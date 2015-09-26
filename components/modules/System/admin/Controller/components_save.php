@@ -11,7 +11,6 @@ namespace cs\modules\System\admin\Controller;
 use
 	cs\Cache,
 	cs\Config,
-	cs\Core,
 	cs\DB,
 	cs\Event,
 	cs\Index,
@@ -19,15 +18,11 @@ use
 	cs\Page,
 	cs\Permission,
 	cs\Session,
-	h,
 	cs\modules\System\Packages_manipulation;
 
 trait components_save {
 	/**
 	 * Provides next events:
-	 *  admin/System/components/modules/install/process
-	 *  ['name'    => module_name]
-	 *
 	 *  admin/System/components/modules/update_system/process/before
 	 *  ['name'    => module_name]
 	 *
@@ -44,10 +39,7 @@ trait components_save {
 	 *  ['name'    => module_name]
 	 */
 	static function components_modules_save () {
-		$Cache      = Cache::instance();
 		$Config     = Config::instance();
-		$Core       = Core::instance();
-		$db         = DB::instance();
 		$L          = Language::instance();
 		$Page       = Page::instance();
 		$Session    = Session::instance();
@@ -102,59 +94,6 @@ trait components_save {
 			$module_name = $_POST['module'];
 			$module_data = &$Config->components['modules'][$module_name];
 			switch ($_POST['mode']) {
-				case 'install':
-					if ($module_data['active'] != -1) {
-						break;
-					}
-					unset($Cache->languages);
-					if (!Event::instance()->fire(
-						'admin/System/components/modules/install/process',
-						[
-							'name' => $module_name
-						]
-					)
-					) {
-						break;
-					}
-					$module_data['active'] = 0;
-					$meta                  = file_exists(MODULES."/$module_name/meta.json") ? file_get_json(MODULES."/$module_name/meta.json") : null;
-					if (isset($_POST['db'], $meta['db']) && is_array($_POST['db'])) {
-						$module_data['db'] = $_POST['db'];
-						time_limit_pause();
-						foreach ($module_data['db'] as $db_name => $index) {
-							if ($index == 0) {
-								$db_type = $Core->db_type;
-							} else {
-								$db_type = $Config->db[$index]['type'];
-							}
-							$sql_file = MODULES."/$module_name/meta/install_db/$db_name/$db_type.sql";
-							if (file_exists($sql_file)) {
-								$db->$index()->q(
-									explode(';', file_get_contents($sql_file))
-								);
-							}
-						}
-						unset($db_name, $index, $db_type, $sql_file);
-						time_limit_pause(false);
-					}
-					if (isset($_POST['storage'], $meta['storage']) && is_array($_POST['storage'])) {
-						$module_data['storage'] = $_POST['storage'];
-					}
-					if ($a->save()) {
-						$Page->notice(
-							"$L->module_installed_but_not_enabled ".
-							h::{'a[is=cs-link-button]'}(
-								$L->enable_module($module_name),
-								[
-									'href' => ''// TODO fix this link when installation migrate to frontend
-								]
-							)
-						);
-					}
-					clean_pcache();
-					unset($Cache->functionality);
-					clean_classes_cache();
-					break;
 				case 'update_system':
 					/**
 					 * Temporary close site

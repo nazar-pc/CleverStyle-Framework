@@ -252,7 +252,6 @@ trait modules {
 			throw new ExitException(400);
 		}
 		$module  = $route_path[2];
-		$Cache   = System_cache::instance();
 		$Config  = Config::instance();
 		$modules = &$Config->components['modules'];
 		if (
@@ -274,7 +273,11 @@ trait modules {
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
+		static::admin_modules_cleanup();
+	}
+	protected static function admin_modules_cleanup () {
 		clean_pcache();
+		$Cache = System_cache::instance();
 		unset(
 			$Cache->functionality,
 			$Cache->languages
@@ -298,7 +301,6 @@ trait modules {
 			throw new ExitException(400);
 		}
 		$module  = $route_path[2];
-		$Cache   = System_cache::instance();
 		$Config  = Config::instance();
 		$modules = &$Config->components['modules'];
 		if (
@@ -322,12 +324,77 @@ trait modules {
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
-		clean_pcache();
-		unset(
-			$Cache->functionality,
-			$Cache->languages
+		static::admin_modules_cleanup();
+	}
+	/**
+	 * Install module
+	 *
+	 * Provides next events:
+	 *  admin/System/components/modules/install/before
+	 *  ['name' => module_name]
+	 *
+	 *  admin/System/components/modules/install/after
+	 *  ['name' => module_name]
+	 *
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_modules_install ($route_ids, $route_path) {
+		if (!isset($route_path[2])) {
+			throw new ExitException(400);
+		}
+		$module  = $route_path[2];
+		$Config  = Config::instance();
+		$Core    = Core::instance();
+		$db      = DB::instance();
+		$modules = &$Config->components['modules'];
+		if (
+			!isset($modules[$module]) ||
+			$modules[$module]['active'] != -1
+		) {
+			throw new ExitException(400);
+		}
+		if (!Event::instance()->fire(
+			'admin/System/components/modules/install/before',
+			[
+				'name' => $module
+			]
+		)
+		) {
+			throw new ExitException(500);
+		}
+		$module_data = &$modules[$module];
+		if (isset($_POST['db'])) {
+			$module_data['db'] = $_POST['db'];
+			time_limit_pause();
+			foreach ($module_data['db'] as $db_name => $index) {
+				$db_type  = $index == 0 ? $Core->db_type : $Config->db[$index]['type'];
+				$sql_file = MODULES."/$module/meta/install_db/$db_name/$db_type.sql";
+				if (file_exists($sql_file)) {
+					$db->$index()->q(
+						explode(';', file_get_contents($sql_file))
+					);
+				}
+			}
+			unset($db_name, $index, $db_type, $sql_file);
+			time_limit_pause(false);
+		}
+		if (isset($_POST['storage'])) {
+			$module_data['storage'] = $_POST['storage'];
+		}
+		$module_data['active'] = 0;
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+		Event::instance()->fire(
+			'admin/System/components/modules/install/after',
+			[
+				'name' => $module
+			]
 		);
-		clean_classes_cache();
+		static::admin_modules_cleanup();
 	}
 	/**
 	 * Uninstall module
@@ -349,7 +416,6 @@ trait modules {
 			throw new ExitException(400);
 		}
 		$module     = $route_path[2];
-		$Cache      = System_cache::instance();
 		$Config     = Config::instance();
 		$Core       = Core::instance();
 		$db         = DB::instance();
@@ -407,12 +473,7 @@ trait modules {
 				'name' => $module
 			]
 		);
-		clean_pcache();
-		unset(
-			$Cache->functionality,
-			$Cache->languages
-		);
-		clean_classes_cache();
+		static::admin_modules_cleanup();
 	}
 	/**
 	 * Extract uploaded module

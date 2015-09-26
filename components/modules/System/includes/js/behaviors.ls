@@ -27,7 +27,7 @@ behaviors.admin.System	=
 				if cs.simple_admin_mode
 					cs.ui.notify(message, 'error', 5)
 					return
-			if meta.optional
+			if meta && meta.optional
 				message_more	+= '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>'
 			modal	= cs.ui.confirm(
 				"#title#message#message_more"

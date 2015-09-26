@@ -14,7 +14,6 @@ Polymer(
 		add				: Boolean
 		database-index	: Number
 		mirror-index	: Number
-		addition		: false
 		databases		: Array
 		database		:
 			type	: Object

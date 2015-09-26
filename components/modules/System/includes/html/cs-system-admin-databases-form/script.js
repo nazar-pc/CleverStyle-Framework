@@ -17,7 +17,6 @@
       add: Boolean,
       databaseIndex: Number,
       mirrorIndex: Number,
-      addition: false,
       databases: Array,
       database: {
         type: Object,

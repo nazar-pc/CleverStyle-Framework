@@ -130,6 +130,128 @@
     }
     /**
      * Provides next events:
+     *  admin/System/components/modules/install/before
+     *  {name : module_name}
+     *
+     *  admin/System/components/modules/install/after
+     *  {name : module_name}
+     */,
+    _install: function(e){
+      var module, meta, this$ = this;
+      module = e.model.module.name;
+      meta = e.model.module.meta;
+      $.when($.getJSON("api/System/admin/modules/" + module + "/dependencies"), $.getJSON('api/System/admin/databases'), $.getJSON('api/System/admin/storages')).then(function(arg$, arg1$, arg2$){
+        var dependencies, databases, storages, message, message_more, form, modal;
+        dependencies = arg$[0];
+        databases = arg1$[0];
+        storages = arg2$[0];
+        message = '';
+        message_more = '';
+        if (Object.keys(dependencies).length) {
+          message = compose_dependencies_message(component, dependencies);
+          if (cs.simple_admin_mode) {
+            cs.ui.notify(message, 'error', 5);
+            return;
+          }
+        }
+        if (meta && meta.optional) {
+          message_more += '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>';
+        }
+        form = meta ? this$._installation_form(meta, databases, storages) : '';
+        modal = cs.ui.confirm("<h3>" + L.installation_of_module(module) + "</h3>\n" + message + "\n" + message_more + "\n" + form, function(){
+          cs.Event.fire('admin/System/components/modules/install/before', {
+            name: module
+          }).then(function(){
+            $.ajax({
+              url: "api/System/admin/modules/" + module,
+              data: new FormData(modal.querySelector('form')),
+              processData: false,
+              type: 'install',
+              success: function(){
+                cs.ui.notify(L.changes_saved, 'success', 5);
+                cs.Event.fire('admin/System/components/modules/install/after', {
+                  name: module
+                }).then(function(){
+                  location.reload();
+                });
+              }
+            });
+          });
+        });
+        modal.ok.innerHTML = L[!message ? 'install' : 'force_install_not_recommended'];
+        modal.ok.primary = !message;
+        modal.cancel.primary = !modal.ok.primary;
+      });
+    },
+    _installation_form: function(meta, databases, storages){
+      var content, i$, ref$, len$, db_name, db_options, db, storage_name, storage_options, storage;
+      content = '';
+      if (meta.db) {
+        if (cs.simple_admin_mode) {
+          for (i$ = 0, len$ = (ref$ = meta.db).length; i$ < len$; ++i$) {
+            db_name = ref$[i$];
+            content += "<input type=\"hidden\" name=\"db[" + db_name + "]\" value=\"0\">";
+          }
+        } else {
+          content += "<tr>\n	<th tooltip=\"" + cs.prepare_attr_value(L.appointment_of_db_info) + "\">\n		" + L.appointment_of_db + "\n		<cs-tooltip/>\n	</th>\n	<th tooltip=\"" + cs.prepare_attr_value(L.system_db_info) + "\">\n		" + L.system_db + "\n		<cs-tooltip/>\n	</th>\n</tr>";
+          db_options = '';
+          for (i$ = 0, len$ = databases.length; i$ < len$; ++i$) {
+            db = databases[i$];
+            if (!meta.db_support || meta.db_support.indexOf(db.type) !== -1) {
+              db_options += this._db_option(db);
+            }
+          }
+          for (i$ = 0, len$ = (ref$ = meta.db).length; i$ < len$; ++i$) {
+            db_name = ref$[i$];
+            content += "<tr>\n	<td>" + db_name + "</td>\n	<td>\n		<select is=\"cs-select\" name=\"db[" + db_name + "]\">" + db_options + "</select>\n	</td>\n</tr>";
+          }
+        }
+      }
+      if (meta.storage) {
+        if (cs.simple_admin_mode) {
+          for (i$ = 0, len$ = (ref$ = meta.storage).length; i$ < len$; ++i$) {
+            storage_name = ref$[i$];
+            content += "<input type=\"hidden\" name=\"storage[" + storage_name + "]\" value=\"0\">";
+          }
+        } else {
+          content += "<tr>\n	<th tooltip=\"" + cs.prepare_attr_value(L.appointment_of_storage_info) + "\">\n		" + L.appointment_of_storage + "\n		<cs-tooltip/>\n	</th>\n	<th tooltip=\"" + cs.prepare_attr_value(L.system_storage_info) + "\">\n		" + L.system_storage + "\n		<cs-tooltip/>\n	</th>\n</tr>";
+          storage_options = '';
+          for (i$ = 0, len$ = databases.length; i$ < len$; ++i$) {
+            storage = databases[i$];
+            if (!meta.storage_support || meta.storage_support.indexOf(storage.type) !== -1) {
+              storage_options += this._storage_option(storage);
+            }
+          }
+          for (i$ = 0, len$ = (ref$ = meta.storage).length; i$ < len$; ++i$) {
+            storage_name = ref$[i$];
+            content += "<tr>\n	<td>" + storage_name + "</td>\n	<td>\n		<select is=\"cs-select\" name=\"storage[" + storage_name + "]\">" + storage_options + "</select>\n	</td>\n</tr>";
+          }
+        }
+      }
+      if (cs.simple_admin_mode) {
+        return "<form>" + content + "</form>";
+      } else {
+        return "<form>\n	<table class=\"cs-table\">\n		" + content + "\n	</table>\n</form>";
+      }
+    },
+    _db_option: function(db){
+      var name, checked;
+      name = db.index
+        ? db.host + "/" + db.name + " (" + db.type + ")"
+        : L.core_db + (" (" + db.type + ")");
+      checked = db.index ? '' : 'checked';
+      return "<option value=\"" + db.index + "\" " + checked + ">" + name + "</option>";
+    },
+    _storage_option: function(storage){
+      var name, checked;
+      name = storage.index
+        ? storage.host + " (" + storage.connection + ")"
+        : L.core_storage + (" (" + storage.connection + ")");
+      checked = storage.index ? '' : 'checked';
+      return "<option value=\"" + db.index + "\" " + checked + ">" + name + "</option>";
+    }
+    /**
+     * Provides next events:
      *  admin/System/components/modules/uninstall/before
      *  {name : module_name}
      *
@@ -145,7 +267,7 @@
         }).then(function(){
           $.ajax({
             url: "api/System/admin/modules/" + module,
-            type: 'disable',
+            type: 'uninstall',
             success: function(){
               this$.reload();
               cs.ui.notify(L.changes_saved, 'success', 5);

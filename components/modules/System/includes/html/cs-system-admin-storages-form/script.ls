@@ -13,7 +13,6 @@ Polymer(
 	properties	:
 		add				: Boolean
 		storage-index	: Number
-		addition		: false
 		storages		: Array
 		storage		:
 			type	: Object

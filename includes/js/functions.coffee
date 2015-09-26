@@ -254,7 +254,7 @@ cs.prepare_attr_value		= (string) ->
 		for s in string.slice(0)
 			cs.prepare_attr_value(s)
 	else
-		string
+		String(string)
 			.replace(/&/g, '&amp;')
 			.replace(/'/g, '&apos;')
 			.replace(/"/g, '&quot;')

@@ -16,7 +16,6 @@
     properties: {
       add: Boolean,
       storageIndex: Number,
-      addition: false,
       storages: Array,
       storage: {
         type: Object,

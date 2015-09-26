@@ -115,6 +115,137 @@ Polymer(
 		@_disable_component(e.model.module.name, 'module')
 	/**
 	 * Provides next events:
+	 *  admin/System/components/modules/install/before
+	 *  {name : module_name}
+	 *
+	 *  admin/System/components/modules/install/after
+	 *  {name : module_name}
+	 */
+	_install : (e) !->
+		module	= e.model.module.name
+		meta	= e.model.module.meta
+		$.when(
+			$.getJSON("api/System/admin/modules/#module/dependencies")
+			$.getJSON('api/System/admin/databases')
+			$.getJSON('api/System/admin/storages')
+		).then ([dependencies], [databases], [storages]) !~>
+			message			= ''
+			message_more	= ''
+			if Object.keys(dependencies).length
+				message	= compose_dependencies_message(component, dependencies)
+				if cs.simple_admin_mode
+					cs.ui.notify(message, 'error', 5)
+					return
+			if meta && meta.optional
+				message_more	+= '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>'
+			form	= if meta then @_installation_form(meta, databases, storages) else ''
+			modal	= cs.ui.confirm(
+				"""<h3>#{L.installation_of_module(module)}</h3>
+				#message
+				#message_more
+				#form"""
+				!~>
+					cs.Event.fire(
+						'admin/System/components/modules/install/before'
+						name	: module
+					).then !~>
+						$.ajax(
+							url			: "api/System/admin/modules/#module"
+							data		: new FormData(modal.querySelector('form'))
+							processData	: false
+							type		: 'install'
+							success		: !~>
+								cs.ui.notify(L.changes_saved, 'success', 5)
+								cs.Event.fire(
+									'admin/System/components/modules/install/after'
+									name	: module
+								).then !->
+									location.reload()
+						)
+			)
+			modal.ok.innerHTML		= L[if !message then 'install' else 'force_install_not_recommended']
+			modal.ok.primary		= !message
+			modal.cancel.primary	= !modal.ok.primary
+	_installation_form : (meta, databases, storages) ->
+		content	= ''
+		if meta.db
+			if cs.simple_admin_mode
+				for db_name in meta.db
+					content	+= """<input type="hidden" name="db[#db_name]" value="0">"""
+			else
+				content	+= """<tr>
+					<th tooltip="#{cs.prepare_attr_value(L.appointment_of_db_info)}">
+						#{L.appointment_of_db}
+						<cs-tooltip/>
+					</th>
+					<th tooltip="#{cs.prepare_attr_value(L.system_db_info)}">
+						#{L.system_db}
+						<cs-tooltip/>
+					</th>
+				</tr>"""
+				db_options	= ''
+				for db in databases
+					if !meta.db_support || meta.db_support.indexOf(db.type) != -1
+						db_options	+= @_db_option(db)
+				for db_name in meta.db
+					content	+= """<tr>
+						<td>#db_name</td>
+						<td>
+							<select is="cs-select" name="db[#db_name]">#db_options</select>
+						</td>
+					</tr>"""
+		if meta.storage
+			if cs.simple_admin_mode
+				for storage_name in meta.storage
+					content	+= """<input type="hidden" name="storage[#storage_name]" value="0">"""
+			else
+				content	+= """<tr>
+					<th tooltip="#{cs.prepare_attr_value(L.appointment_of_storage_info)}">
+						#{L.appointment_of_storage}
+						<cs-tooltip/>
+					</th>
+					<th tooltip="#{cs.prepare_attr_value(L.system_storage_info)}">
+						#{L.system_storage}
+						<cs-tooltip/>
+					</th>
+				</tr>"""
+				storage_options	= ''
+				for storage in databases
+					if !meta.storage_support || meta.storage_support.indexOf(storage.type) != -1
+						storage_options	+= @_storage_option(storage)
+				for storage_name in meta.storage
+					content	+= """<tr>
+						<td>#storage_name</td>
+						<td>
+							<select is="cs-select" name="storage[#storage_name]">#storage_options</select>
+						</td>
+					</tr>"""
+		if cs.simple_admin_mode
+			"<form>#content</form>"
+		else
+			"""<form>
+				<table class="cs-table">
+					#content
+				</table>
+			</form>"""
+	_db_option : (db) ->
+		name	=
+			if db.index
+				"#{db.host}/#{db.name} (#{db.type})"
+			else
+				L.core_db + " (#{db.type})"
+		checked	= if db.index then '' else 'checked'
+		"""<option value="#{db.index}" #checked>#name</option>"""
+	_storage_option : (storage) ->
+		name	=
+			if storage.index
+				"#{storage.host} (#{storage.connection})"
+			else
+				L.core_storage + " (#{storage.connection})"
+		checked	= if storage.index then '' else 'checked'
+		"""<option value="#{db.index}" #checked>#name</option>"""
+	/**
+	 * Provides next events:
 	 *  admin/System/components/modules/uninstall/before
 	 *  {name : module_name}
 	 *
@@ -122,7 +253,7 @@ Polymer(
 	 *  {name : module_name}
 	 */
 	_uninstall : (e) !->
-		module = e.model.module.name
+		module	= e.model.module.name
 		modal	= cs.ui.confirm(
 			L.uninstallation_of_module(module)
 			!~>
@@ -132,7 +263,7 @@ Polymer(
 				).then !~>
 					$.ajax(
 						url		: "api/System/admin/modules/#module"
-						type	: 'disable'
+						type	: 'uninstall'
 						success	: !~>
 							@reload()
 							cs.ui.notify(L.changes_saved, 'success', 5)

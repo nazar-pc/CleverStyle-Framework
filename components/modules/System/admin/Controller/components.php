@@ -65,9 +65,6 @@ trait components {
 	}
 	/**
 	 * Provides next events:
-	 *  admin/System/components/modules/install/prepare
-	 *  ['name' => module_name]
-	 *
 	 *  admin/System/components/modules/update_system/prepare
 	 *
 	 *  admin/System/components/modules/db/prepare
@@ -99,79 +96,6 @@ trait components {
 			)
 		) {
 			switch ($rc[2]) {
-				case 'install':
-					$show_modules = false;
-					$Page->title($L->installation_of_module($rc[3]));
-					$a->content(
-						h::{'h2.cs-text-center'}(
-							$L->installation_of_module($rc[3])
-						)
-					);
-					if (!Event::instance()->fire(
-						'admin/System/components/modules/install/prepare',
-						[
-							'name' => $rc[3]
-						]
-					)
-					) {
-						break;
-					}
-					$check_dependencies = true;
-					if (file_exists(MODULES."/$rc[3]/meta.json")) {
-						$meta               = file_get_json(MODULES."/$rc[3]/meta.json");
-						$check_dependencies = Packages_manipulation::get_dependencies($meta);
-						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-							break;
-						}
-						if (isset($meta['optional'])) {
-							$Page->success(
-								$L->for_complete_feature_set(
-									implode(', ', (array)$meta['optional'])
-								)
-							);
-						}
-						if ($Config->core['simple_admin_mode']) {
-							if (isset($meta['db'])) {
-								foreach ($meta['db'] as $database) {
-									$a->content(
-										h::{'input[type=hidden]'}(
-											[
-												'name'  => "db[$database]",
-												'value' => 0
-											]
-										)
-									);
-								}
-								unset($database);
-							}
-							if (isset($meta['storage'])) {
-								foreach ($meta['storage'] as $storage) {
-									$a->content(
-										h::{'input[type=hidden]'}(
-											[
-												'name'  => "storage[$storage]",
-												'value' => 0
-											]
-										)
-									);
-								}
-								unset($storage);
-							}
-						} else {
-							goto module_db_settings;
-							back_to_module_installation_1:
-							goto module_storage_settings;
-							back_to_module_installation_2:
-						}
-						unset($meta);
-					}
-					$a->cancel_button_back = true;
-					$a->content(
-						h::{'button[is=cs-button][type=submit]'}(
-							$L->{$check_dependencies ? 'install' : 'force_install_not_recommended'}
-						)
-					);
-					break;
 				case 'update_system':
 					$tmp_file = Packages_manipulation::move_uploaded_file_to_tmp('upload_system');
 					if (!$tmp_file) {
@@ -243,9 +167,8 @@ trait components {
 						}
 						$a->buttons            = true;
 						$a->cancel_button_back = true;
-						module_db_settings:
-						$Core = Core::instance();
-						$dbs  = [0 => "$L->core_db ($Core->db_type)"];
+						$Core                  = Core::instance();
+						$dbs                   = [0 => "$L->core_db ($Core->db_type)"];
 						foreach ($Config->db as $i => &$db_data) {
 							if ($i) {
 								$dbs[$i] = "$db_data[name] ($db_data[host] / $db_data[type])";
@@ -286,9 +209,6 @@ trait components {
 							);
 						}
 						unset($db_list);
-						if ($rc[2] == 'install') {
-							goto back_to_module_installation_1;
-						}
 					}
 					break;
 				case 'storage':
@@ -312,8 +232,7 @@ trait components {
 						}
 						$a->buttons            = true;
 						$a->cancel_button_back = true;
-						module_storage_settings:
-						$storages = [0 => $L->core_storage];
+						$storages              = [0 => $L->core_storage];
 						foreach ($Config->storage as $i => &$storage_data) {
 							if ($i) {
 								$storages[$i] = "$storage_data[host] ($storage_data[connection])";
@@ -354,14 +273,10 @@ trait components {
 							);
 						}
 						unset($storage_list);
-						if ($rc[2] == 'install') {
-							goto back_to_module_installation_2;
-						}
 					}
 					break;
 			}
 			switch ($rc[2]) {
-				case 'install':
 				case 'update_system':
 				case 'db':
 				case 'storage':
