@@ -272,7 +272,6 @@
 		"storage_settings_for_module"					: "Storage settings for module %s",
 		"default_module"								: "Default module (displayed on the home page)",
 		"make_default_module"							: "Make it default module",
-		"module_installed_but_not_enabled"				: "Module installed, but not enable yet. You can edit module settings, but it will not be available for users until you enable it.",
 		"enabling_of_module"							: "Enabling of module %s",
 		"enable_module"									: "Enable module %s?",
 		"disabling_of_module"							: "Disabling of module %s",
