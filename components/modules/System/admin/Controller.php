@@ -19,7 +19,6 @@ use
 	cs\modules\System\admin\Controller\components,
 	cs\modules\System\admin\Controller\general,
 	cs\modules\System\admin\Controller\users,
-	cs\modules\System\admin\Controller\components_save,
 	cs\modules\System\admin\Controller\users_save,
 	cs\modules\System\admin\Controller\layout_elements;
 
@@ -28,7 +27,6 @@ class Controller {
 		components,
 		general,
 		users,
-		components_save,
 		users_save,
 		layout_elements;
 	static function index (

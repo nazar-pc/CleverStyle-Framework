@@ -23,22 +23,35 @@
   Polymer({
     'is': 'cs-system-admin-modules-list',
     behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.components],
+    properties: {
+      default_module: String
+    },
     ready: function(){
       this.reload();
     },
     reload: function(){
       var this$ = this;
-      $.getJSON('api/System/admin/modules', function(modules){
+      $.when($.getJSON('api/System/admin/modules'), $.getJSON('api/System/admin/modules/default')).then(function(arg$, arg1$){
+        var modules, default_module;
+        modules = arg$[0];
+        default_module = arg1$[0];
+        this$.default_module = default_module;
         modules.forEach(function(module){
-          var active_switch_local;
-          module.can_disable = module.active == 1 && module.name !== 'System';
+          var active_switch_local, enabled, installed;
           active_switch_local = active_switch.bind(module);
           module['class'] = active_switch_local('cs-block-error cs-text-error', 'cs-block-warning cs-text-warning', 'cs-block-success cs-text-success');
-          module.icon = active_switch_local('times', 'minus', module.is_default ? 'home' : 'check');
-          module.icon_text = active_switch_local(L.uninstalled, L.disabled, module.is_default
+          module.icon = active_switch_local('times', 'minus', module.name === default_module ? 'home' : 'check');
+          module.icon_text = active_switch_local(L.uninstalled, L.disabled, module.name === default_module
             ? L.default_module
             : L.enabled);
           module.name_localized = L[module.name] || module.name.replace('_', ' ');
+          enabled = module.active == 1;
+          installed = module.active != -1;
+          module.can_disable = enabled && module.name !== 'System';
+          module.administration = module.has_admin_section && installed;
+          module.db_settings = !cs.simple_admin_mode && installed && module.meta && module.meta.db;
+          module.storage_settings = !cs.simple_admin_mode && installed && module.meta && module.meta.storage;
+          module.can_be_set_as_default = enabled && module.name !== default_module && module.has_user_section;
           (function(){
             var i$, ref$, len$, prop, ref1$, tag;
             for (i$ = 0, len$ = (ref$ = ['api', 'license', 'readme']).length; i$ < len$; ++i$) {

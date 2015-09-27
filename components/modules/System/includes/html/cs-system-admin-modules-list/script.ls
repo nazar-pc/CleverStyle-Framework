@@ -18,54 +18,66 @@ Polymer(
 		cs.Polymer.behaviors.Language
 		cs.Polymer.behaviors.admin.System.components
 	]
+	properties	:
+		default_module	: String
 	ready : !->
 		@reload()
 	reload : !->
-		modules <~! $.getJSON('api/System/admin/modules', _)
-		modules.forEach (module) !->
-			module.can_disable		= module.active ~= 1 && module.name != 'System'
-			active_switch_local		= active_switch.bind(module)
-			module.class			= active_switch_local(
-				'cs-block-error cs-text-error'
-				'cs-block-warning cs-text-warning'
-				'cs-block-success cs-text-success'
-			)
-			module.icon				= active_switch_local(
-				'times'
-				'minus'
-				if module.is_default then 'home' else 'check'
-			)
-			module.icon_text		= active_switch_local(
-				L.uninstalled
-				L.disabled
-				if module.is_default then L.default_module else L.enabled
-			)
-			module.name_localized	= L[module.name] || module.name.replace('_', ' ')
-			do !->
-				for prop in ['api', 'license', 'readme']
-					if module[prop]?.type
-						tag						= if module[prop].type == 'txt' then 'pre' else 'div'
-						module[prop].content	= "<#tag>#{module[prop].content}</#tag>"
-			if module.meta
-				module.info	= let (@ = module.meta)
-					L.module_info(
-						@package,
-						@version,
-						@description,
-						@author,
-						@website || L.none,
-						@license,
-						if @db_support then @db_support.join(', ') else L.none,
-						if @storage_support then @storage_support.join(', ') else L.none,
-						if @provide then [].concat(@provide).join(', ') else L.none,
-						if @require then [].concat(@require).join(', ') else L.none,
-						if @conflict then [].concat(@conflict).join(', ') else L.none,
-						if @optional then [].concat(@optional).join(', ') else L.none,
-						if @multilingual && @multilingual.indexOf('interface') != -1 then L.yes else L.no,
-						if @multilingual && @multilingual.indexOf('content') != -1 then L.yes else L.no,
-						if @languages then @languages.join(', ') else L.none
-					)
-		@set('modules', modules)
+		$.when(
+			$.getJSON('api/System/admin/modules')
+			$.getJSON('api/System/admin/modules/default')
+		).then ([modules], [default_module]) !~>
+			@default_module	= default_module
+			modules.forEach (module) !->
+				active_switch_local		= active_switch.bind(module)
+				module.class			= active_switch_local(
+					'cs-block-error cs-text-error'
+					'cs-block-warning cs-text-warning'
+					'cs-block-success cs-text-success'
+				)
+				module.icon				= active_switch_local(
+					'times'
+					'minus'
+					if module.name == default_module then 'home' else 'check'
+				)
+				module.icon_text		= active_switch_local(
+					L.uninstalled
+					L.disabled
+					if module.name == default_module then L.default_module else L.enabled
+				)
+				module.name_localized			= L[module.name] || module.name.replace('_', ' ')
+				enabled							= module.active ~= 1
+				installed						= module.active !~= -1
+				module.can_disable				= enabled && module.name != 'System'
+				module.administration			= module.has_admin_section && installed
+				module.db_settings				= !cs.simple_admin_mode && installed && module.meta && module.meta.db
+				module.storage_settings			= !cs.simple_admin_mode && installed && module.meta && module.meta.storage
+				module.can_be_set_as_default	= enabled && module.name != default_module && module.has_user_section
+				do !->
+					for prop in ['api', 'license', 'readme']
+						if module[prop]?.type
+							tag						= if module[prop].type == 'txt' then 'pre' else 'div'
+							module[prop].content	= "<#tag>#{module[prop].content}</#tag>"
+				if module.meta
+					module.info	= let (@ = module.meta)
+						L.module_info(
+							@package,
+							@version,
+							@description,
+							@author,
+							@website || L.none,
+							@license,
+							if @db_support then @db_support.join(', ') else L.none,
+							if @storage_support then @storage_support.join(', ') else L.none,
+							if @provide then [].concat(@provide).join(', ') else L.none,
+							if @require then [].concat(@require).join(', ') else L.none,
+							if @conflict then [].concat(@conflict).join(', ') else L.none,
+							if @optional then [].concat(@optional).join(', ') else L.none,
+							if @multilingual && @multilingual.indexOf('interface') != -1 then L.yes else L.no,
+							if @multilingual && @multilingual.indexOf('content') != -1 then L.yes else L.no,
+							if @languages then @languages.join(', ') else L.none
+						)
+			@set('modules', modules)
 	/**
 	 * Provides next events:
 	 *  admin/System/components/modules/default/before

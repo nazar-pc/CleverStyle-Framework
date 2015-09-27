@@ -165,18 +165,10 @@ trait modules {
 		$modules_list = [];
 		foreach ($Config->components['modules'] as $module_name => &$module_data) {
 			$module = [
-				'active'                => $module_data['active'],
-				'name'                  => $module_name,
-				'is_default'            => $module_name == $Config->core['default_module'],
-				'can_be_set_as_default' =>
-					$module_data['active'] == 1 &&
-					$module_name != $Config->core['default_module'] &&
-					file_exists_with_extension(MODULES."/$module_name/index", ['php', 'html', 'json']),
-				'db_settings'           => !$Config->core['simple_admin_mode'] && @$module_data['db'] && count($Config->db) > 1,
-				'storage_settings'      => !$Config->core['simple_admin_mode'] && @$module_data['storage'] && count($Config->storage) > 1,
-				'administration'        =>
-					$module_data['active'] != -1 &&
-					file_exists_with_extension(MODULES."/$module_name/admin/index", ['php', 'json'])
+				'active'            => $module_data['active'],
+				'name'              => $module_name,
+				'has_user_section'  => file_exists_with_extension(MODULES."/$module_name/index", ['php', 'html', 'json']),
+				'has_admin_section' => file_exists_with_extension(MODULES."/$module_name/admin/index", ['php', 'json'])
 			];
 			/**
 			 * Check if API available
