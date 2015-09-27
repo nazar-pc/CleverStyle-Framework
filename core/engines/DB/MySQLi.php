@@ -14,12 +14,40 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8', $prefix = '') {
+	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8mb4', $prefix = '') {
 		$this->connecting_time = microtime(true);
 		/**
 		 * Parsing of $host variable, detecting port and persistent connection
 		 */
-		$host = explode(':', $host);
+		list($host, $port) = $this->get_host_and_port($host);
+		$this->instance = @new \MySQLi($host, $user, $password, $database, $port);
+		if (is_object($this->instance) && !$this->instance->connect_errno) {
+			$this->database = $database;
+			/**
+			 * Changing DB charset
+			 */
+			if ($charset && $charset != $this->instance->character_set_name()) {
+				$this->instance->set_charset($charset);
+			}
+			$this->connected = true;
+		} else {
+			return;
+		}
+		$this->connecting_time = microtime(true) - $this->connecting_time;
+		$this->db_type         = 'mysql';
+		$this->prefix          = $prefix;
+	}
+	/**
+	 * Parse host string into host and port separately
+	 *
+	 * Understands `p:` prefix for persistent connections
+	 *
+	 * @param string $host_string
+	 *
+	 * @return array
+	 */
+	protected function get_host_and_port ($host_string) {
+		$host = explode(':', $host_string);
 		$port = ini_get('mysqli.default_port') ?: 3306;
 		switch (count($host)) {
 			case 1:
@@ -37,23 +65,7 @@ class MySQLi extends _Abstract {
 				$port = $host[2];
 				$host = "$host[0]:$host[1]";
 		}
-		$this->instance = @new \MySQLi($host, $user, $password, $database, $port);
-		/** @noinspection NotOptimalIfConditionsInspection */
-		if (is_object($this->instance) && !$this->instance->connect_errno) {
-			$this->database = $database;
-			/**
-			 * Changing DB charset
-			 */
-			if ($charset && $charset != $this->instance->character_set_name()) {
-				$this->instance->set_charset($charset);
-			}
-			$this->connected = true;
-		} else {
-			return;
-		}
-		$this->connecting_time = microtime(true) - $this->connecting_time;
-		$this->db_type         = 'mysql';
-		$this->prefix          = $prefix;
+		return [$host, $port];
 	}
 	/**
 	 * @inheritdoc
