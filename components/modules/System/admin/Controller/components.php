@@ -58,18 +58,10 @@ trait components {
 		);
 	}
 	static function components_modules () {
-		$L              = Language::instance();
-		$Index          = Index::instance();
-		$Index->buttons = false;
+		$Index       = Index::instance();
+		$Index->form = false;
 		$Index->content(
-			h::cs_system_admin_modules_list().
-			h::{'button[is=cs-button][icon=refresh][type=submit]'}(
-				$L->update_modules_list,
-				[
-					'tooltip' => $L->update_modules_list_info,
-					'name'    => 'update_modules_list'
-				]
-			)
+			h::cs_system_admin_modules_list()
 		);
 	}
 	static function components_plugins () {

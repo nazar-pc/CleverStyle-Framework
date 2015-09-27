@@ -321,7 +321,7 @@ Polymer(
 				success	: !->
 					cs.ui.notify(L.changes_saved, 'success', 5)
 					location.reload()
-				)
+			)
 	_db_settings : (e) !->
 		module	= e.model.module.name
 		meta	= e.model.module.meta
@@ -368,4 +368,12 @@ Polymer(
 			)
 			for index, storage_name of storages_mapping
 				modal.querySelector("[name=storage[#storage_name]]").selected = index
+	_update_modules_list : !->
+		$.ajax(
+			url		: 'api/System/admin/modules'
+			type	: 'update_list'
+			success	: !~>
+				cs.ui.notify(L.changes_saved, 'success', 5)
+				@reload()
+			)
 )

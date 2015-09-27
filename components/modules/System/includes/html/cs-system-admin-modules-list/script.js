@@ -388,6 +388,17 @@
           modal.querySelector("[name=storage[" + storage_name + "]]").selected = index;
         }
       });
+    },
+    _update_modules_list: function(){
+      var this$ = this;
+      $.ajax({
+        url: 'api/System/admin/modules',
+        type: 'update_list',
+        success: function(){
+          cs.ui.notify(L.changes_saved, 'success', 5);
+          this$.reload();
+        }
+      });
     }
   });
 }).call(this);

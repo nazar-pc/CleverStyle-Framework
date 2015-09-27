@@ -542,8 +542,8 @@ trait modules {
 		}
 		$permissions_ids = array_merge(
 			$Permission->get(null, $module),
-			$Permission->get(null, "$module/admin"),
-			$Permission->get(null, "$module/api")
+			$Permission->get(null, "admin/$module"),
+			$Permission->get(null, "api/$module")
 		);
 		if (!empty($permissions_ids)) {
 			$Permission->del(
@@ -779,6 +779,62 @@ trait modules {
 			throw new ExitException(500);
 		}
 		unset($Config->components['modules'][$module_name]);
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+	}
+	/**
+	 * Update information about present modules
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_modules_update_list () {
+		$Config     = Config::instance();
+		$Permission = Permission::instance();
+		/**
+		 * List of currently presented modules in file system
+		 */
+		$modules_in_fs = get_files_list(MODULES, false, 'd');
+		$modules_list  = array_fill_keys(
+			$modules_in_fs,
+			[
+				'active'  => -1,
+				'db'      => [],
+				'storage' => []
+			]
+		);
+		/**
+		 * Already known modules
+		 */
+		$modules       = &$Config->components['modules'];
+		$known_modules = array_keys($modules);
+		if ($modules_in_fs != $known_modules) {
+			/**
+			 * Delete permissions of modules that are mot present anymore
+			 */
+			$permissions_ids = [];
+			foreach ($known_modules as $module) {
+				if (!isset($modules_list[$module])) {
+					/** @noinspection SlowArrayOperationsInLoopInspection */
+					$permissions_ids = array_merge(
+						$permissions_ids,
+						(array)$Permission->get(null, $module),
+						(array)$Permission->get(null, "admin/$module"),
+						(array)$Permission->get(null, "api/$module")
+					);
+				}
+			}
+			unset($known_modules, $module);
+			if ($permissions_ids) {
+				$Permission->del(
+					array_column($permissions_ids, 'id')
+				);
+			}
+			unset($permissions_ids);
+		}
+		unset($modules_in_fs, $known_modules);
+		$modules = array_merge($modules_list, array_intersect_key($modules, $modules_list));
+		ksort($modules, SORT_STRING | SORT_FLAG_CASE);
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
