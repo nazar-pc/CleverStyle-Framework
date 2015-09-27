@@ -10,7 +10,6 @@
 namespace cs\modules\System\admin\Controller;
 use
 	cs\Config,
-	cs\Core,
 	cs\DB,
 	cs\Event,
 	cs\Index,
