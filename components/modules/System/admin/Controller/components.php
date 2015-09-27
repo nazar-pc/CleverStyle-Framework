@@ -66,12 +66,6 @@ trait components {
 	/**
 	 * Provides next events:
 	 *  admin/System/components/modules/update_system/prepare
-	 *
-	 *  admin/System/components/modules/db/prepare
-	 *  ['name' => module_name]
-	 *
-	 *  admin/System/components/modules/storage/prepare
-	 *  ['name' => module_name]
 	 */
 	static function components_modules () {
 		$Config       = Config::instance();
@@ -146,140 +140,9 @@ trait components {
 					$rc[3]                 = 'System';
 					$a->cancel_button_back = true;
 					break;
-				case 'db':
-					$show_modules = false;
-					if (count($Config->db) > 1) {
-						$Page->warning($L->changing_settings_warning);
-						$Page->title($L->db_settings_for_module($rc[3]));
-						$a->content(
-							h::{'h2.cs-text-center'}(
-								$L->db_settings_for_module($rc[3])
-							)
-						);
-						if (!Event::instance()->fire(
-							'admin/System/components/modules/db/prepare',
-							[
-								'name' => $rc[3]
-							]
-						)
-						) {
-							break;
-						}
-						$a->buttons            = true;
-						$a->cancel_button_back = true;
-						$Core                  = Core::instance();
-						$dbs                   = [0 => "$L->core_db ($Core->db_type)"];
-						foreach ($Config->db as $i => &$db_data) {
-							if ($i) {
-								$dbs[$i] = "$db_data[name] ($db_data[host] / $db_data[type])";
-							}
-						}
-						unset($i, $db_data);
-						$db_list = [];
-						if (file_exists(MODULES."/$rc[3]/meta.json")) {
-							$meta = file_get_json(MODULES."/$rc[3]/meta.json");
-							foreach (isset($meta['db']) ? $meta['db'] : [] as $database) {
-								$db_list[] = [
-									$database,
-									h::{'select[is=cs-select]'}(
-										[
-											'in'    => array_values($dbs),
-											'value' => array_keys($dbs)
-										],
-										[
-											'name'     => "db[$database]",
-											'selected' => isset($Config->components['modules'][$rc[3]]['db'][$database]) ?
-												$Config->components['modules'][$rc[3]]['db'][$database] : 0,
-											'size'     => 5
-										]
-									)
-								];
-							}
-							unset($dbs, $database);
-						}
-						if ($db_list) {
-							$a->content(
-								h::{'table.cs-table[right-left] tr| td'}(
-									[
-										h::info('appointment_of_db'),
-										h::info('system_db')
-									],
-									$db_list
-								)
-							);
-						}
-						unset($db_list);
-					}
-					break;
-				case 'storage':
-					$show_modules = false;
-					if (count($Config->storage) > 1) {
-						$Page->warning($L->changing_settings_warning);
-						$Page->title($L->storage_settings_for_module($rc[3]));
-						$a->content(
-							h::{'h2.cs-text-center'}(
-								$L->storage_settings_for_module($rc[3])
-							)
-						);
-						if (!Event::instance()->fire(
-							'admin/System/components/modules/storage/prepare',
-							[
-								'name' => $rc[3]
-							]
-						)
-						) {
-							break;
-						}
-						$a->buttons            = true;
-						$a->cancel_button_back = true;
-						$storages              = [0 => $L->core_storage];
-						foreach ($Config->storage as $i => &$storage_data) {
-							if ($i) {
-								$storages[$i] = "$storage_data[host] ($storage_data[connection])";
-							}
-						}
-						unset($i, $storage_data);
-						$storage_list = [];
-						if (file_exists(MODULES."/$rc[3]/meta.json")) {
-							$meta = file_get_json(MODULES."/$rc[3]/meta.json");
-							foreach (isset($meta['storage']) ? $meta['storage'] : [] as $storage) {
-								$storage_list[] = [
-									$storage,
-									h::{'select[is=cs-select]'}(
-										[
-											'in'    => array_values($storages),
-											'value' => array_keys($storages)
-										],
-										[
-											'name'     => "storage[$storage]",
-											'selected' => isset($Config->components['modules'][$rc[3]]['storage'][$storage]) ?
-												$Config->components['modules'][$rc[3]]['storage'][$storage] : 0,
-											'size'     => 5
-										]
-									)
-								];
-							}
-							unset($storages, $storage);
-						}
-						if ($storage_list) {
-							$a->content(
-								h::{'table.cs-table[right-left] tr| td'}(
-									[
-										h::info('appointment_of_storage'),
-										h::info('system_storage')
-									],
-									$storage_list
-								)
-							);
-						}
-						unset($storage_list);
-					}
-					break;
 			}
 			switch ($rc[2]) {
 				case 'update_system':
-				case 'db':
-				case 'storage':
 					$a->content(
 						h::{'input[type=hidden]'}(
 							[

@@ -31,9 +31,9 @@ dom-module(id="cs-system-admin-modules-list")
 					td(left)
 						a(is="cs-link-button" icon="home" on-tap="_set_as_default" tooltip="[[L.make_default_module]]" hidden$="[[!module.can_be_set_as_default]]")
 						= ' '
-						a(is="cs-link-button" icon="database" href="[[concat('/admin/System/components/modules/db/', module.name)]]" tooltip="[[L.databases]]" hidden$="[[!module.db_settings]]")
+						a(is="cs-link-button" icon="database" on-tap="_db_settings" tooltip="[[L.databases]]" hidden$="[[!module.db_settings]]")
 						= ' '
-						a(is="cs-link-button" icon="hdd-o" href="[[concat('/admin/System/components/modules/storage/', module.name)]]" tooltip="[[L.storages]]" hidden$="[[!module.storage_settings]]")
+						a(is="cs-link-button" icon="hdd-o" on-tap="_storage_settings" tooltip="[[L.storages]]" hidden$="[[!module.storage_settings]]")
 						= ' '
 						a(is="cs-link-button" icon="sliders" href="[[concat('/admin/', module.name)]]" tooltip="[[L.module_admin_page]]" hidden$="[[!module.administration]]")
 						= ' '

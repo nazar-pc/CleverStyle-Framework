@@ -157,15 +157,14 @@
         if (meta && meta.optional) {
           message_more += '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>';
         }
-        form = meta ? this$._installation_form(meta, databases, storages) : '';
+        form = meta ? this$._databases_storages_form(meta, databases, storages) : '';
         modal = cs.ui.confirm("<h3>" + L.installation_of_module(module) + "</h3>\n" + message + "\n" + message_more + "\n" + form, function(){
           cs.Event.fire('admin/System/components/modules/install/before', {
             name: module
           }).then(function(){
             $.ajax({
               url: "api/System/admin/modules/" + module,
-              data: new FormData(modal.querySelector('form')),
-              processData: false,
+              data: $(modal.querySelector('form')).serialize(),
               type: 'install',
               success: function(){
                 cs.ui.notify(L.changes_saved, 'success', 5);
@@ -183,10 +182,10 @@
         modal.cancel.primary = !modal.ok.primary;
       });
     },
-    _installation_form: function(meta, databases, storages){
+    _databases_storages_form: function(meta, databases, storages){
       var content, i$, ref$, len$, db_name, db_options, db, storage_name, storage_options, storage;
       content = '';
-      if (meta.db) {
+      if (meta.db && databases.length) {
         if (cs.simple_admin_mode) {
           for (i$ = 0, len$ = (ref$ = meta.db).length; i$ < len$; ++i$) {
             db_name = ref$[i$];
@@ -207,7 +206,7 @@
           }
         }
       }
-      if (meta.storage) {
+      if (meta.storage && storages.length) {
         if (cs.simple_admin_mode) {
           for (i$ = 0, len$ = (ref$ = meta.storage).length; i$ < len$; ++i$) {
             storage_name = ref$[i$];
@@ -216,8 +215,8 @@
         } else {
           content += "<tr>\n	<th tooltip=\"" + cs.prepare_attr_value(L.appointment_of_storage_info) + "\">\n		" + L.appointment_of_storage + "\n		<cs-tooltip/>\n	</th>\n	<th tooltip=\"" + cs.prepare_attr_value(L.system_storage_info) + "\">\n		" + L.system_storage + "\n		<cs-tooltip/>\n	</th>\n</tr>";
           storage_options = '';
-          for (i$ = 0, len$ = databases.length; i$ < len$; ++i$) {
-            storage = databases[i$];
+          for (i$ = 0, len$ = storages.length; i$ < len$; ++i$) {
+            storage = storages[i$];
             if (!meta.storage_support || meta.storage_support.indexOf(storage.type) !== -1) {
               storage_options += this._storage_option(storage);
             }
@@ -248,7 +247,7 @@
         ? storage.host + " (" + storage.connection + ")"
         : L.core_storage + (" (" + storage.connection + ")");
       checked = storage.index ? '' : 'checked';
-      return "<option value=\"" + db.index + "\" " + checked + ">" + name + "</option>";
+      return "<option value=\"" + storage.index + "\" " + checked + ">" + name + "</option>";
     }
     /**
      * Provides next events:
@@ -318,6 +317,57 @@
         type: 'extract',
         success: function(){
           this$.reload();
+        }
+      });
+    },
+    _db_settings: function(e){
+      var module, meta, this$ = this;
+      module = e.model.module.name;
+      meta = e.model.module.meta;
+      $.when($.getJSON('api/System/admin/databases'), $.getJSON("api/System/admin/modules/" + module + "/db")).then(function(arg$, arg1$){
+        var databases, databases_mapping, form, modal, index, db_name;
+        databases = arg$[0];
+        databases_mapping = arg1$[0];
+        form = meta ? this$._databases_storages_form(meta, databases, []) : '';
+        modal = cs.ui.confirm("<h3>" + L.db_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n" + form, function(){
+          $.ajax({
+            url: "api/System/admin/modules/" + module + "/db",
+            data: $(modal.querySelector('form')).serialize(),
+            type: 'put',
+            success: function(){
+              cs.ui.notify(L.changes_saved, 'success', 5);
+            }
+          });
+        });
+        for (index in databases_mapping) {
+          db_name = databases_mapping[index];
+          modal.querySelector("[name=db[" + db_name + "]]").selected = index;
+        }
+      });
+    },
+    _storage_settings: function(e){
+      var module, meta, this$ = this;
+      module = e.model.module.name;
+      meta = e.model.module.meta;
+      console.log(meta);
+      $.when($.getJSON('api/System/admin/storages'), $.getJSON("api/System/admin/modules/" + module + "/storage")).then(function(arg$, arg1$){
+        var storages, storages_mapping, form, modal, index, storage_name;
+        storages = arg$[0];
+        storages_mapping = arg1$[0];
+        form = meta ? this$._databases_storages_form(meta, [], storages) : '';
+        modal = cs.ui.confirm("<h3>" + L.storage_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n" + form, function(){
+          $.ajax({
+            url: "api/System/admin/modules/" + module + "/storage",
+            data: $(modal.querySelector('form')).serialize(),
+            type: 'put',
+            success: function(){
+              cs.ui.notify(L.changes_saved, 'success', 5);
+            }
+          });
+        });
+        for (index in storages_mapping) {
+          storage_name = storages_mapping[index];
+          modal.querySelector("[name=storage[" + storage_name + "]]").selected = index;
         }
       });
     }

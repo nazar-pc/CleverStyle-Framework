@@ -397,6 +397,7 @@
 		//Storages
 		"storages"					: "Storages",
 		"storage"					: "Storage",
+		"core_storage"				: "Core storage",
 		"add_storage"				: "Add storage",
 		"storage_url"				: "Storage url",
 		"storage_url_info"			: "Specify public path to the storage via http/https/ftp or other protocol.<br>Relative files addresses in storage will be added to this address.<br>Address should not contain the final slash, but it must be prefixed http:// or https:// or ftp:// or other appropriate.",

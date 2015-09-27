@@ -138,7 +138,7 @@ Polymer(
 					return
 			if meta && meta.optional
 				message_more	+= '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>'
-			form	= if meta then @_installation_form(meta, databases, storages) else ''
+			form	= if meta then @_databases_storages_form(meta, databases, storages) else ''
 			modal	= cs.ui.confirm(
 				"""<h3>#{L.installation_of_module(module)}</h3>
 				#message
@@ -151,8 +151,7 @@ Polymer(
 					).then !~>
 						$.ajax(
 							url			: "api/System/admin/modules/#module"
-							data		: new FormData(modal.querySelector('form'))
-							processData	: false
+							data		: $(modal.querySelector('form')).serialize()
 							type		: 'install'
 							success		: !~>
 								cs.ui.notify(L.changes_saved, 'success', 5)
@@ -166,9 +165,9 @@ Polymer(
 			modal.ok.innerHTML		= L[if !message then 'install' else 'force_install_not_recommended']
 			modal.ok.primary		= !message
 			modal.cancel.primary	= !modal.ok.primary
-	_installation_form : (meta, databases, storages) ->
+	_databases_storages_form : (meta, databases, storages) ->
 		content	= ''
-		if meta.db
+		if meta.db && databases.length
 			if cs.simple_admin_mode
 				for db_name in meta.db
 					content	+= """<input type="hidden" name="db[#db_name]" value="0">"""
@@ -194,7 +193,7 @@ Polymer(
 							<select is="cs-select" name="db[#db_name]">#db_options</select>
 						</td>
 					</tr>"""
-		if meta.storage
+		if meta.storage && storages.length
 			if cs.simple_admin_mode
 				for storage_name in meta.storage
 					content	+= """<input type="hidden" name="storage[#storage_name]" value="0">"""
@@ -210,7 +209,7 @@ Polymer(
 					</th>
 				</tr>"""
 				storage_options	= ''
-				for storage in databases
+				for storage in storages
 					if !meta.storage_support || meta.storage_support.indexOf(storage.type) != -1
 						storage_options	+= @_storage_option(storage)
 				for storage_name in meta.storage
@@ -243,7 +242,7 @@ Polymer(
 			else
 				L.core_storage + " (#{storage.connection})"
 		checked	= if storage.index then '' else 'checked'
-		"""<option value="#{db.index}" #checked>#name</option>"""
+		"""<option value="#{storage.index}" #checked>#name</option>"""
 	/**
 	 * Provides next events:
 	 *  admin/System/components/modules/uninstall/before
@@ -306,4 +305,51 @@ Polymer(
 				@reload()
 				#TODO ask for installation right here
 		)
+	_db_settings : (e) !->
+		module	= e.model.module.name
+		meta	= e.model.module.meta
+		$.when(
+			$.getJSON('api/System/admin/databases')
+			$.getJSON("api/System/admin/modules/#module/db")
+		).then ([databases], [databases_mapping]) !~>
+			form	= if meta then @_databases_storages_form(meta, databases, []) else ''
+			modal	= cs.ui.confirm(
+				"""<h3>#{L.db_settings_for_module(module)}</h3>
+				<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
+				#form"""
+				!~>
+					$.ajax(
+						url			: "api/System/admin/modules/#module/db"
+						data		: $(modal.querySelector('form')).serialize()
+						type		: 'put'
+						success		: !->
+							cs.ui.notify(L.changes_saved, 'success', 5)
+					)
+			)
+			for index, db_name of databases_mapping
+				modal.querySelector("[name=db[#db_name]]").selected = index
+	_storage_settings : (e) !->
+		module	= e.model.module.name
+		meta	= e.model.module.meta
+		console.log meta
+		$.when(
+			$.getJSON('api/System/admin/storages')
+			$.getJSON("api/System/admin/modules/#module/storage")
+		).then ([storages], [storages_mapping]) !~>
+			form	= if meta then @_databases_storages_form(meta, [], storages) else ''
+			modal	= cs.ui.confirm(
+				"""<h3>#{L.storage_settings_for_module(module)}</h3>
+				<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
+				#form"""
+				!~>
+					$.ajax(
+						url			: "api/System/admin/modules/#module/storage"
+						data		: $(modal.querySelector('form')).serialize()
+						type		: 'put'
+						success		: !->
+							cs.ui.notify(L.changes_saved, 'success', 5)
+					)
+			)
+			for index, storage_name of storages_mapping
+				modal.querySelector("[name=storage[#storage_name]]").selected = index
 )

@@ -48,6 +48,18 @@ trait modules {
 				case 'update_dependencies':
 					static::get_update_dependencies_for_module($route_path[2]);
 					break;
+				/**
+				 * Get mapping of named module's databases to indexes of system databases
+				 */
+				case 'db':
+					static::get_module_databases($route_path[2]);
+					break;
+				/**
+				 * Get mapping of named module's storages to indexes of system storages
+				 */
+				case 'storage':
+					static::get_module_storages($route_path[2]);
+					break;
 				default:
 					throw new ExitException(400);
 			}
@@ -118,6 +130,34 @@ trait modules {
 		}
 		Page::instance()->json(
 			Packages_manipulation::get_dependencies(file_get_json($new_meta))
+		);
+	}
+	/**
+	 * @param string $module
+	 *
+	 * @throws ExitException
+	 */
+	protected static function get_module_databases ($module) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules'][$module]['db'])) {
+			throw new ExitException(404);
+		}
+		Page::instance()->json(
+			$Config->components['modules'][$module]['db']
+		);
+	}
+	/**
+	 * @param string $module
+	 *
+	 * @throws ExitException
+	 */
+	protected static function get_module_storages ($module) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules'][$module]['storage'])) {
+			throw new ExitException(404);
+		}
+		Page::instance()->json(
+			$Config->components['modules'][$module]['storage']
 		);
 	}
 	protected static function get_modules_list () {
@@ -191,13 +231,60 @@ trait modules {
 	 * @throws ExitException
 	 */
 	static function admin_modules_put ($route_ids, $route_path) {
-		if (isset($route_path[2]) && $route_path[2] == 'default') {
+		if (isset($route_path[3])) {
+			switch ($route_path[3]) {
+				/**
+				 * Set mapping of named module's databases to indexes of system databases
+				 */
+				case 'db':
+					static::set_module_databases($route_path[2]);
+					break;
+				/**
+				 * Set mapping of named module's storages to indexes of system storages
+				 */
+				case 'storage':
+					static::set_module_storages($route_path[2]);
+					break;
+				default:
+					throw new ExitException(400);
+			}
+		} elseif (isset($route_path[2]) && $route_path[2] == 'default') {
 			if (!isset($_POST['module'])) {
 				throw new ExitException(400);
 			}
 			static::set_default_module($_POST['module']);
 		} else {
 			throw new ExitException(400);
+		}
+	}
+	/**
+	 * @param string $module
+	 *
+	 * @throws ExitException
+	 */
+	protected static function set_module_databases ($module) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules'][$module]['db'], $_POST['db'])) {
+			throw new ExitException(404);
+		}
+		$Config->components['modules'][$module]['db'] = _int($_POST['db']);
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+	}
+	/**
+	 * @param string $module
+	 *
+	 * @throws ExitException
+	 */
+	protected static function set_module_storages ($module) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules'][$module]['storage'], $_POST['storage'])) {
+			throw new ExitException(404);
+		}
+		$Config->components['modules'][$module]['storage'] = _int($_POST['storage']);
+		if (!$Config->save()) {
+			throw new ExitException(500);
 		}
 	}
 	/**

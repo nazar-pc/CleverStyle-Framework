@@ -26,15 +26,6 @@ trait components_save {
 	 *
 	 *  admin/System/components/modules/update_system/process/after
 	 *  ['name'    => module_name]
-	 *
-	 *  admin/System/components/modules/default
-	 *  ['name'    => module_name]
-	 *
-	 *  admin/System/components/modules/db/process
-	 *  ['name'    => module_name]
-	 *
-	 *  admin/System/components/modules/storage/process
-	 *  ['name'    => module_name]
 	 */
 	static function components_modules_save () {
 		$Config     = Config::instance();
@@ -139,40 +130,6 @@ trait components_save {
 							'name' => $module_name
 						]
 					);
-					break;
-				case 'db':
-					/** @noinspection NotOptimalIfConditionsInspection */
-					if (
-						Event::instance()->fire(
-							'admin/System/components/modules/db/process',
-							[
-								'name' => $module_name
-							]
-						) &&
-						isset($_POST['db']) &&
-						is_array($_POST['db']) &&
-						count($Config->db) > 1
-					) {
-						$module_data['db'] = xap($_POST['db']);
-						$a->save();
-					}
-					break;
-				case 'storage':
-					/** @noinspection NotOptimalIfConditionsInspection */
-					if (
-						Event::instance()->fire(
-							'admin/System/components/modules/storage/process',
-							[
-								'name' => $module_name
-							]
-						) &&
-						isset($_POST['storage']) &&
-						is_array($_POST['storage']) &&
-						count($Config->storage) > 1
-					) {
-						$module_data['storage'] = xap($_POST['storage']);
-						$a->save();
-					}
 					break;
 			}
 		}
