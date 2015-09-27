@@ -6,4 +6,4 @@
  * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-include '../attributes.get.php';
+include __DIR__.'/../attributes.get.php';
