@@ -10,28 +10,12 @@
 namespace cs\modules\System\admin\Controller;
 use
 	cs\Config,
-	cs\Event,
 	cs\Index,
-	cs\Language,
-	cs\Page,
-	cs\Permission,
-	cs\Session,
-	cs\modules\System\Packages_manipulation;
+	cs\Permission;
 
 trait components_save {
-	/**
-	 * Provides next events:
-	 *  admin/System/components/modules/update_system/process/before
-	 *  ['name'    => module_name]
-	 *
-	 *  admin/System/components/modules/update_system/process/after
-	 *  ['name'    => module_name]
-	 */
 	static function components_modules_save () {
 		$Config     = Config::instance();
-		$L          = Language::instance();
-		$Page       = Page::instance();
-		$Session    = Session::instance();
 		$Permission = Permission::instance();
 		$a          = Index::instance();
 		if (isset($_POST['update_modules_list'])) {
@@ -79,59 +63,6 @@ trait components_save {
 			$modules = array_merge($modules_list, array_intersect_key($modules, $modules_list));
 			ksort($modules, SORT_STRING | SORT_FLAG_CASE);
 			$a->save();
-		} elseif (isset($_POST['mode'], $_POST['module'], $Config->components['modules'][$_POST['module']])) {
-			$module_name = $_POST['module'];
-			$module_data = &$Config->components['modules'][$module_name];
-			switch ($_POST['mode']) {
-				case 'update_system':
-					/**
-					 * Temporary close site
-					 */
-					$site_mode = $Config->core['site_mode'];
-					if ($site_mode) {
-						$Config->core['site_mode'] = 0;
-						$Config->save();
-					}
-					Event::instance()->fire(
-						'admin/System/components/modules/update_system/process/before',
-						[
-							'name' => $module_name
-						]
-					);
-					$module_dir  = MODULES.'/System';
-					$old_version = file_get_json("$module_dir/meta.json")['version'];
-					if (!Packages_manipulation::update_extract(DIR, TEMP.'/'.$Session->get_id().'_update_system.phar', DIR.'/core', $module_dir)) {
-						$Page->warning($L->system_files_unpacking_error);
-						break;
-					}
-					/**
-					 * Updating of System
-					 */
-					if (isset(file_get_json("$module_dir/meta.json")['update_versions'])) {
-						Packages_manipulation::update_php_sql(
-							$module_dir,
-							$old_version,
-							$module_data['db']
-						);
-					}
-					unset($old_version);
-					/**
-					 * Restore previous site mode
-					 */
-					if ($site_mode) {
-						$Config->core['site_mode'] = 1;
-					}
-					$a->save();
-					clean_pcache();
-					clean_classes_cache();
-					Event::instance()->fire(
-						'admin/System/components/modules/update_system/process/after',
-						[
-							'name' => $module_name
-						]
-					);
-					break;
-			}
 		}
 	}
 }

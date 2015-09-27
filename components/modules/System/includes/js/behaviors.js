@@ -112,10 +112,10 @@
           var translation_key, title, message, message_more, modal;
           delete dependencies.db_support;
           delete dependencies.storage_support;
-          translation_key = category === 'modules' ? 'updating_of_module' : 'updating_of_plugin';
+          translation_key = category === 'modules' ? component === 'System' ? 'updating_of_system' : 'updating_of_module' : 'updating_of_plugin';
           title = "<h3>" + L[translation_key](component) + "</h3>";
           message = '';
-          translation_key = category === 'modules' ? 'update_moodule' : 'update_plugin';
+          translation_key = category === 'modules' ? component === 'System' ? 'update_system' : 'update_module' : 'update_plugin';
           message_more = L[translation_key].update_plugin(component, existing_meta.version, new_meta.version);
           if (Object.keys(dependencies).length) {
             message = compose_dependencies_message(component, dependencies);
@@ -128,18 +128,26 @@
             message_more += '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(new_meta.optional.join(', ')) + '</p>';
           }
           modal = cs.ui.confirm(title + "" + message + message_more, function(){
-            cs.Event.fire("admin/System/components/" + category + "/update/before", {
-              name: component
-            }).then(function(){
+            var event_promise;
+            event_promise = component === 'System'
+              ? cs.Event.fire('admin/System/components/modules/update_system/before')
+              : cs.Event.fire("admin/System/components/" + category + "/update/before", {
+                name: component
+              });
+            event_promise.then(function(){
               $.ajax({
                 url: "api/System/admin/" + category + "/" + component,
                 type: 'update',
                 success: function(){
                   this$.reload();
                   cs.ui.notify(L.changes_saved, 'success', 5);
-                  cs.Event.fire("admin/System/components/" + category + "/update/after", {
-                    name: component
-                  });
+                  if (component === 'System') {
+                    cs.Event.fire('admin/System/components/modules/update_system/after');
+                  } else {
+                    cs.Event.fire("admin/System/components/" + category + "/update/after", {
+                      name: component
+                    });
+                  }
                 }
               });
             });
@@ -205,9 +213,14 @@
       var i$, ref$, len$, results$ = [], results1$ = [];
       switch (what) {
       case 'update_from':
-        return L.module_cant_be_updated_from_version_to_supported_only(component, detail.from, detail.to, detail.can_update_from);
+        if (component === 'System') {
+          return L.update_system_impossible_from_version_to(detail.from, detail.to, detail.can_update_from);
+        } else {
+          return L.module_cant_be_updated_from_version_to(component, detail.from, detail.to, detail.can_update_from);
+        }
+        break;
       case 'update_older':
-        translation_key = category === 'modules' ? 'update_module_impossible_older_version' : 'update_plugin_impossible_older_version';
+        translation_key = category === 'modules' ? component === 'System' ? 'update_system_impossible_older_version' : 'update_module_impossible_older_version' : 'update_plugin_impossible_older_version';
         return L[translation_key](detail.from, detail.to);
       case 'provide':
         translation_key = category === 'modules' ? 'module_already_provides_functionality' : 'plugin_already_provides_functionality';

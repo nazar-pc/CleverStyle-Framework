@@ -596,14 +596,7 @@ trait modules {
 		}
 	}
 	/**
-	 * Update module
-	 *
-	 * Provides next events:
-	 *  admin/System/components/modules/update/before
-	 *  ['name' => module_name]
-	 *
-	 *  admin/System/components/modules/update/after
-	 *  ['name' => module_name]
+	 * Update module (or system if module name is System)
 	 *
 	 * @param int[]    $route_ids
 	 * @param string[] $route_path
@@ -614,8 +607,6 @@ trait modules {
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
-		$Config  = Config::instance();
-		$L       = Language::instance();
 		$module  = $route_path[2];
 		$modules = get_files_list(MODULES, false, 'd');
 		if (!in_array($module, $modules, true)) {
@@ -633,8 +624,36 @@ trait modules {
 		}
 		$existing_meta = file_get_json("$module_dir/meta.json");
 		$new_meta      = file_get_json("$tmp_dir/meta.json");
-		$module_data   = $Config->components['modules'][$module];
-		$active        = $module_data['active'] == 1;
+		if ($module === 'System') {
+			static::update_module($module, $existing_meta, $new_meta, $tmp_location, $route_ids, $route_path);
+		} else {
+			static::update_system($module, $existing_meta, $new_meta, $tmp_location, $tmp_dir);
+		}
+		static::admin_modules_cleanup();
+	}
+	/**
+	 * Provides next events:
+	 *  admin/System/components/modules/update/before
+	 *  ['name' => module_name]
+	 *
+	 *  admin/System/components/modules/update/after
+	 *  ['name' => module_name]
+	 *
+	 * @param string   $module
+	 * @param array    $existing_meta
+	 * @param array    $new_meta
+	 * @param string   $tmp_location
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
+	 * @throws ExitException
+	 */
+	protected static function update_module ($module, $existing_meta, $new_meta, $tmp_location, $route_ids, $route_path) {
+		$Config      = Config::instance();
+		$L           = Language::instance();
+		$module_dir  = MODULES."/$module";
+		$module_data = $Config->components['modules'][$module];
+		$active      = $module_data['active'] == 1;
 		// If module is currently enabled - disable it temporary
 		if ($active) {
 			static::admin_modules_disable($route_ids, $route_path);
@@ -674,6 +693,63 @@ trait modules {
 		// If module was enabled before update - enable it back
 		if ($active) {
 			static::admin_modules_enable($route_ids, $route_path);
+		}
+	}
+	/**
+	 * Provides next events:
+	 *  admin/System/components/modules/update_system/before
+	 *
+	 *  admin/System/components/modules/update_system/after
+	 *
+	 * @param string $module
+	 * @param array  $existing_meta
+	 * @param array  $new_meta
+	 * @param string $tmp_location
+	 * @param string $tmp_dir
+	 *
+	 * @throws ExitException
+	 */
+	protected static function update_system ($module, $existing_meta, $new_meta, $tmp_location, $tmp_dir) {
+		$Config      = Config::instance();
+		$L           = Language::instance();
+		$module_dir  = MODULES."/$module";
+		$module_data = $Config->components['modules'][$module];
+		/**
+		 * Temporary close site
+		 */
+		$site_mode = $Config->core['site_mode'];
+		if ($site_mode) {
+			$Config->core['site_mode'] = 0;
+			if (!$Config->save()) {
+				throw new ExitException(500);
+			}
+		}
+		if (
+			$new_meta['package'] !== 'System' ||
+			$new_meta['category'] !== 'modules' ||
+			!file_exists("$tmp_dir/modules.json") ||
+			!file_exists("$tmp_dir/plugins.json") ||
+			!file_exists("$tmp_dir/themes.json")
+		) {
+			throw new ExitException($L->this_is_not_system_installer_file, 400);
+		}
+		if (!Event::instance()->fire('admin/System/components/modules/update_system/before')) {
+			throw new ExitException(500);
+		}
+		if (!Packages_manipulation::update_extract(DIR, $tmp_location, DIR.'/core', $module_dir)) {
+			throw new ExitException($L->system_files_unpacking_error, 500);
+		}
+		// Run PHP update scripts and SQL queries if any
+		Packages_manipulation::update_php_sql($module_dir, $existing_meta['version'], $module_data['db']);
+		Event::instance()->fire('admin/System/components/modules/update_system/after');
+		/**
+		 * Restore previous site mode
+		 */
+		if ($site_mode) {
+			$Config->core['site_mode'] = 1;
+			if (!$Config->save()) {
+				throw new ExitException(500);
+			}
 		}
 	}
 	/**

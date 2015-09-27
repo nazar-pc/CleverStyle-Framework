@@ -287,17 +287,17 @@
     /**
      * Provides next events:
      *  admin/System/components/modules/update/before
-     *  {name : plugin_name}
+     *  {name : module_name}
      *
      *  admin/System/components/modules/update/after
-     *  {name : plugin_name}
+     *  {name : module_name}
      */,
     _upload: function(){
       var this$ = this;
       this._upload_package(this.$.file).then(function(meta){
         var i$, ref$, len$, module;
         if (meta.category !== 'modules' || !meta['package'] || !meta.version) {
-          cs.ui.notify(L.this_is_not_plugin_installer_file, 'error', 5);
+          cs.ui.notify(L.this_is_not_module_installer_file, 'error', 5);
           return;
         }
         for (i$ = 0, len$ = (ref$ = this$.modules).length; i$ < len$; ++i$) {
@@ -307,17 +307,36 @@
             return;
           }
         }
-        this$._extract(meta);
+        $.ajax({
+          url: 'api/System/admin/modules',
+          type: 'extract',
+          success: function(){
+            this$.reload();
+          }
+        });
       });
-    },
-    _extract: function(meta){
+    }
+    /**
+     * Provides next events:
+     *  admin/System/components/modules/update_system/before
+     *
+     *  admin/System/components/modules/update_system/after
+     */,
+    _upload_system: function(){
       var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/modules',
-        type: 'extract',
-        success: function(){
-          this$.reload();
+      this._upload_package(this.$.file_system).then(function(meta){
+        if (meta.category !== 'modules' || meta['package'] !== 'System' || !meta.version) {
+          cs.ui.notify(L.this_is_not_system_installer_file, 'error', 5);
+          return;
         }
+        $.ajax({
+          url: 'api/System/admin/modules',
+          type: 'extract',
+          success: function(){
+            cs.ui.notify(L.changes_saved, 'success', 5);
+            location.reload();
+          }
+        });
       });
     },
     _db_settings: function(e){

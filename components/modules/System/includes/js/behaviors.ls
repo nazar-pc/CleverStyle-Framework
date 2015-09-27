@@ -99,10 +99,24 @@ behaviors.admin.System	=
 			# During update we don't care about those since module should be already installed
 			delete dependencies.db_support
 			delete dependencies.storage_support
-			translation_key	= if category == 'modules' then 'updating_of_module' else 'updating_of_plugin'
+			translation_key	=
+				if category == 'modules'
+					if component == 'System'
+						'updating_of_system'
+					else
+						'updating_of_module'
+				else
+					'updating_of_plugin'
 			title			= "<h3>#{L[translation_key](component)}</h3>"
 			message			= ''
-			translation_key	= if category == 'modules' then 'update_moodule' else 'update_plugin'
+			translation_key	=
+				if category == 'modules'
+					if component == 'System'
+						'update_system'
+					else
+						'update_module'
+				else
+					'update_plugin'
 			message_more	= L[translation_key]update_plugin(component, existing_meta.version, new_meta.version)
 			if Object.keys(dependencies).length
 				message	= compose_dependencies_message(component, dependencies)
@@ -114,20 +128,28 @@ behaviors.admin.System	=
 			modal	= cs.ui.confirm(
 				"#title#message#message_more"
 				!~>
-					cs.Event.fire(
-						"admin/System/components/#category/update/before"
-						name	: component
-					).then !~>
+					event_promise	=
+						if component == 'System'
+							cs.Event.fire('admin/System/components/modules/update_system/before')
+						else
+							cs.Event.fire(
+								"admin/System/components/#category/update/before"
+								name	: component
+							)
+					event_promise.then !~>
 						$.ajax(
 							url		: "api/System/admin/#category/#component"
 							type	: 'update'
 							success	: !~>
 								@reload()
 								cs.ui.notify(L.changes_saved, 'success', 5)
-								cs.Event.fire(
-									"admin/System/components/#category/update/after"
-									name	: component
-								)
+								if component == 'System'
+									cs.Event.fire('admin/System/components/modules/update_system/after')
+								else
+									cs.Event.fire(
+										"admin/System/components/#category/update/after"
+										name	: component
+									)
 						)
 			)
 			modal.ok.innerHTML		= L[if !message then 'yes' else 'force_update_not_recommended']
@@ -172,11 +194,17 @@ function compose_dependencies_message (component, dependencies)
 					"<p>" +
 					(switch what
 						case 'update_from'
-							L.module_cant_be_updated_from_version_to_supported_only(component, detail.from, detail.to, detail.can_update_from)
+							if component == 'System'
+								L.update_system_impossible_from_version_to(detail.from, detail.to, detail.can_update_from)
+							else
+								L.module_cant_be_updated_from_version_to(component, detail.from, detail.to, detail.can_update_from)
 						case 'update_older'
 							translation_key =
 								if category == 'modules'
-									'update_module_impossible_older_version'
+									if component == 'System'
+										'update_system_impossible_older_version'
+									else
+										'update_module_impossible_older_version'
 								else
 									'update_plugin_impossible_older_version'
 							L[translation_key](detail.from, detail.to)

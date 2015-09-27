@@ -175,6 +175,9 @@ class Packages_manipulation {
 		$Config = Config::instance();
 		$db     = DB::instance();
 		$meta   = file_get_json("$target_directory/meta.json");
+		if (!$meta['update_versions']) {
+			return;
+		}
 		foreach ($meta['update_versions'] as $version) {
 			if (version_compare($old_version, $version, '<')) {
 				/**

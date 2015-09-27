@@ -280,15 +280,15 @@ Polymer(
 	/**
 	 * Provides next events:
 	 *  admin/System/components/modules/update/before
-	 *  {name : plugin_name}
+	 *  {name : module_name}
 	 *
 	 *  admin/System/components/modules/update/after
-	 *  {name : plugin_name}
+	 *  {name : module_name}
 	 */
 	_upload : !->
 		@_upload_package(@$.file).then (meta) !~>
 			if meta.category != 'modules' || !meta.package || !meta.version
-				cs.ui.notify(L.this_is_not_plugin_installer_file, 'error', 5)
+				cs.ui.notify(L.this_is_not_module_installer_file, 'error', 5)
 				return
 			# Lookign for already present module
 			for module in @modules
@@ -296,15 +296,32 @@ Polymer(
 					@_update_component(module.meta, meta)
 					return
 			# If module is not present yet - lest just extract it
-			@_extract(meta)
-	_extract : (meta) !->
-		$.ajax(
-			url		: 'api/System/admin/modules'
-			type	: 'extract'
-			success	: !~>
-				@reload()
-				#TODO ask for installation right here
-		)
+			$.ajax(
+				url		: 'api/System/admin/modules'
+				type	: 'extract'
+				success	: !~>
+					@reload()
+					#TODO ask for installation right here
+			)
+	/**
+	 * Provides next events:
+	 *  admin/System/components/modules/update_system/before
+	 *
+	 *  admin/System/components/modules/update_system/after
+	 */
+	_upload_system : !->
+		@_upload_package(@$.file_system).then (meta) !~>
+			if meta.category != 'modules' || meta.package != 'System' || !meta.version
+				cs.ui.notify(L.this_is_not_system_installer_file, 'error', 5)
+				return
+			# Extract new system version
+			$.ajax(
+				url		: 'api/System/admin/modules'
+				type	: 'extract'
+				success	: !->
+					cs.ui.notify(L.changes_saved, 'success', 5)
+					location.reload()
+				)
 	_db_settings : (e) !->
 		module	= e.model.module.name
 		meta	= e.model.module.meta
