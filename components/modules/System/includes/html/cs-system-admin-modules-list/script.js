@@ -349,7 +349,6 @@
       var module, meta, this$ = this;
       module = e.model.module.name;
       meta = e.model.module.meta;
-      console.log(meta);
       $.when($.getJSON('api/System/admin/storages'), $.getJSON("api/System/admin/modules/" + module + "/storage")).then(function(arg$, arg1$){
         var storages, storages_mapping, form, modal, index, storage_name;
         storages = arg$[0];

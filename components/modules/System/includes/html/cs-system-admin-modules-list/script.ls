@@ -331,7 +331,6 @@ Polymer(
 	_storage_settings : (e) !->
 		module	= e.model.module.name
 		meta	= e.model.module.meta
-		console.log meta
 		$.when(
 			$.getJSON('api/System/admin/storages')
 			$.getJSON("api/System/admin/modules/#module/storage")
