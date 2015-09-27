@@ -13,9 +13,6 @@
     L = cs.Language;
     $.ajaxSetup({
       type: 'post',
-      data: {
-        session: cs.getcookie('session')
-      },
       error: function(xhr) {
         return cs.ui.notify(xhr.responseText ? JSON.parse(xhr.responseText).error_description : L.connection_error.toString(), 'warning', 5);
       }

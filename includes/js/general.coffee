@@ -6,10 +6,8 @@
 ###
 $ ->
 	L	= cs.Language
-	$.ajaxSetup
+	$.ajaxSetup(
 		type	: 'post'
-		data	:
-			session	: cs.getcookie('session')
 		error	: (xhr) ->
 			cs.ui.notify(
 				if xhr.responseText
@@ -19,6 +17,7 @@ $ ->
 				'warning'
 				5
 			)
+	)
 	$('.cs-header-sign-in-slide').click ->
 		$('.cs-header-guest-form').removeClass('active')
 		$('.cs-header-sign-in-form').addClass('active')

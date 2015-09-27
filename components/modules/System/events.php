@@ -91,7 +91,14 @@ Event::instance()
 			/**
 			 * Security check
 			 */
-			if (!isset($_POST['session']) || $_POST['session'] != $Session->get_id()) {
+			if (
+				(
+					!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest'
+				) &&
+				(
+					!isset($_POST['session']) || $_POST['session'] != $Session->get_id()
+				)
+			) {
 				foreach (array_keys((array)$_POST) as $key) {
 					unset($_POST[$key], $_REQUEST[$key]);
 				}

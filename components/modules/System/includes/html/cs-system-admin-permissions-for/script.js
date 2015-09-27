@@ -65,20 +65,9 @@
       })(this));
     },
     save: function() {
-      var default_data, key, value;
-      default_data = ((function() {
-        var ref, results;
-        ref = $.ajaxSettings.data;
-        results = [];
-        for (key in ref) {
-          value = ref[key];
-          results.push(key + '=' + value);
-        }
-        return results;
-      })()).join('&');
       return $.ajax({
         url: "api/System/admin/" + this["for"] + "s/" + this[this["for"]] + "/permissions",
-        data: $(this.$.form).serialize() + '&' + default_data,
+        data: $(this.$.form).serialize(),
         type: 'put',
         success: function() {
           return cs.ui.notify(L.changes_saved, 'success', 5);

@@ -90,20 +90,9 @@
       });
     },
     save: function() {
-      var default_data, key, value;
-      default_data = ((function() {
-        var ref, results;
-        ref = $.ajaxSettings.data;
-        results = [];
-        for (key in ref) {
-          value = ref[key];
-          results.push(key + '=' + value);
-        }
-        return results;
-      })()).join('&');
       return $.ajax({
         url: 'api/System/admin/permissions/for_item',
-        data: $(this.$.form).serialize() + '&label=' + this.label + '&group=' + this.group + '&' + default_data,
+        data: $(this.$.form).serialize() + '&label=' + this.label + '&group=' + this.group,
         type: 'post',
         success: function() {
           return cs.ui.notify(L.changes_saved, 'success', 5);

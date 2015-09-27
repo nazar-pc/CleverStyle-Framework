@@ -8,16 +8,16 @@
 ###
 L	= cs.Language
 Polymer(
-	'is'					: 'cs-system-admin-permissions-for-item'
-	behaviors				: [cs.Polymer.behaviors.Language]
-	properties				:
-		group				: ''
-		label				: ''
-		permissions			: {}
-		users				: []
-		found_users			: []
-		groups				: []
-	ready					: ->
+	'is'		: 'cs-system-admin-permissions-for-item'
+	behaviors	: [cs.Polymer.behaviors.Language]
+	properties	:
+		group		: ''
+		label		: ''
+		permissions	: {}
+		users		: []
+		found_users	: []
+		groups		: []
+	ready : ->
 		$.when(
 			$.getJSON(
 				'api/System/admin/permissions/for_item'
@@ -77,41 +77,40 @@ Polymer(
 			->
 				$(@).closest('tr').addClass('changed')
 		)
-	save					: ->
-		default_data	= (key + '=' + value for key, value of $.ajaxSettings.data).join('&')
+	save : ->
 		$.ajax(
 			url		: 'api/System/admin/permissions/for_item'
-			data	: $(@$.form).serialize() + '&label=' + @label + '&group=' + @group + '&' + default_data
+			data	: $(@$.form).serialize() + '&label=' + @label + '&group=' + @group
 			type	: 'post'
 			success	: ->
 				cs.ui.notify(L.changes_saved, 'success', 5)
 		)
-	invert					: (e) ->
+	invert : (e) ->
 		$(e.currentTarget).closest('div')
 			.find(':radio:not(:checked)[value!=-1]')
 				.parent()
 					.click()
-	allow_all				: (e) ->
+	allow_all : (e) ->
 		$(e.currentTarget).closest('div')
 			.find(':radio[value=1]')
 				.parent()
 					.click()
-	deny_all				: (e) ->
+	deny_all : (e) ->
 		$(e.currentTarget).closest('div')
 			.find(':radio[value=0]')
 				.parent()
 					.click()
-	permission_state		: (type, id, expected) ->
+	permission_state : (type, id, expected) ->
 		permission	= @permissions[type][id]
 		`permission == expected` ||
 		(
 			`expected == '-1'` &&
 			permission == undefined
 		)
-	group_permission_state	: (id, expected) ->
+	group_permission_state : (id, expected) ->
 		@permission_state('groups', id, expected)
-	user_permission_state	: (id, expected) ->
+	user_permission_state : (id, expected) ->
 		@permission_state('users', id, expected)
-	username				: (user) ->
+	username : (user) ->
 		user.username || user.login
 )
