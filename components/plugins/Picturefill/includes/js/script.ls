@@ -1,25 +1,23 @@
-###*
+/**
  * @package   Picturefill
  * @category  plugins
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License
-###
+ */
 Polymer(
 	'is'		: 'cs-picturefill-img'
 	'extends'	: 'img'
-	ready		: ->
+	ready : !->
 		picturefill(
 			elements : [@]
 		)
-		return
 )
 Polymer(
 	'is'		: 'cs-picturefill-picture'
 	'extends'	: 'picture'
-	ready		: ->
+	ready : !->
 		picturefill(
 			elements : [@querySelector('img')]
 		)
-		return
 )
