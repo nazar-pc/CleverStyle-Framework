@@ -224,7 +224,7 @@ trait users {
 				[
 					[
 						h::info('key_expire'),
-						h::{'input[type=number]'}(
+						h::{'input[is=cs-input-text][type=number]'}(
 							[
 								'name'  => 'core[key_expire]',
 								'value' => $Config->core['key_expire'],
