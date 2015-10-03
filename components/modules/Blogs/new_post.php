@@ -85,7 +85,7 @@ $Index->buttons            = false;
 $Index->cancel_button_back = true;
 $disabled                  = [];
 $max_sections              = $module_data->max_sections;
-$content                   = uniqid('post_content');
+$content                   = uniqid('post_content', true);
 $Page->replace($content, isset($_POST['content']) ? $_POST['content'] : '');
 $sections = get_sections_select_post($disabled);
 if (count($sections['in']) > 1) {
@@ -113,7 +113,7 @@ $Index->content(
 	h::{'table.cs-table.cs-blogs-post-form[right-left] tr| td'}(
 		[
 			$L->post_title,
-			h::{'h1.cs-blogs-new-post-title[contenteditable=true][level=0]'}(
+			h::{'h1.cs-blogs-new-post-title[contenteditable=true]'}(
 				isset($_POST['title']) ? $_POST['title'] : '<br>'
 			)
 		],

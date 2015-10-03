@@ -51,7 +51,7 @@ $post        = isset($_POST['id']) ? $Posts->get($_POST['id']) : [
 $module      = path($L->Blogs);
 $module_data = $Config->module('Blogs');
 $Page->json(
-	h::{'section.cs-blogs-post[level=0] article[level=0]'}(
+	h::{'section.cs-blogs-post article'}(
 		h::header(
 			h::h1(xap($_POST['title'])).
 			((array)$_POST['sections'] != [0] ? h::p(

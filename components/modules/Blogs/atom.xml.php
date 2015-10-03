@@ -106,8 +106,7 @@ $Page->content(
 								function ($category) {
 									return [
 										'term'  => h::prepare_attr_value($category['title']),
-										'label' => h::prepare_attr_value($category['title']),
-										'level' => 0
+										'label' => h::prepare_attr_value($category['title'])
 									];
 								},
 								$Sections->get($post['sections'])

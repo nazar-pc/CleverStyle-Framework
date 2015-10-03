@@ -110,13 +110,13 @@ if ($page['interface']) {
 		$Page->content(
 			h::p(
 				$is_admin ?
-					h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
+					h::{'a[is=cs-link-button][icon=pencil]'}(
 						[
 							'href'    => "$canonical_url?edit",
 							'tooltip' => $L->edit
 						]
 					).
-					h::{'a[is=cs-link-button][icon=trash][level=0]'}(
+					h::{'a[is=cs-link-button][icon=trash]'}(
 						[
 							'href'    => "admin/Pages/delete_page/$page[id]",
 							'tooltip' => $L->delete

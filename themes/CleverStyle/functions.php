@@ -221,7 +221,7 @@ function get_footer () {
 				],
 				[
 					format_time(round(microtime(true) - MICROTIME, 5)),
-					format_filesize(memory_get_usage(), 5).h::{'sup[level=0]'}(format_filesize(memory_get_peak_usage(), 5))
+					format_filesize(memory_get_usage(), 5).h::sup(format_filesize(memory_get_peak_usage(), 5))
 				],
 				$Page->Html
 			);

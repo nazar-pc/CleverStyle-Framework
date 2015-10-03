@@ -142,11 +142,9 @@ trait Includes {
 				$this->core_js[0][] =
 					h::script(
 						[
-							'src'   => $add,
-							'level' => false
+							'src' => $add
 						]
-					).
-					"\n";
+					);
 			} elseif ($mode == 'code') {
 				$this->core_js[1][] = "$add\n";
 			}
@@ -155,11 +153,9 @@ trait Includes {
 				$this->js[0][] =
 					h::script(
 						[
-							'src'   => $add,
-							'level' => false
+							'src' => $add
 						]
-					).
-					"\n";
+					);
 			} elseif ($mode == 'code') {
 				$this->js[1][] = "$add\n";
 			}
@@ -248,14 +244,13 @@ trait Includes {
 			[
 				'target' => $target,
 				'class'  => 'cs-config',
-				'type'   => 'application/json',
-				'level'  => 0
+				'type'   => 'application/json'
 			]
 		);
 		if ($core) {
-			$this->core_config .= "$config\n";
+			$this->core_config .= $config;
 		} else {
-			$this->config .= "$config\n";
+			$this->config .= $config;
 		}
 		return $this;
 	}

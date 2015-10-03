@@ -68,7 +68,7 @@ $Index->content(
 					$controls = '';
 					if ($User->admin() || $image['user'] == $User->id) {
 						$controls =
-							h::{'a.cs-photo-gallery-image-control[is=cs-link-button][level=0]'}(
+							h::{'a.cs-photo-gallery-image-control[is=cs-link-button]'}(
 								[
 									'href'       => "Photo_gallery/edit_images/$image[id]",
 									'icon'       => 'pencil',
@@ -76,7 +76,7 @@ $Index->content(
 									'data-image' => $image['id']
 								]
 							).
-							h::{'a.cs-photo-gallery-image-control[is=cs-link-button][level=0]'}(
+							h::{'a.cs-photo-gallery-image-control[is=cs-link-button]'}(
 								[
 									'icon'       => 'trash',
 									'tooltip'    => $L->delete,

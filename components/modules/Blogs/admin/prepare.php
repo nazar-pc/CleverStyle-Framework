@@ -13,7 +13,7 @@ use
 	cs\DB,
 	cs\Language,
 	cs\User;
-function get_sections_rows ($structure = null, $level = 0, &$content = null) {
+function get_sections_rows ($structure = null, $level = 0) {
 	$L			= Language::instance();
 	$root		= false;
 	$module		= path($L->Blogs);
@@ -21,8 +21,8 @@ function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 		$structure			= Sections::instance()->get_structure();
 		$structure['title']	= $L->root_section;
 		$root				= true;
-		$content			= [];
 	}
+	$content	= [];
 	$content[]	= [
 		[
 			h::a(
@@ -41,20 +41,20 @@ function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 				'class'	=> "cs-blogs-padding-left-$level"
 			]
 		],
-		h::{'a[is=cs-link-button][icon=plus][level=0]'}(
+		h::{'a[is=cs-link-button][icon=plus]'}(
 			[
 				'href'		=> "admin/Blogs/add_section/$structure[id]",
 				'tooltip'	=> $L->add_subsection
 			]
 		).
 		(!$root
-			? h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
+			? h::{'a[is=cs-link-button][icon=pencil]'}(
 				[
 					'href'		=> "admin/Blogs/edit_section/$structure[id]",
 					'tooltip'	=> $L->edit
 				]
 			).
-			h::{'a[is=cs-link-button][icon=trash][level=0]'}(
+			h::{'a[is=cs-link-button][icon=trash]'}(
 				[
 					'href'		=> "admin/Blogs/delete_section/$structure[id]",
 					'tooltip'	=> $L->delete
@@ -65,10 +65,10 @@ function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 	];
 	if (!empty($structure['sections'])) {
 		foreach ($structure['sections'] as $section) {
-			get_sections_rows($section, $level + 1, $content);
+			$content = array_merge($content, get_sections_rows($section, $level + 1));
 		}
 	}
-	return [$content];
+	return $content;
 }
 function get_sections_select_section ($current = null, $structure = null, $level = 0) {
 	$list	= [
@@ -159,13 +159,13 @@ function get_posts_rows ($page = 1) {
 				).
 				h::br().
 				date($L->_datetime, $post['date']),
-				h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
+				h::{'a[is=cs-link-button][icon=pencil]'}(
 					[
 						'href'		=> "Blogs/edit_post/$post[id]",
 						'tooltip'	=> $L->edit
 					]
 				).
-				h::{'a[is=cs-link-button][icon=trash][level=0]'}(
+				h::{'a[is=cs-link-button][icon=trash]'}(
 					[
 						'href'		=> "admin/Blogs/delete_post/$post[id]",
 						'tooltip'	=> $L->delete

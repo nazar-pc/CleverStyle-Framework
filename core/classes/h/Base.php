@@ -73,13 +73,14 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param array $attributes
+	 * @param string $tag
+	 * @param array  $attributes
 	 */
-	protected static function pre_processing (&$attributes) {
+	protected static function pre_processing ($tag, &$attributes) {
 		if (isset($attributes['tooltip']) && $attributes['tooltip'] !== false) {
 			$attributes['tooltip'] = static::prepare_attr_value($attributes['tooltip']);
 			// Do not apply to custom elements
-			if (!isset($attributes['is']) && strpos($attributes['tag'], '-') === false) {
+			if (!isset($attributes['is']) && strpos($tag, '-') === false) {
 				$attributes['in'] = isset($attributes['in']) ? $attributes['in'].static::cs_tooltip() : static::cs_tooltip();
 			}
 		}
@@ -95,7 +96,7 @@ abstract class Base extends BananaHTML {
 	 * @return string
 	 */
 	protected static function indentation_protection ($text) {
-		$uniqid = uniqid('html_replace_');
+		$uniqid = uniqid('html_replace_', true);
 		Page::instance()->replace($uniqid, $text);
 		return $uniqid;
 	}
@@ -149,7 +150,6 @@ abstract class Base extends BananaHTML {
 			return '';
 		}
 		$data['icon']  = $class;
-		$data['level'] = 0;
 		return static::cs_icon($data).' ';
 	}
 	/**
@@ -176,7 +176,7 @@ abstract class Base extends BananaHTML {
 		} else {
 			self::common_checkbox_radio_post($in);
 			return static::label(
-				static::u_wrap($in),
+				static::u_wrap($in, 'input'),
 				[
 					'is'    => 'cs-label-switcher',
 					'class' => isset($item['class']) ? $item['class'] : false
@@ -206,7 +206,7 @@ abstract class Base extends BananaHTML {
 		foreach ($items as $item) {
 			self::common_checkbox_radio_post($item);
 			$content .= static::label(
-				static::u_wrap($item),
+				static::u_wrap($item, 'input'),
 				[
 					'is'    => 'cs-label-button',
 					'class' => isset($item['class']) ? $item['class'] : false

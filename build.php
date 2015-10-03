@@ -131,8 +131,7 @@ echo
 	).
 	h::script(
 		[
-			'src'   => 'build/includes/functions.js',
-			'level' => 0
+			'src' => 'build/includes/functions.js'
 		]
 	)."\n".
 	h::header(

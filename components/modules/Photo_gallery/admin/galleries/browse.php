@@ -34,13 +34,13 @@ $Index->content(
 							'href' => "$module/$gallery[path]"
 						]
 					),
-					h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
+					h::{'a[is=cs-link-button][icon=pencil]'}(
 						[
 							'href'    => "admin/Photo_gallery/galleries/edit/$gallery[id]",
 							'tooltip' => $L->edit
 						]
 					).
-					h::{'a[is=cs-link-button][icon=trash][level=0]'}(
+					h::{'a[is=cs-link-button][icon=trash]'}(
 						[
 							'href'    => "admin/Photo_gallery/galleries/delete/$gallery[id]",
 							'tooltip' => $L->delete

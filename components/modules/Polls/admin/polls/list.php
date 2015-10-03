@@ -26,13 +26,13 @@ $Index->content(
 				function ($poll) use ($L) {
 					return [
 						$poll['title'],
-						h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
+						h::{'a[is=cs-link-button][icon=pencil]'}(
 							[
 								'href'    => "admin/Polls/polls/edit/$poll[id]",
 								'tooltip' => $L->edit
 							]
 						).
-						h::{'a[is=cs-link-button][icon=trash][level=0]'}(
+						h::{'a[is=cs-link-button][icon=trash]'}(
 							[
 								'href'    => "admin/Polls/polls/delete/$poll[id]",
 								'tooltip' => $L->delete

@@ -45,13 +45,13 @@ $Index->content(
 									'value' => $client['secret']
 								]
 							),
-							h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
+							h::{'a[is=cs-link-button][icon=pencil]'}(
 								[
 									'href'    => "admin/OAuth2/clients/edit/$client[id]",
 									'tooltip' => $L->edit
 								]
 							).
-							h::{'a[is=cs-link-button][icon=trash][level=0]'}(
+							h::{'a[is=cs-link-button][icon=trash]'}(
 								[
 									'href'    => "admin/OAuth2/clients/delete/$client[id]",
 									'tooltip' => $L->delete
@@ -102,11 +102,9 @@ $Index->content(
 		]
 	).
 	h::{'p.cs-text-left a[is=cs-link-button]'}(
+		$L->add_client,
 		[
-			$L->add_client,
-			[
-				'href' => 'admin/OAuth2/clients/add'
-			]
+			'href' => 'admin/OAuth2/clients/add'
 		]
 	)
 );
