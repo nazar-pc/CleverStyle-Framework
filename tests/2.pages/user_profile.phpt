@@ -54,21 +54,21 @@ shutdown_function();
 					<input autocapitalize="off" autocorrect="off" class="cs-header-restore-password-email" placeholder="Login or e-mail" tabindex="1" type="text">
 					<br>
 					<button class="cs-header-restore-password-process" icon="question" is="cs-button" tabindex="2" type="button">Restore password</button>
-					<button class="cs-header-back" icon="chevron-down" is="cs-button" tooltip="Back" type="button">&nbsp;</button>
+					<button class="cs-header-back" icon="chevron-down" is="cs-button" tooltip="Back" type="button"></button>
 				</div>
 				<div class="cs-header-registration-form">
 					<input autocapitalize="off" autocorrect="off" class="cs-header-registration-email" placeholder="Email" type="email">
 					<br>
 					<button class="cs-header-registration-process" icon="pencil" is="cs-button" type="button">Sign up</button>
-					<button class="cs-header-back" icon="chevron-down" is="cs-button" tooltip="Back" type="button">&nbsp;</button>
+					<button class="cs-header-back" icon="chevron-down" is="cs-button" tooltip="Back" type="button"></button>
 				</div>
 				<form class="cs-header-sign-in-form" method="post">
 					<input autocapitalize="off" autocorrect="off" class="cs-header-sign-in-email" placeholder="Login or e-mail" type="text">
 					<input class="cs-header-user-password" placeholder="Password" type="password">
 					<br>
 					<button icon="sign-in" is="cs-button" type="submit">Sign in</button>
-					<button class="cs-header-back" icon="chevron-down" is="cs-button" tooltip="Back" type="button">&nbsp;</button>
-					<button class="cs-header-restore-password-slide" icon="question" is="cs-button" tooltip="Restore password" type="button">&nbsp;</button>
+					<button class="cs-header-back" icon="chevron-down" is="cs-button" tooltip="Back" type="button"></button>
+					<button class="cs-header-restore-password-slide" icon="question" is="cs-button" tooltip="Restore password" type="button"></button>
 					<input name="session" type="hidden" value="%s">
 				</form>
 			</aside>
@@ -116,6 +116,7 @@ shutdown_function();
 	<footer>
 		<div>
 			Page generated in %f seconds, %d query(s) in DB in %f seconds, memory consumption %f MB<sup>%f MB</sup>
+
 		</div>
 		<div>
 			© Powered by <a target="_blank" href="http://cleverstyle.org/cms" title="CleverStyle CMS">CleverStyle CMS</a>
