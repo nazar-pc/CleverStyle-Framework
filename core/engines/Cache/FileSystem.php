@@ -100,6 +100,7 @@ class FileSystem extends _Abstract {
 	 * @inheritdoc
 	 */
 	function clean () {
+		$ok         = true;
 		$dirs_to_rm = [];
 		/**
 		 * Remove root files and rename root directories for instant cache cleaning
@@ -127,7 +128,6 @@ class FileSystem extends _Abstract {
 				}
 			}
 		);
-		$ok = true;
 		/**
 		 * Then remove all renamed directories
 		 */
