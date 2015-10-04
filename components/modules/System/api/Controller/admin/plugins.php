@@ -159,7 +159,10 @@ trait plugins {
 	 * Disable plugin
 	 *
 	 * Provides next events:
-	 *  admin/System/components/plugins/enable
+	 *  admin/System/components/plugins/enable/before
+	 *  ['name' => plugin_name]
+	 *
+	 *  admin/System/components/plugins/enable/after
 	 *  ['name' => plugin_name]
 	 *
 	 * @param int[]    $route_ids
@@ -178,7 +181,7 @@ trait plugins {
 			throw new ExitException(400);
 		}
 		if (!Event::instance()->fire(
-			'admin/System/components/plugins/enable',
+			'admin/System/components/plugins/enable/before',
 			[
 				'name' => $plugin
 			]
@@ -190,6 +193,15 @@ trait plugins {
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
+		Event::instance()->fire(
+			'admin/System/components/plugins/enable/before',
+			[
+				'name' => $plugin
+			]
+		);
+		static::admin_plugins_cleanup();
+	}
+	protected static function admin_plugins_cleanup () {
 		clean_pcache();
 		unset(System_cache::instance()->functionality);
 		clean_classes_cache();
@@ -198,7 +210,10 @@ trait plugins {
 	 * Disable plugin
 	 *
 	 * Provides next events:
-	 *  admin/System/components/plugins/disable
+	 *  admin/System/components/plugins/disable/before
+	 *  ['name' => plugin_name]
+	 *
+	 *  admin/System/components/plugins/disable/after
 	 *  ['name' => plugin_name]
 	 *
 	 * @param int[]    $route_ids
@@ -217,7 +232,7 @@ trait plugins {
 			throw new ExitException(400);
 		}
 		if (!Event::instance()->fire(
-			'admin/System/components/plugins/disable',
+			'admin/System/components/plugins/disable/before',
 			[
 				'name' => $plugin
 			]
@@ -229,9 +244,13 @@ trait plugins {
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
-		clean_pcache();
-		unset(System_cache::instance()->functionality);
-		clean_classes_cache();
+		Event::instance()->fire(
+			'admin/System/components/plugins/disable/after',
+			[
+				'name' => $plugin
+			]
+		);
+		static::admin_plugins_cleanup();
 	}
 	/**
 	 * Extract uploaded plugin
