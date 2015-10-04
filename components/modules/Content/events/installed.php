@@ -14,7 +14,7 @@ use
 	cs\User;
 
 Event::instance()->on(
-	'admin/System/components/modules/uninstall/process',
+	'admin/System/components/modules/uninstall/before',
 	function ($data) {
 		if ($data['name'] != 'Content' || !User::instance()->admin()) {
 			return;

@@ -14,7 +14,7 @@ use
 	cs\Event,
 	cs\Storage;
 Event::instance()->on(
-	'admin/System/components/modules/uninstall/process',
+	'admin/System/components/modules/uninstall/before',
 	function ($data) {
 		if ($data['name'] != 'Plupload') {
 			return;

@@ -12,7 +12,7 @@ use
 	cs\Event,
 	cs\User;
 Event::instance()->on(
-	'admin/System/components/modules/uninstall/process',
+	'admin/System/components/modules/uninstall/before',
 	function ($data) {
 		if ($data['name'] != 'Static_pages' || !User::instance()->admin()) {
 			return true;

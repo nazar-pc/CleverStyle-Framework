@@ -9,7 +9,7 @@
  */
 namespace	cs;
 Event::instance()->on(
-	'admin/System/components/modules/install/process',
+	'admin/System/components/modules/install/after',
 	function ($data) {
 		if ($data['name'] != 'HybridAuth') {
 			return;

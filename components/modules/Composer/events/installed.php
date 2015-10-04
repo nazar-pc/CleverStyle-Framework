@@ -9,30 +9,14 @@
 namespace cs\modules\Composer;
 use
 	cs\Event;
-Event::instance()
-	->on('admin/System/components/modules/uninstall/process', function ($data) {
+Event::instance()->on(
+	'admin/System/components/modules/uninstall/after',
+	function ($data) {
 		if ($data['name'] == 'Composer') {
 			$dir = DIR.'/storage/Composer';
-			if (!is_dir($dir)) {
-				return;
+			if (!rmdir_recursive($dir)) {
+				trigger_error("Composer's directory $dir was not removed completely", E_USER_WARNING);
 			}
-			get_files_list(
-				$dir,
-				false,
-				'fd',
-				true,
-				true,
-				false,
-				false,
-				true,
-				function ($item) {
-					if (is_dir($item)) {
-						@rmdir($item);
-					} else {
-						@unlink($item);
-					}
-				}
-			);
-			@rmdir($dir);
 		}
-	});
+	}
+);

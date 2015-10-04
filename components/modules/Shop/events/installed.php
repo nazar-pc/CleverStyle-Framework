@@ -10,7 +10,7 @@ namespace cs\modules\Shop;
 use
 	cs\Event;
 Event::instance()->on(
-	'admin/System/components/modules/uninstall/process',
+	'admin/System/components/modules/uninstall/before',
 	function ($data) {
 		if ($data['name'] != 'Shop') {
 			return;

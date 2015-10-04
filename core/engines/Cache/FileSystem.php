@@ -90,33 +90,9 @@ class FileSystem extends _Abstract {
 			/**
 			 * Rename to random name in order to immediately invalidate nested elements, actual deletion done right after this
 			 */
-			$random_id = uniqid();
-			$new_path  = $path_in_filesystem.$random_id;
+			$new_path = $path_in_filesystem.md5(random_bytes(1000));
 			rename($path_in_filesystem, $new_path);
-			/**
-			 * Speed-up of files deletion
-			 */
-			get_files_list(
-				$new_path,
-				false,
-				'f',
-				true,
-				true,
-				false,
-				true,
-				false,
-				function ($file) {
-					if (is_writable($file)) {
-						@unlink($file);
-					}
-				}
-			);
-			$files = get_files_list($new_path, false, 'fd');
-			foreach ($files as $file) {
-				$this->del($item.$random_id."/$file");
-			}
-			unset($files, $file);
-			return @rmdir($new_path);
+			return rmdir_recursive($new_path);
 		}
 		return @unlink($path_in_filesystem);
 	}
@@ -124,12 +100,11 @@ class FileSystem extends _Abstract {
 	 * @inheritdoc
 	 */
 	function clean () {
-		$ok         = true;
 		$dirs_to_rm = [];
 		/**
 		 * Remove root files and rename root directories for instant cache cleaning
 		 */
-		$uniqid = uniqid();
+		$random_key = md5(random_bytes(1000));
 		get_files_list(
 			CACHE,
 			false,
@@ -139,11 +114,11 @@ class FileSystem extends _Abstract {
 			false,
 			false,
 			true,
-			function ($item) use (&$ok, &$dirs_to_rm, $uniqid) {
+			function ($item) use (&$ok, &$dirs_to_rm, $random_key) {
 				if (is_writable($item)) {
 					if (is_dir($item)) {
-						rename($item, "$item$uniqid");
-						$dirs_to_rm[] = "$item$uniqid";
+						rename($item, "$item$random_key");
+						$dirs_to_rm[] = "$item$random_key";
 					} else {
 						@unlink($item);
 					}
@@ -152,28 +127,12 @@ class FileSystem extends _Abstract {
 				}
 			}
 		);
+		$ok = true;
 		/**
 		 * Then remove all renamed directories
 		 */
 		foreach ($dirs_to_rm as $dir) {
-			get_files_list(
-				$dir,
-				false,
-				'fd',
-				true,
-				true,
-				false,
-				false,
-				true,
-				function ($item) use (&$ok) {
-					if (is_writable($item)) {
-						is_dir($item) ? @rmdir($item) : @unlink($item);
-					} else {
-						$ok = false;
-					}
-				}
-			);
-			@rmdir($dir);
+			$ok = rmdir_recursive($dir) && $ok;
 		}
 		return $ok;
 	}
