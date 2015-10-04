@@ -318,7 +318,10 @@ trait modules {
 	 * Enable module
 	 *
 	 * Provides next events:
-	 *  admin/System/components/modules/enable
+	 *  admin/System/components/modules/enable/before
+	 *  ['name' => module_name]
+	 *
+	 *  admin/System/components/modules/enable/after
 	 *  ['name' => module_name]
 	 *
 	 * @param int[]    $route_ids
@@ -340,7 +343,7 @@ trait modules {
 			throw new ExitException(400);
 		}
 		if (!Event::instance()->fire(
-			'admin/System/components/modules/enable',
+			'admin/System/components/modules/enable/before',
 			[
 				'name' => $module
 			]
@@ -352,6 +355,12 @@ trait modules {
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
+		Event::instance()->fire(
+			'admin/System/components/modules/enable/after',
+			[
+				'name' => $module
+			]
+		);
 		static::admin_modules_cleanup();
 	}
 	protected static function admin_modules_cleanup () {
@@ -367,7 +376,10 @@ trait modules {
 	 * Disable module
 	 *
 	 * Provides next events:
-	 *  admin/System/components/modules/disable
+	 *  admin/System/components/modules/disable/before
+	 *  ['name' => module_name]
+	 *
+	 *  admin/System/components/modules/disable/after
 	 *  ['name' => module_name]
 	 *
 	 * @param int[]    $route_ids
@@ -391,7 +403,7 @@ trait modules {
 			throw new ExitException(400);
 		}
 		if (!Event::instance()->fire(
-			'admin/System/components/modules/disable',
+			'admin/System/components/modules/disable/before',
 			[
 				'name' => $module
 			]
@@ -403,6 +415,12 @@ trait modules {
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
+		Event::instance()->fire(
+			'admin/System/components/modules/disable/after',
+			[
+				'name' => $module
+			]
+		);
 		static::admin_modules_cleanup();
 	}
 	/**
