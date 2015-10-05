@@ -10,8 +10,7 @@ namespace cs\modules\Composer;
 use
 	h,
 	cs\Index,
-	cs\Language\Prefix,
-	cs\Page;
+	cs\Language\Prefix;
 $Index          = Index::instance();
 $Index->buttons = false;
 $L              = new Prefix('composer_');
