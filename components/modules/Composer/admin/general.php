@@ -27,12 +27,6 @@ if (file_exists(DIR.'/storage/Composer/last_execution.log')) {
 		)
 	);
 }
-Page::instance()->config(
-	[
-		'force' => true
-	],
-	'cs.composer'
-);
 $Index->content(
 	h::{'p.cs-text-center button.cs-composer-admin-force-update[is=cs-button]'}($L->force_update)
 );

@@ -11,7 +11,7 @@ use
 	cs\ExitException,
 	cs\Page,
 	cs\User;
-if (!isset($_POST['force']) && !isset($_POST['name'], $_POST['type'])) {
+if (!isset($_POST['force']) && !isset($_POST['name'], $_POST['category'])) {
 	throw new ExitException(400);
 }
 if (!User::instance()->admin()) {
@@ -21,7 +21,7 @@ require_once __DIR__.'/../ansispan.php';
 if (isset($_POST['force']) && $_POST['force']) {
 	$result = Composer::instance()->force_update();
 } else {
-	$result = Composer::instance()->update($_POST['name'], $_POST['type'], Composer::MODE_ADD);
+	$result = Composer::instance()->update($_POST['name'], $_POST['category'], Composer::MODE_ADD);
 }
 Page::instance()->json(
 	[

@@ -43,8 +43,6 @@ use
 class Composer {
 	use
 		Singleton;
-	const COMPONENT_MODULE = 1;
-	const COMPONENT_PLUGIN = 2;
 	const MODE_ADD         = 1;
 	const MODE_DELETE      = 2;
 	/**
@@ -69,19 +67,19 @@ class Composer {
 	 * Update composer
 	 *
 	 * @param string $component_name Is specified if called before component actually installed (to satisfy dependencies)
-	 * @param int    $component_type Composer::COMPONENT_MODULE or Composer::COMPONENT_PLUGIN
+	 * @param string $category       `modules` or `plugins`
 	 * @param int    $mode           Composer::MODE_ADD or Composer::MODE_DELETE
 	 *
 	 * @return array Array with `code` and `description` elements, first represents status code returned by composer, second contains ANSI text returned by
 	 *               composer
 	 */
-	function update ($component_name = null, $component_type = self::COMPONENT_MODULE, $mode = self::MODE_ADD) {
+	function update ($component_name = null, $category = 'modules', $mode = self::MODE_ADD) {
 		time_limit_pause();
 		$storage     = STORAGE.'/Composer';
 		$status_code = 0;
 		$description = '';
 		$this->prepare($storage);
-		$composer_json = $this->generate_composer_json($component_name, $component_type, $mode);
+		$composer_json = $this->generate_composer_json($component_name, $category, $mode);
 		$Config        = Config::instance();
 		$auth_json     = _json_decode($Config->module('Composer')->auth_json ?: '[]');
 		$Event         = Event::instance();
@@ -183,12 +181,12 @@ class Composer {
 	}
 	/**
 	 * @param string $component_name
-	 * @param int    $component_type `self::COMPONENT_MODULE` or `self::COMPONENT_PLUGIN`
-	 * @param int    $mode           `self::MODE_ADD` or `self::MODE_DELETE`
+	 * @param string $category `modules` or `plugins`
+	 * @param int    $mode     `self::MODE_ADD` or `self::MODE_DELETE`
 	 *
 	 * @return array Resulting `composer.json` structure in form of array
 	 */
-	protected function generate_composer_json ($component_name, $component_type, $mode) {
+	protected function generate_composer_json ($component_name, $category, $mode) {
 		$composer = [
 			'repositories' => [],
 			'require'      => []
@@ -197,7 +195,7 @@ class Composer {
 		foreach ($Config->components['modules'] as $module => $module_data) {
 			if (
 				$module == $component_name &&
-				$component_type == self::COMPONENT_MODULE &&
+				$category == 'modules' &&
 				$mode == self::MODE_DELETE
 			) {
 				continue;
@@ -207,7 +205,7 @@ class Composer {
 					$module_data['active'] != -1 ||
 					(
 						$component_name == $module &&
-						$component_type == self::COMPONENT_MODULE
+						$category == 'modules'
 					)
 				) &&
 				file_exists(MODULES."/$module/meta.json")
@@ -221,12 +219,12 @@ class Composer {
 		foreach (
 			array_merge(
 				$Config->components['plugins'],
-				$component_type == self::COMPONENT_PLUGIN && $component_name ? [$component_name] : []
+				$category == 'plugins' && $component_name ? [$component_name] : []
 			) as $plugin
 		) {
 			if (
 				$plugin == $component_name &&
-				$component_type == self::COMPONENT_PLUGIN &&
+				$category == 'plugins' &&
 				$mode == self::MODE_DELETE
 			) {
 				continue;

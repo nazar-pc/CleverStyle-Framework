@@ -1,12 +1,1 @@
-<dom-module id="cs-composer">
-  <template>
-    <style include="advanced-styles-alone"></style>
-    <h2 class="cs-text-center">[[L.composer_composer_updating]]</h2>
-    <h1 class="cs-text-center" hidden$="[[status]]">
-      <cs-icon icon="spinner" spin></cs-icon>
-    </h1>
-    <h3 class="cs-text-center" hidden$="[[!status]]">[[status]]</h3>
-    <pre id="result" style="background: #1a1a1a"></pre>
-  </template>
-  <script src="script.js"></script>
-</dom-module>
+<dom-module id="cs-composer"><template><style include="advanced-styles"></style><h3 class="cs-text-center">[[L.composer_composer_updating]]</h3><h1 hidden$="[[status]]" class="cs-text-center"><cs-icon icon="spinner" spin></cs-icon></h1><h3 hidden$="[[!status]]" class="cs-text-center">[[status]]</h3><pre id="result" style="background: #1a1a1a"></pre></template><script src="script.js"></script></dom-module>
