@@ -30,8 +30,6 @@ dom-module(id="cs-system-admin-databases-list")
 				template(is="dom-repeat" items="[[database.mirrors]]" as="mirror")
 					tr
 						td.cs-text-right
-							button(is="cs-button" on-tap="_test_connection" icon="signal" tooltip="[[L.test_connection]]")
-							= ' '
 							a(is="cs-link-button" on-tap="_edit" icon="pencil" tooltip="[[concat(L.edit, ' ', L.mirror, ' ', L.of_db)]]")
 							= ' '
 							a(is="cs-link-button" on-tap="_delete" icon="trash" tooltip="[[concat(L.delete, ' ', L.mirror, ' ', L.of_db)]]")

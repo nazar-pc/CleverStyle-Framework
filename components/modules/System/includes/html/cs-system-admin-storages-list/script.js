@@ -22,21 +22,6 @@
         this$.set('storages', storages);
       });
     },
-    _test_connection: function(e){
-      var $modal;
-      $modal = $(cs.ui.simple_modal("<div>\n	<h3 class=\"cs-text-center\">" + L.test_connection + "</h3>\n	<progress is=\"cs-progress\" infinite></progress>\n</div>"));
-      $.ajax({
-        url: 'api/System/admin/storages',
-        data: e.model.storage,
-        type: 'test',
-        success: function(result){
-          $modal.find('progress').replaceWith("<p class=\"cs-text-center cs-block-success cs-text-success\" style=text-transform:capitalize;\">" + L.success + "</p>");
-        },
-        error: function(){
-          $modal.find('progress').replaceWith("<p class=\"cs-text-center cs-block-error cs-text-error\" style=text-transform:capitalize;\">" + L.failed + "</p>");
-        }
-      });
-    },
     _add: function(){
       var this$ = this;
       $(cs.ui.simple_modal("<h3>" + L.adding_of_storage + "</h3>\n<cs-system-admin-storages-form add/>")).on('close', function(){

@@ -55,4 +55,22 @@ Polymer(
 			success	: !->
 				cs.ui.notify(L.changes_saved, 'success', 5)
 		)
+	_test_connection : (e) !->
+		$modal	= $(cs.ui.simple_modal("""<div>
+			<h3 class="cs-text-center">#{L.test_connection}</h3>
+			<progress is="cs-progress" infinite></progress>
+		</div>"""))
+		$.ajax(
+			url		: 'api/System/admin/storages'
+			data	: @storage
+			type	: 'test'
+			success	: (result) !->
+				$modal
+					.find('progress')
+					.replaceWith("""<p class="cs-text-center cs-block-success cs-text-success" style=text-transform:capitalize;">#{L.success}</p>""")
+			error	: !->
+				$modal
+					.find('progress')
+					.replaceWith("""<p class="cs-text-center cs-block-error cs-text-error" style=text-transform:capitalize;">#{L.failed}</p>""")
+		)
 )

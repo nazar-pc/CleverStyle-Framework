@@ -22,21 +22,6 @@
         this$.set('databases', databases);
       });
     },
-    _test_connection: function(e){
-      var $modal;
-      $modal = $(cs.ui.simple_modal("<div>\n	<h3 class=\"cs-text-center\">" + L.test_connection + "</h3>\n	<progress is=\"cs-progress\" infinite></progress>\n</div>"));
-      $.ajax({
-        url: 'api/System/admin/databases',
-        data: e.model.database,
-        type: 'test',
-        success: function(result){
-          $modal.find('progress').replaceWith("<p class=\"cs-text-center cs-block-success cs-text-success\" style=text-transform:capitalize;\">" + L.success + "</p>");
-        },
-        error: function(){
-          $modal.find('progress').replaceWith("<p class=\"cs-text-center cs-block-error cs-text-error\" style=text-transform:capitalize;\">" + L.failed + "</p>");
-        }
-      });
-    },
     _add: function(e){
       var database, this$ = this;
       database = e.model && e.model.database;

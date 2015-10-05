@@ -196,9 +196,15 @@ trait databases {
 	 * @throws ExitException
 	 */
 	static function admin_databases_test () {
-		// TODO proper arguments check
+		$engines = static::admin_databases_get_engines();
+		if (
+			!isset($_POST['type'], $_POST['name'], $_POST['user'], $_POST['password'], $_POST['host'], $_POST['charset']) ||
+			!in_array($_POST['type'], $engines, true)
+		) {
+			throw new ExitException(400);
+		}
 		errors_off();
-		$engine_class = '\\cs\\DB\\'.$_POST['type'];
+		$engine_class = "\\cs\\DB\\$_POST[type]";
 		/**
 		 * @var \cs\DB\_Abstract $connection
 		 */

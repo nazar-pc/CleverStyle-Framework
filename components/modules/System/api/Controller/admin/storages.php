@@ -158,7 +158,13 @@ trait storages {
 	 * @throws ExitException
 	 */
 	static function admin_storages_test () {
-		// TODO proper arguments check
+		$engines = static::admin_storages_get_engines();
+		if (
+			!isset($_POST['connection'], $_POST['url'], $_POST['host'], $_POST['user'], $_POST['password']) ||
+			!in_array($_POST['connection'], $engines, true)
+		) {
+			throw new ExitException(400);
+		}
 		$connection_class = "\\cs\\Storage\\$_POST[connection]";
 		/**
 		 * @var \cs\Storage\_Abstract $connection
