@@ -74,26 +74,6 @@ function _getcookie ($name) {
 }
 
 /**
- * Function that is used to define errors by specifying error code, and system will account this in its operation
- *
- * @param int|null $code
- *
- * @return int                <b>0</b> if no errors, error code otherwise
- */
-function error_code ($code = null) {
-	static $stored_code = 0;
-	if (
-		$code !== null &&
-		(
-			!$stored_code || $code == 0 //Allows to reset error code, but not allows to redefine by other code directly
-		)
-	) {
-		$stored_code = $code;
-	}
-	return $stored_code;
-}
-
-/**
  * Is current path from administration area?
  *
  * @param bool|null $admin_path

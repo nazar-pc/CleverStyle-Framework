@@ -41,8 +41,7 @@ try {
 		}
 	} catch (ExitException $e) {
 		if ($e->getCode() >= 400) {
-			error_code($e->getCode());
-			Page::instance()->error($e->getMessage() ?: null, $e->getJson());
+			Page::instance()->error($e->getMessage() ?: null, $e->getJson(), $e->getCode());
 		}
 	}
 } catch (ExitException $e) {

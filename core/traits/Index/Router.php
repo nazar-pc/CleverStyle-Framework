@@ -27,9 +27,10 @@ trait Router {
 	 */
 	protected function execute_router () {
 		$this->check_and_normalize_route();
-		if (!error_code()) {
-			$router = file_exists("$this->working_directory/Controller.php") ? 'controller_router' : 'files_router';
-			$this->$router();
+		if (file_exists("$this->working_directory/Controller.php")) {
+			$this->controller_router();
+		} else {
+			$this->files_router();
 		}
 	}
 	/**
@@ -86,12 +87,15 @@ trait Router {
 		} elseif (!isset($structure[$path]) && !in_array($path, $structure)) {
 			throw new ExitException(404);
 		}
+		/** @noinspection PhpUndefinedMethodInspection */
 		if (!$this->check_permission($path)) {
 			throw new ExitException(403);
 		}
 	}
 	/**
 	 * Include files necessary for module page rendering
+	 *
+	 * @throws ExitException
 	 */
 	protected function files_router () {
 		foreach ($this->controller_path as $index => $path) {
@@ -102,9 +106,7 @@ trait Router {
 				$path = implode('/', array_slice($this->controller_path, 1, $index));
 			}
 			$next_exists = isset($this->controller_path[$index + 1]);
-			if (!$this->files_router_handler($this->working_directory, $path, !$next_exists)) {
-				return;
-			}
+			$this->files_router_handler($this->working_directory, $path, !$next_exists);
 		}
 	}
 	/**
@@ -114,12 +116,18 @@ trait Router {
 	 * @param string $basename
 	 * @param bool   $required
 	 *
-	 * @return bool
+	 * @throws ExitException
 	 */
 	protected function files_router_handler ($dir, $basename, $required = true) {
 		$this->files_router_handler_internal($dir, $basename, $required);
-		return !error_code();
 	}
+	/**
+	 * @param string $dir
+	 * @param string $basename
+	 * @param bool   $required
+	 *
+	 * @throws ExitException
+	 */
 	protected function files_router_handler_internal ($dir, $basename, $required) {
 		$included = _include("$dir/$basename.php", false, false) !== false;
 		if (!api_path()) {
@@ -154,6 +162,8 @@ trait Router {
 	}
 	/**
 	 * Call methods necessary for module page rendering
+	 *
+	 * @throws ExitException
 	 */
 	protected function controller_router () {
 		$suffix = '';
@@ -171,9 +181,7 @@ trait Router {
 				$path = implode('_', array_slice($this->controller_path, 1, $index));
 			}
 			$next_exists = isset($this->controller_path[$index + 1]);
-			if (!$this->controller_router_handler($controller_class, $path, !$next_exists)) {
-				return;
-			}
+			$this->controller_router_handler($controller_class, $path, !$next_exists);
 		}
 	}
 	/**
@@ -183,17 +191,18 @@ trait Router {
 	 * @param string $method_name
 	 * @param bool   $required
 	 *
-	 * @return bool
+	 * @throws ExitException
 	 */
 	protected function controller_router_handler ($controller_class, $method_name, $required = true) {
 		$method_name = str_replace('.', '_', $method_name);
 		$this->controller_router_handler_internal($controller_class, $method_name, $required);
-		return !error_code();
 	}
 	/**
 	 * @param string $controller_class
 	 * @param string $method_name
 	 * @param bool   $required
+	 *
+	 * @throws ExitException
 	 */
 	protected function controller_router_handler_internal ($controller_class, $method_name, $required) {
 		$included =

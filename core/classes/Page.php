@@ -424,33 +424,29 @@ class Page {
 	/**
 	 * Error pages processing
 	 *
-	 * @param null|string|string[] $custom_text       Custom error text instead of text like "404 Not Found",
-	 *                                                or array with two elements: [error, error_description]
-	 * @param bool                 $json              Force JSON return format
+	 * @param null|string|string[] $custom_text Custom error text instead of text like "404 Not Found" or array with two elements: [error, error_description]
+	 * @param bool                 $json        Force JSON return format
+	 * @param int                  $error_code  HTTP status code
 	 *
 	 * @throws ExitException
 	 */
-	function error ($custom_text = null, $json = false) {
+	function error ($custom_text = null, $json = false, $error_code = 500) {
 		if ($this->error_showed) {
 			return;
 		}
 		$this->error_showed	= true;
-		$error = error_code();
-		if (!$error) {
-			error_code($error = 500);
-		}
 		/**
 		 * Hack for 403 after sign out in administration
 		 */
-		if ($error == 403 && !api_path() && _getcookie('sign_out')) {
+		if ($error_code == 403 && !api_path() && _getcookie('sign_out')) {
 			_header('Location: /', true, 302);
 			$this->Content	= '';
 			throw new ExitException;
 		}
 		interface_off();
-		$error_description	= status_code($error);
+		$error_description	= status_code($error_code);
 		if (is_array($custom_text)) {
-			list($error, $error_description)	= $custom_text;
+			list($error_code, $error_description)	= $custom_text;
 		} elseif ($custom_text) {
 			$error_description	= $custom_text;
 		}
@@ -460,7 +456,7 @@ class Page {
 				interface_off();
 			}
 			$this->json([
-				'error'				=> $error,
+				'error'				=> $error_code,
 				'error_description'	=> $error_description
 			]);
 		} else {
@@ -470,8 +466,8 @@ class Page {
 				!_include(THEMES."/$this->theme/error.php", false, false)
 			) {
 				echo "<!doctype html>\n".
-					h::title($error).
-					($error_description ?: $error);
+					h::title($error_code).
+					($error_description ?: $error_code);
 			}
 			$this->Content	= ob_get_clean();
 		}

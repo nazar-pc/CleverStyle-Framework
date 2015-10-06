@@ -51,8 +51,7 @@ class Request {
 				$this->execute_request();
 			} catch (ExitException $e) {
 				if ($e->getCode() >= 400) {
-					error_code($e->getCode());
-					Page::instance()->error($e->getMessage() ?: null, $e->getJson());
+					Page::instance()->error($e->getMessage() ?: null, $e->getJson(), $e->getCode());
 				}
 			}
 		} catch (\Exception $e) {
@@ -182,7 +181,6 @@ class Request {
 				$_REQUEST[$request_id]
 			);
 		}
-		error_code(-1);
 		admin_path(-1);
 		api_path(-1);
 		current_module(-1);
