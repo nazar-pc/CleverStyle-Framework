@@ -132,9 +132,9 @@ class Page {
 		 * If website is closed and user is not an administrator - send `503 Service Unavailable` header and show closed site page
 		 */
 		if (
+			status_code(503) &&
 			!Config::instance()->core['site_mode'] &&
 			!User::instance(true)->admin() &&
-			status_code(503) &&
 			!_include("$theme_dir/closed.php", false, false) &&
 			!_include("$theme_dir/closed.html", false, false)
 		) {

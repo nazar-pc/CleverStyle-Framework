@@ -89,9 +89,8 @@ class Route {
 		 * If match was not found - mirror is not allowed!
 		 */
 		if ($this->mirror_index === -1) {
-			status_code(400);
 			trigger_error("Mirror $_SERVER->host not allowed", E_USER_ERROR);
-			throw new ExitException;
+			throw new ExitException(400);
 		}
 		/**
 		 * Remove trailing slashes

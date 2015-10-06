@@ -74,13 +74,15 @@ if (!$client['active']) {
 	 */
 	if ($_GET['response_type'] != 'guest_token') {
 		if (!isset($_GET['redirect_uri'])) {
-			status_code(400);
-			$Page->error(
+			$e = new ExitException(
 				[
 					'invalid_request',
 					'Inactive client_id, redirect_uri parameter required'
-				]
+				],
+				400
 			);
+			$e->setJson();
+			throw $e;
 		} else {
 			if (
 				urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
@@ -89,24 +91,27 @@ if (!$client['active']) {
 				error_redirect('access_denied', 'Inactive client id');
 				return;
 			} else {
-				status_code(400);
-				$Page->error(
+				$e = new ExitException(
 					[
 						'invalid_request',
 						'Inactive client_id, redirect_uri parameter required'
-					]
+					],
+					400
 				);
+				$e->setJson();
+				throw $e;
 			}
 		}
 	} else {
-		status_code(400);
-		$Page->error(
+		$e = new ExitException(
 			[
 				'invalid_request',
-				'inactive client_id'
+				'Inactive client_id'
 			],
-			true
+			400
 		);
+		$e->setJson();
+		throw $e;
 	}
 }
 /**
@@ -114,24 +119,28 @@ if (!$client['active']) {
  */
 if ($_GET['response_type'] != 'guest_token') {
 	if (!isset($_GET['redirect_uri'])) {
-		status_code(400);
-		$Page->error(
+		$e = new ExitException(
 			[
 				'invalid_request',
 				'redirect_uri parameter required'
-			]
+			],
+			400
 		);
+		$e->setJson();
+		throw $e;
 	} elseif (
 		urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
 		!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))
 	) {
-		status_code(400);
-		$Page->error(
+		$e = new ExitException(
 			[
 				'invalid_request',
 				'redirect_uri parameter invalid'
-			]
+			],
+			400
 		);
+		$e->setJson();
+		throw $e;
 	}
 	$redirect_uri = urldecode($_GET['redirect_uri']);
 	if (!isset($_GET['response_type'])) {
@@ -144,22 +153,26 @@ if ($_GET['response_type'] != 'guest_token') {
 	}
 } else {
 	if (!isset($_GET['response_type'])) {
-		$Page->error(
+		$e = new ExitException(
 			[
 				'invalid_request',
 				'response_type parameter required'
 			],
-			true
+			400
 		);
+		$e->setJson();
+		throw $e;
 	}
 	if (!in_array($_GET['response_type'], ['code', 'token', 'guest_token'])) {
-		$Page->error(
+		$e = new ExitException(
 			[
 				'unsupported_response_type',
 				'Specified response_type is not supported, only "token" or "code" or "guest_token" types available'
 			],
-			true
+			400
 		);
+		$e->setJson();
+		throw $e;
 	}
 }
 $User = User::instance();
