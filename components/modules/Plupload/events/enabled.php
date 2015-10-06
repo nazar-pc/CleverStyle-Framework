@@ -30,7 +30,7 @@ use
 	cs\Storage;
 Event::instance()
 	->on(
-		'System/Page/pre_display',
+		'System/Page/display/before',
 		function () {
 			$Config	= Config::instance();
 			$Page	= Page::instance();

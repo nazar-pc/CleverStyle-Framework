@@ -12,9 +12,6 @@ use
 	cs\Page\Meta;
 
 /**
- * Provides next events:
- *  System/Page/pre_display
- *
  * @method static Page instance($check = false)
  */
 class Page {
@@ -475,6 +472,11 @@ class Page {
 		throw new ExitException;
 	}
 	/**
+	 * Provides next events:
+	 *  System/Page/display/before
+	 *
+	 *  System/Page/display/after
+	 *
 	 * Page generation
 	 */
 	function __finish () {
@@ -495,7 +497,7 @@ class Page {
 			 */
 			echo $this->process_replacing($this->Content ?: ($api ? 'null' : ''));
 		} else {
-			Event::instance()->fire('System/Page/pre_display');
+			Event::instance()->fire('System/Page/display/before');
 			/**
 			 * Processing of template, substituting of content, preparing for the output
 			 */
@@ -504,7 +506,7 @@ class Page {
 			 * Processing of replacing in content
 			 */
 			$this->Html = $this->process_replacing($this->Html);
-			Event::instance()->fire('System/Page/display');
+			Event::instance()->fire('System/Page/display/after');
 			echo rtrim($this->Html);
 		}
 	}

@@ -211,7 +211,7 @@ function get_footer () {
 	 * Some useful details about page execution process, will be called directly before output
 	 */
 	Event::instance()->on(
-		'System/Page/display',
+		'System/Page/display/after',
 		function () {
 			$Page       = Page::instance();
 			$Page->Html = str_replace(
