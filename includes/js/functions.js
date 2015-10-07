@@ -154,7 +154,7 @@
 
   cs.registration = function(email) {
     if (!email) {
-      cs.ui.confirm(L.please_type_your_email);
+      cs.ui.alert(L.please_type_your_email);
       return;
     }
     email = String(email).toLowerCase();
@@ -480,6 +480,7 @@
       modal.ok = ok;
       modal.appendChild(ok);
       modal.open();
+      ok.focus();
       return modal;
     };
 
@@ -525,6 +526,7 @@
       modal.cancel = cancel;
       modal.appendChild(cancel);
       modal.open();
+      ok.focus();
       return modal;
     };
 

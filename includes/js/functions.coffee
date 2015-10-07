@@ -106,7 +106,7 @@ cs.sign_out					= ->
 ###
 cs.registration				= (email) ->
 	if !email
-		cs.ui.confirm(L.please_type_your_email)
+		cs.ui.alert(L.please_type_your_email)
 		return
 	email	= String(email).toLowerCase()
 	$.ajax
@@ -355,6 +355,7 @@ do ->
 		modal.ok			= ok
 		modal.appendChild(ok)
 		modal.open()
+		ok.focus()
 		modal
 	###*
 	 * Confirm modal
@@ -396,6 +397,7 @@ do ->
 		modal.cancel		= cancel
 		modal.appendChild(cancel)
 		modal.open()
+		ok.focus()
 		modal
 	###*
 	 * Notify

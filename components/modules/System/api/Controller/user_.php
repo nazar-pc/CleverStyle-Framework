@@ -103,7 +103,9 @@ trait user_ {
 			throw new ExitException(403);
 		} elseif (!$_POST['email']) {
 			throw new ExitException($L->please_type_your_email, 400);
-		} elseif (!($id = $User->get_id(mb_strtolower($_POST['email'])))) {
+		}
+		$id = $User->get_id(mb_strtolower($_POST['email']));
+		if (!$id) {
 			throw new ExitException($L->user_with_such_login_email_not_found, 400);
 		}
 		if (
