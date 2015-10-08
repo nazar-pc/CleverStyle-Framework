@@ -1,0 +1,20 @@
+dom-module(id="cs-cleverstyle-header-user-block")
+	link(rel="import" href="style.css" type="css")
+	template
+		style(is="custom-style" include="advanced-styles")
+		div
+			img(src="[[avatar]]")
+		div
+			b
+				span [[concat(L.hello, '\\, ', username, '!')]]
+				= ' '
+				cs-icon(icon="sign-out" hidden$="[[guest]]" tooltip="[[L.sign_out]]" on-tap="_sign_out")
+			template(is="dom-if" if="[[guest]]")
+				nav(is="cs-nav-button-group")
+					button(is="cs-button" primary icon="sign-in" type="button" on-tap="_sign_in") [[L.sign_in]]
+					button(is="cs-button" icon="pencil" tooltip="[[L.quick_registration_form]]" type="button" on-tap="_registration") [[L.sign_up]]
+			template(is="dom-if" if="[[!guest]]")
+				nav(is="cs-nav-button-group")
+					a(is="cs-link-button" href="[[concat('/profile/', login)]]") [[L.profile]]
+					a(is="cs-link-button" href="/System/profile/settings") [[L.settings]]
+	script(src="script.js")

@@ -1,6 +1,6 @@
 <?php
 /**
- * @package		ClevereStyle CMS
+ * @package		CleverStyle CMS
  * @subpackage	CleverStyle theme
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2014-2015, Nazar Mokrynskyi
@@ -8,6 +8,7 @@
  */
 namespace cs\themes\CleverStyle;
 use
+	cs\Language,
 	cs\Menu,
 	cs\User,
 	h;
@@ -21,7 +22,10 @@ $main_menu	= h::nav(
 	implode('', get_main_menu())
 );
 $submenu	= admin_path() ? Menu::instance()->get_menu() : '';
-$avatar		= User::instance()->avatar();
+$User		= User::instance();
+$avatar		= $User->avatar();
+$username	= $User->guest() ? Language::instance()->guest : $User->username();
+$login		= $User->login;
 ?><!doctype html>
 <!--pre_Html--><!--head-->
 <body unresolved>
@@ -30,10 +34,7 @@ $avatar		= User::instance()->avatar();
 		<div>
 			<a href="/" class="cs-text-lead"><?=get_core_ml_text('name')?></a>
 			<?=level($main_menu, 3)?>
-			<aside>
-				<img alt="" src="<?=$avatar?>">
-				<?=level(get_header_info(), 4)?>
-			</aside>
+			<cs-cleverstyle-header-user-block avatar="<?=$avatar?>" username="<?=h::prepare_attr_value($username)?>" login="<?=h::prepare_attr_value($login)?>"></cs-cleverstyle-header-user-block>
 		</div>
 		<hr>
 		<?=level($submenu, 2)?>

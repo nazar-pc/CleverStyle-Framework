@@ -17,7 +17,7 @@ use
 	cs\Page,
 	cs\User;
 Event::instance()->on(
-	'System/Page/external_sign_in_list',
+	'System/Page/external_sign_in_list', //TODO: this was removed, need to find a way how to integrate it into UI
 	function ($data) {
 		$Config = Config::instance();
 		$Page   = Page::instance();

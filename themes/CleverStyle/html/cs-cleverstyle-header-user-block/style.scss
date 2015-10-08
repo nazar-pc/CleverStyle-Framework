@@ -1,0 +1,37 @@
+/**
+ * @package    CleverStyle CMS
+ * @subpackage CleverStyle theme
+ * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright  Copyright (c) 2015, Nazar Mokrynskyi
+ * @license    MIT License, see license.txt
+ */
+
+:host {
+	height     : 48px;
+	padding    : 2px 5px;
+	text-align : center;
+
+	@apply (--layout-horizontal);
+}
+
+img {
+	max-height   : 44px;
+	margin-right : 5px;
+	max-width    : 44px;
+}
+
+cs-icon {
+	cursor : pointer;
+}
+
+nav {
+	display : block;
+
+	> * {
+		height : 1.8em;
+	}
+
+	> a {
+		line-height : .8em;
+	}
+}

@@ -1,6 +1,6 @@
 <?php
 /**
- * @package		ClevereStyle CMS
+ * @package		CleverStyle CMS
  * @subpackage	DarkEnergy theme
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2014-2015, Nazar Mokrynskyi

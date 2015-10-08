@@ -36,37 +36,7 @@ shutdown_function();
 			<nav>
 				<a href="/">Home</a>
 			</nav>
-			<aside>
-				<img alt="" src="/includes/img/guest.svg">
-				<div class="cs-header-guest-form active">
-					<b>Hello, Guest!</b>
-					<div>
-						<button class="cs-header-sign-in-slide" icon="sign-in" is="cs-button" type="button">Sign in</button>
-						<button class="cs-header-registration-slide" icon="pencil" is="cs-button" tooltip="Quick registration form" type="button">Sign up</button>
-					</div>
-				</div>
-				<div class="cs-header-restore-password-form">
-					<input autocapitalize="off" autocorrect="off" class="cs-header-restore-password-email" placeholder="Login or e-mail" tabindex="1" type="text">
-					<br>
-					<button class="cs-header-restore-password-process" icon="question" is="cs-button" tabindex="2" type="button">Restore password</button>
-					<button class="cs-header-back" icon="chevron-down" is="cs-button" tooltip="Back" type="button"></button>
-				</div>
-				<div class="cs-header-registration-form">
-					<input autocapitalize="off" autocorrect="off" class="cs-header-registration-email" placeholder="Email" type="email">
-					<br>
-					<button class="cs-header-registration-process" icon="pencil" is="cs-button" type="button">Sign up</button>
-					<button class="cs-header-back" icon="chevron-down" is="cs-button" tooltip="Back" type="button"></button>
-				</div>
-				<form class="cs-header-sign-in-form" method="post">
-					<input autocapitalize="off" autocorrect="off" class="cs-header-sign-in-email" placeholder="Login or e-mail" type="text">
-					<input class="cs-header-user-password" placeholder="Password" type="password">
-					<br>
-					<button icon="sign-in" is="cs-button" type="submit">Sign in</button>
-					<button class="cs-header-back" icon="chevron-down" is="cs-button" tooltip="Back" type="button"></button>
-					<button class="cs-header-restore-password-slide" icon="question" is="cs-button" tooltip="Restore password" type="button"></button>
-					<input name="session" type="hidden" value="%s">
-				</form>
-			</aside>
+			<cs-cleverstyle-header-user-block avatar="/includes/img/guest.svg" username="Guest" login="guest"></cs-cleverstyle-header-user-block>
 		</div>
 		<hr>
 		%w
