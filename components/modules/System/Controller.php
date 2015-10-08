@@ -256,24 +256,7 @@ class Controller {
 		$Index->action = path($L->profile).'/'.path($L->settings);
 		switch (isset($Route->route[2]) ? $Route->route[2] : '') {
 			default:
-				$Index->content(
-					h::p(
-						h::{'a[is=cs-link-button]'}(
-							$L->general,
-							[
-								'href' => "$Index->action/".path($L->general)
-							]
-						).
-						h::{'a[is=cs-link-button]'}(
-							$L->change_password,
-							[
-								'href' => "$Index->action/".path($L->change_password)
-							]
-						)
-					)
-				);
-				Event::instance()->fire('System/profile/settings');
-				break;
+				throw new ExitException(404);
 			case 'general':
 				$user_data = $User->get($columns);
 				unset($columns);
@@ -342,31 +325,6 @@ class Controller {
 								]
 							)
 						]
-					)
-				);
-				break;
-			case 'change_password':
-				$Index->form = true;
-				$Index->form_attributes['class'] .= ' cs-text-center';
-				$Index->buttons            = false;
-				$Index->cancel_button_back = true;
-				$Page->title($L->password_changing);
-				$Index->content(
-					h::{'h2.cs-text-center'}(
-						$L->password_changing
-					).
-					h::{'table.cs-table[right-left] tr| td'}(
-						[
-							"$L->current_password ".h::{'icon#current_password.cs-cursor-pointer'}('lock'),
-							h::{'input.cs-profile-current-password[is=cs-input-text][type=password]'}()
-						],
-						[
-							"$L->new_password ".h::{'icon#new_password.cs-cursor-pointer'}('lock'),
-							h::{'input.cs-profile-new-password[is=cs-input-text][type=password]'}()
-						]
-					).
-					h::{'button.cs-profile-change-password[is=cs-button]'}(
-						$L->change_password
 					)
 				);
 				break;

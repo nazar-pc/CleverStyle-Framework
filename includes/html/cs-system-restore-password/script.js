@@ -9,17 +9,14 @@
   var L;
   L = cs.Language;
   Polymer({
-    'is': 'cs-system-sign-in-form',
+    'is': 'cs-system-restore-password',
     behaviors: [cs.Polymer.behaviors.Language],
     attached: function(){
       this.$.login.focus();
     },
-    _sign_in: function(e){
+    _restore_password: function(e){
       e.preventDefault();
-      cs.sign_in(this.$.login.value, this.$.password.value);
-    },
-    _restore_password: function(){
-      cs.ui.simple_modal("<cs-system-restore-password-form/>");
+      cs.restore_password(this.$.login.value);
     }
   });
 }).call(this);

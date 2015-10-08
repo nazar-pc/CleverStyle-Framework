@@ -12,6 +12,19 @@
 	text-align : center;
 
 	@apply (--layout-horizontal);
+
+	> div > nav {
+		display : block;
+
+		> a,
+		> button {
+			height : 1.8em;
+		}
+
+		> a {
+			line-height : .8em;
+		}
+	}
 }
 
 img {
@@ -24,14 +37,7 @@ cs-icon {
 	cursor : pointer;
 }
 
-nav {
-	display : block;
-
-	> * {
-		height : 1.8em;
-	}
-
-	> a {
-		line-height : .8em;
-	}
+a,
+button {
+	white-space : nowrap;
 }

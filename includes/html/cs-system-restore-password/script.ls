@@ -6,7 +6,7 @@
  */
 L	= cs.Language
 Polymer(
-	'is'		: 'cs-system-restore-password-form'
+	'is'		: 'cs-system-restore-password'
 	behaviors	: [cs.Polymer.behaviors.Language]
 	attached : !->
 		@$.login.focus()

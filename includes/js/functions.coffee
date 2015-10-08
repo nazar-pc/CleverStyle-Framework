@@ -165,7 +165,7 @@ cs.change_password			= (current_password, new_password, success, error) ->
 		return
 	current_password	= cs.hash('sha512', cs.hash('sha512', String(current_password)) + cs.public_key)
 	new_password		= cs.hash('sha512', cs.hash('sha512', String(new_password)) + cs.public_key)
-	$.ajax
+	$.ajax(
 		url		: 'api/System/user/change_password'
 		cache	: false
 		data	:
@@ -183,8 +183,8 @@ cs.change_password			= (current_password, new_password, success, error) ->
 					error()
 				else
 					cs.ui.alert(result)
-		error	: ->
-			error()
+		error	: error || $.ajaxSettings.error
+	)
 ###*
  * Check password strength
  *

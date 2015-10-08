@@ -9,14 +9,14 @@
   var L;
   L = cs.Language;
   Polymer({
-    'is': 'cs-system-registration-form',
+    'is': 'cs-system-change-password',
     behaviors: [cs.Polymer.behaviors.Language],
     attached: function(){
-      this.$.email.focus();
+      this.$.current_password.focus();
     },
-    _registration: function(e){
+    _change_password: function(e){
       e.preventDefault();
-      cs.registration(this.$.email.value);
+      cs.change_password(this.$.current_password.value, this.$.new_password.value);
     }
   });
 }).call(this);

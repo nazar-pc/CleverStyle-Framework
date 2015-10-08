@@ -255,9 +255,7 @@
           }
         }
       },
-      error: function() {
-        return error();
-      }
+      error: error || $.ajaxSettings.error
     });
   };
 

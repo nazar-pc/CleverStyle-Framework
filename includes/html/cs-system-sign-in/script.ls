@@ -6,7 +6,7 @@
  */
 L	= cs.Language
 Polymer(
-	'is'		: 'cs-system-sign-in-form'
+	'is'		: 'cs-system-sign-in'
 	behaviors	: [cs.Polymer.behaviors.Language]
 	attached : !->
 		@$.login.focus()

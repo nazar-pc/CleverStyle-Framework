@@ -6,11 +6,11 @@
  */
 L	= cs.Language
 Polymer(
-	'is'		: 'cs-system-registration-form'
+	'is'		: 'cs-system-change-password'
 	behaviors	: [cs.Polymer.behaviors.Language]
 	attached : !->
-		@$.email.focus()
-	_registration : (e) !->
+		@$.current_password.focus()
+	_change_password : (e) !->
 		e.preventDefault()
-		cs.registration(@$.email.value)
+		cs.change_password(@$.current_password.value, @$.new_password.value)
 )
