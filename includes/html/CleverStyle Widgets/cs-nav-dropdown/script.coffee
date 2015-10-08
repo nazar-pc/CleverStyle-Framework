@@ -12,9 +12,7 @@ Polymer(
 	hostAttributes	:
 		role	: 'group'
 	properties		:
-		asIs	:
-			reflectToAttribute	: true
-			type				: Boolean
+		align	: 'left' # Can be `right`
 		opened	:
 			reflectToAttribute	: true
 			type				: Boolean
@@ -32,6 +30,7 @@ Polymer(
 						return
 				@close()
 		)
+		return
 	attached : ->
 		if !@target && @previousElementSibling.tagName == 'BUTTON'
 			@target			= @previousElementSibling
@@ -48,9 +47,12 @@ Polymer(
 		if @opened || !@target
 			return
 		target_position	= @target.getBoundingClientRect()
-		@style.left		= target_position.left + 'px'
-		@style.top		= target_position.top + target_position.height + 'px'
-		@opened			= true
+		if @align == 'left'
+			@style.left = target_position.left + 'px'
+		else
+			@style.right = (html.clientWidth - target_position.right - scrollX) + 'px'
+		@style.top	= target_position.top + target_position.height + 'px'
+		@opened		= true
 		@fire('open')
 		return
 	close : ->

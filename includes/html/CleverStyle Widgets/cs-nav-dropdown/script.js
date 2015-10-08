@@ -20,10 +20,7 @@
       role: 'group'
     },
     properties: {
-      asIs: {
-        reflectToAttribute: true,
-        type: Boolean
-      },
+      align: 'left',
       opened: {
         reflectToAttribute: true,
         type: Boolean
@@ -38,7 +35,7 @@
           }
         };
       })(this));
-      return document.addEventListener('click', (function(_this) {
+      document.addEventListener('click', (function(_this) {
         return function(e) {
           var element, i, len, ref;
           if (_this.opened) {
@@ -74,7 +71,11 @@
         return;
       }
       target_position = this.target.getBoundingClientRect();
-      this.style.left = target_position.left + 'px';
+      if (this.align === 'left') {
+        this.style.left = target_position.left + 'px';
+      } else {
+        this.style.right = (html.clientWidth - target_position.right - scrollX) + 'px';
+      }
       this.style.top = target_position.top + target_position.height + 'px';
       this.opened = true;
       this.fire('open');
