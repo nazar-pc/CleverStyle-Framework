@@ -116,6 +116,7 @@ Event::instance()
 			$Core             = Core::instance();
 			$Cache            = Cache::instance();
 			$L                = Language::instance();
+			$Page             = Page::instance();
 			/**
 			 * @var _SERVER $_SERVER
 			 */
@@ -133,35 +134,36 @@ Event::instance()
 				} else {
 					_header("Location: /$clang$query_string", true, 301);
 				}
+				$Page->Content = '';
+				interface_off();
+				throw new ExitException;
 			}
-			$base_url = substr($Config->base_url(), 0, -3);
-			Page::instance()->Head .=
-				h::{'link[rel=alternate]'}(
+			$core_url = $Config->core_url();
+			$base_url = $Config->base_url();
+			$Page->Head .= h::{'link[rel=alternate]'}(
+				[
+					'hreflang' => 'x-default',
+					'href'     => home_page() ? $core_url : "$core_url/$relative_address"
+				]
+			);
+			$clangs = $Cache->get(
+				'languages/clangs',
+				function () use ($Config) {
+					$clangs = [];
+					foreach ($Config->core['active_languages'] as $language) {
+						$clangs[] = file_get_json_nocomments(LANGUAGES."/$language.json")['clang'];
+					}
+					return $clangs;
+				}
+			);
+			foreach ($clangs as $clang) {
+				$Page->Head .= h::{'link[rel=alternate]|'}(
 					[
-						'hreflang' => 'x-default',
-						'href'     => home_page() ? $base_url : "$base_url/$relative_address"
+						'hreflang' => $clang,
+						'href'     => "$base_url/$clang/$relative_address"
 					]
-				).
-				h::{'link[rel=alternate]|'}(
-					array_map(
-						function ($lang) use ($base_url, $relative_address) {
-							return [
-								'hreflang' => $lang,
-								'href'     => "$base_url/$lang/$relative_address"
-							];
-						},
-						$Cache->get(
-							'languages/clangs',
-							function () use ($Config) {
-								$clangs = [];
-								foreach ($Config->core['active_languages'] as $language) {
-									$clangs[] = file_get_json_nocomments(LANGUAGES."/$language.json")['clang'];
-								}
-								return $clangs;
-							}
-						)
-					)
 				);
+			}
 		}
 	)
 	->on(
