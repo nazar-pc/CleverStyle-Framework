@@ -115,7 +115,7 @@ $Page->content(
 					[
 						'order_id'       => $order['id'],
 						'date'           => $order['date'],
-						'date_formatted' => h::prepare_attr_value($date),
+						'date_formatted' => $date,
 						'shipping_cost'  => $order['shipping_cost'],
 						'for_payment'    => $order['for_payment'],
 						'payment_method' => $order['payment_method'],

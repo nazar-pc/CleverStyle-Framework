@@ -77,12 +77,16 @@ abstract class Base extends BananaHTML {
 	 * @param array  $attributes
 	 */
 	protected static function pre_processing ($tag, &$attributes) {
-		if (isset($attributes['tooltip']) && $attributes['tooltip'] !== false) {
-			$attributes['tooltip'] = static::prepare_attr_value($attributes['tooltip']);
-			// Do not apply to custom elements
-			if (!isset($attributes['is']) && strpos($tag, '-') === false) {
-				$attributes['in'] = isset($attributes['in']) ? $attributes['in'].static::cs_tooltip() : static::cs_tooltip();
-			}
+		/**
+		 * Do not apply to custom elements, they should support this by themselves
+		 */
+		if (
+			isset($attributes['tooltip']) &&
+			$attributes['tooltip'] !== false &&
+			!isset($attributes['is']) &&
+			strpos($tag, '-') === false
+		) {
+			$attributes['in'] = isset($attributes['in']) ? $attributes['in'].static::cs_tooltip() : static::cs_tooltip();
 		}
 	}
 	/**
@@ -137,19 +141,19 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param string $class Icon name in jQuery UI CSS Framework, fow example, <b>gear</b>, <b>note</b>
+	 * @param string $icon Icon name in Font Awesome
 	 * @param array  $data
 	 *
 	 * @return mixed
 	 */
-	static function icon ($class, $data = []) {
+	static function icon ($icon, $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
 			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
-		if ($class === false) {
+		if ($icon === false) {
 			return '';
 		}
-		$data['icon']  = $class;
+		$data['icon'] = $icon;
 		return static::cs_icon($data).' ';
 	}
 	/**
@@ -249,9 +253,6 @@ abstract class Base extends BananaHTML {
 		$item['tag'] = 'input';
 		if (isset($item['value'], $item['checked'])) {
 			$item['checked'] = $item['value'] == $item['checked'];
-		}
-		if (isset($item['value'])) {
-			$item['value'] = self::prepare_attr_value($item['value']);
 		}
 	}
 }

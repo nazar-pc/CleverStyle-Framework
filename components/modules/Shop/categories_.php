@@ -55,7 +55,7 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 			h::{'img#img'}(
 				[
 					'src'   => $category['image'] ?: Items::DEFAULT_IMAGE,
-					'title' => h::prepare_attr_value($category['title'])
+					'title' => $category['title']
 				]
 			).
 			h::{'h1 a#link'}(
@@ -73,7 +73,7 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 							h::{'img#img'}(
 								[
 									'src'   => $category['image'] ?: Items::DEFAULT_IMAGE,
-									'title' => h::prepare_attr_value($category['title'])
+									'title' => $category['title']
 								]
 							).
 							h::{'h1 a#link'}(
@@ -130,7 +130,7 @@ foreach ($items as &$item) {
 		h::{'img#img'}(
 			[
 				'src'   => @$item['images'][0] ?: Items::DEFAULT_IMAGE,
-				'title' => h::prepare_attr_value($item['title'])
+				'title' => $item['title']
 			]
 		).
 		h::{'h1 a#link'}(

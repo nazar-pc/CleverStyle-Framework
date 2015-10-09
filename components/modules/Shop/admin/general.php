@@ -45,7 +45,7 @@ $Index->content(
 					],
 					[
 						'selected' => $module_data->currency,
-						'label'    => h::prepare_attr_value($L->regular_currencies)
+						'label'    => $L->regular_currencies
 					]
 				).
 				h::optgroup(
@@ -63,7 +63,7 @@ $Index->content(
 					],
 					[
 						'selected' => $module_data->currency,
-						'label'    => h::prepare_attr_value($L->cryptocurrencies)
+						'label'    => $L->cryptocurrencies
 					]
 				)
 			)

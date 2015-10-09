@@ -105,8 +105,8 @@ $Page->content(
 							$post['sections'] == ['0'] ? false : array_map(
 								function ($category) {
 									return [
-										'term'  => h::prepare_attr_value($category['title']),
-										'label' => h::prepare_attr_value($category['title'])
+										'term'  => $category['title'],
+										'label' => $category['title']
 									];
 								},
 								$Sections->get($post['sections'])

@@ -64,7 +64,7 @@ $Page->content(
 			_int(array_values($items))
 		)),
 		[
-			'username' => h::prepare_attr_value(User::instance()->username())
+			'username' => User::instance()->username()
 		]
 	)
 );

@@ -319,7 +319,7 @@ class Page {
 	function atom ($href, $title = 'Atom Feed') {
 		return $this->link([
 			'href'	=> $href,
-			'title'	=> h::prepare_attr_value($title),
+			'title'	=> $title,
 			'rel'	=> 'alternate',
 			'type'	=> 'application/atom+xml'
 		]);
@@ -335,7 +335,7 @@ class Page {
 	function rss ($href, $title = 'RSS Feed') {
 		return $this->link([
 			'href'	=> $href,
-			'title'	=> h::prepare_attr_value($title),
+			'title'	=> $title,
 			'rel'	=> 'alternate',
 			'type'	=> 'application/rss+xml'
 		]);
