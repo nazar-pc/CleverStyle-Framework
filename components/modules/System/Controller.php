@@ -339,12 +339,9 @@ class Controller {
 				'text' => &$text
 			]
 		);
-		$host = explode(
-					'/',
-					explode('//', Config::instance()->core_url(), 2)[1],
-					2
-				)[0];
-		$text .= "Host: $host";
-		Page::instance()->Content = $text;
+		$core_url                  = Config::instance()->core_url();
+		$core_url_without_protocol = explode('//', $core_url, 2)[1];
+		$host                      = explode('/', $core_url_without_protocol, 2)[0];
+		Page::instance()->Content  = "{$text}Host: $host";
 	}
 }
