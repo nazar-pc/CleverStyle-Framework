@@ -587,6 +587,59 @@ trait Includes {
 		return $this;
 	}
 	/**
+	 * Creates cached version of given js and css files.<br>
+	 * Resulting file name consists of <b>$filename_prefix</b> and <b>$this->pcache_basename</b>
+	 *
+	 * @param string $filename_prefix
+	 * @param array  $includes Array of paths to files, may have keys: <b>css</b> and/or <b>js</b> and/or <b>html</b>
+	 *
+	 * @return array
+	 */
+	protected function create_cached_includes_files ($filename_prefix, $includes) {
+		$cache_hash  = [];
+		$destination = Config::instance()->core['vulcanization'] ? false : PUBLIC_CACHE;
+		/** @noinspection AlterInForeachInspection */
+		foreach ($includes as $extension => &$files) {
+			$files_content = '';
+			foreach ($files as $file) {
+				if (!file_exists($file)) {
+					continue;
+				}
+				switch ($extension) {
+					/**
+					 * Insert external elements into resulting css file.
+					 * It is needed, because those files will not be copied into new destination of resulting css file.
+					 */
+					case 'css':
+						$files_content .= Includes_processing::css(
+							file_get_contents($file),
+							$file
+						);
+						break;
+					/**
+					 * Combine css and js files for Web Component into resulting files in order to optimize loading process
+					 */
+					case 'html':
+						$files_content .= Includes_processing::html(
+							file_get_contents($file),
+							$file,
+							"$filename_prefix$this->pcache_basename-".basename($file).'+'.substr(md5($file), 0, 5),
+							$destination
+						);
+						break;
+					case 'js':
+						$files_content .= Includes_processing::js(file_get_contents($file));
+				}
+			}
+			if ($filename_prefix == '' && $extension == 'js') {
+				$files_content = "window.cs={};cs.Language="._json_encode(Language::instance()).";$files_content";
+			}
+			file_put_contents(PUBLIC_CACHE."/$filename_prefix$this->pcache_basename.$extension", gzencode($files_content, 9), LOCK_EX | FILE_BINARY);
+			$cache_hash[$extension] = substr(md5($files_content), 0, 5);
+		}
+		return $cache_hash;
+	}
+	/**
 	 * Get dependencies of components between each other (only that contains some styles and scripts) and mapping styles and scripts to URL paths
 	 *
 	 * @param bool $with_disabled
@@ -667,18 +720,7 @@ trait Includes {
 			]
 		);
 		$dependencies = $this->normalize_dependencies($dependencies, $functionalities);
-		/**
-		 * Clean dependencies without files
-		 */
-		foreach ($dependencies as &$depends_on) {
-			foreach ($depends_on as $index => &$dependency) {
-				if (!isset($includes_map[$dependency])) {
-					unset($depends_on[$index]);
-				}
-			}
-			unset($dependency);
-		}
-		unset($depends_on, $index);
+		$includes_map = $this->clean_includes_arrays_without_files($dependencies, $includes_map);
 		$dependencies = array_map('array_values', $dependencies);
 		$dependencies = array_filter($dependencies);
 		return [$dependencies, $includes_map];
@@ -827,56 +869,22 @@ trait Includes {
 		return array_map('array_unique', $dependencies);
 	}
 	/**
-	 * Creates cached version of given js and css files.<br>
-	 * Resulting file name consists of <b>$filename_prefix</b> and <b>$this->pcache_basename</b>
+	 * Includes array is composed from dependencies and sometimes dependencies doesn't have any files, so we'll clean that
 	 *
-	 * @param string $filename_prefix
-	 * @param array  $includes Array of paths to files, may have keys: <b>css</b> and/or <b>js</b> and/or <b>html</b>
+	 * @param array $dependencies
+	 * @param array $includes_map
 	 *
 	 * @return array
 	 */
-	protected function create_cached_includes_files ($filename_prefix, $includes) {
-		$cache_hash  = [];
-		$destination = Config::instance()->core['vulcanization'] ? false : PUBLIC_CACHE;
-		/** @noinspection AlterInForeachInspection */
-		foreach ($includes as $extension => &$files) {
-			$files_content = '';
-			foreach ($files as $file) {
-				if (!file_exists($file)) {
-					continue;
-				}
-				switch ($extension) {
-					/**
-					 * Insert external elements into resulting css file.
-					 * It is needed, because those files will not be copied into new destination of resulting css file.
-					 */
-					case 'css':
-						$files_content .= Includes_processing::css(
-							file_get_contents($file),
-							$file
-						);
-						break;
-					/**
-					 * Combine css and js files for Web Component into resulting files in order to optimize loading process
-					 */
-					case 'html':
-						$files_content .= Includes_processing::html(
-							file_get_contents($file),
-							$file,
-							"$filename_prefix$this->pcache_basename-".basename($file).'+'.substr(md5($file), 0, 5),
-							$destination
-						);
-						break;
-					case 'js':
-						$files_content .= Includes_processing::js(file_get_contents($file));
+	protected function clean_includes_arrays_without_files ($dependencies, $includes_map) {
+		foreach ($dependencies as &$depends_on) {
+			foreach ($depends_on as $index => &$dependency) {
+				if (!isset($includes_map[$dependency])) {
+					unset($depends_on[$index]);
 				}
 			}
-			if ($filename_prefix == '' && $extension == 'js') {
-				$files_content = "window.cs={};cs.Language="._json_encode(Language::instance()).";$files_content";
-			}
-			file_put_contents(PUBLIC_CACHE."/$filename_prefix$this->pcache_basename.$extension", gzencode($files_content, 9), LOCK_EX | FILE_BINARY);
-			$cache_hash[$extension] = substr(md5($files_content), 0, 5);
+			unset($dependency);
 		}
-		return $cache_hash;
+		return $includes_map;
 	}
 }
