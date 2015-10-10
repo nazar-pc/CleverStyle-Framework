@@ -118,7 +118,7 @@ class Polls {
 		}
 		$Options = Options::instance();
 		$Options->del(
-			$Options->get_all_for_poll($id)
+			$Options->get_all_for_poll($id) ?: []
 		);
 		if (!$this->db_prime()->q(
 			"DELETE FROM `[prefix]polls_options_answers`
