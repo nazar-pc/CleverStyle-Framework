@@ -49,7 +49,7 @@ class Session {
 	/**
 	 * User id of current session
 	 *
-	 * @var bool|int
+	 * @var false|int
 	 */
 	protected $user_id  = false;
 	protected $is_admin = false;
