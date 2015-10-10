@@ -15,8 +15,7 @@ dom-module(id="cs-cleverstyle-header-user-block")
 					button(is="cs-button" icon="pencil" tooltip="[[L.quick_registration_form]]" type="button" on-tap="_registration") [[L.sign_up]]
 			template(is="dom-if" if="[[!guest]]")
 				nav(is="cs-nav-button-group")
-					a(is="cs-link-button" href="[[concat('/profile/', login)]]") [[L.profile]]
-					button(is="cs-button" type="button") [[L.settings]]
+					button(is="cs-button" type="button" icon="cog") [[L.settings]]
 					nav(is="cs-nav-dropdown" align="right")
 						nav(is="cs-nav-button-group" vertical)
 							a(is="cs-link-button" href="/System/profile/settings/general") [[L.general]]

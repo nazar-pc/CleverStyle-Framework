@@ -558,7 +558,6 @@
 
 //User Profile
 	//Profile
-	"profile"				: "Профіль",
 		//Settings
 		"general_settings"				: "Загальні налаштування",
 		"change_password"				: "Змінити пароль",

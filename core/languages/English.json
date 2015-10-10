@@ -557,7 +557,6 @@
 
 //User Profile
 	//Profile
-	"profile"				: "Profile",
 		//Settings
 		"general_settings"				: "General settings",
 		"change_password"				: "Change password",
