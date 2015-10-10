@@ -113,11 +113,11 @@ trait modules {
 			throw new ExitException(404);
 		}
 		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
-		if (!file_exists($tmp_location) || !file_exists(MODULES."/$module/meta.json")) {
-			throw new ExitException(400);
-		}
-		$tmp_dir = "phar://$tmp_location";
-		if (!file_exists("$tmp_dir/meta.json")) {
+		$tmp_dir      = "phar://$tmp_location";
+		if (
+			!file_exists(MODULES."/$module/meta.json") ||
+			!file_exists("$tmp_dir/meta.json")
+		) {
 			throw new ExitException(400);
 		}
 		$existing_meta = file_get_json(MODULES."/$module/meta.json");
@@ -512,12 +512,11 @@ trait modules {
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
-		$module     = $route_path[2];
-		$Config     = Config::instance();
-		$Core       = Core::instance();
-		$db         = DB::instance();
-		$Permission = Permission::instance();
-		$modules    = &$Config->components['modules'];
+		$module  = $route_path[2];
+		$Config  = Config::instance();
+		$Core    = Core::instance();
+		$db      = DB::instance();
+		$modules = &$Config->components['modules'];
 		/**
 		 * Do not allow to uninstall enabled module, it should be explicitly disabled first
 		 */
@@ -550,16 +549,7 @@ trait modules {
 			unset($db_name, $db_type, $sql_file);
 			time_limit_pause(false);
 		}
-		$permissions_ids = array_merge(
-			$Permission->get(null, $module),
-			$Permission->get(null, "admin/$module"),
-			$Permission->get(null, "api/$module")
-		);
-		if (!empty($permissions_ids)) {
-			$Permission->del(
-				array_column($permissions_ids, 'id')
-			);
-		}
+		static::delete_permissions_for_module($module);
 		$modules[$module] = ['active' => -1];
 		if (!$Config->save()) {
 			throw new ExitException(500);
@@ -571,6 +561,22 @@ trait modules {
 			]
 		);
 		static::admin_modules_cleanup();
+	}
+	/**
+	 * @param string $module
+	 */
+	protected static function delete_permissions_for_module ($module) {
+		$Permission      = Permission::instance();
+		$permissions_ids = array_merge(
+			$Permission->get(null, $module),
+			$Permission->get(null, "admin/$module"),
+			$Permission->get(null, "api/$module")
+		);
+		if (!empty($permissions_ids)) {
+			$Permission->del(
+				array_column($permissions_ids, 'id')
+			);
+		}
 	}
 	/**
 	 * Extract uploaded module
@@ -799,8 +805,7 @@ trait modules {
 	 * @throws ExitException
 	 */
 	static function admin_modules_update_list () {
-		$Config     = Config::instance();
-		$Permission = Permission::instance();
+		$Config = Config::instance();
 		/**
 		 * List of currently presented modules in file system
 		 */
@@ -822,25 +827,12 @@ trait modules {
 			/**
 			 * Delete permissions of modules that are mot present anymore
 			 */
-			$permissions_ids = [];
 			foreach ($known_modules as $module) {
 				if (!isset($modules_list[$module])) {
-					/** @noinspection SlowArrayOperationsInLoopInspection */
-					$permissions_ids = array_merge(
-						$permissions_ids,
-						(array)$Permission->get(null, $module),
-						(array)$Permission->get(null, "admin/$module"),
-						(array)$Permission->get(null, "api/$module")
-					);
+					static::delete_permissions_for_module($module);
 				}
 			}
-			unset($known_modules, $module);
-			if ($permissions_ids) {
-				$Permission->del(
-					array_column($permissions_ids, 'id')
-				);
-			}
-			unset($permissions_ids);
+			unset($module);
 		}
 		unset($modules_in_fs, $known_modules);
 		$modules = array_merge($modules_list, array_intersect_key($modules, $modules_list));
