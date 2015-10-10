@@ -16,7 +16,6 @@ use
 	cs\Language,
 	cs\Mail,
 	cs\Page,
-	cs\Page\Meta,
 	cs\Route,
 	cs\User,
 	h;

@@ -9,7 +9,6 @@
 
 namespace cs\plugins\Json_ld;
 use
-	cs\Config,
 	cs\User;
 
 /**
