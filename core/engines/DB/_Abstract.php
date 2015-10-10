@@ -242,7 +242,7 @@ abstract class _Abstract {
 	 * @param bool                  $array         If <b>true</b> returns array of associative arrays of all fetched rows
 	 * @param bool                  $indexed       If <b>false</b> - associative array will be returned
 	 *
-	 * @return array|false|string
+	 * @return array[]|false|int|int[]|string|string[]
 	 */
 	abstract function f ($query_result, $single_column = false, $array = false, $indexed = false);
 	/**
@@ -254,7 +254,7 @@ abstract class _Abstract {
 	 * @param bool                  $single_column If <b>true</b> function will return not array with one element, but directly its value
 	 * @param bool                  $indexed       If <b>false</b> - associative array will be returned
 	 *
-	 * @return array|false|string
+	 * @return array[]|false
 	 */
 	function fa ($query_result, $single_column = false, $indexed = false) {
 		return $this->f($query_result, $single_column, true, $indexed);
@@ -266,12 +266,11 @@ abstract class _Abstract {
 	 *
 	 * @param false|object|resource $query_result
 	 * @param bool                  $array   If <b>true</b> returns array of associative arrays of all fetched rows
-	 * @param bool                  $indexed If <b>false</b> - associative array will be returned
 	 *
-	 * @return false|string
+	 * @return false|int|int[]|string|string[]
 	 */
-	function fs ($query_result, $array = false, $indexed = false) {
-		return $this->f($query_result, true, $array, $indexed);
+	function fs ($query_result, $array = false) {
+		return $this->f($query_result, true, $array);
 	}
 	/**
 	 * Fetch, Array, Single
@@ -279,12 +278,11 @@ abstract class _Abstract {
 	 * Combination of ::fa() and ::fs() methods
 	 *
 	 * @param false|object|resource $query_result
-	 * @param bool                  $indexed If <b>false</b> - associative array will be returned
 	 *
-	 * @return false|string[]
+	 * @return false|int[]|string[]
 	 */
-	function fas ($query_result, $indexed = false) {
-		return $this->fa($query_result, true, $indexed);
+	function fas ($query_result) {
+		return $this->fa($query_result, true);
 	}
 	/**
 	 * Query, Fetch
@@ -296,7 +294,7 @@ abstract class _Abstract {
 	 * @param bool         $array         If <b>true</b> returns array of associative arrays of all fetched rows
 	 * @param bool         $indexed       If <b>false</b> - associative array will be returned
 	 *
-	 * @return array|false|string
+	 * @return array[]|false|int|int[]|string|string[]
 	 */
 	function qf ($query, $single_column = false, $array = false, $indexed = false) {
 		list($query, $params) = $this->q_prepare($query);
@@ -314,7 +312,7 @@ abstract class _Abstract {
 	 * @param bool         $single_column If <b>true</b> function will return not array with one element, but directly its value
 	 * @param bool         $indexed       If <b>false</b> - associative array will be returned
 	 *
-	 * @return array|false
+	 * @return array[]|false
 	 */
 	function qfa ($query, $single_column = false, $indexed = false) {
 		list($query, $params) = $this->q_prepare($query);
@@ -330,33 +328,31 @@ abstract class _Abstract {
 	 *
 	 * @param array|string $query   SQL query string, or you can put all parameters, that ::q() function can accept in form of array
 	 * @param bool         $array   If <b>true</b> returns array of associative arrays of all fetched rows
-	 * @param bool         $indexed If <b>false</b> - associative array will be returned
 	 *
-	 * @return false|int|string
+	 * @return false|int|int[]|string|string[]
 	 */
-	function qfs ($query, $array = false, $indexed = false) {
+	function qfs ($query, $array = false) {
 		list($query, $params) = $this->q_prepare($query);
 		if (!$query) {
 			return false;
 		}
-		return $this->fs($this->q($query, $params), $array, $indexed);
+		return $this->fs($this->q($query, $params), $array);
 	}
 	/**
 	 * Query, Fetch, Array, Single
 	 *
 	 * Combination of ::q() and ::fas() methods
 	 *
-	 * @param array|string $query   SQL query string, or you can put all parameters, that ::q() function can accept in form of array
-	 * @param bool         $indexed If <b>false</b> - associative array will be returned
+	 * @param array|string $query SQL query string, or you can put all parameters, that ::q() function can accept in form of array
 	 *
 	 * @return false|int[]|string[]
 	 */
-	function qfas ($query, $indexed = false) {
+	function qfas ($query) {
 		list($query, $params) = $this->q_prepare($query);
 		if (!$query) {
 			return false;
 		}
-		return $this->fas($this->q($query, $params), $indexed);
+		return $this->fas($this->q($query, $params));
 	}
 	/**
 	 * Query preparing for ::q*() methods
