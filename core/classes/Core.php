@@ -104,7 +104,7 @@ AddEncoding gzip .html
 			strpos($_SERVER->content_type, 'application/x-www-form-urlencoded') === 0
 		) {
 			@parse_str(file_get_contents('php://input'), $POST);
-			foreach ($POST as $i => $v) {
+			foreach ($POST ?: [] as $i => $v) {
 				$_POST[$i]    = $v;
 				$_REQUEST[$i] = $v;
 			}

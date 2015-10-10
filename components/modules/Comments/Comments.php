@@ -286,7 +286,7 @@ class Comments {
 	 * @return string
 	 */
 	function tree ($item) {
-		return $this->tree_html($this->tree_data($item));
+		return $this->tree_html($this->tree_data($item) ?: []);
 	}
 	/**
 	 * Get comments structure of specified item
@@ -318,13 +318,11 @@ class Comments {
 				$parent,
 				$item,
 				$L->clang
-			]);
-			if ($comments) {
-				foreach ($comments as &$comment) {
-					$comment['comments']	= $this->tree_data($item, $comment['id']);
-				}
-				unset($comment);
+			]) ?: [];
+			foreach ($comments as &$comment) {
+				$comment['comments'] = $this->tree_data($item, $comment['id']);
 			}
+			unset($comment);
 			/**
 			 * Cache only root tree data
 			 */
@@ -344,56 +342,57 @@ class Comments {
 	function tree_html ($comments) {
 		$L			= Language::instance();
 		$User		= User::instance();
+		if (!is_array($comments) || !$comments) {
+			return '';
+		}
 		$content	= '';
-		if (is_array($comments) && !empty($comments)) {
-			foreach ($comments as $comment) {
-				$uniqid		= uniqid('comment_');
-				$content	.= str_replace($uniqid, $comment['text'], h::{'article.cs-comments-comment'}(
-					h::{'img.cs-comments-comment-avatar'}([
-						'src'	=> $User->avatar($this->avatar_size, $comment['user']),
-						'alt'	=> $User->username($comment['user']),
-						'title'	=> $User->username($comment['user'])
-					]).
-					h::span($User->username($comment['user'])).
-					h::{'time.cs-comments-comment-date'}(
-						date('dmY', time()) == date('dmY', $comment['date']) ?
-							date($L->_time, $comment['date']) : $L->to_locale(date($L->_datetime, $comment['date'])),
-						[
-							'datetime'		=> date('c', $comment['date'])
-						]
-					).
-					h::{'a.cs-comments-comment-link'}(
-						h::icon('anchor'),
-						[
-							'href'	=> "#comment_$comment[id]"
-						]
-					).
-					(
-						$comment['parent'] ? h::{'a.cs-comments-comment-parent'}(
-							h::icon('level-up'),
-							[
-								'href'	=> "#comment_$comment[parent]"
-							]
-						) : ''
-					).
-					(
-						$User->id == $comment['user'] || $User->admin() ? h::{'icon.cs-comments-comment-edit.cs-cursor-pointer'}('pencil') : ''
-					).
-					(
-						!$comment['comments'] &&
-						(
-							$User->id == $comment['user'] || $User->admin()
-						) ? h::{'icon.cs-comments-comment-delete.cs-cursor-pointer'}('trash-o') : ''
-					).
-					h::{'div.cs-comments-comment-text'}($uniqid).
-					(
-						$comment['comments'] ? $this->tree_html($comment['comments']) : ''
-					),
+		foreach ($comments as $comment) {
+			$uniqid		= uniqid('comment_', true);
+			$content	.= str_replace($uniqid, $comment['text'], h::{'article.cs-comments-comment'}(
+				h::{'img.cs-comments-comment-avatar'}([
+					'src'	=> $User->avatar($this->avatar_size, $comment['user']),
+					'alt'	=> $User->username($comment['user']),
+					'title'	=> $User->username($comment['user'])
+				]).
+				h::span($User->username($comment['user'])).
+				h::{'time.cs-comments-comment-date'}(
+					date('dmY', time()) == date('dmY', $comment['date']) ?
+						date($L->_time, $comment['date']) : $L->to_locale(date($L->_datetime, $comment['date'])),
 					[
-						'id'	=> "comment_$comment[id]"
+						'datetime'		=> date('c', $comment['date'])
 					]
-				));
-			}
+				).
+				h::{'a.cs-comments-comment-link'}(
+					h::icon('anchor'),
+					[
+						'href'	=> "#comment_$comment[id]"
+					]
+				).
+				(
+					$comment['parent'] ? h::{'a.cs-comments-comment-parent'}(
+						h::icon('level-up'),
+						[
+							'href'	=> "#comment_$comment[parent]"
+						]
+					) : ''
+				).
+				(
+					$User->id == $comment['user'] || $User->admin() ? h::{'icon.cs-comments-comment-edit.cs-cursor-pointer'}('pencil') : ''
+				).
+				(
+					!$comment['comments'] &&
+					(
+						$User->id == $comment['user'] || $User->admin()
+					) ? h::{'icon.cs-comments-comment-delete.cs-cursor-pointer'}('trash-o') : ''
+				).
+				h::{'div.cs-comments-comment-text'}($uniqid).
+				(
+					$comment['comments'] ? $this->tree_html($comment['comments']) : ''
+				),
+				[
+					'id'	=> "comment_$comment[id]"
+				]
+			));
 		}
 		return $content;
 	}

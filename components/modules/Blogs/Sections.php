@@ -115,12 +115,10 @@ class Sections {
 				WHERE `parent` = '%s'",
 				$parent
 			]
-		);
+		) ?: [];
 		$structure['sections'] = [];
-		if (!empty($sections)) {
-			foreach ($sections as $section) {
-				$structure['sections'][$this->ml_process($section['path'])] = $this->get_structure_internal($section['id']);
-			}
+		foreach ($sections as $section) {
+			$structure['sections'][$this->ml_process($section['path'])] = $this->get_structure_internal($section['id']);
 		}
 		return $structure;
 	}
@@ -219,7 +217,7 @@ class Sections {
 			"SELECT `id`
 			FROM `[prefix]blogs_posts_sections`
 			WHERE `section` = $parent"
-		);
+		) ?: [];
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]blogs_sections`
 				(`parent`)
@@ -229,18 +227,15 @@ class Sections {
 		) {
 			$Cache = $this->cache;
 			$id    = $this->db_prime()->id();
-			if ($posts) {
-				$this->db_prime()->q(
-					"UPDATE `[prefix]blogs_posts_sections`
+			$this->db_prime()->q(
+				"UPDATE `[prefix]blogs_posts_sections`
 					SET `section` = $id
 					WHERE `section` = $parent"
-				);
-				foreach ($posts as $post) {
-					unset($Cache->{"posts/$post[id]"});
-				}
-				unset($post);
+			);
+			foreach ($posts as $post) {
+				unset($Cache->{"posts/$post[id]"});
 			}
-			unset($posts);
+			unset($posts, $post);
 			$this->set($id, $parent, $title, $path);
 			unset(
 				$Cache->{'sections/list'},
