@@ -9,10 +9,8 @@
  */
 namespace cs\modules\System\api\Controller;
 use
-	cs\Config,
 	cs\ExitException,
-	cs\Mail,
-	cs\Page;
+	cs\Mail;
 trait admin {
 	static function admin_email_sending_test_get () {
 		if (!isset($_GET['email'])) {

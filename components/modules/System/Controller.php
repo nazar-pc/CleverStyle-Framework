@@ -11,14 +11,11 @@ namespace cs\modules\System;
 use
 	cs\Config,
 	cs\Event,
-	cs\ExitException,
-	cs\Index,
 	cs\Language,
 	cs\Mail,
 	cs\Page,
 	cs\Route,
-	cs\User,
-	h;
+	cs\User;
 class Controller {
 	static function profile () {
 		$rc       = &Route::instance()->route;
