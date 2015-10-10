@@ -349,24 +349,12 @@ class Comments {
 			foreach ($comments as $comment) {
 				$uniqid		= uniqid('comment_');
 				$content	.= str_replace($uniqid, $comment['text'], h::{'article.cs-comments-comment'}(
-					h::a(
-						h::{'img.cs-comments-comment-avatar'}([
-							'src'	=> $User->avatar($this->avatar_size, $comment['user']),
-							'alt'	=> $User->username($comment['user']),
-							'title'	=> $User->username($comment['user'])
-						]),
-						[
-							'href'			=> path($L->profile).'/'.$User->get('login', $comment['user']),
-							'rel'			=> 'author'
-						]
-					).
-					h::{'a.cs-comments-comment-author'}(
-						$User->username($comment['user']),
-						[
-							'href'			=> path($L->profile).'/'.$User->get('login', $comment['user']),
-							'rel'			=> 'author'
-						]
-					).
+					h::{'img.cs-comments-comment-avatar'}([
+						'src'	=> $User->avatar($this->avatar_size, $comment['user']),
+						'alt'	=> $User->username($comment['user']),
+						'title'	=> $User->username($comment['user'])
+					]).
+					h::span($User->username($comment['user'])).
 					h::{'time.cs-comments-comment-date'}(
 						date('dmY', time()) == date('dmY', $comment['date']) ?
 							date($L->_time, $comment['date']) : $L->to_locale(date($L->_datetime, $comment['date'])),

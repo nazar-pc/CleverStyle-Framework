@@ -42,6 +42,7 @@ Event::instance()
 			} else {
 				return;
 			}
+			// TODO: drop at least following switch block
 			if (isset($rc[1])) {
 				switch ($rc[1]) {
 					case path($L->settings):

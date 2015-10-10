@@ -15,9 +15,8 @@
 				%hr/
 				%p
 					%time [[post.datetime]]
-					%a(href="[[post.author.url]]")
-						%cs-icon(icon="user")
-						%span [[post.author.name]]
+					%cs-icon(icon="user")
+					%span [[post.author.name]]
 					%template(is="dom-if" if="[[comments_enabled]]")
 						%a(href="[[post.url]]#comments")
 							%cs-icon(icon="comments")

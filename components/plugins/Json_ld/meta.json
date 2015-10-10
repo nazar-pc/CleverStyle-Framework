@@ -1,14 +1,14 @@
 {
 	"package"             : "Json_ld",
 	"category"            : "plugins",
-	"version"             : "0.2.0+build-6",
+	"version"             : "0.3.0+build-7",
 	"description"         : "Useful tools for simplifying generating of JSON-LD snippets",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/cms",
 	"license"             : "MIT License",
 	"provide"             : "json_ld",
 	"require"             : [
-		"System>=2.9.2",
-		"System<=3.0"
+		"System>=3.95",
+		"System<4.0"
 	]
 }

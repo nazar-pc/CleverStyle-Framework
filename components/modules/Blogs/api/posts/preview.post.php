@@ -102,13 +102,7 @@ $Page->json(
 						'datetime' => date('c', $post['date'])
 					]
 				).
-				h::a(
-					h::icon('user').$User->username($post['user']),
-					[
-						'href' => path($L->profile).'/'.$User->get('login', $post['user']),
-						'rel'  => 'author'
-					]
-				).
+				h::icon('user').$User->username($post['user']).
 				(
 				$module_data->enable_comments ? h::icon('comments').$post['comments_count'] : ''
 				)

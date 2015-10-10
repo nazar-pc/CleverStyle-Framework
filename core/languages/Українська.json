@@ -559,16 +559,7 @@
 //User Profile
 	//Profile
 	"profile"				: "Профіль",
-		//Info
-		"account_disabled"				: "Обліковий запис відключений",
-		"account_temporarily_blocked"	: "Обліковий запис тимчасово заблокований",
-		"profile_of_user"				: "Профіль користувача %s",
-		"birth_date"					: "Дата народження",
-		"birth_date_format"				: "j F Y",
-		"reg_date"						: "Дата реєстрації",
-		"reg_date_format"				: "j F Y",
 		//Settings
-		"my_profile"					: "Мій профіль",
 		"general_settings"				: "Загальні налаштування",
 		"change_password"				: "Змінити пароль",
 		"password_changing"				: "Зміна паролю",

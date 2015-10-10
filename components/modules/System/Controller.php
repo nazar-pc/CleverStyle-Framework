@@ -41,75 +41,6 @@ class Controller {
 			$rc[1] = $subparts[0];
 		}
 	}
-	static function profile_info () {
-		$L    = Language::instance();
-		$Page = Page::instance();
-		$User = User::instance();
-		$rc   = Route::instance()->route;
-		if (!isset($rc[1], $rc[2]) || !($id = $User->get_id(hash('sha224', $rc[2])))) {
-			throw new ExitException(404);
-		}
-		$data = $User->get(
-			[
-				'username',
-				'login',
-				'reg_date',
-				'status',
-				'block_until'
-			],
-			$id
-		);
-		if ($data['status'] == User::STATUS_NOT_ACTIVATED) {
-			throw new ExitException(404);
-		} elseif ($data['status'] == User::STATUS_INACTIVE) {
-			$Page->warning(
-				$L->account_disabled
-			);
-			return;
-		} elseif ($data['block_until'] > TIME) {
-			$Page->warning(
-				$L->account_temporarily_blocked
-			);
-		}
-		$name = $data['username'] ? $data['username'].($data['username'] != $data['login'] ? ' aka '.$data['login'] : '') : $data['login'];
-		$Page->title($L->profile_of_user($name));
-		Meta::instance()
-			->profile()
-			->profile('username', $name)
-			->image($User->avatar(256, $id));
-		$Page->content(
-			h::{'div.cs-profile-block'}(
-				h::{'div.cs-profile-avatar img'}(
-					[
-						'src'   => $User->avatar(128, $id),
-						'alt'   => $name,
-						'title' => $name
-					]
-				).
-				h::div(
-					h::h1(
-						$L->profile_of_user($name)
-					).
-					h::{'table.cs-table[right-left] tr| td'}(
-						[
-							$data['reg_date']
-								? [
-								h::h2("$L->reg_date:"),
-								h::h2($L->to_locale(date($L->reg_date_format, $data['reg_date'])))
-							]
-								: false
-						]
-					)
-				)
-			)
-		);
-		Event::instance()->fire(
-			'System/profile/info',
-			[
-				'id' => $id
-			]
-		);
-	}
 	static function profile_registration_confirmation () {
 		$Config = Config::instance();
 		$L      = Language::instance();
@@ -251,7 +182,6 @@ class Controller {
 			$Index->save($User->set($user_data));
 			unset($user_data);
 		}
-		$Page->title($L->my_profile);
 		$Page->title($L->settings);
 		$Index->action = path($L->profile).'/'.path($L->settings);
 		switch (isset($Route->route[2]) ? $Route->route[2] : '') {

@@ -20,10 +20,8 @@
         <hr>
         <p>
           <time>[[post.datetime]]</time>
-          <a href="[[post.author.url]]">
-            <cs-icon icon="user"></cs-icon>
-            <span>[[post.author.name]]</span>
-          </a>
+          <cs-icon icon="user"></cs-icon>
+          <span>[[post.author.name]]</span>
           <template if="[[comments_enabled]]" is="dom-if">
             <a href="[[post.url]]#comments">
               <cs-icon icon="comments"></cs-icon>

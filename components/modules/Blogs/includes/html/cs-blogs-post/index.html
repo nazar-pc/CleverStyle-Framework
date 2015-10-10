@@ -27,10 +27,8 @@
       <hr>
       <p>
         <time>[[jsonld.datetime]]</time>
-        <a href="[[jsonld.author.url]]">
-          <cs-icon icon="user"></cs-icon>
-          <span>[[jsonld.author.name]]</span>
-        </a>
+        <cs-icon icon="user"></cs-icon>
+        <span>[[jsonld.author.name]]</span>
         <template if="[[comments_enabled]]" is="dom-if">
           <cs-icon icon="comments"></cs-icon>
           <span>[[jsonld.comments_count]]</span>
