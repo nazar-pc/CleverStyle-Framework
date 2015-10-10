@@ -171,12 +171,10 @@ class Pages {
 				WHERE `category` = '%s'",
 				$parent
 			]
-		);
+		) ?: [];
 		$structure['pages'] = [];
-		if (!empty($pages)) {
-			foreach ($pages as $id) {
-				$structure['pages'][$this->get($id)['path']] = $id;
-			}
+		foreach ($pages as $id) {
+			$structure['pages'][$this->get($id)['path']] = $id;
 		}
 		unset($pages);
 		$categories              = $this->db()->qfa(
@@ -188,7 +186,7 @@ class Pages {
 				WHERE `parent` = '%s'",
 				$parent
 			]
-		);
+		) ?: [];
 		$structure['categories'] = [];
 		foreach ($categories as $category) {
 			$structure['categories'][$category['path']] = $this->get_structure_internal($category['id']);
