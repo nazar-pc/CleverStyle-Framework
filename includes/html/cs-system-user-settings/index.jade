@@ -1,0 +1,22 @@
+dom-module(id="cs-system-user-setings")
+	template
+		style(is="custom-style" include="advanced-styles")
+		form(is="cs-form" on-submit="_save")
+			h3 [[L.general_settings]]
+			label [[L.login]]
+			input(is="cs-input-text" type="text" value="{{user_data.login}}")
+			label [[L.username]]
+			input(is="cs-input-text" type="text" value="{{user_data.username}}")
+			label [[L.language]]
+			select(is="cs-select" value="{{user_data.language}}" size="5")
+				template(is="dom-repeat" items="[[languages]]" as="language")
+					option(value="[[language.clanguage]]" selected$="[[equal(language.clanguage, user_data.language)]]") [[language.description]]
+			label [[L.timezone]]
+			select(is="cs-select" value="{{user_data.timezone}}" size="7")
+				template(is="dom-repeat" items="[[timezones]]" as="timezone")
+					option(value="[[timezone.timezone]]" selected$="[[equal(timezone.timezone, user_data.timezone)]]") [[timezone.description]]
+			label [[L.avatar]]
+			input(is="cs-input-text" type="text" value="{{user_data.avatar}}")
+			nav(is="cs-nav-button=group")
+				button(is="cs-button" primary type="submit") [[L.save]]
+	script(src="script.js")

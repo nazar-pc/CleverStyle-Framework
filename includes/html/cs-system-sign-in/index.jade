@@ -1,14 +1,14 @@
 dom-module(id="cs-system-sign-in")
 	template
 		style(is="custom-style" include="advanced-styles")
-		form(is='cs-form' on-submit="_sign_in")
+		form(is="cs-form" on-submit="_sign_in")
 			h3 [[L.sign_in]]
 			label
-				input(is='cs-input-text' placeholder='[[L.login_or_email]]' type='text' id='login' autocorrect='off')
+				input(is="cs-input-text" placeholder="[[L.login_or_email]]" type="text" id="login" autocorrect="off")
 			label
-				input(is='cs-input-text' placeholder='[[L.password]]' type='password' id='password')
-			nav(is='cs-nav-button-group')
-				button(is='cs-button' primary type='submit') [[L.sign_in]]
-				button(is='cs-button' icon='question' type='button' force-fullsize tooltip='[[L.restore_password]]' on-tap="_restore_password")
+				input(is="cs-input-text" placeholder="[[L.password]]" type="password" id="password")
+			nav(is="cs-nav-button-group")
+				button(is="cs-button" primary type="submit") [[L.sign_in]]
+				button(is="cs-button" icon="question" type="button" force-fullsize tooltip="[[L.restore_password]]" on-tap="_restore_password")
 			//- TODO: Here we should inject any custom things like social auth things (probably, not here, but in JS or directly into modal)
 	script(src="script.js")

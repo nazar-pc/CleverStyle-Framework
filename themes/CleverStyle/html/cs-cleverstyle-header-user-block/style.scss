@@ -13,17 +13,12 @@
 
 	@apply (--layout-horizontal);
 
+	[small-button] {
+		height : 1.8em;
+	}
+
 	> div > nav {
 		display : block;
-
-		> a,
-		> button {
-			height : 1.8em;
-		}
-
-		> a {
-			line-height : .8em;
-		}
 	}
 }
 
@@ -37,7 +32,6 @@ cs-icon {
 	cursor : pointer;
 }
 
-a,
 button {
 	white-space : nowrap;
 }

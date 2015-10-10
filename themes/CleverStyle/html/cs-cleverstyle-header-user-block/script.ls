@@ -17,10 +17,12 @@ Polymer(
 	ready : !->
 		@guest	= !!cs.is_guest
 	_sign_in : !->
-		cs.ui.simple_modal("<cs-system-sign-in-form/>")
+		cs.ui.simple_modal("<cs-system-sign-in/>")
 	_registration : !->
 		cs.ui.simple_modal("<cs-system-registration/>")
 	_sign_out : cs.sign_out
 	_change_password : !->
 		cs.ui.simple_modal("<cs-system-change-password/>")
+	_general_settings : !->
+		cs.ui.simple_modal("<cs-system-user-setings/>")
 )

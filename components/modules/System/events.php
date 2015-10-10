@@ -15,58 +15,6 @@ use
  */
 Event::instance()
 	->on(
-		'System/Route/routing_replace',
-		function ($data) {
-			if ($data['rc'] == 'api/System/profile') {
-				$data['rc'] = 'api/System/profile/profile';
-			}
-			$rc     = explode('/', $data['rc']);
-			$Config = Config::instance();
-			if (!isset($rc[0])) {
-				return;
-			}
-			$L = Language::instance();
-			if (
-				$rc[0] == 'profile' ||
-				(
-					$rc[0] == path($L->profile) &&
-					!isset($Config->components['modules'][$rc[0]]) &&
-					!in_array($rc[0], $Config->components['plugins'])
-				)
-			) {
-				$rc[0] = 'profile';
-				switch ($rc[0]) {
-					case path($L->profile):
-						$rc[0] = 'profile';
-				}
-			} else {
-				return;
-			}
-			// TODO: drop at least following switch block
-			if (isset($rc[1])) {
-				switch ($rc[1]) {
-					case path($L->settings):
-						$rc[1] = 'settings';
-						break;
-					default:
-						$rc[2] = $rc[1];
-						$rc[1] = 'info';
-				}
-				if (isset($rc[2])) {
-					switch ($rc[2]) {
-						case path($L->general):
-							$rc[2] = 'general';
-							break;
-						case path($L->change_password):
-							$rc[2] = 'change_password';
-							break;
-					}
-				}
-			}
-			$data['rc'] = implode('/', $rc);
-		}
-	)
-	->on(
 		'System/Session/init/after',
 		function () {
 			$Session = Session::instance();

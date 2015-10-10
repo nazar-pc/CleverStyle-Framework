@@ -11,13 +11,13 @@ dom-module(id="cs-cleverstyle-header-user-block")
 				cs-icon(icon="sign-out" hidden$="[[guest]]" tooltip="[[L.sign_out]]" on-tap="_sign_out")
 			template(is="dom-if" if="[[guest]]")
 				nav(is="cs-nav-button-group")
-					button(is="cs-button" primary icon="sign-in" type="button" on-tap="_sign_in") [[L.sign_in]]
-					button(is="cs-button" icon="pencil" tooltip="[[L.quick_registration_form]]" type="button" on-tap="_registration") [[L.sign_up]]
+					button(is="cs-button" primary icon="sign-in" type="button" on-tap="_sign_in" small-button) [[L.sign_in]]
+					button(is="cs-button" icon="pencil" tooltip="[[L.quick_registration_form]]" type="button" on-tap="_registration" small-button) [[L.sign_up]]
 			template(is="dom-if" if="[[!guest]]")
 				nav(is="cs-nav-button-group")
-					button(is="cs-button" type="button" icon="cog") [[L.settings]]
+					button(is="cs-button" type="button" icon="cog" small-button) [[L.settings]]
 					nav(is="cs-nav-dropdown" align="right")
 						nav(is="cs-nav-button-group" vertical)
-							a(is="cs-link-button" href="/System/profile/settings/general") [[L.general]]
+							a(is="cs-link-button" on-tap="_general_settings") [[L.general]]
 							button(is="cs-button" type="button" on-tap="_change_password") [[L.change_password]]
 	script(src="script.js")

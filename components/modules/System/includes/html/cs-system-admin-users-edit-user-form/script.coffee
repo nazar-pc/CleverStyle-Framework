@@ -22,8 +22,8 @@ Polymer(
 			type		: String
 	ready			: ->
 		$.when(
-			$.getJSON('api/System/admin/languages')
-			$.getJSON('api/System/admin/timezones')
+			$.getJSON('api/System/languages')
+			$.getJSON('api/System/timezones')
 			$.getJSON('api/System/admin/users/' + @user_id)
 		).done (languages, timezones, data) =>
 			languages_list	= []

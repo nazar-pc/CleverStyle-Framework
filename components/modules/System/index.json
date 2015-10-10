@@ -1,7 +1,6 @@
 {
 	"blank"			: [],
 	"profile"		: [
-		"settings",
 		"registration_confirmation",
 		"restore_password_confirmation"
 	],

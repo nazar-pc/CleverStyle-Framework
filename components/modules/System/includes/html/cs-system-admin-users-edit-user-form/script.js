@@ -31,7 +31,7 @@
       }
     },
     ready: function() {
-      return $.when($.getJSON('api/System/admin/languages'), $.getJSON('api/System/admin/timezones'), $.getJSON('api/System/admin/users/' + this.user_id)).done((function(_this) {
+      return $.when($.getJSON('api/System/languages'), $.getJSON('api/System/timezones'), $.getJSON('api/System/admin/users/' + this.user_id)).done((function(_this) {
         return function(languages, timezones, data) {
           var block_until, description, i, language, languages_list, len, ref, ref1, timezone, timezones_list;
           languages_list = [];

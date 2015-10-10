@@ -1,12 +1,5 @@
 {
-	"user"     : [
-		"sign_in",
-		"sign_out",
-		"registration",
-		"change_password",
-		"restore_password"
-	],
-	"admin"    : {
+	"admin"     : {
 		"blocks"             : [],
 		"cache"              : [],
 		"databases"          : [],
@@ -16,7 +9,6 @@
 			"_",
 			"permissions"
 		],
-		"languages"          : [],
 		"modules"            : [],
 		"permissions"        : [
 			"_",
@@ -25,16 +17,24 @@
 		"plugins"            : [],
 		"storages"           : [],
 		"storages_test"      : [],
-		"timezones"          : [],
 		"upload"             : [],
 		"users"              : [
 			"_",
 			"permissions"
 		]
 	},
-	"profile"  : [
-		"profile",
+	"languages" : [],
+	"profile"   : [
+		"_",
 		"contacts"
 	],
-	"profiles" : []
+	"profiles"  : [],
+	"timezones" : [],
+	"user"      : [
+		"sign_in",
+		"sign_out",
+		"registration",
+		"change_password",
+		"restore_password"
+	]
 }

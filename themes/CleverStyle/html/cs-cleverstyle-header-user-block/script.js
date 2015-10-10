@@ -22,7 +22,7 @@
       this.guest = !!cs.is_guest;
     },
     _sign_in: function(){
-      cs.ui.simple_modal("<cs-system-sign-in-form/>");
+      cs.ui.simple_modal("<cs-system-sign-in/>");
     },
     _registration: function(){
       cs.ui.simple_modal("<cs-system-registration/>");
@@ -30,6 +30,9 @@
     _sign_out: cs.sign_out,
     _change_password: function(){
       cs.ui.simple_modal("<cs-system-change-password/>");
+    },
+    _general_settings: function(){
+      cs.ui.simple_modal("<cs-system-user-setings/>");
     }
   });
 }).call(this);

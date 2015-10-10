@@ -10,6 +10,7 @@
 namespace cs\modules\System\api;
 use
 	cs\modules\System\api\Controller\admin,
+	cs\modules\System\api\Controller\general,
 	cs\modules\System\api\Controller\profile,
 	cs\modules\System\api\Controller\profiles,
 	cs\modules\System\api\Controller\user_;
@@ -26,6 +27,7 @@ class Controller {
 		admin\storages,
 		admin\upload,
 		admin\users,
+		general,
 		profile,
 		profiles,
 		user_;
