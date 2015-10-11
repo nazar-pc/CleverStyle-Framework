@@ -42,7 +42,6 @@ trait themes {
 		);
 	}
 	protected static function get_themes_list () {
-		$Config = Config::instance();
 		$themes = get_files_list(THEMES, false, 'd');
 		asort($themes);
 		$themes_list = [];
@@ -175,7 +174,6 @@ trait themes {
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
-		$Config = Config::instance();
 		$L      = Language::instance();
 		$theme  = $route_path[2];
 		$themes = get_files_list(THEMES, false, 'd');
@@ -192,8 +190,7 @@ trait themes {
 		) {
 			throw new ExitException(400);
 		}
-		$existing_meta = file_get_json("$theme_dir/meta.json");
-		$new_meta      = file_get_json("$tmp_dir/meta.json");
+		$new_meta = file_get_json("$tmp_dir/meta.json");
 		if (
 			$new_meta['package'] !== $theme ||
 			$new_meta['category'] !== 'themes'
