@@ -1,11 +1,11 @@
-dom-module(id="cs-system-change-password")
+dom-module#cs-system-change-password
 	template
 		style(is="custom-style" include="advanced-styles")
 		form(is="cs-form" on-submit="_change_password")
 			h3 [[L.change_password]]
 			label
-				input(is="cs-input-text" placeholder="[[L.current_password]]" type="password" id="current_password")
+				input#current_password(is="cs-input-text" placeholder="[[L.current_password]]" type="password")
 			label
-				input(is="cs-input-text" placeholder="[[L.new_password]]" type="password" id="new_password")
+				input#new_password(is="cs-input-text" placeholder="[[L.new_password]]" type="password")
 			button(is="cs-button" primary type="submit") [[L.change_password]]
 	script(src="script.js")
