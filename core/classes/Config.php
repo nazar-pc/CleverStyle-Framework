@@ -18,6 +18,8 @@ namespace cs;
 class Config {
 	use
 		Singleton;
+	const SYSTEM_MODULE = 'System';
+	const SYSTEM_THEME  = 'CleverStyle';
 	/**
 	 * Most of general configuration properties
 	 *
@@ -103,7 +105,7 @@ class Config {
 		$this->init();
 		Event::instance()->fire('System/Config/init/after');
 		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
-			$this->core['default_module'] = 'System';
+			$this->core['default_module'] = self::SYSTEM_MODULE;
 			$this->save();
 		}
 	}
@@ -177,13 +179,6 @@ class Config {
 		return false;
 	}
 	/**
-	 * Updating information about set of available themes
-	 */
-	function reload_themes () {
-		$this->core['themes'] = get_files_list(THEMES, false, 'd');
-		asort($this->core['themes']);
-	}
-	/**
 	 * Updating information about set of available languages
 	 */
 	function reload_languages () {
@@ -226,7 +221,6 @@ class Config {
 		} else {
 			return false;
 		}
-		$this->reload_themes();
 		$this->reload_languages();
 		$this->apply_internal(false);
 		return true;

@@ -308,7 +308,7 @@ trait general {
 						break;
 					}
 					$theme = $meta['package'];
-					if (in_array($theme, $Config->core['themes'])) {
+					if (in_array($theme, get_files_list(THEMES, false, 'd'))) {
 						$current_version = file_get_json(THEMES."/$theme/meta.json")['version'];
 						$new_version     = $meta['version'];
 						if (!version_compare($current_version, $new_version, '<')) {
@@ -404,8 +404,6 @@ trait general {
 					break;
 			}
 		}
-
-		$Config->reload_themes();
 		$themes_for_removal = array_values(
 			array_filter(
 				get_files_list(THEMES, '/[^CleverStyle)]/', 'd'),
@@ -418,7 +416,7 @@ trait general {
 		$Index->content(
 			static::vertical_table(
 				[
-					static::core_select($Config->core['themes'], 'theme', null, 'current_theme')
+					static::core_select(get_files_list(THEMES, false, 'd'), 'theme', null, 'current_theme')
 				]
 			).
 			h::p(

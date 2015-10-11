@@ -322,9 +322,6 @@ trait plugins {
 		if ($active) {
 			static::admin_plugins_disable($route_ids, $route_path);
 		}
-		if (!$Config->save()) {
-			throw new ExitException(500);
-		}
 		if (
 			$new_meta['package'] !== $plugin ||
 			$new_meta['category'] !== 'plugins'
@@ -368,10 +365,11 @@ trait plugins {
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
-		$plugin = $route_path[2];
-		$Config = Config::instance();
+		$plugin  = $route_path[2];
+		$plugins = get_files_list(PLUGINS, false, 'd');
+		$Config  = Config::instance();
 		if (
-			!is_dir(PLUGINS."/$plugin") ||
+			!in_array($plugin, $plugins, true) ||
 			in_array($plugin, $Config->components['plugins'])
 		) {
 			throw new ExitException(400);

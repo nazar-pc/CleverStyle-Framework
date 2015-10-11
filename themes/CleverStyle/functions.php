@@ -50,7 +50,7 @@ function get_main_menu () {
 	 */
 	foreach ($Config->components['modules'] as $module => $module_data) {
 		if (
-			$module != 'System' &&
+			$module != Config::SYSTEM_MODULE &&
 			$module_data['active'] == 1 &&
 			$module != $Config->core['default_module'] &&
 			!@file_get_json(MODULES."/$module/meta.json")['hide_in_menu'] &&

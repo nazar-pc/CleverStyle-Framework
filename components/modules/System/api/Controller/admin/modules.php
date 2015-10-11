@@ -215,8 +215,6 @@ trait modules {
 		);
 	}
 	/**
-	 * Set current default module
-	 *
 	 * @param int[]    $route_ids
 	 * @param string[] $route_path
 	 *
@@ -244,6 +242,9 @@ trait modules {
 			if (!isset($_POST['module'])) {
 				throw new ExitException(400);
 			}
+			/**
+			 * Set current default module
+			 */
 			static::set_default_module($_POST['module']);
 		} else {
 			throw new ExitException(400);
@@ -395,7 +396,7 @@ trait modules {
 		$Config  = Config::instance();
 		$modules = &$Config->components['modules'];
 		if (
-			$module == 'System' ||
+			$module == Config::SYSTEM_MODULE ||
 			!isset($modules[$module]) ||
 			$Config->core['default_module'] === $module ||
 			$modules[$module]['active'] != 1
@@ -640,7 +641,7 @@ trait modules {
 		}
 		$existing_meta = file_get_json("$module_dir/meta.json");
 		$new_meta      = file_get_json("$tmp_dir/meta.json");
-		if ($module === 'System') {
+		if ($module === Config::SYSTEM_MODULE) {
 			static::update_module($module, $existing_meta, $new_meta, $tmp_location, $route_ids, $route_path);
 		} else {
 			static::update_system($module, $existing_meta, $new_meta, $tmp_location, $tmp_dir);
@@ -673,9 +674,6 @@ trait modules {
 		// If module is currently enabled - disable it temporary
 		if ($active) {
 			static::admin_modules_disable($route_ids, $route_path);
-		}
-		if (!$Config->save()) {
-			throw new ExitException(500);
 		}
 		if (
 			$new_meta['package'] !== $module ||
@@ -741,7 +739,7 @@ trait modules {
 			}
 		}
 		if (
-			$new_meta['package'] !== 'System' ||
+			$new_meta['package'] !== Config::SYSTEM_MODULE ||
 			$new_meta['category'] !== 'modules' ||
 			!file_exists("$tmp_dir/modules.json") ||
 			!file_exists("$tmp_dir/plugins.json") ||
@@ -781,13 +779,15 @@ trait modules {
 			throw new ExitException(400);
 		}
 		$module_name = $route_path[2];
+		$modules     = get_files_list(MODULES, false, 'd');
 		$Config      = Config::instance();
 		if (!isset($Config->components['modules'][$module_name])) {
 			throw new ExitException(404);
 		}
 		if (
-			$module_name == 'System' ||
-			$Config->components['modules'][$module_name]['active'] != '-1'
+			$module_name == Config::SYSTEM_MODULE ||
+			$Config->components['modules'][$module_name]['active'] != '-1' ||
+			!in_array($module_name, $modules)
 		) {
 			throw new ExitException(400);
 		}
