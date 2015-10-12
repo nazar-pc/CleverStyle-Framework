@@ -186,8 +186,7 @@
 		"clean_scripts_styles_cache"	: "Очистити кеш скриптів та стилів",
 		//Appearance
 		"appearance"								: "Зовнішній вигляд",
-		"current_theme"								: "Поточна тема оформлення",
-		"current_theme_info"						: "Дозволяє вибрати поточну тему оформлення на сайті за замовчуванням",
+		"set_current_theme"							: "Зробити поточною темою оформлення",
 		"this_is_not_theme_installer_file"			: "Це не файл встановлення теми",
 		"update_theme_impossible_older_version"		: "Тема %s вже встановлена, але не може бути оновлена, тому що запропонована версія старіша, ніж встановлена",
 		"updating_of_theme"							: "Оновлення теми %s",
@@ -198,6 +197,8 @@
 		"completely_remove_theme"					: "Видалити тему %s повністю?",
 		"upload_and_install_update_theme"			: "Завантажити та встановити (оновити) тему",
 		"complete_theme_removal"					: "Повне видалення теми",
+		"theme_name"								: "Назва теми",
+		"information_about_theme"					: "Інформація про тему",
 		//Languages
 		"languages"							: "Мови",
 		"current_language"					: "Поточна мова",

@@ -24,7 +24,12 @@ trait themes {
 	 * @throws ExitException
 	 */
 	static function admin_themes_get ($route_ids, $route_path) {
-		if (isset($route_path[2]) && $route_path[2] == 'current') {
+		if (isset($route_path[3]) && $route_path[3] == 'update_dependencies') {
+			/**
+			 * Get dependencies for theme during update
+			 */
+			static::get_update_dependencies_for_theme($route_path[2]);
+		} elseif (isset($route_path[2]) && $route_path[2] == 'current') {
 			/**
 			 * Get current theme
 			 */
@@ -35,6 +40,41 @@ trait themes {
 			 */
 			static::get_themes_list();
 		}
+	}
+	/**
+	 * @param string $theme
+	 *
+	 * @throws ExitException
+	 */
+	protected static function get_update_dependencies_for_theme ($theme) {
+		$themes = get_files_list(THEMES, false, 'd');
+		if (!in_array($theme, $themes, true)) {
+			throw new ExitException(404);
+		}
+		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
+		$tmp_dir      = "phar://$tmp_location";
+		if (
+			!file_exists(THEMES."/$theme/meta.json") ||
+			!file_exists("$tmp_dir/meta.json")
+		) {
+			throw new ExitException(400);
+		}
+		$existing_meta = file_get_json(THEMES."/$theme/meta.json");
+		$new_meta      = file_get_json("$tmp_dir/meta.json");
+		if (
+			$existing_meta['package'] !== $new_meta['package'] ||
+			$existing_meta['category'] !== $new_meta['category']
+		) {
+			throw new ExitException(Language::instance()->this_is_not_theme_installer_file, 400);
+		}
+		$dependencies = [];
+		if (version_compare($new_meta['version'], $existing_meta['version'], '<')) {
+			$dependencies['update_older'] = [
+				'from' => $existing_meta['version'],
+				'to'   => $new_meta['version']
+			];
+		}
+		Page::instance()->json($dependencies);
 	}
 	protected static function get_current_theme () {
 		Page::instance()->json(
@@ -101,6 +141,13 @@ trait themes {
 		}
 	}
 	/**
+	 * Provides next events:
+	 *  admin/System/components/themes/current/before
+	 *  ['name' => theme_name]
+	 *
+	 *  admin/System/components/themes/current/after
+	 *  ['name' => theme_name]
+	 *
 	 * @param string $theme
 	 *
 	 * @throws ExitException
@@ -115,7 +162,7 @@ trait themes {
 			throw new ExitException(400);
 		}
 		if (!Event::instance()->fire(
-			'admin/System/components/themes/current',
+			'admin/System/components/themes/current/before',
 			[
 				'name' => $theme
 			]
@@ -127,6 +174,12 @@ trait themes {
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
+		Event::instance()->fire(
+			'admin/System/components/themes/current/after',
+			[
+				'name' => $theme
+			]
+		);
 	}
 	/**
 	 * Extract uploaded theme
@@ -224,7 +277,7 @@ trait themes {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_themes_delete () {
+	static function admin_themes_delete ($route_ids, $route_path) {
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}

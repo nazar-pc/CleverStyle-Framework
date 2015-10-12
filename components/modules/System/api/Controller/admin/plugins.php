@@ -359,9 +359,12 @@ trait plugins {
 	/**
 	 * Delete plugin completely
 	 *
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_plugins_delete () {
+	static function admin_plugins_delete ($route_ids, $route_path) {
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}

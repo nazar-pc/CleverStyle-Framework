@@ -90,7 +90,7 @@
       this._disable_component(e.model.plugin.name, 'plugin');
     },
     _remove_completely: function(e){
-      this._remove_completely_component(e.model.plugin.name, 'plugin');
+      this._remove_completely_component(e.model.plugin.name, 'plugins');
     }
     /**
      * Provides next events:
@@ -124,8 +124,8 @@
         url: 'api/System/admin/plugins',
         type: 'extract',
         success: function(){
-          this$.reload();
-          this$._enable_component(meta['package'], 'plugin', meta);
+          cs.ui.notify(L.changes_saved, 'success', 5);
+          location.reload();
         }
       });
     }

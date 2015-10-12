@@ -6,7 +6,7 @@
  * @copyright  Copyright (c) 2015, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L = cs.Language
+L				= cs.Language
 active_switch	= (disabled, enabled) ->
 	switch @active
 	| 0		=> disabled
@@ -72,7 +72,7 @@ Polymer(
 	_disable : (e) !->
 		@_disable_component(e.model.plugin.name, 'plugin')
 	_remove_completely : (e) !->
-		@_remove_completely_component(e.model.plugin.name, 'plugin')
+		@_remove_completely_component(e.model.plugin.name, 'plugins')
 	/**
 	 * Provides next events:
 	 *  admin/System/components/plugins/update/before
@@ -86,7 +86,7 @@ Polymer(
 			if meta.category != 'plugins' || !meta.package || !meta.version
 				cs.ui.notify(L.this_is_not_plugin_installer_file, 'error', 5)
 				return
-			# Lookign for already present plugin
+			# Looking for already present plugin
 			for plugin in @plugins
 				if plugin.name == meta.package
 					@_update_component(plugin.meta, meta)
@@ -98,7 +98,7 @@ Polymer(
 			url		: 'api/System/admin/plugins'
 			type	: 'extract'
 			success	: !~>
-				@reload()
-				@_enable_component(meta.package, 'plugin', meta)
+				cs.ui.notify(L.changes_saved, 'success', 5)
+				location.reload()
 		)
 )

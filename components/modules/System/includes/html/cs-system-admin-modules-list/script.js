@@ -295,7 +295,7 @@
       modal.cancel.primary = true;
     },
     _remove_completely: function(e){
-      this._remove_completely_component(e.model.module.name, 'module');
+      this._remove_completely_component(e.model.module.name, 'modules');
     }
     /**
      * Provides next events:
@@ -324,7 +324,8 @@
           url: 'api/System/admin/modules',
           type: 'extract',
           success: function(){
-            this$.reload();
+            cs.ui.notify(L.changes_saved, 'success', 5);
+            location.reload();
           }
         });
       });
@@ -342,14 +343,7 @@
           cs.ui.notify(L.this_is_not_system_installer_file, 'error', 5);
           return;
         }
-        $.ajax({
-          url: 'api/System/admin/modules',
-          type: 'extract',
-          success: function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
-            location.reload();
-          }
-        });
+        this$._update_component(module.meta, meta);
       });
     },
     _db_settings: function(e){

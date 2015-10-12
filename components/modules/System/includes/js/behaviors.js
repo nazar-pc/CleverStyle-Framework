@@ -112,11 +112,39 @@
           var translation_key, title, message, message_more, modal;
           delete dependencies.db_support;
           delete dependencies.storage_support;
-          translation_key = category === 'modules' ? component === 'System' ? 'updating_of_system' : 'updating_of_module' : 'updating_of_plugin';
+          translation_key = (function(){
+            switch (category) {
+            case 'modules':
+              if (component === 'System') {
+                return 'updating_of_system';
+              } else {
+                return 'updating_of_module';
+              }
+              break;
+            case 'plugins':
+              return 'updating_of_plugin';
+            case 'themes':
+              return 'updating_of_theme';
+            }
+          }());
           title = "<h3>" + L[translation_key](component) + "</h3>";
           message = '';
-          translation_key = category === 'modules' ? component === 'System' ? 'update_system' : 'update_module' : 'update_plugin';
-          message_more = L[translation_key].update_plugin(component, existing_meta.version, new_meta.version);
+          translation_key = (function(){
+            switch (category) {
+            case 'modules':
+              if (component === 'System') {
+                return 'update_system';
+              } else {
+                return 'update_module';
+              }
+              break;
+            case 'plugins':
+              return 'update_plugin';
+            case 'themes':
+              return 'update_theme';
+            }
+          }());
+          message_more = '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>';
           if (Object.keys(dependencies).length) {
             message = compose_dependencies_message(component, dependencies);
             if (cs.simple_admin_mode) {
@@ -139,13 +167,16 @@
                 url: "api/System/admin/" + category + "/" + component,
                 type: 'update',
                 success: function(){
-                  this$.reload();
                   cs.ui.notify(L.changes_saved, 'success', 5);
                   if (component === 'System') {
-                    cs.Event.fire('admin/System/components/modules/update_system/after');
+                    cs.Event.fire('admin/System/components/modules/update_system/after').then(function(){
+                      location.reload();
+                    });
                   } else {
                     cs.Event.fire("admin/System/components/" + category + "/update/after", {
                       name: component
+                    }).then(function(){
+                      location.reload();
                     });
                   }
                 }
@@ -158,10 +189,18 @@
           $(modal).find('p:not([class])').addClass('cs-text-error cs-block-error');
         });
       },
-      _remove_completely_component: function(component, component_type){
-        var category, translation_key, this$ = this;
-        category = component_type + 's';
-        translation_key = component_type === 'module' ? 'completely_remove_module' : 'completely_remove_plugin';
+      _remove_completely_component: function(component, category){
+        var translation_key, this$ = this;
+        translation_key = (function(){
+          switch (category) {
+          case 'modules':
+            return 'completely_remove_module';
+          case 'plugins':
+            return 'completely_remove_plugin';
+          case 'themes':
+            return 'completely_remove_theme';
+          }
+        }());
         cs.ui.confirm(L[translation_key](component), function(){
           $.ajax({
             url: "api/System/admin/" + category + "/" + component,
@@ -220,7 +259,21 @@
         }
         break;
       case 'update_older':
-        translation_key = category === 'modules' ? component === 'System' ? 'update_system_impossible_older_version' : 'update_module_impossible_older_version' : 'update_plugin_impossible_older_version';
+        translation_key = (function(){
+          switch (category) {
+          case 'modules':
+            if (component === 'System') {
+              return 'update_system_impossible_older_version';
+            } else {
+              return 'update_module_impossible_older_version';
+            }
+            break;
+          case 'plugins':
+            return 'update_plugin_impossible_older_version';
+          case 'themes':
+            return 'update_theme_impossible_older_version';
+          }
+        }());
         return L[translation_key](detail.from, detail.to);
       case 'provide':
         translation_key = category === 'modules' ? 'module_already_provides_functionality' : 'plugin_already_provides_functionality';

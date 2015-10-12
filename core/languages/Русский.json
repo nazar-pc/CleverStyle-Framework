@@ -185,8 +185,7 @@
 		"clean_scripts_styles_cache"	: "Очистить кэш скриптов и стилей",
 		//Appearance
 		"appearance"								: "Внешний вид",
-		"current_theme"								: "Текущая тема оформления",
-		"current_theme_info"						: "Позволяет выбрать текущую тему оформления на сайте по-умолчанию",
+		"set_current_theme"							: "Сделать текущей темой оформления",
 		"this_is_not_theme_installer_file"			: "Это не файл установки темы",
 		"update_theme_impossible_older_version"		: "Тема %s уже установлена, но не может быть обновлена, потому что предложенная версия старше, чем установленная",
 		"updating_of_theme"							: "Обновление темы %s",
@@ -197,6 +196,8 @@
 		"completely_remove_theme"					: "Удалить тему %s полностью?",
 		"upload_and_install_update_theme"			: "Загрузить и установить (обновить) тему",
 		"complete_theme_removal"					: "Полное удаление темы",
+		"theme_name"								: "Название темы",
+		"information_about_theme"					: "Информация о теме",
 		//Languages
 		"languages"							: "Языки",
 		"current_language"					: "Текущий язык",

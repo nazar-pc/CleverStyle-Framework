@@ -100,24 +100,18 @@ behaviors.admin.System	=
 			delete dependencies.db_support
 			delete dependencies.storage_support
 			translation_key	=
-				if category == 'modules'
-					if component == 'System'
-						'updating_of_system'
-					else
-						'updating_of_module'
-				else
-					'updating_of_plugin'
+				switch category
+				| 'modules'	=> (if component == 'System' then 'updating_of_system' else 'updating_of_module')
+				| 'plugins'	=> 'updating_of_plugin'
+				| 'themes'	=> 'updating_of_theme'
 			title			= "<h3>#{L[translation_key](component)}</h3>"
 			message			= ''
 			translation_key	=
-				if category == 'modules'
-					if component == 'System'
-						'update_system'
-					else
-						'update_module'
-				else
-					'update_plugin'
-			message_more	= L[translation_key]update_plugin(component, existing_meta.version, new_meta.version)
+				switch category
+				| 'modules'	=> (if component == 'System' then 'update_system' else 'update_module')
+				| 'plugins'	=> 'update_plugin'
+				| 'themes'	=> 'update_theme'
+			message_more	= '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>'
 			if Object.keys(dependencies).length
 				message	= compose_dependencies_message(component, dependencies)
 				if cs.simple_admin_mode
@@ -141,25 +135,29 @@ behaviors.admin.System	=
 							url		: "api/System/admin/#category/#component"
 							type	: 'update'
 							success	: !~>
-								@reload()
 								cs.ui.notify(L.changes_saved, 'success', 5)
 								if component == 'System'
-									cs.Event.fire('admin/System/components/modules/update_system/after')
+									cs.Event.fire('admin/System/components/modules/update_system/after').then !->
+										location.reload()
 								else
 									cs.Event.fire(
 										"admin/System/components/#category/update/after"
 										name	: component
-									)
+									).then !->
+										location.reload()
 						)
 			)
 			modal.ok.innerHTML		= L[if !message then 'yes' else 'force_update_not_recommended']
 			modal.ok.primary		= !message
 			modal.cancel.primary	= !modal.ok.primary
 			$(modal).find('p:not([class])').addClass('cs-text-error cs-block-error')
-		# Module/plugin complete removal
-		_remove_completely_component : (component, component_type) !->
-			category	= component_type + 's'
-			translation_key		= if component_type == 'module' then 'completely_remove_module' else 'completely_remove_plugin'
+		# Module/plugin/theme complete removal
+		_remove_completely_component : (component, category) !->
+			translation_key		=
+				switch category
+				| 'modules' => 'completely_remove_module'
+				| 'plugins'	=> 'completely_remove_plugin'
+				| 'themes'	=> 'completely_remove_theme'
 			<~! cs.ui.confirm(L[translation_key](component), _)
 			$.ajax(
 				url		: "api/System/admin/#category/#component"
@@ -200,13 +198,10 @@ function compose_dependencies_message (component, dependencies)
 								L.module_cant_be_updated_from_version_to(component, detail.from, detail.to, detail.can_update_from)
 						case 'update_older'
 							translation_key =
-								if category == 'modules'
-									if component == 'System'
-										'update_system_impossible_older_version'
-									else
-										'update_module_impossible_older_version'
-								else
-									'update_plugin_impossible_older_version'
+								switch category
+								| 'modules'	=> (if component == 'System' then 'update_system_impossible_older_version' else 'update_module_impossible_older_version')
+								| 'plugins'	=> 'update_plugin_impossible_older_version'
+								| 'themes'	=> 'update_theme_impossible_older_version'
 							L[translation_key](detail.from, detail.to)
 						case 'provide'
 							translation_key =

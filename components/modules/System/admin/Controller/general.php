@@ -15,10 +15,7 @@ use
 	cs\DB,
 	cs\Index,
 	cs\Language,
-	cs\Page,
-	cs\Session,
-	h,
-	cs\modules\System\Packages_manipulation;
+	h;
 
 trait general {
 	static function general_about_server (
@@ -284,163 +281,10 @@ trait general {
 		return $version[1];
 	}
 	static function general_appearance () {
-		$Config              = Config::instance();
-		$Index               = Index::instance();
-		$L                   = Language::instance();
-		$Page                = Page::instance();
-		$Index->apply_button = true;
-		if (isset($_POST['action'])) {
-			switch ($_POST['action']) {
-				case 'upload':
-					$tmp_file = Packages_manipulation::move_uploaded_file_to_tmp('upload_theme');
-					if (!$tmp_file) {
-						break;
-					}
-					$tmp_dir = "phar://$tmp_file";
-					$meta    = file_exists("$tmp_dir/meta.json") ? file_get_json("$tmp_dir/meta.json") : false;
-					if (
-						!$meta ||
-						@$meta['category'] != 'themes' ||
-						!@$meta['package']
-					) {
-						$Page->warning($L->this_is_not_theme_installer_file);
-						unlink($tmp_file);
-						break;
-					}
-					$theme = $meta['package'];
-					if (in_array($theme, get_files_list(THEMES, false, 'd'))) {
-						$current_version = file_get_json(THEMES."/$theme/meta.json")['version'];
-						$new_version     = $meta['version'];
-						if (!version_compare($current_version, $new_version, '<')) {
-							$Page->warning($L->update_theme_impossible_older_version($theme));
-							unlink($tmp_file);
-							break;
-						}
-						$Page->title($L->updating_of_theme($theme));
-						rename($tmp_file, $tmp_file = TEMP.'/'.Session::instance()->get_id().'_theme_update.phar');
-						$Index->content(
-							h::{'h2.cs-text-center'}(
-								$L->update_theme(
-									$theme,
-									$current_version,
-									$new_version
-								)
-							).
-							h::{'input[type=hidden]'}(
-								[
-									'name'  => 'update_theme',
-									'value' => $theme
-								]
-							)
-						);
-						$Index->buttons            = false;
-						$Index->cancel_button_back = true;
-						$Index->content(
-							h::{'button[is=cs-button][type=submit][name=action][value=update]'}($L->yes)
-						);
-						return;
-					}
-					if (!file_exists(THEMES."/$theme") && !mkdir(THEMES."/$theme", 0770)) {
-						$Page->warning($L->cant_unpack_theme_no_write_permissions);
-						unlink($tmp_file);
-						break;
-					}
-					$extract = Packages_manipulation::install_extract(THEMES."/$theme", $tmp_file);
-					unset($tmp_file, $tmp_dir, $theme);
-					if (!$extract) {
-						$Page->warning($L->theme_files_unpacking_error);
-						break;
-					}
-					$Index->save(true);
-					break;
-				case 'update':
-					if (!isset($_POST['update_theme'])) {
-						break;
-					}
-					$Session   = Session::instance();
-					$theme_dir = THEMES."/$_POST[update_theme]";
-					if (!Packages_manipulation::update_extract($theme_dir, TEMP.'/'.$Session->get_id().'_theme_update.phar')) {
-						$Page->warning($L->theme_files_unpacking_error);
-						break;
-					}
-					/**
-					 * Clean themes cache
-					 */
-					$Index->save(true);
-					clean_pcache();
-					break;
-				case 'remove':
-					if (!isset($_POST['remove_theme'])) {
-						break;
-					}
-					$Page->title($L->complete_removal_of_theme($_POST['remove_theme']));
-					$Index->content(
-						h::{'h2.cs-text-center'}(
-							$L->completely_remove_theme($_POST['remove_theme'])
-						)
-					);
-					$Index->buttons            = false;
-					$Index->cancel_button_back = true;
-					$Index->content(
-						h::{'button[is=cs-button][type=submit][name=action][value=remove_confirmed]'}($L->yes).
-						h::{'input[type=hidden]'}(
-							[
-								'name'  => 'remove_theme_confirmed',
-								'value' => $_POST['remove_theme']
-							]
-						)
-					);
-					return;
-				case 'remove_confirmed':
-					$theme = $_POST['remove_theme_confirmed'];
-					if ($theme == 'CleverStyle' || $theme == $Config->core['theme']) {
-						break;
-					}
-					if (rmdir_recursive(THEMES."/$theme")) {
-						$Index->save();
-					} else {
-						$Index->save(false);
-					}
-					break;
-			}
-		}
-		$themes_for_removal = array_values(
-			array_filter(
-				get_files_list(THEMES, '/[^CleverStyle)]/', 'd'),
-				function ($theme) use ($Config) {
-					return $theme != $Config->core['theme'];
-				}
-			)
-		);
-		$Index->file_upload = true;
+		$Index       = Index::instance();
+		$Index->form = false;
 		$Index->content(
-			static::vertical_table(
-				[
-					static::core_select(get_files_list(THEMES, false, 'd'), 'theme', null, 'current_theme')
-				]
-			).
-			h::p(
-				h::{'input[is=cs-input-text][compact][tight][type=file][name=upload_theme]'}().
-				h::{'button[is=cs-button][icon=upload][type=submit][name=action][value=upload]'}(
-					$L->upload_and_install_update_theme,
-					[
-						'formaction' => $Index->action
-					]
-				)
-			).
-			(
-			$themes_for_removal
-				? h::p(
-				h::{'select[is=cs-select][compact][tight][name=remove_theme]'}($themes_for_removal).
-				h::{'button[is=cs-button][icon=trash][type=submit][name=action][value=remove]'}(
-					$L->complete_theme_removal,
-					[
-						'formaction' => $Index->action
-					]
-				)
-			)
-				: ''
-			)
+			h::cs_system_admin_themes()
 		);
 	}
 	static function general_languages () {

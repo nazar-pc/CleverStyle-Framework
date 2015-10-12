@@ -288,7 +288,7 @@ Polymer(
 		modal.ok.primary		= false
 		modal.cancel.primary	= true
 	_remove_completely : (e) !->
-		@_remove_completely_component(e.model.module.name, 'module')
+		@_remove_completely_component(e.model.module.name, 'modules')
 	/**
 	 * Provides next events:
 	 *  admin/System/components/modules/update/before
@@ -302,7 +302,7 @@ Polymer(
 			if meta.category != 'modules' || !meta.package || !meta.version
 				cs.ui.notify(L.this_is_not_module_installer_file, 'error', 5)
 				return
-			# Lookign for already present module
+			# Looking for already present module
 			for module in @modules
 				if module.name == meta.package
 					@_update_component(module.meta, meta)
@@ -312,8 +312,8 @@ Polymer(
 				url		: 'api/System/admin/modules'
 				type	: 'extract'
 				success	: !~>
-					@reload()
-					#TODO ask for installation right here
+					cs.ui.notify(L.changes_saved, 'success', 5)
+					location.reload()
 			)
 	/**
 	 * Provides next events:
@@ -326,14 +326,7 @@ Polymer(
 			if meta.category != 'modules' || meta.package != 'System' || !meta.version
 				cs.ui.notify(L.this_is_not_system_installer_file, 'error', 5)
 				return
-			# Extract new system version
-			$.ajax(
-				url		: 'api/System/admin/modules'
-				type	: 'extract'
-				success	: !->
-					cs.ui.notify(L.changes_saved, 'success', 5)
-					location.reload()
-			)
+			@_update_component(module.meta, meta)
 	_db_settings : (e) !->
 		module	= e.model.module.name
 		meta	= e.model.module.meta
