@@ -293,11 +293,7 @@ trait modules {
 		if (
 			$module == $Config->core['default_module'] ||
 			$Config->components['modules'][$module]['active'] != 1 ||
-			!(
-				file_exists(MODULES."/$module/index.php") ||
-				file_exists(MODULES."/$module/index.html") ||
-				file_exists(MODULES."/$module/index.json")
-			)
+			!file_exists_with_extension(MODULES."/$module/index", ['php', 'html', 'json'])
 		) {
 			throw new ExitException(400);
 		}
