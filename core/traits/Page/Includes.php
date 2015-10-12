@@ -75,34 +75,24 @@ trait Includes {
 			return $this;
 		}
 		if (is_array($add)) {
-			foreach ($add as $script) {
-				if ($script) {
-					$this->html_internal($script, $mode, $core);
-				}
-			}
-			return $this;
-		}
-		if ($core) {
-			if ($mode == 'file') {
-				$this->core_html[0][] = h::link(
-					[
-						'href' => $add,
-						'rel'  => 'import'
-					]
-				);
-			} elseif ($mode == 'code') {
-				$this->core_html[1][] = "$add\n";
+			foreach (array_filter($add) as $script) {
+				$this->html_internal($script, $mode, $core);
 			}
 		} else {
+			if ($core) {
+				$html = &$this->core_html;
+			} else {
+				$html = &$this->html;
+			}
 			if ($mode == 'file') {
-				$this->html[0][] = h::link(
+				$html[0][] = h::link(
 					[
 						'href' => $add,
 						'rel'  => 'import'
 					]
 				);
 			} elseif ($mode == 'code') {
-				$this->html[1][] = "$add\n";
+				$html[1][] = "$add\n";
 			}
 		}
 		return $this;
@@ -130,34 +120,23 @@ trait Includes {
 			return $this;
 		}
 		if (is_array($add)) {
-			foreach ($add as $script) {
-				if ($script) {
-					$this->js_internal($script, $mode, $core);
-				}
-			}
-			return $this;
-		}
-		if ($core) {
-			if ($mode == 'file') {
-				$this->core_js[0][] =
-					h::script(
-						[
-							'src' => $add
-						]
-					);
-			} elseif ($mode == 'code') {
-				$this->core_js[1][] = "$add\n";
+			foreach (array_filter($add) as $script) {
+				$this->js_internal($script, $mode, $core);
 			}
 		} else {
+			if ($core) {
+				$js = &$this->core_js;
+			} else {
+				$js = &$this->js;
+			}
 			if ($mode == 'file') {
-				$this->js[0][] =
-					h::script(
-						[
-							'src' => $add
-						]
-					);
+				$js[0][] = h::script(
+					[
+						'src' => $add
+					]
+				);
 			} elseif ($mode == 'code') {
-				$this->js[1][] = "$add\n";
+				$js[1][] = "$add\n";
 			}
 		}
 		return $this;
@@ -185,28 +164,17 @@ trait Includes {
 			return $this;
 		}
 		if (is_array($add)) {
-			foreach ($add as $style) {
-				if ($style) {
-					$this->css_internal($style, $mode, $core);
-				}
-			}
-			return $this;
-		}
-		if ($core) {
-			if ($mode == 'file') {
-				$this->core_css[0][] = h::link(
-					[
-						'href'           => $add,
-						'rel'            => 'stylesheet',
-						'shim-shadowdom' => true
-					]
-				);
-			} elseif ($mode == 'code') {
-				$this->core_css[1][] = "$add\n";
+			foreach (array_filter($add) as $style) {
+				$this->css_internal($style, $mode, $core);
 			}
 		} else {
+			if ($core) {
+				$css = &$this->core_css;
+			} else {
+				$css = &$this->css;
+			}
 			if ($mode == 'file') {
-				$this->css[0][] = h::link(
+				$css[0][] = h::link(
 					[
 						'href'           => $add,
 						'rel'            => 'stylesheet',
@@ -214,7 +182,7 @@ trait Includes {
 					]
 				);
 			} elseif ($mode == 'code') {
-				$this->css[1][] = "$add\n";
+				$css[1][] = "$add\n";
 			}
 		}
 		return $this;
