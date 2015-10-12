@@ -74,11 +74,11 @@ trait general {
 					"$L->server_type:",
 					self::server_api()
 				],
-				preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE']) ? [
+				stripos($_SERVER['SERVER_SOFTWARE'], 'apache') !== false ? [
 					$L->version_of('Apache').':',
 					self::apache_version()
 				] : false,
-				preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE']) ? [
+				stripos($_SERVER['SERVER_SOFTWARE'], 'nginx') !== false ? [
 					$L->version_of('Nginx').':',
 					explode('/', $_SERVER['SERVER_SOFTWARE'])[1]
 				] : false,
@@ -256,11 +256,11 @@ trait general {
 	 */
 	static private function server_api () {
 		$phpinfo = ob_wrapper('phpinfo');
-		if (preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE'])) {
-			return 'Apache'.(preg_match('/mod_php/i', $phpinfo) ? ' + mod_php' : '');
-		} elseif (preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE'])) {
+		if (stripos($_SERVER['SERVER_SOFTWARE'], 'apache') !== false) {
+			return 'Apache'.(stripos($phpinfo, 'mod_php') !== false ? ' + mod_php' : '');
+		} elseif (stripos($_SERVER['SERVER_SOFTWARE'], 'nginx') !== false) {
 			$return = 'Nginx';
-			if (preg_match('/php-fpm/i', $phpinfo)) {
+			if (stripos($phpinfo, 'php-fpm') !== false) {
 				$return .= ' + PHP-FPM';
 			} elseif (defined('HHVM_VERSION')) {
 				$return .= ' + HHVM';
