@@ -36,11 +36,13 @@ Polymer(
 					@removeEventListener(callback)
 					if @selected != undefined
 						@_selected_changed(@selected)
-					# Set select height relatively to font size
-					# Fixes select height in modal
-					height_in_px	= @querySelector('option').getBoundingClientRect().height * @size
-					font_size		= parseFloat(getComputedStyle(@).fontSize)
-					@style.height	= "calc(#{height_in_px}em / #{font_size})"
+					# Only affects selects when multiple elements shown simultaneously
+					if @hasAttribute('size') && @size > 1
+						# Set select height relatively to font size
+						# Fixes select height in modal
+						height_in_px	= @querySelector('option').getBoundingClientRect().height * @size
+						font_size		= parseFloat(getComputedStyle(@).fontSize)
+						@style.height	= "calc(#{height_in_px}em / #{font_size})"
 					return
 				), 100
 			@addEventListener('dom-change', callback)
