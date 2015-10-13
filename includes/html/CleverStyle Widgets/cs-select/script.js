@@ -43,7 +43,7 @@
               if (_this.selected !== void 0) {
                 _this._selected_changed(_this.selected);
               }
-              if (_this.hasAttribute('size') && _this.size > 1) {
+              if (_this.size > 1) {
                 height_in_px = _this.querySelector('option').getBoundingClientRect().height * _this.size;
                 font_size = parseFloat(getComputedStyle(_this).fontSize);
                 _this.style.height = "calc(" + height_in_px + "em / " + font_size + ")";
