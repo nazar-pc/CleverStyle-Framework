@@ -110,7 +110,7 @@ switch ($mode) {
 		$content = $Builder->form();
 		break;
 	case 'core':
-		$content = $Builder->core(@$_POST['modules'], @$_POST['plugins'], @$_POST['themes'], @$_POST['suffix']);
+		$content = $Builder->core(@$_POST['modules'] ?: [], @$_POST['plugins'] ?: [], @$_POST['themes'] ?: [], @$_POST['suffix']);
 		break;
 	case 'module':
 	case 'plugin':

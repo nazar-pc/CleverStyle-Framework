@@ -117,9 +117,6 @@ class Builder {
 	 * @return string
 	 */
 	function core ($modules = [], $plugins = [], $themes = [], $suffix = null) {
-		$modules     = $modules ?: [];
-		$plugins     = $plugins ?: [];
-		$themes      = $themes ?: [];
 		$suffix      = $suffix ? "_$suffix" : '';
 		$version     = file_get_json("$this->root/components/modules/System/meta.json")['version'];
 		$target_file = "$this->target/CleverStyle_CMS_$version$suffix.phar.php";
@@ -135,25 +132,9 @@ class Builder {
 		}
 		unset($file);
 		/**
-		 * Files to be included into installation package
+		 * Core files to be included into installation package
 		 */
-		$core_files = $this->get_files(
-			[
-				"$this->root/components/modules/System",
-				"$this->root/components/blocks/.gitkept",
-				"$this->root/components/plugins/.gitkept",
-				"$this->root/core",
-				"$this->root/custom",
-				"$this->root/includes",
-				"$this->root/templates",
-				"$this->root/themes/CleverStyle",
-				"$this->root/composer.json",
-				"$this->root/composer.lock",
-				"$this->root/index.php",
-				"$this->root/license.txt",
-				"$this->root/Storage.php"
-			]
-		);
+		$core_files = $this->get_core_files();
 		/**
 		 * Add modules that should be built-in into package
 		 */
@@ -263,14 +244,26 @@ __HALT_COMPILER();"
 	/**
 	 * Get array of files
 	 *
-	 * @param string[] $source Files and directories (absolute paths); If file does non exists - it will be skipped, if directory - all files will be returned
-	 *                         instead
-	 *
-	 * @return array
+	 * @return string[]
 	 */
-	protected function get_files ($source) {
-		$files = [];
-		foreach ($source as $s) {
+	protected function get_core_files () {
+		$files_to_include = [
+			"$this->root/components/modules/System",
+			"$this->root/components/blocks/.gitkept",
+			"$this->root/components/plugins/.gitkept",
+			"$this->root/core",
+			"$this->root/custom",
+			"$this->root/includes",
+			"$this->root/templates",
+			"$this->root/themes/CleverStyle",
+			"$this->root/composer.json",
+			"$this->root/composer.lock",
+			"$this->root/index.php",
+			"$this->root/license.txt",
+			"$this->root/Storage.php"
+		];
+		$files            = [];
+		foreach ($files_to_include as $s) {
 			if (is_file($s)) {
 				$files[] = $s;
 			} elseif (is_dir($s)) {
