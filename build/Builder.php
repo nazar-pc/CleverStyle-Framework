@@ -54,66 +54,13 @@ class Builder {
 				],
 				[
 					h::{'select#modules[name=modules[]][size=20][multiple] option'}(
-						array_map(
-							function ($module) {
-								return [
-									$module,
-									file_exists("$this->root/components/modules/$module/meta.json") ? [
-										'title' => 'Version: '.file_get_json("$this->root/components/modules/$module/meta.json")['version']
-									] : [
-										'title' => 'No meta.json file found',
-										'disabled'
-									]
-								];
-							},
-							array_values(
-								array_filter(
-									get_files_list("$this->root/components/modules", false, 'd'),
-									function ($module) {
-										return $module != 'System';
-									}
-								)
-							)
-						)
+						$this->get_list_for_form("$this->root/components/modules", 'System')
 					),
 					h::{'select#plugins[name=plugins[]][size=20][multiple] option'}(
-						array_map(
-							function ($plugin) {
-								return [
-									$plugin,
-									file_exists("$this->root/components/plugins/$plugin/meta.json") ? [
-										'title' => 'Version: '.file_get_json("$this->root/components/plugins/$plugin/meta.json")['version']
-									] : [
-										'title' => 'No meta.json file found',
-										'disabled'
-									]
-								];
-							},
-							get_files_list("$this->root/components/plugins", false, 'd')
-						)
+						$this->get_list_for_form("$this->root/components/plugins")
 					),
 					h::{'select#themes[name=themes[]][size=20][multiple] option'}(
-						array_map(
-							function ($theme) {
-								return [
-									$theme,
-									file_exists("$this->root/themes/$theme/meta.json") ? [
-										'title' => 'Version: '.file_get_json("$this->root/themes/$theme/meta.json")['version']
-									] : [
-										'title' => 'No meta.json file found',
-										'disabled'
-									]
-								];
-							},
-							array_values(
-								array_filter(
-									get_files_list("$this->root/themes", false, 'd'),
-									function ($theme) {
-										return $theme != 'CleverStyle';
-									}
-								)
-							)
-						)
+						$this->get_list_for_form("$this->root/themes", 'CleverStyle')
 					)
 				]
 			).
@@ -132,6 +79,34 @@ class Builder {
 				'Build'
 			)
 		);
+	}
+	/**
+	 * @param string $dir
+	 * @param string $exclude_dir
+	 *
+	 * @return array[]
+	 */
+	protected function get_list_for_form ($dir, $exclude_dir = '') {
+		$components = array_values(
+			array_filter(
+				get_files_list($dir, false, 'd'),
+				function ($module) use ($exclude_dir) {
+					return $module != $exclude_dir;
+				}
+			)
+		);
+		foreach ($components as &$component) {
+			$component = [
+				$component,
+				file_exists("$dir/$component/meta.json") ? [
+					'title' => 'Version: '.file_get_json("$dir/$component/meta.json")['version']
+				] : [
+					'title' => 'No meta.json file found',
+					'disabled'
+				]
+			];
+		}
+		return $components;
 	}
 	/**
 	 * @param string[]    $modules
@@ -183,44 +158,22 @@ class Builder {
 		 * Add modules that should be built-in into package
 		 */
 		$components_files = [];
-		$modules          = array_filter(
-			$modules,
-			function ($module) use (&$components_files) {
-				return $this->get_component_files("$this->root/components/modules/$module", $components_files);
-			}
-		);
-		sort($modules);
+		$modules          = $this->filter_and_add_components("$this->root/components/modules", $modules, $components_files);
 		$phar->addFromString('modules.json', _json_encode($modules));
 		/**
 		 * Add plugins that should be built-in into package
 		 */
-		$plugins = array_filter(
-			$plugins,
-			function ($plugin) use (&$components_files) {
-				return $this->get_component_files("$this->root/components/plugins/$plugin", $components_files);
-			}
-		);
-		sort($plugins);
+		$plugins = $this->filter_and_add_components("$this->root/components/plugins", $plugins, $components_files);
 		$phar->addFromString('plugins.json', _json_encode($plugins));
 		/**
 		 * Add themes that should be built-in into package
 		 */
-		$themes   = array_filter(
-			$themes,
-			function ($theme) use (&$components_files) {
-				return $this->get_component_files("$this->root/themes/$theme", $components_files);
-			}
-		);
-		$themes[] = 'CleverStyle';
-		sort($themes);
+		$themes = $this->filter_and_add_components("$this->root/themes", $themes, $components_files);
 		$phar->addFromString('themes.json', _json_encode($themes));
 		/**
 		 * Joining system and components files
 		 */
-		$core_files = array_merge(
-			$core_files,
-			$components_files
-		);
+		$core_files = array_merge($core_files, $components_files);
 		/**
 		 * Addition of files into package
 		 */
@@ -329,6 +282,23 @@ __HALT_COMPILER();"
 			}
 		}
 		return $files;
+	}
+	/**
+	 * @param string   $dir
+	 * @param string[] $components
+	 * @param string[] $components_files
+	 *
+	 * @return string[]
+	 */
+	protected function filter_and_add_components ($dir, $components, &$components_files) {
+		$components = array_filter(
+			$components,
+			function ($component) use ($dir, &$components_files) {
+				return $this->get_component_files("$dir/$component", $components_files);
+			}
+		);
+		sort($components);
+		return $components;
 	}
 	/**
 	 * @param string   $component_root

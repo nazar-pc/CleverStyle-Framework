@@ -153,7 +153,6 @@ function install_process ($fs, $argv = null) {
 		'vulcanization'                     => 1,
 		'put_js_after_body'                 => 1,
 		'theme'                             => '',
-		'themes'                            => [],
 		'language'                          => '',
 		'allow_change_language'             => 0,
 		'multilingual'                      => 0,
@@ -208,13 +207,12 @@ function install_process ($fs, $argv = null) {
 	$config['language']         = $_POST['language'];
 	$config['languages']        = file_get_json(DIR.'/languages.json');
 	$config['active_languages'] = $config['languages'];
-	$config['themes']           = file_get_json(DIR.'/themes.json');
-	$config['theme']            = in_array('CleverStyle', $config['themes']) ? 'CleverStyle' : $config['themes'][0];
+	$config['theme']            = 'CleverStyle';
 	$url                        = explode('/', explode('//', $url)[1], 2);
 	$config['cookie_domain'][]  = explode(':', $url[0])[0];
 	unset($url);
 	$config['timezone']          = $_POST['timezone'];
-	$config['mail_from_name']    = 'Administrator of '.$config['name'];
+	$config['mail_from_name']    = "Administrator of $config[name]";
 	$config['mail_from']         = $_POST['admin_email'];
 	$config['simple_admin_mode'] = !isset($_POST['mode']) || $_POST['mode'] ? 1 : 0;
 	/**
