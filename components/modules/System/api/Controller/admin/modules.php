@@ -120,17 +120,22 @@ trait modules {
 		) {
 			throw new ExitException(400);
 		}
-		$existing_meta = file_get_json(MODULES."/$module/meta.json");
-		$new_meta      = file_get_json("$tmp_dir/meta.json");
-		if (
-			$existing_meta['package'] !== $new_meta['package'] ||
-			$existing_meta['category'] !== $new_meta['category']
-		) {
+		$new_meta = file_get_json("$tmp_dir/meta.json");
+		if (!static::is_same_module($new_meta, $module)) {
 			throw new ExitException(Language::instance()->this_is_not_module_installer_file, 400);
 		}
 		Page::instance()->json(
 			Packages_manipulation::get_dependencies(file_get_json($new_meta))
 		);
+	}
+	/**
+	 * @param array  $meta
+	 * @param string $module
+	 *
+	 * @return bool
+	 */
+	protected static function is_same_module ($meta, $module) {
+		return $meta['category'] === 'modules' && $meta['package'] === $module;
 	}
 	/**
 	 * @param string $module
@@ -638,9 +643,9 @@ trait modules {
 		$existing_meta = file_get_json("$module_dir/meta.json");
 		$new_meta      = file_get_json("$tmp_dir/meta.json");
 		if ($module === Config::SYSTEM_MODULE) {
-			static::update_module($module, $existing_meta, $new_meta, $tmp_location, $route_ids, $route_path);
-		} else {
 			static::update_system($module, $existing_meta, $new_meta, $tmp_location, $tmp_dir);
+		} else {
+			static::update_module($module, $existing_meta, $new_meta, $tmp_location, $route_ids, $route_path);
 		}
 		static::admin_modules_cleanup();
 	}
@@ -671,10 +676,7 @@ trait modules {
 		if ($active) {
 			static::admin_modules_disable($route_ids, $route_path);
 		}
-		if (
-			$new_meta['package'] !== $module ||
-			$new_meta['category'] !== 'modules'
-		) {
+		if (!static::is_same_module($new_meta, $module)) {
 			throw new ExitException($L->this_is_not_module_installer_file, 400);
 		}
 		if (!Event::instance()->fire(
@@ -735,8 +737,7 @@ trait modules {
 			}
 		}
 		if (
-			$new_meta['package'] !== Config::SYSTEM_MODULE ||
-			$new_meta['category'] !== 'modules' ||
+			!static::is_same_module($new_meta, Config::SYSTEM_MODULE) ||
 			!file_exists("$tmp_dir/modules.json") ||
 			!file_exists("$tmp_dir/plugins.json") ||
 			!file_exists("$tmp_dir/themes.json")
