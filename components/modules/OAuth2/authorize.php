@@ -178,7 +178,6 @@ if ($_GET['response_type'] != 'guest_token') {
 $User = User::instance();
 if (!$User->user()) {
 	if ($_GET['response_type'] != 'guest_token') {
-		status_code(403);
 		if (Event::instance()->fire('OAuth2/custom_sign_in_page')) {
 			$Page->Content = '';
 			$Page->warning($L->you_are_not_logged_in);
