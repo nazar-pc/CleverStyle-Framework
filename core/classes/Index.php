@@ -281,7 +281,7 @@ class Index {
 			 * If cancel button does not work as back button - render it here
 			 */
 			if ($this->apply_button && !$this->cancel_button_back) {
-				$this->Content .= $this->form_button('cancel', !@Config::instance()->core['cache_not_saved']);
+				$this->Content .= $this->form_button('cancel', !Config::instance()->cancel_available());
 			}
 		}
 		/**

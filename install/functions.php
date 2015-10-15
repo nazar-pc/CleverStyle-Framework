@@ -139,6 +139,8 @@ function install_process ($fs, $argv = null) {
 	}
 	/**
 	 * General system configuration
+	 *
+	 * TODO: put more values right into array, no need to put default value here and redefine it right after that
 	 */
 	$config         = [
 		'name'                              => '',
@@ -160,7 +162,6 @@ function install_process ($fs, $argv = null) {
 		'db_mirror_mode'                    => \cs\DB::MIRROR_MODE_MASTER_MASTER,
 		'active_languages'                  => [],
 		'cookie_domain'                     => [],
-		'languages'                         => [],
 		'inserts_limit'                     => 1000,
 		'key_expire'                        => 120,
 		'session_expire'                    => 2592000,
@@ -205,8 +206,7 @@ function install_process ($fs, $argv = null) {
 	$config['url'][]            = $url;
 	$config['admin_email']      = $_POST['admin_email'];
 	$config['language']         = $_POST['language'];
-	$config['languages']        = file_get_json(DIR.'/languages.json');
-	$config['active_languages'] = $config['languages'];
+	$config['active_languages'] = [$_POST['language']];
 	$config['theme']            = 'CleverStyle';
 	$url                        = explode('/', explode('//', $url)[1], 2);
 	$config['cookie_domain'][]  = explode(':', $url[0])[0];

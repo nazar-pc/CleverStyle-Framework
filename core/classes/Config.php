@@ -179,18 +179,6 @@ class Config {
 		return false;
 	}
 	/**
-	 * Updating information about set of available languages
-	 */
-	function reload_languages () {
-		$this->core['languages'] = array_unique(
-			array_merge(
-				_mb_substr(get_files_list(LANGUAGES, '/^.*?\.php$/i', 'f'), 0, -4) ?: [],
-				_mb_substr(get_files_list(LANGUAGES, '/^.*?\.json$/i', 'f'), 0, -5) ?: []
-			)
-		);
-		asort($this->core['languages']);
-	}
-	/**
 	 * Reloading of settings cache
 	 *
 	 * @return bool
@@ -221,7 +209,6 @@ class Config {
 		} else {
 			return false;
 		}
-		$this->reload_languages();
 		$this->apply_internal(false);
 		return true;
 	}
@@ -250,15 +237,21 @@ class Config {
 		} else {
 			unset($this->core['cache_not_saved']);
 		}
-		$Cache         = Cache::instance();
-		$Cache->config = [
-			'core'       => $this->core,
-			'db'         => $this->db,
-			'storage'    => $this->storage,
-			'components' => $this->components,
-			'replace'    => $this->replace,
-			'routing'    => $this->routing
-		];
+		$Cache = Cache::instance();
+		if (!$Cache->set(
+			'config',
+			[
+				'core'       => $this->core,
+				'db'         => $this->db,
+				'storage'    => $this->storage,
+				'components' => $this->components,
+				'replace'    => $this->replace,
+				'routing'    => $this->routing
+			]
+		)
+		) {
+			return false;
+		}
 		unset($Cache->{'languages'});
 		$L = Language::instance();
 		if ($this->core['multilingual'] && User::instance(true)) {
@@ -277,10 +270,11 @@ class Config {
 	 * @throws ExitException
 	 */
 	function save () {
-		if (isset($this->core['cache_not_saved'])) {
+		if ($this->cancel_available()) {
 			unset($this->core['cache_not_saved']);
 		}
 		$cdb = DB::instance()->db_prime(0);
+		// TODO: filter of possible keys for $this->core to clean redundant options automatically
 		if ($cdb->q(
 			"UPDATE `[prefix]config`
 			SET
@@ -307,14 +301,22 @@ class Config {
 		return false;
 	}
 	/**
+	 * Whether configuration was applied (not saved) and can be canceled
+	 *
+	 * @return bool
+	 */
+	function cancel_available () {
+		return isset($this->core['cache_not_saved']);
+	}
+	/**
 	 * Canceling of applied settings
+	 *
+	 * @return bool
 	 *
 	 * @throws ExitException
 	 */
 	function cancel () {
-		unset(Cache::instance()->config);
-		$this->load_config_from_db();
-		$this->apply_internal(false);
+		return $this->load_config_from_db() && $this->apply_internal(false);
 	}
 	/**
 	 * Get base url of current mirror including language suffix

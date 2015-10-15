@@ -200,8 +200,8 @@
 		"information_about_theme"					: "Information about theme",
 		//Languages
 		"languages"							: "Languages",
-		"current_language"					: "Current language",
-		"current_language_info"				: "Language on the site by default, at corresponding settings, user can change language to more convenient",
+		"default_language"					: "Default language",
+		"default_language_info"				: "Language on the site by default, at corresponding settings, user can change language to more convenient",
 		"active_languages"					: "Active languages",
 		"active_languages_info"				: "Allows allow the use of one language, and prohibit the use of others. To select multiple languages use the the Ctrl key.",
 		"multilingual"						: "Multilingual",

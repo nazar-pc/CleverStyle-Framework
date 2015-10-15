@@ -21,6 +21,7 @@ class Controller {
 		admin\cache,
 		admin\databases,
 		admin\groups,
+		admin\languages,
 		admin\modules,
 		admin\permissions,
 		admin\plugins,

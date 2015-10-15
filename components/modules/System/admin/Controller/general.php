@@ -288,27 +288,10 @@ trait general {
 		);
 	}
 	static function general_languages () {
-		$Config = Config::instance();
-		$Index  = Index::instance();
-		$L      = Language::instance();
-		$Config->reload_languages();
-		$Index->apply_button = true;
+		$Index       = Index::instance();
+		$Index->form = false;
 		$Index->content(
-			static::vertical_table(
-				static::core_select($Config->core['active_languages'], 'language', 'change_language', 'current_language'),
-				static::core_select($Config->core['languages'], 'active_languages', 'change_active_languages', null, true),
-				[
-					h::info('multilingual'),
-					h::radio(
-						[
-							'name'    => 'core[multilingual]',
-							'checked' => $Config->core['multilingual'],
-							'value'   => [0, 1],
-							'in'      => [$L->off, $L->on]
-						]
-					)
-				]
-			)
+			h::cs_system_admin_languages()
 		);
 	}
 	static function general_optimization () {
