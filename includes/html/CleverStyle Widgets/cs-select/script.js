@@ -36,19 +36,27 @@
           var callback, timeout;
           timeout = null;
           callback = function() {
+            var font_size, height_in_px;
             clearTimeout(timeout);
-            return timeout = setTimeout((function() {
-              var font_size, height_in_px;
+            timeout = setTimeout((function() {
               _this.removeEventListener(callback);
               if (_this.selected !== void 0) {
                 _this._selected_changed(_this.selected);
               }
-              if (_this.size > 1) {
-                height_in_px = _this.querySelector('option').getBoundingClientRect().height * _this.size;
-                font_size = parseFloat(getComputedStyle(_this).fontSize);
-                _this.style.height = "calc(" + height_in_px + "em / " + font_size + ")";
-              }
             }), 100);
+            if (_this._height_updated) {
+              return;
+            }
+            if (_this.size <= 1) {
+              _this._height_updated = true;
+              return;
+            }
+            if (_this.querySelectorAll('option').length) {
+              _this._height_updated = true;
+              height_in_px = _this.querySelector('option').getBoundingClientRect().height * _this.size;
+              font_size = parseFloat(getComputedStyle(_this).fontSize);
+              return _this.style.height = "calc(" + height_in_px + "em / " + font_size + ")";
+            }
           };
           return _this.addEventListener('dom-change', callback);
         });
@@ -93,23 +101,10 @@
       return this.set('selected', selected);
     },
     _selected_changed: function(selected) {
-      var s;
       if (selected === void 0) {
         return;
       }
-      selected = (function() {
-        var i, len, results;
-        if (selected instanceof Array) {
-          results = [];
-          for (i = 0, len = selected.length; i < len; i++) {
-            s = selected[i];
-            results.push(String(s));
-          }
-          return results;
-        } else {
-          return String(selected);
-        }
-      })();
+      selected = selected instanceof Array ? selected.map(String) : String(selected);
       return [].slice.call(this.querySelectorAll('option')).forEach(function(option) {
         return option.selected = selected === option.value || (selected instanceof Array && selected.indexOf(option.value) !== -1);
       });

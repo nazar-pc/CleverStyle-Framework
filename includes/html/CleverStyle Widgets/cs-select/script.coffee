@@ -36,15 +36,21 @@ Polymer(
 					@removeEventListener(callback)
 					if @selected != undefined
 						@_selected_changed(@selected)
-					# Only affects selects when multiple elements shown simultaneously
-					if @size > 1
-						# Set select height relatively to font size
-						# Fixes select height in modal
-						height_in_px	= @querySelector('option').getBoundingClientRect().height * @size
-						font_size		= parseFloat(getComputedStyle(@).fontSize)
-						@style.height	= "calc(#{height_in_px}em / #{font_size})"
 					return
 				), 100
+				if @_height_updated
+					return
+				# Only affects selects when multiple elements shown simultaneously
+				if @size <= 1
+					@_height_updated	= true
+					return
+				if @querySelectorAll('option').length
+					@_height_updated	= true
+					# Set select height relatively to font size
+					# Fixes select height in modal
+					height_in_px	= @querySelector('option').getBoundingClientRect().height * @size
+					font_size		= parseFloat(getComputedStyle(@).fontSize)
+					@style.height	= "calc(#{height_in_px}em / #{font_size})"
 			@addEventListener('dom-change', callback)
 		return
 	_scroll_to_selected : ->
@@ -79,8 +85,7 @@ Polymer(
 			return
 		selected	=
 			if selected instanceof Array
-				for s in selected
-					String(s)
+				selected.map(String)
 			else
 				String(selected)
 		[].slice.call(@querySelectorAll('option')).forEach (option) ->
