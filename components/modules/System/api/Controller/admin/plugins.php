@@ -111,7 +111,7 @@ trait plugins {
 			throw new ExitException(Language::instance()->this_is_not_plugin_installer_file, 400);
 		}
 		Page::instance()->json(
-			Packages_manipulation::get_dependencies(file_get_json($new_meta))
+			Packages_manipulation::get_dependencies($new_meta)
 		);
 	}
 	protected static function get_plugins_list () {

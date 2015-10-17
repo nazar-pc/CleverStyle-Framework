@@ -22,7 +22,7 @@
   };
   Polymer({
     'is': 'cs-system-admin-modules-list',
-    behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.components],
+    behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.components, cs.Polymer.behaviors.admin.System.upload],
     properties: {
       default_module: String
     },
