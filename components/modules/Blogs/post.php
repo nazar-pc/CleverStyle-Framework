@@ -62,7 +62,6 @@ $Meta = Meta::instance();
 $Meta
 	->article()
 	->article('published_time', date('Y-m-d', $post['date'] ?: TIME))
-	->article('author', $post['author']['url'])
 	->article('section', $post['articleSection'] ? $post['articleSection'][0] : false)
 	->article('tag', $post['tags']);
 array_map([$Meta, 'image'], $post['image']);
