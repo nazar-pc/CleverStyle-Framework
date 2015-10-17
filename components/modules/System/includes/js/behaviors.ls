@@ -23,7 +23,7 @@ behaviors.admin.System	=
 			message			= ''
 			message_more	= ''
 			if Object.keys(dependencies).length
-				message	= compose_dependencies_message(component, dependencies)
+				message	= @_compose_dependencies_message(component, dependencies)
 				if cs.simple_admin_mode
 					cs.ui.notify(message, 'error', 5)
 					return
@@ -91,7 +91,7 @@ behaviors.admin.System	=
 			modal.ok.primary		= !message
 			modal.cancel.primary	= !modal.ok.primary
 			$(modal).find('p').addClass('cs-text-error cs-block-error')
-		# Module/plugin update
+		# Module/plugin/theme update
 		_update_component : (existing_meta, new_meta) !->
 			component		= new_meta.package
 			category		= new_meta.category
@@ -113,7 +113,7 @@ behaviors.admin.System	=
 				| 'themes'	=> 'update_theme'
 			message_more	= '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>'
 			if Object.keys(dependencies).length
-				message	= compose_dependencies_message(component, dependencies)
+				message	= @_compose_dependencies_message(component, dependencies)
 				if cs.simple_admin_mode
 					cs.ui.notify(message, 'error', 5)
 					return
@@ -166,6 +166,55 @@ behaviors.admin.System	=
 					@reload()
 					cs.ui.notify(L.changes_saved, 'success', 5)
 			)
+		# Compose HTML representation of dependencies details
+		_compose_dependencies_message : (component, dependencies) ->
+			message = ''
+			for what, categories of dependencies
+				for category, details of categories
+					for detail in details
+						message	+=
+							"<p>" +
+							(switch what
+								case 'update_from'
+									if component == 'System'
+										L.update_system_impossible_from_version_to(detail.from, detail.to, detail.can_update_from)
+									else
+										L.module_cant_be_updated_from_version_to(component, detail.from, detail.to, detail.can_update_from)
+								case 'update_older'
+									translation_key =
+										switch category
+										| 'modules'	=> (if component == 'System' then 'update_system_impossible_older_version' else 'update_module_impossible_older_version')
+										| 'plugins'	=> 'update_plugin_impossible_older_version'
+										| 'themes'	=> 'update_theme_impossible_older_version'
+									L[translation_key](detail.from, detail.to)
+								case 'provide'
+									translation_key =
+										if category == 'modules'
+											'module_already_provides_functionality'
+										else
+											'plugin_already_provides_functionality'
+									L[translation_key](detail.name, detail.features.join('", "'))
+								case 'require'
+									for required in detail.required
+										if category == 'unknown'
+											L.package_or_functionality_not_found(detail.name + required.join(' '))
+										else
+											translation_key =
+												if category == 'modules'
+													'unsatisfactory_version_of_the_module'
+												else
+													'unsatisfactory_version_of_the_plugin'
+											L[translation_key](detail.name, required.join(' '), detail.existing)
+								case 'conflict'
+									for conflict in detail.conflicts
+										L.package_is_incompatible_with(conflict.package, conflict.conflicts_with, conflict.of_versions.join(' '))
+								case 'db_support'
+									L.compatible_databases_not_found(detail.supported.join('", "'))
+								case 'storage_support'
+									L.compatible_storages_not_found(detail.supported.join('", "'))
+							) +
+							"</p>"
+			"#message<p>#{L.dependencies_not_satisfied}</p>"
 	upload :
 		# Generic ackage uploading, jqXHR object will be returned
 		_upload_package : (file_input, progress) ->
@@ -182,52 +231,3 @@ behaviors.admin.System	=
 				processData	: false
 				contentType	: false
 			)
-# Compose HTML representation of dependencies details
-function compose_dependencies_message (component, dependencies)
-	message = ''
-	for what, categories of dependencies
-		for category, details of categories
-			for detail in details
-				message	+=
-					"<p>" +
-					(switch what
-						case 'update_from'
-							if component == 'System'
-								L.update_system_impossible_from_version_to(detail.from, detail.to, detail.can_update_from)
-							else
-								L.module_cant_be_updated_from_version_to(component, detail.from, detail.to, detail.can_update_from)
-						case 'update_older'
-							translation_key =
-								switch category
-								| 'modules'	=> (if component == 'System' then 'update_system_impossible_older_version' else 'update_module_impossible_older_version')
-								| 'plugins'	=> 'update_plugin_impossible_older_version'
-								| 'themes'	=> 'update_theme_impossible_older_version'
-							L[translation_key](detail.from, detail.to)
-						case 'provide'
-							translation_key =
-								if category == 'modules'
-									'module_already_provides_functionality'
-								else
-									'plugin_already_provides_functionality'
-							L[translation_key](detail.name, detail.features.join('", "'))
-						case 'require'
-							for conflict in detail.conflicts
-								if category == 'unknown'
-									L.package_or_functionality_not_found(conflict.name + conflict.required.join(' '))
-								else
-									translation_key =
-										if category == 'modules'
-											'unsatisfactory_version_of_the_module'
-										else
-											'unsatisfactory_version_of_the_plugin'
-									L[translation_key](detail.name, conflict.join(' '), detail.existing)
-						case 'conflict'
-							for conflict in detail.conflicts
-								L.package_is_incompatible_with(conflict.package, conflict.conflicts_with, conflict.of_versions.join(' '))
-						case 'db_support'
-							L.compatible_databases_not_found(detail.supported.join('", "'))
-						case 'storage_support'
-							L.compatible_storages_not_found(detail.supported.join('", "'))
-					) +
-					"</p>"
-	"#message<p>#{L.dependencies_not_satisfied}</p>"

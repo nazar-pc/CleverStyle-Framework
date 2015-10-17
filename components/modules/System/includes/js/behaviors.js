@@ -26,7 +26,7 @@
           message = '';
           message_more = '';
           if (Object.keys(dependencies).length) {
-            message = compose_dependencies_message(component, dependencies);
+            message = this$._compose_dependencies_message(component, dependencies);
             if (cs.simple_admin_mode) {
               cs.ui.notify(message, 'error', 5);
               return;
@@ -146,7 +146,7 @@
           }());
           message_more = '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>';
           if (Object.keys(dependencies).length) {
-            message = compose_dependencies_message(component, dependencies);
+            message = this$._compose_dependencies_message(component, dependencies);
             if (cs.simple_admin_mode) {
               cs.ui.notify(message, 'error', 5);
               return;
@@ -211,6 +211,76 @@
             }
           });
         });
+      },
+      _compose_dependencies_message: function(component, dependencies){
+        var message, what, categories, category, details, i$, len$, detail, translation_key, required, conflict;
+        message = '';
+        for (what in dependencies) {
+          categories = dependencies[what];
+          for (category in categories) {
+            details = categories[category];
+            for (i$ = 0, len$ = details.length; i$ < len$; ++i$) {
+              detail = details[i$];
+              message += "<p>" + (fn$()) + "</p>";
+            }
+          }
+        }
+        return message + "<p>" + L.dependencies_not_satisfied + "</p>";
+        function fn$(){
+          var i$, ref$, len$, results$ = [], results1$ = [];
+          switch (what) {
+          case 'update_from':
+            if (component === 'System') {
+              return L.update_system_impossible_from_version_to(detail.from, detail.to, detail.can_update_from);
+            } else {
+              return L.module_cant_be_updated_from_version_to(component, detail.from, detail.to, detail.can_update_from);
+            }
+            break;
+          case 'update_older':
+            translation_key = (function(){
+              switch (category) {
+              case 'modules':
+                if (component === 'System') {
+                  return 'update_system_impossible_older_version';
+                } else {
+                  return 'update_module_impossible_older_version';
+                }
+                break;
+              case 'plugins':
+                return 'update_plugin_impossible_older_version';
+              case 'themes':
+                return 'update_theme_impossible_older_version';
+              }
+            }());
+            return L[translation_key](detail.from, detail.to);
+          case 'provide':
+            translation_key = category === 'modules' ? 'module_already_provides_functionality' : 'plugin_already_provides_functionality';
+            return L[translation_key](detail.name, detail.features.join('", "'));
+          case 'require':
+            for (i$ = 0, len$ = (ref$ = detail.required).length; i$ < len$; ++i$) {
+              required = ref$[i$];
+              if (category === 'unknown') {
+                results$.push(L.package_or_functionality_not_found(detail.name + required.join(' ')));
+              } else {
+                translation_key = category === 'modules' ? 'unsatisfactory_version_of_the_module' : 'unsatisfactory_version_of_the_plugin';
+                results$.push(L[translation_key](detail.name, required.join(' '), detail.existing));
+              }
+            }
+            return results$;
+            break;
+          case 'conflict':
+            for (i$ = 0, len$ = (ref$ = detail.conflicts).length; i$ < len$; ++i$) {
+              conflict = ref$[i$];
+              results1$.push(L.package_is_incompatible_with(conflict['package'], conflict.conflicts_with, conflict.of_versions.join(' ')));
+            }
+            return results1$;
+            break;
+          case 'db_support':
+            return L.compatible_databases_not_found(detail.supported.join('", "'));
+          case 'storage_support':
+            return L.compatible_storages_not_found(detail.supported.join('", "'));
+          }
+        }
       }
     },
     upload: {
@@ -234,74 +304,4 @@
       }
     }
   };
-  function compose_dependencies_message(component, dependencies){
-    var message, what, categories, category, details, i$, len$, detail, translation_key, conflict;
-    message = '';
-    for (what in dependencies) {
-      categories = dependencies[what];
-      for (category in categories) {
-        details = categories[category];
-        for (i$ = 0, len$ = details.length; i$ < len$; ++i$) {
-          detail = details[i$];
-          message += "<p>" + (fn$()) + "</p>";
-        }
-      }
-    }
-    return message + "<p>" + L.dependencies_not_satisfied + "</p>";
-    function fn$(){
-      var i$, ref$, len$, results$ = [], results1$ = [];
-      switch (what) {
-      case 'update_from':
-        if (component === 'System') {
-          return L.update_system_impossible_from_version_to(detail.from, detail.to, detail.can_update_from);
-        } else {
-          return L.module_cant_be_updated_from_version_to(component, detail.from, detail.to, detail.can_update_from);
-        }
-        break;
-      case 'update_older':
-        translation_key = (function(){
-          switch (category) {
-          case 'modules':
-            if (component === 'System') {
-              return 'update_system_impossible_older_version';
-            } else {
-              return 'update_module_impossible_older_version';
-            }
-            break;
-          case 'plugins':
-            return 'update_plugin_impossible_older_version';
-          case 'themes':
-            return 'update_theme_impossible_older_version';
-          }
-        }());
-        return L[translation_key](detail.from, detail.to);
-      case 'provide':
-        translation_key = category === 'modules' ? 'module_already_provides_functionality' : 'plugin_already_provides_functionality';
-        return L[translation_key](detail.name, detail.features.join('", "'));
-      case 'require':
-        for (i$ = 0, len$ = (ref$ = detail.conflicts).length; i$ < len$; ++i$) {
-          conflict = ref$[i$];
-          if (category === 'unknown') {
-            results$.push(L.package_or_functionality_not_found(conflict.name + conflict.required.join(' ')));
-          } else {
-            translation_key = category === 'modules' ? 'unsatisfactory_version_of_the_module' : 'unsatisfactory_version_of_the_plugin';
-            results$.push(L[translation_key](detail.name, conflict.join(' '), detail.existing));
-          }
-        }
-        return results$;
-        break;
-      case 'conflict':
-        for (i$ = 0, len$ = (ref$ = detail.conflicts).length; i$ < len$; ++i$) {
-          conflict = ref$[i$];
-          results1$.push(L.package_is_incompatible_with(conflict['package'], conflict.conflicts_with, conflict.of_versions.join(' ')));
-        }
-        return results1$;
-        break;
-      case 'db_support':
-        return L.compatible_databases_not_found(detail.supported.join('", "'));
-      case 'storage_support':
-        return L.compatible_storages_not_found(detail.supported.join('", "'));
-      }
-    }
-  }
 }).call(this);

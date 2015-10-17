@@ -161,7 +161,7 @@
         message = '';
         message_more = '';
         if (Object.keys(dependencies).length) {
-          message = compose_dependencies_message(component, dependencies);
+          message = this$._compose_dependencies_message(module, dependencies);
           if (cs.simple_admin_mode) {
             cs.ui.notify(message, 'error', 5);
             return;
