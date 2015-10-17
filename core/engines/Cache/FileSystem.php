@@ -18,7 +18,6 @@ class FileSystem extends _Abstract {
 	 * @return string
 	 */
 	protected function get_absolute_path ($path) {
-		$path      = CACHE."/$path";
 		$path      = str_replace(['/', '\\'], '/', $path);
 		$parts     = array_filter(explode('/', $path), 'strlen');
 		$absolutes = [];
@@ -32,7 +31,7 @@ class FileSystem extends _Abstract {
 				$absolutes[] = $part;
 			}
 		}
-		return '/'.implode('/', $absolutes);
+		return CACHE.'/'.implode('/', $absolutes);
 	}
 	/**
 	 * @inheritdoc
