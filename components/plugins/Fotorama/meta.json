@@ -8,7 +8,7 @@
 	"license"     : "MIT License",
 	"provide"     : "fotorama",
 	"require"     : [
-		"System>=2.119",
-		"System<=3.0"
+		"System>=3.99",
+		"System<4.0"
 	]
 }
