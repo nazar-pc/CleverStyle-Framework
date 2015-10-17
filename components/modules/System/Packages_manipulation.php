@@ -336,9 +336,9 @@ class Packages_manipulation {
 		 */
 		if ($dependencies_conflicts = self::check_requirement_satisfaction($meta, $component_meta)) {
 			$dependencies['require'][$category][] = [
-				'name'      => $package,
-				'existing'  => $component_meta['version'],
-				'conflicts' => $dependencies_conflicts
+				'name'     => $package,
+				'existing' => $component_meta['version'],
+				'required' => $dependencies_conflicts
 			];
 		}
 		unset($meta['require'][$package]);

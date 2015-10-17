@@ -259,11 +259,12 @@
           case 'require':
             for (i$ = 0, len$ = (ref$ = detail.required).length; i$ < len$; ++i$) {
               required = ref$[i$];
+              required = required.filter(fn$).join(' ');
               if (category === 'unknown') {
-                results$.push(L.package_or_functionality_not_found(detail.name + required.join(' ')));
+                results$.push(L.package_or_functionality_not_found(detail.name + required));
               } else {
                 translation_key = category === 'modules' ? 'unsatisfactory_version_of_the_module' : 'unsatisfactory_version_of_the_plugin';
-                results$.push(L[translation_key](detail.name, required.join(' '), detail.existing));
+                results$.push(L[translation_key](detail.name, required, detail.existing));
               }
             }
             return results$;
@@ -271,7 +272,7 @@
           case 'conflict':
             for (i$ = 0, len$ = (ref$ = detail.conflicts).length; i$ < len$; ++i$) {
               conflict = ref$[i$];
-              results1$.push(L.package_is_incompatible_with(conflict['package'], conflict.conflicts_with, conflict.of_versions.join(' ')));
+              results1$.push(L.package_is_incompatible_with(conflict['package'], conflict.conflicts_with, conflict.of_versions.filter(fn1$).join(' ')));
             }
             return results1$;
             break;
@@ -279,6 +280,12 @@
             return L.compatible_databases_not_found(detail.supported.join('", "'));
           case 'storage_support':
             return L.compatible_storages_not_found(detail.supported.join('", "'));
+          }
+          function fn$(it){
+            return it != '0';
+          }
+          function fn1$(it){
+            return it != '0';
           }
         }
       }

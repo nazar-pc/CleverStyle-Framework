@@ -196,18 +196,19 @@ behaviors.admin.System	=
 									L[translation_key](detail.name, detail.features.join('", "'))
 								case 'require'
 									for required in detail.required
+										required	= required.filter(-> it !~= '0').join(' ')
 										if category == 'unknown'
-											L.package_or_functionality_not_found(detail.name + required.join(' '))
+											L.package_or_functionality_not_found(detail.name + required)
 										else
 											translation_key =
 												if category == 'modules'
 													'unsatisfactory_version_of_the_module'
 												else
 													'unsatisfactory_version_of_the_plugin'
-											L[translation_key](detail.name, required.join(' '), detail.existing)
+											L[translation_key](detail.name, required, detail.existing)
 								case 'conflict'
 									for conflict in detail.conflicts
-										L.package_is_incompatible_with(conflict.package, conflict.conflicts_with, conflict.of_versions.join(' '))
+										L.package_is_incompatible_with(conflict.package, conflict.conflicts_with, conflict.of_versions.filter(-> it !~= '0').join(' '))
 								case 'db_support'
 									L.compatible_databases_not_found(detail.supported.join('", "'))
 								case 'storage_support'
