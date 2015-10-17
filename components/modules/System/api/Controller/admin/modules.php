@@ -537,6 +537,7 @@ trait modules {
 		) {
 			throw new ExitException(500);
 		}
+		$module_data = &$modules[$module];
 		if (isset($module_data['db'])) {
 			time_limit_pause();
 			foreach ($module_data['db'] as $db_name => $index) {
