@@ -11,15 +11,26 @@
   modal = null;
   open_modal = function(action, package_name, category, force){
     force == null && (force = false);
-    force = force ? 'force' : '';
-    modal = cs.ui.simple_modal("<cs-composer action=\"" + action + "\" package=\"" + package_name + "\" category=\"" + category + "\" " + force + "/>");
-    $(modal).on('close', function(){
-      cs.Event.fire('admin/Composer/canceled');
-    });
+    if (package_name === 'Composer' && !force) {
+      return;
+    }
     return new Promise(function(resolve, reject){
-      cs.Event.once('admin/Composer/updated', function(){
-        modal.close();
-        resolve();
+      var this$ = this;
+      $.getJSON('api/System/admin/modules', function(modules){
+        var force;
+        if (modules.Composer.active !== 1) {
+          resolve();
+          return;
+        }
+        force = force ? 'force' : '';
+        modal = cs.ui.simple_modal("<cs-composer action=\"" + action + "\" package=\"" + package_name + "\" category=\"" + category + "\" " + force + "/>");
+        $(modal).on('close', function(){
+          cs.Event.fire('admin/Composer/canceled');
+        });
+        cs.Event.once('admin/Composer/updated', function(){
+          modal.close();
+          resolve();
+        });
       });
     });
   };

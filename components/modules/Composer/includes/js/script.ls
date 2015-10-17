@@ -7,12 +7,18 @@
  */
 modal		= null
 open_modal	= (action, package_name, category, force = false) ->
-	force	= if force then 'force' else ''
-	modal	:= cs.ui.simple_modal("""<cs-composer action="#action" package="#package_name" category="#category" #force/>""")
-	$(modal).on('close', !->
-		cs.Event.fire('admin/Composer/canceled')
-	)
+	if package_name == 'Composer' && !force
+		return
 	(new Promise (resolve, reject) !->
+		modules	<~! $.getJSON('api/System/admin/modules')
+		if modules.Composer.active != 1
+			resolve()
+			return
+		force	= if force then 'force' else ''
+		modal	:= cs.ui.simple_modal("""<cs-composer action="#action" package="#package_name" category="#category" #force/>""")
+		$(modal).on('close', !->
+			cs.Event.fire('admin/Composer/canceled')
+		)
 		cs.Event.once('admin/Composer/updated', !->
 			modal.close()
 			resolve()
