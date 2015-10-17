@@ -20,16 +20,11 @@ Event::instance()->on(
 		}
 		switch ($Config->components['modules']['Blockchain_payment']['active']) {
 			case -1:
-				if (!admin_path()) {
-					return;
-				}
 				require __DIR__.'/events/uninstalled.php';
 				break;
 			case 1:
 				require __DIR__.'/events/enabled.php';
-				if (admin_path()) {
-					require __DIR__.'/events/enabled/admin.php';
-				}
+				require __DIR__.'/events/enabled/admin.php';
 		}
 	}
 );

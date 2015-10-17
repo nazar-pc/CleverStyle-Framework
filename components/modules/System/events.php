@@ -118,7 +118,7 @@ Event::instance()
 	->on(
 		'System/Index/construct',
 		function () {
-			if (admin_path() && current_module() == 'System') {
+			if (current_module() == 'System') {
 				require __DIR__.'/events/admin.php';
 			}
 		}

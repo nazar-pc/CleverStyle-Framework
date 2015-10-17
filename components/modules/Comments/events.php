@@ -18,9 +18,6 @@ Event::instance()->on(
 			case 1:
 				require __DIR__.'/events/enabled.php';
 			default:
-				if (!admin_path()) {
-					return;
-				}
 				require __DIR__.'/events/installed.php';
 		}
 	}

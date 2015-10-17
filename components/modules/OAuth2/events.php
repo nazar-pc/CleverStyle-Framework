@@ -43,9 +43,6 @@ Event::instance()
 			}
 			switch ($Config->components['modules']['OAuth2']['active']) {
 				case -1:
-					if (!admin_path()) {
-						return;
-					}
 					require __DIR__.'/events/uninstalled.php';
 					break;
 				case 1:

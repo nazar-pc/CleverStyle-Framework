@@ -16,9 +16,6 @@ Event::instance()->on(
 		}
 		switch ($Config->components['modules']['Deferred_tasks']['active']) {
 			case -1:
-				if (!admin_path()) {
-					return;
-				}
 				require __DIR__.'/events/uninstalled.php';
 		}
 	}

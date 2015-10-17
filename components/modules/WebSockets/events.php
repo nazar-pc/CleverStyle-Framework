@@ -20,9 +20,6 @@ Event::instance()->on(
 				require __DIR__.'/events/enabled.php';
 				return;
 			case -1:
-				if (!admin_path()) {
-					return;
-				}
 				require __DIR__.'/events/uninstalled.php';
 		}
 	}

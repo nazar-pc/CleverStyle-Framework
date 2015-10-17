@@ -65,20 +65,14 @@ Event::instance()
 			}
 			switch ($Config->components['modules']['Blogs']['active']) {
 				case -1:
-					if (!admin_path()) {
-						return;
-					}
 					require __DIR__.'/events/uninstalled.php';
 					break;
 				case 1:
 					require __DIR__.'/events/enabled.php';
-					if (admin_path() && current_module() == 'Blogs') {
+					if (current_module() == 'Blogs') {
 						require __DIR__.'/events/enabled/admin.php';
 					}
 				default:
-					if (!admin_path()) {
-						return;
-					}
 					require __DIR__.'/events/installed.php';
 			}
 		}

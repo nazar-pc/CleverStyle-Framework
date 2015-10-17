@@ -51,9 +51,6 @@ Event::instance()
 			switch ($Config->components['modules']['Photo_gallery']['active']) {
 				case 1:
 				case 0:
-					if (!admin_path()) {
-						return;
-					}
 					require __DIR__.'/events/installed.php';
 			}
 		}

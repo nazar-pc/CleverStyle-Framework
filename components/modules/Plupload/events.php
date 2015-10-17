@@ -25,9 +25,6 @@ Event::instance()
 	->on(
 		'System/Index/construct',
 		function () {
-			if (!admin_path()) {
-				return;
-			}
 			$Config = Config::instance();
 			if (!isset($Config->components['modules']['Plupload'])) {
 				return;

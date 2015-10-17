@@ -18,9 +18,6 @@ Event::instance()->on(
 		switch ($Config->components['modules']['Polls']['active']) {
 			case 0:
 			case 1:
-				if (!admin_path()) {
-					return;
-				}
 				require __DIR__.'/events/installed.php';
 		}
 	}
