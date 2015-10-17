@@ -72,7 +72,7 @@ trait CRUD {
 		 * after creation (there is no id before creation)
 		 */
 		if ($update_needed) {
-			$this->update_internal($table, $data_model, array_merge([$id], $prepared_arguments), false);
+			$this->update_internal($table, $data_model, array_merge([array_keys($data_model)[0] => $id], $prepared_arguments), false);
 		}
 		return $id;
 	}
