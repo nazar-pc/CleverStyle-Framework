@@ -8,10 +8,8 @@
  */
 namespace cs\modules\Blogs;
 use
-	h,
 	cs\Config,
 	cs\Event,
-	cs\Index,
 	cs\Language,
 	cs\Page,
 	cs\Route,
@@ -21,7 +19,6 @@ if (!Event::instance()->fire('Blogs/drafts')) {
 	return;
 }
 $Config = Config::instance();
-$Index  = Index::instance();
 $L      = Language::instance();
 $Page   = Page::instance();
 $Posts  = Posts::instance();
@@ -46,25 +43,17 @@ if ($page > 1) {
  */
 $posts_per_page = $Config->module('Blogs')->posts_per_page;
 $posts          = $Posts->get_drafts($User->id, $page, $posts_per_page);
-/**
- * Render posts page
- */
-if (!$posts) {
-	$Index->content(
-		h::{'p.cs-text-center'}($L->no_posts_yet)
-	);
-	return;
-}
-$posts_count = $Posts->get_drafts_count($User->id);
+$posts_count    = $Posts->get_drafts_count($User->id);
 /**
  * Base url (without page number)
  */
 $base_url = $Config->base_url().'/'.path($L->Blogs).'/'.path($L->drafts);
-$Index->content(
-	Helpers::posts_list(
-		$posts,
-		$posts_count,
-		$page,
-		$base_url
-	)
+/**
+ * Render posts page
+ */
+Helpers::show_posts_list(
+	$posts,
+	$posts_count,
+	$page,
+	$base_url
 );

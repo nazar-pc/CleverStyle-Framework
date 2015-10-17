@@ -9,6 +9,8 @@
 namespace cs\modules\Blogs;
 use
 	cs\Config,
+	cs\Index,
+	cs\Language,
 	cs\User,
 	h;
 
@@ -23,16 +25,26 @@ class Helpers {
 	 *
 	 * @return string
 	 */
-	static function posts_list ($posts, $posts_count, $page, $base_url) {
+	static function show_posts_list ($posts, $posts_count, $page, $base_url) {
 		$module_data = Config::instance()->module('Blogs');
+		$Index       = Index::instance();
+		$L           = Language::instance();
 		$User        = User::instance();
-		return
+		$Index->content(
 			h::{'cs-blogs-head-actions'}(
 				[
 					'admin'          => $User->admin() && $User->get_permission('admin/Blogs', 'index'),
 					'can_write_post' => $User->admin() || !$module_data->new_posts_only_from_admins
 				]
-			).
+			)
+		);
+		if (!$posts) {
+			$Index->content(
+				h::{'p.cs-text-center'}($L->no_posts_yet)
+			);
+			return;
+		}
+		$Index->content(
 			h::{'section[is=cs-blogs-posts]'}(
 				h::{'script[type=application/ld+json]'}(
 					json_encode(
@@ -53,6 +65,7 @@ class Helpers {
 					},
 					true
 				)
-			);
+			)
+		);
 	}
 }

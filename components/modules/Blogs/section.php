@@ -8,11 +8,9 @@
  */
 namespace cs\modules\Blogs;
 use
-	h,
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Index,
 	cs\Language,
 	cs\Page\Meta,
 	cs\Page,
@@ -22,7 +20,6 @@ if (!Event::instance()->fire('Blogs/section')) {
 	return;
 }
 $Config   = Config::instance();
-$Index    = Index::instance();
 $L        = Language::instance();
 $Meta     = Meta::instance();
 $Page     = Page::instance();
@@ -77,23 +74,15 @@ if ($page > 1) {
 $posts_per_page = $Config->module('Blogs')->posts_per_page;
 $posts          = $Posts->get_for_section($section['id'], $page, $posts_per_page);
 /**
- * Render posts page
- */
-if (!$posts) {
-	$Index->content(
-		h::{'p.cs-text-center'}($L->no_posts_yet)
-	);
-	return;
-}
-/**
  * Base url (without page number)
  */
 $base_url = $Config->base_url().'/'.path($L->Blogs).'/'.path($L->section)."/$section[full_path]";
-$Index->content(
-	Helpers::posts_list(
-		$posts,
-		$section['posts'],
-		$page,
-		$base_url
-	)
+/**
+ * Render posts page
+ */
+Helpers::show_posts_list(
+	$posts,
+	$section['posts'],
+	$page,
+	$base_url
 );
