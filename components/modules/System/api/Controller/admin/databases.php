@@ -23,14 +23,15 @@ trait databases {
 		$Core         = Core::instance();
 		$databases    = $Config->db;
 		$databases[0] = array_merge(
-			$databases[0],
+			isset($databases[0]) ? $databases[0] : [],
 			[
 				'host'    => $Core->db_host,
 				'type'    => $Core->db_type,
 				'prefix'  => $Core->db_prefix,
 				'name'    => $Core->db_name,
 				'user'    => '',
-				'charset' => $Core->db_charset
+				'charset' => $Core->db_charset,
+				'mirrors' => []
 			]
 		);
 		foreach ($databases as $i => &$db) {
