@@ -22,11 +22,17 @@ $Index      = Index::instance();
 $L          = Language::instance();
 $Pages      = Pages::instance();
 $Categories = Categories::instance();
-$page       = $Pages->get(
-	home_page() ? $Pages->get_structure()['pages']['index'] : Route::instance()->route[0]
-);
-$Page       = Page::instance();
-$User       = User::instance();
+if (home_page()) {
+	$page = $Pages->get($Pages->get_structure()['pages']['index']);
+} else {
+	$Route = Route::instance();
+	if (!isset($Route->route[0])) {
+		throw new ExitException(404);
+	}
+	$page = $Pages->get($Route->route[0]);
+}
+$Page = Page::instance();
+$User = User::instance();
 if (isset($_POST['save'])) {
 	if (!$User->get_permission('admin/Pages', 'edit_page')) {
 		throw new ExitException(403);

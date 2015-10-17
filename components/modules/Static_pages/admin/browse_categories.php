@@ -1,25 +1,26 @@
 <?php
 /**
- * @package		Static Pages
- * @category	modules
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   Static Pages
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs\modules\Static_pages;
-use			h,
-			cs\Index,
-			cs\Language;
-$Index			= Index::instance();
-$L				= Language::instance();
-$Index->buttons	= false;
+namespace cs\modules\Static_pages;
+use
+	h,
+	cs\Index,
+	cs\Language;
+$Index          = Index::instance();
+$L              = Language::instance();
+$Index->buttons = false;
 $Index->content(
 	h::{'table.cs-table[list]'}(
 		h::{'tr th'}(
 			[
 				$L->pages_category,
 				[
-					'style'	=> 'width: 80%'
+					'style' => 'width: 80%'
 				]
 			],
 			$L->action
@@ -33,13 +34,13 @@ $Index->content(
 		[
 			$L->add_category,
 			[
-				'href'	=> 'admin/Static_pages/add_category'
+				'href' => 'admin/Static_pages/add_category'
 			]
 		],
 		[
 			$L->add_page,
 			[
-				'href'	=> 'admin/Static_pages/add_page'
+				'href' => 'admin/Static_pages/add_page'
 			]
 		]
 	)
