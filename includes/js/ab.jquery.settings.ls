@@ -5,8 +5,10 @@
  * @license   MIT License, see license.txt
  */
 $.ajaxSetup(
-	type	: 'post'
-	error	: (xhr) !->
+	type		: 'post'
+	contents	:
+		script	: false
+	error		: (xhr) !->
 		cs.ui.notify(
 			if xhr.responseText
 				JSON.parse(xhr.responseText).error_description

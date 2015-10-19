@@ -8,6 +8,9 @@
 (function(){
   $.ajaxSetup({
     type: 'post',
+    contents: {
+      script: false
+    },
     error: function(xhr){
       cs.ui.notify(xhr.responseText
         ? JSON.parse(xhr.responseText).error_description
