@@ -313,14 +313,14 @@ class Language implements JsonSerializable {
 		 * Get current system translations
 		 */
 		$translation = &$this->translation[$language];
-		$translation = file_get_json_nocomments(LANGUAGES."/$language.json");
+		$translation = $this->get_translation_from_json(LANGUAGES."/$language.json");
 		$translation = $this->fill_required_translation_keys($translation, $language);
 		/**
 		 * Set modules' translations
 		 */
 		foreach (get_files_list(MODULES, false, 'd', true) as $module_dir) {
 			if (file_exists("$module_dir/languages/$language.json")) {
-				$translation = file_get_json_nocomments("$module_dir/languages/$language.json") + $translation;
+				$translation = $this->get_translation_from_json("$module_dir/languages/$language.json") + $translation;
 			}
 		}
 		/**
@@ -328,7 +328,7 @@ class Language implements JsonSerializable {
 		 */
 		foreach (get_files_list(PLUGINS, false, 'd', true) as $plugin_dir) {
 			if (file_exists("$plugin_dir/languages/$language.json")) {
-				$translation = file_get_json_nocomments("$plugin_dir/languages/$language.json") + $translation;
+				$translation = $this->get_translation_from_json("$plugin_dir/languages/$language.json") + $translation;
 			}
 		}
 		Event::instance()->fire(
@@ -345,6 +345,24 @@ class Language implements JsonSerializable {
 		 */
 		if ($this->clanguage) {
 			$translation = $translation + $this->translation[$this->clanguage];
+		}
+		return $translation;
+	}
+	/**
+	 * @param string $filename
+	 *
+	 * @return string[]
+	 */
+	protected function get_translation_from_json ($filename) {
+		$translation = file_get_json_nocomments($filename);
+		// Nested structure processing
+		foreach ($translation as $item => $value) {
+			if (is_array_assoc($value)) {
+				unset($translation[$item]);
+				foreach ($value as $sub_item => $sub_value) {
+					$translation[$item.$sub_item] = $sub_value;
+				}
+			}
 		}
 		return $translation;
 	}
