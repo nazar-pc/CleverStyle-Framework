@@ -45,19 +45,20 @@
 
 	@apply (--cs-label-switcher-hover);
 	@apply (--cs-label-switcher-focus);
+}
 
-	&:not(:active):not([active]) cs-icon {
-		@apply (--cs-label-switcher-hover-icon);
-		@apply (--cs-label-switcher-focus-icon);
-	}
+:host([focus]:not(:active):not([active])) cs-icon,
+:host(:focus:not(:active):not([active])) cs-icon {
+	@apply (--cs-label-switcher-hover-icon);
+	@apply (--cs-label-switcher-focus-icon);
 }
 
 :host(:hover) {
 	@apply (--cs-label-switcher-hover);
+}
 
-	&:not(:active):not([active]) cs-icon {
-		@apply (--cs-label-switcher-hover-icon);
-	}
+:host(:hover:not(:active):not([active])) cs-icon {
+	@apply (--cs-label-switcher-hover-icon);
 }
 
 :host([disabled]) {
