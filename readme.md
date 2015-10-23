@@ -3,6 +3,7 @@
 [![SensioLabsInsight](https://img.shields.io/sensiolabs/i/eacdd55b-4a0e-4429-add5-e6a01adb12af.svg?label=SLInsight)](https://insight.sensiolabs.com/projects/eacdd55b-4a0e-4429-add5-e6a01adb12af)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/nazar-pc/CleverStyle-CMS.svg?label=Scrutinizer)](https://scrutinizer-ci.com/g/nazar-pc/CleverStyle-CMS/)
 [![Build Status](https://img.shields.io/travis/nazar-pc/CleverStyle-CMS/master.svg?label=Travis CI)](https://travis-ci.org/nazar-pc/CleverStyle-CMS)
+[![Join the chat at https://gitter.im/nazar-pc/CleverStyle-CMS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nazar-pc/CleverStyle-CMS)
 # What is this?
 
 CleverStyle CMS is simple, scalable, and fast content management system.
@@ -148,7 +149,7 @@ This results in constant and predictable performance (no degradation with time),
 * or HHVM 3.3.2+ LTS or HHVM 3.4.1+
 * MySQL 5.5+
 * or MariaDB 5.5+
- 
+
 # How to try?
 
 It is possible to try latest git version of CleverStyle CMS without even installing it using [Docker](https://www.docker.com/), just type in terminal:
