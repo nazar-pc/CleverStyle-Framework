@@ -5,6 +5,8 @@
 [![Build Status](https://img.shields.io/travis/nazar-pc/CleverStyle-CMS/master.svg?label=Travis CI)](https://travis-ci.org/nazar-pc/CleverStyle-CMS)
 # What is this?
 
+[![Join the chat at https://gitter.im/nazar-pc/CleverStyle-CMS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nazar-pc/CleverStyle-CMS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 CleverStyle CMS is simple, scalable, and fast content management system.
 
 System core contains only basic functionality, so, it looks more like CMF (content management framework) rather than CMS.
