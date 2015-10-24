@@ -322,7 +322,11 @@ Polymer(
 	 *
 	 *  admin/System/components/modules/update_system/after
 	 */
-	_upload_system : !->
+	_upload_system : (e) !->
+		# Get System's module information
+		for module in @modules
+			if module.name == 'System'
+				break
 		@_upload_package(@$.file_system).then (meta) !~>
 			if meta.category != 'modules' || meta.package != 'System' || !meta.version
 				cs.ui.notify(L.this_is_not_system_installer_file, 'error', 5)

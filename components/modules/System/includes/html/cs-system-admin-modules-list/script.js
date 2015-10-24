@@ -336,8 +336,14 @@
      *
      *  admin/System/components/modules/update_system/after
      */,
-    _upload_system: function(){
-      var this$ = this;
+    _upload_system: function(e){
+      var i$, ref$, len$, module, this$ = this;
+      for (i$ = 0, len$ = (ref$ = this.modules).length; i$ < len$; ++i$) {
+        module = ref$[i$];
+        if (module.name === 'System') {
+          break;
+        }
+      }
       this._upload_package(this.$.file_system).then(function(meta){
         if (meta.category !== 'modules' || meta['package'] !== 'System' || !meta.version) {
           cs.ui.notify(L.this_is_not_system_installer_file, 'error', 5);

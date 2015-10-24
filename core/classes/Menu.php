@@ -46,6 +46,10 @@ class Menu {
 	protected function render_sections ($module) {
 		$content = '';
 		foreach ($this->section_items[$module] as $item) {
+			// TODO remove this later, needed for smooth update from 2.x versions
+			if (!isset($item[1]['href'])) {
+				return '';
+			}
 			$dropdown = $this->render_items($module, $item[1]['href']);
 			if ($dropdown) {
 				$dropdown = h::{'nav[is=cs-nav-dropdown] nav[is=cs-nav-button-group][vertical]'}($dropdown);
@@ -72,6 +76,10 @@ class Menu {
 		}
 		$content = '';
 		foreach ($this->items[$module] as $item) {
+			// TODO remove this later, needed for smooth update from 2.x versions
+			if (!isset($item[1]['href'])) {
+				return '';
+			}
 			/**
 			 * Nested items for parent
 			 */

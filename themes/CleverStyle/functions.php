@@ -48,9 +48,11 @@ function get_main_menu () {
 	/**
 	 * All other active modules if permissions allow to visit
 	 */
+	// TODO remove this later, needed for smooth update from 2.x versions
+	$system_module = defined(Config::class.'::SYSTEM_MODULE') ? Config::SYSTEM_MODULE : 'System';
 	foreach ($Config->components['modules'] as $module => $module_data) {
 		if (
-			$module != Config::SYSTEM_MODULE &&
+			$module != $system_module &&
 			$module_data['active'] == 1 &&
 			$module != $Config->core['default_module'] &&
 			!@file_get_json(MODULES."/$module/meta.json")['hide_in_menu'] &&
