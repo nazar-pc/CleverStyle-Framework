@@ -1,9 +1,0 @@
-%dom-module(id="cs-nav-pagination")
-	%link(rel="import" href="style.css" type="css")
-	%template
-		-# If anything was passed here - show as is
-		%content
-		-# Render pages if any
-		%template(is="dom-repeat" items="[[pages_list]]")
-			%button(is="cs-button" type="button" primary="[[item.active]]" disabled="[[item.disabled]]" on-tap="_set_page" first$="[[item.first]]" last$="[[item.last]]") [[item.text]]
-	%script(src="script.js")
