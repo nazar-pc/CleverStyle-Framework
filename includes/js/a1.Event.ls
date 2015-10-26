@@ -34,31 +34,26 @@ cs.Event = do
 			@on(event, callback_)
 		@
 	fire : (event, ...params) ->
-		(new Promise (resolve, reject) !->
-			if event && callbacks[event] && callbacks[event].length
-				new Callbacks_resolver(callbacks[event], params, resolve, reject)
-			else
-				resolve()
-		)
+		if event && callbacks[event] && callbacks[event].length
+			resolver	= new Callbacks_resolver(callbacks[event], params)
+			resolver.execute()
+		else
+			Promise.resolve()
 Object.freeze(cs.Event)
 /**
  * Utility callback resolver class
  */
 Callbacks_resolver = class
 	index	: 0
-	(@callbacks, @params, @resolve, @reject) ->
-		@execute()
-	execute : !->
+	(@callbacks, @params) ->
+	execute : ->
 		callback	= @callbacks[@index]
 		++@index
 		if !callback
-			@resolve()
-			return
-		result	= callback.apply(callback, @params)
-		if result == false
-			@reject()
-		# We accept either native Promise object or any other object that has `then` method (asumed to be compatible with `Promise.then` interface)
-		else if result && result.then instanceof Function
-			result.then(@~execute, @reject)
+			Promise.resolve()
 		else
-			@resolve()
+			result	= callback.apply(callback, @params)
+			if result == false
+				Promise.reject()
+			else
+				Promise.resolve(result).then(@~execute)

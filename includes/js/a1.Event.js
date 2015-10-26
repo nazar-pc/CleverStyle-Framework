@@ -44,15 +44,14 @@
       return this;
     },
     fire: function(event){
-      var params;
+      var params, resolver;
       params = slice$.call(arguments, 1);
-      return new Promise(function(resolve, reject){
-        if (event && callbacks[event] && callbacks[event].length) {
-          new Callbacks_resolver(callbacks[event], params, resolve, reject);
-        } else {
-          resolve();
-        }
-      });
+      if (event && callbacks[event] && callbacks[event].length) {
+        resolver = new Callbacks_resolver(callbacks[event], params);
+        return resolver.execute();
+      } else {
+        return Promise.resolve();
+      }
     }
   });
   Object.freeze(cs.Event);
@@ -63,28 +62,23 @@
     Callbacks_resolver.displayName = 'Callbacks_resolver';
     var prototype = Callbacks_resolver.prototype, constructor = Callbacks_resolver;
     prototype.index = 0;
-    function Callbacks_resolver(callbacks, params, resolve, reject){
+    function Callbacks_resolver(callbacks, params){
       this.callbacks = callbacks;
       this.params = params;
-      this.resolve = resolve;
-      this.reject = reject;
-      this.execute();
     }
     prototype.execute = function(){
       var callback, result;
       callback = this.callbacks[this.index];
       ++this.index;
       if (!callback) {
-        this.resolve();
-        return;
-      }
-      result = callback.apply(callback, this.params);
-      if (result === false) {
-        this.reject();
-      } else if (result && result.then instanceof Function) {
-        result.then(bind$(this, 'execute'), this.reject);
+        return Promise.resolve();
       } else {
-        this.resolve();
+        result = callback.apply(callback, this.params);
+        if (result === false) {
+          return Promise.reject();
+        } else {
+          return Promise.resolve(result).then(bind$(this, 'execute'));
+        }
       }
     };
     return Callbacks_resolver;
