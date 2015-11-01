@@ -30,7 +30,9 @@ cs.hash						= (algo, data) ->
 		when 'sha384' then 'SHA-384'
 		when 'sha512' then 'SHA-512'
 		else algo
-	(new jsSHA(data, 'ASCII')).getHash(algo, 'HEX')
+	shaObj = new jsSHA(algo, 'TEXT')
+	shaObj.update(data)
+	shaObj.getHash('HEX')
 ###*
  * Function for setting cookies taking into account cookies prefix
  *

@@ -38,6 +38,7 @@
    */
 
   cs.hash = function(algo, data) {
+    var shaObj;
     algo = (function() {
       switch (algo) {
         case 'sha1':
@@ -54,7 +55,9 @@
           return algo;
       }
     })();
-    return (new jsSHA(data, 'ASCII')).getHash(algo, 'HEX');
+    shaObj = new jsSHA(algo, 'TEXT');
+    shaObj.update(data);
+    return shaObj.getHash('HEX');
   };
 
 
