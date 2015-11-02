@@ -276,9 +276,9 @@ class Route {
 				return
 					(
 						$ADMIN &&
-						$module_data['active'] == 0
+						$module_data['active'] == Config\Module_Properties::DISABLED
 					) ||
-					$module_data['active'] == 1;
+					$module_data['active'] == Config\Module_Properties::ENABLED;
 			}
 		);
 		$L       = Language::instance();

@@ -12,7 +12,7 @@ Event::instance()
 	->on(
 		'System/Route/routing_replace',
 		function ($data) {
-			if (Config::instance()->module('OAuth2')->active() && substr($data['rc'], 0, 5) != 'admin') {
+			if (Config::instance()->module('OAuth2')->enabled() && substr($data['rc'], 0, 5) != 'admin') {
 				$rc = explode('/', $data['rc'], 2);
 				if (isset($rc[0]) && $rc[0] == 'OAuth2') {
 					if (isset($rc[1])) {
@@ -37,15 +37,12 @@ Event::instance()
 	->on(
 		'System/Index/construct',
 		function () {
-			$Config = Config::instance();
-			if (!isset($Config->components['modules']['OAuth2'])) {
-				return;
-			}
-			switch ($Config->components['modules']['OAuth2']['active']) {
-				case -1:
+			$module_data = Config::instance()->module('OAuth2');
+			switch (true) {
+				case $module_data->uninstalled():
 					require __DIR__.'/events/uninstalled.php';
 					break;
-				case 1:
+				case $module_data->enabled():
 					require __DIR__.'/events/enabled.php';
 			}
 		}

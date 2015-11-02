@@ -16,7 +16,7 @@ Event::instance()
 		function ($data) {
 			if (
 				substr($data['rc'], 0, 5) != 'admin' &&
-				!Config::instance()->module('Static_pages')->active()
+				!Config::instance()->module('Static_pages')->enabled()
 			) {
 				return;
 			}
@@ -48,14 +48,8 @@ Event::instance()
 	->on(
 		'System/Index/construct',
 		function () {
-			$Config = Config::instance();
-			if (!isset($Config->components['modules']['Static_pages'])) {
-				return;
-			}
-			switch ($Config->components['modules']['Static_pages']['active']) {
-				case 0:
-				case 1:
-					require __DIR__.'/events/installed.php';
+			if (Config::instance()->module('Static_pages')->installed()) {
+				require __DIR__.'/events/installed.php';
 			}
 		}
 	);

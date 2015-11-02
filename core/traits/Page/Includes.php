@@ -503,9 +503,9 @@ trait Includes {
 		$Config = Config::instance();
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
 			if (
-				$module_data['active'] == -1 ||
+				$module_data['active'] == Config\Module_Properties::UNINSTALLED ||
 				(
-					$module_data['active'] == 0 &&
+					$module_data['active'] == Config\Module_Properties::DISABLED &&
 					!$with_disabled
 				)
 			) {
@@ -633,9 +633,9 @@ trait Includes {
 		$Config = Config::instance();
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
 			if (
-				$module_data['active'] == -1 ||
+				$module_data['active'] == Config\Module_Properties::UNINSTALLED ||
 				(
-					$module_data['active'] == 0 &&
+					$module_data['active'] == Config\Module_Properties::DISABLED &&
 					!$with_disabled
 				)
 			) {

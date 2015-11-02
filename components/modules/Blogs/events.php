@@ -1,10 +1,10 @@
 <?php
 /**
- * @package        Blogs
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   Blogs
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs;
 Event::instance()
@@ -59,20 +59,17 @@ Event::instance()
 	->on(
 		'System/Index/construct',
 		function () {
-			$Config = Config::instance();
-			if (!isset($Config->components['modules']['Blogs'])) {
-				return;
-			}
-			switch ($Config->components['modules']['Blogs']['active']) {
-				case -1:
+			$module_data = Config::instance()->module('Blogs');
+			switch (true) {
+				case $module_data->uninstalled():
 					require __DIR__.'/events/uninstalled.php';
 					break;
-				case 1:
+				case $module_data->enabled():
 					require __DIR__.'/events/enabled.php';
 					if (current_module() == 'Blogs') {
 						require __DIR__.'/events/enabled/admin.php';
 					}
-				default:
+				case $module_data->installed():
 					require __DIR__.'/events/installed.php';
 			}
 		}

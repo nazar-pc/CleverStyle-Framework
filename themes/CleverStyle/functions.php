@@ -50,18 +50,14 @@ function get_main_menu () {
 	 */
 	// TODO remove this later, needed for smooth update from 2.x versions
 	$system_module = defined(Config::class.'::SYSTEM_MODULE') ? Config::SYSTEM_MODULE : 'System';
-	foreach ($Config->components['modules'] as $module => $module_data) {
+	foreach ($Config->components['modules'] as $module) {
 		if (
 			$module != $system_module &&
-			$module_data['active'] == 1 &&
 			$module != $Config->core['default_module'] &&
-			!@file_get_json(MODULES."/$module/meta.json")['hide_in_menu'] &&
 			$User->get_permission($module, 'index') &&
-			(
-				file_exists(MODULES."/$module/index.php") ||
-				file_exists(MODULES."/$module/index.html") ||
-				file_exists(MODULES."/$module/index.json")
-			)
+			file_exists_with_extension(MODULES."/$module/index", ['php', 'html', 'json']) &&
+			!@file_get_json(MODULES."/$module/meta.json")['hide_in_menu'] &&
+			$Config->module($module)->enabled()
 		) {
 			$main_menu_items[] = h::a(
 				$L->$module,

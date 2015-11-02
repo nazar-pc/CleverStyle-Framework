@@ -44,14 +44,8 @@ Event::instance()
 	->on(
 		'System/Index/construct',
 		function () {
-			$Config = Config::instance();
-			if (!isset($Config->components['modules']['Photo_gallery'])) {
-				return;
-			}
-			switch ($Config->components['modules']['Photo_gallery']['active']) {
-				case 1:
-				case 0:
-					require __DIR__.'/events/installed.php';
+			if (Config::instance()->module('Photo_gallery')->installed()) {
+				require __DIR__.'/events/installed.php';
 			}
 		}
 	);

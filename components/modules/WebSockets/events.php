@@ -10,16 +10,13 @@ namespace cs;
 Event::instance()->on(
 	'System/Index/construct',
 	function () {
-		$Config = Config::instance();
-		if (!isset($Config->components['modules']['WebSockets'])) {
-			return;
-		}
-		switch ($Config->components['modules']['WebSockets']['active']) {
-			case 1:
+		$module_data = Config::instance()->module('WebSockets');
+		switch (true) {
+			case $module_data->enabled():
 				require_once __DIR__.'/functions.php';
 				require __DIR__.'/events/enabled.php';
 				return;
-			case -1:
+			case $module_data->uninstalled():
 				require __DIR__.'/events/uninstalled.php';
 		}
 	}

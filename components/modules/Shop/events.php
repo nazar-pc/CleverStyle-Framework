@@ -1,10 +1,10 @@
 <?php
 /**
- * @package    Shop
- * @attribute  modules
- * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2014-2015, Nazar Mokrynskyi
- * @license    MIT License, see license.txt
+ * @package   Shop
+ * @attribute modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\Shop;
 use
@@ -45,19 +45,15 @@ Event::instance()
 	->on(
 		'System/Index/construct',
 		function () {
-			$Config = Config::instance();
-			if (!isset($Config->components['modules']['Shop'])) {
-				return;
-			}
-			switch ($Config->components['modules']['Shop']['active']) {
-				case -1:
+			$module_data = Config::instance()->module('Shop');
+			switch (true) {
+				case $module_data->uninstalled():
 					require __DIR__.'/events/uninstalled.php';
 					break;
-				case 1:
+				case $module_data->enabled():
 					require __DIR__.'/events/enabled.php';
 					require __DIR__.'/events/enabled/admin.php';
-				//Yes, this is not a typo
-				case 0:
+				case $module_data->installed():
 					require __DIR__.'/events/installed.php';
 			}
 		}

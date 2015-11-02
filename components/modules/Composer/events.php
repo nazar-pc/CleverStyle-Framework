@@ -14,16 +14,13 @@ _require_once(STORAGE.'/Composer/vendor/autoload.php', false);
 Event::instance()->on(
 	'System/Index/construct',
 	function () {
-		$Config = Config::instance();
-		if (!isset($Config->components['modules']['Composer'])) {
-			return;
-		}
-		switch ($Config->components['modules']['Composer']['active']) {
-			case 1:
+		$module_data = Config::instance()->module('Composer');
+		switch (true) {
+			case $module_data->enabled():
 				if (current_module() == 'Composer') {
 					require __DIR__.'/events/enabled/admin.php';
 				}
-			case 0:
+			case $module_data->installed():
 				require __DIR__.'/events/installed.php';
 		}
 	}

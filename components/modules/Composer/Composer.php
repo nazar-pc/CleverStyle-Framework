@@ -43,8 +43,8 @@ use
 class Composer {
 	use
 		Singleton;
-	const MODE_ADD         = 1;
-	const MODE_DELETE      = 2;
+	const MODE_ADD    = 1;
+	const MODE_DELETE = 2;
 	/**
 	 * Force update even if nothing changed
 	 *
@@ -192,7 +192,7 @@ class Composer {
 			'require'      => []
 		];
 		$Config   = Config::instance();
-		foreach ($Config->components['modules'] as $module => $module_data) {
+		foreach ($Config->components['modules'] as $module) {
 			if (
 				$module == $component_name &&
 				$category == 'modules' &&
@@ -201,14 +201,14 @@ class Composer {
 				continue;
 			}
 			if (
+				file_exists(MODULES."/$module/meta.json") &&
 				(
-					$module_data['active'] != -1 ||
+					!$Config->module($module)->uninstalled() ||
 					(
 						$component_name == $module &&
 						$category == 'modules'
 					)
-				) &&
-				file_exists(MODULES."/$module/meta.json")
+				)
 			) {
 				$this->generate_package(
 					$composer,

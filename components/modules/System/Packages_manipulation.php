@@ -168,7 +168,7 @@ class Packages_manipulation {
 	 *
 	 * @param string     $target_directory
 	 * @param string     $old_version
-	 * @param array|null $db_array `$module_data['db']` if module or system
+	 * @param array|null $db_array `$Config->components['modules'][$module]['db']` if module or system
 	 */
 	static function update_php_sql ($target_directory, $old_version, $db_array = null) {
 		$Core   = Core::instance();
@@ -228,11 +228,11 @@ class Packages_manipulation {
 		/**
 		 * Check for compatibility with modules
 		 */
-		foreach ($Config->components['modules'] as $module => $module_data) {
+		foreach ($Config->components['modules'] as $module) {
 			/**
 			 * If module uninstalled - we do not care about it
 			 */
-			if ($module_data['active'] == -1) {
+			if ($Config->module($module)->uninstalled()) {
 				continue;
 			}
 			/**
@@ -248,7 +248,7 @@ class Packages_manipulation {
 			}
 			self::get_dependencies_common_checks($dependencies, $meta, $module_meta);
 		}
-		unset($module, $module_data, $module_meta);
+		unset($module, $module_meta);
 		/**
 		 * Check for compatibility with plugins
 		 */
@@ -544,17 +544,17 @@ class Packages_manipulation {
 		/**
 		 * Checking for backward dependencies of modules
 		 */
-		foreach ($Config->components['modules'] as $module => $module_data) {
+		foreach ($Config->components['modules'] as $module) {
 			/**
-			 * If module is not active, we compare module with itself or there is no `meta.json` - we do not care about it
+			 * If module is not enabled, we compare module with itself or there is no `meta.json` - we do not care about it
 			 */
 			if (
-				$module_data['active'] != 1 ||
 				(
 					$meta['category'] == 'modules' &&
 					$meta['package'] == $module
 				) ||
-				!file_exists(MODULES."/$module/meta.json")
+				!file_exists(MODULES."/$module/meta.json") ||
+				!$Config->module($module)->enabled()
 			) {
 				continue;
 			}
@@ -570,7 +570,7 @@ class Packages_manipulation {
 				$used_by['modules'][] = $module;
 			}
 		}
-		unset($module, $module_data);
+		unset($module);
 		/**
 		 * Checking for backward dependencies of plugins
 		 */

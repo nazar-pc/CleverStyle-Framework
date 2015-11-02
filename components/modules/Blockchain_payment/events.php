@@ -14,15 +14,12 @@ use
 Event::instance()->on(
 	'System/Index/construct',
 	function () {
-		$Config = Config::instance();
-		if (!isset($Config->components['modules']['Blockchain_payment'])) {
-			return;
-		}
-		switch ($Config->components['modules']['Blockchain_payment']['active']) {
-			case -1:
+		$module_data = Config::instance()->module('Blockchain_payment');
+		switch (true) {
+			case $module_data->uninstalled():
 				require __DIR__.'/events/uninstalled.php';
 				break;
-			case 1:
+			case $module_data->enabled():
 				require __DIR__.'/events/enabled.php';
 				require __DIR__.'/events/enabled/admin.php';
 		}

@@ -24,7 +24,7 @@ use
  *  ]
  */
 $Config = Config::instance();
-if (!$Config->module('Comments')->active()) {
+if (!$Config->module('Comments')->enabled()) {
 	throw new ExitException(404);
 }
 if (!User::instance()->user()) {

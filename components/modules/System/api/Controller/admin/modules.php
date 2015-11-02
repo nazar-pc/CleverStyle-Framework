@@ -81,7 +81,7 @@ trait modules {
 	 * @throws ExitException
 	 */
 	protected static function get_dependent_packages_for_module ($module) {
-		if (!isset(Config::instance()->components['modules'][$module])) {
+		if (!Config::instance()->module($module)) {
 			throw new ExitException(404);
 		}
 		$meta_file = MODULES."/$module/meta.json";
@@ -95,7 +95,7 @@ trait modules {
 	 * @throws ExitException
 	 */
 	protected static function get_dependencies_for_module ($module) {
-		if (!isset(Config::instance()->components['modules'][$module])) {
+		if (!Config::instance()->module($module)) {
 			throw new ExitException(404);
 		}
 		$meta_file = MODULES."/$module/meta.json";
@@ -109,7 +109,7 @@ trait modules {
 	 * @throws ExitException
 	 */
 	protected static function get_update_dependencies_for_module ($module) {
-		if (!isset(Config::instance()->components['modules'][$module])) {
+		if (!Config::instance()->module($module)) {
 			throw new ExitException(404);
 		}
 		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
@@ -291,13 +291,14 @@ trait modules {
 	 * @throws ExitException
 	 */
 	protected static function set_default_module ($module) {
-		$Config = Config::instance();
-		if (!isset($Config->components['modules'][$module])) {
+		$Config      = Config::instance();
+		$module_data = $Config->module($module);
+		if (!$module_data) {
 			throw new ExitException(404);
 		}
 		if (
 			$module == $Config->core['default_module'] ||
-			$Config->components['modules'][$module]['active'] != 1 ||
+			!$module_data->enabled() ||
 			!file_exists_with_extension(MODULES."/$module/index", ['php', 'html', 'json'])
 		) {
 			throw new ExitException(400);
@@ -335,13 +336,9 @@ trait modules {
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
-		$module  = $route_path[2];
-		$Config  = Config::instance();
-		$modules = &$Config->components['modules'];
-		if (
-			!isset($modules[$module]) ||
-			$modules[$module]['active'] != 0
-		) {
+		$module = $route_path[2];
+		$Config = Config::instance();
+		if (!$Config->module($module)->disabled()) {
 			throw new ExitException(400);
 		}
 		if (!Event::instance()->fire(
@@ -353,7 +350,7 @@ trait modules {
 		) {
 			throw new ExitException(500);
 		}
-		$modules[$module]['active'] = 1;
+		$Config->components['modules'][$module]['active'] = Config\Module_Properties::ENABLED;
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
@@ -393,14 +390,12 @@ trait modules {
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
-		$module  = $route_path[2];
-		$Config  = Config::instance();
-		$modules = &$Config->components['modules'];
+		$module = $route_path[2];
+		$Config = Config::instance();
 		if (
-			$module == Config::SYSTEM_MODULE ||
-			!isset($modules[$module]) ||
+			$module === Config::SYSTEM_MODULE ||
 			$Config->core['default_module'] === $module ||
-			$modules[$module]['active'] != 1
+			!$Config->module($module)->enabled()
 		) {
 			throw new ExitException(400);
 		}
@@ -413,7 +408,7 @@ trait modules {
 		) {
 			throw new ExitException(500);
 		}
-		$modules[$module]['active'] = 0;
+		$Config->components['modules'][$module]['active'] = Config\Module_Properties::DISABLED;
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
@@ -449,10 +444,7 @@ trait modules {
 		$Core    = Core::instance();
 		$db      = DB::instance();
 		$modules = &$Config->components['modules'];
-		if (
-			!isset($modules[$module]) ||
-			$modules[$module]['active'] != -1
-		) {
+		if (!$Config->module($module)->uninstalled()) {
 			throw new ExitException(400);
 		}
 		if (!Event::instance()->fire(
@@ -483,7 +475,7 @@ trait modules {
 		if (isset($_POST['storage'])) {
 			$module_data['storage'] = $_POST['storage'];
 		}
-		$module_data['active'] = 0;
+		$module_data['active'] = Config\Module_Properties::DISABLED;
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
@@ -522,10 +514,7 @@ trait modules {
 		/**
 		 * Do not allow to uninstall enabled module, it should be explicitly disabled first
 		 */
-		if (
-			!isset($modules[$module]) ||
-			$modules[$module]['active'] != 0
-		) {
+		if (!$Config->module($module)->disabled()) {
 			throw new ExitException(400);
 		}
 		if (!Event::instance()->fire(
@@ -553,7 +542,7 @@ trait modules {
 			time_limit_pause(false);
 		}
 		static::delete_permissions_for_module($module);
-		$modules[$module] = ['active' => -1];
+		$modules[$module] = ['active' => Config\Module_Properties::UNINSTALLED];
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
@@ -608,7 +597,7 @@ trait modules {
 		) {
 			throw new ExitException($L->module_files_unpacking_error, 500);
 		}
-		$Config->components['modules'][$new_meta['package']] = ['active' => -1];
+		$Config->components['modules'][$new_meta['package']] = ['active' => Config\Module_Properties::UNINSTALLED];
 		ksort($Config->components['modules'], SORT_STRING | SORT_FLAG_CASE);
 		if (!$Config->save()) {
 			throw new ExitException(500);
@@ -626,9 +615,8 @@ trait modules {
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
-		$module  = $route_path[2];
-		$modules = get_files_list(MODULES, false, 'd');
-		if (!in_array($module, $modules, true)) {
+		$module = $route_path[2];
+		if (!Config::instance()->module($module)) {
 			throw new ExitException(404);
 		}
 		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
@@ -668,13 +656,12 @@ trait modules {
 	 * @throws ExitException
 	 */
 	protected static function update_module ($module, $existing_meta, $new_meta, $tmp_location, $route_ids, $route_path) {
-		$Config      = Config::instance();
-		$L           = Language::instance();
-		$module_dir  = MODULES."/$module";
-		$module_data = $Config->components['modules'][$module];
-		$active      = $module_data['active'] == 1;
+		$Config     = Config::instance();
+		$L          = Language::instance();
+		$module_dir = MODULES."/$module";
+		$enabled    = $Config->module($module)->enabled();
 		// If module is currently enabled - disable it temporary
-		if ($active) {
+		if ($enabled) {
 			static::admin_modules_disable($route_ids, $route_path);
 		}
 		if (!static::is_same_module($new_meta, $module)) {
@@ -696,7 +683,11 @@ trait modules {
 			throw new ExitException($L->module_files_unpacking_error, 500);
 		}
 		// Run PHP update scripts and SQL queries if any
-		Packages_manipulation::update_php_sql($module_dir, $existing_meta['version'], isset($module_data['db']) ? $module_data['db'] : null);
+		Packages_manipulation::update_php_sql(
+			$module_dir,
+			$existing_meta['version'],
+			isset($Config->components['modules'][$module]['db']) ? $Config->components['modules'][$module]['db'] : null
+		);
 		Event::instance()->fire(
 			'admin/System/components/modules/update/after',
 			[
@@ -704,7 +695,7 @@ trait modules {
 			]
 		);
 		// If module was enabled before update - enable it back
-		if ($active) {
+		if ($enabled) {
 			static::admin_modules_enable($route_ids, $route_path);
 		}
 	}
@@ -723,10 +714,9 @@ trait modules {
 	 * @throws ExitException
 	 */
 	protected static function update_system ($module, $existing_meta, $new_meta, $tmp_location, $tmp_dir) {
-		$Config      = Config::instance();
-		$L           = Language::instance();
-		$module_dir  = MODULES."/$module";
-		$module_data = $Config->components['modules'][$module];
+		$Config     = Config::instance();
+		$L          = Language::instance();
+		$module_dir = MODULES."/$module";
 		/**
 		 * Temporary close site
 		 */
@@ -752,7 +742,11 @@ trait modules {
 			throw new ExitException($L->system_files_unpacking_error, 500);
 		}
 		// Run PHP update scripts and SQL queries if any
-		Packages_manipulation::update_php_sql($module_dir, $existing_meta['version'], $module_data['db']);
+		Packages_manipulation::update_php_sql(
+			$module_dir,
+			$existing_meta['version'],
+			isset($Config->components['modules'][$module]['db']) ? $Config->components['modules'][$module]['db'] : null
+		);
 		Event::instance()->fire('admin/System/components/modules/update_system/after');
 		/**
 		 * Restore previous site mode
@@ -776,23 +770,18 @@ trait modules {
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
-		$module_name = $route_path[2];
-		$modules     = get_files_list(MODULES, false, 'd');
-		$Config      = Config::instance();
-		if (!isset($Config->components['modules'][$module_name])) {
-			throw new ExitException(404);
-		}
+		$module = $route_path[2];
+		$Config = Config::instance();
 		if (
-			$module_name == Config::SYSTEM_MODULE ||
-			$Config->components['modules'][$module_name]['active'] != '-1' ||
-			!in_array($module_name, $modules)
+			$module == Config::SYSTEM_MODULE ||
+			!$Config->module($module)->uninstalled()
 		) {
 			throw new ExitException(400);
 		}
-		if (!rmdir_recursive(MODULES."/$module_name")) {
+		if (!rmdir_recursive(MODULES."/$module")) {
 			throw new ExitException(500);
 		}
-		unset($Config->components['modules'][$module_name]);
+		unset($Config->components['modules'][$module]);
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}

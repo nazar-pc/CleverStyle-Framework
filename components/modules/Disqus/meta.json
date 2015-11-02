@@ -1,14 +1,14 @@
 {
 	"package"     : "Disqus",
 	"category"    : "modules",
-	"version"     : "1.5.2+build-13",
+	"version"     : "1.6.0+build-14",
 	"description" : "Integration of Disqus commenting service, adds comments functionality to other modules",
 	"author"      : "Nazar Mokrynskyi",
 	"website"     : "cleverstyle.org/cms",
 	"license"     : "MIT License",
 	"provide"     : "comments",
 	"require"     : [
-		"System>=3.39",
+		"System>=3.105",
 		"System<4.0"
 	]
 }

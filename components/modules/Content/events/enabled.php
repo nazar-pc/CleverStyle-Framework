@@ -18,7 +18,7 @@ Event::instance()->on(
 	'System/Page/display/after',
 	function () {
 		$module_data = Config::instance()->module('Content');
-		if ($module_data->simple_insert && $module_data->active()) {
+		if ($module_data->simple_insert && $module_data->enabled()) {
 			$Page          = Page::instance();
 			$Page->Content = preg_replace_callback(
 				'/{(Content|Content_title):(.+)}/Uims',

@@ -708,12 +708,13 @@ function functionality ($functionality) {
 		return $result;
 	}
 	$all = Cache::instance()->get(
-		"functionality",
+		'functionality',
 		function () {
 			$functionality = [];
-			$components    = Config::instance()->components;
-			foreach ($components['modules'] as $module => $module_data) {
-				if ($module_data['active'] != 1 || !file_exists(MODULES."/$module/meta.json")) {
+			$Config        = Config::instance();
+			$components    = $Config->components;
+			foreach ($components['modules'] as $module) {
+				if (!$Config->module($module)->enabled() || !file_exists(MODULES."/$module/meta.json")) {
 					continue;
 				}
 				$functionality[] = [$module];
@@ -737,6 +738,7 @@ function functionality ($functionality) {
 	);
 	return in_array($functionality, $all);
 }
+
 /**
  * Returns system version
  *

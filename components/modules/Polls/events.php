@@ -1,24 +1,18 @@
 <?php
 /**
- * @package        Polls
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2014-2015, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   Polls
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs;
 
 Event::instance()->on(
 	'System/Index/construct',
 	function () {
-		$Config = Config::instance();
-		if (!isset($Config->components['modules']['Polls'])) {
-			return;
-		}
-		switch ($Config->components['modules']['Polls']['active']) {
-			case 0:
-			case 1:
-				require __DIR__.'/events/installed.php';
+		if (Config::instance()->module('Polls')->installed()) {
+			require __DIR__.'/events/installed.php';
 		}
 	}
 );
