@@ -135,7 +135,7 @@ trait modules {
 	 * @return bool
 	 */
 	protected static function is_same_module ($meta, $module) {
-		return $meta['category'] === 'modules' && $meta['package'] === $module;
+		return $meta['category'] == 'modules' && $meta['package'] == $module;
 	}
 	/**
 	 * @param string $module
@@ -393,8 +393,8 @@ trait modules {
 		$module = $route_path[2];
 		$Config = Config::instance();
 		if (
-			$module === Config::SYSTEM_MODULE ||
-			$Config->core['default_module'] === $module ||
+			$module == Config::SYSTEM_MODULE ||
+			$Config->core['default_module'] == $module ||
 			!$Config->module($module)->enabled()
 		) {
 			throw new ExitException(400);
@@ -631,7 +631,7 @@ trait modules {
 		}
 		$existing_meta = file_get_json("$module_dir/meta.json");
 		$new_meta      = file_get_json("$tmp_dir/meta.json");
-		if ($module === Config::SYSTEM_MODULE) {
+		if ($module == Config::SYSTEM_MODULE) {
 			static::update_system($module, $existing_meta, $new_meta, $tmp_location, $tmp_dir);
 		} else {
 			static::update_module($module, $existing_meta, $new_meta, $tmp_location, $route_ids, $route_path);
@@ -682,12 +682,9 @@ trait modules {
 		if (!Packages_manipulation::update_extract($module_dir, $tmp_location)) {
 			throw new ExitException($L->module_files_unpacking_error, 500);
 		}
+		$module_data = $Config->components['modules'][$module];
 		// Run PHP update scripts and SQL queries if any
-		Packages_manipulation::update_php_sql(
-			$module_dir,
-			$existing_meta['version'],
-			isset($Config->components['modules'][$module]['db']) ? $Config->components['modules'][$module]['db'] : null
-		);
+		Packages_manipulation::update_php_sql($module_dir, $existing_meta['version'], isset($module_data['db']) ? $module_data['db'] : null);
 		Event::instance()->fire(
 			'admin/System/components/modules/update/after',
 			[
@@ -741,12 +738,9 @@ trait modules {
 		if (!Packages_manipulation::update_extract(DIR, $tmp_location, DIR.'/core', $module_dir)) {
 			throw new ExitException($L->system_files_unpacking_error, 500);
 		}
+		$module_data = $Config->components['modules'][$module];
 		// Run PHP update scripts and SQL queries if any
-		Packages_manipulation::update_php_sql(
-			$module_dir,
-			$existing_meta['version'],
-			isset($Config->components['modules'][$module]['db']) ? $Config->components['modules'][$module]['db'] : null
-		);
+		Packages_manipulation::update_php_sql($module_dir, $existing_meta['version'], isset($module_data['db']) ? $module_data['db'] : null);
 		Event::instance()->fire('admin/System/components/modules/update_system/after');
 		/**
 		 * Restore previous site mode
