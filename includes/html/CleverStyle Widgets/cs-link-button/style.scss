@@ -69,12 +69,12 @@
 }
 
 /* Button with icon */
-:host([icon]:not(:empty):not([empty])) cs-icon {
+:host([icon]) cs-icon:first-of-type {
 	@apply (--cs-button-icon);
 	@apply (--cs-link-button-icon);
 }
 
-:host([icon-after]:not(:empty):not([empty])) cs-icon {
+:host([icon-after]) cs-icon:last-of-type {
 	@apply (--cs-button-icon-after);
 	@apply (--cs-link-button-icon-after);
 }
