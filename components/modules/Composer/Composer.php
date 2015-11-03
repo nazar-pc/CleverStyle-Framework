@@ -192,7 +192,7 @@ class Composer {
 			'require'      => []
 		];
 		$Config   = Config::instance();
-		foreach ($Config->components['modules'] as $module) {
+		foreach (array_keys($Config->components['modules']) as $module) {
 			if (
 				$module == $component_name &&
 				$category == 'modules' &&

@@ -50,7 +50,7 @@ function get_main_menu () {
 	 */
 	// TODO remove this later, needed for smooth update from 2.x versions
 	$system_module = defined(Config::class.'::SYSTEM_MODULE') ? Config::SYSTEM_MODULE : 'System';
-	foreach ($Config->components['modules'] as $module) {
+	foreach (array_keys($Config->components['modules']) as $module) {
 		if (
 			$module != $system_module &&
 			$module != $Config->core['default_module'] &&

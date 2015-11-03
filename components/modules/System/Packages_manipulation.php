@@ -228,7 +228,7 @@ class Packages_manipulation {
 		/**
 		 * Check for compatibility with modules
 		 */
-		foreach ($Config->components['modules'] as $module) {
+		foreach (array_keys($Config->components['modules']) as $module) {
 			/**
 			 * If module uninstalled - we do not care about it
 			 */
@@ -544,7 +544,7 @@ class Packages_manipulation {
 		/**
 		 * Checking for backward dependencies of modules
 		 */
-		foreach ($Config->components['modules'] as $module) {
+		foreach (array_keys($Config->components['modules']) as $module) {
 			/**
 			 * If module is not enabled, we compare module with itself or there is no `meta.json` - we do not care about it
 			 */
