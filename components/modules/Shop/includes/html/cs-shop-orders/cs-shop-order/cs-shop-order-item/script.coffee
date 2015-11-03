@@ -16,10 +16,10 @@ Polymer(
 		do (img = @querySelector('#img')) =>
 			@$.img.src		= img.src
 			@$.img.title	= img.title
-		href					= @querySelector('#link').href
+		href = @querySelector('#link').href
 		if href
-			@$.img.href		= href
-			@$.link.href	= href
+			@$['img-link'].href	= href
+			@$.link.href		= href
 		@item_title				= @querySelector('#link').innerHTML
 		@unit_price_formatted	= sprintf(cs.shop.settings.price_formatting, @unit_price)
 		@price_formatted		= sprintf(cs.shop.settings.price_formatting, @price)

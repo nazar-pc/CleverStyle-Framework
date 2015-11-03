@@ -9,24 +9,24 @@ dom-module(id="cs-system-admin-modules-list")
 			template(is="dom-repeat" items="[[modules]]" as="module")
 				tr(class$="[[module.class]]")
 					td
-						a(href="[[concat('/admin/', module.name)]]" tooltip="[[module.info]]" hidden$="[[!module.administration]]")
-							span [[module.name_localized]]
+						a(href="/admin/[[module.name]]" tooltip="[[module.info]]" hidden$="[[!module.administration]]")
+							[[module.name_localized]]
 							cs-tooltip
 						span(tooltip="[[module.info]]" hidden$="[[module.administration]]")
-							span [[module.name_localized]]
+							[[module.name_localized]]
 							cs-tooltip
 					td
 						cs-icon(icon="[[module.icon]]" tooltip="[[module.icon_text]]")
 						= ' '
 						template(is="dom-if" if="[[module.api]]")
 							cs-icon(icon="link" tooltip="[[L.api_exists]]" hidden$="[[module.api.type]]")
-							button(is="cs-button" type="button" icon="link" tooltip="[[concat(L.api_exists, '<br>', L.click_to_view_details)]]" hidden$="[[!module.api.type]]")
+							button(is="cs-button" type="button" icon="link" tooltip="[[L.api_exists]]<br>[[L.click_to_view_details]]" hidden$="[[!module.api.type]]")
 							section(is="cs-section-modal" content="[[module.api.content]]")
 						= ' '
-						button(is="cs-button" type="button" icon="book" tooltip="[[concat(L.information_about_module, '<br>', L.click_to_view_details)]]" hidden$="[[!module.readme]]")
+						button(is="cs-button" type="button" icon="book" tooltip="[[L.information_about_module]]<br>[[L.click_to_view_details]]" hidden$="[[!module.readme]]")
 						section(is="cs-section-modal" content="[[module.readme.content]]")
 						= ' '
-						button(is="cs-button" type="button" icon="legal" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]" hidden$="[[!module.license]]")
+						button(is="cs-button" type="button" icon="legal" tooltip="[[L.license]]<br>[[L.click_to_view_details]]" hidden$="[[!module.license]]")
 						section(is="cs-section-modal" content="[[module.license.content]]")
 					td(left)
 						a(is="cs-link-button" icon="home" on-tap="_set_as_default" tooltip="[[L.make_default_module]]" hidden$="[[!module.can_be_set_as_default]]")
@@ -35,7 +35,7 @@ dom-module(id="cs-system-admin-modules-list")
 						= ' '
 						a(is="cs-link-button" icon="hdd-o" on-tap="_storage_settings" tooltip="[[L.storages]]" hidden$="[[!module.storage_settings]]")
 						= ' '
-						a(is="cs-link-button" icon="sliders" href="[[concat('/admin/', module.name)]]" tooltip="[[L.module_admin_page]]" hidden$="[[!module.administration]]")
+						a(is="cs-link-button" icon="sliders" href="/admin/[[module.name]]" tooltip="[[L.module_admin_page]]" hidden$="[[!module.administration]]")
 						= ' '
 						a(is="cs-link-button" icon="minus" on-tap="_disable" tooltip="[[L.disable]]" hidden$="[[!module.can_disable]]")
 						= ' '

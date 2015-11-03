@@ -27,7 +27,7 @@
       })(this)(this.querySelector('#img'));
       href = this.querySelector('#link').href;
       if (href) {
-        this.$.img.href = href;
+        this.$['img-link'].href = href;
         this.$.link.href = href;
       }
       this.item_title = this.querySelector('#link').innerHTML;

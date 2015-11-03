@@ -13,9 +13,9 @@ dom-module(id="cs-system-admin-storages-list")
 					td
 						template(is="dom-if" if="[[!index]]") -
 						template(is="dom-if" if="[[index]]")
-							a(is="cs-link-button" on-tap="_edit" icon="pencil" tooltip="[[concat(L.edit, ' ', L.storage)]]")
+							a(is="cs-link-button" on-tap="_edit" icon="pencil" tooltip="[[L.edit]] [[L.storage]]")
 							= ' '
-							a(is="cs-link-button" on-tap="_delete" icon="trash" tooltip="[[concat(L.delete, ' ', L.storage)]]")
+							a(is="cs-link-button" on-tap="_delete" icon="trash" tooltip="[[L.delete]] [[L.storage]]")
 					td [[storage.url]]
 					td [[storage.host]]
 					td [[storage.connection]]

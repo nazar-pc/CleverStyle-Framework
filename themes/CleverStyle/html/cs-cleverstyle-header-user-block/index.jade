@@ -6,7 +6,7 @@ dom-module#cs-cleverstyle-header-user-block
 			img(src="[[avatar]]")
 		div
 			b
-				span [[concat(L.hello, '\\, ', username, '!')]]
+				[[L.hello]], [[username]]!
 				= ' '
 				cs-icon(icon="sign-out" hidden$="[[guest]]" tooltip="[[L.sign_out]]" on-tap="_sign_out")
 			template(is="dom-if" if="[[guest]]")
