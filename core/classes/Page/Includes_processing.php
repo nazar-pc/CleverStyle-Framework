@@ -187,16 +187,21 @@ class Includes_processing {
 				/**
 				 * End of multi-line comment
 				 */
-				if (mb_substr($d, -2) === '*/') {
-					$d       = '';
+				if (strpos($d, '*/') !== false) {
+					$d       = explode('*/', $d)[1];
 					$comment = false;
+				} else {
+					$d = '';
 				}
-				$d = '';
 			} else {
 				/**
-				 * Ends with single-line comment
+				 * Single-line comment
 				 */
-				$d = preg_replace('#\s+//[^\'"]+$#', '', $d);
+				$d = preg_replace('#^\s*//[^\'"]+$#', '', $d);
+				/**
+				 * If we are not sure - just add new like afterwards
+				 */
+				$d = preg_replace('#//.*$#', "\\0\n", $d);
 			}
 		}
 		$data = implode('', $data);

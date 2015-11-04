@@ -336,7 +336,7 @@
      *
      *  admin/System/components/modules/update_system/after
      */,
-    _upload_system: function(e){
+    _upload_system: function(){
       var i$, ref$, len$, module, this$ = this;
       for (i$ = 0, len$ = (ref$ = this.modules).length; i$ < len$; ++i$) {
         module = ref$[i$];

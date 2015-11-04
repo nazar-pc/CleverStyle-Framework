@@ -322,7 +322,7 @@ Polymer(
 	 *
 	 *  admin/System/components/modules/update_system/after
 	 */
-	_upload_system : (e) !->
+	_upload_system : !->
 		# Get System's module information
 		for module in @modules
 			if module.name == 'System'

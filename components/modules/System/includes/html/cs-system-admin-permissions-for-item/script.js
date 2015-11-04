@@ -80,11 +80,9 @@
             });
           });
         };
-      })(this)).keydown((function(_this) {
-        return function(event) {
-          return event.which !== 13;
-        };
-      })(this));
+      })(this)).keydown(function(event) {
+        return event.which !== 13;
+      });
       return $(this.$['search-results']).on('change', ':radio', function() {
         return $(this).closest('tr').addClass('changed');
       });

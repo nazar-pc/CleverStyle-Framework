@@ -68,7 +68,7 @@ Polymer(
 								@set('found_users', users)
 						)
 				)
-			.keydown (event) =>
+			.keydown (event) ->
 				# Only handle Enter button
 				event.which != 13
 		$(@$['search-results']).on(
