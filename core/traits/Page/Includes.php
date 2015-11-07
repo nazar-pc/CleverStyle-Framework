@@ -223,7 +223,7 @@ trait Includes {
 		return $this;
 	}
 	/**
-	 * Getting of CSS and JavaScript includes
+	 * Getting of HTML, JS and CSS includes
 	 *
 	 * @return \cs\Page
 	 */
@@ -305,53 +305,24 @@ trait Includes {
 	 */
 	protected function get_includes_for_page_with_compression () {
 		/**
-		 * Current cache checking
+		 * Rebuild cache if necessary
 		 */
 		if (!file_exists(PUBLIC_CACHE."/$this->pcache_basename.json")) {
 			$this->rebuild_cache();
 		}
-		$data         = file_get_json(PUBLIC_CACHE."/$this->pcache_basename.json");
-		$structure    = $data['structure'];
-		$dependencies = $data['dependencies'];
-		unset($data);
-		$current_module = current_module();
-		/**
-		 * Current URL based on controller path (it better represents how page was rendered)
-		 */
-		$current_url = Index::instance()->controller_path;
-		$current_url = array_slice($current_url, 1);
-		$current_url = (admin_path() ? 'admin+' : '')."$current_module+".implode('+', $current_url);
-		/**
-		 * Narrow the dependencies to current module only
-		 */
-		$dependencies          = isset($dependencies[$current_module]) ? $dependencies[$current_module] : [];
-		$system_includes       = [
+		list($dependencies, $structure) = file_get_json(PUBLIC_CACHE."/$this->pcache_basename.json");
+		$system_includes = [
 			'css'  => ["storage/pcache/$this->pcache_basename.css?{$structure['']['css']}"],
 			'js'   => ["storage/pcache/$this->pcache_basename.js?{$structure['']['js']}"],
 			'html' => ["storage/pcache/$this->pcache_basename.html?{$structure['']['html']}"]
 		];
-		$includes              = [
-			'css'  => [],
-			'js'   => [],
-			'html' => []
-		];
-		$dependencies_includes = $includes;
+		list($includes, $dependencies_includes, $dependencies, $current_url) = $this->get_includes_prepare($dependencies, '+');
 		foreach ($structure as $filename_prefix => $hashes) {
-			$prefix_module = explode('+', $filename_prefix);
-			/** @noinspection NestedTernaryOperatorInspection */
-			$prefix_module = $prefix_module[0] != 'admin' ? $prefix_module[0] : (@$prefix_module[1] ?: '');
-			$is_dependency = false;
-			if (
-				(
-					$filename_prefix &&
-					mb_strpos($current_url, $filename_prefix) === 0
-				) ||
-				(
-					$dependencies &&
-					in_array($prefix_module, $dependencies) &&
-					$is_dependency = true
-				)
-			) {
+			if (!$filename_prefix) {
+				continue;
+			}
+			$is_dependency = $this->get_includes_is_dependency($dependencies, $filename_prefix, '+');
+			if ($is_dependency || mb_strpos($current_url, $filename_prefix) === 0) {
 				foreach ($hashes as $extension => $hash) {
 					if ($is_dependency) {
 						$dependencies_includes[$extension][] = "storage/pcache/$filename_prefix$this->pcache_basename.$extension?$hash";
@@ -359,11 +330,8 @@ trait Includes {
 						$includes[$extension][] = "storage/pcache/$filename_prefix$this->pcache_basename.$extension?$hash";
 					}
 				}
-				unset($extension, $hash);
 			}
-			unset($prefix_module, $is_dependency);
 		}
-		unset($dependencies, $structure, $filename_prefix, $hashes);
 		return array_merge_recursive($system_includes, $dependencies_includes, $includes);
 	}
 	/**
@@ -372,59 +340,68 @@ trait Includes {
 	 * @return array[]
 	 */
 	protected function get_includes_for_page_without_compression ($Config) {
+		// To determine all dependencies and stuff we need `$Config` object to be already created
 		if ($Config) {
 			list($dependencies, $includes_map) = $this->includes_dependencies_and_map(admin_path());
-			/**
-			 * Add system includes
-			 */
-			$includes              = [
-				'css'  => [],
-				'js'   => [],
-				'html' => []
-			];
-			$dependencies_includes = $includes;
-			$current_module        = current_module();
-			/**
-			 * Current URL based on controller path (it better represents how page was rendered)
-			 */
-			$current_url = array_slice(Index::instance()->controller_path, 1);
-			$current_url = (admin_path() ? 'admin/' : '')."$current_module/".implode('/', $current_url);
-			/**
-			 * Narrow the dependencies to current module only
-			 */
-			$dependencies = isset($dependencies[$current_module]) ? $dependencies[$current_module] : [];
+			$system_includes = $includes_map[''];
+			list($includes, $dependencies_includes, $dependencies, $current_url) = $this->get_includes_prepare($dependencies, '/');
 			foreach ($includes_map as $url => $local_includes) {
 				if (!$url) {
 					continue;
 				}
-				$prefix_module = explode('+', $url);
-				/** @noinspection NestedTernaryOperatorInspection */
-				$prefix_module = $prefix_module[0] != 'admin' ? $prefix_module[0] : (@$prefix_module[1] ?: '');
-				$is_dependency = false;
-				if (
-					mb_strpos($current_url, $url) === 0 ||
-					(
-						$dependencies &&
-						in_array($prefix_module, $dependencies) &&
-						$is_dependency = true
-					)
-				) {
-					if ($is_dependency) {
-						$dependencies_includes = array_merge_recursive($dependencies_includes, $local_includes);
-					} else {
-						$includes = array_merge_recursive($includes, $local_includes);
-					}
+				$is_dependency = $this->get_includes_is_dependency($dependencies, $url, '/');
+				if ($is_dependency) {
+					$dependencies_includes = array_merge_recursive($dependencies_includes, $local_includes);
+				} elseif (mb_strpos($current_url, $url) === 0) {
+					$includes = array_merge_recursive($includes, $local_includes);
 				}
 			}
-			unset($current_url, $dependencies, $url, $local_includes, $prefix_module, $is_dependency);
-			$includes = array_merge_recursive($includes_map[''], $dependencies_includes, $includes);
-			unset($dependencies_includes);
+			$includes = array_merge_recursive($system_includes, $dependencies_includes, $includes);
 			$includes = _substr($includes, strlen(DIR.'/'));
 		} else {
 			$includes = $this->get_includes_list();
 		}
-		$includes = $this->add_versions_hash($includes);
-		return $includes;
+		return $this->add_versions_hash($includes);
+	}
+	/**
+	 * @param array  $dependencies
+	 * @param string $separator `+` or `/`
+	 *
+	 * @return array
+	 */
+	protected function get_includes_prepare ($dependencies, $separator) {
+		$includes              = [
+			'css'  => [],
+			'js'   => [],
+			'html' => []
+		];
+		$dependencies_includes = $includes;
+		$current_module        = current_module();
+		/**
+		 * Current URL based on controller path (it better represents how page was rendered)
+		 */
+		$current_url = array_slice(Index::instance()->controller_path, 1);
+		$current_url = (admin_path() ? "admin$separator" : '')."$current_module$separator".implode($separator, $current_url);
+		/**
+		 * Narrow the dependencies to current module only
+		 */
+		$dependencies = isset($dependencies[$current_module]) ? $dependencies[$current_module] : [];
+		return [$includes, $dependencies_includes, $dependencies, $current_url];
+	}
+	/**
+	 * @param array  $dependencies
+	 * @param string $url
+	 * @param string $separator `+` or `/`
+	 *
+	 * @return bool
+	 */
+	protected function get_includes_is_dependency ($dependencies, $url, $separator) {
+		$url_exploded = explode($separator, $url);
+		/** @noinspection NestedTernaryOperatorInspection */
+		return
+			$url_exploded !== Config::SYSTEM_MODULE &&
+			in_array($url_exploded[0] != 'admin' ? $url_exploded[0] : (@$url_exploded[1] ?: ''), $dependencies) &&
+			admin_path() == ($url_exploded[0] == 'admin');
 	}
 	protected function add_versions_hash ($includes) {
 		$content = '';
@@ -473,7 +450,7 @@ trait Includes {
 		$this->$js_html_insert_to .= $js_html;
 	}
 	/**
-	 * Getting of JavaScript and CSS files list to be included
+	 * Getting of HTML, JS and CSS files list to be included
 	 *
 	 * @param bool $absolute If <i>true</i> - absolute paths to files will be returned
 	 * @param bool $with_disabled
@@ -531,7 +508,7 @@ trait Includes {
 		return $includes;
 	}
 	/**
-	 * Rebuilding of JavaScript and CSS cache
+	 * Rebuilding of HTML, JS and CSS cache
 	 *
 	 * @return \cs\Page
 	 */
@@ -539,23 +516,21 @@ trait Includes {
 		list($dependencies, $includes_map) = $this->includes_dependencies_and_map();
 		$structure = [];
 		foreach ($includes_map as $filename_prefix => $includes) {
+			// We replace `/` by `+` to make it suitable for filename
 			$filename_prefix             = str_replace('/', '+', $filename_prefix);
 			$structure[$filename_prefix] = $this->create_cached_includes_files($filename_prefix, $includes);
 		}
 		unset($includes_map, $filename_prefix, $includes);
 		file_put_json(
 			PUBLIC_CACHE."/$this->pcache_basename.json",
-			[
-				'dependencies' => $dependencies,
-				'structure'    => $structure
-			]
+			[$dependencies, $structure]
 		);
 		unset($structure);
 		Event::instance()->fire('System/Page/rebuild_cache');
 		return $this;
 	}
 	/**
-	 * Creates cached version of given js and css files.<br>
+	 * Creates cached version of given HTML, JS and CSS files.
 	 * Resulting file name consists of <b>$filename_prefix</b> and <b>$this->pcache_basename</b>
 	 *
 	 * @param string $filename_prefix
@@ -608,7 +583,7 @@ trait Includes {
 		return $cache_hash;
 	}
 	/**
-	 * Get dependencies of components between each other (only that contains some styles and scripts) and mapping styles and scripts to URL paths
+	 * Get dependencies of components between each other (only that contains some HTML, JS and CSS files) and mapping HTML, JS and CSS files to URL paths
 	 *
 	 * @param bool $with_disabled
 	 *
