@@ -398,9 +398,10 @@ trait Includes {
 	protected function get_includes_is_dependency ($dependencies, $url, $separator) {
 		$url_exploded = explode($separator, $url);
 		/** @noinspection NestedTernaryOperatorInspection */
+		$url_module = $url_exploded[0] != 'admin' ? $url_exploded[0] : (@$url_exploded[1] ?: '');
 		return
-			$url_exploded !== Config::SYSTEM_MODULE &&
-			in_array($url_exploded[0] != 'admin' ? $url_exploded[0] : (@$url_exploded[1] ?: ''), $dependencies) &&
+			$url_module !== Config::SYSTEM_MODULE &&
+			in_array($url_module, $dependencies) &&
 			admin_path() == ($url_exploded[0] == 'admin');
 	}
 	protected function add_versions_hash ($includes) {
