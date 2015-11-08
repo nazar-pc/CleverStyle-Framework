@@ -11,8 +11,7 @@ use
 	cs\Cache,
 	cs\Config,
 	cs\DB,
-	cs\Event,
-	cs\User;
+	cs\Event;
 Event::instance()->on(
 	'admin/System/components/modules/uninstall/before',
 	function ($data) {
