@@ -43,8 +43,11 @@
             return;
           }
           if (this$.querySelectorAll('option').length) {
-            this$._height_updated = true;
             height_in_px = this$.querySelector('option').getBoundingClientRect().height * this$.size;
+            if (height_in_px === 0) {
+              return;
+            }
+            this$._height_updated = true;
             font_size = parseFloat(getComputedStyle(this$).fontSize);
             this$.style.height = "calc(" + height_in_px + "em / " + font_size + ")";
           }

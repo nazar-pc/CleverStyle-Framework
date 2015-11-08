@@ -39,10 +39,12 @@ Polymer.cs.behaviors.cs-select = [
 				@_height_updated	= true
 				return
 			if @querySelectorAll('option').length
-				@_height_updated	= true
 				# Set select height relatively to font size
 				# Fixes select height in modal
 				height_in_px	= @querySelector('option').getBoundingClientRect().height * @size
+				if height_in_px == 0
+					return
+				@_height_updated	= true
 				font_size		= parseFloat(getComputedStyle(@).fontSize)
 				@style.height	= "calc(#{height_in_px}em / #{font_size})"
 		@addEventListener('dom-change', callback)
