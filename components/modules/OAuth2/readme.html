@@ -336,28 +336,4 @@
 		</dl>
 	</li>
 </ol>
-<h4>API requests (another way, beyond RFC 6749 and 6750 specifications, not recommended):</h4>
-<ol>
-	<li>
-		Every request should contain header:
-		<ul>
-			<li>Access-token: <b>access_token</b></li>
-		</ul>
-		<p>NOTE: <b>access_token</b> header may be replaced by request parameter <b>access_token</b> with the same name, but this is not recommended and should be used as last resort</p>
-		<h4>Successful request</h4>
-		Browser will return data according to format, provided by module.
-		<h4>Error request</h4>
-		Browser will return JSON data with header "Content-Type: application/json" and status code HTTP 400 (Bad Request) or HTTP 500 (Internal Server Error) or HTTP 403 (403 Forbidden):<br><br>
-		<code>{</code><br>
-		<code>"error":"<b>error</b>",</code><br>
-		<code>"error_description":"<b>error_description</b>"</code><br>
-		<code>}</code>
-		<dl>
-			<dt>error</dt>
-			<dd>Error code according to <a href="https://tools.ietf.org/html/rfc6749">RFC 6749</a></dd>
-			<dt>error_description</dt>
-			<dd>Simple description, explaining error reason</dd>
-		</dl>
-	</li>
-</ol>
 <br><br>

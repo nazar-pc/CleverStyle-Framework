@@ -33,14 +33,6 @@ Event::instance()
 			if (isset($_SERVER['HTTP_AUTHORIZATION']) && preg_match('/Bearer ([0-9a-z]{32})/i', $_SERVER['HTTP_AUTHORIZATION'], $access_token)) {
 				$access_token = $access_token[1];
 			} else {
-				unset($access_token);
-				if (isset($_SERVER['HTTP_ACCESS_TOKEN'])) {
-					$access_token = $_SERVER['HTTP_ACCESS_TOKEN'];
-				} elseif (isset($_REQUEST['access_token'])) {
-					$access_token = $_REQUEST['access_token'];
-				}
-			}
-			if (!isset($access_token)) {
 				return;
 			}
 			$OAuth2     = OAuth2::instance();
