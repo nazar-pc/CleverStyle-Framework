@@ -16,7 +16,7 @@ use
 Event::instance()->on(
 	'admin/System/components/modules/uninstall/before',
 	function ($data) {
-		if ($data['name'] != 'Blogs' || !User::instance()->admin()) {
+		if ($data['name'] != 'Blogs') {
 			return;
 		}
 		time_limit_pause();
