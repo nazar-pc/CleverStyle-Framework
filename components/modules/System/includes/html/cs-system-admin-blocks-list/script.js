@@ -18,25 +18,7 @@
       blocks_count: Number
     },
     ready: function(){
-      var this$ = this;
-      $.getJSON('api/System/admin/blocks', function(blocks){
-        var blocks_grouped, i$, len$, index, block;
-        this$.blocks_count = blocks.length;
-        blocks_grouped = {
-          top: [],
-          left: [],
-          floating: [],
-          right: [],
-          bottom: []
-        };
-        for (i$ = 0, len$ = blocks.length; i$ < len$; ++i$) {
-          index = i$;
-          block = blocks[i$];
-          blocks_grouped[block.position].push(block);
-        }
-        this$.set('blocks', blocks_grouped);
-        this$._init_sortable();
-      });
+      this._reload();
     },
     _init_sortable: function(){
       var $shadowRoot, $group;
@@ -84,23 +66,41 @@
       }
     },
     _reload: function(){
-      location.reload();
+      var this$ = this;
+      $.getJSON('api/System/admin/blocks', function(blocks){
+        var blocks_grouped, i$, len$, index, block;
+        this$.blocks_count = blocks.length;
+        blocks_grouped = {
+          top: [],
+          left: [],
+          floating: [],
+          right: [],
+          bottom: []
+        };
+        for (i$ = 0, len$ = blocks.length; i$ < len$; ++i$) {
+          index = i$;
+          block = blocks[i$];
+          blocks_grouped[block.position].push(block);
+        }
+        this$.set('blocks', blocks_grouped);
+        this$._init_sortable();
+      });
     },
     _block_permissions: function(e){
       var title;
       title = L.permissions_for_block(e.model.item.title);
-      cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for-item label=\"" + e.model.item.index + "\" group=\"Block\"/>");
+      cs.ui.simple_modal("<h3>" + title + "</h3>\n<cs-system-admin-permissions-for-item label=\"" + e.model.item.index + "\" group=\"Block\"/>");
     },
     _add_block: function(){
       var this$ = this;
-      $(cs.ui.simple_modal("<h2>" + L.adding_a_block + "</h2>\n<cs-system-admin-blocks-form/>")).on('close', function(){
+      $(cs.ui.simple_modal("<h3>" + L.adding_a_block + "</h3>\n<cs-system-admin-blocks-form/>")).on('close', function(){
         this$._reload();
       });
     },
     _edit_block: function(e){
       var title, this$ = this;
       title = L.editing_a_block(e.model.item.title);
-      $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-blocks-form index=\"" + e.model.item.index + "\"/>")).on('close', function(){
+      $(cs.ui.simple_modal("<h3>" + title + "</h3>\n<cs-system-admin-blocks-form index=\"" + e.model.item.index + "\"/>")).on('close', function(){
         this$._reload();
       });
     },

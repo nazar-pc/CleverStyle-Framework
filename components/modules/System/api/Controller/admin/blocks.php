@@ -36,7 +36,7 @@ trait blocks {
 				$block['content'] = $block['content'] ? $Text->process($db_id, $block['content'], true) : '';
 			}
 			unset($block);
-			$Page->json($blocks ?: []);
+			$Page->json(array_values($blocks) ?: []);
 			return;
 		}
 		$block = static::get_block_by_index($route_ids[0]);

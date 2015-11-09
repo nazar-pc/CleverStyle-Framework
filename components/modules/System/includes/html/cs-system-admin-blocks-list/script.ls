@@ -14,18 +14,7 @@ Polymer(
 		blocks			: Object
 		blocks_count	: Number
 	ready : !->
-		blocks <~! $.getJSON('api/System/admin/blocks', _)
-		@blocks_count	= blocks.length
-		blocks_grouped	=
-			top			: []
-			left		: []
-			floating	: []
-			right		: []
-			bottom		: []
-		for block, index in blocks
-			blocks_grouped[block.position].push(block)
-		@set('blocks', blocks_grouped)
-		@_init_sortable()
+		@_reload()
 	_init_sortable : !->
 		$shadowRoot	= $(@shadowRoot)
 		if $shadowRoot.find('[group] > div:not(:first)').length < @blocks_count
@@ -59,17 +48,27 @@ Polymer(
 	_status_class : (active) ->
 		if active ~= 1 then 'cs-block-success cs-text-success' else 'cs-block-warning cs-text-warning'
 	_reload : !->
-		# TODO proper reload
-		location.reload()
+		blocks <~! $.getJSON('api/System/admin/blocks', _)
+		@blocks_count	= blocks.length
+		blocks_grouped	=
+			top			: []
+			left		: []
+			floating	: []
+			right		: []
+			bottom		: []
+		for block, index in blocks
+			blocks_grouped[block.position].push(block)
+		@set('blocks', blocks_grouped)
+		@_init_sortable()
 	_block_permissions : (e) !->
 		title	= L.permissions_for_block(e.model.item.title)
 		cs.ui.simple_modal("""
-			<h2>#title</h2>
+			<h3>#title</h3>
 			<cs-system-admin-permissions-for-item label="#{e.model.item.index}" group="Block"/>
 		""")
 	_add_block : !->
 		$(cs.ui.simple_modal("""
-			<h2>#{L.adding_a_block}</h2>
+			<h3>#{L.adding_a_block}</h3>
 			<cs-system-admin-blocks-form/>
 		""")).on('close', !~>
 			@_reload()
@@ -77,7 +76,7 @@ Polymer(
 	_edit_block : (e) !->
 		title	= L.editing_a_block(e.model.item.title)
 		$(cs.ui.simple_modal("""
-			<h2>#title</h2>
+			<h3>#title</h3>
 			<cs-system-admin-blocks-form index="#{e.model.item.index}"/>
 		""")).on('close', !~>
 			@_reload()
