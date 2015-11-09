@@ -1,0 +1,9 @@
+dom-module(id="cs-hybridauth-sign-in")
+	link(rel="import" href="style.css" type="css")
+	template
+		h3 [[L.or_sign_in_with]]:
+		nav(is="cs-nav-button-group" vertical)
+			template(is="dom-repeat" items="[[providers]]")
+				a(is="cs-link-button" href="/HybridAuth/[[item.provider]]" icon="[[item.icon]]") [[item.name]]
+				= ' '
+	script(src="script.js")

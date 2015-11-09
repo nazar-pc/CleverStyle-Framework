@@ -11,6 +11,9 @@
   Polymer({
     'is': 'cs-system-sign-in',
     behaviors: [cs.Polymer.behaviors.Language],
+    ready: function(){
+      cs.Event.fire('cs-system-sign-in', this);
+    },
     attached: function(){
       this.$.login.focus();
     },

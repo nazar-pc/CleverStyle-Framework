@@ -8,6 +8,8 @@ L	= cs.Language
 Polymer(
 	'is'		: 'cs-system-sign-in'
 	behaviors	: [cs.Polymer.behaviors.Language]
+	ready : !->
+		cs.Event.fire('cs-system-sign-in', @)
 	attached : !->
 		@$.login.focus()
 	_sign_in : (e) !->
