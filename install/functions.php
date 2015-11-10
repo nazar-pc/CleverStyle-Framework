@@ -139,13 +139,19 @@ function install_process ($fs, $argv = null) {
 	}
 	/**
 	 * General system configuration
-	 *
-	 * TODO: put more values right into array, no need to put default value here and redefine it right after that
 	 */
-	$config         = [
-		'name'                              => '',
-		'url'                               => [],
-		'admin_email'                       => '',
+	if (isset($_POST['site_url'])) {
+		$url = $_POST['site_url'];
+	} else {
+		$url = "$_SERVER->protocol://$_SERVER->host$_SERVER->request_uri";
+		$url = implode('/', array_slice(explode('/', $url), 0, -2));    //Remove 2 last items
+	}
+	preg_match('#//([^/]+)#', $url, $domain);
+	$domain = $domain[1];
+	$config = [
+		'name'                              => $_POST['site_name'],
+		'url'                               => [$url],
+		'admin_email'                       => $_POST['admin_email'],
 		'closed_title'                      => 'Site closed',
 		'closed_text'                       => '<p>Site closed for maintenance</p>',
 		'site_mode'                         => 1,
@@ -154,22 +160,22 @@ function install_process ($fs, $argv = null) {
 		'cache_compress_js_css'             => 1,
 		'vulcanization'                     => 1,
 		'put_js_after_body'                 => 1,
-		'theme'                             => '',
-		'language'                          => '',
+		'theme'                             => 'CleverStyle',
+		'language'                          => $_POST['language'],
 		'allow_change_language'             => 0,
+		'active_languages'                  => [$_POST['language']],
 		'multilingual'                      => 0,
 		'db_balance'                        => 0,
 		'db_mirror_mode'                    => \cs\DB::MIRROR_MODE_MASTER_MASTER,
-		'active_languages'                  => [],
-		'cookie_domain'                     => [],
+		'cookie_prefix'                     => '',
+		'cookie_domain'                     => [$domain],
 		'inserts_limit'                     => 1000,
 		'key_expire'                        => 120,
 		'session_expire'                    => 2592000,
 		'update_ratio'                      => 75,
 		'sign_in_attempts_block_count'      => 0,
 		'sign_in_attempts_block_time'       => 5,
-		'cookie_prefix'                     => '',
-		'timezone'                          => '',
+		'timezone'                          => $_POST['timezone'],
 		'password_min_length'               => 4,
 		'password_min_strength'             => 3,
 		'smtp'                              => 0,
@@ -179,42 +185,22 @@ function install_process ($fs, $argv = null) {
 		'smtp_auth'                         => 0,
 		'smtp_user'                         => '',
 		'smtp_password'                     => '',
-		'mail_from_name'                    => '',
+		'mail_from'                         => $_POST['admin_email'],
+		'mail_from_name'                    => "Administrator of $_POST[site_name]",
 		'allow_user_registration'           => 1,
 		'require_registration_confirmation' => 1,
 		'auto_sign_in_after_registration'   => 1,
 		'registration_confirmation_time'    => 1,
 		'mail_signature'                    => '',
-		'mail_from'                         => '',
 		'rules'                             => '',
 		'show_tooltips'                     => 1,
 		'remember_user_ip'                  => 0,
 		'ip_black_list'                     => [],
 		'ip_admin_list_only'                => 0,
 		'ip_admin_list'                     => [],
-		'simple_admin_mode'                 => 1,
+		'simple_admin_mode'                 => !isset($_POST['mode']) || $_POST['mode'] ? 1 : 0,
 		'default_module'                    => 'System'
 	];
-	$config['name'] = (string)$_POST['site_name'];
-	if (isset($_POST['site_url'])) {
-		$url = $_POST['site_url'];
-	} else {
-		$url = @$_SERVER->protocol;
-		$url .= "://$_SERVER->host$_SERVER->request_uri";
-		$url = implode('/', array_slice(explode('/', $url), 0, -2));    //Remove 2 last items
-	}
-	$config['url'][]            = $url;
-	$config['admin_email']      = $_POST['admin_email'];
-	$config['language']         = $_POST['language'];
-	$config['active_languages'] = [$_POST['language']];
-	$config['theme']            = 'CleverStyle';
-	$url                        = explode('/', explode('//', $url)[1], 2);
-	$config['cookie_domain'][]  = explode(':', $url[0])[0];
-	unset($url);
-	$config['timezone']          = $_POST['timezone'];
-	$config['mail_from_name']    = "Administrator of $config[name]";
-	$config['mail_from']         = $_POST['admin_email'];
-	$config['simple_admin_mode'] = !isset($_POST['mode']) || $_POST['mode'] ? 1 : 0;
 	/**
 	 * Extracting of engine's files
 	 */
@@ -242,7 +228,7 @@ function install_process ($fs, $argv = null) {
 		!(file_exists(ROOT.'/storage') || mkdir(ROOT.'/storage', 0770)) ||
 		!file_put_contents(ROOT.'/storage/.htaccess', "Deny from all\nRewriteEngine Off\n<Files *>\n\tSetHandler default-handler\n</Files>")
 	) {
-		return 'Can\'t extract system files from the archive! Installation aborted.';
+		return "Can't extract system files from the archive! Installation aborted.";
 	}
 	/**
 	 * Basic system configuration
