@@ -1,3 +1,6 @@
+mixin pagination
+	.cs-margin.cs-text-center(hidden$="[[!show_pagination]]")
+		nav(is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]")
 dom-module(id="cs-system-admin-users-list")
 	template
 		style(include="advanced-styles")
@@ -21,9 +24,7 @@ dom-module(id="cs-system-admin-users-list")
 				template(is="dom-repeat" items="[[search_columns]]" as="column")
 					button(is="cs-button" on-tap="toggle_search_column" primary="[[column.selected]]") [[column.name]]
 		hr
-		//- TODO should be reference template#pagination
-		.cs-margin.cs-text-center(hidden$="[[!show_pagination]]")
-			nav(is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]")
+		+pagination
 		h2.cs-text-center(hidden$="[[!searching_loader]]")
 			cs-icon(icon="spinner" spin)
 		table.cs-table(center list)
@@ -51,9 +52,7 @@ dom-module(id="cs-system-admin-users-list")
 							cs-tooltip
 					template(is="dom-repeat" items="[[user.columns]]" as="column")
 						td [[column]]
-		//- TODO should be reference template#pagination
-		.cs-margin.cs-text-center(hidden$="[[!show_pagination]]")
-			nav(is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]")
+		+pagination
 		p.cs-text-left
 			button(is="cs-button" on-tap="add_user" type="button") [[L.add_user]]
 			button(is="cs-button" on-tap="add_bot" type="button") [[L.add_bot]]
