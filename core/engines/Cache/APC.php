@@ -7,7 +7,7 @@
  */
 namespace cs\Cache;
 /**
- * Provides cache functionality based on APC (Alternative PHP Cache).
+ * Provides cache functionality based on APCu
  */
 class APC extends _Abstract {
 	protected $apc;
@@ -22,7 +22,7 @@ class APC extends _Abstract {
 		if (!$this->apc) {
 			return false;
 		}
-		return apc_fetch(
+		return apcu_fetch(
 			$this->namespaces_imitation($item)
 		);
 	}
@@ -33,7 +33,7 @@ class APC extends _Abstract {
 		if (!$this->apc) {
 			return false;
 		}
-		return apc_store(
+		return apcu_store(
 			$this->namespaces_imitation($item),
 			$data
 		);
@@ -45,8 +45,8 @@ class APC extends _Abstract {
 		if (!$this->apc) {
 			return false;
 		}
-		apc_delete($this->namespaces_imitation($item));
-		apc_inc('/'.DOMAIN."/$item");
+		apcu_delete($this->namespaces_imitation($item));
+		apcu_inc('/'.DOMAIN."/$item");
 		unset($this->root_versions_cache['/'.DOMAIN."/$item"]);
 		return true;
 	}
@@ -71,9 +71,9 @@ class APC extends _Abstract {
 					$exploded[$i] .= '/'.$this->root_versions_cache["/$item_path"];
 					continue;
 				}
-				$version = apc_fetch("/$item_path");
+				$version = apcu_fetch("/$item_path");
 				if ($version === false) {
-					apc_store("/$item_path", 0);
+					apcu_store("/$item_path", 0);
 					$version = 0;
 				}
 				$exploded[$i] .= "/$version";
@@ -92,6 +92,6 @@ class APC extends _Abstract {
 		if (!$this->apc) {
 			return false;
 		}
-		return apc_clear_cache();
+		return apcu_clear_cache();
 	}
 }
