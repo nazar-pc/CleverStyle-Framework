@@ -1,5 +1,11 @@
 --TEST--
 Basic features using APC cache engine
+--SKIPIF--
+<?php
+if (PHP_VERSION_ID >= 70000) {
+	exit('Skipped: APC is not working under PHP7 yet');
+}
+?>
 --INI--
 apc.enable_cli	= 1
 --FILE--
