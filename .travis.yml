@@ -11,7 +11,7 @@ env:
     - REPORT_EXIT_STATUS=1
 before_script:
   - mysql -e 'CREATE DATABASE `cscms.travis`;'
-  - echo 'yes' | pecl install apcu-beta
+  - echo yes | pecl install `if [ php -v | grep -q 'PHP 7.0' ]; then echo apcu-beta; else echo apcu; fi`
   - php -v | grep -q 'PHP 7.0' || echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script:
   - php run-tests.php -P --show-diff tests
