@@ -402,7 +402,9 @@ trait Includes {
 		return
 			$url_module !== Config::SYSTEM_MODULE &&
 			in_array($url_module, $dependencies) &&
-			admin_path() == ($url_exploded[0] == 'admin');
+			(
+				admin_path() || admin_path() == ($url_exploded[0] == 'admin')
+			);
 	}
 	protected function add_versions_hash ($includes) {
 		$content = '';
