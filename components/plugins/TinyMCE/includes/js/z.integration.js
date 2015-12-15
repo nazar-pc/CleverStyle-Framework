@@ -1,10 +1,9 @@
 /**
- * @package        TinyMCE
- * @category    plugins
- * @author        Moxiecode Systems AB
- * @author        Nazar Mokrynskyi <nazar@mokrynskyi.com> (integration into CleverStyle CMS)
- * @copyright    Moxiecode Systems AB
- * @license        GNU Lesser General Public License 2.1, see license.txt
+ * @package   TinyMCE
+ * @category  plugins
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2012-2015, Nazar Mokrynskyi
+ * @license   GNU Lesser General Public License 2.1, see license.txt
  */
 tinymce.baseURL = '/components/plugins/TinyMCE/includes/js';
 $(function () {
@@ -39,7 +38,7 @@ $(function () {
 		skin                 : cs.tinymce && cs.tinymce.skin !== undefined ? cs.tinymce.skin : 'lightgray',
 		language             : cs.Language.clang !== undefined ? cs.Language.clang : 'en',
 		menubar              : false,
-		plugins              : 'advlist anchor charmap code colorpicker contextmenu fullscreen hr image link lists media nonbreaking noneditable pagebreak paste preview searchreplace tabfocus table textcolor visualblocks visualchars wordcount',
+		plugins              : 'advlist anchor charmap code codesample colorpicker contextmenu fullscreen hr image link lists media nonbreaking noneditable pagebreak paste preview searchreplace tabfocus table textcolor visualblocks visualchars wordcount',
 		resize               : 'both',
 		toolbar_items_size   : 'small',
 		width                : '100%',
@@ -63,8 +62,8 @@ $(function () {
 	};
 	tinymce.editor_config               = $.extend(
 		{
-			toolbar1 : 'styleselect fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bold italic underline strikethrough superscript subscript | forecolor backcolor',
-			toolbar2 : 'undo redo | bullist numlist outdent indent blockquote | link unlink anchor image media charmap hr nonbreaking pagebreak | visualchars visualblocks | searchreplace | fullscreen preview code'
+			toolbar1 : 'styleselect fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bold italic underline strikethrough superscript subscript | forecolor backcolor | fullscreen',
+			toolbar2 : 'undo redo | bullist numlist outdent indent blockquote codesample | link unlink anchor image media charmap hr nonbreaking pagebreak | visualchars visualblocks | searchreplace | preview code'
 		},
 		base_config
 	);
@@ -88,33 +87,62 @@ $(function () {
 		},
 		tinymce.simple_editor_config
 	);
-	cs.async_call([
-		function () {
-			/**
-			 * Full editor
-			 */
-			$('.EDITOR').prop('required', false).tinymce(tinymce.editor_config);
-		},
-		function () {
-			/**
-			 * Simple editor
-			 */
-			$('.SIMPLE_EDITOR').prop('required', false).tinymce(tinymce.simple_editor_config);
-		},
-		function () {
-			/**
-			 * Inline editor
-			 */
-			$('.INLINE_EDITOR').prop('required', false).tinymce(tinymce.inline_editor_config);
-		},
-		function () {
-			/**
-			 * Small inline editor
-			 */
-			$('.SIMPLE_INLINE_EDITOR').prop('required', false).tinymce(tinymce.simple_inline_editor_config);
-		}
-	]);
+	setTimeout(function () {
+		/**
+		 * Full editor
+		 */
+		$('.EDITOR').prop('required', false).each(function () {
+			tinymce.init(
+				$.extend(
+					{
+						target : this
+					},
+					tinymce.editor_config
+				)
+			);
+		});
+		/**
+		 * Simple editor
+		 */
+		$('.SIMPLE_EDITOR').prop('required', false).each(function () {
+			tinymce.init(
+				$.extend(
+					{
+						target : this
+					},
+					tinymce.simple_editor_config
+				)
+			);
+		});
+		/**
+		 * Inline editor
+		 */
+		$('.INLINE_EDITOR').prop('required', false).each(function () {
+			tinymce.init(
+				$.extend(
+					{
+						target : this
+					},
+					tinymce.inline_editor_config
+				)
+			);
+		});
+		/**
+		 * Small inline editor
+		 */
+		$('.SIMPLE_INLINE_EDITOR').prop('required', false).each(function () {
+			tinymce.init(
+				$.extend(
+					{
+						target : this
+					},
+					tinymce.simple_inline_editor_config
+				)
+			);
+		});
+	});
 });
+// TODO: following should be rewritten without jQuery usage since now we use TinyMCE without jQuery core
 function editor_deinitialization (textarea) {
 	$(textarea).tinymce().remove();
 }
