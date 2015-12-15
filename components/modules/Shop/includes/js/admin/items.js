@@ -275,7 +275,6 @@
           var container;
           $this = $(this);
           container = $this.parent();
-          console.log(container);
           switch ($this.val()) {
             case 'supported_video':
               container.find('.video-video').next('button').hide();
