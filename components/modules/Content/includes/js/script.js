@@ -27,13 +27,13 @@
       type = modal_body.find('[name=type]');
       type.change(function() {
         if (type.val() === 'text') {
-          typeof window.editor_deinitialization === 'function' && editor_deinitialization($('cs-content-html-content'));
+          typeof window.editor_deinitialization === 'function' && editor_deinitialization($('#cs-content-html-content'));
           modal_body.find('.html').hide();
           return content = modal_body.find('.text').show().val(content.val());
         } else {
           modal_body.find('.text').hide();
           content = modal_body.find('.html').show().val(content.val());
-          return typeof window.editor_reinitialization === 'function' && editor_reinitialization($('cs-content-html-content'));
+          return typeof window.editor_reinitialization === 'function' && editor_reinitialization($('#cs-content-html-content'));
         }
       });
       cs.ui.simple_modal(modal_body);
@@ -67,13 +67,13 @@
           type = modal_body.find('[name=type]').val(data.type);
           type.change(function() {
             if (type.val() === 'text') {
-              typeof window.editor_deinitialization === 'function' && editor_deinitialization($('cs-content-html-content'));
+              typeof window.editor_deinitialization === 'function' && editor_deinitialization($('#cs-content-html-content'));
               modal_body.find('.html').hide();
               return content = modal_body.find('.text').show().val(content.val());
             } else {
               modal_body.find('.text').hide();
               content = modal_body.find('.html').show().val(content.val());
-              return typeof window.editor_reinitialization === 'function' && editor_reinitialization($('cs-content-html-content'));
+              return typeof window.editor_reinitialization === 'function' && editor_reinitialization($('#cs-content-html-content'));
             }
           });
           cs.ui.simple_modal(modal_body);

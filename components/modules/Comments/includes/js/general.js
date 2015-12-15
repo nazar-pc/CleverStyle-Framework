@@ -23,11 +23,11 @@ $(function () {
 		'.cs-comments-comment-text',
 		function () {
 			var textarea	= $('.cs-comments-comment-write-text');
+			typeof window.editor_deinitialization === 'function' && editor_deinitialization(textarea);
 			textarea.data(
 				'parent',
 				$(this).parent('article').prop('id').replace('comment_', '')
 			).val('');
-			typeof window.editor_deinitialization === 'function' && editor_deinitialization(textarea);
 			$(this).after(
 				$('.cs-comments-comment-write')
 			);
@@ -43,11 +43,11 @@ $(function () {
 			var textarea	= $('.cs-comments-comment-write-text'),
 				parent		= $(this).parent('article'),
 				text		= parent.children('.cs-comments-comment-text');
+			typeof window.editor_deinitialization === 'function' && editor_deinitialization(textarea);
 			textarea.data(
 				'id',
 				parent.prop('id').replace('comment_', '')
 			).val(text.html());
-			typeof window.editor_deinitialization === 'function' && editor_deinitialization(textarea);
 			text.after(
 				$('.cs-comments-comment-write')
 			);
@@ -136,11 +136,11 @@ $(function () {
 	function blogs_comment_cancel () {
 		$('.cs-comments-comment-text').show();
 		var textarea	= $('.cs-comments-comment-write-text');
+		typeof window.editor_deinitialization === 'function' && editor_deinitialization(textarea);
 		textarea
 			.data('parent', 0)
 			.data('id', 0)
 			.val('');
-		typeof window.editor_deinitialization === 'function' && editor_deinitialization(textarea);
 		$('.cs-comments-add-comment, .cs-comments-comment-write-send').show();
 		$('.cs-comments-comment-write-edit, .cs-comments-comment-write-cancel').hide();
 		$('.cs-comments-comments').next().after(

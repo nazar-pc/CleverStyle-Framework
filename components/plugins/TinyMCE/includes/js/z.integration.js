@@ -33,24 +33,24 @@ $(function () {
 		}
 	) : false;
 	var base_config                     = {
-		doctype              : '<!doctype html>',
-		theme                : cs.tinymce && cs.tinymce.theme !== undefined ? cs.tinymce.theme : 'modern',
-		skin                 : cs.tinymce && cs.tinymce.skin !== undefined ? cs.tinymce.skin : 'lightgray',
-		language             : cs.Language.clang !== undefined ? cs.Language.clang : 'en',
-		menubar              : false,
-		plugins              : 'advlist anchor charmap code codesample colorpicker contextmenu fullscreen hr image link lists media nonbreaking noneditable pagebreak paste preview searchreplace tabfocus table textcolor visualblocks visualchars wordcount',
-		resize               : 'both',
-		toolbar_items_size   : 'small',
-		width                : '100%',
-		convert_urls         : false,
-		remove_script_host   : false,
-		relative_urls        : false,
-		table_style_by_css   : true,
-		file_picker_callback : uploader ? function (callback) {
+		doctype                : '<!doctype html>',
+		theme                  : cs.tinymce && cs.tinymce.theme !== undefined ? cs.tinymce.theme : 'modern',
+		skin                   : cs.tinymce && cs.tinymce.skin !== undefined ? cs.tinymce.skin : 'lightgray',
+		language               : cs.Language.clang !== undefined ? cs.Language.clang : 'en',
+		menubar                : false,
+		plugins                : 'advlist anchor charmap code codesample colorpicker contextmenu fullscreen hr image link lists media nonbreaking noneditable pagebreak paste preview searchreplace tabfocus table textcolor visualblocks visualchars wordcount',
+		resize                 : 'both',
+		toolbar_items_size     : 'small',
+		width                  : '100%',
+		convert_urls           : false,
+		remove_script_host     : false,
+		relative_urls          : false,
+		table_style_by_css     : true,
+		file_picker_callback   : uploader ? function (callback) {
 			uploader_callback = callback;
 			uploader.browse();
 		} : null,
-		setup                : function (editor) {
+		setup                  : function (editor) {
 			editor.on('change', function () {
 				editor.save();
 				var textarea = editor.getElement(),
@@ -58,6 +58,9 @@ $(function () {
 				event.initEvent('change', false, true);
 				textarea.dispatchEvent(event);
 			});
+		},
+		init_instance_callback : function (editor) {
+			editor.targetElm.tinymce_editor = editor;
 		}
 	};
 	tinymce.editor_config               = $.extend(
@@ -91,73 +94,88 @@ $(function () {
 		/**
 		 * Full editor
 		 */
-		$('.EDITOR').prop('required', false).each(function () {
-			tinymce.init(
-				$.extend(
-					{
-						target : this
-					},
-					tinymce.editor_config
-				)
-			);
-		});
+		$('.EDITOR').prop('required', false);
+		tinymce.init(
+			$.extend(
+				{
+					selector : '.EDITOR'
+				},
+				tinymce.editor_config
+			)
+		);
 		/**
 		 * Simple editor
 		 */
-		$('.SIMPLE_EDITOR').prop('required', false).each(function () {
-			tinymce.init(
-				$.extend(
-					{
-						target : this
-					},
-					tinymce.simple_editor_config
-				)
-			);
-		});
+		$('.SIMPLE_EDITOR').prop('required', false);
+		tinymce.init(
+			$.extend(
+				{
+					selector : '.SIMPLE_EDITOR'
+				},
+				tinymce.simple_editor_config
+			)
+		);
 		/**
 		 * Inline editor
 		 */
-		$('.INLINE_EDITOR').prop('required', false).each(function () {
-			tinymce.init(
-				$.extend(
-					{
-						target : this
-					},
-					tinymce.inline_editor_config
-				)
-			);
-		});
+		$('.INLINE_EDITOR').prop('required', false);
+		tinymce.init(
+			$.extend(
+				{
+					selector : '.INLINE_EDITOR'
+				},
+				tinymce.inline_editor_config
+			)
+		);
 		/**
 		 * Small inline editor
 		 */
-		$('.SIMPLE_INLINE_EDITOR').prop('required', false).each(function () {
-			tinymce.init(
-				$.extend(
-					{
-						target : this
-					},
-					tinymce.simple_inline_editor_config
-				)
-			);
-		});
+		$('.SIMPLE_INLINE_EDITOR').prop('required', false);
+		tinymce.init(
+			$.extend(
+				{
+					selector : '.SIMPLE_INLINE_EDITOR'
+				},
+				tinymce.simple_inline_editor_config
+			)
+		);
 	});
 });
-// TODO: following should be rewritten without jQuery usage since now we use TinyMCE without jQuery core
 function editor_deinitialization (textarea) {
-	$(textarea).tinymce().remove();
+	textarea = $(textarea)[0];
+	if (textarea.tinymce_editor) {
+		textarea.tinymce_editor.destroy();
+		delete textarea.tinymce_editor;
+	}
 }
 function editor_reinitialization (textarea) {
-	var $textarea = $(textarea);
+	var $textarea = $(textarea),
+		editor    = $textarea[0].tinymce_editor,
+		config;
+	if (editor) {
+		editor.load();
+		return;
+	}
 	if ($textarea.hasClass('EDITOR')) {
-		$textarea.tinymce(tinymce.editor_config).load();
+		config = tinymce.editor_config;
 	} else if ($textarea.hasClass('SIMPLE_EDITOR')) {
-		$textarea.tinymce(tinymce.simple_editor_config).load();
+		config = tinymce.simple_editor_config;
 	} else if ($textarea.hasClass('INLINE_EDITOR')) {
-		$textarea.tinymce(tinymce.inline_editor_config).load();
+		config = tinymce.inline_editor_config;
 	} else if ($textarea.hasClass('SIMPLE_INLINE_EDITOR')) {
-		$textarea.tinymce(tinymce.simple_inline_editor_config).load();
+		config = tinymce.simple_inline_editor_config;
+	}
+	if (config) {
+		tinymce.init(
+			$.extend(
+				{
+					target : $textarea[0]
+				},
+				config
+			)
+		);
 	}
 }
 function editor_focus (textarea) {
-	$(textarea).tinymce().focus();
+	$(textarea)[0].tinymce_editor.focus();
 }
