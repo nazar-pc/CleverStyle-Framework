@@ -9,6 +9,9 @@
 (function(){
   var ref$;
   ((ref$ = Polymer.cs.behaviors).TinyMCE || (ref$.TinyMCE = {})).editor = {
+    listeners: {
+      tap: '_style_fix'
+    },
     properties: {
       target: {
         observers: '_tinymce_init',
@@ -23,6 +26,12 @@
       tinymce.init(importAll$({
         target: this.target
       }, this.editor_config));
+    },
+    _style_fix: function(){
+      var this$ = this;
+      [].slice.call(document.querySelectorAll('body > [class^=mce-]')).forEach(function(node){
+        this$.scopeSubtree(node, true);
+      });
     }
   };
   function importAll$(obj, src){
