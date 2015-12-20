@@ -27,6 +27,7 @@
 			p {
 				background         : rgba(0, 0, 0, .5);
 				bottom             : 0;
+				box-sizing         : border-box;
 				color              : #fff;
 				margin             : 0;
 				opacity            : 0;
@@ -61,6 +62,7 @@
 
 		footer {
 			background : rgba(0, 0, 0, .6);
+			box-sizing : border-box;
 			color      : #fff;
 			padding    : 5px;
 			width      : 256px;

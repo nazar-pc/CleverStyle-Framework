@@ -38,6 +38,7 @@ body {
 
 //Left and right blocks
 #left_blocks {
+	box-sizing     : border-box;
 	float          : left;
 	padding        : 0 5px;
 	vertical-align : top;
@@ -54,6 +55,7 @@ body {
 //Top, bottom blocks
 #top_blocks,
 #bottom_blocks {
+	box-sizing   : border-box;
 	margin-left  : $left-column;
 	margin-right : $right-column;
 }
@@ -70,6 +72,7 @@ body {
 		background    : rgba($base-bg, .95);
 		border-radius : 5px;
 		box-shadow    : 0 0 0 11px rgba($base-bg, .25), 0 0 0 10px rgba(#000, .15);
+		box-sizing    : border-box;
 		float         : left;
 		padding       : 10px;
 		height        : 100%;
