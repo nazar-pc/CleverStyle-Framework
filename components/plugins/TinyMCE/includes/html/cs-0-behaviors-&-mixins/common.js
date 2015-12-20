@@ -20,12 +20,13 @@
       this._tinymce_init();
     },
     _tinymce_init: function(){
-      var this$ = this;
-      $(function(){
-        tinymce.init($.extend({
-          target: this$.target
-        }, this$.editor_config));
-      });
+      tinymce.init(importAll$({
+        target: this.target
+      }, this.editor_config));
     }
   };
+  function importAll$(obj, src){
+    for (var key in src) obj[key] = src[key];
+    return obj;
+  }
 }).call(this);

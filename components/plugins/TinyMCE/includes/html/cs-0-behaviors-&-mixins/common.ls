@@ -14,10 +14,8 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 		@target	= @firstElementChild
 		@_tinymce_init()
 	_tinymce_init : !->
-		$ !~>
-			tinymce.init(
-				$.extend(
-					target : @target
-					@editor_config
-				)
-			)
+		tinymce.init(
+			{
+				target : @target
+			} <<<< @editor_config
+		)

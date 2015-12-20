@@ -1,6 +1,7 @@
 {
-	"TinyMCE"	: [
+	"TinyMCE" : [
 		"tinymce.min.js",
-		"z.integration.js"
+		"z.integration.js",
+		"cs-*"
 	]
 }
