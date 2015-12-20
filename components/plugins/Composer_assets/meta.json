@@ -19,6 +19,6 @@
 	"require_composer" : {
 		"fxp/composer-asset-plugin" : "^1.1.0",
 		"oyejorge/less.php"         : "~1.7",
-		"leafo/scssphp"             : "^0.4.0"
+		"leafo/scssphp"             : "^0.6.2"
 	}
 }
