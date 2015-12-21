@@ -373,7 +373,7 @@ trait general {
 			static::vertical_table(
 				static::core_input('site_mode', 'radio'),
 				static::core_input('closed_title'),
-				static::core_textarea('closed_text', 'SIMPLE_EDITOR'),
+				static::core_textarea('closed_text', 'cs-editor'),
 				static::core_input('title_delimiter'),
 				static::core_input('title_reverse', 'radio'),
 				static::core_input('show_tooltips', 'radio', false),

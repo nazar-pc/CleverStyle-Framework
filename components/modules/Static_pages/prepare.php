@@ -91,10 +91,10 @@ if ($page['interface']) {
 				[
 					$L->page_content,
 					(functionality('inline_editor')
-						? h::{'div.cs-static-pages-page-content.INLINE_EDITOR'}(
+						? h::{'cs-editor-inline div.cs-static-pages-page-content'}(
 							$page['content']
 						)
-						: h::{'textarea.cs-static-pages-page-content.EDITOR[is=cs-textarea][autosize]name=content][required]'}(
+						: h::{'cs-editor textarea.cs-static-pages-page-content[is=cs-textarea][autosize]name=content][required]'}(
 							$page['content']
 						)
 					)

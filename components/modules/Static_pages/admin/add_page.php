@@ -50,7 +50,7 @@ $Index->content(
 	).
 	h::{'table.cs-table[center] tr'}(
 		h::th($L->content),
-		h::{'td textarea.EDITOR[cs-textarea][autosize][name=content]'}()
+		h::{'td cs-editor textarea[cs-textarea][autosize][name=content]'}()
 	).
 	h::{'input[type=hidden][name=mode][value=add_page]'}()
 );

@@ -21,7 +21,7 @@
     },
     observers: ['_type_change(block.type)'],
     ready: function(){
-      var editor, this$ = this;
+      var this$ = this;
       $.when($.ajax({
         url: 'api/System/admin/blocks',
         type: 'types'
@@ -53,9 +53,6 @@
           }
         };
       }
-      editor = this.shadowRoot.querySelector('.EDITOR');
-      $(editor).after('<content select=".editor-container"/>');
-      $('<div class="editor-container"><div></div></div>').appendTo(this).children().append(editor);
     },
     _type_change: function(type){
       $(this.shadowRoot).find('.html, .raw_html').prop('hidden', true).filter('.' + type).prop('hidden', false);

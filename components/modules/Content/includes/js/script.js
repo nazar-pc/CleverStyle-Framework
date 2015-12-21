@@ -18,7 +18,7 @@
     L = cs.Language;
     $('body').on('click', '.cs-content-add', function() {
       var content, key, modal_body, title, type;
-      modal_body = $("<form is=\"cs-form\">\n	<label>" + L.content_key + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"key\">\n	<label>" + L.content_title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content_content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text\"></textarea>\n	<textarea is=\"cs-textarea\" autosize class=\"html EDITOR cs-margin-bottom\" id=\"cs-content-html-content\"></textarea>\n	<label>" + L.content_type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\" id=\"cs-content-html-content\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.content_save + "</button>\n	</div>\n</form>");
+      modal_body = $("<form is=\"cs-form\">\n	<label>" + L.content_key + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"key\">\n	<label>" + L.content_title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content_content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html\">\n		<textarea is=\"cs-textarea\" autosize class=\"cs-margin-bottom\"></textarea>\n	</cs-editor>\n	<label>" + L.content_type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.content_save + "</button>\n	</div>\n</form>");
       modal_body.appendTo(document.body);
       key = modal_body.find('[name=key]');
       title = modal_body.find('[name=title]');
@@ -27,13 +27,11 @@
       type = modal_body.find('[name=type]');
       type.change(function() {
         if (type.val() === 'text') {
-          typeof window.editor_deinitialization === 'function' && editor_deinitialization($('#cs-content-html-content'));
           modal_body.find('.html').hide();
           return content = modal_body.find('.text').show().val(content.val());
         } else {
           modal_body.find('.text').hide();
-          content = modal_body.find('.html').show().val(content.val());
-          return typeof window.editor_reinitialization === 'function' && editor_reinitialization($('#cs-content-html-content'));
+          return content = modal_body.find('.html').val(content.val()).show().children('textarea').val(content.val());
         }
       });
       cs.ui.simple_modal(modal_body);
@@ -60,20 +58,18 @@
         type: 'get',
         success: function(data) {
           var content, modal_body, title, type;
-          modal_body = $("<form is=\"cs-form\">\n	<label>" + L.content_key + "</label>\n	<input is=\"cs-input-text\" readonly value=\"" + data.key + "\">\n	<label>" + L.content_title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content_content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text\"></textarea>\n	<textarea is=\"cs-textarea\" autosize class=\"html EDITOR cs-margin-bottom\" id=\"cs-content-html-content\"></textarea>\n	<label>" + L.content_type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.content_save + "</button>\n	</div>\n</form>");
+          modal_body = $("<form is=\"cs-form\">\n	<label>" + L.content_key + "</label>\n	<input is=\"cs-input-text\" readonly value=\"" + data.key + "\">\n	<label>" + L.content_title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content_content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html\">\n		<textarea is=\"cs-textarea\" autosize class=\"cs-margin-bottom\"></textarea>\n	</cs-editor>\n	<label>" + L.content_type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.content_save + "</button>\n	</div>\n</form>");
           title = modal_body.find('[name=title]').val(data.title);
-          content = modal_body.find('textarea').val(data.content);
-          modal_body.find("textarea:not(." + data.type + ")").hide();
+          content = modal_body.find('.' + data.type).val(data.content);
+          modal_body.find('.text, .html').not('.' + data.type).hide();
           type = modal_body.find('[name=type]').val(data.type);
           type.change(function() {
             if (type.val() === 'text') {
-              typeof window.editor_deinitialization === 'function' && editor_deinitialization($('#cs-content-html-content'));
               modal_body.find('.html').hide();
               return content = modal_body.find('.text').show().val(content.val());
             } else {
               modal_body.find('.text').hide();
-              content = modal_body.find('.html').show().val(content.val());
-              return typeof window.editor_reinitialization === 'function' && editor_reinitialization($('#cs-content-html-content'));
+              return content = modal_body.find('.html').val(content.val()).show().children('textarea').val(content.val());
             }
           });
           cs.ui.simple_modal(modal_body);

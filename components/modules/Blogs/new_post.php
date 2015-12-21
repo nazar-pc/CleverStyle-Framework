@@ -121,9 +121,9 @@ $Index->content(
 		[
 			$L->post_content,
 			(
-			functionality('inline_editor') ? h::{'div.cs-blogs-new-post-content.INLINE_EDITOR'}(
+			functionality('inline_editor') ? h::{'cs-editor-inline div.cs-blogs-new-post-content'}(
 				$content
-			) : h::{'textarea.cs-blogs-new-post-content.EDITOR[is=cs-textarea][autosize][name=content][required]'}(
+			) : h::{'cs-editor textarea.cs-blogs-new-post-content[is=cs-textarea][autosize][name=content][required]'}(
 				isset($_POST['content']) ? $_POST['content'] : ''
 			)
 			).

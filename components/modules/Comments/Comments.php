@@ -414,7 +414,7 @@ class Comments {
 		h::{'p.cs-comments-add-comment'}("$L->add_comment:").
 		(
 			User::instance()->user() ? h::{'section.cs-comments-comment-write'}(
-				h::{'textarea.cs-comments-comment-write-text.SIMPLE_EDITOR[is=cs-textarea][autosize]'}(
+				h::{'cs-editor-simple textarea.cs-comments-comment-write-text[is=cs-textarea][autosize]'}(
 					'',
 					[
 						'data-item'		=> $item,

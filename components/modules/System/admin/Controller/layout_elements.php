@@ -84,7 +84,7 @@ trait layout_elements {
 			];
 		}
 	}
-	protected static function core_textarea ($item, $editor = null, $info_item = null) {
+	protected static function core_textarea ($item, $editor = null) {
 		switch ($item) {
 			default:
 				$content = Config::instance()->core[$item];
@@ -95,8 +95,8 @@ trait layout_elements {
 				$content = get_core_ml_text($item);
 		}
 		return [
-			h::info($info_item ?: $item),
-			h::{'textarea[is=cs-textarea][autosize]'}(
+			h::info($item),
+			h::{"$editor textarea[is=cs-textarea][autosize]"}(
 				$content,
 				[
 					'name'  => "core[$item]",

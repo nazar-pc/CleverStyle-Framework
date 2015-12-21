@@ -155,5 +155,5 @@ function get_pages_rows () {
 		}
 		unset($page);
 	}
-	return [$content];
+	return $content;
 }

@@ -16,7 +16,7 @@
     results = [];
     for (i = 0, len = elements.length; i < len; i++) {
       element = elements[i];
-      if (element.matches('html /deep/ [contenteditable=true] *') || element.matches('html /deep/ .INLINE_EDITOR *')) {
+      if (element.matches('html /deep/ [contenteditable=true] *')) {
         continue;
       }
       (element.parentNode.tagName === 'PRE' ? element.parentNode : element).classList.add('line-numbers');

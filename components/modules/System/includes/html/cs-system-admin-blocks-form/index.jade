@@ -63,8 +63,8 @@ dom-module#cs-system-admin-blocks-form
 					br
 					input(is="cs-input-text" name="block[expire][date]" type="datetime-local" value="{{block.expire.date}}")
 		.html(hidden$="[[!equal(block.type, 'html')]]")
-			// TODO editor not working here
-			textarea.EDITOR(is="cs-textarea" autosize full-width rows="5" name="block[html]" value="{{block.content}}")
+			cs-editor(value="{{block.content}}")
+				textarea(is="cs-textarea" autosize full-width rows="5" name="block[html]" value="{{block.content}}")
 		.raw_html(hidden$="[[!equal(block.type, 'raw_html')]]")
 			textarea(is="cs-textarea" autosize full-width rows="5" name="block[raw_html]" value="{{block.content}}")
 		button(is="cs-button" type="button" primary on-tap="_save" class="cs-margin-top") [[L.save]]

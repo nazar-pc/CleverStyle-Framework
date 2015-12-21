@@ -20,6 +20,7 @@ $data  = Pages::instance()->get($id);
 Page::instance()->title($L->editing_of_page($data['title']));
 $Index->cancel_button_back = true;
 $Index->action             = 'admin/Static_pages';
+$textarea                  = h::{'textarea[is=cs-textarea][autosize][name=content]'}($data['content']);
 $Index->content(
 	h::h2(
 		$L->editing_of_page($data['title'])
@@ -59,11 +60,8 @@ $Index->content(
 	).
 	h::{'table.cs-table[center] tr'}(
 		h::th($L->content),
-		h::{'td textarea[is=cs-textarea][autosize][name=content]'}(
-			$data['content'],
-			[
-				'class' => $data['interface'] ? 'EDITOR' : ''
-			]
+		h::td(
+			$data['interface'] ? h::cs_editor($textarea) : $textarea
 		)
 	).
 	h::{'input[type=hidden][name=id]'}(

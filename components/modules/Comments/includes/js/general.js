@@ -22,17 +22,15 @@ $(function () {
 		'click',
 		'.cs-comments-comment-text',
 		function () {
-			var textarea	= $('.cs-comments-comment-write-text');
-			typeof window.editor_deinitialization === 'function' && editor_deinitialization(textarea);
-			textarea.data(
-				'parent',
-				$(this).parent('article').prop('id').replace('comment_', '')
-			).val('');
+			$('.cs-comments-comment-write-text')
+				.data(
+					'parent',
+					$(this).parent('article').prop('id').replace('comment_', '')
+				)
+				.val('');
 			$(this).after(
 				$('.cs-comments-comment-write')
 			);
-			typeof window.editor_reinitialization === 'function' && editor_reinitialization(textarea);
-			typeof window.editor_focus === 'function' && editor_focus(textarea);
 			$('.cs-comments-comment-write-cancel').show();
 			$('.cs-comments-add-comment').hide();
 		}
@@ -40,19 +38,17 @@ $(function () {
 		'click',
 		'.cs-comments-comment-edit',
 		function () {
-			var textarea	= $('.cs-comments-comment-write-text'),
+			var $textarea	= $('.cs-comments-comment-write-text'),
 				parent		= $(this).parent('article'),
 				text		= parent.children('.cs-comments-comment-text');
-			typeof window.editor_deinitialization === 'function' && editor_deinitialization(textarea);
-			textarea.data(
+			$textarea.data(
 				'id',
 				parent.prop('id').replace('comment_', '')
 			).val(text.html());
 			text.after(
 				$('.cs-comments-comment-write')
 			);
-			typeof window.editor_reinitialization === 'function' && editor_reinitialization(textarea);
-			typeof window.editor_focus === 'function' && editor_focus(textarea);
+			$textarea.focus();
 			$('.cs-comments-comment-write-edit, .cs-comments-comment-write-cancel').show();
 			$('.cs-comments-comment-write-send').hide();
 		}
@@ -62,16 +58,16 @@ $(function () {
 		blogs_delete_comment
 	);
 	function blogs_add_comment () {
-		var textarea	= $('.cs-comments-comment-write-text');
+		var $textarea	= $('.cs-comments-comment-write-text');
 		$.ajax(
 			'api/Comments',
 			{
 				cache		: false,
 				data		: {
-					item	: textarea.data('item'),
-					parent	: textarea.data('parent'),
-					module	: textarea.data('module'),
-					text	: textarea.val()
+					item	: $textarea.data('item'),
+					parent	: $textarea.data('parent'),
+					module	: $textarea.data('module'),
+					text	: $textarea.val()
 				},
 				dataType	: 'json',
 				type		: 'post',
@@ -80,10 +76,10 @@ $(function () {
 					if (no_comments.length) {
 						no_comments.remove();
 					}
-					if (textarea.data('parent') == 0) {
+					if ($textarea.data('parent') == 0) {
 						$('.cs-comments-comments').append(result);
 					} else {
-						$('#comment_' + textarea.data('parent')).append(result);
+						$('#comment_' + $textarea.data('parent')).append(result);
 					}
 					blogs_comment_cancel();
 				}
@@ -91,15 +87,15 @@ $(function () {
 		);
 	}
 	function blogs_edit_comment () {
-		var textarea	= $('.cs-comments-comment-write-text'),
-			id			= textarea.data('id');
+		var $textarea	= $('.cs-comments-comment-write-text'),
+			id			= $textarea.data('id');
 		$.ajax(
 			'api/Comments/' + id,
 			{
 				cache		: false,
 				data		: {
-					module	: textarea.data('module'),
-					text	: textarea.val()
+					module	: $textarea.data('module'),
+					text	: $textarea.val()
 				},
 				dataType	: 'json',
 				type		: 'put',
@@ -135,9 +131,7 @@ $(function () {
 	}
 	function blogs_comment_cancel () {
 		$('.cs-comments-comment-text').show();
-		var textarea	= $('.cs-comments-comment-write-text');
-		typeof window.editor_deinitialization === 'function' && editor_deinitialization(textarea);
-		textarea
+		$('.cs-comments-comment-write-text')
 			.data('parent', 0)
 			.data('id', 0)
 			.val('');
@@ -146,6 +140,5 @@ $(function () {
 		$('.cs-comments-comments').next().after(
 			$('.cs-comments-comment-write')
 		);
-		typeof window.editor_reinitialization === 'function' && editor_reinitialization(textarea);
 	}
 });

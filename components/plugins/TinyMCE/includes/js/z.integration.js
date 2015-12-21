@@ -7,7 +7,7 @@
  * @license   GNU Lesser General Public License 2.1, see license.txt
  */
 (function(){
-  var uploader_callback, uploader, base_config, x$, y$;
+  var uploader_callback, uploader, base_config, x$;
   tinymce.baseURL = '/components/plugins/TinyMCE/includes/js';
   uploader_callback = undefined;
   uploader = cs.file_upload && cs.file_upload(null, function(files){
@@ -56,9 +56,6 @@
         event.initEvent('change', false, true);
         editor.getElement().dispatchEvent(event);
       });
-    },
-    init_instance_callback: function(editor){
-      editor.getElement().tinymce_editor = editor;
     }
   };
   x$ = tinymce;
@@ -77,53 +74,6 @@
     inline: true,
     menubar: false
   }, tinymce.editor_config_simple);
-  (function(){
-    var initialize;
-    initialize = function(selector, config){
-      $(function(){
-        $(selector).prop('required', false);
-      });
-      return tinymce.init(importAll$({
-        selector: selector
-      }, config));
-    };
-    initialize('.EDITOR', tinymce.editor_config_full);
-    initialize('.SIMPLE_EDITOR', tinymce.editor_config_simple);
-    initialize('.INLINE_EDITOR', tinymce.editor_config_inline);
-    initialize('.SIMPLE_INLINE_EDITOR', tinymce.editor_config_simple_inline);
-  })();
-  y$ = window;
-  y$.editor_deinitialization = function(textarea){
-    textarea = $(textarea)[0];
-    if (textarea.tinymce_editor) {
-      textarea.tinymce_editor.destroy();
-      delete textarea.tinymce_editor;
-    }
-  };
-  y$.editor_reinitialization = function(textarea){
-    var $textarea, editor, config;
-    $textarea = $(textarea);
-    editor = $textarea[0].tinymce_editor;
-    if (editor) {
-      editor.load();
-      return;
-    }
-    config = $textarea.hasClass('EDITOR')
-      ? tinymce.editor_config_full
-      : $textarea.hasClass('SIMPLE_EDITOR')
-        ? tinymce.editor_config_simple
-        : $textarea.hasClass('INLINE_EDITOR')
-          ? tinymce.editor_config_inline
-          : $textarea.hasClass('SIMPLE_INLINE_EDITOR') ? tinymce.editor_config_simple_inline : void 8;
-    if (config) {
-      tinymce.init(importAll$({
-        target: $textarea[0]
-      }, config));
-    }
-  };
-  y$.editor_focus = function(textarea){
-    $(textarea)[0].tinymce_editor.focus();
-  };
   function importAll$(obj, src){
     for (var key in src) obj[key] = src[key];
     return obj;

@@ -101,7 +101,7 @@ trait users {
 						'class' => 'cs-allow-user-registration cs-require-registration-confirmation'
 					]
 				],
-				static::core_textarea('rules', 'SIMPLE_EDITOR')
+				static::core_textarea('rules', 'cs-editor-simple')
 			)
 		);
 	}
@@ -195,7 +195,7 @@ trait users {
 					],
 					static::core_input('mail_from'),
 					static::core_input('mail_from_name'),
-					static::core_textarea('mail_signature', 'SIMPLE_EDITOR'),
+					static::core_textarea('mail_signature', 'cs-editor-simple'),
 					[
 						'',
 						h::{'td button[is=cs-button][onclick=cs.test_email_sending()]'}($L->test_email_sending)

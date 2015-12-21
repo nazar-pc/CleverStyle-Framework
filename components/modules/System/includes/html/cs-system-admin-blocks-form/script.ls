@@ -45,14 +45,6 @@ Polymer(
 				type	: 'html'
 				expire	:
 					state	: 0
-		# Since TinyMCE doesn't work inside ShadowDOM yet, we need to move it into regular DOM, and then insert it in right place with <content> element
-		# Double wrapping is also because of TinyMCE doesn't handle it nicely otherwise
-		editor	= @shadowRoot.querySelector('.EDITOR')
-		$(editor).after('<content select=".editor-container"/>')
-		$('<div class="editor-container"><div></div></div>')
-			.appendTo(@)
-			.children()
-			.append(editor)
 	_type_change : (type) !->
 		$(@shadowRoot).find('.html, .raw_html').prop('hidden', true).filter('.' + type).prop('hidden', false)
 	_save : !->

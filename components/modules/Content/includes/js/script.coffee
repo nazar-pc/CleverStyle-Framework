@@ -21,12 +21,14 @@ $ ->
 					<label>#{L.content_title}</label>
 					<input is="cs-input-text" type="text" name="title">
 					<label>#{L.content_content}</label>
-					<textarea is="cs-textarea" autosize class="text"></textarea>
-					<textarea is="cs-textarea" autosize class="html EDITOR cs-margin-bottom" id="cs-content-html-content"></textarea>
+					<textarea is="cs-textarea" autosize class="text cs-margin-bottom"></textarea>
+					<cs-editor class="html">
+						<textarea is="cs-textarea" autosize class="cs-margin-bottom"></textarea>
+					</cs-editor>
 					<label>#{L.content_type}</label>
 					<select is="cs-select" name="type">
 						<option value="text">text</option>
-						<option value="html" id="cs-content-html-content">html</option>
+						<option value="html">html</option>
 					</select>
 					<div>
 						<button is="cs-button" type="button" primary>#{L.content_save}</button>
@@ -40,13 +42,11 @@ $ ->
 				type	= modal_body.find('[name=type]')
 				type.change ->
 					if type.val() == 'text'
-						typeof window.editor_deinitialization == 'function' && editor_deinitialization($('#cs-content-html-content'))
 						modal_body.find('.html').hide()
 						content	= modal_body.find('.text').show().val(content.val())
 					else
 						modal_body.find('.text').hide()
-						content	= modal_body.find('.html').show().val(content.val())
-						typeof window.editor_reinitialization == 'function' && editor_reinitialization($('#cs-content-html-content'))
+						content	= modal_body.find('.html').val(content.val()).show().children('textarea').val(content.val())
 				cs.ui.simple_modal(modal_body)
 				modal_body.find('button').click ->
 					$.ajax(
@@ -77,8 +77,10 @@ $ ->
 							<label>#{L.content_title}</label>
 							<input is="cs-input-text" type="text" name="title">
 							<label>#{L.content_content}</label>
-							<textarea is="cs-textarea" autosize class="text"></textarea>
-							<textarea is="cs-textarea" autosize class="html EDITOR cs-margin-bottom" id="cs-content-html-content"></textarea>
+							<textarea is="cs-textarea" autosize class="text cs-margin-bottom"></textarea>
+							<cs-editor class="html">
+								<textarea is="cs-textarea" autosize class="cs-margin-bottom"></textarea>
+							</cs-editor>
 							<label>#{L.content_type}</label>
 							<select is="cs-select" name="type">
 								<option value="text">text</option>
@@ -89,18 +91,16 @@ $ ->
 							</div>
 						</form>""")
 						title	= modal_body.find('[name=title]').val(data.title)
-						content	= modal_body.find('textarea').val(data.content)
-						modal_body.find("textarea:not(.#{data.type})").hide()
+						content	= modal_body.find('.' + data.type).val(data.content)
+						modal_body.find('.text, .html').not('.' + data.type).hide()
 						type	= modal_body.find('[name=type]').val(data.type)
 						type.change ->
 							if type.val() == 'text'
-								typeof window.editor_deinitialization == 'function' && editor_deinitialization($('#cs-content-html-content'))
 								modal_body.find('.html').hide()
 								content	= modal_body.find('.text').show().val(content.val())
 							else
 								modal_body.find('.text').hide()
-								content	= modal_body.find('.html').show().val(content.val())
-								typeof window.editor_reinitialization == 'function' && editor_reinitialization($('#cs-content-html-content'))
+								content	= modal_body.find('.html').val(content.val()).show().children('textarea').val(content.val())
 						cs.ui.simple_modal(modal_body)
 						modal_body.find('button').click ->
 							$.ajax(

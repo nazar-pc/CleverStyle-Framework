@@ -13,23 +13,55 @@
       tap: '_style_fix'
     },
     properties: {
-      target: {
-        observers: '_tinymce_init',
-        type: Object
-      },
       value: {
         observer: '_value_changed',
         type: String
       }
     },
-    ready: function(){
-      this.target = this.firstElementChild;
-      this._tinymce_init();
-    },
-    _tinymce_init: function(){
+    attached: function(){
+      var this$ = this;
+      if (this._init_started) {
+        return;
+      }
+      this._init_started = true;
+      this._detached = false;
+      if (this._tinymce_editor) {
+        this._tinymce_editor.load();
+        this._tinymce_editor.remove();
+        delete this._tinymce_editor;
+      }
       tinymce.init(importAll$({
-        target: this.target
+        target: this.firstElementChild,
+        init_instance_callback: function(editor){
+          var target;
+          this$._tinymce_editor = editor;
+          this$._init_started = false;
+          editor.load();
+          if (this$.value !== undefined && this$.value !== editor.getContent()) {
+            editor.setContent(this$.value);
+            editor.save();
+          }
+          target = editor.targetElm;
+          target._original_focus = target.focus;
+          target.focus = bind$(editor, 'focus');
+          editor.on('remove', function(){
+            target.focus = target._original_focus;
+          });
+        }
       }, this.editor_config));
+    },
+    detached: function(){
+      var this$ = this;
+      if (!this._tinymce_editor) {
+        return;
+      }
+      this._detached = true;
+      setTimeout(function(){
+        if (this$._detached) {
+          this$._tinymce_editor.remove();
+          delete this$._tinymce_editor;
+        }
+      });
     },
     _style_fix: function(){
       var this$ = this;
@@ -38,13 +70,17 @@
       });
     },
     _value_changed: function(){
-      if (this.target.tagName === 'TEXTAREA' && this.target.tinymce_editor && this.value !== this.target.tinymce_editor.getContent()) {
-        this.target.tinymce_editor.load();
+      if (this._tinymce_editor && this.value !== this._tinymce_editor.getContent()) {
+        this._tinymce_editor.setContent(this.value);
+        this._tinymce_editor.save();
       }
     }
   };
   function importAll$(obj, src){
     for (var key in src) obj[key] = src[key];
     return obj;
+  }
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
   }
 }).call(this);

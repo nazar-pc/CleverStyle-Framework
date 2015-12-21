@@ -42,7 +42,7 @@
 	}
 
 	&page-form td {
-		.INLINE_EDITOR,
+		cs-editor-inline,
 		[contenteditable=true] {
 			outline : #333 dotted 1px
 		}
