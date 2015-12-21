@@ -327,6 +327,22 @@ function get_core_ml_text ($item) {
 }
 
 /**
+ * Set multilingual value from $Config->core array
+ *
+ * @param string $item
+ * @param string $value
+ *
+ * @return false|string
+ */
+function set_core_ml_text ($item, $value) {
+	$Config = Config::instance(true);
+	if (!$Config) {
+		return false;
+	}
+	return Text::instance()->set($Config->module('System')->db('texts'), 'System/Config/core', $Config->core[$item], $value);
+}
+
+/**
  * Sends header with string representation of http status code, for example "404 Not Found" for corresponding server protocol
  *
  * @param int $code Status code
