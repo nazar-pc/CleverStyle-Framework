@@ -16,6 +16,10 @@
       target: {
         observers: '_tinymce_init',
         type: Object
+      },
+      value: {
+        observer: '_value_changed',
+        type: String
       }
     },
     ready: function(){
@@ -32,6 +36,11 @@
       [].slice.call(document.querySelectorAll('body > [class^=mce-]')).forEach(function(node){
         this$.scopeSubtree(node, true);
       });
+    },
+    _value_changed: function(){
+      if (this.target.tagName === 'TEXTAREA' && this.target.tinymce_editor && this.value !== this.target.tinymce_editor.getContent()) {
+        this.target.tinymce_editor.load();
+      }
     }
   };
   function importAll$(obj, src){
