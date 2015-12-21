@@ -2,4 +2,35 @@
 <p>TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control released as Open Source under LGPL by Moxiecode Systems AB.</p>
 <p>TinyMCE has the ability to convert HTML TEXTAREA fields or other HTML elements to editor instances.</p>
 <a href="http://tinymce.moxiecode.com" target="_blank">Project page: tinymce.moxiecode.com</a>
-<!-- TODO: docs about wrappers usage-->
+<h3 style="text-align: center;">Usage</h3>
+<p>There are 4 wrappers to use with TinyMCE:</p>
+<dl>
+	<dt>cs-editor</dt>
+	<dd>Editor with complete set of features</dd>
+	<dt>cs-editor-simple</dt>
+	<dd>Simplified version of editor without some secondary features</dd>
+	<dt>cs-editor-inline</dt>
+	<dd>Editor with complete set of features, but for inline use, namely, for <code>div</code>, not <code>textarea</code></dd>
+	<dt>cs-editor-simple-inline</dt>
+	<dd>Simplified version of inline editor, similar to <code>cs-editor-simple</code></dd>
+</dl>
+<p>To use any of editors you just need to wrap with it target element:</p>
+<pre><code>&lt;cs-editor>
+	&lt;textarea>&lt;/textarea>
+&lt;/cs-editor>
+&lt;cs-editor-simple>
+	&lt;textarea>&lt;/textarea>
+&lt;/cs-editor-simple>
+&lt;cs-editor-inline>
+	&lt;div>&lt;/div>
+&lt;/cs-editor-inline>
+&lt;cs-editor-simple-inline>
+	&lt;div>&lt;/div>
+&lt;/cs-editor-simple-inline>
+</code></pre>
+If you want to use data bindings (especially with convenient <code>cs-textarea</code>), because of <a href="https://github.com/Polymer/polymer/issues/3225">Polymer issue</a> you'll need to apply data binding to editor's <code>value</code> property as well:
+<pre><code>&lt;cs-editor value="{{content}}">
+	&lt;textarea is="cs-textarea" value="{{content}}">&lt;/textarea>
+&lt;/cs-editor>
+</code></pre>
+<p>Since there is nothing more special to do in order to use wrappers, removing TinyMCE plugin will not break anything:)</p>
