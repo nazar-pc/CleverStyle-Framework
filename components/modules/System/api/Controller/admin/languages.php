@@ -77,7 +77,7 @@ trait languages {
 	 */
 	static function admin_languages_save_settings () {
 		static::admin_languages_settings_common();
-		if (!Config::instance()->apply()) {
+		if (!Config::instance()->save()) {
 			throw new ExitException(500);
 		}
 	}
