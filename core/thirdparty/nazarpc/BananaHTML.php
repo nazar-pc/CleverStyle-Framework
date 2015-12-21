@@ -233,7 +233,7 @@ class BananaHTML {
 				strpos($in, '<') !== false
 			)
 		) {
-			$in = $level ? "\n".static::level("$in\n", $level) : "\n$in\n";;
+			$in = $level ? "\n".static::level("$in\n", $level) : "\n$in\n";
 		}
 		return "<$tag$attributes>$in</$tag>".($level ? "\n" : '');
 	}

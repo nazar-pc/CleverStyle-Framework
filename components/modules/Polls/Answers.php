@@ -62,7 +62,7 @@ class Answers {
 	function get ($poll) {
 		if (is_array($poll)) {
 			foreach ($poll as &$i) {
-				$i = $this->get($i);;
+				$i = $this->get($i);
 			}
 			return $poll;
 		}

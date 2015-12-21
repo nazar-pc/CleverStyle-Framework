@@ -76,7 +76,7 @@ class Includes_processing {
 			'/url\((.*?)\)|@import[\s\t\n\r]*[\'"](.*?)[\'"]/',
 			function ($match) use ($dir) {
 				$link = trim($match[1], '\'" ');
-				$link = explode('?', $link, 2)[0];;
+				$link = explode('?', $link, 2)[0];
 				if (!static::is_relative_path_and_exists($link, $dir)) {
 					return $match[0];
 				}

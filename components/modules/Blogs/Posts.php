@@ -138,7 +138,7 @@ class Posts {
 	 * @return array|false
 	 */
 	function get_as_json_ld ($id) {
-		$post = $this->get($id);;
+		$post = $this->get($id);
 		if (!$post) {
 			return false;
 		}
