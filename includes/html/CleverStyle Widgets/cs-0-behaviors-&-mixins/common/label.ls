@@ -33,7 +33,7 @@ Polymer.{}cs.{}behaviors.label =
 			if @value != undefined
 				@_value_changed(@value)
 			for input in inputs
-				do (input = input) !~>
+				let (input = input)
 					input.addEventListener('change', !~>
 						@value					= input.value
 						@active					= @local_input.value ~= input.value

@@ -45,7 +45,7 @@
         }
         for (i$ = 0, len$ = inputs.length; i$ < len$; ++i$) {
           input = inputs[i$];
-          fn$();
+          (fn$.call(this$, input));
         }
         this$.local_input.addEventListener('focus', function(){
           this$.focus = true;
@@ -54,14 +54,14 @@
           this$.focus = false;
         });
         function fn$(input){
-          input == null && (input = input);
+          var this$ = this;
           input.addEventListener('change', function(){
             this$.value = input.value;
             this$.active = this$.local_input.value == input.value;
             this$.local_input.checked = this$.local_input.value == input.value;
           });
           if (input.checked) {
-            this$.value = input.value;
+            this.value = input.value;
           }
         }
       });
