@@ -8,11 +8,9 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L, behaviors;
+  var L, ref$, ref1$;
   L = cs.Language;
-  behaviors = cs.Polymer.behaviors;
-  behaviors.admin = behaviors.admin || {};
-  behaviors.admin.System = {
+  ((ref$ = (ref1$ = cs.Polymer || (cs.Polymer = {})).behaviors || (ref1$.behaviors = {})).admin || (ref$.admin = {})).System = {
     components: {
       _enable_component: function(component, component_type, meta){
         var category, this$ = this;
@@ -307,6 +305,60 @@
           },
           processData: false,
           contentType: false
+        });
+      }
+    },
+    settings: {
+      properties: {
+        settings_api_url: {
+          observer: '_reload',
+          type: String
+        },
+        settings: Object
+      },
+      _reload: function(){
+        var this$ = this;
+        $.ajax({
+          url: this.settings_api_url,
+          type: 'get_settings',
+          success: function(settings){
+            this$.set('settings', settings);
+          }
+        });
+      },
+      _apply: function(){
+        var this$ = this;
+        $.ajax({
+          url: this.settings_api_url,
+          type: 'apply_settings',
+          data: this.settings,
+          success: function(){
+            this$._reload();
+            cs.ui.notify(L.changes_applied + L.check_applied, 'warning', 5);
+          }
+        });
+      },
+      _save: function(){
+        var this$ = this;
+        $.ajax({
+          url: this.settings_api_url,
+          type: 'save_settings',
+          data: this.settings,
+          success: function(){
+            this$._reload();
+            cs.ui.notify(L.changes_saved, 'success', 5);
+          }
+        });
+      },
+      _cancel: function(){
+        var this$ = this;
+        $.ajax({
+          url: this.settings_api_url,
+          type: 'cancel_settings',
+          success: function(){
+            this$._reload();
+            cs.ui.notify(L.changes_canceled, 'success', 5);
+          }
         });
       }
     }

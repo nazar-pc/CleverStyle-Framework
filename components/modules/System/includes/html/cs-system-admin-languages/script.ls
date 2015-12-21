@@ -9,45 +9,10 @@
 L = cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-languages'
-	# TODO: everything below can be likely decoupled into behavior and reused elsewhere, new property with basic path would be only needed instead
 	behaviors	: [
 		cs.Polymer.behaviors.Language
+		cs.Polymer.behaviors.admin.System.settings
 	]
 	properties	:
-		settings	: Object
-	ready : !->
-		@reload()
-	reload : !->
-		$.ajax(
-			url		: 'api/System/admin/languages'
-			type	: 'get_settings'
-			success	: (settings) !~>
-				@set('settings', settings)
-		)
-	_apply : !->
-		$.ajax(
-			url		: 'api/System/admin/languages'
-			type	: 'apply_settings'
-			data	: @settings
-			success	: !~>
-				@reload()
-				cs.ui.notify(L.changes_applied + L.check_applied, 'warning', 5)
-		)
-	_save : !->
-		$.ajax(
-			url		: 'api/System/admin/languages'
-			type	: 'save_settings'
-			data	: @settings
-			success	: !~>
-				@reload()
-				cs.ui.notify(L.changes_saved, 'success', 5)
-		)
-	_cancel : !->
-		$.ajax(
-			url		: 'api/System/admin/languages'
-			type	: 'cancel_settings'
-			success	: !~>
-				@reload()
-				cs.ui.notify(L.changes_canceled, 'success', 5)
-		)
+		settings_api_url	: 'api/System/admin/languages'
 )

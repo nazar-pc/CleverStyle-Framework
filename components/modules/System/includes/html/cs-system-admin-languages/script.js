@@ -12,57 +12,9 @@
   L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-languages',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.settings],
     properties: {
-      settings: Object
-    },
-    ready: function(){
-      this.reload();
-    },
-    reload: function(){
-      var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/languages',
-        type: 'get_settings',
-        success: function(settings){
-          this$.set('settings', settings);
-        }
-      });
-    },
-    _apply: function(){
-      var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/languages',
-        type: 'apply_settings',
-        data: this.settings,
-        success: function(){
-          this$.reload();
-          cs.ui.notify(L.changes_applied + L.check_applied, 'warning', 5);
-        }
-      });
-    },
-    _save: function(){
-      var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/languages',
-        type: 'save_settings',
-        data: this.settings,
-        success: function(){
-          this$.reload();
-          cs.ui.notify(L.changes_saved, 'success', 5);
-        }
-      });
-    },
-    _cancel: function(){
-      var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/languages',
-        type: 'cancel_settings',
-        success: function(){
-          this$.reload();
-          cs.ui.notify(L.changes_canceled, 'success', 5);
-        }
-      });
+      settings_api_url: 'api/System/admin/languages'
     }
   });
 }).call(this);

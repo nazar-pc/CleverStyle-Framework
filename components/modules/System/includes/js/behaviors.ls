@@ -6,10 +6,8 @@
  * @copyright  Copyright (c) 2015, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L						= cs.Language
-behaviors				= cs.Polymer.behaviors
-behaviors.admin			= behaviors.admin || {}
-behaviors.admin.System	=
+L									= cs.Language
+cs.{}Polymer.{}behaviors.{}admin.System	=
 	components	:
 		# Module/plugin enabling
 		_enable_component : (component, component_type, meta) !->
@@ -231,4 +229,43 @@ behaviors.admin.System	=
 					onprogress	: progress || !->
 				processData	: false
 				contentType	: false
+			)
+	settings :
+		properties	:
+			settings_api_url	:
+				observer	: '_reload'
+				type		: String
+			settings			: Object
+		_reload : !->
+			$.ajax(
+				url		: @settings_api_url
+				type	: 'get_settings'
+				success	: (settings) !~>
+					@set('settings', settings)
+			)
+		_apply : !->
+			$.ajax(
+				url		: @settings_api_url
+				type	: 'apply_settings'
+				data	: @settings
+				success	: !~>
+					@_reload()
+					cs.ui.notify(L.changes_applied + L.check_applied, 'warning', 5)
+			)
+		_save : !->
+			$.ajax(
+				url		: @settings_api_url
+				type	: 'save_settings'
+				data	: @settings
+				success	: !~>
+					@_reload()
+					cs.ui.notify(L.changes_saved, 'success', 5)
+			)
+		_cancel : !->
+			$.ajax(
+				url		: @settings_api_url
+				type	: 'cancel_settings'
+				success	: !~>
+					@_reload()
+					cs.ui.notify(L.changes_canceled, 'success', 5)
 			)
