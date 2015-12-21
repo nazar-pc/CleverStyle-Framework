@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-languages',
     behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.settings],

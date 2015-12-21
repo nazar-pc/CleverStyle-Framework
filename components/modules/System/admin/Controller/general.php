@@ -335,33 +335,10 @@ trait general {
 		);
 	}
 	static function general_site_info () {
-		$Config              = Config::instance();
-		$Index               = Index::instance();
-		$timezones           = get_timezones_list();
-		$sa                  = $Config->core['simple_admin_mode'];
-		$Index->apply_button = true;
-		Index::instance()->content(
-			static::vertical_table(
-				static::core_input('name', 'text', 'site_name'),
-				!$sa ? static::core_textarea('url') : false,
-				!$sa ? static::core_textarea('cookie_domain') : false,
-				!$sa ? static::core_input('cookie_prefix') : false,
-				[
-					h::info('timezone'),
-					h::{'select[is=cs-select]'}(
-						[
-							'in'    => array_keys($timezones),
-							'value' => array_values($timezones)
-						],
-						[
-							'name'     => 'core[timezone]',
-							'selected' => $Config->core['timezone'],
-							'size'     => 7
-						]
-					)
-				],
-				static::core_input('admin_email', 'email')
-			)
+		$Index       = Index::instance();
+		$Index->form = false;
+		$Index->content(
+			h::cs_system_admin_site_info()
 		);
 	}
 	static function general_system () {

@@ -1,0 +1,38 @@
+dom-module#cs-system-admin-site-info
+	template
+		style(include="advanced-styles")
+		form.cs-text-center(is="cs-form")
+			label(tooltip="[[L.site_name_info]]")
+				[[L.site_name]]
+				cs-tooltip
+			input(is="cs-input-text" value="{{settings.name}}")
+			label(tooltip="[[L.url_info]]")
+				[[L.url]]
+				cs-tooltip
+			textarea(is="cs-textarea" autosize value="{{settings.url}}")
+			label(tooltip="[[L.cookie_domain_info]]")
+				[[L.cookie_domain]]
+				cs-tooltip
+			textarea(is="cs-textarea" autosize value="{{settings.cookie_domain}}")
+			label(tooltip="[[L.cookie_prefix_info]]")
+				[[L.cookie_prefix]]
+				cs-tooltip
+			input(is="cs-input-text" value="{{settings.cookie_prefix}}")
+			label(tooltip="[[L.timezone_info]]")
+				[[L.timezone]]
+				cs-tooltip
+			template(is="dom-if" if="[[timezones]]")
+				select(is="cs-select" selected="{{settings.timezone}}" size="7")
+					template(is="dom-repeat" items="[[timezones]]")
+						option(value="[[item.timezone]]") [[item.description]]
+			label(tooltip="[[L.admin_email_info]]")
+				[[L.admin_email]]
+				cs-tooltip
+			input(is="cs-input-text" value="{{settings.admin_email}}")
+			p
+				button(is="cs-button" type="button" on-tap="_apply" tooltip="[[L.apply_info]]") [[L.apply]]
+				= ' '
+				button(is="cs-button" type="button" on-tap="_save" tooltip="[[L.save_info]]") [[L.save]]
+				= ' '
+				button(is="cs-button" type="button" on-tap="_cancel" tooltip="[[L.cancel_info]]" disabled$="[[!settings.applied]]") [[L.cancel]]
+	script(src="script.js")

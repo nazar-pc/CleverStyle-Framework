@@ -7,11 +7,18 @@
  * @license    MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-system-admin-languages'
+	'is'		: 'cs-system-admin-site-info'
 	behaviors	: [
 		cs.Polymer.behaviors.Language
 		cs.Polymer.behaviors.admin.System.settings
 	]
 	properties	:
-		settings_api_url	: 'api/System/admin/languages'
+		settings_api_url	: 'api/System/admin/site_info'
+		timezones			: Array
+	ready : !->
+		timezones <~! $.getJSON('api/System/timezones', _)
+		@timezones	=
+			for description, timezone of timezones
+				timezone	: timezone
+				description	: description
 )

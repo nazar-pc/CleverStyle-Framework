@@ -54,7 +54,6 @@ class Controller {
 					$temp = &$Config->$part;
 					foreach ($_POST[$part] as $item => $value) {
 						switch ($item) {
-							case 'name':
 							case 'closed_title':
 							case 'closed_text':
 							case 'mail_from_name':
@@ -67,8 +66,6 @@ class Controller {
 									$value
 								);
 								break;
-							case 'url':
-							case 'cookie_domain':
 							case 'ip_black_list':
 							case 'ip_admin_list':
 								$value = _trim(explode("\n", $value));
