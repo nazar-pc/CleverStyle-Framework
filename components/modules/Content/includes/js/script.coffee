@@ -9,7 +9,6 @@ if !cs.is_admin
 	return
 $ ->
 	L	= cs.Language
-	# TODO HTML editor below not working
 	$('body')
 		.on(
 			'click'
