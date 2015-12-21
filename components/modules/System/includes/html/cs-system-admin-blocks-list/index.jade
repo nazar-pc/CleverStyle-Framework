@@ -10,7 +10,7 @@ mixin blocks-container (position)
 					a(is="cs-link-button" icon="key" tooltip="[[L.edit_permissions]]" on-tap="_block_permissions")
 					= ' '
 					a(is="cs-link-button" icon="trash" tooltip="[[L.delete]]" on-tap="_delete_block")
-dom-module(id="cs-system-admin-blocks-list")
+dom-module#cs-system-admin-blocks-list
 	link(rel="import" href="style.css" type="css")
 	template
 		style(include="advanced-styles-alone")

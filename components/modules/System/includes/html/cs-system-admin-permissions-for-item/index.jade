@@ -26,7 +26,7 @@ mixin group-actions
 		button(is="cs-button" on-tap="invert" type="button") [[L.invert]]
 		button(is="cs-button" on-tap="allow_all" type="button") [[L.allow_all]]
 		button(is="cs-button" on-tap="deny_all" type="button") [[L.deny_all]]
-dom-module(id="cs-system-admin-permissions-for-item")
+dom-module#cs-system-admin-permissions-for-item
 	template
 		style(include="advanced-styles")
 		nav(is="cs-nav-tabs" selected="{{selected_tab}}")
