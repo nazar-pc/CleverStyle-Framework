@@ -1,19 +1,18 @@
-###*
+/**
  * @package   CleverStyle Widgets
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
+ */
 tooltip_element = null
-Polymer.cs.behaviors.tooltip =
+Polymer.{}cs.{}behaviors.tooltip =
 	properties	:
 		tooltip	: String
-	attached : ->
-		requestAnimationFrame =>
+	attached : !->
+		requestAnimationFrame !~>
 			if @tooltip
 				@_tooltip_for_element(@)
-		return
-	_tooltip_for_element : (element) ->
+	_tooltip_for_element : (element) !->
 		if @_tooltip_binding_added
 			return
 		@_tooltip_binding_added = true
@@ -25,9 +24,7 @@ Polymer.cs.behaviors.tooltip =
 		element.addEventListener('pointerenter', show)
 		element.addEventListener('mouseleave', hide)
 		element.addEventListener('pointerleave', hide)
-		return
-	_initialize_tooltip : ->
+	_initialize_tooltip : !->
 		if !tooltip_element
-			tooltip_element = document.createElement('cs-tooltip')
+			tooltip_element := document.createElement('cs-tooltip')
 			document.documentElement.appendChild(tooltip_element)
-		return

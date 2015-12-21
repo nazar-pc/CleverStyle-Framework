@@ -1,10 +1,10 @@
-###*
+/**
  * @package   CleverStyle Widgets
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
-Polymer.cs.behaviors.button =
+ */
+Polymer.{}cs.{}behaviors.button =
 	properties	:
 		action		:
 			type	: String
@@ -30,10 +30,9 @@ Polymer.cs.behaviors.button =
 			type				: Boolean
 	listeners	:
 		tap	: '_tap'
-	attached : ->
+	attached : !->
 		@empty = !@childNodes.length
-		return
-	_bind_changed : ->
+	_bind_changed : !->
 		if @bind
 			# Yeah, a bit tricky here:)
 			# Save bind element in local variable and we drop binding to element to avoid memory leaks
@@ -44,8 +43,8 @@ Polymer.cs.behaviors.button =
 			@_tap	= bind_element[@action].bind(bind_element)
 			# Also in order to avoid memory leaks we need to know when bind element is detached from DOM
 			# If it is detached after one second - we'll drop binding
-			observer	= (new MutationObserver (mutations) =>
-				mutations.forEach (mutation) =>
+			observer	= (new MutationObserver (mutations) !~>
+				mutations.forEach (mutation) !~>
 					# Only removed nodes are interesting
 					if !mutation.removedNodes
 						return
@@ -56,7 +55,7 @@ Polymer.cs.behaviors.button =
 						# Disconnect observer, since we are not interested in old parent node anymore
 						observer.disconnect()
 						# Wait a second
-						setTimeout (=>
+						setTimeout (!~>
 							# If no parent node -> element is still detached -> drop binded method to avoid any connections with that element
 							# and thus memory leaks
 							if !bind_element.parentNode
@@ -64,11 +63,7 @@ Polymer.cs.behaviors.button =
 							else
 								# New parent, lets reconfigure observer again
 								observer.observe(bind_element.parentNode, {childList : true})
-							return
 						), 1000
-					return
-				return
 			)
 			observer.observe(bind_element.parentNode, {childList : true, subtree: false})
-		return
 	_tap : ->
