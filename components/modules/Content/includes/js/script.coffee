@@ -65,7 +65,6 @@ $ ->
 			'.cs-content-edit'
 			->
 				key = $(@).data('key')
-				# TODO HTML editor below not working
 				$.ajax(
 					url		: "api/Content/#{key}"
 					type	: 'get'
