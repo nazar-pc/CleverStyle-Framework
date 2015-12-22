@@ -69,8 +69,11 @@ Polymer.cs.behaviors.cs-select = [
 		count
 	_value_changed : !->
 		selected	= []
-		[].slice.call(@selectedOptions).forEach (option) ->
-			selected.push(option.value)
+		Array::forEach.call(
+			@selectedOptions
+			(option) ->
+				selected.push(option.value)
+		)
 		if !@multiple
 			selected	= selected[0] || undefined
 		@set('selected', selected)
@@ -82,11 +85,14 @@ Polymer.cs.behaviors.cs-select = [
 				selected.map(String)
 			else
 				String(selected)
-		[].slice.call(@querySelectorAll('option')).forEach (option) ->
-			option.selected	=
-				selected == option.value ||
-				(
-					selected instanceof Array &&
-					selected.indexOf(option.value) != -1
-				)
+		Array::forEach.call(
+			@querySelectorAll('option')
+			(option) ->
+				option.selected	=
+					selected == option.value ||
+					(
+						selected instanceof Array &&
+						selected.indexOf(option.value) != -1
+					)
+		)
 ]

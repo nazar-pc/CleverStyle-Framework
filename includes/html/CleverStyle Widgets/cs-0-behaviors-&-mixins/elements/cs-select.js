@@ -84,7 +84,7 @@
       _value_changed: function(){
         var selected;
         selected = [];
-        [].slice.call(this.selectedOptions).forEach(function(option){
+        Array.prototype.forEach.call(this.selectedOptions, function(option){
           return selected.push(option.value);
         });
         if (!this.multiple) {
@@ -99,7 +99,7 @@
         selected = selected instanceof Array
           ? selected.map(String)
           : String(selected);
-        [].slice.call(this.querySelectorAll('option')).forEach(function(option){
+        Array.prototype.forEach.call(this.querySelectorAll('option'), function(option){
           return option.selected = selected === option.value || (selected instanceof Array && selected.indexOf(option.value) !== -1);
         });
       }

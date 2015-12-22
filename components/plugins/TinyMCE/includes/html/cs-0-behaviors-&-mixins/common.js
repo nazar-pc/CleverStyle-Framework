@@ -65,7 +65,7 @@
     },
     _style_fix: function(){
       var this$ = this;
-      [].slice.call(document.querySelectorAll('body > [class^=mce-]')).forEach(function(node){
+      Array.prototype.forEach.call(document.querySelectorAll('body > [class^=mce-]'), function(node){
         this$.scopeSubtree(node, true);
       });
     },

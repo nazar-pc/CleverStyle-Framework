@@ -57,8 +57,11 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 				delete @_tinymce_editor
 	_style_fix : !->
 		# Hack: Polymer styling should be fixed for dynamically created elements
-		[].slice.call(document.querySelectorAll('body > [class^=mce-]')).forEach (node) !~>
-			@scopeSubtree(node, true)
+		Array::forEach.call(
+			document.querySelectorAll('body > [class^=mce-]')
+			(node) !~>
+				@scopeSubtree(node, true)
+		)
 	_value_changed : !->
 		if @_tinymce_editor && @value != @_tinymce_editor.getContent()
 			@_tinymce_editor.setContent(@value)
