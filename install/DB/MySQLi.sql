@@ -4,8 +4,6 @@ CREATE TABLE IF NOT EXISTS `[prefix]config` (
   `db` mediumtext NOT NULL,
   `storage` mediumtext NOT NULL,
   `components` mediumtext NOT NULL,
-  `replace` mediumtext NOT NULL,
-  `routing` mediumtext NOT NULL,
   PRIMARY KEY (`domain`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='Settings';
 

@@ -45,18 +45,6 @@ class Config {
 	 */
 	public $components = [];
 	/**
-	 * Replacing rules, that are used to replace text on pages
-	 *
-	 * @var mixed[]
-	 */
-	public $replace = [];
-	/**
-	 * Replacing rules, they are applied to current route, every rule is applied only once
-	 *
-	 * @var mixed[]
-	 */
-	public $routing = [];
-	/**
 	 * Array of all domains, which allowed to access the site
 	 *
 	 * Contains keys:
@@ -122,7 +110,6 @@ class Config {
 			$this->core['theme']
 		);
 		if (!$this->init) {
-			$Page->replace($this->replace['in'], $this->replace['out']);
 			$this->init = true;
 			if ($this->check_ip($this->core['ip_black_list'])) {
 				throw new ExitException(403);
@@ -192,9 +179,7 @@ class Config {
 					`core`,
 					`db`,
 					`storage`,
-					`components`,
-					`replace`,
-					`routing`
+					`components`
 				FROM `[prefix]config`
 				WHERE `domain` = '%s'
 				LIMIT 1",
@@ -244,9 +229,7 @@ class Config {
 				'core'       => $this->core,
 				'db'         => $this->db,
 				'storage'    => $this->storage,
-				'components' => $this->components,
-				'replace'    => $this->replace,
-				'routing'    => $this->routing
+				'components' => $this->components
 			]
 		)
 		) {
@@ -281,17 +264,13 @@ class Config {
 				`core`			= '%s',
 				`db`			= '%s',
 				`storage`		= '%s',
-				`components`	= '%s',
-				`replace`		= '%s',
-				`routing`		= '%s'
+				`components`	= '%s'
 			WHERE `domain` = '%s'
 			LIMIT 1",
 			_json_encode($this->core),
 			_json_encode($this->db),
 			_json_encode($this->storage),
 			_json_encode($this->components),
-			_json_encode($this->replace),
-			_json_encode($this->routing),
 			DOMAIN
 		)
 		) {

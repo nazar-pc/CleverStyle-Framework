@@ -8,9 +8,6 @@
 namespace cs;
 /**
  * Provides next events:
- *  System/Route/pre_routing_replace
- *  ['rc'    => &$rc] //Reference to string with current route, this string can be changed
- *
  *  System/Route/routing_replace
  *  ['rc'    => &$rc] //Reference to string with current route, this string can be changed
  *
@@ -175,19 +172,6 @@ class Route {
 			$rc = explode('/', $rc, 2);
 			$rc = isset($rc[1]) ? $rc[1] : '';
 		}
-		/**
-		 * Routing replacing
-		 */
-		Event::instance()->fire(
-			'System/Route/pre_routing_replace',
-			[
-				'rc' => &$rc
-			]
-		);
-		foreach ($Config->routing['in'] as $i => $search) {
-			$rc = _preg_replace($search, $Config->routing['out'][$i], $rc) ?: str_replace($search, $Config->routing['out'][$i], $rc);
-		}
-		unset($i, $search);
 		Event::instance()->fire(
 			'System/Route/routing_replace',
 			[

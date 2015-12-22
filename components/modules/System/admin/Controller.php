@@ -49,7 +49,7 @@ class Controller {
 		$Index  = Index::instance();
 		$Config = Config::instance();
 		if (isset($_POST['apply']) || isset($_POST['save'])) {
-			foreach (['core', 'db', 'storage', 'components', 'replace', 'routing'] as $part) {
+			foreach (['core', 'db', 'storage', 'components'] as $part) {
 				if (isset($_POST[$part])) {
 					$temp = &$Config->$part;
 					foreach ($_POST[$part] as $item => $value) {
@@ -76,17 +76,6 @@ class Controller {
 						$temp[$item] = xap($value, true);
 					}
 					unset($item, $value);
-					if ($part == 'routing' || $part == 'replace') {
-						$temp['in']  = explode("\n", $temp['in']);
-						$temp['out'] = explode("\n", $temp['out']);
-						foreach ($temp['in'] as $i => $value) {
-							if (empty($value)) {
-								unset($temp['in'][$i], $temp['out'][$i]);
-							}
-						}
-						unset($i, $value);
-					}
-					unset($temp);
 				}
 			}
 			unset($part);

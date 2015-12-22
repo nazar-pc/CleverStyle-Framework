@@ -339,15 +339,13 @@ function install_process ($fs, $argv = null) {
 	}
 	if (!$cdb->q(
 		"INSERT INTO `[prefix]config` (
-			`domain`, `core`, `db`, `storage`, `components`, `replace`, `routing`
+			`domain`, `core`, `db`, `storage`, `components`
 		) VALUES (
-			'%s', '%s', '[]', '[]', '%s', '%s', '%s'
+			'%s', '%s', '[]', '[]', '%s'
 		)",
 		$config['cookie_domain'][0],
 		_json_encode($config),
-		'{"modules":'._json_encode($modules).',"plugins":[],"blocks":[]}',
-		'{"in":[],"out":[]}',
-		'{"in":[],"out":[]}'
+		'{"modules":'._json_encode($modules).',"plugins":[],"blocks":[]}'
 	)
 	) {
 		return "Can't import system configuration into database! Installation aborted.";

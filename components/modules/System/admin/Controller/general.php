@@ -342,9 +342,7 @@ trait general {
 		);
 	}
 	static function general_system () {
-		$Config              = Config::instance();
 		$Index               = Index::instance();
-		$sa                  = $Config->core['simple_admin_mode'];
 		$Index->apply_button = true;
 		$Index->content(
 			static::vertical_table(
@@ -354,53 +352,7 @@ trait general {
 				static::core_input('title_delimiter'),
 				static::core_input('title_reverse', 'radio'),
 				static::core_input('show_tooltips', 'radio', false),
-				static::core_input('simple_admin_mode', 'radio'),
-				!$sa ? [
-					h::info('routing'),
-					h::{'table.cs-table[center] tr| td'}(
-						[
-							h::info('routing_in'),
-							h::info('routing_out')
-						],
-						[
-							h::{'textarea[is=cs-textarea][autosize]'}(
-								$Config->routing['in'],
-								[
-									'name' => 'routing[in]'
-								]
-							),
-							h::{'textarea[is=cs-textarea][autosize]'}(
-								$Config->routing['out'],
-								[
-									'name' => 'routing[out]'
-								]
-							)
-						]
-					)
-				] : false,
-				!$sa ? [
-					h::info('replace'),
-					h::{'table.cs-table[center] tr| td'}(
-						[
-							h::info('replace_in'),
-							h::info('replace_out')
-						],
-						[
-							h::{'textarea[is=cs-textarea][autosize]'}(
-								$Config->replace['in'],
-								[
-									'name' => 'replace[in]'
-								]
-							),
-							h::{'textarea[is=cs-textarea][autosize]'}(
-								$Config->replace['out'],
-								[
-									'name' => 'replace[out]'
-								]
-							)
-						]
-					)
-				] : false
+				static::core_input('simple_admin_mode', 'radio')
 			)
 		);
 	}
