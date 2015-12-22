@@ -17,6 +17,7 @@ use
 class Controller {
 	use
 		admin,
+		admin\about_server,
 		admin\blocks,
 		admin\databases,
 		admin\groups,

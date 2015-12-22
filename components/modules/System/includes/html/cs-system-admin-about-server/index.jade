@@ -1,0 +1,101 @@
+dom-module#cs-system-admin-about-server
+	template
+		style(include="advanced-styles")
+		div.cs-text-right
+			a(is="cs-link-button" target="_blank" href="/admin/System/general/about_server/phpinfo") phpinfo()
+			= ' '
+			a(is="cs-link-button" icon="info" target="_blank" href="/admin/System/general/about_server/readme.html") [[L.information_about_system]]
+			= ' '
+			a(is="cs-link-button" icon="legal" target="_blank" href="/license.txt") [[L.license]]
+		table.cs-table(right-left)
+			tr
+				td [[L.operating_system]]:
+				td [[server_config.operating_system]]
+			tr
+				td [[L.server_type]]:
+				td [[if(server_config.server_type, server_config.server_type, L.indefinite)]]
+			tr(hidden="[[!server_config.available_ram]]")
+				td [[L.available_ram]]:
+				td [[server_config.available_ram]]
+			tr
+				td [[L.php_extensions]]:
+				td
+					table.cs-table
+						tr
+							td OpenSSL
+							td(class$="[[if(server_config.php_extensions.openssl, 'cs-block-success cs-text-success', 'cs-block-error cs-text-error')]]")
+								[[if(server_config.php_extensions.openssl, L.yes, L.no)]]
+								= ' '
+								cs-icon(icon="info-circle" tooltip="[[L.openssl_warning]]" hidden="[[server_config.php_extensions.openssl]]")
+						tr
+							td cURL
+							td(class$="[[if(server_config.php_extensions.curl, 'cs-block-success cs-text-success', 'cs-block-error cs-text-error')]]")
+								[[if(server_config.php_extensions.curl, L.yes, L.no)]]
+						tr
+							td APCu
+							td
+								[[if(server_config.php_extensions.apcu, L.yes, L.no)]]
+						tr
+							td Memcached
+							td
+								[[if(server_config.php_extensions.memcached, L.yes, L.no)]]
+			tr
+				td [[L.php_ini_settings]]
+				td
+					table.cs-table
+						tr
+							td [[L.allow_file_upload]]
+							td(class$="[[if(server_config.php_ini.allow_file_uploads, 'cs-block-success cs-text-success', 'cs-block-error cs-text-error')]]")
+								[[if(server_config.php_ini.allow_file_uploads, L.yes, L.no)]]
+						tr
+							td [[L.max_file_uploads]]
+							td [[server_config.php_ini.max_file_uploads]]
+						tr(hidden="[[!server_config.php_ini.upload_size_limit]]")
+							td [[L.upload_size_limit]]
+							td [[server_config.php_ini.upload_size_limit]]
+						tr(hidden="[[!server_config.php_ini.post_max_size]]")
+							td [[L.post_max_size]]
+							td [[server_config.php_ini.post_max_size]]
+						tr(hidden="[[!server_config.php_ini.max_execution_time]]")
+							td [[L.max_execution_time]]
+							td [[server_config.php_ini.max_execution_time]]
+						tr(hidden="[[!server_config.php_ini.max_input_time]]")
+							td [[L.max_input_time]]
+							td [[server_config.php_ini.max_input_time]]
+						tr(hidden="[[!server_config.php_ini.default_socket_timeout]]")
+							td [[L.default_socket_timeout]]
+							td [[server_config.php_ini.default_socket_timeout]]
+						tr
+							td [[L.allow_url_fopen]]
+							td(class$="[[if(server_config.php_ini.allow_url_fopen, 'cs-block-success cs-text-success', 'cs-block-error cs-text-error')]]")
+								[[if(server_config.php_ini.allow_url_fopen, L.yes, L.no)]]
+						tr
+							td [[L.display_errors]]
+							td(class$="[[if(server_config.php_ini.display_errors, 'cs-block-error cs-text-error', 'cs-block-success cs-text-success')]]")
+								[[if(server_config.php_ini.display_errors, L.yes, L.no)]]
+			tr
+				td [[L.main_db]]
+				td [[server_config.main_db.type]] [[server_config.main_db.version]]
+			tr
+				td
+				td
+					table.cs-table
+						tr
+							td [[L.host]]
+							td [[server_config.main_db.host]]
+						tr
+							td [[L.name_of_db]]
+							td [[server_config.main_db.name]]
+						tr
+							td [[L.prefix_for_db_tables]]
+							td [[server_config.main_db.prefix]]
+			tr
+				td [[L.main_storage]]
+				td [[server_config.main_storage.type]]
+			tr
+				td [[L.cache_engine]]
+				td [[server_config.cache_engine]]
+			tr
+				td [[L.free_disk_space]]
+				td [[server_config.free_disk_space]]
+	script(src="script.js")

@@ -1,5 +1,6 @@
 {
 	"admin"     : {
+		"about_server"       : [],
 		"blocks"             : [],
 		"databases"          : [],
 		"databases_test"     : [],
