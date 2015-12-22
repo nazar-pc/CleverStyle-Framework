@@ -46,7 +46,6 @@ trait site_info {
 	 * @throws ExitException
 	 */
 	protected static function admin_site_info_settings_common () {
-		/** @noinspection NotOptimalIfConditionsInspection */
 		if (
 			!isset($_POST['name'], $_POST['url'], $_POST['cookie_domain'], $_POST['cookie_prefix'], $_POST['timezone'], $_POST['admin_email']) ||
 			!in_array($_POST['timezone'], get_timezones_list(), true)
@@ -54,12 +53,12 @@ trait site_info {
 			throw new ExitException(400);
 		}
 		$Config                        = Config::instance();
-		$Config->core['name']          = set_core_ml_text('name', $_POST['name']);
+		$Config->core['name']          = set_core_ml_text('name', xap($_POST['name']));
 		$Config->core['url']           = static::admin_site_info_settings_common_multiline($_POST['url']);
 		$Config->core['cookie_domain'] = static::admin_site_info_settings_common_multiline($_POST['cookie_domain']);
-		$Config->core['cookie_prefix'] = $_POST['cookie_prefix'];
+		$Config->core['cookie_prefix'] = xap($_POST['cookie_prefix']);
 		$Config->core['timezone']      = $_POST['timezone'];
-		$Config->core['admin_email']   = $_POST['admin_email'];
+		$Config->core['admin_email']   = xap($_POST['admin_email'], true);
 	}
 	/**
 	 * @param string $value

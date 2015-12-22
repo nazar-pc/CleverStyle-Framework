@@ -27,6 +27,7 @@ class Controller {
 		admin\plugins,
 		admin\site_info,
 		admin\storages,
+		admin\system,
 		admin\themes,
 		admin\upload,
 		admin\users,

@@ -56,7 +56,6 @@ trait languages {
 	 * @throws ExitException
 	 */
 	protected static function admin_languages_settings_common () {
-		/** @noinspection NotOptimalIfConditionsInspection */
 		if (
 			!isset($_POST['language'], $_POST['active_languages'], $_POST['multilingual']) ||
 			!is_array($_POST['active_languages']) ||

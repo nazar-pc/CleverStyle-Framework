@@ -54,8 +54,6 @@ class Controller {
 					$temp = &$Config->$part;
 					foreach ($_POST[$part] as $item => $value) {
 						switch ($item) {
-							case 'closed_title':
-							case 'closed_text':
 							case 'mail_from_name':
 							case 'mail_signature':
 							case 'rules':

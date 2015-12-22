@@ -342,18 +342,10 @@ trait general {
 		);
 	}
 	static function general_system () {
-		$Index               = Index::instance();
-		$Index->apply_button = true;
+		$Index       = Index::instance();
+		$Index->form = false;
 		$Index->content(
-			static::vertical_table(
-				static::core_input('site_mode', 'radio'),
-				static::core_input('closed_title'),
-				static::core_textarea('closed_text', 'cs-editor'),
-				static::core_input('title_delimiter'),
-				static::core_input('title_reverse', 'radio'),
-				static::core_input('show_tooltips', 'radio', false),
-				static::core_input('simple_admin_mode', 'radio')
-			)
+			h::cs_system_admin_system()
 		);
 	}
 }
