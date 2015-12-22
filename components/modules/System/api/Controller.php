@@ -18,11 +18,11 @@ class Controller {
 	use
 		admin,
 		admin\blocks,
-		admin\cache,
 		admin\databases,
 		admin\groups,
 		admin\languages,
 		admin\modules,
+		admin\optimization,
 		admin\permissions,
 		admin\plugins,
 		admin\site_info,

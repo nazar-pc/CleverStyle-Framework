@@ -10,14 +10,14 @@ dom-module#cs-system-admin-site-info
 				[[L.url]]
 				cs-tooltip
 			textarea(is="cs-textarea" autosize value="{{settings.url}}")
-			label(tooltip="[[L.cookie_domain_info]]")
+			label(tooltip="[[L.cookie_domain_info]]" hidden$="[[simple_admin_mode]]")
 				[[L.cookie_domain]]
 				cs-tooltip
-			textarea(is="cs-textarea" autosize value="{{settings.cookie_domain}}")
-			label(tooltip="[[L.cookie_prefix_info]]")
+			textarea(is="cs-textarea" autosize value="{{settings.cookie_domain}}" hidden$="[[simple_admin_mode]]")
+			label(tooltip="[[L.cookie_prefix_info]]" hidden$="[[simple_admin_mode]]")
 				[[L.cookie_prefix]]
 				cs-tooltip
-			input(is="cs-input-text" value="{{settings.cookie_prefix}}")
+			input(is="cs-input-text" value="{{settings.cookie_prefix}}" hidden$="[[simple_admin_mode]]")
 			label(tooltip="[[L.timezone_info]]")
 				[[L.timezone]]
 				cs-tooltip

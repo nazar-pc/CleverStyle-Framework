@@ -314,7 +314,14 @@
           observer: '_reload',
           type: String
         },
-        settings: Object
+        settings: Object,
+        simple_admin_mode: {
+          computed: '_simple_admin_mode(settings.simple_admin_mode)',
+          type: Boolean
+        }
+      },
+      _simple_admin_mode: function(simple_admin_mode){
+        return simple_admin_mode == 1;
       },
       _reload: function(){
         var this$ = this;

@@ -295,43 +295,10 @@ trait general {
 		);
 	}
 	static function general_optimization () {
-		$Config              = Config::instance();
-		$Index               = Index::instance();
-		$L                   = Language::instance();
-		$sa                  = $Config->core['simple_admin_mode'];
-		$Index->apply_button = true;
+		$Index       = Index::instance();
+		$Index->form = false;
 		$Index->content(
-			static::vertical_table(
-				static::core_input('cache_compress_js_css', 'radio'),
-				static::core_input('vulcanization', 'radio'),
-				static::core_input('put_js_after_body', 'radio'),
-				(!$sa ? static::core_input('inserts_limit', 'number', null, false, 1) : false),
-				(!$sa ? static::core_input('update_ratio', 'number', null, false, 0, 100) : false),
-				[
-					h::{'div#clean_cache'}(),
-					h::{'div#clean_pcache'}()
-				],
-				[
-					h::{'input[is=cs-input-text][compact][tight]'}(
-						[
-							'placeholder' => $L->partial_cache_cleaning,
-							'style'       => $Config->core['simple_admin_mode'] ? 'display:none;' : false
-						]
-					).
-					h::{'button[is=cs-button]'}(
-						$L->clean_settings_cache,
-						Cache::instance()->cache_state() ? [
-							'onMouseDown' => "cs.admin_cache('#clean_cache', '{$Config->base_url()}/api/System/admin/cache/clean_cache', this.previousElementSibling.value);"
-						] : ['disabled']
-					),
-					h::{'button[is=cs-button]'}(
-						$L->clean_scripts_styles_cache,
-						$Config->core['cache_compress_js_css'] ? [
-							'onMouseDown' => "cs.admin_cache('#clean_pcache', '{$Config->base_url()}/api/System/admin/cache/clean_pcache');"
-						] : ['disabled']
-					)
-				]
-			)
+			h::cs_system_admin_optimization()
 		);
 	}
 	static function general_site_info () {

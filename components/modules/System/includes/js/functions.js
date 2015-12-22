@@ -14,28 +14,6 @@
 
   L = cs.Language;
 
-
-  /**
-   * Cache cleaning
-   *
-   * @param 			element
-   * @param {string}	action
-   */
-
-  cs.admin_cache = function(element, action, partial_path) {
-    $(element).html("<progress is=\"cs-progress\" infinite></progress>");
-    $.ajax({
-      url: action,
-      data: {
-        partial_path: partial_path
-      },
-      type: 'delete',
-      success: function(result) {
-        return $(element).html(result ? "<p class=\"cs-block-success cs-text-success\">" + L.done + "</p>" : "<p class=\"cs-block-errorcs-text-error\">" + L.error + "</p>");
-      }
-    });
-  };
-
   cs.test_email_sending = function() {
     var email;
     email = prompt(L.email);

@@ -7,29 +7,6 @@
  * @license    MIT License, see license.txt
 ###
 L	= cs.Language
-###*
- * Cache cleaning
- *
- * @param 			element
- * @param {string}	action
-###
-cs.admin_cache				= (element, action, partial_path) ->
-	$(element).html """
-		<progress is="cs-progress" infinite></progress>
-	"""
-	$.ajax
-		url		: action
-		data	:
-			partial_path	: partial_path
-		type	: 'delete'
-		success	: (result) ->
-			$(element).html(
-				if result
-					"""<p class="cs-block-success cs-text-success">#{L.done}</p>"""
-				else
-					"""<p class="cs-block-errorcs-text-error">#{L.error}</p>"""
-			)
-	return
 cs.test_email_sending		= () ->
 	email = prompt(L.email)
 	if email
