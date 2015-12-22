@@ -28,7 +28,7 @@ dom-module#cs-system-admin-site-info
 			label(tooltip="[[L.admin_email_info]]")
 				[[L.admin_email]]
 				cs-tooltip
-			input(is="cs-input-text" value="{{settings.admin_email}}")
+			input(is="cs-input-text" type="email" value="{{settings.admin_email}}")
 			p
 				button(is="cs-button" type="button" on-tap="_apply" tooltip="[[L.apply_info]]") [[L.apply]]
 				= ' '

@@ -18,9 +18,5 @@
 
 form {
 	text-align : center;
-
-	> :not(.cs-text-center) {
-		text-align : left;
-	}
 }
 

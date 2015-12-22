@@ -13,16 +13,22 @@ dom-module#cs-system-admin-users-list
 					option(selected value="") [[L.all_columns]]
 					template(is="dom-repeat" items="[[all_columns]]" as="column")
 						option(value="[[column]]") [[column]]
+				= ' '
 				[[L.search_mode]]
+				= ' '
 				select(is="cs-select" compact value="{{search_mode}}")
 					template(is="dom-repeat" items="[[search_modes]]" as="mode")
 						option(value="[[mode]]" selected$="[[equal(mode, search_mode)]]") [[mode]]
+				= ' '
 				input(is="cs-input-text" value="{{search_text}}" placeholder="[[L.search_text]]" type="text")
+				= ' '
 				[[L.items]]
+				= ' '
 				input(is="cs-input-text" compact min="1" step="1" type="number" value="{{search_limit}}")
 			div
 				template(is="dom-repeat" items="[[search_columns]]" as="column")
 					button(is="cs-button" on-tap="toggle_search_column" primary="[[column.selected]]") [[column.name]]
+					= ' '
 		hr
 		+pagination
 		h2.cs-text-center(hidden$="[[!searching_loader]]")
