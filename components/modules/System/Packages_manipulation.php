@@ -174,10 +174,7 @@ class Packages_manipulation {
 	 * @param array|null $db_array `$Config->components['modules'][$module]['db']` if module or system
 	 */
 	static function update_php_sql ($target_directory, $old_version, $db_array = null) {
-		$Core   = Core::instance();
-		$Config = Config::instance();
-		$db     = DB::instance();
-		$meta   = file_get_json("$target_directory/meta.json");
+		$meta = file_get_json("$target_directory/meta.json");
 		if (!$meta['update_versions']) {
 			return;
 		}
@@ -191,25 +188,31 @@ class Packages_manipulation {
 				 * Database update
 				 */
 				if ($db_array) {
-					time_limit_pause();
-					foreach ($db_array as $db_name => $index) {
-						if ($index == 0) {
-							$db_type = $Core->db_type;
-						} else {
-							$db_type = $Config->db[$index]['type'];
-						}
-						$sql_file = "$target_directory/meta/update_db/$db_name/$version/$db_type.sql";
-						if (file_exists($sql_file)) {
-							$db->$index()->q(
-								explode(';', file_get_contents($sql_file))
-							);
-						}
-					}
-					unset($db_name, $db_type, $sql_file);
-					time_limit_pause(false);
+					self::execute_sql_from_directory("$target_directory/meta/update_db", $db_array, $version);
 				}
 			}
 		}
+	}
+	/**
+	 * @param string $directory        Base path to SQL files
+	 * @param array  $db_configuration Array in form [$db_name => $index]
+	 * @param string $version          In case when we are working with update script we might have version subdirectory
+	 */
+	static function execute_sql_from_directory ($directory, $db_configuration, $version = '') {
+		$Config = Config::instance();
+		$Core   = Core::instance();
+		$db     = DB::instance();
+		time_limit_pause();
+		foreach ($db_configuration as $db_name => $index) {
+			$db_type  = $index == 0 ? $Core->db_type : $Config->db[$index]['type'];
+			$sql_file = "$directory/$db_name/$version/$db_type.sql";
+			if (file_exists($sql_file)) {
+				$db->db_prime($index)->q(
+					explode(';', file_get_contents($sql_file))
+				);
+			}
+		}
+		time_limit_pause(false);
 	}
 	/**
 	 * Check dependencies for new component (during installation/updating/enabling)

@@ -11,8 +11,6 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Cache as System_cache,
 	cs\Config,
-	cs\Core,
-	cs\DB,
 	cs\Event,
 	cs\ExitException,
 	cs\Language,
@@ -403,8 +401,6 @@ trait modules {
 		}
 		$module  = $route_path[2];
 		$Config  = Config::instance();
-		$Core    = Core::instance();
-		$db      = DB::instance();
 		$modules = &$Config->components['modules'];
 		if (!$Config->module($module)->uninstalled()) {
 			throw new ExitException(400);
@@ -415,18 +411,7 @@ trait modules {
 		$module_data = &$modules[$module];
 		if (isset($_POST['db'])) {
 			$module_data['db'] = $_POST['db'];
-			time_limit_pause();
-			foreach ($module_data['db'] as $db_name => $index) {
-				$db_type  = $index == 0 ? $Core->db_type : $Config->db[$index]['type'];
-				$sql_file = MODULES."/$module/meta/install_db/$db_name/$db_type.sql";
-				if (file_exists($sql_file)) {
-					$db->$index()->q(
-						explode(';', file_get_contents($sql_file))
-					);
-				}
-			}
-			unset($db_name, $index, $db_type, $sql_file);
-			time_limit_pause(false);
+			Packages_manipulation::execute_sql_from_directory(MODULES."/$module/meta/install_db", $module_data['db']);
 		}
 		if (isset($_POST['storage'])) {
 			$module_data['storage'] = $_POST['storage'];
@@ -457,8 +442,6 @@ trait modules {
 		}
 		$module  = $route_path[2];
 		$Config  = Config::instance();
-		$Core    = Core::instance();
-		$db      = DB::instance();
 		$modules = &$Config->components['modules'];
 		/**
 		 * Do not allow to uninstall enabled module, it should be explicitly disabled first
@@ -471,18 +454,7 @@ trait modules {
 		}
 		$module_data = &$modules[$module];
 		if (isset($module_data['db'])) {
-			time_limit_pause();
-			foreach ($module_data['db'] as $db_name => $index) {
-				$db_type  = $index == 0 ? $Core->db_type : $Config->db[$index]['type'];
-				$sql_file = MODULES."/$module/meta/uninstall_db/$db_name/$db_type.sql";
-				if (file_exists($sql_file)) {
-					$db->$index()->q(
-						explode(';', file_get_contents($sql_file))
-					);
-				}
-			}
-			unset($db_name, $db_type, $sql_file);
-			time_limit_pause(false);
+			Packages_manipulation::execute_sql_from_directory(MODULES."/$module/meta/uninstall_db", $module_data['db']);
 		}
 		static::delete_permissions_for_module($module);
 		$modules[$module] = ['active' => Config\Module_Properties::UNINSTALLED];
@@ -641,12 +613,7 @@ trait modules {
 			$Config->core['site_mode'] = 0;
 			static::admin_modules_save();
 		}
-		if (
-			!static::is_same_module($new_meta, Config::SYSTEM_MODULE) ||
-			!file_exists("$tmp_dir/modules.json") ||
-			!file_exists("$tmp_dir/plugins.json") ||
-			!file_exists("$tmp_dir/themes.json")
-		) {
+		if (!static::is_same_module($new_meta, Config::SYSTEM_MODULE)) {
 			throw new ExitException($L->this_is_not_system_installer_file, 400);
 		}
 		if (!Event::instance()->fire('admin/System/components/modules/update_system/before')) {
