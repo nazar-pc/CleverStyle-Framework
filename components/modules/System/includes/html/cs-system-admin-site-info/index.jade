@@ -1,3 +1,4 @@
+include ../_settings_mixins
 dom-module#cs-system-admin-site-info
 	template
 		style(include="advanced-styles")
@@ -29,10 +30,5 @@ dom-module#cs-system-admin-site-info
 				[[L.admin_email]]
 				cs-tooltip
 			input(is="cs-input-text" type="email" value="{{settings.admin_email}}")
-			p
-				button(is="cs-button" type="button" on-tap="_apply" tooltip="[[L.apply_info]]") [[L.apply]]
-				= ' '
-				button(is="cs-button" type="button" on-tap="_save" tooltip="[[L.save_info]]") [[L.save]]
-				= ' '
-				button(is="cs-button" type="button" on-tap="_cancel" tooltip="[[L.cancel_info]]" disabled$="[[!settings.applied]]") [[L.cancel]]
+			+footer-buttons
 	script(src="script.js")

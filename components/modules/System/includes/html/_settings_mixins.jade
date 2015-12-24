@@ -1,0 +1,23 @@
+mixin on-off-switcher (name, hidden, values, translations)
+	- values = values || [0,1]
+	- translations = translations || ['[[L.off]]', '[[L.on]]']
+	label(tooltip="[[L.#{name}_info]]" hidden=hidden)
+		[[L.#{name}]]
+		cs-tooltip
+	nav(is="cs-nav-button-group" hidden=hidden)
+		each value, index in values
+			if index
+				label(is="cs-label-button")
+					input(type="radio" value=value)
+					= translations[index]
+			else
+				label(is="cs-label-button" value="{{settings.#{name}}}")
+					input(type="radio" value=value)
+					= translations[index]
+mixin footer-buttons
+	p
+		button(is="cs-button" type="button" on-tap="_apply" tooltip="[[L.apply_info]]") [[L.apply]]
+		= ' '
+		button(is="cs-button" type="button" on-tap="_save" tooltip="[[L.save_info]]") [[L.save]]
+		= ' '
+		button(is="cs-button" type="button" on-tap="_cancel" tooltip="[[L.cancel_info]]" disabled$="[[!settings.applied]]") [[L.cancel]]
