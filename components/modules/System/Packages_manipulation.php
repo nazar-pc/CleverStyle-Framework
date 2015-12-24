@@ -59,6 +59,9 @@ class Packages_manipulation {
 	 * @return bool
 	 */
 	static function install_extract ($target_directory, $source_phar) {
+		if (!mkdir($target_directory, 0770)) {
+			return false;
+		}
 		$tmp_dir   = "phar://$source_phar";
 		$fs        = file_get_json("$tmp_dir/fs.json");
 		$extracted = array_filter(

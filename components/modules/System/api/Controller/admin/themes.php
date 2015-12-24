@@ -200,11 +200,7 @@ trait themes {
 		if ($new_meta['category'] !== 'themes') {
 			throw new ExitException($L->this_is_not_theme_installer_file, 400);
 		}
-		$theme_dir = THEMES."/$new_meta[package]";
-		if (
-			!mkdir($theme_dir, 0770) ||
-			!Packages_manipulation::install_extract($theme_dir, $tmp_location)
-		) {
+		if (!Packages_manipulation::install_extract(THEMES."/$new_meta[package]", $tmp_location)) {
 			throw new ExitException($L->theme_files_unpacking_error, 500);
 		}
 	}

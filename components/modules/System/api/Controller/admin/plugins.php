@@ -271,11 +271,7 @@ trait plugins {
 		if ($new_meta['category'] !== 'plugins') {
 			throw new ExitException($L->this_is_not_plugin_installer_file, 400);
 		}
-		$plugin_dir = PLUGINS."/$new_meta[package]";
-		if (
-			!mkdir($plugin_dir, 0770) ||
-			!Packages_manipulation::install_extract($plugin_dir, $tmp_location)
-		) {
+		if (!Packages_manipulation::install_extract(PLUGINS."/$new_meta[package]", $tmp_location)) {
 			throw new ExitException($L->plugin_files_unpacking_error, 500);
 		}
 	}

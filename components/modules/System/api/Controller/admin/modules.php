@@ -526,11 +526,7 @@ trait modules {
 		if ($new_meta['category'] !== 'modules') {
 			throw new ExitException($L->this_is_not_module_installer_file, 400);
 		}
-		$module_dir = MODULES."/$new_meta[package]";
-		if (
-			!mkdir($module_dir, 0770) ||
-			!Packages_manipulation::install_extract($module_dir, $tmp_location)
-		) {
+		if (!Packages_manipulation::install_extract(MODULES."/$new_meta[package]", $tmp_location)) {
 			throw new ExitException($L->module_files_unpacking_error, 500);
 		}
 		$Config->components['modules'][$new_meta['package']] = ['active' => Config\Module_Properties::UNINSTALLED];
