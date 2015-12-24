@@ -9,6 +9,9 @@ $.ajaxSetup(
 	contents	:
 		script	: false
 	error		: (xhr) !->
+		if @['error_' + xhr.status]
+			@['error_' + xhr.status].apply(@, arguments)
+			return
 		cs.ui.notify(
 			if xhr.responseText
 				JSON.parse(xhr.responseText).error_description

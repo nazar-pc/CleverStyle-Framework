@@ -12,6 +12,10 @@
       script: false
     },
     error: function(xhr){
+      if (this['error_' + xhr.status]) {
+        this['error_' + xhr.status].apply(this, arguments);
+        return;
+      }
       cs.ui.notify(xhr.responseText
         ? JSON.parse(xhr.responseText).error_description
         : cs.Language.connection_error.toString(), 'warning', 5);
