@@ -9,7 +9,6 @@
  */
 namespace cs\modules\System\api\Controller\admin\users;
 use
-	cs\Cache,
 	cs\Config,
 	cs\ExitException,
 	cs\Page;
