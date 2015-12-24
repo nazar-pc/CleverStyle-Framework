@@ -13,11 +13,7 @@ use
 	h;
 
 trait general {
-	static function general_about_server (
-		/** @noinspection PhpUnusedParameterInspection */
-		$route_ids,
-		$route_path
-	) {
+	static function general_about_server ($route_ids, $route_path) {
 		$Index       = Index::instance();
 		$Index->form = false;
 		if (isset($route_path[2])) {

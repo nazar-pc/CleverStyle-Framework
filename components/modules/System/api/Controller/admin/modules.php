@@ -266,9 +266,7 @@ trait modules {
 			throw new ExitException(404);
 		}
 		$Config->components['modules'][$module]['db'] = _int($_POST['db']);
-		if (!$Config->save()) {
-			throw new ExitException(500);
-		}
+		static::admin_modules_save();
 	}
 	/**
 	 * @param string $module
@@ -281,9 +279,7 @@ trait modules {
 			throw new ExitException(404);
 		}
 		$Config->components['modules'][$module]['storage'] = _int($_POST['storage']);
-		if (!$Config->save()) {
-			throw new ExitException(500);
-		}
+		static::admin_modules_save();
 	}
 	/**
 	 * @param string $module
@@ -303,19 +299,11 @@ trait modules {
 		) {
 			throw new ExitException(400);
 		}
-		if (!Event::instance()->fire(
-			'admin/System/components/modules/default',
-			[
-				'name' => $module
-			]
-		)
-		) {
+		if (!Event::instance()->fire('admin/System/components/modules/default', ['name' => $module])) {
 			throw new ExitException(500);
 		}
 		$Config->core['default_module'] = $module;
-		if (!$Config->save()) {
-			throw new ExitException(500);
-		}
+		static::admin_modules_save();
 	}
 	/**
 	 * Enable module
@@ -341,25 +329,12 @@ trait modules {
 		if (!$Config->module($module)->disabled()) {
 			throw new ExitException(400);
 		}
-		if (!Event::instance()->fire(
-			'admin/System/components/modules/enable/before',
-			[
-				'name' => $module
-			]
-		)
-		) {
+		if (!Event::instance()->fire('admin/System/components/modules/enable/before', ['name' => $module])) {
 			throw new ExitException(500);
 		}
 		$Config->components['modules'][$module]['active'] = Config\Module_Properties::ENABLED;
-		if (!$Config->save()) {
-			throw new ExitException(500);
-		}
-		Event::instance()->fire(
-			'admin/System/components/modules/enable/after',
-			[
-				'name' => $module
-			]
-		);
+		static::admin_modules_save();
+		Event::instance()->fire('admin/System/components/modules/enable/after', ['name' => $module]);
 		static::admin_modules_cleanup();
 	}
 	protected static function admin_modules_cleanup () {
@@ -399,25 +374,12 @@ trait modules {
 		) {
 			throw new ExitException(400);
 		}
-		if (!Event::instance()->fire(
-			'admin/System/components/modules/disable/before',
-			[
-				'name' => $module
-			]
-		)
-		) {
+		if (!Event::instance()->fire('admin/System/components/modules/disable/before', ['name' => $module])) {
 			throw new ExitException(500);
 		}
 		$Config->components['modules'][$module]['active'] = Config\Module_Properties::DISABLED;
-		if (!$Config->save()) {
-			throw new ExitException(500);
-		}
-		Event::instance()->fire(
-			'admin/System/components/modules/disable/after',
-			[
-				'name' => $module
-			]
-		);
+		static::admin_modules_save();
+		Event::instance()->fire('admin/System/components/modules/disable/after', ['name' => $module]);
 		static::admin_modules_cleanup();
 	}
 	/**
@@ -447,13 +409,7 @@ trait modules {
 		if (!$Config->module($module)->uninstalled()) {
 			throw new ExitException(400);
 		}
-		if (!Event::instance()->fire(
-			'admin/System/components/modules/install/before',
-			[
-				'name' => $module
-			]
-		)
-		) {
+		if (!Event::instance()->fire('admin/System/components/modules/install/before', ['name' => $module])) {
 			throw new ExitException(500);
 		}
 		$module_data = &$modules[$module];
@@ -476,15 +432,8 @@ trait modules {
 			$module_data['storage'] = $_POST['storage'];
 		}
 		$module_data['active'] = Config\Module_Properties::DISABLED;
-		if (!$Config->save()) {
-			throw new ExitException(500);
-		}
-		Event::instance()->fire(
-			'admin/System/components/modules/install/after',
-			[
-				'name' => $module
-			]
-		);
+		static::admin_modules_save();
+		Event::instance()->fire('admin/System/components/modules/install/after', ['name' => $module]);
 		static::admin_modules_cleanup();
 	}
 	/**
@@ -517,13 +466,7 @@ trait modules {
 		if (!$Config->module($module)->disabled()) {
 			throw new ExitException(400);
 		}
-		if (!Event::instance()->fire(
-			'admin/System/components/modules/uninstall/before',
-			[
-				'name' => $module
-			]
-		)
-		) {
+		if (!Event::instance()->fire('admin/System/components/modules/uninstall/before', ['name' => $module])) {
 			throw new ExitException(500);
 		}
 		$module_data = &$modules[$module];
@@ -543,15 +486,8 @@ trait modules {
 		}
 		static::delete_permissions_for_module($module);
 		$modules[$module] = ['active' => Config\Module_Properties::UNINSTALLED];
-		if (!$Config->save()) {
-			throw new ExitException(500);
-		}
-		Event::instance()->fire(
-			'admin/System/components/modules/uninstall/after',
-			[
-				'name' => $module
-			]
-		);
+		static::admin_modules_save();
+		Event::instance()->fire('admin/System/components/modules/uninstall/after', ['name' => $module]);
 		static::admin_modules_cleanup();
 	}
 	/**
@@ -599,9 +535,7 @@ trait modules {
 		}
 		$Config->components['modules'][$new_meta['package']] = ['active' => Config\Module_Properties::UNINSTALLED];
 		ksort($Config->components['modules'], SORT_STRING | SORT_FLAG_CASE);
-		if (!$Config->save()) {
-			throw new ExitException(500);
-		}
+		static::admin_modules_save();
 	}
 	/**
 	 * Update module (or system if module name is System)
@@ -667,13 +601,7 @@ trait modules {
 		if (!static::is_same_module($new_meta, $module)) {
 			throw new ExitException($L->this_is_not_module_installer_file, 400);
 		}
-		if (!Event::instance()->fire(
-			'admin/System/components/modules/update/before',
-			[
-				'name' => $module
-			]
-		)
-		) {
+		if (!Event::instance()->fire('admin/System/components/modules/update/before', ['name' => $module])) {
 			throw new ExitException(500);
 		}
 		if (!is_writable($module_dir)) {
@@ -685,12 +613,7 @@ trait modules {
 		$module_data = $Config->components['modules'][$module];
 		// Run PHP update scripts and SQL queries if any
 		Packages_manipulation::update_php_sql($module_dir, $existing_meta['version'], isset($module_data['db']) ? $module_data['db'] : null);
-		Event::instance()->fire(
-			'admin/System/components/modules/update/after',
-			[
-				'name' => $module
-			]
-		);
+		Event::instance()->fire('admin/System/components/modules/update/after', ['name' => $module]);
 		// If module was enabled before update - enable it back
 		if ($enabled) {
 			static::admin_modules_enable($route_ids, $route_path);
@@ -720,9 +643,7 @@ trait modules {
 		$site_mode = $Config->core['site_mode'];
 		if ($site_mode) {
 			$Config->core['site_mode'] = 0;
-			if (!$Config->save()) {
-				throw new ExitException(500);
-			}
+			static::admin_modules_save();
 		}
 		if (
 			!static::is_same_module($new_meta, Config::SYSTEM_MODULE) ||
@@ -747,9 +668,7 @@ trait modules {
 		 */
 		if ($site_mode) {
 			$Config->core['site_mode'] = 1;
-			if (!$Config->save()) {
-				throw new ExitException(500);
-			}
+			static::admin_modules_save();
 		}
 	}
 	/**
@@ -776,9 +695,7 @@ trait modules {
 			throw new ExitException(500);
 		}
 		unset($Config->components['modules'][$module]);
-		if (!$Config->save()) {
-			throw new ExitException(500);
-		}
+		static::admin_modules_save();
 	}
 	/**
 	 * Update information about present modules
@@ -818,7 +735,15 @@ trait modules {
 		unset($modules_in_fs, $known_modules);
 		$modules = array_merge($modules_list, array_intersect_key($modules, $modules_list));
 		ksort($modules, SORT_STRING | SORT_FLAG_CASE);
-		if (!$Config->save()) {
+		static::admin_modules_save();
+	}
+	/**
+	 * Save changes
+	 *
+	 * @throws ExitException
+	 */
+	protected static function admin_modules_save () {
+		if (!Config::instance()->save()) {
 			throw new ExitException(500);
 		}
 	}
