@@ -597,11 +597,10 @@ trait modules {
 	 * @param array  $existing_meta
 	 * @param array  $new_meta
 	 * @param string $tmp_location
-	 * @param string $tmp_dir
 	 *
 	 * @throws ExitException
 	 */
-	protected static function update_system ($module, $existing_meta, $new_meta, $tmp_location, $tmp_dir) {
+	protected static function update_system ($module, $existing_meta, $new_meta, $tmp_location) {
 		$Config     = Config::instance();
 		$L          = Language::instance();
 		$module_dir = MODULES."/$module";
