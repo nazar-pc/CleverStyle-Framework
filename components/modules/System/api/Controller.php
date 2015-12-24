@@ -32,6 +32,8 @@ class Controller {
 		admin\themes,
 		admin\upload,
 		admin\users,
+		admin\users\general,
+		admin\users\permissions,
 		general,
 		profile,
 		profiles,

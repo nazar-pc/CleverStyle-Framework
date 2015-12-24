@@ -56,7 +56,6 @@ class Controller {
 						switch ($item) {
 							case 'mail_from_name':
 							case 'mail_signature':
-							case 'rules':
 								$value = Text::instance()->set(
 									Config::instance()->module('System')->db('texts'),
 									'System/Config/core',

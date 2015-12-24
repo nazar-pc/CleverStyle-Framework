@@ -20,89 +20,10 @@ use
 
 trait users {
 	static function users_general () {
-		$Config              = Config::instance();
-		$Index               = Index::instance();
-		$L                   = Language::instance();
-		$Index->apply_button = true;
+		$Index       = Index::instance();
+		$Index->form = false;
 		$Index->content(
-			static::vertical_table(
-				static::core_input('session_expire', 'number', null, false, 1, false, $L->seconds),
-				[
-					h::info('sign_in_attempts_block_count'),
-					h::{'input[is=cs-input-text][type=number]'}(
-						[
-							'name'     => 'core[sign_in_attempts_block_count]',
-							'value'    => $Config->core['sign_in_attempts_block_count'],
-							'min'      => 0,
-							'onChange' => "if ($(this).val() == 0) { $('.cs-sign-in-attempts-block-count').hide(); } else { $('.cs-sign-in-attempts-block-count').show(); }"
-						]
-					)
-				],
-				[
-					static::core_input('sign_in_attempts_block_time', 'number', null, false, 1, false, $L->seconds),
-					[
-						'style' => $Config->core['sign_in_attempts_block_count'] == 0 ? 'display: none;' : '',
-						'class' => 'cs-sign-in-attempts-block-count'
-					]
-				],
-				static::core_input('remember_user_ip', 'radio'),
-				static::core_input('password_min_length', 'number', null, false, 4),
-				static::core_input('password_min_strength', 'number', null, false, 0, 7),
-				[
-					h::info('allow_user_registration'),
-					h::radio(
-						[
-							'name'     => 'core[allow_user_registration]',
-							'checked'  => $Config->core['allow_user_registration'],
-							'value'    => [0, 1],
-							'in'       => [$L->off, $L->on],
-							'onchange' => [
-								"$('.cs-allow-user-registration').hide();",
-								"$('.cs-allow-user-registration').show();".
-								"if (!$('.cs-allow-user-registration input[value=1]').prop('checked')) { $('.cs-require-registration-confirmation').hide(); }"
-							]
-						]
-					)
-				],
-				[
-					[
-						h::info('require_registration_confirmation'),
-						h::radio(
-							[
-								'name'     => 'core[require_registration_confirmation]',
-								'checked'  => $Config->core['require_registration_confirmation'],
-								'value'    => [0, 1],
-								'in'       => [$L->off, $L->on],
-								'onchange' => [
-									"$('.cs-require-registration-confirmation').hide();",
-									"$('.cs-require-registration-confirmation').show();"
-								]
-							]
-						)
-					],
-					[
-						'style' => $Config->core['allow_user_registration'] == 0 ? 'display: none;' : '',
-						'class' => 'cs-allow-user-registration'
-					]
-				],
-				[
-					static::core_input('registration_confirmation_time', 'number', null, false, 1, false, $L->days),
-					[
-						'style' => $Config->core['allow_user_registration'] == 1 && $Config->core['require_registration_confirmation'] == 1 ? '' :
-							'display: none;',
-						'class' => 'cs-allow-user-registration cs-require-registration-confirmation'
-					]
-				],
-				[
-					static::core_input('auto_sign_in_after_registration', 'radio'),
-					[
-						'style' => $Config->core['allow_user_registration'] == 1 && $Config->core['require_registration_confirmation'] == 1 ? '' :
-							'display: none;',
-						'class' => 'cs-allow-user-registration cs-require-registration-confirmation'
-					]
-				],
-				static::core_textarea('rules', 'cs-editor-simple')
-			)
+			h::cs_system_admin_users_general()
 		);
 	}
 	static function users_groups () {
