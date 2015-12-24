@@ -6,7 +6,6 @@
  * @copyright  Copyright (c) 2015, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L = cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-about-server'
 	behaviors	: [

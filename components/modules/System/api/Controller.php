@@ -16,12 +16,12 @@ use
 	cs\modules\System\api\Controller\user_;
 class Controller {
 	use
-		admin,
 		admin\about_server,
 		admin\blocks,
 		admin\databases,
 		admin\groups,
 		admin\languages,
+		admin\mail,
 		admin\modules,
 		admin\optimization,
 		admin\permissions,
