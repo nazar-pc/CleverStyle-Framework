@@ -4,14 +4,8 @@ dom-module#cs-system-admin-site-info
 		style(include="advanced-styles")
 		form.cs-text-center(is="cs-form")
 			+input("site_name")
-			label(tooltip="[[L.url_info]]")
-				[[L.url]]
-				cs-tooltip
-			textarea(is="cs-textarea" autosize value="{{settings.url}}")
-			label(tooltip="[[L.cookie_domain_info]]" hidden$="[[simple_admin_mode]]")
-				[[L.cookie_domain]]
-				cs-tooltip
-			textarea(is="cs-textarea" autosize value="{{settings.cookie_domain}}" hidden$="[[simple_admin_mode]]")
+			+textarea("url")
+			+textarea("cookie_domain", "[[simple_admin_mode]]")
 			+input("cookie_prefix", "[[simple_admin_mode]]")
 			label(tooltip="[[L.timezone_info]]")
 				[[L.timezone]]

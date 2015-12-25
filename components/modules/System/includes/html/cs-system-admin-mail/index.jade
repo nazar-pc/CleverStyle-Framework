@@ -12,11 +12,7 @@ dom-module#cs-system-admin-mail
 			+input("smtp_password", "[[!smtp_auth]]")
 			+input("mail_from", null, "email")
 			+input("mail_from_name")
-			label(tooltip="[[L.mail_signature_info]]")
-				[[L.mail_signature]]
-				cs-tooltip
-			cs-editor-simple(value="{{settings.mail_signature}}")
-				textarea(is="cs-textarea" autosize value="{{settings.mail_signature}}")
+			+editor("mail_signature", true)
 			p
 				button(is="cs-button" type="button" icon="signal" on-tap="_test_email") [[L.test_email_sending]]
 			+footer-buttons

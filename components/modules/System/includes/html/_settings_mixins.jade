@@ -26,3 +26,18 @@ mixin input (name, hidden, type, min, max)
 		[[L.#{name}]]
 		cs-tooltip
 	input(is="cs-input-text" type=type value="{{settings.#{name}}}" hidden=hidden min=min max=max)
+mixin textarea (name, hidden)
+	label(tooltip="[[L.#{name}_info]]" hidden=hidden)
+		[[L.#{name}]]
+		cs-tooltip
+	textarea(is="cs-textarea" autosize value="{{settings.#{name}}}" hidden=hidden)
+mixin editor (name, simple)
+	label(tooltip="[[L.#{name}_info]]")
+		[[L.#{name}]]
+		cs-tooltip
+	if simple
+		cs-editor-simple(value="{{settings.#{name}}}")
+			textarea(is="cs-textarea" autosize value="{{settings.#{name}}}")
+	else
+		cs-editor(value="{{settings.#{name}}}")
+			textarea(is="cs-textarea" autosize value="{{settings.#{name}}}")

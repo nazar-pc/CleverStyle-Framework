@@ -5,11 +5,7 @@ dom-module#cs-system-admin-system
 		form.cs-text-center(is="cs-form")
 			+on-off-switcher("site_mode")
 			+input("closed_title")
-			label(tooltip="[[L.closed_text_info]]")
-				[[L.closed_text]]
-				cs-tooltip
-			cs-editor(value="{{settings.closed_text}}")
-				textarea(is="cs-textarea" autosize value="{{settings.closed_text}}")
+			+editor("closed_text")
 			+input("title_delimiter")
 			+on-off-switcher("title_reverse")
 			+on-off-switcher("show_tooltips")
