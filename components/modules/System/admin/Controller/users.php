@@ -9,7 +9,6 @@
  */
 namespace cs\modules\System\admin\Controller;
 use
-	cs\Config,
 	cs\Group,
 	cs\Index,
 	cs\Language,
@@ -48,60 +47,10 @@ trait users {
 		);
 	}
 	static function users_security () {
-		$Config = Config::instance();
-		$Index  = Index::instance();
-		$L      = Language::instance();
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
-		$Index->apply_button = true;
-		$Index->content(
-			static::vertical_table(
-				[
-					[
-						h::info('key_expire'),
-						h::{'input[is=cs-input-text][type=number]'}(
-							[
-								'name'  => 'core[key_expire]',
-								'value' => $Config->core['key_expire'],
-								'min'   => 1
-							]
-						).
-						$L->seconds
-					],
-					[
-						h::info('ip_black_list'),
-						h::{'textarea[is=cs-textarea][autosize]'}(
-							$Config->core['ip_black_list'],
-							[
-								'name' => 'core[ip_black_list]'
-							]
-						)
-					],
-					[
-						h::info('ip_admin_list_only'),
-						h::radio(
-							[
-								'name'    => 'core[ip_admin_list_only]',
-								'checked' => $Config->core['ip_admin_list_only'],
-								'value'   => [0, 1],
-								'in'      => [$L->off, $L->on]
-							]
-						)
-					],
-					[
-						h::info('ip_admin_list'),
-						h::{'textarea[is=cs-textarea][autosize]'}(
-							$Config->core['ip_admin_list'],
-							[
-								'name' => 'core[ip_admin_list]'
-							]
-						).
-						h::br().
-						$L->current_ip.': '.h::b($_SERVER->ip)
-					]
-				]
-			)
+		$a       = Index::instance();
+		$a->form = false;
+		$a->content(
+			h::cs_system_admin_security()
 		);
 	}
 	static function users_users () {

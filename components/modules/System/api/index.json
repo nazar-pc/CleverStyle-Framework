@@ -1,28 +1,29 @@
 {
 	"admin"     : {
-		"about_server"       : [],
-		"blocks"             : [],
-		"databases"          : [],
-		"databases_test"     : [],
-		"groups"             : [
+		"about_server"   : [],
+		"blocks"         : [],
+		"databases"      : [],
+		"databases_test" : [],
+		"groups"         : [
 			"_",
 			"permissions"
 		],
-		"languages"          : [],
-		"mail"               : [],
-		"modules"            : [],
-		"optimization"       : [],
-		"permissions"        : [
+		"languages"      : [],
+		"mail"           : [],
+		"modules"        : [],
+		"optimization"   : [],
+		"permissions"    : [
 			"_",
 			"for_item"
 		],
-		"plugins"            : [],
-		"site_info"          : [],
-		"storages"           : [],
-		"system"             : [],
-		"themes"             : [],
-		"upload"             : [],
-		"users"              : [
+		"plugins"        : [],
+		"security"       : [],
+		"site_info"      : [],
+		"storages"       : [],
+		"system"         : [],
+		"themes"         : [],
+		"upload"         : [],
+		"users"          : [
 			"_",
 			"general",
 			"permissions"
