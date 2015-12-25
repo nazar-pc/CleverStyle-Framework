@@ -5,8 +5,8 @@ dom-module#cs-system-admin-site-info
 		form.cs-text-center(is="cs-form")
 			+input("site_name")
 			+textarea("url")
-			+textarea("cookie_domain", "[[simple_admin_mode]]")
-			+input("cookie_prefix", "[[simple_admin_mode]]")
+			+textarea("cookie_domain", "simple_admin_mode")
+			+input("cookie_prefix", "simple_admin_mode")
 			label(tooltip="[[L.timezone_info]]")
 				[[L.timezone]]
 				cs-tooltip
