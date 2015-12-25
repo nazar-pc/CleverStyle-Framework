@@ -3,10 +3,7 @@ dom-module#cs-system-admin-site-info
 	template
 		style(include="advanced-styles")
 		form.cs-text-center(is="cs-form")
-			label(tooltip="[[L.site_name_info]]")
-				[[L.site_name]]
-				cs-tooltip
-			input(is="cs-input-text" value="{{settings.name}}")
+			+input("site_name")
 			label(tooltip="[[L.url_info]]")
 				[[L.url]]
 				cs-tooltip
@@ -15,10 +12,7 @@ dom-module#cs-system-admin-site-info
 				[[L.cookie_domain]]
 				cs-tooltip
 			textarea(is="cs-textarea" autosize value="{{settings.cookie_domain}}" hidden$="[[simple_admin_mode]]")
-			label(tooltip="[[L.cookie_prefix_info]]" hidden$="[[simple_admin_mode]]")
-				[[L.cookie_prefix]]
-				cs-tooltip
-			input(is="cs-input-text" value="{{settings.cookie_prefix}}" hidden$="[[simple_admin_mode]]")
+			+input("cookie_prefix", "[[simple_admin_mode]]")
 			label(tooltip="[[L.timezone_info]]")
 				[[L.timezone]]
 				cs-tooltip
@@ -26,9 +20,6 @@ dom-module#cs-system-admin-site-info
 				select(is="cs-select" selected="{{settings.timezone}}" size="7")
 					template(is="dom-repeat" items="[[timezones]]")
 						option(value="[[item.timezone]]") [[item.description]]
-			label(tooltip="[[L.admin_email_info]]")
-				[[L.admin_email]]
-				cs-tooltip
-			input(is="cs-input-text" type="email" value="{{settings.admin_email}}")
+			+input("admin_email", null, "email")
 			+footer-buttons
 	script(src="script.js")

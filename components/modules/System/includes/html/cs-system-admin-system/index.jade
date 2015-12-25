@@ -4,19 +4,13 @@ dom-module#cs-system-admin-system
 		style(include="advanced-styles")
 		form.cs-text-center(is="cs-form")
 			+on-off-switcher("site_mode")
-			label(tooltip="[[L.closed_title_info]]")
-				[[L.closed_title]]
-				cs-tooltip
-			input(is="cs-input-text" value="{{settings.closed_title}}")
+			+input("closed_title")
 			label(tooltip="[[L.closed_text_info]]")
 				[[L.closed_text]]
 				cs-tooltip
 			cs-editor(value="{{settings.closed_text}}")
 				textarea(is="cs-textarea" autosize value="{{settings.closed_text}}")
-			label(tooltip="[[L.title_delimiter_info]]")
-				[[L.title_delimiter]]
-				cs-tooltip
-			input(is="cs-input-text" value="{{settings.title_delimiter}}")
+			+input("title_delimiter")
 			+on-off-switcher("title_reverse")
 			+on-off-switcher("show_tooltips")
 			+on-off-switcher("simple_admin_mode")

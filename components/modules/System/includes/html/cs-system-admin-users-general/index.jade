@@ -3,38 +3,20 @@ dom-module#cs-system-admin-users-general
 	template
 		style(include="advanced-styles")
 		form.cs-text-center(is="cs-form")
-			label(tooltip="[[L.session_expire_info]]")
-				[[L.session_expire]]
-				cs-tooltip
-			input(is="cs-input-text" type="number" value="{{settings.session_expire}}" min="1")
+			+input("session_expire", null, "number", 1)
 			= ' '
 			[[L.seconds]]
-			label(tooltip="[[L.sign_in_attempts_block_count_info]]")
-				[[L.sign_in_attempts_block_count]]
-				cs-tooltip
-			input(is="cs-input-text" type="number" value="{{settings.sign_in_attempts_block_count}}")
-			label(tooltip="[[L.sign_in_attempts_block_time_info]]" hidden="[[equal(settings.sign_in_attempts_block_count, 0)]]")
-				[[L.sign_in_attempts_block_time]]
-				cs-tooltip
-			input(is="cs-input-text" type="number" value="{{settings.sign_in_attempts_block_time}}" min="1" hidden="[[equal(settings.sign_in_attempts_block_count, 0)]]")
+			+input("sign_in_attempts_block_count", null, "number")
+			+input("sign_in_attempts_block_time", "[[equal(settings.sign_in_attempts_block_count, 0)]]", "number", 1)
 			span(hidden="[[equal(settings.sign_in_attempts_block_count, 0)]]")
 				= ' '
 				[[L.seconds]]
 			+on-off-switcher("remember_user_ip")
-			label(tooltip="[[L.password_min_length_info]]")
-				[[L.password_min_length]]
-				cs-tooltip
-			input(is="cs-input-text" type="number" value="{{settings.password_min_length}}" min="4")
-			label(tooltip="[[L.password_min_strength_info]]")
-				[[L.password_min_strength]]
-				cs-tooltip
-			input(is="cs-input-text" type="number" value="{{settings.password_min_strength}}" min="0" max="7")
+			+input("password_min_length", null, "number", 4)
+			+input("password_min_strength", null, "number", 0, 7)
 			+on-off-switcher("allow_user_registration")
 			+on-off-switcher("require_registration_confirmation", "[[equal(settings.allow_user_registration, 0)]]")
-			label(tooltip="[[L.registration_confirmation_time_info]]" hidden="[[!registration_with_confirmation]]")
-				[[L.registration_confirmation_time]]
-				cs-tooltip
-			input(is="cs-input-text" type="number" value="{{settings.registration_confirmation_time}}" min="1" hidden="[[!registration_with_confirmation]]")
+			+input("registration_confirmation_time", "[[!registration_with_confirmation]]", "number", 1)
 			span(hidden="[[!registration_with_confirmation]]")
 				= ' '
 				[[L.days]]

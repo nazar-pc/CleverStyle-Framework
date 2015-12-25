@@ -4,32 +4,14 @@ dom-module#cs-system-admin-mail
 		style(include="advanced-styles")
 		form.cs-text-center(is="cs-form")
 			+on-off-switcher("smtp")
-			label(tooltip="[[L.smtp_host_info]]" hidden="[[!smtp]]")
-				[[L.smtp_host]]
-				cs-tooltip
-			input(is="cs-input-text" value="{{settings.smtp_host}}" hidden="[[!smtp]]")
-			label(tooltip="[[L.smtp_port_info]]" hidden="[[!smtp]]")
-				[[L.smtp_port]]
-				cs-tooltip
-			input(is="cs-input-text" type="number" value="{{settings.smtp_port}}" hidden="[[!smtp]]")
+			+input("smtp_host", "[[!smtp]]")
+			+input("smtp_port", "[[!smtp]]", "number")
 			+on-off-switcher("smtp_secure", "[[!smtp]]", ["", "ssl", "tls"], ["[[L.off]]", "SSL", "TLS"])
 			+on-off-switcher("smtp_auth", "[[!smtp]]")
-			label(tooltip="[[L.smtp_user_info]]" hidden="[[!smtp_auth]]")
-				[[L.smtp_user]]
-				cs-tooltip
-			input(is="cs-input-text" value="{{settings.smtp_user}}" hidden="[[!smtp_auth]]")
-			label(tooltip="[[L.smtp_password_info]]" hidden="[[!smtp_auth]]")
-				[[L.smtp_password]]
-				cs-tooltip
-			input(is="cs-input-text" value="{{settings.smtp_password}}" hidden="[[!smtp_auth]]")
-			label(tooltip="[[L.mail_from_info]]")
-				[[L.mail_from]]
-				cs-tooltip
-			input(is="cs-input-text" type="email" value="{{settings.mail_from}}")
-			label(tooltip="[[L.mail_from_name_info]]")
-				[[L.mail_from_name]]
-				cs-tooltip
-			input(is="cs-input-text" value="{{settings.mail_from_name}}")
+			+input("smtp_user", "[[!smtp_auth]]")
+			+input("smtp_password", "[[!smtp_auth]]")
+			+input("mail_from", null, "email")
+			+input("mail_from_name")
 			label(tooltip="[[L.mail_signature_info]]")
 				[[L.mail_signature]]
 				cs-tooltip
