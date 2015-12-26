@@ -61,7 +61,7 @@ $ ->
 			$.when(
 				$.getJSON('api/Shop/admin/order_statuses/types')
 				$.getJSON("api/Shop/admin/order_statuses/#{id}")
-			).done (types, type) ->
+			).then (types, type) ->
 				modal = make_modal(types[0], L.shop_order_status_edition, L.shop_edit)
 				modal.find('form').submit ->
 					$.ajax(

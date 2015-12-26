@@ -168,7 +168,7 @@ $ ->
 				$.getJSON('api/Shop/admin/shipping_types')
 				$.getJSON('api/Shop/admin/order_statuses')
 				$.getJSON('api/Shop/payment_methods')
-			).done (shipping_types, order_statuses, payment_methods) ->
+			).then (shipping_types, order_statuses, payment_methods) ->
 				modal = make_modal(shipping_types[0], order_statuses[0], payment_methods[0], L.shop_order_addition, L.shop_add)
 				modal.find('form').submit ->
 					data	= $(@).serialize()
@@ -194,7 +194,7 @@ $ ->
 			$.when(
 				$.getJSON('api/Shop/admin/order_statuses')
 				$.getJSON("api/Shop/admin/orders/#{id}/statuses")
-			).done (order_statuses, statuses) ->
+			).then (order_statuses, statuses) ->
 				order_statuses	= do ->
 					result	= {}
 					order_statuses[0].forEach (status) ->
@@ -239,7 +239,7 @@ $ ->
 				$.getJSON('api/Shop/payment_methods')
 				$.getJSON("api/Shop/admin/orders/#{id}")
 				$.getJSON("api/Shop/admin/orders/#{id}/items")
-			).done (shipping_types, order_statuses, payment_methods, order, items) ->
+			).then (shipping_types, order_statuses, payment_methods, order, items) ->
 				modal	= make_modal(shipping_types[0], order_statuses[0], payment_methods[0], L.shop_order_edition, L.shop_edit)
 				modal.find('form').submit ->
 					data	= $(@).serialize()

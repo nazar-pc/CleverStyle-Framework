@@ -67,7 +67,7 @@ $ ->
 			$.when(
 				$.getJSON('api/Shop/admin/attributes/types')
 				$.getJSON("api/Shop/admin/attributes/#{id}")
-			).done (types, attribute) ->
+			).then (types, attribute) ->
 				$modal	= $(make_modal(types[0], L.shop_attribute_edition, L.shop_edit))
 				$modal
 					.on('submit', 'form', ->

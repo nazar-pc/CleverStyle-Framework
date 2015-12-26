@@ -131,7 +131,7 @@ $ ->
 			$.when(
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
-			).done (attributes, categories) ->
+			).then (attributes, categories) ->
 				modal = make_modal(attributes[0], categories[0], L.shop_category_addition, L.shop_add)
 				modal.find('form').submit ->
 					$.ajax(
@@ -150,7 +150,7 @@ $ ->
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
 				$.getJSON("api/Shop/admin/categories/#{id}")
-			).done (attributes, categories, category) ->
+			).then (attributes, categories, category) ->
 				modal = make_modal(attributes[0], categories[0], L.shop_category_edition, L.shop_edit)
 				modal.find('form').submit ->
 					$.ajax(

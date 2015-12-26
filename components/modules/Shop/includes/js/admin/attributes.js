@@ -64,7 +64,7 @@
     }).on('mousedown', '.cs-shop-attribute-edit', function() {
       var id;
       id = $(this).data('id');
-      return $.when($.getJSON('api/Shop/admin/attributes/types'), $.getJSON("api/Shop/admin/attributes/" + id)).done(function(types, attribute) {
+      return $.when($.getJSON('api/Shop/admin/attributes/types'), $.getJSON("api/Shop/admin/attributes/" + id)).then(function(types, attribute) {
         var $modal;
         $modal = $(make_modal(types[0], L.shop_attribute_edition, L.shop_edit));
         $modal.on('submit', 'form', function() {

@@ -292,7 +292,7 @@
       return modal;
     };
     return $('html').on('mousedown', '.cs-shop-item-add', function() {
-      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories')).done(function(attributes, categories) {
+      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories')).then(function(attributes, categories) {
         var modal;
         modal = make_modal(attributes[0], categories[0], L.shop_item_addition, L.shop_add);
         modal.find("[name=category]").change();
@@ -312,7 +312,7 @@
     }).on('mousedown', '.cs-shop-item-edit', function() {
       var id;
       id = $(this).data('id');
-      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories'), $.getJSON("api/Shop/admin/items/" + id)).done(function(attributes, categories, item) {
+      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories'), $.getJSON("api/Shop/admin/items/" + id)).then(function(attributes, categories, item) {
         var modal;
         modal = make_modal(attributes[0], categories[0], L.shop_item_edition, L.shop_edit);
         modal.find('form').submit(function() {

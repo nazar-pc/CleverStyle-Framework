@@ -161,7 +161,7 @@
       });
     };
     return $('html').on('mousedown', '.cs-shop-order-add', function() {
-      return $.when($.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods')).done(function(shipping_types, order_statuses, payment_methods) {
+      return $.when($.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods')).then(function(shipping_types, order_statuses, payment_methods) {
         var modal;
         modal = make_modal(shipping_types[0], order_statuses[0], payment_methods[0], L.shop_order_addition, L.shop_add);
         return modal.find('form').submit(function() {
@@ -190,7 +190,7 @@
     }).on('mousedown', '.cs-shop-order-statuses-history', function() {
       var id;
       id = $(this).data('id');
-      return $.when($.getJSON('api/Shop/admin/order_statuses'), $.getJSON("api/Shop/admin/orders/" + id + "/statuses")).done(function(order_statuses, statuses) {
+      return $.when($.getJSON('api/Shop/admin/order_statuses'), $.getJSON("api/Shop/admin/orders/" + id + "/statuses")).then(function(order_statuses, statuses) {
         var content;
         order_statuses = (function() {
           var result;
@@ -216,7 +216,7 @@
       id = $this.data('id');
       username = $this.data('username');
       date = $this.data('date');
-      return $.when($.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods'), $.getJSON("api/Shop/admin/orders/" + id), $.getJSON("api/Shop/admin/orders/" + id + "/items")).done(function(shipping_types, order_statuses, payment_methods, order, items) {
+      return $.when($.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods'), $.getJSON("api/Shop/admin/orders/" + id), $.getJSON("api/Shop/admin/orders/" + id + "/items")).then(function(shipping_types, order_statuses, payment_methods, order, items) {
         var modal;
         modal = make_modal(shipping_types[0], order_statuses[0], payment_methods[0], L.shop_order_edition, L.shop_edit);
         modal.find('form').submit(function() {

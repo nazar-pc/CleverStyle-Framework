@@ -110,7 +110,7 @@
       return modal;
     };
     return $('html').on('mousedown', '.cs-shop-category-add', function() {
-      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories')).done(function(attributes, categories) {
+      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories')).then(function(attributes, categories) {
         var modal;
         modal = make_modal(attributes[0], categories[0], L.shop_category_addition, L.shop_add);
         return modal.find('form').submit(function() {
@@ -129,7 +129,7 @@
     }).on('mousedown', '.cs-shop-category-edit', function() {
       var id;
       id = $(this).data('id');
-      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories'), $.getJSON("api/Shop/admin/categories/" + id)).done(function(attributes, categories, category) {
+      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories'), $.getJSON("api/Shop/admin/categories/" + id)).then(function(attributes, categories, category) {
         var modal;
         modal = make_modal(attributes[0], categories[0], L.shop_category_edition, L.shop_edit);
         modal.find('form').submit(function() {
