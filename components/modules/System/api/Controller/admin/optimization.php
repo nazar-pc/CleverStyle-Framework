@@ -11,6 +11,7 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Cache,
 	cs\Config,
+	cs\Event,
 	cs\ExitException,
 	cs\Page;
 trait optimization {
@@ -61,6 +62,7 @@ trait optimization {
 		if (!clean_pcache()) {
 			throw new ExitException(500);
 		}
+		Event::instance()->fire('admin/System/general/optimization/clean_pcache');
 	}
 	/**
 	 * Apply optimization settings
@@ -69,8 +71,12 @@ trait optimization {
 	 */
 	static function admin_optimization_apply_settings () {
 		static::admin_optimization_settings_common();
-		if (!Config::instance()->apply()) {
+		$Config = Config::instance();
+		if (!$Config->apply()) {
 			throw new ExitException(500);
+		}
+		if (!$Config->core['cache_compress_js_css']) {
+			static::admin_optimization_clean_pcache();
 		}
 	}
 	/**
@@ -101,8 +107,12 @@ trait optimization {
 	 */
 	static function admin_optimization_save_settings () {
 		static::admin_optimization_settings_common();
-		if (!Config::instance()->save()) {
+		$Config = Config::instance();
+		if (!$Config->save()) {
 			throw new ExitException(500);
+		}
+		if (!$Config->core['cache_compress_js_css']) {
+			static::admin_optimization_clean_pcache();
 		}
 	}
 	/**

@@ -233,7 +233,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 	settings :
 		properties	:
 			settings_api_url	:
-				observer	: '_reload'
+				observer	: '_reload_settings'
 				type		: String
 			settings			: Object
 			simple_admin_mode	:
@@ -241,7 +241,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				type		: Boolean
 		_simple_admin_mode : (simple_admin_mode) ->
 			simple_admin_mode ~= 1
-		_reload : !->
+		_reload_settings : !->
 			$.ajax(
 				url		: @settings_api_url
 				type	: 'get_settings'
@@ -254,7 +254,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				type	: 'apply_settings'
 				data	: @settings
 				success	: !~>
-					@_reload()
+					@_reload_settings()
 					cs.ui.notify(L.changes_applied + L.check_applied, 'warning', 5)
 			)
 		_save : !->
@@ -263,7 +263,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				type	: 'save_settings'
 				data	: @settings
 				success	: !~>
-					@_reload()
+					@_reload_settings()
 					cs.ui.notify(L.changes_saved, 'success', 5)
 			)
 		_cancel : !->
@@ -271,6 +271,6 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				url		: @settings_api_url
 				type	: 'cancel_settings'
 				success	: !~>
-					@_reload()
+					@_reload_settings()
 					cs.ui.notify(L.changes_canceled, 'success', 5)
 			)

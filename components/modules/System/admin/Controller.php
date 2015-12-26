@@ -9,13 +9,8 @@
  */
 namespace cs\modules\System\admin;
 use
-	cs\Cache,
-	cs\Config,
-	cs\Event,
-	cs\Index,
 	cs\Language,
 	cs\Page,
-	cs\Text,
 	cs\modules\System\admin\Controller\components,
 	cs\modules\System\admin\Controller\general,
 	cs\modules\System\admin\Controller\users,
@@ -39,50 +34,8 @@ class Controller {
 		$save_method = "$route_path[0]_$route_path[1]_save";
 		if (method_exists(__CLASS__, $save_method)) {
 			self::$save_method();
-		} else {
-			self::save();
 		}
 		$Page->title($L->{$route_path[0]});
 		$Page->title($L->{$route_path[1]});
-	}
-	static function save () {
-		$Index  = Index::instance();
-		$Config = Config::instance();
-		if (isset($_POST['apply']) || isset($_POST['save'])) {
-			foreach (['core', 'db', 'storage', 'components'] as $part) {
-				if (isset($_POST[$part])) {
-					$temp = &$Config->$part;
-					foreach ($_POST[$part] as $item => $value) {
-						switch ($item) {
-							case 'ip_black_list':
-							case 'ip_admin_list':
-								$value = _trim(explode("\n", $value));
-								if ($value[0] == '') {
-									$value = [];
-								}
-						}
-						$temp[$item] = xap($value, true);
-					}
-					unset($item, $value);
-				}
-			}
-			unset($part);
-		}
-		$Cache = Cache::instance();
-		if (isset($_POST['apply']) && $Cache->cache_state()) {
-			/** @noinspection NotOptimalIfConditionsInspection */
-			if ($Index->apply() && !$Config->core['cache_compress_js_css']) {
-				clean_pcache();
-				Event::instance()->fire('admin/System/general/optimization/clean_pcache');
-			}
-		} elseif (isset($_POST['save'])) {
-			$save = $Index->save();
-			if ($save && !$Config->core['cache_compress_js_css']) {
-				clean_pcache();
-				Event::instance()->fire('admin/System/general/optimization/clean_pcache');
-			}
-		} /** @noinspection NotOptimalIfConditionsInspection */ elseif (isset($_POST['cancel']) && $Cache->cache_state()) {
-			$Index->cancel();
-		}
 	}
 }

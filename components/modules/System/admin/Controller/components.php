@@ -23,38 +23,10 @@ trait components {
 		);
 	}
 	static function components_databases () {
-		$Config              = Config::instance();
-		$L                   = Language::instance();
-		$Index               = Index::instance();
-		$Index->apply_button = true;
+		$Index       = Index::instance();
+		$Index->form = false;
 		$Index->content(
-			h::cs_system_admin_databases_list().
-			static::vertical_table(
-				[
-					[
-						h::info('db_balance'),
-						h::radio(
-							[
-								'name'    => 'core[db_balance]',
-								'checked' => $Config->core['db_balance'],
-								'value'   => [0, 1],
-								'in'      => [$L->off, $L->on]
-							]
-						)
-					],
-					[
-						h::info('db_mirror_mode'),
-						h::radio(
-							[
-								'name'    => 'core[db_mirror_mode]',
-								'checked' => $Config->core['db_mirror_mode'],
-								'value'   => [DB::MIRROR_MODE_MASTER_MASTER, DB::MIRROR_MODE_MASTER_SLAVE],
-								'in'      => [$L->master_master, $L->master_slave]
-							]
-						)
-					]
-				]
-			)
+			h::cs_system_admin_databases_list()
 		);
 	}
 	static function components_modules () {

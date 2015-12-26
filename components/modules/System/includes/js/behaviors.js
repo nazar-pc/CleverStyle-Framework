@@ -311,7 +311,7 @@
     settings: {
       properties: {
         settings_api_url: {
-          observer: '_reload',
+          observer: '_reload_settings',
           type: String
         },
         settings: Object,
@@ -323,7 +323,7 @@
       _simple_admin_mode: function(simple_admin_mode){
         return simple_admin_mode == 1;
       },
-      _reload: function(){
+      _reload_settings: function(){
         var this$ = this;
         $.ajax({
           url: this.settings_api_url,
@@ -340,7 +340,7 @@
           type: 'apply_settings',
           data: this.settings,
           success: function(){
-            this$._reload();
+            this$._reload_settings();
             cs.ui.notify(L.changes_applied + L.check_applied, 'warning', 5);
           }
         });
@@ -352,7 +352,7 @@
           type: 'save_settings',
           data: this.settings,
           success: function(){
-            this$._reload();
+            this$._reload_settings();
             cs.ui.notify(L.changes_saved, 'success', 5);
           }
         });
@@ -363,7 +363,7 @@
           url: this.settings_api_url,
           type: 'cancel_settings',
           success: function(){
-            this$._reload();
+            this$._reload_settings();
             cs.ui.notify(L.changes_canceled, 'success', 5);
           }
         });

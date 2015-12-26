@@ -221,4 +221,65 @@ trait databases {
 			throw new ExitException(500);
 		}
 	}
+	/**
+	 * Get database settings
+	 */
+	static function admin_databases_get_settings () {
+		$Config = Config::instance();
+		Page::instance()->json(
+			[
+				'db_balance'        => $Config->core['db_balance'],
+				'db_mirror_mode'    => $Config->core['db_mirror_mode'],
+				'simple_admin_mode' => $Config->core['simple_admin_mode'],
+				'applied'           => $Config->cancel_available()
+			]
+		);
+	}
+	/**
+	 * Apply database settings
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_databases_apply_settings () {
+		static::admin_databases_settings_common();
+		if (!Config::instance()->apply()) {
+			throw new ExitException(500);
+		}
+	}
+	/**
+	 * @throws ExitException
+	 */
+	protected static function admin_databases_settings_common () {
+		if (!isset(
+			$_POST['db_balance'],
+			$_POST['db_mirror_mode']
+		)
+		) {
+			throw new ExitException(400);
+		}
+		$Config                         = Config::instance();
+		$Config->core['db_balance']     = (int)(bool)$_POST['db_balance'];
+		$Config->core['db_mirror_mode'] = (int)(bool)$_POST['db_mirror_mode'];
+	}
+	/**
+	 * Save database settings
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_databases_save_settings () {
+		static::admin_databases_settings_common();
+		if (!Config::instance()->save()) {
+			throw new ExitException(500);
+		}
+	}
+	/**
+	 * Cancel database settings
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_databases_cancel_settings () {
+		if (!Config::instance()->cancel()) {
+			throw new ExitException(500);
+		}
+	}
 }
