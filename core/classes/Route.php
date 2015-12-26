@@ -99,8 +99,8 @@ class Route {
 		 */
 		if (mb_strpos($processed_route['relative_address'], 'System/redirect/') === 0) {
 			if ($this->is_referer_local($Config)) {
-				_header('Location: '.substr($processed_route['relative_address'], 16));
-				throw new ExitException;
+				_header('Location: '.substr($processed_route['relative_address'], 16), true, 301);
+				throw new ExitException(301);
 			} else {
 				throw new ExitException(400);
 			}

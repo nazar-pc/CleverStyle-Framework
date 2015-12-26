@@ -85,7 +85,7 @@ Event::instance()
 				}
 				$Page->Content = '';
 				interface_off();
-				throw new ExitException;
+				throw new ExitException(301);
 			}
 			$core_url = $Config->core_url();
 			$base_url = $Config->base_url();
