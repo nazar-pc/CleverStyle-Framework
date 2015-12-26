@@ -5,26 +5,22 @@
  * @copyright	Copyright (c) 2014-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-@import 'common_config';
 @import '../../../includes/css/flexy-plexy';
 
 html {
-	background         : #161616;
-	font-family        : $base-font-family;
-	font-size          : 16px !important; // TODO remove `!important`
-	transition         : transform 1s, width 1s;
-	-webkit-transition : -webkit-transform 1s, width 1s;
+	background : #161616;
+	transition : transform 1s, width 1s;
 }
 
-body {
-	padding : 5px !important;
+#body {
+	padding : .5em;
 
 	@include flexy-plexy(1rem child, 2 8, 1);
 
 	@media (max-width : 959px) {
 		@include flexy-plexy(1rem child, 1);
 
-		> aside:first-child > :nth-child(n+2) {
+		.cs-mobile-menu:not([show]) ~ :nth-child(n+2) {
 			display : none;
 		}
 	}
@@ -39,39 +35,24 @@ body {
 	}
 }
 
-@mixin page_scale($zoom) {
-	transform                : scale($zoom);
-	transform-origin         : 0 0 0;
-	-webkit-transform        : scale($zoom);
-	-webkit-transform-origin : 0 0 0;
-	width                    : (100% / $zoom);
-}
-
 .cs-mobile-menu {
 	background : #262626;
 	color      : #b7b7b7;
+	height     : auto;
 	width      : 100%;
 
-	cs-icon {
-		font-size : 2.5em;
-		margin    : 5px;
+	> div {
+		text-align : right;
+		width      : 100%;
+
+		cs-icon {
+			font-size : 2.5em;
+		}
 	}
 }
 
 @media (min-width : 960px) {
 	.cs-mobile-menu {
 		display : none;
-	}
-}
-
-@media (min-width : 1921px) {
-	html {
-		@include page_scale(1.5);
-	}
-}
-
-@media (min-width : 2561px) {
-	html {
-		@include page_scale(2);
 	}
 }

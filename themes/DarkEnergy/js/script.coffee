@@ -6,5 +6,9 @@
  * @license    MIT License, see license.txt
 ###
 document.querySelector('.cs-mobile-menu').addEventListener('click', ->
-	$(@).nextAll().toggle()
+	if @hasAttribute('show')
+		@removeAttribute('show')
+	else
+		@setAttribute('show', '')
+	return
 )

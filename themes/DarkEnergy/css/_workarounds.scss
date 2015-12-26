@@ -5,13 +5,10 @@
  * @copyright	Copyright (c) 2014-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+html /deep/ a:not([is]):not([class]) {
+	color : #47adff;
 
-html /deep/ {
-	a {
-		color : #47adff;
-
-		&:hover {
-			color : #398ccc;
-		}
+	&:hover {
+		color : #398ccc;
 	}
 }

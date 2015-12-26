@@ -10,7 +10,11 @@
 
 (function() {
   document.querySelector('.cs-mobile-menu').addEventListener('click', function() {
-    return $(this).nextAll().toggle();
+    if (this.hasAttribute('show')) {
+      this.removeAttribute('show');
+    } else {
+      this.setAttribute('show', '');
+    }
   });
 
 }).call(this);
