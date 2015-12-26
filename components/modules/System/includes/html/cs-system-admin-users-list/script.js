@@ -220,6 +220,14 @@
         return $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>")).on('hide.uk.modal', this.search.bind(this));
       }
     },
+    edit_groups: function(e) {
+      var $sender, index, title, user;
+      $sender = $(e.currentTarget);
+      index = $sender.closest('[data-user-index]').data('user-index');
+      user = this.users[index];
+      title = L.user_groups(user.username || user.login);
+      return cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-groups-form user=\"" + user.id + "\" for=\"user\"/>");
+    },
     edit_permissions: function(e) {
       var $sender, index, title, title_key, user;
       $sender = $(e.currentTarget);

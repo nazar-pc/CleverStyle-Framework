@@ -28,7 +28,7 @@ Polymer(
 				url		: 'api/System/admin/blocks'
 				type	: 'templates'
 			)
-		).done ([@types], [@templates]) ~>
+		).then ([@types], [@templates]) ~>
 		if @index
 			block <~! $.getJSON('api/System/admin/blocks/' + @index, _)
 			block.type		= block.type || @types[0]

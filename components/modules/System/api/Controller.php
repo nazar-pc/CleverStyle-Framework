@@ -34,6 +34,7 @@ class Controller {
 		admin\upload,
 		admin\users,
 		admin\users\general,
+		admin\users\groups,
 		admin\users\permissions,
 		general,
 		profile,

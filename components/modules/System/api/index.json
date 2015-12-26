@@ -26,6 +26,7 @@
 		"users"          : [
 			"_",
 			"general",
+			"groups",
 			"permissions"
 		]
 	},

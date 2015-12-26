@@ -18,7 +18,7 @@ Polymer(
 		$.when(
 			$.getJSON('api/System/admin/blocks')
 			$.getJSON('api/System/admin/permissions')
-		).done (blocks, permissions) =>
+		).then (blocks, permissions) =>
 			block_index_to_title	= {}
 			blocks[0].forEach (block) ->
 				block_index_to_title[block.index] = block.title

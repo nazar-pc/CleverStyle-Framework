@@ -25,7 +25,7 @@ Polymer(
 				label	: @label
 			)
 			$.getJSON('api/System/admin/groups')
-		).done (permissions, groups) =>
+		).then (permissions, groups) =>
 			@set('permissions', permissions[0])
 			@set('groups', groups[0])
 			if !Object.keys(@permissions.users).length

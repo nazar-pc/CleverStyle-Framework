@@ -24,7 +24,7 @@
       return this.reload();
     },
     reload: function() {
-      return $.when($.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions')).done((function(_this) {
+      return $.when($.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions')).then((function(_this) {
         return function(blocks, permissions) {
           var block_index_to_title, group, id, label, labels, permissions_list, ref;
           block_index_to_title = {};

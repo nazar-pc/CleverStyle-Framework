@@ -13,28 +13,16 @@ use
 	cs\Page,
 	cs\modules\System\admin\Controller\components,
 	cs\modules\System\admin\Controller\general,
-	cs\modules\System\admin\Controller\users,
-	cs\modules\System\admin\Controller\users_save,
-	cs\modules\System\admin\Controller\layout_elements;
+	cs\modules\System\admin\Controller\users;
 
 class Controller {
 	use
 		components,
 		general,
-		users,
-		users_save,
-		layout_elements;
-	static function index (
-		/** @noinspection PhpUnusedParameterInspection */
-		$route_ids,
-		$route_path
-	) {
-		$L           = Language::instance();
-		$Page        = Page::instance();
-		$save_method = "$route_path[0]_$route_path[1]_save";
-		if (method_exists(__CLASS__, $save_method)) {
-			self::$save_method();
-		}
+		users;
+	static function index ($route_ids, $route_path) {
+		$L    = Language::instance();
+		$Page = Page::instance();
 		$Page->title($L->{$route_path[0]});
 		$Page->title($L->{$route_path[1]});
 	}

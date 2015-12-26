@@ -1,4 +1,7 @@
 include ../_settings_mixins
+- MIRROR_MODE_MASTER_MASTER	= 0
+- MIRROR_MODE_MASTER_SLAVE	= 1
+
 dom-module#cs-system-admin-databases-list
 	template
 		style(include="advanced-styles")
@@ -44,6 +47,6 @@ dom-module#cs-system-admin-databases-list
 			a(is="cs-link-button" on-tap="_add") [[L.add_database]]
 		form.cs-text-center(is="cs-form")
 			+on-off-switcher("db_balance")
-			+on-off-switcher("db_mirror_mode", null, null, ["[[L.master_master]]", "[[L.master_slave]]"])
+			+on-off-switcher("db_mirror_mode", null, [MIRROR_MODE_MASTER_MASTER, MIRROR_MODE_MASTER_SLAVE], ["[[L.master_master]]", "[[L.master_slave]]"])
 			+footer-buttons
 	script(src="script.js")

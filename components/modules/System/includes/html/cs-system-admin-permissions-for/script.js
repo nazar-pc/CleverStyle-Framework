@@ -28,7 +28,7 @@
     all_permissions: {},
     permissions: {},
     ready: function() {
-      return $.when($.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions'), $.getJSON("api/System/admin/" + this["for"] + "s/" + this[this["for"]] + "/permissions")).done((function(_this) {
+      return $.when($.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions'), $.getJSON("api/System/admin/" + this["for"] + "s/" + this[this["for"]] + "/permissions")).then((function(_this) {
         return function(blocks, all_permissions, permissions) {
           var block_index_to_title, group, id, label, labels;
           block_index_to_title = {};

@@ -28,7 +28,7 @@
       }), $.ajax({
         url: 'api/System/admin/blocks',
         type: 'templates'
-      })).done(function(arg$, arg1$){
+      })).then(function(arg$, arg1$){
         this$.types = arg$[0];
         this$.templates = arg1$[0];
       });

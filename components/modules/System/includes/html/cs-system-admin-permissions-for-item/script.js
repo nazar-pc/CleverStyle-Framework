@@ -30,7 +30,7 @@
       $.when($.getJSON('api/System/admin/permissions/for_item', {
         group: this.group,
         label: this.label
-      }), $.getJSON('api/System/admin/groups')).done((function(_this) {
+      }), $.getJSON('api/System/admin/groups')).then((function(_this) {
         return function(permissions, groups) {
           var user;
           _this.set('permissions', permissions[0]);

@@ -172,6 +172,15 @@ Polymer(
 				<h2>#{title}</h2>
 				<cs-system-admin-users-edit-user-form user_id="#{user.id}"/>
 			""")).on('hide.uk.modal', @search.bind(@))
+	edit_groups : (e) ->
+		$sender		= $(e.currentTarget)
+		index		= $sender.closest('[data-user-index]').data('user-index')
+		user		= @users[index]
+		title		= L.user_groups(user.username || user.login)
+		cs.ui.simple_modal("""
+			<h2>#{title}</h2>
+			<cs-system-admin-users-groups-form user="#{user.id}" for="user"/>
+		""")
 	edit_permissions : (e) ->
 		$sender		= $(e.currentTarget)
 		index		= $sender.closest('[data-user-index]').data('user-index')

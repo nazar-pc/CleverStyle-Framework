@@ -48,8 +48,7 @@ dom-module#cs-system-admin-users-list
 								a(is="cs-link-button" icon="pencil" on-tap="edit_user" tooltip="[[L.edit_user_information]]")
 								= ' '
 							template(is="dom-if" if="[[!or(user.is_guest, user.is_bot)]]")
-								//- TODO Move this into modal also
-								a(is="cs-link-button" icon="group" href="/admin/System/users/users/groups/[[user.id]]" tooltip="[[L.edit_user_groups]]")
+								button(is="cs-button" icon="group" on-tap="edit_groups" tooltip="[[L.edit_user_groups]]")
 								= ' '
 							button(is="cs-button" icon="key" on-tap="edit_permissions" tooltip="[[L.edit_user_permissions]]")
 					td
