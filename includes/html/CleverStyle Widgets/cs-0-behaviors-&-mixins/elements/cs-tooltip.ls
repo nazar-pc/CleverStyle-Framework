@@ -33,10 +33,13 @@ Polymer.cs.behaviors.cs-tooltip	= [
 					@show = false
 			)
 	_set_show : !->
-		@show = true
+		if @reset_show
+			@reset_show	= false
+			@show		= true
 	_unset_show : !->
 		@show = false
 	_show : (element) !->
+		@reset_show = true
 		if !element.tooltip || @show
 			return
 		if @innerHTML != element.tooltip

@@ -45,13 +45,17 @@
         }
       },
       _set_show: function(){
-        this.show = true;
+        if (this.reset_show) {
+          this.reset_show = false;
+          this.show = true;
+        }
       },
       _unset_show: function(){
         this.show = false;
       },
       _show: function(element){
         var tooltip_position;
+        this.reset_show = true;
         if (!element.tooltip || this.show) {
           return;
         }
