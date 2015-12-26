@@ -9,10 +9,7 @@
  */
 namespace cs\modules\System\admin\Controller;
 use
-	cs\Config,
-	cs\DB,
 	cs\Index,
-	cs\Language,
 	h;
 trait components {
 	static function components_blocks () {
