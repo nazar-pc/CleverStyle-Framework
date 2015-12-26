@@ -79,10 +79,10 @@
         };
       })(this));
     },
-    show_password: function(e) {
+    _show_password: function(e) {
       var lock, password;
       lock = e.currentTarget;
-      password = lock.nextElementSibling;
+      password = lock.previousElementSibling;
       if (password.type === 'password') {
         password.type = 'text';
         return lock.icon = 'unlock';

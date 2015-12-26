@@ -13,4 +13,13 @@ Polymer(
 	_change_password : (e) !->
 		e.preventDefault()
 		cs.change_password(@$.current_password.value, @$.new_password.value)
+	_show_password	: (e) ->
+		lock		= e.currentTarget
+		password	= lock.previousElementSibling
+		if password.type == 'password'
+			password.type	= 'text'
+			lock.icon		= 'unlock'
+		else
+			password.type	= 'password'
+			lock.icon		= 'lock'
 )

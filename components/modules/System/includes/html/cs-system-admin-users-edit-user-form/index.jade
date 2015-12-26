@@ -20,9 +20,9 @@ dom-module#cs-system-admin-users-edit-user-form
 				label [[L.email]]
 				input(is="cs-input-text" type="email" value="{{user_data.email}}")
 				label [[L.password_only_for_changing]]
-				//- TODO fix icon positioning
-				cs-icon(icon="lock" on-tap="show_password")
-				input(is="cs-input-text" id="password" type="password" value="{{user_data.password}}")
+				div
+					input(is="cs-input-text" type="password" value="{{user_data.password}}" tight)
+					button(is="cs-button" type="button" icon="lock" on-tap="_show_password" force-fullsize)
 				label [[L.language]]
 				select(is="cs-select" value="{{user_data.language}}" size="5")
 					template(is="dom-repeat" items="[[languages]]" as="language")

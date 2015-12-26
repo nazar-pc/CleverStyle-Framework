@@ -17,6 +17,18 @@
     _change_password: function(e){
       e.preventDefault();
       cs.change_password(this.$.current_password.value, this.$.new_password.value);
+    },
+    _show_password: function(e){
+      var lock, password;
+      lock = e.currentTarget;
+      password = lock.previousElementSibling;
+      if (password.type === 'password') {
+        password.type = 'text';
+        return lock.icon = 'unlock';
+      } else {
+        password.type = 'password';
+        return lock.icon = 'lock';
+      }
     }
   });
 }).call(this);

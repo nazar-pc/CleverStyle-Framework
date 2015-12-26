@@ -58,9 +58,9 @@ Polymer(
 				date.getFullYear() + '-' + z(date.getMonth() + 1) + '-' + z(date.getDate()) + 'T' + z(date.getHours()) + ':' + z(date.getMinutes())
 			@set('block_until', block_until)
 			@set('user_data', data[0])
-	show_password	: (e) ->
+	_show_password	: (e) ->
 		lock		= e.currentTarget
-		password	= lock.nextElementSibling
+		password	= lock.previousElementSibling
 		if password.type == 'password'
 			password.type	= 'text'
 			lock.icon		= 'unlock'
