@@ -256,9 +256,13 @@ class Config {
 		if ($this->cancel_available()) {
 			unset($this->core['cache_not_saved']);
 		}
-		$cdb = DB::instance()->db_prime(0);
-		// TODO: filter of possible keys for $this->core to clean redundant options automatically
-		if ($cdb->q(
+		$core_settings_keys = file_get_json(MODULES.'/System/core_settings_keys.json');
+		foreach ($this->core as $key => $value) {
+			if (!in_array($key, $core_settings_keys)) {
+				unset($this->core[$key]);
+			}
+		}
+		if (DB::instance()->db_prime(0)->q(
 			"UPDATE `[prefix]config`
 			SET
 				`core`			= '%s',
