@@ -2,7 +2,7 @@
 	"package"      : "Uploader",
 	"category"     : "modules",
 	"version"      : "1.0.0",
-	"description"  : "Uploader adds files uploading functionality to other modules",
+	"description"  : "Uploader provides files uploading functionality to other modules",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/cms",
 	"license"      : "MIT License",
