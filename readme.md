@@ -27,10 +27,10 @@ But in parallel with core some components are developed:
  * **HybridAuth** (integration of [HybridAuth](https://github.com/hybridauth/hybridauth) library for integration with social networks and other services)
  * **OAuth2** (provides realization of OAuth 2 authorization protocol (server side))
  * **Photo gallery** (simple photo gallery module, powered by Fotorama, Plupload and SimpleImage components)
- * **Plupload** (integration of [Plupload](https://github.com/moxiecode/plupload) for files uploading, adds files uploading functionality to other modules)
  * **Polls** (provides polls functionality to other modules)
  * **Shop** (provides simple, but highly extensible and customizable shopping functionality)
  * **Static pages** (allows to create static pages like About page or pages without interface, for example for site owner verification)
+ * **Uploader** (provides files uploading functionality to other modules)
  * **WebSockets** (support for WebSockets connections utilizing [React](https://github.com/reactphp/react) and [Ratchet](https://github.com/ratchetphp/Ratchet))
 
 #### Plugins
