@@ -3,11 +3,9 @@
 	"bower-asset/jquery"           : "*",
 	"bower-asset/jssha"            : "*",
 	"bower-asset/polymer"          : "*",
-	"bower-asset/uikit"            : "*",
 	"bower-asset/webcomponentsjs"  : "*",
 	"npm-asset/jquery"             : "*",
 	"npm-asset/jssha"              : "*",
 	"npm-asset/polymer"            : "*",
-	"npm-asset/uikit"              : "*",
 	"npm-asset/webcomponents.js"   : "*"
 }
