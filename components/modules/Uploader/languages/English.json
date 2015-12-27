@@ -1,0 +1,9 @@
+{
+	"uploader_" : {
+		"confirmation_time"      : "File confirmation time",
+		"confirmation_time_info" : "After uploading file should be confirmed by any module, for example, Blogs module confirms all images used in article after saving. If time expires - file will be deleted.",
+		"file_too_large"         : "File too large, file size should up to %s",
+		"file_uploading_failed"  : "Uploading file %s failed, reason: %s",
+		"no_files_uploaded"      : "No files were uploaded"
+	}
+}

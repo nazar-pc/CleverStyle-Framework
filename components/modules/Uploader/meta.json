@@ -1,0 +1,31 @@
+{
+	"package"      : "Uploader",
+	"category"     : "modules",
+	"version"      : "1.0.0",
+	"description"  : "Uploader adds files uploading functionality to other modules",
+	"author"       : "Nazar Mokrynskyi",
+	"website"      : "cleverstyle.org/cms",
+	"license"      : "MIT License",
+	"db"           : [
+		"files"
+	],
+	"db_support"   : [
+		"MySQLi"
+	],
+	"storage"      : [
+		"files"
+	],
+	"provide"      : "file_upload",
+	"require"      : [
+		"System>=3.105",
+		"System<4.0"
+	],
+	"multilingual" : [
+		"interface"
+	],
+	"languages"    : [
+		"English",
+		"Русский",
+		"Українська"
+	]
+}
