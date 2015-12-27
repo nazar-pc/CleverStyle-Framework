@@ -1,20 +1,19 @@
 <?php
 /**
- * @package		Plupload
- * @category	modules
- * @author		Moxiecode Systems AB
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com> (integration with CleverStyle CMS)
- * @copyright	Moxiecode Systems AB
- * @license		GNU GPL v2, see license.txt
+ * @package   Plupload
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2013-2015, Nazar Mokrynskyi
+ * @license   GNU GPL v2, see license.txt
  */
-namespace	cs;
+namespace cs;
 Event::instance()->on(
 	'admin/System/components/modules/install/after',
 	function ($data) {
 		if ($data['name'] == 'Plupload') {
-			$Config											= Config::instance();
-			$Config->module('Plupload')->max_file_size		= '5mb';
-			$Config->module('Plupload')->confirmation_time	= '900';
+			$Config                                        = Config::instance();
+			$Config->module('Plupload')->max_file_size     = '5mb';
+			$Config->module('Plupload')->confirmation_time = '900';
 		}
 	}
 );

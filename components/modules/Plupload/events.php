@@ -2,9 +2,8 @@
 /**
  * @package   Plupload
  * @category  modules
- * @author    Moxiecode Systems AB
- * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com> (integration with CleverStyle CMS)
- * @copyright Moxiecode Systems AB
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2013-2015, Nazar Mokrynskyi
  * @license   GNU GPL v2, see license.txt
  */
 namespace cs;
