@@ -17,10 +17,13 @@
     return new Promise(function(resolve, reject){
       var this$ = this;
       $.getJSON('api/System/admin/modules', function(modules){
-        var force;
-        if (modules.Composer.active !== 1) {
-          resolve();
-          return;
+        var i$, len$, module, force;
+        for (i$ = 0, len$ = modules.length; i$ < len$; ++i$) {
+          module = modules[i$];
+          if (module.name === 'Composer' && module.active !== 1) {
+            resolve();
+            return;
+          }
         }
         force = force ? 'force' : '';
         modal = cs.ui.simple_modal("<cs-composer action=\"" + action + "\" package=\"" + package_name + "\" category=\"" + category + "\" " + force + "/>");

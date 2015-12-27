@@ -11,9 +11,10 @@ open_modal	= (action, package_name, category, force = false) ->
 		return
 	(new Promise (resolve, reject) !->
 		modules	<~! $.getJSON('api/System/admin/modules')
-		if modules.Composer.active != 1
-			resolve()
-			return
+		for module in modules
+			if module.name == 'Composer' && module.active != 1
+				resolve()
+				return
 		force	= if force then 'force' else ''
 		modal	:= cs.ui.simple_modal("""<cs-composer action="#action" package="#package_name" category="#category" #force/>""")
 		$(modal).on('close', !->
