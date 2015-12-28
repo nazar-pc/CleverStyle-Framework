@@ -42,7 +42,11 @@
         uploader(file, progress, state).then(function(data){
           return next_upload(data.url);
         })['catch'](function(e){
-          cs.ui.notify(L.file_uploading_failed(file.name, e.responseJSON.error_description), 'error');
+          if (error) {
+            error.call(error, L.file_uploading_failed(file.name, e.responseJSON.error_description), e, file);
+          } else {
+            cs.ui.notify(L.file_uploading_failed(file.name, e.responseJSON.error_description), 'error');
+          }
           next_upload();
         });
       } else {

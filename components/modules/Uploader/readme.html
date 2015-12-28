@@ -14,7 +14,7 @@
 			<dt>success</dt>
 			<dd>Function, will be called after successful uploading of all files, accepts one argument <code>files</code> with array of absolute urls of all uploaded files</dd>
 			<dt>error</dt>
-			<dd>Function, will be called if error occurred in Uploader, accepts one argument <code>error</code> with error text</dd>
+			<dd>Function, will be called if error occurred in Uploader, accepts 3 arguments <code>error, jqXHR, file</code> with error text, jqXHR object and file object being uploaded</dd>
 			<dt>progress</dt>
 			<dd>Function, will be called when file uploading progress changes, accepts 9 arguments <code>percent, size, uploaded_size, name, total_percent, total_size, total_uploaded, current_file, total_files</code> current progress in percents, total file size, size of uploaded part, file name, total percents, size and uploaded size (useful when multiple files being uploaded) and currently uploading file number and total number of files to be uploaded.</dd>
 			<dt>multi</dt>
