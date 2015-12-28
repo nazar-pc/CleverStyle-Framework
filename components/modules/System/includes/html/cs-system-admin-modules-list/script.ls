@@ -46,7 +46,7 @@ Polymer(
 					L.disabled
 					if module.name == default_module then L.default_module else L.enabled
 				)
-				module.name_localized			= L[module.name] || module.name.replace('_', ' ')
+				module.name_localized			= L[module.name] || module.name.replace(/_/g, ' ')
 				enabled							= module.active ~= 1
 				installed						= module.active !~= -1
 				module.can_disable				= enabled && module.name != 'System'

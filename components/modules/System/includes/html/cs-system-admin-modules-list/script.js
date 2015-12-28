@@ -44,7 +44,7 @@
           module.icon_text = active_switch_local(L.uninstalled, L.disabled, module.name === default_module
             ? L.default_module
             : L.enabled);
-          module.name_localized = L[module.name] || module.name.replace('_', ' ');
+          module.name_localized = L[module.name] || module.name.replace(/_/g, ' ');
           enabled = module.active == 1;
           installed = module.active != -1;
           module.can_disable = enabled && module.name !== 'System';

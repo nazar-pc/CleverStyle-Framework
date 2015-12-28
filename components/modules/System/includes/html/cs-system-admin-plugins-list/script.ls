@@ -27,7 +27,7 @@ Polymer(
 			plugin.class			= active_switch_local('cs-block-warning cs-text-warning', 'cs-block-success cs-text-success')
 			plugin.icon				= active_switch_local('minus', 'check')
 			plugin.icon_text		= active_switch_local(L.disabled, L.enabled)
-			plugin.name_localized	= L[plugin.name] || plugin.name.replace('_', ' ')
+			plugin.name_localized	= L[plugin.name] || plugin.name.replace(/_/g, ' ')
 			do !->
 				for prop in ['license', 'readme']
 					if plugin[prop]?.type
