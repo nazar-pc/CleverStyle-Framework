@@ -28,6 +28,7 @@ But in parallel with core some components are developed:
  * **OAuth2** (provides realization of OAuth 2 authorization protocol (server side))
  * **Photo gallery** (simple photo gallery module, powered by Fotorama, Plupload and SimpleImage components)
  * **Polls** (provides polls functionality to other modules)
+ * **Service Worker cache** (uses Service Worker to cache requests to static assets like CSS/JS/HTML/fonts/images to improve subsequent page loads, especially on bad internet connection)
  * **Shop** (provides simple, but highly extensible and customizable shopping functionality)
  * **Static pages** (allows to create static pages like About page or pages without interface, for example for site owner verification)
  * **Uploader** (provides files uploading functionality to other modules)
