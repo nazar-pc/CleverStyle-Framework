@@ -20,13 +20,9 @@ trait security {
 		$Config = Config::instance();
 		Page::instance()->json(
 			[
-				'key_expire'         => $Config->core['key_expire'],
-				'ip_black_list'      => $Config->core['ip_black_list'],
-				'ip_admin_list_only' => $Config->core['ip_admin_list_only'],
-				'ip_admin_list'      => $Config->core['ip_admin_list'],
-				'current_ip'         => $_SERVER->ip,
-				'simple_admin_mode'  => $Config->core['simple_admin_mode'],
-				'applied'            => $Config->cancel_available()
+				'key_expire'        => $Config->core['key_expire'],
+				'simple_admin_mode' => $Config->core['simple_admin_mode'],
+				'applied'           => $Config->cancel_available()
 			]
 		);
 	}
@@ -46,19 +42,13 @@ trait security {
 	 */
 	protected static function admin_security_settings_common () {
 		if (!isset(
-			$_POST['key_expire'],
-			$_POST['ip_black_list'],
-			$_POST['ip_admin_list_only'],
-			$_POST['ip_admin_list']
+			$_POST['key_expire']
 		)
 		) {
 			throw new ExitException(400);
 		}
-		$Config                             = Config::instance();
-		$Config->core['key_expire']         = (int)$_POST['key_expire'];
-		$Config->core['ip_black_list']      = static::admin_security_settings_common_multiline($_POST['ip_black_list']);
-		$Config->core['ip_admin_list_only'] = (int)(bool)$_POST['ip_admin_list_only'];
-		$Config->core['ip_admin_list']      = static::admin_security_settings_common_multiline($_POST['ip_admin_list']);
+		$Config                     = Config::instance();
+		$Config->core['key_expire'] = (int)$_POST['key_expire'];
 	}
 	/**
 	 * @param string $value

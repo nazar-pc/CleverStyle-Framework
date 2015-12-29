@@ -165,9 +165,8 @@ class Route {
 	 *                        route, relative_address, ADMIN, API, MODULE, HOME
 	 */
 	function process_route ($raw_relative_address) {
-		$Config = Config::instance();
-		$rc     = explode('?', $raw_relative_address, 2)[0];
-		$rc     = trim($rc, '/');
+		$rc = explode('?', $raw_relative_address, 2)[0];
+		$rc = trim($rc, '/');
 		if (Language::instance()->url_language($rc)) {
 			$rc = explode('/', $rc, 2);
 			$rc = isset($rc[1]) ? $rc[1] : '';
@@ -189,9 +188,6 @@ class Route {
 		 * If url is admin or API page - set corresponding variables to corresponding path prefix
 		 */
 		if (@mb_strtolower($rc[0]) == 'admin') {
-			if (!$Config->can_be_admin()) {
-				return false;
-			}
 			$ADMIN = 'admin/';
 			array_shift($rc);
 		} elseif (@mb_strtolower($rc[0]) == 'api') {
@@ -201,7 +197,7 @@ class Route {
 		/**
 		 * Module detection
 		 */
-		$MODULE = $this->determine_page_module($rc, $HOME, $Config, $ADMIN, $API);
+		$MODULE = $this->determine_page_module($rc, $HOME, $ADMIN, $API);
 		return [
 			'route'            => $rc,
 			'relative_address' => trim(
@@ -219,13 +215,13 @@ class Route {
 	 *
 	 * @param array  $rc
 	 * @param bool   $HOME
-	 * @param Config $Config
 	 * @param string $ADMIN
 	 * @param string $API
 	 *
 	 * @return mixed|string
 	 */
-	protected function determine_page_module (&$rc, &$HOME, $Config, $ADMIN, $API) {
+	protected function determine_page_module (&$rc, &$HOME, $ADMIN, $API) {
+		$Config  = Config::instance();
 		$modules = $this->get_modules($Config, $ADMIN);
 		if (@in_array($rc[0], array_values($modules))) {
 			return array_shift($rc);

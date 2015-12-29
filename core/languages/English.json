@@ -515,13 +515,6 @@
 		"security"						: "Security",
 		"key_expire"					: "Key expires after",
 		"key_expire_info"				: "For some operations temporary keys are created that may contain some attached information, and are used to ensure the safety and/or to store some temporary data. Enter time interval after which the keys will be considered obsolete and invalid.",
-		"ip_black_list"					: "Black list of IP addresses",
-		"ip_black_list_info"			: "Allows you to block access to the site from the specified address (you can specify the IP address as a string or regular expression, one entry per line). WARNING: do not specify your current IP address, in order not to lose access. IPv4 and IPv6 addresses are supported.",
-		"ip_admin_list_only"			: "Sign in to the admin panel only from specified IP addresses",
-		"ip_admin_list_only_info"		: "Allows you to enable or disable the restriction on the entrance to the admin panel",
-		"ip_admin_list"					: "List of IP addresses that are allowed to enter the admin panel",
-		"ip_admin_list_info"			: "Access to the admin panel will be allowed only from specified IP (you can specify the IP address as a string or regular expression, one entry per line). WARNING: Be sure to include your current IP address, in order not to lose access. Your current address listed under the input. IPv4 and IPv6 addresses are supported.",
-		"current_ip"					: "Your current IP address",
 		//Mail
 		"mail"						: "Mail",
 		"smtp"						: "SMTP",

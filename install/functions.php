@@ -195,9 +195,6 @@ function install_process ($fs, $argv = null) {
 		'rules'                             => '',
 		'show_tooltips'                     => 1,
 		'remember_user_ip'                  => 0,
-		'ip_black_list'                     => [],
-		'ip_admin_list_only'                => 0,
-		'ip_admin_list'                     => [],
 		'simple_admin_mode'                 => !isset($_POST['mode']) || $_POST['mode'] ? 1 : 0,
 		'default_module'                    => 'System'
 	];

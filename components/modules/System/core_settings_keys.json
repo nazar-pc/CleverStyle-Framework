@@ -45,9 +45,6 @@
 	"rules",
 	"show_tooltips",
 	"remember_user_ip",
-	"ip_black_list",
-	"ip_admin_list_only",
-	"ip_admin_list",
 	"simple_admin_mode",
 	"default_module"
 ]

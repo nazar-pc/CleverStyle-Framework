@@ -6,12 +6,5 @@ dom-module#cs-system-admin-security
 			+input("key_expire", null, "number", 1)
 			= ' '
 			[[L.seconds]]
-			+textarea("ip_black_list")
-			+on-off-switcher("ip_admin_list_only")
-			+textarea("ip_admin_list")
-			p
-				[[L.current_ip]]:
-				= ' '
-				b [[settings.current_ip]]
 			+footer-buttons
 	script(src="script.js")

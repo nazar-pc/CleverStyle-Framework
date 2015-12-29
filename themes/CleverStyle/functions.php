@@ -26,9 +26,9 @@ function get_main_menu () {
 	$User            = User::instance();
 	$main_menu_items = [];
 	/**
-	 * Administration item if allowed
+	 * Administration item
 	 */
-	if ($User->admin() || ($Config->can_be_admin() && $Config->core['ip_admin_list_only'])) {
+	if ($User->admin()) {
 		$main_menu_items[] = h::a(
 			$L->administration,
 			[

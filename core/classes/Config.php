@@ -60,12 +60,6 @@ class Config {
 		'https' => []
 	];
 	/**
-	 * Initialization state
-	 *
-	 * @var bool
-	 */
-	protected $init = false;
-	/**
 	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
 	 *
 	 * @throws ExitException
@@ -109,12 +103,6 @@ class Config {
 			get_core_ml_text('name'),
 			$this->core['theme']
 		);
-		if (!$this->init) {
-			$this->init = true;
-			if ($this->check_ip($this->core['ip_black_list'])) {
-				throw new ExitException(403);
-			}
-		}
 		/**
 		 * Setting system timezone
 		 */
@@ -131,39 +119,6 @@ class Config {
 			$this->mirrors[$protocol][] = $urls[0];
 		}
 		$this->mirrors['count'] = count($this->mirrors['http']) + count($this->mirrors['https']);
-	}
-	/**
-	 * Check user's IP address matches with elements of given list
-	 *
-	 * @param string[] $ips
-	 *
-	 * @return bool
-	 */
-	protected function check_ip ($ips) {
-		if (!$ips || !is_array($ips)) {
-			return false;
-		}
-		/**
-		 * @var _SERVER $_SERVER
-		 */
-		foreach ($ips as $ip) {
-			if ($ip) {
-				$char = mb_substr($ip, 0, 1);
-				if ($char != mb_substr($ip, -1)) {
-					$ip = "/$ip/";
-				}
-				if (
-					_preg_match($ip, $_SERVER->remote_addr) ||
-					(
-						$_SERVER->ip &&
-						_preg_match($ip, $_SERVER->ip)
-					)
-				) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 	/**
 	 * Reloading of settings cache
@@ -343,13 +298,5 @@ class Config {
 			return False_class::instance();
 		}
 		return new Config\Module_Properties($this->components['modules'][$module_name], $module_name);
-	}
-	/**
-	 * Allows to check ability to be admin user (can be limited by IP)
-	 *
-	 * @return bool
-	 */
-	function can_be_admin () {
-		return !$this->core['ip_admin_list_only'] || $this->check_ip($this->core['ip_admin_list']);
 	}
 }

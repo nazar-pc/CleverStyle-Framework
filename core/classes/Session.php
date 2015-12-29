@@ -230,7 +230,7 @@ class Session {
 		 */
 		$groups = User::instance()->get_groups($this->user_id) ?: [];
 		if (in_array(User::ADMIN_GROUP_ID, $groups)) {
-			$this->is_admin = Config::instance()->can_be_admin();
+			$this->is_admin = true;
 			$this->is_user  = true;
 		} elseif (in_array(User::USER_GROUP_ID, $groups)) {
 			$this->is_user = true;
