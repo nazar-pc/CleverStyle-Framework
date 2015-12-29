@@ -85,7 +85,7 @@ class Controller {
 			strpos($_SERVER->referer, $Config->base_url()) === 0 &&
 			strpos($_SERVER->referer, $Config->base_url().'/HybridAuth') === false
 		) {
-			_setcookie('HybridAuth_referer', $_SERVER->referer);
+			_setcookie('HybridAuth_referer', $_SERVER->referer, 0, true);
 		}
 		require_once __DIR__.'/Hybrid/Auth.php';
 		require_once __DIR__.'/Hybrid/Endpoint.php';

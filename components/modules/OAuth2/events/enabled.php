@@ -80,7 +80,7 @@ Event::instance()
 			$_SERVER->user_agent = "OAuth2-$client[name]-$client[id]";
 			$_POST['session']    = $token_data['session'];
 			$_REQUEST['session'] = $token_data['session'];
-			_setcookie('session', $token_data['session']);
+			_setcookie('session', $token_data['session'], 0, true);
 			if (!Config::instance()->module('OAuth2')->guest_tokens) {
 				Event::instance()->on(
 					'System/User/construct/after',

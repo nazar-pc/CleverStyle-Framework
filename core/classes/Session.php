@@ -478,7 +478,7 @@ class Session {
 			return $this->add(User::GUEST_ID);
 		}
 		$session_data = $this->create_unique_session($user);
-		_setcookie('session', $session_data['id'], $session_data['expire']);
+		_setcookie('session', $session_data['id'], $session_data['expire'], true);
 		$this->load_initialization($session_data['id'], $session_data['user']);
 		/**
 		 * Delete old sessions using probability and system configuration of inserts limits and update ratio

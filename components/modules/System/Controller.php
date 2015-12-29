@@ -76,7 +76,7 @@ class Controller {
 			$body
 		)
 		) {
-			_setcookie('reg_confirm', 1);
+			_setcookie('reg_confirm', 1, 0, true);
 			_header("Location: {$Config->base_url()}/System/profile/registration_confirmation");
 		} else {
 			$User->registration_cancel();
@@ -122,7 +122,7 @@ class Controller {
 			)
 		)
 		) {
-			_setcookie('restore_password_confirm', 1);
+			_setcookie('restore_password_confirm', 1, 0, true);
 			_header("Location: {$Config->base_url()}/System/profile/restore_password_confirmation");
 		} else {
 			$Page->title($L->sending_reg_mail_error_title);
