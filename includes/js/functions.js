@@ -62,50 +62,6 @@
 
 
   /**
-   * Function for setting cookies taking into account cookies prefix
-   *
-   * @param {string}	name
-   * @param {string}	value
-   * @param {int}		expires
-   *
-   * @return {bool}
-   */
-
-  cs.setcookie = function(name, value, expires) {
-    var date, options;
-    name = cs.cookie_prefix + name;
-    options = {
-      path: '/',
-      domain: cs.cookie_domain,
-      secure: cs.protocol === 'https'
-    };
-    if (!value) {
-      return $.removeCookie(name);
-    }
-    if (expires) {
-      date = new Date();
-      date.setTime(expires * 1000);
-      options.expires = date;
-    }
-    return !!$.cookie(name, value, options);
-  };
-
-
-  /**
-   * Function for getting of cookies, taking into account cookies prefix
-   *
-   * @param {string}			name
-   *
-   * @return {bool|string}
-   */
-
-  cs.getcookie = function(name) {
-    name = cs.cookie_prefix + name;
-    return $.cookie(name);
-  };
-
-
-  /**
    * Sign in into system
    *
    * @param {string} login

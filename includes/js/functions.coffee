@@ -34,44 +34,6 @@ cs.hash						= (algo, data) ->
 	shaObj.update(data)
 	shaObj.getHash('HEX')
 ###*
- * Function for setting cookies taking into account cookies prefix
- *
- * @param {string}	name
- * @param {string}	value
- * @param {int}		expires
- *
- * @return {bool}
-###
-cs.setcookie				= (name, value, expires) ->
-	name	= cs.cookie_prefix + name
-	options	=
-		path	: '/'
-		domain	: cs.cookie_domain
-		secure	: cs.protocol == 'https'
-	if !value
-		return $.removeCookie(
-			name
-		)
-	if expires
-		date	= new Date()
-		date.setTime(expires * 1000)
-		options.expires	= date
-	!!$.cookie(
-		name
-		value
-		options
-	)
-###*
- * Function for getting of cookies, taking into account cookies prefix
- *
- * @param {string}			name
- *
- * @return {bool|string}
-###
-cs.getcookie				= (name) ->
-	name	= cs.cookie_prefix + name
-	$.cookie(name)
-###*
  * Sign in into system
  *
  * @param {string} login
