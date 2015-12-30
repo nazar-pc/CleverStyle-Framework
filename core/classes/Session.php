@@ -340,21 +340,61 @@ class Session {
 	 * @return bool
 	 */
 	protected function is_good_session ($session_data) {
+		return
+			is_array($session_data) &&
+			$session_data['expire'] > time() &&
+			$this->is_user_active($session_data['user']);
+	}
+	/**
+	 * Whether session data belongs to current visitor (user agent, remote addr and ip check)
+	 *
+	 * @param string $session_id
+	 * @param string $user_agent
+	 * @param string $remote_addr
+	 * @param string $ip
+	 *
+	 * @return bool
+	 */
+	function is_session_owner ($session_id, $user_agent, $remote_addr, $ip) {
+		return $this->is_session_owner_internal(
+			$this->get($session_id),
+			$user_agent,
+			$remote_addr,
+			$ip
+		);
+	}
+	/**
+	 * Whether session data belongs to current visitor (user agent, remote addr and ip check)
+	 *
+	 * @param array       $session_data
+	 * @param string|null $user_agent
+	 * @param string|null $remote_addr
+	 * @param string|null $ip
+	 *
+	 * @return bool
+	 */
+	protected function is_session_owner_internal ($session_data, $user_agent = null, $remote_addr = null, $ip = null) {
 		/**
 		 * md5() as protection against timing attacks
 		 *
 		 * @var \cs\_SERVER $_SERVER
 		 */
+		if ($user_agent === null) {
+			$user_agent = $_SERVER->user_agent;
+		}
+		if ($remote_addr === null) {
+			$remote_addr = $_SERVER->remote_addr;
+		}
+		if ($ip === null) {
+			$ip = $_SERVER->ip;
+		}
 		return
-			is_array($session_data) &&
-			$session_data['expire'] > time() &&
-			md5($session_data['user_agent']) == md5($_SERVER->user_agent) &&
-			$this->is_user_active($session_data['user']) &&
+			md5($session_data['user_agent']) == md5($user_agent) &&
 			(
 				!Config::instance()->core['remember_user_ip'] ||
 				(
-					md5($session_data['remote_addr']) == md5(ip2hex($_SERVER->remote_addr)) &&
-					md5($session_data['ip']) == md5(ip2hex($_SERVER->ip))
+					md5($session_data['remote_addr']) == md5(ip2hex($remote_addr)) &&
+					md5($session_data['ip']) == md5(ip2hex($ip))
 				)
 			);
 	}
@@ -370,7 +410,7 @@ class Session {
 			return User::GUEST_ID;
 		}
 		$session_data = $this->get_internal($session_id);
-		if (!$session_data) {
+		if (!$session_data || !$this->is_session_owner_internal($session_data)) {
 			$this->add(User::GUEST_ID);
 			return User::GUEST_ID;
 		}
