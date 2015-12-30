@@ -62,40 +62,16 @@ Event::instance()
 				return;
 			}
 			$relative_address = Route::instance()->relative_address;
-			$Core             = Core::instance();
-			$Cache            = Cache::instance();
-			$L                = Language::instance();
 			$Page             = Page::instance();
-			/**
-			 * @var _SERVER $_SERVER
-			 */
-			if (
-				$_SERVER->request_method == 'GET' &&
-				$Core->cache_engine != 'BlackHole' &&
-				@Route::instance()->route[0] != 'robots.txt' &&
-				!$L->url_language() &&
-				$Cache->cache_state()
-			) {
-				$clang        = $L->clang;
-				$query_string = $_SERVER->query_string ? "?$_SERVER->query_string" : '';
-				if (!home_page()) {
-					_header("Location: /$clang/$relative_address$query_string", true, 301);
-				} else {
-					_header("Location: /$clang$query_string", true, 301);
-				}
-				$Page->Content = '';
-				interface_off();
-				throw new ExitException(301);
-			}
-			$core_url = $Config->core_url();
-			$base_url = $Config->base_url();
+			$core_url         = $Config->core_url();
+			$base_url         = $Config->base_url();
 			$Page->Head .= h::{'link[rel=alternate]'}(
 				[
 					'hreflang' => 'x-default',
 					'href'     => home_page() ? $core_url : "$core_url/$relative_address"
 				]
 			);
-			$clangs = $Cache->get(
+			$clangs = Cache::instance()->get(
 				'languages/clangs',
 				function () use ($Config) {
 					$clangs = [];

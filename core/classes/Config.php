@@ -270,7 +270,7 @@ class Config {
 		 */
 		$base_url = "$_SERVER->protocol://$_SERVER->host";
 		$L        = Language::instance();
-		if ($L->url_language()) {
+		if ($this->core['multilingual']) {
 			$base_url .= "/$L->clang";
 		}
 		return $base_url;
