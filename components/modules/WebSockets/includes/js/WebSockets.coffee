@@ -15,12 +15,7 @@ do ->
 	delay			= 0
 	onopen			= ->
 		delay	= 1000
-		cs.WebSockets.send(
-			'Client/authentication'
-			session		: cs.getcookie('session')
-			user_agent	: navigator.userAgent
-			language	: cs.Language.clanguage.toString()
-		)
+		cs.WebSockets.send('Client/authentication')
 		while messages_pool.length
 			cs.WebSockets.send(messages_pool.shift())
 		return

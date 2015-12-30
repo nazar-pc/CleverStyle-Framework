@@ -1,7 +1,7 @@
 {
 	"package"          : "WebSockets",
 	"category"         : "modules",
-	"version"          : "0.43.0+build-68",
+	"version"          : "0.44.0+build-69",
 	"description"      : "WebSockets server based on Ratchet and React with client-side bindings as well",
 	"author"           : "Nazar Mokrynskyi",
 	"website"          : "cleverstyle.org/cms",
@@ -18,7 +18,7 @@
 	],
 	"provide"          : "websockets",
 	"require"          : [
-		"System>=3.105",
+		"System>=3.135",
 		"System<4.0",
 		"composer"
 	],

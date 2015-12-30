@@ -141,7 +141,9 @@ class Server implements MessageComponentInterface {
 		$ws_server->disableVersion(0);
 		$ws_server->disableVersion(6);
 		$this->io_server        = IoServer::factory(
-			new HttpServer($ws_server),
+			new HttpServer(
+				new Connection_properties_injector($ws_server)
+			),
 			$this->listen_port,
 			$this->listen_locally
 		);
@@ -204,20 +206,13 @@ class Server implements MessageComponentInterface {
 				}
 				return;
 			case 'Client/authentication':
-				if (!isset($details['session'], $details['user_agent'], $details['language'])) {
-					$connection->send(
-						_json_encode(['Client/authentication:error', $this->compose_error(400)])
-					);
-					return;
-				}
-				$session = Session::instance()->get($details['session']);
+				$Session = Session::instance();
+				/** @noinspection PhpUndefinedFieldInspection */
+				$session = $Session->get($connection->session_id);
 				/** @noinspection PhpUndefinedFieldInspection */
 				if (
-					$session['user_agent'] != $details['user_agent'] ||
-					(
-						$this->remember_session_ip &&
-						$session['ip'] != ip2hex($connection->remoteAddress)
-					)
+					!$session ||
+					!$Session->is_session_owner($session['id'], $connection->user_agent, $connection->remote_addr, $connection->ip)
 				) {
 					$connection->send(
 						_json_encode(['Client/authentication:error', $this->compose_error(403)])
@@ -225,7 +220,6 @@ class Server implements MessageComponentInterface {
 					$connection->close();
 					return;
 				}
-				$connection->language       = $details['language'];
 				$connection->user_id        = $session['user'];
 				$connection->session_id     = $session['id'];
 				$connection->session_expire = $session['expire'];
