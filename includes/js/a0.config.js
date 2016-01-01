@@ -40,7 +40,7 @@
   if (document.URL.indexOf(document.baseURI) !== 0) {
     url_lang = document.baseURI.split('/')[3];
     new_url = location.href.split('/');
-    new_url.splice(3, 0, url_lang);
+    new_url.splice(3, !new_url[3] ? 1 : 0, url_lang);
     new_url = new_url.join('/');
     history.replaceState({}, document.title, new_url);
   }
