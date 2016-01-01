@@ -64,9 +64,10 @@
     }).on('mousedown', '.cs-shop-attribute-edit', function() {
       var id;
       id = $(this).data('id');
-      return $.when($.getJSON('api/Shop/admin/attributes/types'), $.getJSON("api/Shop/admin/attributes/" + id)).then(function(types, attribute) {
-        var $modal;
-        $modal = $(make_modal(types[0], L.shop_attribute_edition, L.shop_edit));
+      return Promise.all([$.getJSON('api/Shop/admin/attributes/types'), $.getJSON("api/Shop/admin/attributes/" + id)]).then(function(arg) {
+        var $modal, attribute, types;
+        types = arg[0], attribute = arg[1];
+        $modal = $(make_modal(types, L.shop_attribute_edition, L.shop_edit));
         $modal.on('submit', 'form', function() {
           var type, value;
           type = $modal.find('[name=type]').val();
@@ -96,7 +97,6 @@
             return value_container.hide();
           }
         });
-        attribute = attribute[0];
         $modal.find('[name=type]').val(attribute.type).change();
         $modal.find('[name=value]').val(attribute.value ? attribute.value.join('\n') : '');
         $modal.find('[name=title]').val(attribute.title);

@@ -64,11 +64,11 @@ $ ->
 		)
 		.on('mousedown', '.cs-shop-attribute-edit', ->
 			id = $(@).data('id')
-			$.when(
+			Promise.all([
 				$.getJSON('api/Shop/admin/attributes/types')
 				$.getJSON("api/Shop/admin/attributes/#{id}")
-			).then (types, attribute) ->
-				$modal	= $(make_modal(types[0], L.shop_attribute_edition, L.shop_edit))
+			]).then ([types, attribute]) ->
+				$modal	= $(make_modal(types, L.shop_attribute_edition, L.shop_edit))
 				$modal
 					.on('submit', 'form', ->
 						type = $modal.find('[name=type]').val()
@@ -99,7 +99,6 @@ $ ->
 						else
 							value_container.hide()
 				)
-				attribute	= attribute[0]
 				$modal.find('[name=type]').val(attribute.type).change()
 				$modal.find('[name=value]').val(if attribute.value then attribute.value.join('\n') else '')
 				$modal.find('[name=title]').val(attribute.title)

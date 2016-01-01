@@ -164,12 +164,12 @@ $ ->
 			)
 	$('html')
 		.on('mousedown', '.cs-shop-order-add', ->
-			$.when(
+			Promise.all([
 				$.getJSON('api/Shop/admin/shipping_types')
 				$.getJSON('api/Shop/admin/order_statuses')
 				$.getJSON('api/Shop/payment_methods')
-			).then (shipping_types, order_statuses, payment_methods) ->
-				modal = make_modal(shipping_types[0], order_statuses[0], payment_methods[0], L.shop_order_addition, L.shop_add)
+			]).then ([shipping_types, order_statuses, payment_methods]) ->
+				modal = make_modal(shipping_types, order_statuses, payment_methods, L.shop_order_addition, L.shop_add)
 				modal.find('form').submit ->
 					data	= $(@).serialize()
 					$.ajax(
@@ -191,17 +191,17 @@ $ ->
 		)
 		.on('mousedown', '.cs-shop-order-statuses-history', ->
 			id	= $(@).data('id')
-			$.when(
+			Promise.all([
 				$.getJSON('api/Shop/admin/order_statuses')
 				$.getJSON("api/Shop/admin/orders/#{id}/statuses")
-			).then (order_statuses, statuses) ->
+			]).then ([order_statuses, statuses]) ->
 				order_statuses	= do ->
 					result	= {}
-					order_statuses[0].forEach (status) ->
+					order_statuses.forEach (status) ->
 						result[status.id]	= status
 					result
 				content			= ''
-				statuses[0].forEach (status) ->
+				statuses.forEach (status) ->
 					order_status	= order_statuses?[status.status]
 					color			=
 						if order_status
@@ -233,14 +233,14 @@ $ ->
 			id			= $this.data('id')
 			username	= $this.data('username')
 			date		= $this.data('date')
-			$.when(
+			Promise.all([
 				$.getJSON('api/Shop/admin/shipping_types')
 				$.getJSON('api/Shop/admin/order_statuses')
 				$.getJSON('api/Shop/payment_methods')
 				$.getJSON("api/Shop/admin/orders/#{id}")
 				$.getJSON("api/Shop/admin/orders/#{id}/items")
-			).then (shipping_types, order_statuses, payment_methods, order, items) ->
-				modal	= make_modal(shipping_types[0], order_statuses[0], payment_methods[0], L.shop_order_edition, L.shop_edit)
+			]).then ([shipping_types, order_statuses, payment_methods, order, items]) ->
+				modal	= make_modal(shipping_types, order_statuses, payment_methods, L.shop_order_edition, L.shop_edit)
 				modal.find('form').submit ->
 					data	= $(@).serialize()
 					$.ajax(
@@ -258,7 +258,6 @@ $ ->
 							)
 					)
 					return false
-				order	= order[0]
 				modal.find('.date').html(date).parent().removeAttr('hidden')
 				modal.find('.username').html(username)
 				modal.find('[name=user]').val(order.user)
@@ -271,7 +270,6 @@ $ ->
 				modal.find('[name=paid][value=' + (if parseInt(order.paid) then 1 else 0) + ']').prop('checked', true)
 				modal.find('[name=status]').val(order.status)
 				modal.find('[name=comment]').val(order.comment)
-				items	= items[0]
 				items.forEach (item) ->
 					modal.add_item(item)
 		)

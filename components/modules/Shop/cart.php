@@ -16,10 +16,7 @@ use
 
 $L              = new Prefix('shop_');
 $Page           = Page::instance();
-$Categories     = Categories::instance();
-$Items          = Items::instance();
 $Shipping_types = Shipping_types::instance();
-$items          = @_json_decode($_COOKIE['shop_cart_items']);
 $Page
 	->title($L->cart)
 	->config($Shipping_types->get($Shipping_types->get_all()), 'cs.shop.shipping_types')
@@ -27,44 +24,6 @@ $Page
 		Orders::instance()->get_payment_methods(),
 		'cs.shop.payment_methods'
 	);
-if (!$items || !is_array($items)) {
-	$Page->content(
-		h::cs_shop_empty_cart($L->cart_empty)
-	);
-	return;
-}
-$module_path = path($L->shop);
-$items_path  = path($L->items);
 $Page->content(
-	h::cs_shop_cart(
-		h::h1($L->your_cart).
-		h::{'#items cs-shop-cart-item'}(array_map(
-			function ($item, $units) use ($Categories, $Items, $module_path, $items_path) {
-				$item = $Items->get($item);
-				return [
-					h::{'img#img'}([
-						'src' => @$item['images'][0] ?: Items::DEFAULT_IMAGE
-					]).
-					h::{'a#link'}(
-						$item['title'],
-						[
-							'href'   => "$module_path/$items_path/".path($Categories->get($item['category'])['title']).'/'.path($item['title']).":$item[id]",
-							'target' => '_blank'
-						]
-					).
-					h::{'#description'}(truncate($item['description'], 200) ?: false),
-					[
-						'item_id'    => $item['id'],
-						'unit_price' => $item['price'],
-						'units'      => $units
-					]
-				];
-			},
-			array_keys($items),
-			_int(array_values($items))
-		)),
-		[
-			'username' => User::instance()->username()
-		]
-	)
+	h::cs_shop_cart()
 );

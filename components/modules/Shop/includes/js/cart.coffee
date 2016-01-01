@@ -8,16 +8,9 @@
 cs.shop.cart	= do ->
 	items_storage	=
 		get	: ->
-			if data = cs.getcookie('shop_cart_items')
-				JSON.parse(data)
-			else
-				{}
+			JSON.parse(localStorage.shop_cart_items || '{}')
 		set	: (items) ->
-			cs.setcookie(
-				'shop_cart_items'
-				JSON.stringify(items)
-				new Date / 1000 + 86400	# +24h from now
-			)
+			localStorage.shop_cart_items	= JSON.stringify(items)
 	params			= do ->
 		params_			= localStorage.shop_cart_params
 		params_			= if params_ then JSON.parse(params_) else {}
@@ -42,8 +35,9 @@ cs.shop.cart	= do ->
 	get_items	= ->
 		items_storage.get()
 	get_item	= (id) ->
-		items[id] || 0
+		get_items()[id] || 0
 	add_item	= (id) ->
+		items	= get_items()
 		if items[id]
 			++items[id]
 		else
@@ -51,15 +45,15 @@ cs.shop.cart	= do ->
 		items_storage.set(items)
 		items[id]
 	set_item	= (id, units) ->
+		items		= get_items()
 		items[id]	= units
 		items_storage.set(items)
 	del_item	= (id) ->
+		items	= get_items()
 		delete items[id]
 		items_storage.set(items)
-	items	= get_items()
 	clean		= ->
-		items	= {}
-		items_storage.set(items)
+		items_storage.set({})
 	return {
 		get_all			: get_items
 		get_calculated	: (callback) ->

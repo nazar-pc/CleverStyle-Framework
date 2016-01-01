@@ -110,9 +110,10 @@
       return modal;
     };
     return $('html').on('mousedown', '.cs-shop-category-add', function() {
-      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories')).then(function(attributes, categories) {
-        var modal;
-        modal = make_modal(attributes[0], categories[0], L.shop_category_addition, L.shop_add);
+      return Promise.all([$.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories')]).then(function(arg) {
+        var attributes, categories, modal;
+        attributes = arg[0], categories = arg[1];
+        modal = make_modal(attributes, categories, L.shop_category_addition, L.shop_add);
         return modal.find('form').submit(function() {
           $.ajax({
             url: 'api/Shop/admin/categories',
@@ -129,9 +130,10 @@
     }).on('mousedown', '.cs-shop-category-edit', function() {
       var id;
       id = $(this).data('id');
-      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories'), $.getJSON("api/Shop/admin/categories/" + id)).then(function(attributes, categories, category) {
-        var modal;
-        modal = make_modal(attributes[0], categories[0], L.shop_category_edition, L.shop_edit);
+      return Promise.all([$.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories'), $.getJSON("api/Shop/admin/categories/" + id)]).then(function(arg) {
+        var attributes, categories, category, modal;
+        attributes = arg[0], categories = arg[1], category = arg[2];
+        modal = make_modal(attributes, categories, L.shop_category_edition, L.shop_edit);
         modal.find('form').submit(function() {
           $.ajax({
             url: "api/Shop/admin/categories/" + id,
@@ -144,7 +146,6 @@
           });
           return false;
         });
-        category = category[0];
         modal.find('[name=parent]').val(category.parent);
         modal.find('[name=title]').val(category.title);
         modal.find('[name=description]').val(category.description);

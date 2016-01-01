@@ -4,10 +4,10 @@ dom-module#cs-shop-cart-item
 		style(include="advanced-styles")
 		#content.cs-margin-top
 			div
-				a(href="[[href]]")
+				a(href="[[href]]" target="_blank")
 					img#img
 			div
-				a.cs-text-lead(href="[[href]]") [[item_title]]
+				a.cs-text-lead(href="[[href]]" target="_blank") [[item_title]]
 				| :
 				input(is="cs-input-text" compact min="0" type="number" value="{{units}}")
 				= ' '

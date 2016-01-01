@@ -161,9 +161,10 @@
       });
     };
     return $('html').on('mousedown', '.cs-shop-order-add', function() {
-      return $.when($.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods')).then(function(shipping_types, order_statuses, payment_methods) {
-        var modal;
-        modal = make_modal(shipping_types[0], order_statuses[0], payment_methods[0], L.shop_order_addition, L.shop_add);
+      return Promise.all([$.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods')]).then(function(arg) {
+        var modal, order_statuses, payment_methods, shipping_types;
+        shipping_types = arg[0], order_statuses = arg[1], payment_methods = arg[2];
+        modal = make_modal(shipping_types, order_statuses, payment_methods, L.shop_order_addition, L.shop_add);
         return modal.find('form').submit(function() {
           var data;
           data = $(this).serialize();
@@ -190,18 +191,19 @@
     }).on('mousedown', '.cs-shop-order-statuses-history', function() {
       var id;
       id = $(this).data('id');
-      return $.when($.getJSON('api/Shop/admin/order_statuses'), $.getJSON("api/Shop/admin/orders/" + id + "/statuses")).then(function(order_statuses, statuses) {
-        var content;
+      return Promise.all([$.getJSON('api/Shop/admin/order_statuses'), $.getJSON("api/Shop/admin/orders/" + id + "/statuses")]).then(function(arg) {
+        var content, order_statuses, statuses;
+        order_statuses = arg[0], statuses = arg[1];
         order_statuses = (function() {
           var result;
           result = {};
-          order_statuses[0].forEach(function(status) {
+          order_statuses.forEach(function(status) {
             return result[status.id] = status;
           });
           return result;
         })();
         content = '';
-        statuses[0].forEach(function(status) {
+        statuses.forEach(function(status) {
           var color, comment, order_status;
           order_status = order_statuses != null ? order_statuses[status.status] : void 0;
           color = order_status ? "background: " + order_status.color : '';
@@ -216,9 +218,10 @@
       id = $this.data('id');
       username = $this.data('username');
       date = $this.data('date');
-      return $.when($.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods'), $.getJSON("api/Shop/admin/orders/" + id), $.getJSON("api/Shop/admin/orders/" + id + "/items")).then(function(shipping_types, order_statuses, payment_methods, order, items) {
-        var modal;
-        modal = make_modal(shipping_types[0], order_statuses[0], payment_methods[0], L.shop_order_edition, L.shop_edit);
+      return Promise.all([$.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods'), $.getJSON("api/Shop/admin/orders/" + id), $.getJSON("api/Shop/admin/orders/" + id + "/items")]).then(function(arg) {
+        var items, modal, order, order_statuses, payment_methods, shipping_types;
+        shipping_types = arg[0], order_statuses = arg[1], payment_methods = arg[2], order = arg[3], items = arg[4];
+        modal = make_modal(shipping_types, order_statuses, payment_methods, L.shop_order_edition, L.shop_edit);
         modal.find('form').submit(function() {
           var data;
           data = $(this).serialize();
@@ -240,7 +243,6 @@
           });
           return false;
         });
-        order = order[0];
         modal.find('.date').html(date).parent().removeAttr('hidden');
         modal.find('.username').html(username);
         modal.find('[name=user]').val(order.user);
@@ -253,7 +255,6 @@
         modal.find('[name=paid][value=' + (parseInt(order.paid) ? 1 : 0) + ']').prop('checked', true);
         modal.find('[name=status]').val(order.status);
         modal.find('[name=comment]').val(order.comment);
-        items = items[0];
         return items.forEach(function(item) {
           return modal.add_item(item);
         });

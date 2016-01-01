@@ -58,11 +58,11 @@ $ ->
 		)
 		.on('mousedown', '.cs-shop-order-status-edit', ->
 			id = $(@).data('id')
-			$.when(
+			Promise.all([
 				$.getJSON('api/Shop/admin/order_statuses/types')
 				$.getJSON("api/Shop/admin/order_statuses/#{id}")
-			).then (types, type) ->
-				modal = make_modal(types[0], L.shop_order_status_edition, L.shop_edit)
+			]).then ([types, type]) ->
+				modal = make_modal(types, L.shop_order_status_edition, L.shop_edit)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : "api/Shop/admin/order_statuses/#{id}"
@@ -73,7 +73,6 @@ $ ->
 							location.reload()
 					)
 					return false
-				type	= type[0]
 				modal.find('[name=title]').val(type.title)
 				modal.find('[name=color]').val(type.color)
 				modal.find('[type=color]').val(type.color)

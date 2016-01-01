@@ -128,11 +128,11 @@ $ ->
 		modal
 	$('html')
 		.on('mousedown', '.cs-shop-category-add', ->
-			$.when(
+			Promise.all([
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
-			).then (attributes, categories) ->
-				modal = make_modal(attributes[0], categories[0], L.shop_category_addition, L.shop_add)
+			]).then ([attributes, categories]) ->
+				modal = make_modal(attributes, categories, L.shop_category_addition, L.shop_add)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : 'api/Shop/admin/categories'
@@ -146,12 +146,12 @@ $ ->
 		)
 		.on('mousedown', '.cs-shop-category-edit', ->
 			id = $(@).data('id')
-			$.when(
+			Promise.all([
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
 				$.getJSON("api/Shop/admin/categories/#{id}")
-			).then (attributes, categories, category) ->
-				modal = make_modal(attributes[0], categories[0], L.shop_category_edition, L.shop_edit)
+			]).then ([attributes, categories, category]) ->
+				modal = make_modal(attributes, categories, L.shop_category_edition, L.shop_edit)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : "api/Shop/admin/categories/#{id}"
@@ -162,7 +162,6 @@ $ ->
 							location.reload()
 					)
 					return false
-				category	= category[0]
 				modal.find('[name=parent]').val(category.parent)
 				modal.find('[name=title]').val(category.title)
 				modal.find('[name=description]').val(category.description)

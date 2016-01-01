@@ -53,9 +53,10 @@
     }).on('mousedown', '.cs-shop-order-status-edit', function() {
       var id;
       id = $(this).data('id');
-      return $.when($.getJSON('api/Shop/admin/order_statuses/types'), $.getJSON("api/Shop/admin/order_statuses/" + id)).then(function(types, type) {
-        var modal;
-        modal = make_modal(types[0], L.shop_order_status_edition, L.shop_edit);
+      return Promise.all([$.getJSON('api/Shop/admin/order_statuses/types'), $.getJSON("api/Shop/admin/order_statuses/" + id)]).then(function(arg) {
+        var modal, type, types;
+        types = arg[0], type = arg[1];
+        modal = make_modal(types, L.shop_order_status_edition, L.shop_edit);
         modal.find('form').submit(function() {
           $.ajax({
             url: "api/Shop/admin/order_statuses/" + id,
@@ -68,7 +69,6 @@
           });
           return false;
         });
-        type = type[0];
         modal.find('[name=title]').val(type.title);
         modal.find('[name=color]').val(type.color);
         modal.find('[type=color]').val(type.color);
