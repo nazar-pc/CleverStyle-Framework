@@ -68,8 +68,8 @@ class Packages_manipulation {
 			array_map(
 				function ($index, $file) use ($tmp_dir, $target_directory) {
 					if (
-						!file_exists(dirname("$target_directory/$file")) &&
-						!mkdir(dirname("$target_directory/$file"), 0770, true)
+						!@mkdir(dirname("$target_directory/$file"), 0770, true) &&
+						!is_dir(dirname("$target_directory/$file"))
 					) {
 						return false;
 					}
@@ -117,8 +117,8 @@ class Packages_manipulation {
 			array_map(
 				function ($index, $file) use ($tmp_dir, $target_directory) {
 					if (
-						!file_exists(dirname("$target_directory/$file")) &&
-						!mkdir(dirname("$target_directory/$file"), 0770, true)
+						!@mkdir(dirname("$target_directory/$file"), 0770, true) &&
+						!is_dir(dirname("$target_directory/$file"))
 					) {
 						return false;
 					}
