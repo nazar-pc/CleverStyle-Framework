@@ -289,29 +289,23 @@ class DB {
 		 * $Config might be not initialized, so, check also for `$Config->core`
 		 */
 		if (
-			!$Config->core ||
 			!$Config->core['db_balance'] ||
-			!isset($Config->db[$database_id]['mirrors'])
+			!isset($Config->db[$database_id]['mirrors'][0])
 		) {
 			return self::MASTER_MIRROR;
 		}
-		$mirrors_count = count($Config->db[$database_id]['mirrors'] ?: []);
-		if ($mirrors_count) {
-			/**
-			 * Main db should be excluded from read requests if writes to mirrors are not allowed
-			 */
-			$selected_mirror = mt_rand(
-				0,
-				$read_query && $Config->core['db_mirror_mode'] == self::MIRROR_MODE_MASTER_SLAVE ? $mirrors_count - 1 : $mirrors_count
-			);
-			/**
-			 * Main DB assumed to be in the end of interval, that is why `$select_mirror < $mirrors_count` will correspond to one of available mirrors,
-			 * and `$select_mirror == $mirrors_count` to master DB itself
-			 */
-			if ($selected_mirror < $mirrors_count) {
-				return $selected_mirror;
-			}
-		}
-		return self::MASTER_MIRROR;
+		$mirrors_count = count($Config->db[$database_id]['mirrors']);
+		/**
+		 * Main db should be excluded from read requests if writes to mirrors are not allowed
+		 */
+		$selected_mirror = mt_rand(
+			0,
+			$read_query && $Config->core['db_mirror_mode'] == self::MIRROR_MODE_MASTER_SLAVE ? $mirrors_count - 1 : $mirrors_count
+		);
+		/**
+		 * Main DB assumed to be in the end of interval, that is why `$select_mirror < $mirrors_count` will correspond to one of available mirrors,
+		 * and `$select_mirror == $mirrors_count` to master DB itself
+		 */
+		return $selected_mirror < $mirrors_count ? $selected_mirror : self::MASTER_MIRROR;
 	}
 }
