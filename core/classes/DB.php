@@ -289,7 +289,7 @@ class DB {
 		 * $Config might be not initialized, so, check also for `$Config->core`
 		 */
 		if (
-			!$Config->core['db_balance'] ||
+			!@$Config->core['db_balance'] ||
 			!isset($Config->db[$database_id]['mirrors'][0])
 		) {
 			return self::MASTER_MIRROR;
