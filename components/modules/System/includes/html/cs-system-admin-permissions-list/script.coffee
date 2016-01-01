@@ -15,15 +15,15 @@ Polymer(
 	ready				: ->
 		@reload()
 	reload				: ->
-		$.when(
+		Promise.all([
 			$.getJSON('api/System/admin/blocks')
 			$.getJSON('api/System/admin/permissions')
-		).then (blocks, permissions) =>
+		]).then ([blocks, permissions]) =>
 			block_index_to_title	= {}
-			blocks[0].forEach (block) ->
+			blocks.forEach (block) ->
 				block_index_to_title[block.index] = block.title
 			permissions_list	= []
-			for group, labels of permissions[0]
+			for group, labels of permissions
 				for label, id of labels
 					permissions_list.push(
 						id			: id

@@ -13,11 +13,11 @@ Polymer(
 		timezones	: Array
 		user_data	: Object
 	ready : !->
-		$.when(
+		Promise.all([
 			$.getJSON('api/System/languages')
 			$.getJSON('api/System/timezones')
 			$.getJSON('api/System/profile')
-		).then ([languages], [timezones], [user_data]) !~>
+		]).then ([languages, timezones, user_data]) !~>
 			languages_list	= []
 			languages_list.push(
 				clanguage	: ''

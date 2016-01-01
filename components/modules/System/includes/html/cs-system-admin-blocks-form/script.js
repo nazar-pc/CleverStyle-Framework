@@ -22,15 +22,16 @@
     observers: ['_type_change(block.type)'],
     ready: function(){
       var this$ = this;
-      $.when($.ajax({
-        url: 'api/System/admin/blocks',
-        type: 'types'
-      }), $.ajax({
-        url: 'api/System/admin/blocks',
-        type: 'templates'
-      })).then(function(arg$, arg1$){
-        this$.types = arg$[0];
-        this$.templates = arg1$[0];
+      Promise.all([
+        $.ajax({
+          url: 'api/System/admin/blocks',
+          type: 'types'
+        }), $.ajax({
+          url: 'api/System/admin/blocks',
+          type: 'templates'
+        })
+      ]).then(function(arg$){
+        this$.types = arg$[0], this$.templates = arg$[1];
       });
       if (this.index) {
         $.getJSON('api/System/admin/blocks/' + this.index, function(block){

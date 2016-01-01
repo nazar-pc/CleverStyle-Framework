@@ -24,10 +24,9 @@
     },
     _reload: function(){
       var this$ = this;
-      $.when($.getJSON('api/System/admin/groups'), $.getJSON("api/System/admin/users/" + this.user + "/groups")).then(function(arg$, arg1$){
+      Promise.all([$.getJSON('api/System/admin/groups'), $.getJSON("api/System/admin/users/" + this.user + "/groups")]).then(function(arg$){
         var groups, user_groups_ids, user_groups, other_groups, group;
-        groups = arg$[0];
-        user_groups_ids = arg1$[0];
+        groups = arg$[0], user_groups_ids = arg$[1];
         user_groups = [];
         other_groups = [];
         console.log(user_groups_ids);

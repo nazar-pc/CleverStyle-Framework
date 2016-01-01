@@ -19,7 +19,7 @@ Polymer(
 		'_type_change(block.type)'
 	]
 	ready : !->
-		$.when(
+		Promise.all([
 			$.ajax(
 				url		: 'api/System/admin/blocks'
 				type	: 'types'
@@ -28,7 +28,7 @@ Polymer(
 				url		: 'api/System/admin/blocks'
 				type	: 'templates'
 			)
-		).then ([@types], [@templates]) ~>
+		]).then ([@types, @templates]) ~>
 		if @index
 			block <~! $.getJSON('api/System/admin/blocks/' + @index, _)
 			block.type		= block.type || @types[0]

@@ -24,17 +24,17 @@
       return this.reload();
     },
     reload: function() {
-      return $.when($.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions')).then((function(_this) {
-        return function(blocks, permissions) {
-          var block_index_to_title, group, id, label, labels, permissions_list, ref;
+      return Promise.all([$.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions')]).then((function(_this) {
+        return function(arg) {
+          var block_index_to_title, blocks, group, id, label, labels, permissions, permissions_list;
+          blocks = arg[0], permissions = arg[1];
           block_index_to_title = {};
-          blocks[0].forEach(function(block) {
+          blocks.forEach(function(block) {
             return block_index_to_title[block.index] = block.title;
           });
           permissions_list = [];
-          ref = permissions[0];
-          for (group in ref) {
-            labels = ref[group];
+          for (group in permissions) {
+            labels = permissions[group];
             for (label in labels) {
               id = labels[label];
               permissions_list.push({

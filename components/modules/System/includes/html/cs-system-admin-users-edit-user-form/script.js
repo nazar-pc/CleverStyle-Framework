@@ -23,25 +23,25 @@
         type: Object,
         value: {}
       },
-      languages: [],
-      timezones: [],
+      languages: Array,
+      timezones: Array,
       block_until: {
         observer: '_block_until',
         type: String
       }
     },
     ready: function() {
-      return $.when($.getJSON('api/System/languages'), $.getJSON('api/System/timezones'), $.getJSON('api/System/admin/users/' + this.user_id)).then((function(_this) {
-        return function(languages, timezones, data) {
-          var block_until, description, i, language, languages_list, len, ref, ref1, timezone, timezones_list;
+      return Promise.all([$.getJSON('api/System/languages'), $.getJSON('api/System/timezones'), $.getJSON('api/System/admin/users/' + this.user_id)]).then((function(_this) {
+        return function(arg) {
+          var block_until, data, description, i, language, languages, languages_list, len, timezone, timezones, timezones_list;
+          languages = arg[0], timezones = arg[1], data = arg[2];
           languages_list = [];
           languages_list.push({
             clanguage: '',
             description: L.system_default
           });
-          ref = languages[0];
-          for (i = 0, len = ref.length; i < len; i++) {
-            language = ref[i];
+          for (i = 0, len = languages.length; i < len; i++) {
+            language = languages[i];
             languages_list.push({
               clanguage: language,
               description: language
@@ -52,19 +52,18 @@
             timezone: '',
             description: L.system_default
           });
-          ref1 = timezones[0];
-          for (description in ref1) {
-            timezone = ref1[description];
+          for (description in timezones) {
+            timezone = timezones[description];
             timezones_list.push({
               timezone: timezone,
               description: description
             });
           }
-          _this.set('languages', languages_list);
-          _this.set('timezones', timezones_list);
+          _this.languages = languages_list;
+          _this.timezones = timezones_list;
           block_until = (function() {
             var date, z;
-            block_until = data[0].block_until;
+            block_until = data.block_until;
             date = new Date;
             if (parseInt(block_until)) {
               date.setTime(parseInt(block_until) * 1000);
@@ -74,8 +73,8 @@
             };
             return date.getFullYear() + '-' + z(date.getMonth() + 1) + '-' + z(date.getDate()) + 'T' + z(date.getHours()) + ':' + z(date.getMinutes());
           })();
-          _this.set('block_until', block_until);
-          return _this.set('user_data', data[0]);
+          _this.block_until = block_until;
+          return _this.user_data = data;
         };
       })(this));
     },

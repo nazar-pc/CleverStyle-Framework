@@ -24,10 +24,10 @@ Polymer(
 	ready : !->
 		@reload()
 	reload : !->
-		$.when(
+		Promise.all([
 			$.getJSON('api/System/admin/modules')
 			$.getJSON('api/System/admin/modules/default')
-		).then ([modules], [default_module]) !~>
+		]).then ([modules, default_module]) !~>
 			@default_module	= default_module
 			modules.forEach (module) !->
 				active_switch_local		= active_switch.bind(module)
@@ -137,11 +137,11 @@ Polymer(
 	_install : (e) !->
 		module	= e.model.module.name
 		meta	= e.model.module.meta
-		$.when(
+		Promise.all([
 			$.getJSON("api/System/admin/modules/#module/dependencies")
 			$.getJSON('api/System/admin/databases')
 			$.getJSON('api/System/admin/storages')
-		).then ([dependencies], [databases], [storages]) !~>
+		]).then ([dependencies, databases, storages]) !~>
 			message			= ''
 			message_more	= ''
 			if Object.keys(dependencies).length
@@ -335,10 +335,10 @@ Polymer(
 	_db_settings : (e) !->
 		module	= e.model.module.name
 		meta	= e.model.module.meta
-		$.when(
+		Promise.all([
 			$.getJSON('api/System/admin/databases')
 			$.getJSON("api/System/admin/modules/#module/db")
-		).then ([databases], [databases_mapping]) !~>
+		]).then ([databases, databases_mapping]) !~>
 			form	= if meta then @_databases_storages_form(meta, databases, []) else ''
 			modal	= cs.ui.confirm(
 				"""<h3>#{L.db_settings_for_module(module)}</h3>
@@ -358,10 +358,10 @@ Polymer(
 	_storage_settings : (e) !->
 		module	= e.model.module.name
 		meta	= e.model.module.meta
-		$.when(
+		Promise.all([
 			$.getJSON('api/System/admin/storages')
 			$.getJSON("api/System/admin/modules/#module/storage")
-		).then ([storages], [storages_mapping]) !~>
+		]).then ([storages, storages_mapping]) !~>
 			form	= if meta then @_databases_storages_form(meta, [], storages) else ''
 			modal	= cs.ui.confirm(
 				"""<h3>#{L.storage_settings_for_module(module)}</h3>

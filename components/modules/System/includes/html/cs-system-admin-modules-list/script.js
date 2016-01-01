@@ -31,10 +31,9 @@
     },
     reload: function(){
       var this$ = this;
-      $.when($.getJSON('api/System/admin/modules'), $.getJSON('api/System/admin/modules/default')).then(function(arg$, arg1$){
+      Promise.all([$.getJSON('api/System/admin/modules'), $.getJSON('api/System/admin/modules/default')]).then(function(arg$){
         var modules, default_module;
-        modules = arg$[0];
-        default_module = arg1$[0];
+        modules = arg$[0], default_module = arg$[1];
         this$.default_module = default_module;
         modules.forEach(function(module){
           var active_switch_local, enabled, installed;
@@ -153,11 +152,9 @@
       var module, meta, this$ = this;
       module = e.model.module.name;
       meta = e.model.module.meta;
-      $.when($.getJSON("api/System/admin/modules/" + module + "/dependencies"), $.getJSON('api/System/admin/databases'), $.getJSON('api/System/admin/storages')).then(function(arg$, arg1$, arg2$){
+      Promise.all([$.getJSON("api/System/admin/modules/" + module + "/dependencies"), $.getJSON('api/System/admin/databases'), $.getJSON('api/System/admin/storages')]).then(function(arg$){
         var dependencies, databases, storages, message, message_more, form, modal;
-        dependencies = arg$[0];
-        databases = arg1$[0];
-        storages = arg2$[0];
+        dependencies = arg$[0], databases = arg$[1], storages = arg$[2];
         message = '';
         message_more = '';
         if (Object.keys(dependencies).length) {
@@ -356,10 +353,9 @@
       var module, meta, this$ = this;
       module = e.model.module.name;
       meta = e.model.module.meta;
-      $.when($.getJSON('api/System/admin/databases'), $.getJSON("api/System/admin/modules/" + module + "/db")).then(function(arg$, arg1$){
+      Promise.all([$.getJSON('api/System/admin/databases'), $.getJSON("api/System/admin/modules/" + module + "/db")]).then(function(arg$){
         var databases, databases_mapping, form, modal, index, db_name;
-        databases = arg$[0];
-        databases_mapping = arg1$[0];
+        databases = arg$[0], databases_mapping = arg$[1];
         form = meta ? this$._databases_storages_form(meta, databases, []) : '';
         modal = cs.ui.confirm("<h3>" + L.db_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n" + form, function(){
           $.ajax({
@@ -381,10 +377,9 @@
       var module, meta, this$ = this;
       module = e.model.module.name;
       meta = e.model.module.meta;
-      $.when($.getJSON('api/System/admin/storages'), $.getJSON("api/System/admin/modules/" + module + "/storage")).then(function(arg$, arg1$){
+      Promise.all([$.getJSON('api/System/admin/storages'), $.getJSON("api/System/admin/modules/" + module + "/storage")]).then(function(arg$){
         var storages, storages_mapping, form, modal, index, storage_name;
-        storages = arg$[0];
-        storages_mapping = arg1$[0];
+        storages = arg$[0], storages_mapping = arg$[1];
         form = meta ? this$._databases_storages_form(meta, [], storages) : '';
         modal = cs.ui.confirm("<h3>" + L.storage_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n" + form, function(){
           $.ajax({

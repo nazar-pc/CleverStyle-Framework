@@ -15,23 +15,23 @@ Polymer(
 		user_data			:
 			type	: Object
 			value	: {}
-		languages			: []
-		timezones			: []
+		languages			: Array
+		timezones			: Array
 		block_until			:
 			observer	: '_block_until'
 			type		: String
 	ready			: ->
-		$.when(
+		Promise.all([
 			$.getJSON('api/System/languages')
 			$.getJSON('api/System/timezones')
 			$.getJSON('api/System/admin/users/' + @user_id)
-		).then (languages, timezones, data) =>
+		]).then ([languages, timezones, data]) =>
 			languages_list	= []
 			languages_list.push(
 				clanguage	: ''
 				description	: L.system_default
 			)
-			for language in languages[0]
+			for language in languages
 				languages_list.push(
 					clanguage	: language
 					description	: language
@@ -41,23 +41,23 @@ Polymer(
 				timezone	: ''
 				description	: L.system_default
 			)
-			for description, timezone of timezones[0]
+			for description, timezone of timezones
 				timezones_list.push(
 					timezone	: timezone
 					description	: description
 				)
-			@set('languages', languages_list)
-			@set('timezones', timezones_list)
+			@languages	= languages_list
+			@timezones	= timezones_list
 			block_until	= do ->
-				block_until	= data[0].block_until
+				block_until	= data.block_until
 				date		= new Date
 				if parseInt(block_until)
 					date.setTime(parseInt(block_until) * 1000)
 				z	= (number) ->
 					('0' + number).substr(-2)
 				date.getFullYear() + '-' + z(date.getMonth() + 1) + '-' + z(date.getDate()) + 'T' + z(date.getHours()) + ':' + z(date.getMinutes())
-			@set('block_until', block_until)
-			@set('user_data', data[0])
+			@block_until	= block_until
+			@user_data		= data
 	_show_password	: (e) ->
 		lock		= e.currentTarget
 		password	= lock.previousElementSibling

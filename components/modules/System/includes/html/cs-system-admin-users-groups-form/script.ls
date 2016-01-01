@@ -18,10 +18,10 @@ Polymer(
 	ready : !->
 		@_reload()
 	_reload : !->
-		$.when(
+		Promise.all([
 			$.getJSON('api/System/admin/groups')
 			$.getJSON("api/System/admin/users/#{@user}/groups")
-		).then ([groups], [user_groups_ids]) !~>
+		]).then ([groups, user_groups_ids]) !~>
 			user_groups		= []
 			other_groups	= []
 			console.log user_groups_ids

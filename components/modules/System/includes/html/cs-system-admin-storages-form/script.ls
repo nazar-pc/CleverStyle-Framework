@@ -24,13 +24,13 @@ Polymer(
 				password	: ''
 		engines			: Array
 	ready : !->
-		$.when(
+		Promise.all([
 			$.getJSON('api/System/admin/storages')
 			$.ajax(
 				url		: 'api/System/admin/storages'
 				type	: 'engines'
 			)
-		).then ([@storages], [@engines]) !~>
+		]).then ([@storages, @engines]) !~>
 			if !@add
 				@storages.forEach (storage) !~>
 					if @storage-index ~= storage.index

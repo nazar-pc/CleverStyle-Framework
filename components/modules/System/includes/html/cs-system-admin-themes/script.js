@@ -21,10 +21,9 @@
     },
     reload: function(){
       var this$ = this;
-      $.when($.getJSON('api/System/admin/themes'), $.getJSON('api/System/admin/themes/current')).then(function(arg$, arg1$){
+      Promise.all([$.getJSON('api/System/admin/themes'), $.getJSON('api/System/admin/themes/current')]).then(function(arg$){
         var themes, current_theme;
-        themes = arg$[0];
-        current_theme = arg1$[0];
+        themes = arg$[0], current_theme = arg$[1];
         this$.current_theme = current_theme;
         themes.forEach(function(theme){
           var current;

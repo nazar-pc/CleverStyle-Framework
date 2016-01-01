@@ -19,10 +19,10 @@ Polymer(
 	ready : !->
 		@reload()
 	reload : !->
-		$.when(
+		Promise.all([
 			$.getJSON('api/System/admin/themes')
 			$.getJSON('api/System/admin/themes/current')
-		).then ([themes], [current_theme]) !~>
+		]).then ([themes, current_theme]) !~>
 			@current_theme	= current_theme
 			themes.forEach (theme) !~>
 				current				= theme.name == @current_theme

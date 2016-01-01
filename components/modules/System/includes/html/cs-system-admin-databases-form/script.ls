@@ -28,13 +28,13 @@ Polymer(
 				charset		: ''
 		engines			: Array
 	ready : !->
-		$.when(
+		Promise.all([
 			$.getJSON('api/System/admin/databases')
 			$.ajax(
 				url		: 'api/System/admin/databases'
 				type	: 'engines'
 			)
-		).then ([@databases], [@engines]) !~>
+		]).then ([@databases, @engines]) !~>
 			if @add
 				if !isNaN(@database-index)
 					@set('database.mirror', @database-index)

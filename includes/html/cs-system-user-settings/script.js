@@ -18,11 +18,9 @@
     },
     ready: function(){
       var this$ = this;
-      $.when($.getJSON('api/System/languages'), $.getJSON('api/System/timezones'), $.getJSON('api/System/profile')).then(function(arg$, arg1$, arg2$){
+      Promise.all([$.getJSON('api/System/languages'), $.getJSON('api/System/timezones'), $.getJSON('api/System/profile')]).then(function(arg$){
         var languages, timezones, user_data, languages_list, i$, len$, language, timezones_list, description, timezone;
-        languages = arg$[0];
-        timezones = arg1$[0];
-        user_data = arg2$[0];
+        languages = arg$[0], timezones = arg$[1], user_data = arg$[2];
         languages_list = [];
         languages_list.push({
           clanguage: '',

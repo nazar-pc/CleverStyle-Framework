@@ -20,21 +20,24 @@
     properties: {
       group: '',
       label: '',
-      permissions: {},
+      permissions: Object,
       users: [],
       found_users: [],
-      groups: []
+      groups: Array
     },
     ready: function() {
       var $search, $shadowRoot;
-      $.when($.getJSON('api/System/admin/permissions/for_item', {
-        group: this.group,
-        label: this.label
-      }), $.getJSON('api/System/admin/groups')).then((function(_this) {
-        return function(permissions, groups) {
-          var user;
-          _this.set('permissions', permissions[0]);
-          _this.set('groups', groups[0]);
+      Promise.all([
+        $.getJSON('api/System/admin/permissions/for_item', {
+          group: this.group,
+          label: this.label
+        }), $.getJSON('api/System/admin/groups')
+      ]).then((function(_this) {
+        return function(arg) {
+          var groups, permissions, user;
+          permissions = arg[0], groups = arg[1];
+          _this.permissions = permissions;
+          _this.groups = groups;
           if (!Object.keys(_this.permissions.users).length) {
             return;
           }

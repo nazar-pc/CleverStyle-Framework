@@ -35,12 +35,13 @@
     },
     ready: function(){
       var this$ = this;
-      $.when($.getJSON('api/System/admin/databases'), $.ajax({
-        url: 'api/System/admin/databases',
-        type: 'engines'
-      })).then(function(arg$, arg1$){
-        this$.databases = arg$[0];
-        this$.engines = arg1$[0];
+      Promise.all([
+        $.getJSON('api/System/admin/databases'), $.ajax({
+          url: 'api/System/admin/databases',
+          type: 'engines'
+        })
+      ]).then(function(arg$){
+        this$.databases = arg$[0], this$.engines = arg$[1];
         if (this$.add) {
           if (!isNaN(this$.databaseIndex)) {
             this$.set('database.mirror', this$.databaseIndex);

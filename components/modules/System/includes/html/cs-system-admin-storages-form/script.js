@@ -31,12 +31,13 @@
     },
     ready: function(){
       var this$ = this;
-      $.when($.getJSON('api/System/admin/storages'), $.ajax({
-        url: 'api/System/admin/storages',
-        type: 'engines'
-      })).then(function(arg$, arg1$){
-        this$.storages = arg$[0];
-        this$.engines = arg1$[0];
+      Promise.all([
+        $.getJSON('api/System/admin/storages'), $.ajax({
+          url: 'api/System/admin/storages',
+          type: 'engines'
+        })
+      ]).then(function(arg$){
+        this$.storages = arg$[0], this$.engines = arg$[1];
         if (!this$.add) {
           this$.storages.forEach(function(storage){
             if (this$.storageIndex == storage.index) {

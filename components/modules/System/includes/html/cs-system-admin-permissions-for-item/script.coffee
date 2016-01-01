@@ -13,21 +13,21 @@ Polymer(
 	properties	:
 		group		: ''
 		label		: ''
-		permissions	: {}
+		permissions	: Object
 		users		: []
 		found_users	: []
-		groups		: []
+		groups		: Array
 	ready : ->
-		$.when(
+		Promise.all([
 			$.getJSON(
 				'api/System/admin/permissions/for_item'
 				group	: @group
 				label	: @label
 			)
 			$.getJSON('api/System/admin/groups')
-		).then (permissions, groups) =>
-			@set('permissions', permissions[0])
-			@set('groups', groups[0])
+		]).then ([permissions, groups]) =>
+			@permissions	= permissions
+			@groups			= groups
 			if !Object.keys(@permissions.users).length
 				return
 			$.getJSON(
