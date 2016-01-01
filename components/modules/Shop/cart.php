@@ -11,8 +11,7 @@ use
 	h,
 	cs\Language,
 	cs\Language\Prefix,
-	cs\Page,
-	cs\User;
+	cs\Page;
 
 $L              = new Prefix('shop_');
 $Page           = Page::instance();
