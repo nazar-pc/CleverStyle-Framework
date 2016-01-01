@@ -33,7 +33,7 @@ class Prefix {
 	 * @return string
 	 */
 	function get ($item, $language = false) {
-		return Language::instance()->get($this->prefix.$item, $language);
+		return Language::instance()->get($item, $language, $this->prefix);
 	}
 	/**
 	 * Get translation
@@ -43,7 +43,7 @@ class Prefix {
 	 * @return string
 	 */
 	function __get ($item) {
-		return Language::instance()->get($this->prefix.$item);
+		return Language::instance()->get($item, false, $this->prefix);
 	}
 	/**
 	 * Time formatting according to the current language (adding correct endings)
@@ -68,18 +68,19 @@ class Prefix {
 	 * @return string
 	 */
 	function __call ($item, $arguments) {
-		return Language::instance()->format($this->prefix.$item, $arguments);
+		return Language::instance()->format($item, $arguments, false, $this->prefix);
 	}
 	/**
 	 * Allows to use formatted strings in translations
 	 *
-	 * @param string   $item
-	 * @param string[] $arguments
+	 * @param string       $item
+	 * @param string[]     $arguments
+	 * @param false|string $language If specified - translation for specified language will be returned, otherwise for current
 	 *
 	 * @return string
 	 */
-	function format ($item, $arguments) {
-		return Language::instance()->format($this->prefix.$item, $arguments);
+	function format ($item, $arguments, $language = false) {
+		return Language::instance()->format($item, $arguments, $language, $this->prefix);
 	}
 	/**
 	 * Formatting data according to language locale (translating months names, days of week, etc.)

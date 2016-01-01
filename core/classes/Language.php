@@ -188,17 +188,24 @@ class Language implements JsonSerializable {
 	 *
 	 * @param bool|string  $item
 	 * @param false|string $language If specified - translation for specified language will be returned, otherwise for current
+	 * @param string       $prefix   Used by `\cs\Language\Prefix`, usually no need to use it directly
 	 *
 	 * @return string
 	 */
-	function get ($item, $language = false) {
+	function get ($item, $language = false, $prefix = '') {
 		$language = $language ?: $this->clanguage;
 		if (isset($this->translation[$language])) {
-			return @$this->translation[$language][$item] ?: ucfirst(str_replace('_', ' ', $item));
+			$translation = $this->translation[$language];
+			if (isset($translation[$prefix.$item])) {
+				return $translation[$prefix.$item];
+			} elseif (isset($translation[$item])) {
+				return $translation[$item];
+			}
+			return ucfirst(str_replace('_', ' ', $item));
 		}
 		$current_language = $this->clanguage;
 		$this->change($language);
-		$return = $this->get($item);
+		$return = $this->get($item, $language, $prefix);
 		$this->change($current_language);
 		return $return;
 	}
@@ -438,13 +445,15 @@ class Language implements JsonSerializable {
 	/**
 	 * Allows to use formatted strings in translations
 	 *
-	 * @param string   $item
-	 * @param string[] $arguments
+	 * @param string       $item
+	 * @param string[]     $arguments
+	 * @param false|string $language If specified - translation for specified language will be returned, otherwise for current
+	 * @param string       $prefix   Used by `\cs\Language\Prefix`, usually no need to use it directly
 	 *
 	 * @return string
 	 */
-	function format ($item, $arguments) {
-		return vsprintf($this->get($item), $arguments);
+	function format ($item, $arguments, $language = false, $prefix = '') {
+		return vsprintf($this->get($item, $language, $prefix), $arguments);
 	}
 	/**
 	 * Formatting date according to language locale (translating months names, days of week, etc.)
