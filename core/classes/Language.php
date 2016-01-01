@@ -362,6 +362,14 @@ class Language implements JsonSerializable {
 	 */
 	protected function get_translation_from_json ($filename) {
 		$translation = file_get_json_nocomments($filename);
+		return $this->get_translation_from_json_internal($translation);
+	}
+	/**
+	 * @param string[]|string[][] $translation
+	 *
+	 * @return string[]
+	 */
+	protected function get_translation_from_json_internal ($translation) {
 		// Nested structure processing
 		foreach ($translation as $item => $value) {
 			if (is_array_assoc($value)) {
@@ -369,6 +377,7 @@ class Language implements JsonSerializable {
 				foreach ($value as $sub_item => $sub_value) {
 					$translation[$item.$sub_item] = $sub_value;
 				}
+				return $this->get_translation_from_json_internal($translation);
 			}
 		}
 		return $translation;
