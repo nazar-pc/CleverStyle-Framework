@@ -9,28 +9,26 @@
   /**
    * Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by WebComponents.js
    */
-  var ready_original, functions, ready, ready_callback;
+  var ready_original, functions, ready;
   ready_original = $.fn.ready;
   functions = [];
   ready = false;
   $.fn.ready = function(fn){
     functions.push(fn);
   };
-  ready_callback = function(){
-    if (!ready) {
-      document.removeEventListener('WebComponentsReady', ready_callback);
-      Polymer.updateStyles();
-      ready = true;
-      $.fn.ready = ready_original;
-      $(function(){
-        var i$, ref$, len$, fn;
-        for (i$ = 0, len$ = (ref$ = functions).length; i$ < len$; ++i$) {
-          fn = ref$[i$];
-          fn();
-        }
+  document.addEventListener('WebComponentsReady', (function(){
+    function ready_callback(){
+      if (!ready) {
+        document.removeEventListener('WebComponentsReady', ready_callback);
+        Polymer.updateStyles();
+        ready = true;
+        $.fn.ready = ready_original;
+        functions.forEach(function(it){
+          it();
+        });
         functions = [];
-      });
+      }
     }
-  };
-  document.addEventListener('WebComponentsReady', ready_callback);
+    return ready_callback;
+  }()));
 }).call(this);

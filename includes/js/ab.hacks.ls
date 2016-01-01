@@ -13,16 +13,13 @@ ready			= false
 $.fn.ready		= (fn) ->
 	functions.push(fn)
 	return
-ready_callback	= !->
+document.addEventListener('WebComponentsReady', !function ready_callback
 	if !ready
 		document.removeEventListener('WebComponentsReady', ready_callback)
 		# Since we may use some CSS variables and mixins, lets update styles to make sure we didn't skip any styles
 		Polymer.updateStyles()
-		ready		:= true;
+		ready		:= true
 		$.fn.ready	= ready_original
-		$(!->
-			for fn in functions
-				fn()
-			functions	:= []
-		)
-document.addEventListener('WebComponentsReady', ready_callback)
+		functions.forEach !-> it()
+		functions	:= []
+)
