@@ -542,48 +542,67 @@ trait Includes {
 	 * @return array
 	 */
 	protected function create_cached_includes_files ($filename_prefix, $includes) {
-		$cache_hash  = [];
-		$destination = Config::instance()->core['vulcanization'] ? false : PUBLIC_CACHE;
+		$cache_hash = [];
 		/** @noinspection AlterInForeachInspection */
-		foreach ($includes as $extension => &$files) {
-			$files_content = '';
-			foreach ($files as $file) {
-				if (!file_exists($file)) {
-					continue;
-				}
-				switch ($extension) {
-					/**
-					 * Insert external elements into resulting css file.
-					 * It is needed, because those files will not be copied into new destination of resulting css file.
-					 */
-					case 'css':
-						$files_content .= Includes_processing::css(
+		foreach ($includes as $extension => $files) {
+			$content = $this->create_cached_includes_files_process_files(
+				$extension,
+				$filename_prefix,
+				$files
+			);
+			file_put_contents(PUBLIC_CACHE."/$filename_prefix$this->pcache_basename.$extension", gzencode($content, 9), LOCK_EX | FILE_BINARY);
+			$cache_hash[$extension] = substr(md5($content), 0, 5);
+		}
+		return $cache_hash;
+	}
+	protected function create_cached_includes_files_process_files ($extension, $filename_prefix, $files) {
+		$content = '';
+		switch ($extension) {
+			/**
+			 * Insert external elements into resulting css file.
+			 * It is needed, because those files will not be copied into new destination of resulting css file.
+			 */
+			case 'css':
+				$callback = function ($content, $file) {
+					return
+						$content.
+						Includes_processing::css(
 							file_get_contents($file),
 							$file
 						);
-						break;
-					/**
-					 * Combine css and js files for Web Component into resulting files in order to optimize loading process
-					 */
-					case 'html':
-						$files_content .= Includes_processing::html(
+				};
+				break;
+			/**
+			 * Combine css and js files for Web Component into resulting files in order to optimize loading process
+			 */
+			case 'html':
+				/**
+				 * For CSP-compatible HTML files we need to know destination to put there additional JS/CSS files
+				 */
+				$destination = Config::instance()->core['vulcanization'] ? false : PUBLIC_CACHE;
+				$callback    = function ($content, $file) use ($filename_prefix, $destination) {
+					return
+						$content.
+						Includes_processing::html(
 							file_get_contents($file),
 							$file,
 							"$filename_prefix$this->pcache_basename-".basename($file).'+'.substr(md5($file), 0, 5),
 							$destination
 						);
-						break;
-					case 'js':
-						$files_content .= Includes_processing::js(file_get_contents($file));
+				};
+				break;
+			case 'js':
+				$callback = function ($content, $file) {
+					return
+						$content.
+						Includes_processing::js(file_get_contents($file));
+				};
+				if ($filename_prefix == '') {
+					$content = 'window.cs={};cs.Language='._json_encode(Language::instance()).';';
 				}
-			}
-			if ($filename_prefix == '' && $extension == 'js') {
-				$files_content = "window.cs={};cs.Language="._json_encode(Language::instance()).";$files_content";
-			}
-			file_put_contents(PUBLIC_CACHE."/$filename_prefix$this->pcache_basename.$extension", gzencode($files_content, 9), LOCK_EX | FILE_BINARY);
-			$cache_hash[$extension] = substr(md5($files_content), 0, 5);
 		}
-		return $cache_hash;
+		/** @noinspection PhpUndefinedVariableInspection */
+		return array_reduce(array_filter($files, 'file_exists'), $callback, $content);
 	}
 	/**
 	 * Get dependencies of components between each other (only that contains some HTML, JS and CSS files) and mapping HTML, JS and CSS files to URL paths
