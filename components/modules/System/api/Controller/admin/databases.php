@@ -96,7 +96,6 @@ trait databases {
 	static function admin_databases_post ($route_ids) {
 		if (
 			!isset($_POST['mirror'], $_POST['host'], $_POST['type'], $_POST['prefix'], $_POST['name'], $_POST['user'], $_POST['password'], $_POST['charset']) ||
-			!strlen($_POST['host']) ||
 			!in_array($_POST['type'], static::admin_databases_get_engines())
 		) {
 			throw new ExitException(400);
