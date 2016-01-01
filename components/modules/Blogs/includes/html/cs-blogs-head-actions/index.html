@@ -1,13 +1,1 @@
-<dom-module id="cs-blogs-head-actions">
-  <template>
-    <style include="basic-styles"></style>
-    <p hidden$="[[!or(admin, can_write_post)]]">
-      <a hidden$="[[!admin]]" href="/admin/Blogs" icon="gears" is="cs-link-button" tooltip="[[L.administration]]"></a>
-      <template if="[[can_write_post]]" is="dom-if">
-        <a force-compact href="/Blogs/new_post" icon="pencil" is="cs-link-button">[[L.new_post]]</a>
-        <a force-compact href="/Blogs/drafts" icon="archive" is="cs-link-button">[[L.drafts]]</a>
-      </template>
-    </p>
-  </template>
-  <script src="script.js"></script>
-</dom-module>
+<dom-module id="cs-blogs-head-actions"><template><style include="basic-styles"></style><p hidden="[[!or(admin, can_write_post)]]"><a is="cs-link-button" icon="gears" href="/admin/Blogs" tooltip="[[L.administration]]" hidden="[[!admin]]"></a><template is="dom-if" if="[[can_write_post]]"> <a is="cs-link-button" icon="pencil" force-compact href="/Blogs/new_post">[[L.new_post]]</a> <a is="cs-link-button" icon="archive" force-compact href="/Blogs/drafts">[[L.drafts]]</a></template></p></template><script src="script.js"></script></dom-module>

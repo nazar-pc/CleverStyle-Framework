@@ -1,0 +1,25 @@
+dom-module#cs-system-admin-groups-list
+	template
+		style(include="advanced-styles-alone")
+		h2.cs-text-center(hidden="[[groups.length]]")
+			cs-icon(icon="spinner" spin)
+		table.cs-table(center list hidden="[[!groups.length]]")
+			tr
+				th [[L.action]]
+				th id
+				th [[L.group_name]]
+				th [[L.group_description]]
+			template(is="dom-repeat" items="[[groups]]" as="group")
+				tr
+					td
+						button(is="cs-button" on-tap="edit_group" icon="pencil" tooltip="[[L.edit_group_information]]")
+						= ' '
+						button(is="cs-button" on-tap="edit_permissions" icon="key" tooltip="[[L.edit_group_permissions]]")
+						= ' '
+						button(is="cs-button" on-tap="delete_group" icon="trash" tooltip="[[L.delete]]" hidden="[[!group.allow_to_delete]]")
+					td [[group.id]]
+					td [[group.title]]
+					td [[group.description]]
+		p.cs-text-left
+			button(is="cs-button" on-tap="add_group" type="button") [[L.add_group]]
+	script(src="script.js")

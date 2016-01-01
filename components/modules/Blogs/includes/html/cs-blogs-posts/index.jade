@@ -1,0 +1,6 @@
+dom-module#cs-blogs-posts
+	template
+		style(include="basic-styles")
+		template(is="dom-repeat" items="[[posts]]" as="post")
+			article(is="cs-blogs-posts-post" comments_enabled="[[comments_enabled]]" post="[[post]]")
+	script(src="script.js")

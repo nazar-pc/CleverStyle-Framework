@@ -1,6 +1,0 @@
-%dom-module(id="cs-blogs-posts")
-	%template
-		%style(include="basic-styles")
-		%template(is="dom-repeat" items="[[posts]]" as="post")
-			%article(comments_enabled="[[comments_enabled]]" is="cs-blogs-posts-post" post="[[post]]")
-	%script(src="script.js")

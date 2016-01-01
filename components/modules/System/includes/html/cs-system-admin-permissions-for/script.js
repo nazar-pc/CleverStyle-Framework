@@ -23,14 +23,15 @@
         value: ''
       },
       group: '',
-      user: ''
+      user: '',
+      all_permissions: Array,
+      permissions: Object
     },
-    all_permissions: {},
-    permissions: {},
     ready: function() {
       return Promise.all([$.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions'), $.getJSON("api/System/admin/" + this["for"] + "s/" + this[this["for"]] + "/permissions")]).then((function(_this) {
-        return function(blocks, all_permissions, permissions) {
-          var block_index_to_title, group, id, label, labels;
+        return function(arg) {
+          var all_permissions, block_index_to_title, blocks, group, id, label, labels, permissions;
+          blocks = arg[0], all_permissions = arg[1], permissions = arg[2];
           block_index_to_title = {};
           blocks.forEach(function(block) {
             return block_index_to_title[block.index] = block.title;

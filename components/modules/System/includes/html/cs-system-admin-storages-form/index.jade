@@ -24,6 +24,6 @@ dom-module#cs-system-admin-storages-form
 				cs-tooltip
 			input(is="cs-input-text" type="text" value="{{storage.password}}")
 			div
-				button(is="cs-button" type="button" primary on-tap="_save" disabled$="[[!and(storage.host, storage.connection)]]") [[L.save]]
-				button(is="cs-button" type="button" on-tap="_test_connection" icon="signal" disabled$="[[!and(storage.host, storage.connection)]]") [[L.test_connection]]
+				button(is="cs-button" type="button" primary on-tap="_save" disabled="[[!and(storage.host, storage.connection)]]") [[L.save]]
+				button(is="cs-button" type="button" on-tap="_test_connection" icon="signal" disabled="[[!and(storage.host, storage.connection)]]") [[L.test_connection]]
 	script(src="script.js")

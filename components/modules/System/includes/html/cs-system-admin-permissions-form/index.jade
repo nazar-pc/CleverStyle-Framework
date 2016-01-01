@@ -1,0 +1,13 @@
+dom-module#cs-system-admin-permissions-form
+	template
+		form(is="cs-form")
+			template(is="dom-if" if="[[permission_id]]")
+				label id
+				input(is="cs-input-text" readonly value="[[permission_id]]")
+			label [[L.group]]
+			input(is="cs-input-text" type="text" value="{{group}}")/
+			label [[L.label]]
+			input(is="cs-input-text" type="text" value="{{label}}")/
+			div
+				button(is="cs-button" type="button" primary on-tap="save" disabled="[[!and(group, label)]]") [[L.save]]
+	script(src="script.js")

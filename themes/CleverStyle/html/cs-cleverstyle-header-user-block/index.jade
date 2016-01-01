@@ -8,7 +8,7 @@ dom-module#cs-cleverstyle-header-user-block
 			b
 				[[L.hello]], [[username]]!
 				= ' '
-				cs-icon(icon="sign-out" hidden$="[[guest]]" tooltip="[[L.sign_out]]" on-tap="_sign_out")
+				cs-icon(icon="sign-out" hidden="[[guest]]" tooltip="[[L.sign_out]]" on-tap="_sign_out")
 			template(is="dom-if" if="[[guest]]")
 				nav(is="cs-nav-button-group")
 					button(is="cs-button" primary icon="sign-in" type="button" on-tap="_sign_in" small-button) [[L.sign_in]]

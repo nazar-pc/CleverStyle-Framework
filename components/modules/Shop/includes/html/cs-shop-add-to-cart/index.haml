@@ -1,8 +1,0 @@
-%dom-module(id="cs-shop-add-to-cart")
-	%link(rel="import" href="style.css" type="css")
-	%template
-		%nav(is="cs-nav-button-group" hidden$="[[!in_cart]]")
-			%button(is="cs-button" primary on-tap="add" type="button") [[L.shop_add_to_cart]]
-			%a#in_cart(is="cs-link-button" href="/Shop/cart" tooltip="[[L.shop_already_in_cart]]") [[in_cart]]
-		%button(is="cs-button" primary on-tap="add" type="button" hidden$="[[and(in_cart)]]") [[L.shop_add_to_cart]]
-	%script(src="script.js")

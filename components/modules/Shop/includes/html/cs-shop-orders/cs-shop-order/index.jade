@@ -9,14 +9,14 @@ dom-module#cs-shop-order
 		content(select="#items")
 		p [[L.shop_shipping_type]]: [[shipping_type]] ([[shipping_cost_formatted]])
 		p [[L.shop_total_price]]: [[total_price_formatted]]
-		p(hidden$="[[!discount_formatted]]") [[L.shop_discount]]: [[discount_formatted]]
+		p(hidden="[[!discount_formatted]]") [[L.shop_discount]]: [[discount_formatted]]
 		p [[L.shop_shipping_cost]]: [[shipping_cost_formatted]]
 		p.cs-text-bold [[L.shop_for_payment]]: [[for_payment_formatted]]
-		p(hidden$="[[!phone]]")
+		p(hidden="[[!phone]]")
 			[[L.shop_phone]]:
 			= ' '
 			span#phone
-		p(hidden$="[[!address]]")
+		p(hidden="[[!address]]")
 			[[L.shop_address]]:
 			= ' '
 			span#address

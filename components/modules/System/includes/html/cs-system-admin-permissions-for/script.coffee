@@ -16,14 +16,14 @@ Polymer(
 			value	: ''
 		group	: ''
 		user	: ''
-	all_permissions	: {}
-	permissions		: {}
+		all_permissions	: Array
+		permissions		: Object
 	ready : ->
 		Promise.all([
 			$.getJSON('api/System/admin/blocks')
 			$.getJSON('api/System/admin/permissions')
 			$.getJSON("api/System/admin/#{@for}s/#{@[@for]}/permissions")
-		]).then (blocks, all_permissions, permissions) =>
+		]).then ([blocks, all_permissions, permissions]) =>
 			block_index_to_title	= {}
 			blocks.forEach (block) ->
 				block_index_to_title[block.index] = block.title

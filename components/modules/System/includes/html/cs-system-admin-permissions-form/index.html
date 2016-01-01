@@ -1,18 +1,1 @@
-<dom-module id="cs-system-admin-permissions-form">
-  <template>
-    <form is="cs-form">
-      <template if="[[permission_id]]" is="dom-if">
-        <label>id</label>
-        <input is="cs-input-text" readonly value="[[permission_id]]">
-      </template>
-      <label>[[L.group]]</label>
-      <input is="cs-input-text" type="text" value="{{group}}">
-      <label>[[L.label]]</label>
-      <input is="cs-input-text" type="text" value="{{label}}">
-      <div>
-        <button disabled$="[[!and(group, label)]]" is="cs-button" on-tap="save" primary type="button">[[L.save]]</button>
-      </div>
-    </form>
-  </template>
-  <script src="script.js"></script>
-</dom-module>
+<dom-module id="cs-system-admin-permissions-form"><template><form is="cs-form"><template is="dom-if" if="[[permission_id]]"><label>id</label><input is="cs-input-text" readonly value="[[permission_id]]"></template><label>[[L.group]]</label><input is="cs-input-text" type="text" value="{{group}}"><label>[[L.label]]</label><input is="cs-input-text" type="text" value="{{label}}"><div><button is="cs-button" type="button" primary on-tap="save" disabled="[[!and(group, label)]]">[[L.save]]</button></div></form></template><script src="script.js"></script></dom-module>

@@ -1,5 +1,5 @@
 mixin pagination
-	.cs-margin.cs-text-center(hidden$="[[!show_pagination]]")
+	.cs-margin.cs-text-center(hidden="[[!show_pagination]]")
 		nav(is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]")
 dom-module#cs-system-admin-users-list
 	template
@@ -18,7 +18,7 @@ dom-module#cs-system-admin-users-list
 				= ' '
 				select(is="cs-select" compact value="{{search_mode}}")
 					template(is="dom-repeat" items="[[search_modes]]" as="mode")
-						option(value="[[mode]]" selected$="[[equal(mode, search_mode)]]") [[mode]]
+						option(value="[[mode]]" selected="[[equal(mode, search_mode)]]") [[mode]]
 				= ' '
 				input(is="cs-input-text" value="{{search_text}}" placeholder="[[L.search_text]]" type="text")
 				= ' '
@@ -31,7 +31,7 @@ dom-module#cs-system-admin-users-list
 					= ' '
 		hr
 		+pagination
-		h2.cs-text-center(hidden$="[[!searching_loader]]")
+		h2.cs-text-center(hidden="[[!searching_loader]]")
 			cs-icon(icon="spinner" spin)
 		table.cs-table(center list)
 			tr
@@ -60,5 +60,6 @@ dom-module#cs-system-admin-users-list
 		+pagination
 		p.cs-text-left
 			button(is="cs-button" on-tap="add_user" type="button") [[L.add_user]]
+			= ' '
 			button(is="cs-button" on-tap="add_bot" type="button") [[L.add_bot]]
 	script(src="script.js")

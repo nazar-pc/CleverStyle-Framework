@@ -21,7 +21,7 @@ mixin footer-buttons
 		= ' '
 		button(is="cs-button" type="button" on-tap="_save" tooltip="[[L.save_info]]") [[L.save]]
 		= ' '
-		button(is="cs-button" type="button" on-tap="_cancel" tooltip="[[L.cancel_info]]" disabled$="[[!settings.applied]]") [[L.cancel]]
+		button(is="cs-button" type="button" on-tap="_cancel" tooltip="[[L.cancel_info]]" disabled="[[!settings.applied]]") [[L.cancel]]
 mixin input (name, hidden, type, min, max)
 	- hidden = hidden && '[[' + hidden + ']]'
 	label(tooltip="[[L.#{name}_info]]" hidden=hidden)

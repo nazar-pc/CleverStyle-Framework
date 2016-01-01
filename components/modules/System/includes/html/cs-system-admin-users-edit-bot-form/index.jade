@@ -1,7 +1,7 @@
 dom-module#cs-system-admin-users-edit-bot-form
 	template
 		style(include="advanced-styles")
-		h2.cs-text-center(hidden$="[[user_data.id]]")
+		h2.cs-text-center(hidden="[[user_data.id]]")
 			cs-icon(icon="spinner" spin)
 		template(is="dom-if" if="[[user_data.id]]")
 			form(is="cs-form")
@@ -27,5 +27,5 @@ dom-module#cs-system-admin-users-edit-bot-form
 						input(checked="[[equal(user_data.status, 1)]]" type="radio" value="1")
 						[[L.active]]
 				div
-					button(is="cs-button" type="button" primary on-tap="save" disabled$="[[!can_save]]") [[L.save]]
+					button(is="cs-button" type="button" primary on-tap="save" disabled="[[!can_save]]") [[L.save]]
 	script(src="script.js")
