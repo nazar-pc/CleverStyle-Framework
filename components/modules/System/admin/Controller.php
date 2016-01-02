@@ -10,7 +10,6 @@
 namespace cs\modules\System\admin;
 use
 	cs\Index,
-	cs\Language,
 	cs\Page;
 
 class Controller {
