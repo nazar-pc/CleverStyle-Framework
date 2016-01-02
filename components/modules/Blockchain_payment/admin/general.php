@@ -8,36 +8,44 @@
  */
 use
 	cs\Config,
-	cs\Index;
-$Index       = Index::instance();
-$Config      = Config::instance();
-$module_data = $Config->module('Blockchain_payment');
+	cs\Index,
+	cs\Language,
+	cs\Page;
+
+$L           = Language::instance();
+$module_data = Config::instance()->module('Blockchain_payment');
 if (isset($_POST['bitcoin_address'], $_POST['bitcoin_address'])) {
 	$module_data->set(
 		[
 			'bitcoin_address'        => $_POST['bitcoin_address'],
-			'confirmations_required' => min(1, $_POST['confirmations_required'])
+			'confirmations_required' => max(1, $_POST['confirmations_required'])
 		]
 	);
-	$Index->save(true);
+	Index::instance()->save(true);
 }
-$Index->form_attributes['is'] = 'cs-form';
-$Index->content(
-	h::{'label info'}('blockchain_payment_bitcoin_address').
-	h::{'input[is=cs-input-text]'}(
-		[
-			'name'  => 'bitcoin_address',
-			'value' => $module_data->bitcoin_address
-		]
-	).
-	h::{'label info'}('blockchain_payment_confirmations_required').
-	h::{'input[is=cs-input-text]'}(
-		[
-			'name'  => 'confirmations_required',
-			'value' => $module_data->confirmations_required,
-			'type'  => 'number',
-			'min'   => 1
-		]
-	).
-	h::br()
+Page::instance()->content(
+	h::{'form[is=cs-form]'}(
+		h::{'label info'}('blockchain_payment_bitcoin_address').
+		h::{'input[is=cs-input-text]'}(
+			[
+				'name'  => 'bitcoin_address',
+				'value' => $module_data->bitcoin_address
+			]
+		).
+		h::{'label info'}('blockchain_payment_confirmations_required').
+		h::{'input[is=cs-input-text]'}(
+			[
+				'name'  => 'confirmations_required',
+				'value' => $module_data->confirmations_required,
+				'type'  => 'number',
+				'min'   => 1
+			]
+		).
+		h::{'p button[is=cs-button][type=submit]'}(
+			$L->save,
+			[
+				'tooltip' => $L->save_info
+			]
+		)
+	)
 );
