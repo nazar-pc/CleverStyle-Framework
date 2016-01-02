@@ -132,7 +132,6 @@ This results in constant and predictable performance (no degradation with time),
  * Multiple Databases mirrors
 * Multiple files storages
 * System cache (FileSystem, APC, Memcached)
-* IP filtering and restriction
 * RESTful API
 * IPv6
 
