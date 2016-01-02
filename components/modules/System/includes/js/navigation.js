@@ -55,6 +55,8 @@
     function popstate(e){
       if (location.href.indexOf('admin/System') !== -1) {
         go(location.href.match(/admin\/System\/\w+\/\w+/)[0]);
+      } else if (location.href === document.baseURI + 'admin' || location.href === document.baseURI + 'admin/System') {
+        go('admin/System/components/modules');
       }
     }
     addEventListener('popstate', popstate);
