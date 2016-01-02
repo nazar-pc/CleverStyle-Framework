@@ -3,7 +3,7 @@
  * @package   TinyMCE
  * @category  plugins
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright Copyright (c) 2015, Nazar Mokrynskyi
+ * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   GNU Lesser General Public License 2.1, see license.txt
  */
 (function(){
