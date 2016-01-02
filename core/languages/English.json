@@ -206,7 +206,7 @@
 		"properties"				: "Properties",
 		"available_ram"				: "Available RAM",
 		"free_disk_space"			: "Free disk space",
-		"upload_limit"				: "Limit of file size for uploading",
+		"upload_size_limit"			: "Limit of file size for uploading",
 		"post_max_size"				: "Limit of data size to send via POST method",
 		"max_execution_time"		: "Maximum execution time",
 		"max_input_time"			: "The maximum time for parsing input data",

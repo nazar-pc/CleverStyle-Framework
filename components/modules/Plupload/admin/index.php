@@ -15,7 +15,7 @@ $L                            = Language::instance();
 $Index                        = Index::instance();
 $Index->form_attributes['is'] = 'cs-form';
 $Index->content(
-	h::label("$L->upload_limit (b, kb, mb, gb)").
+	h::label("$L->upload_size_limit (b, kb, mb, gb)").
 	h::{'input[is=cs-input-text][compact][name=max_file_size]'}(
 		[
 			'value' => $Config->module('Plupload')->max_file_size
