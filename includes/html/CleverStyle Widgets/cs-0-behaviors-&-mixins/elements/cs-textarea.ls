@@ -17,7 +17,7 @@ Polymer.cs.behaviors.cs-textarea = [
 		initialized	: Boolean
 	attached : !->
 		@initialized = true
-		@_do_autosizing()
+		setTimeout(@~_do_autosizing)
 	_autosize_changed : !->
 		@_do_autosizing()
 	_do_autosizing : !->

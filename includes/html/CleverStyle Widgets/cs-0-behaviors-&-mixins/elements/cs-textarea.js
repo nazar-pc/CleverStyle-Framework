@@ -18,7 +18,7 @@
       },
       attached: function(){
         this.initialized = true;
-        this._do_autosizing();
+        setTimeout(bind$(this, '_do_autosizing'));
       },
       _autosize_changed: function(){
         this._do_autosizing();
@@ -39,4 +39,7 @@
       }
     }
   ];
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);
