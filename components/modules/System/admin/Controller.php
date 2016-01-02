@@ -9,21 +9,29 @@
  */
 namespace cs\modules\System\admin;
 use
+	cs\Index,
 	cs\Language,
-	cs\Page,
-	cs\modules\System\admin\Controller\components,
-	cs\modules\System\admin\Controller\general,
-	cs\modules\System\admin\Controller\users;
+	cs\Page;
 
 class Controller {
-	use
-		components,
-		general,
-		users;
 	static function index ($route_ids, $route_path) {
-		$L    = Language::instance();
+		Index::instance()->form = false;
+		switch (@$route_path[2]) {
+			case 'phpinfo':
+				interface_off();
+				Page::instance()->Content = ob_wrapper(
+					function () {
+						phpinfo();
+					}
+				);
+				return;
+			case 'readme.html':
+				interface_off();
+				Page::instance()->Content = file_get_contents(DIR.'/readme.html');
+				return;
+		}
 		$Page = Page::instance();
-		$Page->title($L->{$route_path[0]});
-		$Page->title($L->{$route_path[1]});
+		$Page->title('%1$s');
+		$Page->title('%2$s');
 	}
 }

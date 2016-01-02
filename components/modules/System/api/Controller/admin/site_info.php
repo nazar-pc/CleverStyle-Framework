@@ -20,7 +20,7 @@ trait site_info {
 		$Config = Config::instance();
 		Page::instance()->json(
 			[
-				'name'              => get_core_ml_text('name'),
+				'site_name'         => get_core_ml_text('name'),
 				'url'               => implode("\n", $Config->core['url']),
 				'cookie_domain'     => implode("\n", $Config->core['cookie_domain']),
 				'cookie_prefix'     => $Config->core['cookie_prefix'],
@@ -47,13 +47,13 @@ trait site_info {
 	 */
 	protected static function admin_site_info_settings_common () {
 		if (
-			!isset($_POST['name'], $_POST['url'], $_POST['cookie_domain'], $_POST['cookie_prefix'], $_POST['timezone'], $_POST['admin_email']) ||
+			!isset($_POST['site_name'], $_POST['url'], $_POST['cookie_domain'], $_POST['cookie_prefix'], $_POST['timezone'], $_POST['admin_email']) ||
 			!in_array($_POST['timezone'], get_timezones_list(), true)
 		) {
 			throw new ExitException(400);
 		}
 		$Config                        = Config::instance();
-		$Config->core['name']          = set_core_ml_text('name', xap($_POST['name']));
+		$Config->core['name']          = set_core_ml_text('name', xap($_POST['site_name']));
 		$Config->core['url']           = static::admin_site_info_settings_common_multiline($_POST['url']);
 		$Config->core['cookie_domain'] = static::admin_site_info_settings_common_multiline($_POST['cookie_domain']);
 		$Config->core['cookie_prefix'] = xap($_POST['cookie_prefix']);
