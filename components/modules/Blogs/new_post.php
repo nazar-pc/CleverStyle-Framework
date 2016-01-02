@@ -12,7 +12,6 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Index,
 	cs\Language,
 	cs\Page,
 	cs\Route,
