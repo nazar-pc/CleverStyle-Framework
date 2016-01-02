@@ -78,14 +78,9 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 			break;
 	}
 }
-$Index                     = Index::instance();
-$Index->form               = true;
-$Index->action             = "$module/new_post";
-$Index->buttons            = false;
-$Index->cancel_button_back = true;
-$disabled                  = [];
-$max_sections              = $module_data->max_sections;
-$content                   = uniqid('post_content', true);
+$disabled     = [];
+$max_sections = $module_data->max_sections;
+$content      = uniqid('post_content', true);
 $Page->replace($content, isset($_POST['content']) ? $_POST['content'] : '');
 $sections = get_sections_select_post($disabled);
 if (count($sections['in']) > 1) {
@@ -105,51 +100,60 @@ if (count($sections['in']) > 1) {
 } else {
 	$sections = false;
 }
-$Index->content(
-	h::{'h2.cs-text-center'}(
-		$L->new_post
-	).
-	h::{'div.cs-blogs-post-preview-content'}().
-	h::{'table.cs-table.cs-blogs-post-form[right-left] tr| td'}(
-		[
-			$L->post_title,
-			h::{'h1.cs-blogs-new-post-title[contenteditable=true]'}(
-				isset($_POST['title']) ? $_POST['title'] : '<br>'
-			)
-		],
-		$sections,
-		[
-			$L->post_content,
-			(
-			functionality('inline_editor') ? h::{'cs-editor-inline div.cs-blogs-new-post-content'}(
-				$content
-			) : h::{'cs-editor textarea.cs-blogs-new-post-content[is=cs-textarea][autosize][name=content][required]'}(
-				isset($_POST['content']) ? $_POST['content'] : ''
-			)
-			).
-			h::br().
-			$L->post_use_pagebreak
-		],
-		[
-			$L->post_tags,
-			h::{'input.cs-blogs-new-post-tags[is=cs-input-text][name=tags][required]'}(
-				[
-					'value'       => isset($_POST['tags']) ? $_POST['tags'] : false,
-					'placeholder' => 'CleverStyle, CMS, Open Source'
-				]
-			)
-		]
-	).
-	(
-	!$sections ? h::{'input[type=hidden][name=sections[]][value=0]'}() : ''
-	).
-	h::{'button.cs-blogs-post-preview[is=cs-button]'}(
-		$L->preview
-	).
-	h::{'button[is=cs-button][type=submit][name=mode][value=publish]'}(
-		$L->publish
-	).
-	h::{'button[is=cs-button][type=submit][name=mode][value=draft]'}(
-		$L->to_drafts
+$Page->content(
+	h::form(
+		h::{'h2.cs-text-center'}(
+			$L->new_post
+		).
+		h::{'div.cs-blogs-post-preview-content'}().
+		h::{'table.cs-table.cs-blogs-post-form[right-left] tr| td'}(
+			[
+				$L->post_title,
+				h::{'h1.cs-blogs-new-post-title[contenteditable=true]'}(
+					isset($_POST['title']) ? $_POST['title'] : '<br>'
+				)
+			],
+			$sections,
+			[
+				$L->post_content,
+				(
+				functionality('inline_editor') ? h::{'cs-editor-inline div.cs-blogs-new-post-content'}(
+					$content
+				) : h::{'cs-editor textarea.cs-blogs-new-post-content[is=cs-textarea][autosize][name=content][required]'}(
+					isset($_POST['content']) ? $_POST['content'] : ''
+				)
+				).
+				h::br().
+				$L->post_use_pagebreak
+			],
+			[
+				$L->post_tags,
+				h::{'input.cs-blogs-new-post-tags[is=cs-input-text][name=tags][required]'}(
+					[
+						'value'       => isset($_POST['tags']) ? $_POST['tags'] : false,
+						'placeholder' => 'CleverStyle, CMS, Open Source'
+					]
+				)
+			]
+		).
+		(
+		!$sections ? h::{'input[type=hidden][name=sections[]][value=0]'}() : ''
+		).
+		h::{'button.cs-blogs-post-preview[is=cs-button]'}(
+			$L->preview
+		).
+		h::{'button[is=cs-button][type=submit][name=mode][value=publish]'}(
+			$L->publish
+		).
+		h::{'button[is=cs-button][type=submit][name=mode][value=draft]'}(
+			$L->to_drafts
+		).
+		h::{'button[is=cs-button]'}(
+			$L->cancel,
+			[
+				'type'    => 'button',
+				'onclick' => 'history.go(-1);'
+			]
+		)
 	)
 );

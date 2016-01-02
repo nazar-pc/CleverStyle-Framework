@@ -9,8 +9,8 @@
 namespace cs\modules\Blogs;
 use
 	cs\Config,
-	cs\Index,
 	cs\Language,
+	cs\Page,
 	cs\User,
 	h;
 
@@ -27,10 +27,10 @@ class Helpers {
 	 */
 	static function show_posts_list ($posts, $posts_count, $page, $base_url) {
 		$module_data = Config::instance()->module('Blogs');
-		$Index       = Index::instance();
 		$L           = Language::instance();
+		$Page        = Page::instance();
 		$User        = User::instance();
-		$Index->content(
+		$Page->content(
 			h::{'cs-blogs-head-actions'}(
 				[
 					'admin'          => $User->admin() && $User->get_permission('admin/Blogs', 'index'),
@@ -39,12 +39,12 @@ class Helpers {
 			)
 		);
 		if (!$posts) {
-			$Index->content(
+			$Page->content(
 				h::{'p.cs-text-center'}($L->no_posts_yet)
 			);
 			return;
 		}
-		$Index->content(
+		$Page->content(
 			h::{'section[is=cs-blogs-posts]'}(
 				h::{'script[type=application/ld+json]'}(
 					json_encode(
