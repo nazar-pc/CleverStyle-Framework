@@ -8,52 +8,55 @@
  */
 namespace cs\modules\Polls;
 use
-	cs\Index,
 	cs\Language\Prefix,
+	cs\Page,
 	h;
-$Index          = Index::instance();
-$L              = new Prefix('polls_');
-$Polls          = Polls::instance();
-$Index->buttons = false;
-$Index->content(
-	h::{'table.cs-table[list]'}(
-		h::{'tr th'}(
-			$L->poll,
-			$L->action
-		).
-		h::{'tr| td'}(
-			array_map(
-				function ($poll) use ($L) {
-					return [
-						$poll['title'],
-						h::{'a[is=cs-link-button][icon=pencil]'}(
-							[
-								'href'    => "admin/Polls/polls/edit/$poll[id]",
-								'tooltip' => $L->edit
-							]
-						).
-						h::{'a[is=cs-link-button][icon=trash]'}(
-							[
-								'href'    => "admin/Polls/polls/delete/$poll[id]",
-								'tooltip' => $L->delete
-							]
-						)
-					];
-				},
-				$Polls->get($Polls->get_all())
+
+$L     = new Prefix('polls_');
+$Polls = Polls::instance();
+Page::instance()->content(
+	h::{'form[is=cs-form]'}(
+		h::{'table.cs-table[list]'}(
+			h::{'tr th'}(
+				$L->poll,
+				$L->action
+			).
+			h::{'tr| td'}(
+				array_map(
+					function ($poll) use ($L) {
+						return [
+							$poll['title'],
+							h::{'a[is=cs-link-button][icon=pencil]'}(
+								[
+									'href'    => "admin/Polls/polls/edit/$poll[id]",
+									'tooltip' => $L->edit
+								]
+							).
+							h::{'a[is=cs-link-button][icon=trash]'}(
+								[
+									'href'    => "admin/Polls/polls/delete/$poll[id]",
+									'tooltip' => $L->delete
+								]
+							)
+						];
+					},
+					$Polls->get($Polls->get_all())
+				)
 			)
+		).
+		h::h2($L->new_poll).
+		h::{'p input[is=cs-input-text][name=add[title]]'}(
+			[
+				'placeholder' => $L->poll_title
+			]
+		).
+		h::{'p textarea[is=cs-textarea][autosize][name=add[options]]'}(
+			[
+				'placeholder' => $L->answers_one_per_line
+			]
+		).
+		h::{'p button[is=cs-button][type=submit]'}(
+			$L->add
 		)
-	).
-	h::h2($L->new_poll).
-	h::{'p input[is=cs-input-text][name=add[title]]'}(
-		[
-			'placeholder' => $L->poll_title
-		]
-	).
-	h::{'p textarea[is=cs-textarea][autosize][name=add[options]]'}(
-		[
-			'placeholder' => $L->answers_one_per_line
-		]
 	)
 );
-$Index->custom_buttons = h::{'button[is=cs-button][type=submit]'}($L->add);
