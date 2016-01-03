@@ -14,7 +14,6 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Index,
 	cs\Key,
 	cs\Language,
 	cs\Mail,
@@ -22,6 +21,7 @@ use
 	cs\Route,
 	cs\Session,
 	cs\User;
+
 /**
  * Provides next events:
  *  HybridAuth/registration/before
@@ -55,7 +55,7 @@ class Controller {
 			return;
 		}
 		$Config             = Config::instance();
-		$Index              = Index::instance();
+		$Page               = Page::instance();
 		$User               = User::instance();
 		$Social_integration = Social_integration::instance();
 		$L                  = Language::instance();
@@ -63,7 +63,7 @@ class Controller {
 		 * Confirmation of accounts merging
 		 */
 		if ($route[0] == 'merge_confirmation') {
-			self::merge_confirmation($route, $Index, $L);
+			self::merge_confirmation($route, $Page, $L);
 			return;
 		}
 		$provider = $route[0];
@@ -110,13 +110,13 @@ class Controller {
 		 * If user did not specified email
 		 */
 		if (!isset($_POST['email'])) {
-			self::email_not_specified($provider, $Social_integration, $User, $Index, $L);
+			self::email_not_specified($provider, $Social_integration, $User, $Page, $L);
 			return;
 		}
 		/**
 		 * If user specified email
 		 */
-		self::email_was_specified($provider, $Social_integration, $User, $Index, $L, $Config);
+		self::email_was_specified($provider, $Social_integration, $User, $Page, $L, $Config);
 	}
 	/**
 	 * Redirect to referer or home page
@@ -138,10 +138,10 @@ class Controller {
 	}
 	/**
 	 * @param string[] $route
-	 * @param Index    $Index
+	 * @param Page     $Page
 	 * @param Language $L
 	 */
-	protected static function merge_confirmation ($route, $Index, $L) {
+	protected static function merge_confirmation ($route, $Page, $L) {
 		if (!isset($route[1])) {
 			self::redirect();
 		}
@@ -150,7 +150,7 @@ class Controller {
 		 */
 		$data = self::get_data_by_confirmation_code($route[1]);
 		if (!$data) {
-			$Index->content($L->hybridauth_merge_confirm_code_invalid);
+			$Page->warning($L->hybridauth_merge_confirm_code_invalid);
 			return;
 		}
 		/**
@@ -163,7 +163,7 @@ class Controller {
 			$data['profile']
 		);
 		self::save_hybridauth_session();
-		$Index->content(
+		$Page->success(
 			$L->hybridauth_merging_confirmed_successfully($L->{$data['provider']})
 		);
 	}
@@ -213,12 +213,12 @@ class Controller {
 	 * @param string             $provider
 	 * @param Social_integration $Social_integration
 	 * @param User               $User
-	 * @param Index              $Index
+	 * @param Page               $Page
 	 * @param Language           $L
 	 *
 	 * @throws ExitException
 	 */
-	protected static function email_not_specified ($provider, $Social_integration, $User, $Index, $L) {
+	protected static function email_not_specified ($provider, $Social_integration, $User, $Page, $L) {
 		$profile = self::authenticate_hybridauth($provider);
 		/**
 		 * Check whether this account was already registered in system. If registered - make login
@@ -242,7 +242,7 @@ class Controller {
 		 * If integrated service does not returns email - ask user for email
 		 */
 		if (!$email) {
-			self::email_form($Index, $L);
+			self::email_form($Page, $L);
 			return;
 		}
 		/**
@@ -320,7 +320,7 @@ class Controller {
 			$Page
 				->title($L->please_type_correct_email)
 				->warning($L->please_type_correct_email);
-			self::email_form(Index::instance(), $L);
+			self::email_form($Page, $L);
 			return false;
 		}
 		if (!$result || $result == 'error') {
@@ -333,18 +333,20 @@ class Controller {
 		return $result;
 	}
 	/**
-	 * @param Index    $Index
+	 * @param Page     $Page
 	 * @param Language $L
 	 */
-	protected function email_form ($Index, $L) {
-		$Index->form           = true;
-		$Index->buttons        = false;
-		$Index->custom_buttons = h::{'button[is=cs-button][type=submit]'}($L->submit);
-		$Index->content(
-			h::{'p.cs-text-center'}(
-				$L->please_type_your_email.':'.
-				h::{'input[name=email]'}(
-					isset($_POST['email']) ? $_POST['email'] : ''
+	protected function email_form ($Page, $L) {
+		$Page->content(
+			h::{'form[is=cs-form]'}(
+				h::{'p.cs-text-center'}(
+					$L->please_type_your_email.':'.
+					h::{'input[name=email]'}(
+						isset($_POST['email']) ? $_POST['email'] : ''
+					)
+				).
+				h::{'button[is=cs-button][type=submit]'}(
+					$L->submit
 				)
 			)
 		);
@@ -353,13 +355,13 @@ class Controller {
 	 * @param string             $provider
 	 * @param Social_integration $Social_integration
 	 * @param User               $User
-	 * @param Index              $Index
+	 * @param Page               $Page
 	 * @param Language           $L
 	 * @param Config             $Config
 	 *
 	 * @throws ExitException
 	 */
-	protected static function email_was_specified ($provider, $Social_integration, $User, $Index, $L, $Config) {
+	protected static function email_was_specified ($provider, $Social_integration, $User, $Page, $L, $Config) {
 		$profile = self::authenticate_hybridauth($provider);
 		/**
 		 * Try to register user
@@ -389,7 +391,7 @@ class Controller {
 			);
 			if (self::send_registration_mail($_POST['email'], $title, $body)) {
 				_setcookie('HybridAuth_referer', '');
-				$Index->content(
+				$Page->content(
 					h::p(
 						$L->hybridauth_merge_confirmation($L->$provider)
 					)
@@ -418,7 +420,7 @@ class Controller {
 		if (self::send_registration_mail($_POST['email'], $title, $body)) {
 			self::update_data($provider);
 			_setcookie('HybridAuth_referer', '');
-			$Index->content($L->reg_confirmation);
+			$Page->content($L->reg_confirmation);
 		}
 	}
 	/**
