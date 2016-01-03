@@ -10,7 +10,6 @@ namespace cs\modules\OAuth2;
 use
 	h,
 	cs\Config,
-	cs\Index,
 	cs\Language\Prefix,
 	cs\Page;
 
