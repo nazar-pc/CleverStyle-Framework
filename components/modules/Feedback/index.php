@@ -1,39 +1,48 @@
 <?php
 /**
- * @package		Feedback
- * @category	modules
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2016, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   Feedback
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs;
-use			h;
-$Index			= Index::instance();
-$Index->form	= true;
-$Index->buttons	= false;
-$Config			= Config::instance();
-$L				= Language::instance();
-$Page			= Page::instance();
-$User			= User::instance();
+namespace cs;
+use
+	h;
+
+$Config = Config::instance();
+$L      = Language::instance();
+$Page   = Page::instance();
+$User   = User::instance();
 $Page->css('components/modules/Feedback/includes/css/general.css');
-$Index->content(
-	h::{'section.cs-feedback-form article'}(
-		h::{'header h2.cs-text-center'}($L->Feedback).
-		h::{'table.cs-table[center] tr| td'}([
-			h::{'input[is=cs-input-text][name=name][required]'}([
-				'placeholder'	=> $L->feedback_name,
-				'value'			=> $User->user() ? $User->username() : (isset($_POST['name']) ? $_POST['name'] : '')
-			]),
-			h::{'input[is=cs-input-text][type=email][name=email][required]'}([
-				'placeholder'	=> $L->feedback_email,
-				'value'			=> $User->user() ? $User->email : (isset($_POST['email']) ? $_POST['email'] : '')
-			]),
-			h::{'textarea[is=cs-textarea][autosize][name=text][required]'}([
-				'placeholder'	=> $L->feedback_text,
-				'value'			=> isset($_POST['text']) ? $_POST['text'] : ''
-			]),
-			h::{'button[is=cs-button][type=submit]'}($L->feedback_send)
-		])
+$Page->content(
+	h::{'form[is=cs-form]'}(
+		h::{'section.cs-feedback-form article'}(
+			h::{'header h2.cs-text-center'}($L->Feedback).
+			h::{'table.cs-table[center] tr| td'}(
+				[
+					h::{'input[is=cs-input-text][name=name][required]'}(
+						[
+							'placeholder' => $L->feedback_name,
+							'value'       => $User->user() ? $User->username() : (isset($_POST['name']) ? $_POST['name'] : '')
+						]
+					),
+					h::{'input[is=cs-input-text][type=email][name=email][required]'}(
+						[
+							'placeholder' => $L->feedback_email,
+							'value'       => $User->user() ? $User->email : (isset($_POST['email']) ? $_POST['email'] : '')
+						]
+					),
+					h::{'textarea[is=cs-textarea][autosize][name=text][required]'}(
+						[
+							'placeholder' => $L->feedback_text,
+							'value'       => isset($_POST['text']) ? $_POST['text'] : ''
+						]
+					),
+					h::{'button[is=cs-button][type=submit]'}($L->feedback_send)
+				]
+			)
+		)
 	)
 );
 if (isset($_POST['name'], $_POST['email'], $_POST['text'])) {
@@ -41,14 +50,15 @@ if (isset($_POST['name'], $_POST['email'], $_POST['text'])) {
 		$Page->warning($L->feedback_fill_all_fields);
 		return;
 	}
-	if (Mail::instance()->send_to(
+	$result = Mail::instance()->send_to(
 		$Config->core['admin_email'],
 		$L->feedback_email_from(xap($_POST['name']), $Config->core['name']),
 		xap($_POST['text']),
 		null,
 		null,
 		$_POST['email']
-	)) {
+	);
+	if ($result) {
 		$Page->success($L->feedback_sent_successfully);
 	} else {
 		$Page->warning($L->feedback_sending_error);
