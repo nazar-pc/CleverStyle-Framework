@@ -9,12 +9,29 @@
 namespace cs;
 use
 	h;
-$Index                        = Index::instance();
-$Index->form_attributes['is'] = 'cs-button';
-$Index->content(
-	h::{'p.cs-text-center'}(Language::instance()->crontab_content).
-	h::{'textarea[is=cs-textarea][full-width][autosize][name=tasks][rows=10]'}(
-		isset($_POST['tasks']) ? $_POST['tasks'] : shell_exec('crontab -l')
-	).
-	h::br(2)
+
+if (isset($_POST['tasks'])) {
+	$filename = TEMP.'/'.uniqid('cron', true);
+	$tasks    = _trim(explode("\n", trim($_POST['tasks'])));
+	$tasks    = implode("\n", $tasks);
+	file_put_contents($filename, "$tasks\n");
+	exec("crontab $filename", $result, $result);
+	unlink($filename);
+	Index::instance()->save($result === 0);
+}
+
+$L = Language::instance();
+Page::instance()->content(
+	h::{'form[is=cs-form]'}(
+		h::{'p.cs-text-center'}(Language::instance()->crontab_content).
+		h::{'textarea[is=cs-textarea][full-width][autosize][name=tasks][rows=10]'}(
+			isset($_POST['tasks']) ? $_POST['tasks'] : shell_exec('crontab -l')
+		).
+		h::{'p button[is=cs-button][type=submit]'}(
+			$L->save,
+			[
+				'tooltip' => $L->save_info
+			]
+		)
+	)
 );
