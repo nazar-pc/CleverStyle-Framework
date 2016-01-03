@@ -10,7 +10,6 @@ namespace cs\modules\Photo_gallery;
 use
 	h,
 	cs\Config,
-	cs\Index,
 	cs\Language\Prefix,
 	cs\Page;
 
