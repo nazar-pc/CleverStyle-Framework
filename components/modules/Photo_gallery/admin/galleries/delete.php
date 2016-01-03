@@ -9,25 +9,34 @@
 namespace cs\modules\Photo_gallery;
 use
 	h,
-	cs\Index,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route;
+
 $gallery = Photo_gallery::instance()->get_gallery(Route::instance()->route[1]);
-$Index   = Index::instance();
-$L       = Language::instance();
-Page::instance()->title($L->photo_gallery_deletion_of_gallery($gallery['title']));
-$Index->buttons            = false;
-$Index->cancel_button_back = true;
-$Index->action             = 'admin/Photo_gallery/galleries/browse';
-$Index->content(
-	h::{'h2.cs-text-center'}(
-		$L->photo_gallery_sure_to_delete_gallery($gallery['title'])
-	).
-	h::{'button[is=cs-button][type=submit]'}($L->yes).
-	h::{'input[type=hidden][name=delete]'}(
-		[
-			'value' => $gallery['id']
-		]
-	)
-);
+$L       = new Prefix('photo_gallery_');
+Page::instance()
+	->title($L->deletion_of_gallery($gallery['title']))
+	->content(
+		h::{'form[is=cs-form][action=admin/Photo_gallery/galleries/browse]'}(
+			h::{'h2.cs-text-center'}(
+				$L->sure_to_delete_gallery($gallery['title'])
+			).
+			h::{'input[type=hidden][name=delete]'}(
+				[
+					'value' => $gallery['id']
+				]
+			).
+			h::p(
+				h::{'button[is=cs-button][type=submit]'}(
+					$L->yes
+				).
+				h::{'button[is=cs-button][type=button]'}(
+					$L->cancel,
+					[
+						'onclick' => 'history.go(-1);'
+					]
+				)
+			)
+		)
+	);

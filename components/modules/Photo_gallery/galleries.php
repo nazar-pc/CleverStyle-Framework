@@ -1,38 +1,35 @@
 <?php
 /**
- * @package        Photo gallery
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2013-2016, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   Photo gallery
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2013-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\Photo_gallery;
-
 use
 	h,
 	cs\Config,
-	cs\Index,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\User;
 
 $Config        = Config::instance();
-$Index         = Index::instance();
-$L             = Language::instance();
+$L             = new Prefix('photo_gallery_');
+$Page          = Page::instance();
 $User          = User::instance();
 $Photo_gallery = Photo_gallery::instance();
 $galleries     = $Photo_gallery->get_galleries_list();
-$module        = path(Language::instance()->Photo_gallery);
+$module        = path($L->Photo_gallery);
 if (count($galleries) > 1) {
 	$galleries        = $Photo_gallery->get_gallery(array_values($galleries));
 	$galleries_titles = array_filter(array_column(array_slice($galleries, 0, 10), 'title'));
-	$Page             = Page::instance();
 	$Page->canonical_url("{$Config->base_url()}/$module");
 	if ($galleries_titles) {
 		$Page->Description = description(implode('; ', $galleries_titles));
 	}
 	unset($galleries_titles);
-	$Index->content(
+	$Page->content(
 		h::{'section.cs-photo-gallery-galleries article'}(
 			array_map(
 				function ($gallery) use ($L, $User, $module) {
@@ -81,7 +78,7 @@ if (count($galleries) > 1) {
 	$path = array_keys($galleries)[0];
 	_header("Location: {$Config->base_url()}/$module/$path", true, 307);
 } else {
-	$Index->content(
-		$L->photo_gallery_no_galleries_yet
+	$Page->content(
+		$L->no_galleries_yet
 	);
 }

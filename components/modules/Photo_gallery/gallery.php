@@ -1,33 +1,31 @@
 <?php
 /**
- * @package        Photo gallery
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2013-2016, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   Photo gallery
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2013-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\Photo_gallery;
-
 use
 	h,
 	cs\Config,
-	cs\Index,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page\Meta,
 	cs\Page,
 	cs\Route,
 	cs\User;
 
 $Config        = Config::instance();
-$Index         = Index::instance();
-$L             = Language::instance();
+$L             = new Prefix('photo_gallery_');
+$Page          = Page::instance();
+$User          = User::instance();
 $Photo_gallery = Photo_gallery::instance();
 $gallery       = $Photo_gallery->get_gallery(Route::instance()->route[1]);
-$User          = User::instance();
 if ($User->user()) {
-	$Index->content(
+	$Page->content(
 		h::{'p.cs-text-left a.cs-photo-gallery-add-images[is=cs-link-button][icon=plus]'}(
-			$L->photo_gallery_add_image,
+			$L->add_image,
 			[
 				'data-gallery' => $gallery['id']
 			]
@@ -35,14 +33,13 @@ if ($User->user()) {
 	);
 }
 if (!$gallery['images']) {
-	$Index->content(
-		h::{'p.cs-text-center'}($L->photo_gallery_gallery_empty)
+	$Page->content(
+		h::{'p.cs-text-center'}($L->gallery_empty)
 	);
 	return;
 }
 $images        = $Photo_gallery->get($gallery['images']);
 $images_titles = array_filter(array_column(array_slice($images, 0, 10), 'title'));
-$Page          = Page::instance();
 $Page->title($gallery['title']);
 if (isset($images[0])) {
 	Meta::instance()->image(
@@ -60,7 +57,7 @@ if ($images_titles) {
 unset($images_titles);
 $module = path($L->Photo_gallery);
 $Page->canonical_url("{$Config->base_url()}/$module/$gallery[path]");
-$Index->content(
+$Page->content(
 	h::{'section.cs-photo-gallery-images.fotorama'}(
 		h::div(
 			array_map(
