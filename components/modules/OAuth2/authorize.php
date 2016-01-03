@@ -17,10 +17,8 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Index,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route,
 	cs\User;
 
 if (!function_exists(__NAMESPACE__.'\\error_redirect')) {
@@ -42,7 +40,6 @@ if (!function_exists(__NAMESPACE__.'\\error_redirect')) {
 }
 $OAuth2 = OAuth2::instance();
 $Config = Config::instance();
-$Index  = Index::instance();
 $L      = new Prefix('oauth2_');
 $Page   = Page::instance();
 /**
@@ -215,15 +212,15 @@ if (isset($_POST['mode'])) {
 }
 if (!$OAuth2->get_access($client['id'])) {
 	if (Event::instance()->fire('OAuth2/custom_allow_access_page')) {
-		$Index->form    = true;
-		$Index->buttons = false;
 		$Page->success(
 			$L->client_want_access_your_account($client['name'])
 		);
-		$Index->action         = $Config->base_url().'/'.Route::instance()->raw_relative_address;
-		$Index->custom_buttons =
-			h::{'button[is=cs-button][type=submit][name=mode][value=allow]'}($L->allow).
-			h::{'button[is=cs-button][type=submit][mode=mode][value=deny]'}($L->deny);
+		$Page->content(
+			h::form(
+				h::{'button[is=cs-button][type=submit][name=mode][value=allow]'}($L->allow).
+				h::{'button[is=cs-button][type=submit][mode=mode][value=deny]'}($L->deny)
+			)
+		);
 	}
 	return;
 }
