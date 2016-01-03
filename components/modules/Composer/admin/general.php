@@ -9,14 +9,14 @@
 namespace cs\modules\Composer;
 use
 	h,
-	cs\Index,
-	cs\Language\Prefix;
-$Index          = Index::instance();
-$Index->buttons = false;
-$L              = new Prefix('composer_');
+	cs\Language\Prefix,
+	cs\Page;
+
+$Page = Page::instance();
+$L    = new Prefix('composer_');
 if (file_exists(DIR.'/storage/Composer/last_execution.log')) {
 	require_once __DIR__.'/../ansispan.php';
-	$Index->content(
+	$Page->content(
 		h::p($L->last_log).
 		h::pre(
 			ansispan(file_get_contents(DIR.'/storage/Composer/last_execution.log')),
@@ -26,6 +26,6 @@ if (file_exists(DIR.'/storage/Composer/last_execution.log')) {
 		)
 	);
 }
-$Index->content(
+$Page->content(
 	h::{'p.cs-text-center button.cs-composer-admin-force-update[is=cs-button]'}($L->force_update)
 );
