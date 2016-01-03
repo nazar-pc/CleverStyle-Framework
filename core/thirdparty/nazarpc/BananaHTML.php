@@ -1,9 +1,9 @@
 <?php
 /**
- * @package        BananaHTML
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2016, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   BananaHTML
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace nazarpc;
 /**
@@ -561,7 +561,7 @@ class BananaHTML {
 		if (is_array($in)) {
 			if (isset($in['in'])) {
 				$in['in'] = static::indentation_protection(is_array($in['in']) ? implode("\n", $in['in']) : $in['in']);
-			} else {
+			} elseif (self::is_array_indexed($in)) {
 				$in = static::indentation_protection(implode("\n", $in));
 			}
 		} else {
