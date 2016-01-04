@@ -194,7 +194,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 									L[translation_key](detail.name, detail.features.join('", "'))
 								case 'require'
 									for required in detail.required
-										required	= required.filter(-> it !~= '0').join(' ')
+										required	= if required[1] && required[1] !~= '0' then required.join(' ') else ''
 										if category == 'unknown'
 											L.package_or_functionality_not_found(detail.name + required)
 										else

@@ -257,7 +257,7 @@
           case 'require':
             for (i$ = 0, len$ = (ref$ = detail.required).length; i$ < len$; ++i$) {
               required = ref$[i$];
-              required = required.filter(fn$).join(' ');
+              required = required[1] && required[1] != '0' ? required.join(' ') : '';
               if (category === 'unknown') {
                 results$.push(L.package_or_functionality_not_found(detail.name + required));
               } else {
@@ -270,7 +270,7 @@
           case 'conflict':
             for (i$ = 0, len$ = (ref$ = detail.conflicts).length; i$ < len$; ++i$) {
               conflict = ref$[i$];
-              results1$.push(L.package_is_incompatible_with(conflict['package'], conflict.conflicts_with, conflict.of_versions.filter(fn1$).join(' ')));
+              results1$.push(L.package_is_incompatible_with(conflict['package'], conflict.conflicts_with, conflict.of_versions.filter(fn$).join(' ')));
             }
             return results1$;
             break;
@@ -280,9 +280,6 @@
             return L.compatible_storages_not_found(detail.supported.join('", "'));
           }
           function fn$(it){
-            return it != '0';
-          }
-          function fn1$(it){
             return it != '0';
           }
         }
