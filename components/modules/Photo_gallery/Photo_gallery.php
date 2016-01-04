@@ -247,7 +247,9 @@ class Photo_gallery {
 					'tag'	=> "Photo_gallery/images/$id"
 				]
 			);
-			$this->storage()->unlink($this->storage()->source_by_url($data['preview']));
+			if ($data['preview']) {
+				$this->storage()->unlink($this->storage()->source_by_url($data['preview']));
+			}
 			$Cache	= $this->cache;
 			unset(
 				$Cache->{"images/$id"},
