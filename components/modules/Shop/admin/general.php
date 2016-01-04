@@ -10,10 +10,11 @@ namespace cs\modules\Shop;
 use
 	h,
 	cs\Config,
-	cs\Index,
 	cs\Language\Prefix,
 	cs\Page;
 
+$L    = new Prefix('shop_');
+$Page = Page::instance();
 if (isset(
 	$_POST['price_formatting'],
 	$_POST['items_per_page'],
@@ -26,7 +27,7 @@ if (isset(
 	$currencies = file_get_json(__DIR__.'/../currencies_codes.json');
 	$currency   = $_POST['currency'];
 	$currency   = isset($currencies['regular'][$currency]) || isset($currencies['crypto'][$currency]) ? $currency : 'USD';
-	Config::instance()->module('Shop')->set(
+	if (Config::instance()->module('Shop')->set(
 		[
 			'currency'                            => $currency,
 			'price_formatting'                    => xap($_POST['price_formatting']),
@@ -37,17 +38,20 @@ if (isset(
 			'default_order_status'                => (int)$_POST['default_order_status'],
 			'default_paid_order_status'           => (int)$_POST['default_paid_order_status']
 		]
-	);
-	Index::instance()->save(true);
+	)
+	) {
+		$Page->success($L->changes_saved);
+	} else {
+		$Page->warning($L->changes_save_error);
+	}
 }
 
-$L              = new Prefix('shop_');
 $Config         = Config::instance();
 $module_data    = $Config->module('Shop');
 $Order_statuses = Order_statuses::instance();
 $order_statuses = $Order_statuses->get($Order_statuses->get_all());
 $currencies     = file_get_json(__DIR__.'/../currencies_codes.json');
-Page::instance()
+$Page
 	->title($L->general)
 	->content(
 		h::form(

@@ -11,7 +11,6 @@ use
 	h,
 	cs\Config,
 	cs\ExitException,
-	cs\Index,
 	cs\Language,
 	cs\Page\Meta,
 	cs\Page,
@@ -37,9 +36,11 @@ if (isset($_POST['save'])) {
 	if (!$User->get_permission('admin/Pages', 'edit_page')) {
 		throw new ExitException(403);
 	}
-	Index::instance()->save(
-		$Pages->set($page['id'], $page['category'], $_POST['title'], $page['path'], $_POST['content'], $page['interface'])
-	);
+	if ($Pages->set($page['id'], $page['category'], $_POST['title'], $page['path'], $_POST['content'], $page['interface'])) {
+		$Page->success($L->changes_saved);
+	} else {
+		$Page->warning($L->changes_save_error);
+	}
 	$page = $Pages->get($page['id']);
 }
 if ($page['interface']) {

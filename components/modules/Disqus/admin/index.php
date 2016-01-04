@@ -10,14 +10,15 @@ namespace cs;
 use
 	h;
 
+$L           = Language::instance();
+$Page        = Page::instance();
 $module_data = Config::instance()->module('Disqus');
 if (isset($_POST['shortname'])) {
 	$module_data->shortname = $_POST['shortname'];
-	Index::instance()->save(true);
+	$Page->success($L->changes_saved);
 }
 
-$L = Language::instance();
-Page::instance()->content(
+$Page->content(
 	h::{'form[is=cs-form]'}(
 		h::label('Shortname').
 		h::{'input[is=cs-input-text][name=shortname]'}(

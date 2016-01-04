@@ -322,59 +322,6 @@ class Index {
 		return Text::instance()->process(Config::instance()->module('System')->db('texts'), $text, true);
 	}
 	/**
-	 * Saving changes and/or showing resulting message of saving changes
-	 *
-	 * @param bool|null $result If bool - result will be shown only, otherwise works similar to the $Config->save() and shows resulting message
-	 *
-	 * @return bool
-	 */
-	function save ($result = null) {
-		$L    = Language::instance();
-		$Page = Page::instance();
-		if ($result || ($result === null && Config::instance()->save())) {
-			$this->append_to_title = $L->changes_saved;
-			$Page->success($L->changes_saved);
-			return true;
-		} else {
-			$this->append_to_title = $L->changes_save_error;
-			$Page->warning($L->changes_save_error);
-			return false;
-		}
-	}
-	/**
-	 * Applying changes and/or showing resulting message of applying changes
-	 *
-	 * @param bool|null|string $result If bool - result will be shown only, otherwise works similar to the $Config->apply() and shows resulting message
-	 *
-	 * @return bool
-	 */
-	function apply ($result = null) {
-		$L    = Language::instance();
-		$Page = Page::instance();
-		if ($result || ($result === null && Config::instance()->apply())) {
-			$this->append_to_title = $L->changes_applied;
-			$Page->success($L->changes_applied.$L->check_applied);
-			return true;
-		} else {
-			$this->append_to_title = $L->changes_apply_error;
-			$Page->warning($L->changes_apply_error);
-			return false;
-		}
-	}
-	/**
-	 * Changes canceling and/or showing result of canceling changes
-	 *
-	 * @param bool $system If <b>true,/b> - cancels changes of system configuration, otherwise shows message about successful canceling
-	 */
-	function cancel ($system = true) {
-		if ($system) {
-			Config::instance()->cancel();
-		}
-		$L                     = Language::instance();
-		$this->append_to_title = $L->changes_canceled;
-		Page::instance()->success($L->changes_canceled);
-	}
-	/**
 	 * Getter for `controller_path` property (no other properties supported currently)
 	 *
 	 * @param string $property

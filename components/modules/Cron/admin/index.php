@@ -10,6 +10,8 @@ namespace cs;
 use
 	h;
 
+$L    = Language::instance();
+$Page = Page::instance();
 if (isset($_POST['tasks'])) {
 	$filename = TEMP.'/'.uniqid('cron', true);
 	$tasks    = _trim(explode("\n", trim($_POST['tasks'])));
@@ -17,11 +19,14 @@ if (isset($_POST['tasks'])) {
 	file_put_contents($filename, "$tasks\n");
 	exec("crontab $filename", $result, $result);
 	unlink($filename);
-	Index::instance()->save($result === 0);
+	if ($result === 0) {
+		$Page->success($L->changes_saved);
+	} else {
+		$Page->warning($L->changes_save_error);
+	}
 }
 
-$L = Language::instance();
-Page::instance()->content(
+$Page->content(
 	h::{'form[is=cs-form]'}(
 		h::{'p.cs-text-center'}(Language::instance()->crontab_content).
 		h::{'textarea[is=cs-textarea][full-width][autosize][name=tasks][rows=10]'}(

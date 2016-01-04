@@ -9,31 +9,35 @@
 namespace cs\modules\Polls;
 
 use
-	cs\Index;
+	cs\Language,
+	cs\Page;
 
-$Index   = Index::instance();
+$L       = Language::instance();
+$Page    = Page::instance();
 $Options = Options::instance();
 $Polls   = Polls::instance();
 if (isset($_POST['add'])) {
 	$add  = $_POST['add'];
 	$poll = $Polls->add($add['title']);
 	if (!$poll) {
-		$Index->save(false);
+		$Page->warning($L->changes_save_error);
 		return;
 	}
 	foreach (explode("\n", trim($add['options'])) as $title) {
 		$Options->add($poll, trim($title));
 	}
-	$Index->save(true);
+	$Page->success($L->changes_saved);
 } elseif (isset($_POST['edit'])) {
 	$edit = $_POST['edit'];
 	$Polls->set($edit['id'], $edit['title']);
 	foreach ($edit['options'] as $id => $title) {
 		$Options->set($id, $edit['id'], $title);
 	}
-	$Index->save(true);
+	$Page->success($L->changes_saved);
 } elseif (isset($_POST['delete'])) {
-	$Index->save(
-		$Polls->del($_POST['delete'])
-	);
+	if ($Polls->del($_POST['delete'])) {
+		$Page->success($L->changes_saved);
+	} else {
+		$Page->warning($L->changes_save_error);
+	}
 }

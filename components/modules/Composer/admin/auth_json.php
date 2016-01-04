@@ -10,19 +10,19 @@ namespace cs\modules\Composer;
 use
 	h,
 	cs\Config,
-	cs\Index,
 	cs\Language\Prefix,
 	cs\Page;
 
 $L           = new Prefix('composer_');
+$Page        = Page::instance();
 $module_data = Config::instance()->module('Composer');
 
 if (isset($_POST['auth_json'])) {
 	$module_data->auth_json = $_POST['auth_json'];
-	Index::instance()->save(true);
+	$Page->success($L->changes_saved);
 }
 
-Page::instance()->content(
+$Page->content(
 	h::{'form[is=cs-form]'}(
 		h::label($L->auth_json_contents).
 		h::{'p textarea[is=cs-textarea][autosize][name=auth_json]'}($module_data->auth_json ?: '').

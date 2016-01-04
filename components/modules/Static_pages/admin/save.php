@@ -8,31 +8,57 @@
  */
 namespace cs\modules\Static_pages;
 use
-	cs\Index;
+	cs\Language,
+	cs\Page;
 
 if (!isset($_POST['mode'])) {
 	return;
 }
-$Index      = Index::instance();
+$L          = Language::instance();
+$Page       = Page::instance();
 $Pages      = Pages::instance();
 $Categories = Categories::instance();
 switch ($_POST['mode']) {
 	case 'add_category':
-		$Index->save($Categories->add($_POST['parent'], $_POST['title'], $_POST['path']));
+		if ($Categories->add($_POST['parent'], $_POST['title'], $_POST['path'])) {
+			$Page->success($L->changes_saved);
+		} else {
+			$Page->warning($L->changes_save_error);
+		}
 		break;
 	case 'edit_category':
-		$Index->save($Categories->set($_POST['id'], $_POST['parent'], $_POST['title'], $_POST['path']));
+		if ($Categories->set($_POST['id'], $_POST['parent'], $_POST['title'], $_POST['path'])) {
+			$Page->success($L->changes_saved);
+		} else {
+			$Page->warning($L->changes_save_error);
+		}
 		break;
 	case 'delete_category':
-		$Index->save($Categories->del($_POST['id']));
+		if ($Categories->del($_POST['id'])) {
+			$Page->success($L->changes_saved);
+		} else {
+			$Page->warning($L->changes_save_error);
+		}
 		break;
 	case 'add_page':
-		$Index->save($Pages->add($_POST['category'], $_POST['title'], $_POST['path'], $_POST['content'], $_POST['interface']));
+		if ($Pages->add($_POST['category'], $_POST['title'], $_POST['path'], $_POST['content'], $_POST['interface'])) {
+			$Page->success($L->changes_saved);
+		} else {
+			$Page->warning($L->changes_save_error);
+		}
 		break;
 	case 'edit_page':
-		$Index->save($Pages->set($_POST['id'], $_POST['category'], $_POST['title'], $_POST['path'], $_POST['content'], $_POST['interface']));
+		if ($Pages->set($_POST['id'], $_POST['category'], $_POST['title'], $_POST['path'], $_POST['content'], $_POST['interface'])) {
+			$Page->success($L->changes_saved);
+		} else {
+			$Page->warning($L->changes_save_error);
+		}
 		break;
 	case 'delete_page':
-		$Index->save($Pages->del($_POST['id']));
+		if ($Pages->del($_POST['id'])) {
+			$Page->success($L->changes_saved);
+		} else {
+			$Page->warning($L->changes_save_error);
+		}
 		break;
 }

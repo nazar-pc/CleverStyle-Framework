@@ -10,11 +10,11 @@ namespace cs\modules\WebSockets;
 use
 	h,
 	cs\Config,
-	cs\Index,
 	cs\Language\Prefix,
 	cs\Page;
 
 $L           = new Prefix('websockets_');
+$Page        = Page::instance();
 $Config      = Config::instance();
 $module_data = $Config->module('WebSockets');
 if (isset($_POST['start_server']) && !is_server_running()) {
@@ -31,16 +31,20 @@ if (isset($_POST['start_server']) && !is_server_running()) {
 	);
 	sleep(1);
 } elseif (isset($_POST['listen_port'], $_POST['listen_locally'])) {
-	$module_data->set(
+	if ($module_data->set(
 		[
 			'security_key'   => $_POST['security_key'],
 			'listen_port'    => (int)$_POST['listen_port'] ?: 8080,
 			'listen_locally' => (int)$_POST['listen_locally']
 		]
-	);
-	Index::instance()->save(true);
+	)
+	) {
+		$Page->success($L->changes_saved);
+	} else {
+		$Page->warning($L->changes_save_error);
+	}
 }
-Page::instance()->content(
+$Page->content(
 	h::{'form[is=cs-form]'}(
 		h::{'label info'}('websockets_security_key').
 		h::{'input[is=cs-input-text]'}(

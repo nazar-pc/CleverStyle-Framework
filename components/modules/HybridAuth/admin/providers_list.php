@@ -10,21 +10,25 @@ namespace cs;
 use
 	h;
 
+$L    = Language::instance();
+$Page = Page::instance();
 if (isset($_POST['providers'], $_POST['enable_contacts_detection'])) {
-	Index::instance()->save(
-		Config::instance()->module('HybridAuth')->set(
-			[
-				'providers'                 => $_POST['providers'],
-				'enable_contacts_detection' => $_POST['enable_contacts_detection']
-			]
-		)
-	);
+	if (Config::instance()->module('HybridAuth')->set(
+		[
+			'providers'                 => $_POST['providers'],
+			'enable_contacts_detection' => $_POST['enable_contacts_detection']
+		]
+	)
+	) {
+		$Page->success($L->changes_saved);
+	} else {
+		$Page->warning($L->changes_save_error);
+	}
 }
 $Config           = Config::instance();
-$L                = Language::instance();
 $providers_config = $Config->module('HybridAuth')->providers;
 $providers        = file_get_json(__DIR__.'/../providers.json');
-Page::instance()->content(
+$Page->content(
 	h::{'form[is=cs-form]'}(
 		h::{'table.cs-table[right-left] tr td'}(
 			h::info('enable_contacts_detection'),

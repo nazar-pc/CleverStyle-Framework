@@ -8,22 +8,26 @@
  */
 use
 	cs\Config,
-	cs\Index,
 	cs\Language,
 	cs\Page;
 
 $L           = Language::instance();
+$Page        = Page::instance();
 $module_data = Config::instance()->module('Blockchain_payment');
 if (isset($_POST['bitcoin_address'], $_POST['bitcoin_address'])) {
-	$module_data->set(
+	if ($module_data->set(
 		[
 			'bitcoin_address'        => $_POST['bitcoin_address'],
 			'confirmations_required' => max(1, $_POST['confirmations_required'])
 		]
-	);
-	Index::instance()->save(true);
+	)
+	) {
+		$Page->success($L->changes_saved);
+	} else {
+		$Page->warning($L->changes_save_error);
+	}
 }
-Page::instance()->content(
+$Page->content(
 	h::{'form[is=cs-form]'}(
 		h::{'label info'}('blockchain_payment_bitcoin_address').
 		h::{'input[is=cs-input-text]'}(

@@ -12,15 +12,16 @@ use
 	cs\Language\Prefix;
 
 $Config      = Config::instance();
+$L           = new Prefix('deferred_tasks_');
+$Page        = Page::instance();
 $module_data = $Config->module('Deferred_tasks');
 if (isset($_POST['general'])) {
 	$module_data->set($_POST['general']);
-	Index::instance()->save(true);
+	$Page->success($L->changes_saved);
 }
 
-$L        = new Prefix('deferred_tasks_');
 $core_url = $Config->core_url();
-Page::instance()->content(
+$Page->content(
 	h::{'form[is=cs-form]'}(
 		h::{'label info'}('deferred_tasks_security_key').
 		h::{'input[is=cs-input-text][full-width][name=general[security_key]]'}(

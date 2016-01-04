@@ -11,20 +11,20 @@ namespace cs\modules\Content;
 use
 	h,
 	cs\Config,
-	cs\Index,
 	cs\Language\Prefix,
 	cs\Page;
 
 $L           = new Prefix('content_');
+$Page        = Page::instance();
 $Content     = Content::instance();
 $all_items   = $Content->get($Content->get_all());
 $module_data = Config::instance()->module('Content');
 
 if (isset($_POST['simple_insert'])) {
 	$module_data->simple_insert = $_POST['simple_insert'];
-	Index::instance()->save(true);
+	$Page->success($L->changes_saved);
 }
-Page::instance()->content(
+$Page->content(
 	h::{'form[is=cs-form]'}(
 		h::{'table.cs-table[center][list]'}(
 			h::{'tr th'}(

@@ -256,6 +256,8 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				success	: !~>
 					@_reload_settings()
 					cs.ui.notify(L.changes_applied + L.check_applied, 'warning', 5)
+				error	: !->
+					cs.ui.notify(L.changes_apply_error, 'error', 5)
 			)
 		_save : !->
 			$.ajax(
