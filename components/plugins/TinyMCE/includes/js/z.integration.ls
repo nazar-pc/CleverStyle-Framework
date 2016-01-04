@@ -16,7 +16,7 @@ uploader			= cs.file_upload && cs.file_upload(
 		uploader_callback := undefined
 	(error) !->
 		tinymce.uploader_dialog.close()
-		alert(error.message)
+		cs.ui.notify(error, 'error')
 	(file) !->
 		if !tinymce.uploader_dialog
 			progress								= document.createElement('progress', 'cs-progress')

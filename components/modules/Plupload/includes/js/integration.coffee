@@ -48,7 +48,7 @@ cs.file_upload	= (button, success, error, progress, multi, drop_element) ->
 					files.push(response.result)
 				else
 					if error
-						error response.error
+						error response.error.message
 					else
 						alert response.error.message
 		)

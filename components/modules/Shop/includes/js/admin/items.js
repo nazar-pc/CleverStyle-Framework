@@ -179,7 +179,7 @@
               return modal.add_images(images);
             }, function(error) {
               progress.hidden = true;
-              return alert(error.message);
+              return cs.ui.notify(error, 'error');
             }, function(percents) {
               progress.value = percents;
               return progress.hidden = false;
@@ -227,7 +227,7 @@
                   return video_video.val(video[0]);
                 }, function(error) {
                   progress.hidden = true;
-                  return alert(error.message);
+                  return cs.ui.notify(error, 'error');
                 }, function(percents) {
                   progress.value = percents;
                   return progress.hidden = false;
@@ -245,7 +245,7 @@
                   return video_poster.val(poster[0]);
                 }, function(error) {
                   progress.hidden = true;
-                  return alert(error.message);
+                  return cs.ui.notify(error, 'error');
                 }, function(percents) {
                   progress.value = percents;
                   return progress.hidden = false;

@@ -113,7 +113,7 @@ $ ->
 						modal.set_image(image[0])
 					(error) ->
 						progress.hidden = true
-						alert error.message
+						cs.ui.notify(error, 'error')
 					(percents) ->
 						progress.value	= percents
 						progress.hidden	= false

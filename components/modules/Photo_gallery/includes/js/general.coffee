@@ -27,8 +27,7 @@ $ ->
 							alert L.photo_gallery_some_images_not_supported
 						location.href	= 'Photo_gallery/edit_images/' + result.join(',')
 				)
-			(error) ->
-				alert error.message
+			null
 			null
 			true
 		)

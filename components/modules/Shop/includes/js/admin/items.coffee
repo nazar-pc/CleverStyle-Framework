@@ -184,7 +184,7 @@ $ ->
 							modal.add_images(images)
 						(error) ->
 							progress.hidden = true
-							alert error.message
+							cs.ui.notify(error, 'error')
 						(percents) ->
 							progress.value	= percents
 							progress.hidden	= false
@@ -244,7 +244,7 @@ $ ->
 									video_video.val(video[0])
 								(error) ->
 									progress.hidden = true
-									alert error.message
+									cs.ui.notify(error, 'error')
 								(percents) ->
 									progress.value	= percents
 									progress.hidden	= false
@@ -263,7 +263,7 @@ $ ->
 									video_poster.val(poster[0])
 								(error) ->
 									progress.hidden = true
-									alert error.message
+									cs.ui.notify(error, 'error')
 								(percents) ->
 									progress.value	= percents
 									progress.hidden	= false

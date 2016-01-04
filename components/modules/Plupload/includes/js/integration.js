@@ -55,7 +55,7 @@
           return files.push(response.result);
         } else {
           if (error) {
-            return error(response.error);
+            return error(response.error.message);
           } else {
             return alert(response.error.message);
           }

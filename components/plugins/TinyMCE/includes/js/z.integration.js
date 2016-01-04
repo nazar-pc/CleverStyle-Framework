@@ -18,7 +18,7 @@
     uploader_callback = undefined;
   }, function(error){
     tinymce.uploader_dialog.close();
-    alert(error.message);
+    cs.ui.notify(error, 'error');
   }, function(file){
     var progress;
     if (!tinymce.uploader_dialog) {

@@ -33,9 +33,7 @@
             return location.href = 'Photo_gallery/edit_images/' + result.join(',');
           }
         });
-      }, function(error) {
-        return alert(error.message);
-      }, null, true);
+      }, null, null, true);
     }
     images_section = $('.cs-photo-gallery-images');
     if (images_section.length) {

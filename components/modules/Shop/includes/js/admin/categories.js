@@ -89,7 +89,7 @@
             return modal.set_image(image[0]);
           }, function(error) {
             progress.hidden = true;
-            return alert(error.message);
+            return cs.ui.notify(error, 'error');
           }, function(percents) {
             progress.value = percents;
             return progress.hidden = false;

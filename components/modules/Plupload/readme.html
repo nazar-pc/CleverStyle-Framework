@@ -37,7 +37,7 @@ var uploader = cs.file_upload ? cs.file_upload(
 	},
 	function (error) {
 		tinymce.uploader_dialog.close();
-		alert(error.message);
+		alert(error);
 	},
 	function (file) {
 		if (!tinymce.uploader_dialog) {
