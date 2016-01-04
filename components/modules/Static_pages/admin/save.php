@@ -7,7 +7,9 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\modules\Static_pages;
-use            cs\Index;
+use
+	cs\Index;
+
 if (!isset($_POST['mode'])) {
 	return;
 }

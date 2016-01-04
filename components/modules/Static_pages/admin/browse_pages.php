@@ -9,14 +9,13 @@
 namespace cs\modules\Static_pages;
 use
 	h,
-	cs\Index,
 	cs\Language,
-	cs\Route;
-$Index          = Index::instance();
-$L              = Language::instance();
-$rc             = Route::instance()->route;
-$Index->buttons = false;
-$Index->content(
+	cs\Route,
+	cs\Page;
+
+$L  = Language::instance();
+$rc = Route::instance()->route;
+Page::instance()->content(
 	h::{'table.cs-table[list]'}(
 		h::{'tr th'}(
 			[

@@ -17,8 +17,8 @@ use
 	cs\Page,
 	cs\Route,
 	cs\User;
+
 $Config     = Config::instance();
-$Index      = Index::instance();
 $L          = Language::instance();
 $Pages      = Pages::instance();
 $Categories = Categories::instance();
@@ -37,7 +37,7 @@ if (isset($_POST['save'])) {
 	if (!$User->get_permission('admin/Pages', 'edit_page')) {
 		throw new ExitException(403);
 	}
-	$Index->save(
+	Index::instance()->save(
 		$Pages->set($page['id'], $page['category'], $_POST['title'], $page['path'], $_POST['content'], $page['interface'])
 	);
 	$page = $Pages->get($page['id']);
@@ -74,42 +74,44 @@ if ($page['interface']) {
 		if (!$is_admin) {
 			throw new ExitException(404);
 		}
-		$Index->form    = true;
-		$Index->buttons = false;
-		$Index->action  = $canonical_url;
-		$Index->content(
-			h::{'h2.cs-text-center'}(
-				$L->editing_of_page($page['title'])
-			).
-			h::{'table.cs-table.cs-static-pages-page-form[right-left] tr| td'}(
-				[
-					$L->page_title,
-					h::{'h1.cs-static-pages-page-title[contenteditable=true]'}(
-						$page['title']
-					)
-				],
-				[
-					$L->page_content,
-					(functionality('inline_editor')
-						? h::{'cs-editor-inline div.cs-static-pages-page-content'}(
-							$page['content']
-						)
-						: h::{'cs-editor textarea.cs-static-pages-page-content[is=cs-textarea][autosize]name=content][required]'}(
-							$page['content']
-						)
-					)
-				]
-			).
-			h::{'p.cs-text-center'}(
-				h::{'button.cs-static-pages-page-save[is=cs-button][type=submit][name=save]'}(
-					$L->save
+		$Page->content(
+			h::{'form[is=cs-form]'}(
+				h::{'h2.cs-text-center'}(
+					$L->editing_of_page($page['title'])
 				).
-				h::{'button[is=cs-button]'}(
-					$L->cancel,
+				h::{'table.cs-table.cs-static-pages-page-form[right-left] tr| td'}(
 					[
-						'onclick' => 'history.go(-1);'
+						$L->page_title,
+						h::{'h1.cs-static-pages-page-title[contenteditable=true]'}(
+							$page['title']
+						)
+					],
+					[
+						$L->page_content,
+						(functionality('inline_editor')
+							? h::{'cs-editor-inline div.cs-static-pages-page-content'}(
+								$page['content']
+							)
+							: h::{'cs-editor textarea.cs-static-pages-page-content[is=cs-textarea][autosize]name=content][required]'}(
+								$page['content']
+							)
+						)
 					]
-				)
+				).
+				h::{'p.cs-text-center'}(
+					h::{'button.cs-static-pages-page-save[is=cs-button][type=submit][name=save]'}(
+						$L->save
+					).
+					h::{'button[is=cs-button]'}(
+						$L->cancel,
+						[
+							'onclick' => 'history.go(-1);'
+						]
+					)
+				),
+				[
+					'action' => $canonical_url
+				]
 			)
 		);
 	} else {

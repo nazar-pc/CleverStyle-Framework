@@ -9,12 +9,11 @@
 namespace cs\modules\Static_pages;
 use
 	h,
-	cs\Index,
-	cs\Language;
-$Index          = Index::instance();
-$L              = Language::instance();
-$Index->buttons = false;
-$Index->content(
+	cs\Language,
+	cs\Page;
+
+$L = Language::instance();
+Page::instance()->content(
 	h::{'table.cs-table[list]'}(
 		h::{'tr th'}(
 			[

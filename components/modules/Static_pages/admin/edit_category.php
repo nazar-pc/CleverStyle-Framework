@@ -9,44 +9,55 @@
 namespace cs\modules\Static_pages;
 use
 	h,
-	cs\Index,
 	cs\Language,
 	cs\Page,
 	cs\Route;
-$Index = Index::instance();
+
 $L     = Language::instance();
 $id    = (int)Route::instance()->route[1];
 $data  = Categories::instance()->get($id);
-Page::instance()->title($L->editing_of_page_category($data['title']));
-$Index->cancel_button_back    = true;
-$Index->action                = 'admin/Static_pages';
-$Index->form_attributes['is'] = 'cs-form';
-$Index->content(
-	h::h2($L->editing_of_page_category($data['title'])).
-	h::label($L->parent_category).
-	h::{'select[is=cs-select][name=parent][size=5]'}(
-		get_categories_list($id),
-		[
-			'selected' => $data['parent']
-		]
-	).
-	h::label($L->category_title).
-	h::{'input[is=cs-input-text][name=title]'}(
-		[
-			'value' => $data['title']
-		]
-	).
-	h::{'label info'}('category_path').
-	h::{'input[is=cs-input-text][name=path]'}(
-		[
-			'value' => $data['path']
-		]
-	).
-	h::{'input[type=hidden][name=id]'}(
-		[
-			'value' => $id
-		]
-	).
-	h::{'input[type=hidden][name=mode][value=edit_category]'}().
-	h::br()
-);
+Page::instance()
+	->title($L->editing_of_page_category($data['title']))
+	->content(
+		h::{'form[is=cs-form][action=admin/Static_pages]'}(
+			h::h2($L->editing_of_page_category($data['title'])).
+			h::label($L->parent_category).
+			h::{'select[is=cs-select][name=parent][size=5]'}(
+				get_categories_list($id),
+				[
+					'selected' => $data['parent']
+				]
+			).
+			h::label($L->category_title).
+			h::{'input[is=cs-input-text][name=title]'}(
+				[
+					'value' => $data['title']
+				]
+			).
+			h::{'label info'}('category_path').
+			h::{'input[is=cs-input-text][name=path]'}(
+				[
+					'value' => $data['path']
+				]
+			).
+			h::{'input[type=hidden][name=id]'}(
+				[
+					'value' => $id
+				]
+			).
+			h::p(
+				h::{'button[is=cs-button][type=submit][name=mode][value=edit_category]'}(
+					$L->save,
+					[
+						'tooltip' => $L->save_info
+					]
+				).
+				h::{'button[is=cs-button][type=button]'}(
+					$L->cancel,
+					[
+						'onclick' => 'history.go(-1);'
+					]
+				)
+			)
+		)
+	);
