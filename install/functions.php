@@ -147,7 +147,7 @@ function install_process ($fs, $argv = null) {
 		$url = implode('/', array_slice(explode('/', $url), 0, -2));    //Remove 2 last items
 	}
 	preg_match('#//([^/]+)#', $url, $domain);
-	$domain = $domain[1];
+	$domain = explode(':', $domain[1])[0];
 	$config = [
 		'name'                              => $_POST['site_name'],
 		'url'                               => [$url],

@@ -65,13 +65,13 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 # Install CleverStyle CMS
 
 	php dist.phar.php \
-		-site_name      "CleverStyle CMS Demo (not for production, admin:1111)" \
-		-site_url       http://localhost:8888 \
-		-db_name        cscms \
-		-db_user        root \
-		-db_password    $MYSQL_PASSWORD \
-		-admin_email    admin@localhost.loc \
-		-admin_password 1111 && \
+		--site_name      "CleverStyle CMS Demo (not for production, admin:1111)" \
+		--site_url       http://localhost:8888 \
+		--db_name        cscms \
+		--db_user        root \
+		--db_password    $MYSQL_PASSWORD \
+		--admin_email    admin@localhost.loc \
+		--admin_password 1111 && \
 
 # Move to special directory for volume support on running
 
