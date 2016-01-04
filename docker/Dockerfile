@@ -20,7 +20,7 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 	apt-get install -y --no-install-recommends \
 		mysql-client mysql-server \
 		nginx \
-		php5-cli php5-curl php5-fpm php5-mysql \
+		php5-cli php5-curl php5-gd php5-fpm php5-mysql \
 		wget && \
 	rm -rf /var/lib/apt/lists/* && \
 
