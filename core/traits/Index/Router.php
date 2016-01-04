@@ -6,7 +6,9 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\Index;
-use cs\ExitException;
+use
+	cs\ExitException;
+
 /**
  * @property bool     $module          Name of current module
  * @property bool     $in_api          Whether current page is api
@@ -167,9 +169,9 @@ trait Router {
 	 */
 	protected function controller_router () {
 		$suffix = '';
-		if ($this->in_admin) {
+		if (admin_path()) {
 			$suffix = '\\admin';
-		} elseif ($this->in_api) {
+		} elseif (api_path()) {
 			$suffix = '\\api';
 		}
 		$controller_class = "cs\\modules\\$this->module$suffix\\Controller";

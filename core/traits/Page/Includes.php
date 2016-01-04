@@ -263,7 +263,6 @@ trait Includes {
 	}
 	protected function add_system_configs () {
 		$Config         = Config::instance();
-		$Index          = Index::instance();
 		$Route          = Route::instance();
 		$User           = User::instance();
 		$current_module = current_module();
@@ -273,10 +272,10 @@ trait Includes {
 		$this->config_internal(
 			[
 				'base_url'              => $Config->base_url(),
-				'current_base_url'      => $Config->base_url().'/'.($Index->in_admin() ? 'admin/' : '').$current_module,
+				'current_base_url'      => $Config->base_url().'/'.(admin_path() ? 'admin/' : '').$current_module,
 				'public_key'            => Core::instance()->public_key,
 				'module'                => $current_module,
-				'in_admin'              => (int)$Index->in_admin(),
+				'in_admin'              => (int)admin_path(),
 				'is_admin'              => (int)$User->admin(),
 				'is_user'               => (int)$User->user(),
 				'is_guest'              => (int)$User->guest(),

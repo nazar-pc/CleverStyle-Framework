@@ -8,6 +8,7 @@
 namespace cs;
 use
 	h;
+
 /**
  * Provides next events:
  *  System/Index/block_render
@@ -24,27 +25,13 @@ use
  *
  * @method static Index instance($check = false)
  *
- * @property string   $action             Form action
- * @property string[] $controller_path    Path that will be used by controller to render page
+ * @property string[] $controller_path Path that will be used by controller to render page
  */
 class Index {
 	use
 		Singleton,
 		Index\Router;
-	/**
-	 * @var string
-	 */
-	public $Content;
 
-	public    $form               = false;
-	public    $file_upload        = false;
-	public    $form_attributes    = [];
-	public    $buttons            = true;
-	public    $save_button        = true;
-	public    $apply_button       = false;
-	public    $cancel_button_back = false;
-	public    $custom_buttons     = '';
-	protected $action;
 	/**
 	 * Appends to the end of title
 	 *
@@ -57,18 +44,6 @@ class Index {
 	 * @var string
 	 */
 	protected $module;
-	/**
-	 * Whether current page is api
-	 *
-	 * @var bool
-	 */
-	protected $in_api = false;
-	/**
-	 * Whether current page is administration and user is admin
-	 *
-	 * @var bool
-	 */
-	protected $in_admin          = false;
 	protected $request_method;
 	protected $working_directory = '';
 	protected $called_once       = false;
@@ -100,7 +75,7 @@ class Index {
 		$Route      = Route::instance();
 		$this->path = &$Route->path;
 		$this->ids  = &$Route->ids;
-		if ($this->closed_site($Config, api_path())) {
+		if ($this->closed_site($Config)) {
 			return;
 		}
 		$this->module            = current_module();
@@ -116,9 +91,6 @@ class Index {
 		if (!$this->check_permission('index')) {
 			throw new ExitException(403);
 		}
-		$this->in_admin = admin_path();
-		$this->form     = $this->in_admin;
-		$this->in_api   = api_path();
 		Event::instance()->fire('System/Index/construct');
 		/**
 		 * Plugins processing
@@ -139,11 +111,10 @@ class Index {
 	 * Check if site is closed (taking user into account)
 	 *
 	 * @param Config $Config
-	 * @param bool   $in_api
 	 *
 	 * @return bool Whether user is not admin and this is not request for sign in (we allow to sign in on disabled site)
 	 */
-	protected function closed_site ($Config, $in_api) {
+	protected function closed_site ($Config) {
 		if (
 			$Config->core['site_mode'] ||
 			User::instance()->admin()
@@ -151,7 +122,7 @@ class Index {
 			return false;
 		}
 		return
-			!$in_api ||
+			!api_path() ||
 			$this->module != 'System' ||
 			Route::instance()->route !== ['user', 'sign_in'];
 	}
@@ -172,39 +143,6 @@ class Index {
 		return User::instance()->get_permission($permission_group, $label);
 	}
 	/**
-	 * Adding of content on the page
-	 *
-	 * @param string   $add
-	 * @param bool|int $level
-	 *
-	 * @return Index
-	 */
-	function content ($add, $level = false) {
-		if ($level !== false) {
-			$this->Content .= h::level($add, $level);
-		} else {
-			$this->Content .= $add;
-		}
-		return $this;
-	}
-	/**
-	 * Get form action based on current module, path and other parameters
-	 *
-	 * @return string
-	 */
-	protected function get_action () {
-		if ($this->action === null) {
-			$this->action = ($this->in_admin ? 'admin/' : '')."$this->module";
-			if (isset($this->path[0])) {
-				$this->action .= '/'.$this->path[0];
-				if (isset($this->path[1])) {
-					$this->action .= '/'.$this->path[1];
-				}
-			}
-		}
-		return $this->action ?: '';
-	}
-	/**
 	 * Page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
 	 *
 	 * @throws ExitException
@@ -212,14 +150,9 @@ class Index {
 	protected function render_page () {
 		$this->render_title();
 		$this->render_content();
-		$Page = Page::instance();
-		if (!$this->in_api) {
-			if ($this->form) {
-				$this->form_wrapper();
-			}
+		if (!api_path()) {
 			$this->render_blocks();
 		}
-		$Page->content($this->Content);
 	}
 	/**
 	 * Render page title
@@ -229,9 +162,9 @@ class Index {
 		/**
 		 * Add generic Home or Module name title
 		 */
-		if (!$this->in_api) {
+		if (!api_path()) {
 			$L = Language::instance();
-			if ($this->in_admin) {
+			if (admin_path()) {
 				$Page->title($L->administration);
 			}
 			$Page->title(
@@ -256,55 +189,6 @@ class Index {
 			return;
 		}
 		$this->execute_router();
-	}
-	/**
-	 * Wraps `cs\Index::$Content` with form and adds form buttons to the end of content
-	 */
-	protected function form_wrapper () {
-		/**
-		 * Render buttons
-		 */
-		if ($this->buttons) {
-			/**
-			 * Apply button
-			 */
-			if ($this->apply_button) {
-				$this->Content .= $this->form_button('apply', !Cache::instance()->cache_state());
-			}
-			/**
-			 * Save button
-			 */
-			if ($this->save_button) {
-				$this->Content .= $this->form_button('save');
-			}
-			/**
-			 * If cancel button does not work as back button - render it here
-			 */
-			if ($this->apply_button && !$this->cancel_button_back) {
-				$this->Content .= $this->form_button('cancel', !Config::instance()->cancel_available());
-			}
-		}
-		/**
-		 * If cancel button works as back button - render it here
-		 */
-		if ($this->cancel_button_back) {
-			$this->Content .= h::{'button[is=cs-button]'}(
-				Language::instance()->cancel,
-				[
-					'name'    => 'cancel',
-					'type'    => 'button',
-					'onclick' => 'history.go(-1);'
-				]
-			);
-		}
-		$this->Content = h::form(
-			$this->Content.
-			$this->custom_buttons,
-			$this->form_attributes + [
-				'enctype' => $this->file_upload ? 'multipart/form-data' : false,
-				'action'  => $this->get_action()
-			]
-		);
 	}
 	/**
 	 * Simple wrapper for form buttons
@@ -491,15 +375,7 @@ class Index {
 		Page::instance()->success($L->changes_canceled);
 	}
 	/**
-	 * Whether current page is administration and user is admin
-	 *
-	 * @return bool
-	 */
-	function in_admin () {
-		return $this->in_admin;
-	}
-	/**
-	 * Getter for `action` and `controller_path` properties (no other properties supported currently)
+	 * Getter for `controller_path` propertie (no other properties supported currently)
 	 *
 	 * @param string $property
 	 *
@@ -507,23 +383,10 @@ class Index {
 	 */
 	function __get ($property) {
 		switch ($property) {
-			case 'action':
-				return $this->get_action();
 			case 'controller_path';
 				return $this->controller_path;
 		}
 		return false;
-	}
-	/**
-	 * Setter for `action` property (no other properties supported currently)
-	 *
-	 * @param string $property
-	 * @param string $value
-	 */
-	function __set ($property, $value) {
-		if ($property == 'action') {
-			$this->action = $value;
-		}
 	}
 	/**
 	 * Executes plugins processing, blocks and module page generation
@@ -544,7 +407,7 @@ class Index {
 		 * If site is closed
 		 */
 		if (!$Config->core['site_mode']) {
-			if ($this->closed_site($Config, $this->in_api)) {
+			if ($this->closed_site($Config)) {
 				status_code(503);
 				return;
 			}

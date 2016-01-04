@@ -8,4 +8,3 @@
  */
 namespace cs;
 include __DIR__.'/save.php';
-Index::instance()->form_attributes['is'] = 'cs-form';

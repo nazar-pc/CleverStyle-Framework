@@ -9,54 +9,57 @@
 namespace cs\modules\Shop;
 use
 	h,
-	cs\Index,
 	cs\Language\Prefix,
 	cs\Page;
 
-Index::instance()->buttons = false;
-$L                         = new Prefix('shop_');
-$Page                      = Page::instance();
-$Page->title($L->shipping_types);
+$L                  = new Prefix('shop_');
 $Shipping_types     = Shipping_types::instance();
 $all_shipping_types = $Shipping_types->get($Shipping_types->get_all());
-usort($all_shipping_types, function ($shipping_type1, $shipping_type2) {
-	return $shipping_type1['title'] > $shipping_type2['title'] ? 1 : -1;
-});
-$Page->content(
-	h::{'h2.cs-text-center'}($L->shipping_types).
-	h::{'table.cs-table[list]'}(
-		h::{'tr th'}(
-			'id',
-			"$L->title ".h::icon('caret-down'),
-			$L->price,
-			$L->phone_needed,
-			$L->address_needed,
-			$L->action
-		).
-		h::{'tr| td'}(array_map(
-			function ($shipping_type) use ($L) {
-				return [
-					$shipping_type['id'],
-					$shipping_type['title'],
-					$shipping_type['price'],
-					h::icon($shipping_type['phone_needed'] ? 'check' : 'minus'),
-					h::icon($shipping_type['address_needed'] ? 'check' : 'minus'),
-					h::{'button.cs-shop-shipping-type-edit[is=cs-button]'}(
-						$L->edit,
-						[
-							'data-id' => $shipping_type['id']
-						]
-					).
-					h::{'button.cs-shop-shipping-type-delete[is=cs-button]'}(
-						$L->delete,
-						[
-							'data-id' => $shipping_type['id']
-						]
-					)
-				];
-			},
-			$all_shipping_types
-		) ?: false)
-	).
-	h::{'p button.cs-shop-shipping-type-add[is=cs-button]'}($L->add)
+usort(
+	$all_shipping_types,
+	function ($shipping_type1, $shipping_type2) {
+		return $shipping_type1['title'] > $shipping_type2['title'] ? 1 : -1;
+	}
 );
+Page::instance()
+	->title($L->shipping_types)
+	->content(
+		h::{'h2.cs-text-center'}($L->shipping_types).
+		h::{'table.cs-table[list]'}(
+			h::{'tr th'}(
+				'id',
+				"$L->title ".h::icon('caret-down'),
+				$L->price,
+				$L->phone_needed,
+				$L->address_needed,
+				$L->action
+			).
+			h::{'tr| td'}(
+				array_map(
+					function ($shipping_type) use ($L) {
+						return [
+							$shipping_type['id'],
+							$shipping_type['title'],
+							$shipping_type['price'],
+							h::icon($shipping_type['phone_needed'] ? 'check' : 'minus'),
+							h::icon($shipping_type['address_needed'] ? 'check' : 'minus'),
+							h::{'button.cs-shop-shipping-type-edit[is=cs-button]'}(
+								$L->edit,
+								[
+									'data-id' => $shipping_type['id']
+								]
+							).
+							h::{'button.cs-shop-shipping-type-delete[is=cs-button]'}(
+								$L->delete,
+								[
+									'data-id' => $shipping_type['id']
+								]
+							)
+						];
+					},
+					$all_shipping_types
+				) ?: false
+			)
+		).
+		h::{'p button.cs-shop-shipping-type-add[is=cs-button]'}($L->add)
+	);

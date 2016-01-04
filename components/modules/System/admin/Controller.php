@@ -9,12 +9,10 @@
  */
 namespace cs\modules\System\admin;
 use
-	cs\Index,
 	cs\Page;
 
 class Controller {
 	static function index ($route_ids, $route_path) {
-		Index::instance()->form = false;
 		switch (@$route_path[2]) {
 			case 'phpinfo':
 				interface_off();

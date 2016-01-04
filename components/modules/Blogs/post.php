@@ -12,7 +12,6 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Index,
 	cs\Page\Meta,
 	cs\Page,
 	cs\Route,
@@ -70,7 +69,7 @@ $is_admin         =
 	$User->admin() &&
 	$User->get_permission('admin/Blogs', 'index') &&
 	$User->get_permission('admin/Blogs', 'edit_post');
-Index::instance()->content(
+$Page->content(
 	h::{'article[is=cs-blogs-post]'}(
 		h::{'script[type=application/ld+json]'}(
 			json_encode($post, JSON_UNESCAPED_UNICODE)
