@@ -266,9 +266,6 @@ trait Includes {
 		$Route          = Route::instance();
 		$User           = User::instance();
 		$current_module = current_module();
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
 		$this->config_internal(
 			[
 				'base_url'              => $Config->base_url(),
@@ -282,9 +279,6 @@ trait Includes {
 				'password_min_length'   => (int)$Config->core['password_min_length'],
 				'password_min_strength' => (int)$Config->core['password_min_strength'],
 				'debug'                 => (int)DEBUG,
-				'cookie_prefix'         => $Config->core['cookie_prefix'],
-				'cookie_domain'         => $Config->core['cookie_domain'][$Route->mirror_index],
-				'protocol'              => $_SERVER->protocol,
 				'route'                 => $Route->route,
 				'route_path'            => $Route->path,
 				'route_ids'             => $Route->ids
