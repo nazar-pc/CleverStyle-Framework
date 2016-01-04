@@ -375,11 +375,11 @@ class Index {
 		Page::instance()->success($L->changes_canceled);
 	}
 	/**
-	 * Getter for `controller_path` propertie (no other properties supported currently)
+	 * Getter for `controller_path` property (no other properties supported currently)
 	 *
 	 * @param string $property
 	 *
-	 * @return false|string|string[]
+	 * @return false|string[]
 	 */
 	function __get ($property) {
 		switch ($property) {
