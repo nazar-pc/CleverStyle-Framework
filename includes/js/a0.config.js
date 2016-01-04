@@ -37,7 +37,7 @@
       }
     });
   });
-  if (document.URL.indexOf(document.baseURI.substr(0, -1)) !== 0) {
+  if (document.URL.indexOf(document.baseURI.substr(0, document.baseURI.length - 1)) !== 0) {
     url_lang = document.baseURI.split('/')[3];
     new_url = location.href.split('/');
     new_url.splice(3, !new_url[3] ? 1 : 0, url_lang);
