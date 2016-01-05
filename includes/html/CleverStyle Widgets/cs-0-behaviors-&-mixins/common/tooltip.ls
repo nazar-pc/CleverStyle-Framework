@@ -9,9 +9,11 @@ Polymer.{}cs.{}behaviors.tooltip =
 	properties	:
 		tooltip	: String
 	attached : !->
-		requestAnimationFrame !~>
+		@addEventListener('mouseover', !~function add_tooltip
+			@removeEventListener('mouseover', add_tooltip)
 			if @tooltip
 				@_tooltip_for_element(@)
+		)
 	_tooltip_for_element : (element) !->
 		if @_tooltip_binding_added
 			return

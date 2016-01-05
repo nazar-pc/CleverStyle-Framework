@@ -20,33 +20,31 @@ Polymer.{}cs.{}behaviors.label =
 			type		: String
 	# TODO: Should be `ready` according to Polymer docs, but not working as expected (see https://github.com/Polymer/polymer/issues/2366)
 	attached : !->
-		# Micro optimization
-		requestAnimationFrame !~>
-			do !~>
-				next_node	= @nextSibling
-				if next_node && next_node.nodeType == Node.TEXT_NODE && next_node.nextSibling?.getAttribute?('is') == @is
-					next_node.parentNode.removeChild(next_node)
-			@local_input		= @querySelector('input')
-			@local_input.label	= @
-			@active				= @local_input.checked
-			inputs				= @_get_inputs()
-			if @value != undefined
-				@_value_changed(@value)
-			for input in inputs
-				let (input = input)
-					input.addEventListener('change', !~>
-						@value					= input.value
-						@active					= @local_input.value ~= input.value
-						@local_input.checked	= @local_input.value ~= input.value
-					)
-					if input.checked
-						@value	= input.value
-			@local_input.addEventListener('focus', !~>
-				@focus = true
-			)
-			@local_input.addEventListener('blur', !~>
-				@focus = false
-			)
+		do !~>
+			next_node	= @nextSibling
+			if next_node && next_node.nodeType == Node.TEXT_NODE && next_node.nextSibling?.getAttribute?('is') == @is
+				next_node.parentNode.removeChild(next_node)
+		@local_input		= @querySelector('input')
+		@local_input.label	= @
+		@active				= @local_input.checked
+		inputs				= @_get_inputs()
+		if @value != undefined
+			@_value_changed(@value)
+		for input in inputs
+			let (input = input)
+				input.addEventListener('change', !~>
+					@value					= input.value
+					@active					= @local_input.value ~= input.value
+					@local_input.checked	= @local_input.value ~= input.value
+				)
+				if input.checked
+					@value	= input.value
+		@local_input.addEventListener('focus', !~>
+			@focus = true
+		)
+		@local_input.addEventListener('blur', !~>
+			@focus = false
+		)
 	_get_inputs : ->
 		if @local_input.name
 			@parentNode.querySelectorAll('input[name="' + @local_input.name + '"]')

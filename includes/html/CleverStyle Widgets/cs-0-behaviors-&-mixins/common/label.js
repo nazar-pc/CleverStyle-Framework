@@ -26,45 +26,42 @@
       }
     },
     attached: function(){
-      var this$ = this;
-      requestAnimationFrame(function(){
-        var inputs, i$, len$, input;
-        (function(){
-          var next_node, ref$;
-          next_node = this$.nextSibling;
-          if (next_node && next_node.nodeType === Node.TEXT_NODE && ((ref$ = next_node.nextSibling) != null ? typeof ref$.getAttribute == 'function' ? ref$.getAttribute('is') : void 8 : void 8) === this$.is) {
-            next_node.parentNode.removeChild(next_node);
-          }
-        })();
-        this$.local_input = this$.querySelector('input');
-        this$.local_input.label = this$;
-        this$.active = this$.local_input.checked;
-        inputs = this$._get_inputs();
-        if (this$.value !== undefined) {
-          this$._value_changed(this$.value);
+      var inputs, i$, len$, input, this$ = this;
+      (function(){
+        var next_node, ref$;
+        next_node = this$.nextSibling;
+        if (next_node && next_node.nodeType === Node.TEXT_NODE && ((ref$ = next_node.nextSibling) != null ? typeof ref$.getAttribute == 'function' ? ref$.getAttribute('is') : void 8 : void 8) === this$.is) {
+          next_node.parentNode.removeChild(next_node);
         }
-        for (i$ = 0, len$ = inputs.length; i$ < len$; ++i$) {
-          input = inputs[i$];
-          (fn$.call(this$, input));
-        }
-        this$.local_input.addEventListener('focus', function(){
-          this$.focus = true;
-        });
-        this$.local_input.addEventListener('blur', function(){
-          this$.focus = false;
-        });
-        function fn$(input){
-          var this$ = this;
-          input.addEventListener('change', function(){
-            this$.value = input.value;
-            this$.active = this$.local_input.value == input.value;
-            this$.local_input.checked = this$.local_input.value == input.value;
-          });
-          if (input.checked) {
-            this.value = input.value;
-          }
-        }
+      })();
+      this.local_input = this.querySelector('input');
+      this.local_input.label = this;
+      this.active = this.local_input.checked;
+      inputs = this._get_inputs();
+      if (this.value !== undefined) {
+        this._value_changed(this.value);
+      }
+      for (i$ = 0, len$ = inputs.length; i$ < len$; ++i$) {
+        input = inputs[i$];
+        (fn$.call(this, input));
+      }
+      this.local_input.addEventListener('focus', function(){
+        this$.focus = true;
       });
+      this.local_input.addEventListener('blur', function(){
+        this$.focus = false;
+      });
+      function fn$(input){
+        var this$ = this;
+        input.addEventListener('change', function(){
+          this$.value = input.value;
+          this$.active = this$.local_input.value == input.value;
+          this$.local_input.checked = this$.local_input.value == input.value;
+        });
+        if (input.checked) {
+          this.value = input.value;
+        }
+      }
     },
     _get_inputs: function(){
       if (this.local_input.name) {

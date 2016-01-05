@@ -26,7 +26,10 @@ Polymer.cs.behaviors.cs-tooltip	= [
 		parent	= @parentNode
 		if parent.tagName != 'HTML'
 			parent.removeChild(@)
-			@_tooltip_for_element(parent)
+			parent.addEventListener('mouseover', !~function add_tooltip
+				parent.removeEventListener('mouseover', add_tooltip)
+				@_tooltip_for_element(parent)
+			)
 		else
 			document.addEventListener('keydown', (e) !~>
 				if e.keyCode == 27 && @show # Esc

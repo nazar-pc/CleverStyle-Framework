@@ -35,7 +35,13 @@
         parent = this.parentNode;
         if (parent.tagName !== 'HTML') {
           parent.removeChild(this);
-          this._tooltip_for_element(parent);
+          parent.addEventListener('mouseover', (function(){
+            function add_tooltip(){
+              parent.removeEventListener('mouseover', add_tooltip);
+              this$._tooltip_for_element(parent);
+            }
+            return add_tooltip;
+          }()));
         } else {
           document.addEventListener('keydown', function(e){
             if (e.keyCode === 27 && this$.show) {

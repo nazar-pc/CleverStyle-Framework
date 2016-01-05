@@ -14,11 +14,15 @@
     },
     attached: function(){
       var this$ = this;
-      requestAnimationFrame(function(){
-        if (this$.tooltip) {
-          this$._tooltip_for_element(this$);
+      this.addEventListener('mouseover', (function(){
+        function add_tooltip(){
+          this$.removeEventListener('mouseover', add_tooltip);
+          if (this$.tooltip) {
+            this$._tooltip_for_element(this$);
+          }
         }
-      });
+        return add_tooltip;
+      }()));
     },
     _tooltip_for_element: function(element){
       var show, hide;
