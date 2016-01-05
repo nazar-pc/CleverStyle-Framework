@@ -114,7 +114,7 @@ Page::instance()
 							]
 						];
 					},
-					$items
+					$items ?: []
 				) ?: false
 			)
 		).
