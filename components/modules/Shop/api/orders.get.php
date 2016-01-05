@@ -62,7 +62,7 @@ if (isset($Route->ids[0], $Route->path[1])) {
 					'user' => $Session->get_user()
 				]
 			)
-		)
+		) ?: []
 	);
 } else {
 	$Page->json(

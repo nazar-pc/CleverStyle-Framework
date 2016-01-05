@@ -81,6 +81,9 @@ Polymer(
 	comment_changed				: !->
 		params.comment	= @comment
 	finish_order				: !->
+		if !@shipping_username
+			cs.ui.alert(L.shipping_username_is_required)
+			return
 		$.ajax(
 			url		: 'api/Shop/orders'
 			type	: 'post'

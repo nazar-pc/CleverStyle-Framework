@@ -25,8 +25,9 @@ if (
 		$_POST['comment'],
 		$_POST['items']
 	) ||
-	empty($_POST['items']) ||
-	!is_array($_POST['items'])
+	!is_array($_POST['items']) ||
+	!$_POST['items'] ||
+	!$_POST['shipping_username']
 ) {
 	throw new ExitException(400);
 }
@@ -47,7 +48,7 @@ $id = $Orders->add(
 	$Session->get_user(),
 	$_POST['shipping_type'],
 	$recalculated['shipping']['price'],
-	@$_POST['shipping_username'] ?: User::instance()->username($Session->get_user()),
+	$_POST['shipping_username'],
 	$_POST['shipping_phone'],
 	$_POST['shipping_address'],
 	$_POST['payment_method'],

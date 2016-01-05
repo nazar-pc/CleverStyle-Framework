@@ -35,8 +35,8 @@
       total_price = 0;
       discount = 0;
       $(this).find('cs-shop-order-item').each(function() {
-        total_price += this.units * this.unit_price;
-        return discount += (this.units * this.unit_price) - this.price;
+        total_price += this.getAttribute('units') * this.getAttribute('unit_price');
+        return discount += (this.getAttribute('units') * this.getAttribute('unit_price')) - this.getAttribute('price');
       });
       this.total_price_formatted = sprintf(cs.shop.settings.price_formatting, total_price);
       this.discount_formatted = discount ? sprintf(cs.shop.settings.price_formatting, discount) : '';

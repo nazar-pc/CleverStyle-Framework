@@ -123,6 +123,7 @@
 		"default_paid_order_status_info"           : "Может быть несколько статусов заказа, тут можно выбрать статус, который будет назначен заказу когда пользователь оплатит его",
 		"thanks_for_order"                         : "Спасибо за заказ!",
 		"shipping_username"                        : "Доставка на имя",
+		"shipping_username_is_required"            : "Требуется указать имя получателя",
 		"youtube_vimeo_url"                        : "YouTube или Vimeo URL",
 		"iframe_url_or_embed_code"                 : "Iframe URL или код для вставки",
 		"direct_video_url"                         : "Прямой URL к видео (или загрузка)",
