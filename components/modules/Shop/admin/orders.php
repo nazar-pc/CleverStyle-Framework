@@ -157,7 +157,7 @@ Page::instance()
 							]
 						);
 					},
-					$orders
+					$orders ?: []
 				) ?: false
 			)
 		).
