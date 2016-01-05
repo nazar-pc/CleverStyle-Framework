@@ -12,6 +12,7 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Page;
+
 trait system {
 	/**
 	 * Get system settings

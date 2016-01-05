@@ -13,6 +13,7 @@ use
 	cs\ExitException,
 	cs\Mail as System_mail,
 	cs\Page;
+
 trait mail {
 	/**
 	 * Get mail settings
@@ -31,6 +32,7 @@ trait mail {
 				'mail_from'         => $Config->core['mail_from'],
 				'mail_from_name'    => get_core_ml_text('mail_from_name'),
 				'mail_signature'    => get_core_ml_text('mail_signature'),
+				'show_tooltips'     => $Config->core['show_tooltips'],
 				'simple_admin_mode' => $Config->core['simple_admin_mode'],
 				'applied'           => $Config->cancel_available()
 			]

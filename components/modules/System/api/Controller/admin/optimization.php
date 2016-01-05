@@ -14,6 +14,7 @@ use
 	cs\Event,
 	cs\ExitException,
 	cs\Page;
+
 trait optimization {
 	/**
 	 * Get optimization settings
@@ -28,6 +29,7 @@ trait optimization {
 				'inserts_limit'         => $Config->core['inserts_limit'],
 				'update_ratio'          => $Config->core['update_ratio'],
 				'cache_state'           => Cache::instance()->cache_state(),
+				'show_tooltips'         => $Config->core['show_tooltips'],
 				'simple_admin_mode'     => $Config->core['simple_admin_mode'],
 				'applied'               => $Config->cancel_available()
 			]

@@ -12,6 +12,7 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Page;
+
 trait general {
 	/**
 	 * Get general users settings
@@ -31,6 +32,7 @@ trait general {
 				'registration_confirmation_time'    => $Config->core['registration_confirmation_time'],
 				'auto_sign_in_after_registration'   => $Config->core['auto_sign_in_after_registration'],
 				'rules'                             => get_core_ml_text('rules'),
+				'show_tooltips'                     => $Config->core['show_tooltips'],
 				'simple_admin_mode'                 => $Config->core['simple_admin_mode'],
 				'applied'                           => $Config->cancel_available()
 			]

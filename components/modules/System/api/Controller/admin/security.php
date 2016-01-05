@@ -12,6 +12,7 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Page;
+
 trait security {
 	/**
 	 * Get security settings
@@ -21,6 +22,7 @@ trait security {
 		Page::instance()->json(
 			[
 				'key_expire'        => $Config->core['key_expire'],
+				'show_tooltips'     => $Config->core['show_tooltips'],
 				'simple_admin_mode' => $Config->core['simple_admin_mode'],
 				'applied'           => $Config->cancel_available()
 			]

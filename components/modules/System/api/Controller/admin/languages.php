@@ -12,6 +12,7 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Page;
+
 trait languages {
 	/**
 	 * Get languages settings
@@ -24,7 +25,8 @@ trait languages {
 				'active_languages' => $Config->core['active_languages'],
 				'languages'        => static::get_languages_array(),
 				'multilingual'     => $Config->core['multilingual'],
-				'applied'          => $Config->cancel_available()
+				'applied'          => $Config->cancel_available(),
+				'show_tooltips'    => $Config->core['show_tooltips']
 			]
 		);
 	}
