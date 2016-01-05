@@ -3,6 +3,11 @@ MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 RUN	export DEBIAN_FRONTEND=noninteractive && \
 
+# We'll need fresh MariaDB version here
+
+	apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db && \
+	add-apt-repository 'deb http://ams2.mirrors.digitalocean.com/mariadb/repo/10.1/ubuntu trusty main' && \
+
 # Update packages list, upgrade installed packages
 
 	apt-get update && \
@@ -18,7 +23,7 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 # Install MySQL, Nginx, PHP (both fpm and CLI)
 
 	apt-get install -y --no-install-recommends \
-		mysql-client mysql-server \
+		mariadb-server \
 		nginx \
 		php5-cli php5-curl php5-gd php5-fpm php5-mysql \
 		wget && \
