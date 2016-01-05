@@ -65,11 +65,12 @@ trait CRUD_helpers {
 	 * @return false|int|\int[]|string|\string[]
 	 */
 	private function search_do ($table_alias, $total_count, $where, $where_params, $joins, $join_params, $page, $count, $order_by, $asc) {
-		$where = $where ? 'WHERE '.implode(' AND ', $where) : '';
+		$first_column = array_keys($this->data_model)[0];
+		$where        = $where ? 'WHERE '.implode(' AND ', $where) : '';
 		if ($total_count) {
 			return $this->db()->qfs(
 				[
-					"SELECT COUNT(`$table_alias`.`id`)
+					"SELECT COUNT(`$table_alias`.`$first_column`)
 					FROM `$this->table` AS `$table_alias`
 					$where",
 					array_merge($join_params, $where_params)
@@ -82,7 +83,7 @@ trait CRUD_helpers {
 		$asc            = $asc ? 'ASC' : 'DESC';
 		return $this->db()->qfas(
 			[
-				"SELECT `$table_alias`.`id`
+				"SELECT `$table_alias`.`$first_column`
 				FROM `$this->table` AS `$table_alias`
 				$joins
 				$where
@@ -133,8 +134,10 @@ trait CRUD_helpers {
 	 * @param int    $join_index
 	 */
 	private function search_conditions_join_table ($table_alias, $table, $details, &$joins, &$join_params, &$join_index) {
-		$data_model    = $this->data_model[$table];
-		$join_params[] = $table;
+		$data_model        = $this->data_model[$table];
+		$first_column      = array_keys($this->data_model)[0];
+		$first_column_join = array_keys($data_model['data_model'])[0];
+		$join_params[]     = $table;
 		if (is_scalar($details)) {
 			$details = [
 				array_keys($data_model['data_model'])[1] => $details
@@ -144,7 +147,7 @@ trait CRUD_helpers {
 		$joins .=
 			"INNER JOIN `{$this->table}_$table` AS `j$join_index`
 			ON
-				`$table_alias`.`id`	= `j$join_index`.`id`";
+				`$table_alias`.`$first_column`	= `j$join_index`.`$first_column_join`";
 		foreach ($details as $field => $value) {
 			$where_tmp = [];
 			$this->search_conditions("j$join_index", $field, $value, $where_tmp, $join_params);
@@ -190,10 +193,12 @@ trait CRUD_helpers {
 		}
 		if (isset($order_by[1])) {
 			++$join_index;
+			$first_column      = array_keys($this->data_model)[0];
+			$first_column_join = array_keys($this->data_model[$order_by[0]]['data_model'])[0];
 			$joins .=
 				"INNER JOIN `{$this->table}_$order_by[0]` AS `j$join_index`
 				ON
-					`$table_alias`.`id`	= `j$join_index`.`id`";
+					`$table_alias`.`$first_column`	= `j$join_index`.`$first_column_join`";
 			$order_by = "`j$join_index`.`$order_by[1]`";
 		} else {
 			$order_by = "`$table_alias`.`$order_by[0]`";
