@@ -12,8 +12,7 @@ use
 	cs\ExitException,
 	cs\Page,
 	cs\Route,
-	cs\Session,
-	cs\User;
+	cs\Session;
 
 if (
 	!isset(
