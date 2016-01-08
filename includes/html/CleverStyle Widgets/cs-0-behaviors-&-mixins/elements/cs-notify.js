@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var in_progress;
-  in_progress = false;
+  var promise;
+  promise = Promise.resolve();
   Polymer.cs.behaviors.csNotify = [
     Polymer.cs.behaviors['this'], {
       properties: {
@@ -55,6 +55,7 @@
         transitionend: '_transitionend'
       },
       attached: function(){
+        var this$ = this;
         this.last_node = this.parentNode;
         if (this.parentNode.tagName !== 'HTML') {
           document.documentElement.appendChild(this);
@@ -63,36 +64,53 @@
         if (!this.bottom && !this.top) {
           this.top = true;
         }
-        setTimeout(this._show.bind(this), 0);
+        if (document.readyState !== 'complete') {
+          addEventListener('WebComponentsReady', function(){
+            setTimeout(bind$(this$, '_schedule_show'));
+          });
+        } else {
+          setTimeout(bind$(this, '_schedule_show'));
+        }
+      },
+      _schedule_show: function(){
+        var promise, this$ = this;
+        promise = promise.then(function(){
+          return new Promise(function(resolve){
+            this$.resolve = resolve;
+            this$._show();
+          });
+        });
+      },
+      _schedule_hide: function(){
+        var promise, this$ = this;
+        promise = promise.then(function(){
+          return new Promise(function(resolve){
+            this$.resolve = resolve;
+            this$._hide();
+          });
+        });
       },
       _tap: function(e){
         if (e.target === this.$.content || e.target === this.$.icon) {
-          this._hide();
+          this._schedule_hide();
         }
       },
       _transitionend: function(){
-        var ref$, in_progress;
+        var ref$;
+        this.resolve();
         if (!this.show) {
           if ((ref$ = this.parentNode) != null) {
             ref$.removeChild(this);
           }
+          return;
         }
         if (this.timeout) {
-          setTimeout(this._hide.bind(this), this.timeout * 1000);
+          setTimeout(this._schedule_hide, this.timeout * 1000);
           this.timeout = 0;
-        }
-        if (in_progress === this) {
-          in_progress = false;
         }
       },
       _show: function(){
-        var in_progress, this$ = this;
-        if (!in_progress) {
-          in_progress = this;
-        } else {
-          setTimeout(this._show.bind(this), 100);
-          return;
-        }
+        var this$ = this;
         if (this.content) {
           this.innerHTML = this.content;
         }
@@ -108,14 +126,8 @@
         this.fire('show');
       },
       _hide: function(){
-        var in_progress, interesting_margin, this$ = this;
+        var interesting_margin, this$ = this;
         if (!this.show) {
-          return;
-        }
-        if (!in_progress) {
-          in_progress = this;
-        } else {
-          setTimeout(this._hide.bind(this), 100);
           return;
         }
         this.show = false;
@@ -161,4 +173,7 @@
       }
     }
   ];
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

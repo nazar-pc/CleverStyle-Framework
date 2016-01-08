@@ -4,8 +4,8 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-# Variable is used to handle few notify elements in concurrent conditions, allows them to show/hide sequentially
-in_progress	= false
+# Chain of promises is used to show/hide notifications sequentially, variable contains always latest promise in chain and is constantly updated
+promise		= Promise.resolve()
 Polymer.cs.behaviors.cs-notify = [
 	Polymer.cs.behaviors.this
 	properties	:
@@ -48,25 +48,35 @@ Polymer.cs.behaviors.cs-notify = [
 			return
 		if !@bottom && !@top
 			@top	= true
-		# Put notify opening into stack of functions to call
-		setTimeout(@_show.bind(@), 0)
+		# Hack for the case when notification is present in original page source code, so we need to wait until all Web Components are loaded
+		if document.readyState != 'complete'
+			addEventListener('WebComponentsReady', !~>
+				setTimeout(@~_schedule_show)
+			)
+		else
+			setTimeout(@~_schedule_show)
+	_schedule_show : !->
+		promise = promise.then ~>
+			new Promise (resolve) !~>
+				@resolve = resolve
+				@_show()
+	_schedule_hide : !->
+		promise = promise.then ~>
+			new Promise (resolve) !~>
+				@resolve = resolve
+				@_hide()
 	_tap : (e) !->
 		if e.target == @$.content || e.target == @$.icon
-			@_hide()
+			@_schedule_hide()
 	_transitionend : !->
+		@resolve()
 		if !@show
 			@parentNode?.removeChild(@)
-		if @timeout
-			setTimeout(@_hide.bind(@), @timeout * 1000)
-			@timeout = 0
-		if in_progress == @
-			in_progress	= false
-	_show : !->
-		if !in_progress
-			in_progress = @
-		else
-			setTimeout(@_show.bind(@), 100)
 			return
+		if @timeout
+			setTimeout(@_schedule_hide, @timeout * 1000)
+			@timeout = 0
+	_show : !->
 		if @content
 			@innerHTML = @content
 		@_for_similar (child) !~>
@@ -81,11 +91,6 @@ Polymer.cs.behaviors.cs-notify = [
 		@fire('show')
 	_hide : !->
 		if !@show
-			return
-		if !in_progress
-			in_progress = @
-		else
-			setTimeout(@_hide.bind(@), 100)
 			return
 		@show				= false
 		interesting_margin	= if @top then 'marginTop' else 'marginBottom'
