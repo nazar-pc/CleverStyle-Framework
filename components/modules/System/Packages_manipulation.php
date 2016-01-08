@@ -159,11 +159,6 @@ class Packages_manipulation {
 		}
 		unset($file, $dir);
 		file_put_json("$fs_location_directory/fs.json", $fs);
-		/**
-		 * Removing backups after successful update
-		 */
-		unlink("$fs_location_directory/fs_backup.json");
-		unlink("$meta_location_directory/meta_backup.json");
 		return true;
 	}
 	/**
