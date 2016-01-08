@@ -36,12 +36,12 @@ class Includes_processing {
 		/**
 		 * Remove unnecessary spaces
 		 */
-		$data = preg_replace('#\s*([,;>{}\(])\s*#s', '$1', $data);
-		$data = preg_replace('#\s+#s', ' ', $data);
+		$data = preg_replace('/\s*([,;>{}\(])\s*/', '$1', $data);
+		$data = preg_replace('/\s+/', ' ', $data);
 		/**
 		 * Return spaces required in media queries
 		 */
-		$data = preg_replace('/\s(and|or)\(/s', ' $1 (', $data);
+		$data = preg_replace('/\s(and|or)\(/', ' $1 (', $data);
 		/**
 		 * Duplicated semicolons
 		 */
@@ -49,12 +49,12 @@ class Includes_processing {
 		/**
 		 * Minify repeated colors declarations
 		 */
-		$data = preg_replace('/#([0-9a-f])\1([0-9a-f])\2([0-9a-f])\3/is', '#$1$2$3', $data);
+		$data = preg_replace('/#([0-9a-f])\1([0-9a-f])\2([0-9a-f])\3/i', '#$1$2$3', $data);
 		/**
 		 * Minify rgb colors declarations
 		 */
 		$data = preg_replace_callback(
-			'/rgb\(([0-9,\.]+)\)/is',
+			'/rgb\(([0-9,\.]+)\)/i',
 			function ($rgb) {
 				$rgb = explode(',', $rgb[1]);
 				return
@@ -68,7 +68,7 @@ class Includes_processing {
 		/**
 		 * Remove unnecessary zeros
 		 */
-		$data = preg_replace('/([^0-9])0\.([0-9]+)/is', '$1.$2', $data);
+		$data = preg_replace('/(\D)0\.(\d+)/i', '$1.$2', $data);
 		/**
 		 * Includes processing
 		 */
@@ -221,8 +221,7 @@ class Includes_processing {
 	static function html ($data, $file, $base_filename, $destination) {
 		static::html_process_scripts($data, $file, $base_filename, $destination);
 		static::html_process_links_and_styles($data, $file, $base_filename, $destination);
-		$data = preg_replace("/\n+/", "\n", $data);
-		return $data;
+		return preg_replace("/\n+/", "\n", $data);
 	}
 	/**
 	 * @param string      $data          Content of processed file

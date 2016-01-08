@@ -591,7 +591,7 @@ trait Includes {
 						Includes_processing::js(file_get_contents($file));
 				};
 				if ($filename_prefix == '') {
-					$content = 'window.cs={};cs.Language='._json_encode(Language::instance()).';';
+					$content = 'window.cs={Language:'._json_encode(Language::instance()).'};';
 				}
 		}
 		/** @noinspection PhpUndefinedVariableInspection */
