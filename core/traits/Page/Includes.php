@@ -240,6 +240,8 @@ trait Includes {
 		 * Some JS configs required by system
 		 */
 		$this->add_system_configs();
+		// TODO: I hope some day we'll get rid of this sh*t :(
+		$this->ie_edge();
 		/**
 		 * If CSS and JavaScript compression enabled
 		 */
@@ -260,6 +262,21 @@ trait Includes {
 		$this->html_internal($includes['html'], 'file', true);
 		$this->add_includes_on_page_manually_added($Config);
 		return $this;
+	}
+	/**
+	 * Add JS polyfills for IE/Edge
+	 */
+	protected function ie_edge () {
+		/**
+		 * @var \cs\_SERVER $_SERVER
+		 */
+		if (preg_match('/Trident|Edge/', $_SERVER->user_agent)) {
+			$this->js_internal(
+				get_files_list(DIR."/includes/js/microsoft_sh*t", "/.*\\.js$/i", 'f', "includes/js/microsoft_sh*t", true),
+				'file',
+				true
+			);
+		}
 	}
 	protected function add_system_configs () {
 		$Config         = Config::instance();
