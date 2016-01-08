@@ -25,3 +25,8 @@
 .fa-stack {
 	font-size : .5em;
 }
+
+:host([hidden]),
+[hidden] {
+	display : none;
+}

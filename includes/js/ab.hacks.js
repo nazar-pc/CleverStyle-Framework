@@ -6,10 +6,13 @@
  * @license   MIT License, see license.txt
  */
 (function(){
+  var ready_original, functions, ready;
+  if (document.body.hasAttribute('unresolved')) {
+    document.body.setAttribute('unresolved-transition', '');
+  }
   /**
    * Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by WebComponents.js
    */
-  var ready_original, functions, ready;
   ready_original = $.fn.ready;
   functions = [];
   ready = false;
@@ -19,6 +22,9 @@
   document.addEventListener('WebComponentsReady', (function(){
     function ready_callback(){
       if (!ready) {
+        setTimeout(function(){
+          document.body.removeAttribute('unresolved-transition');
+        }, 200);
         document.removeEventListener('WebComponentsReady', ready_callback);
         Polymer.updateStyles();
         ready = true;

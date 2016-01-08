@@ -4,6 +4,10 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
+body[unresolved-transition] {
+	transition : opacity ease-in .2s !important;
+}
+
 body[unresolved] {
 	cursor   : wait;
 	opacity  : 0;
