@@ -255,7 +255,7 @@ cs.{}ui
 	 * @return {HTMLElement}
 	 */
 	..simple_modal = (content) ->
-		ui.modal(content)
+		cs.ui.modal(content)
 			..autoDestroy	= true
 			..open()
 	/**
@@ -270,7 +270,7 @@ cs.{}ui
 			content = content.toString()
 		if typeof content == 'string' && content.indexOf('<') == -1
 			content = "<h3>#{content}</h3>"
-		modal	= ui.modal(content)
+		modal	= cs.ui.modal(content)
 			..autoDestroy	= true
 			..manualClose	= true
 		ok		= document.createElement('button', 'cs-button')
@@ -298,7 +298,7 @@ cs.{}ui
 			content = content.toString()
 		if typeof content == 'string' && content.indexOf('<') == -1
 			content = "<h3>#{content}</h3>"
-		modal	= ui.modal(content)
+		modal	= cs.ui.modal(content)
 			..autoDestroy	= true
 			..manualClose	= true
 		ok		= document.createElement('button', 'cs-button')

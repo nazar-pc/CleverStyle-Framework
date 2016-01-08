@@ -314,7 +314,7 @@
    */
   x$.simple_modal = function(content){
     var x$;
-    x$ = ui.modal(content);
+    x$ = cs.ui.modal(content);
     x$.autoDestroy = true;
     x$.open();
     return x$;
@@ -334,7 +334,7 @@
     if (typeof content === 'string' && content.indexOf('<') === -1) {
       content = "<h3>" + content + "</h3>";
     }
-    x$ = modal = ui.modal(content);
+    x$ = modal = cs.ui.modal(content);
     x$.autoDestroy = true;
     x$.manualClose = true;
     y$ = ok = document.createElement('button', 'cs-button');
@@ -366,7 +366,7 @@
     if (typeof content === 'string' && content.indexOf('<') === -1) {
       content = "<h3>" + content + "</h3>";
     }
-    x$ = modal = ui.modal(content);
+    x$ = modal = cs.ui.modal(content);
     x$.autoDestroy = true;
     x$.manualClose = true;
     y$ = ok = document.createElement('button', 'cs-button');
