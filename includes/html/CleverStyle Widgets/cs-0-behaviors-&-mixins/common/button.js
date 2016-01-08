@@ -18,10 +18,7 @@
         reflectToAttribute: true,
         type: Boolean
       },
-      bind: {
-        observer: '_bind_changed',
-        type: Object
-      },
+      bind: Object,
       empty: {
         reflectToAttribute: true,
         type: Boolean
@@ -45,43 +42,10 @@
     attached: function(){
       this.empty = !this.childNodes.length;
     },
-    _bind_changed: function(){
-      var bind_element, observer, this$ = this;
-      if (this.bind) {
-        bind_element = this.bind;
-        this.bind = null;
-        this._tap = bind_element[this.action].bind(bind_element);
-        observer = new MutationObserver(function(mutations){
-          mutations.forEach(function(mutation){
-            var i$, ref$, len$, node;
-            if (!mutation.removedNodes) {
-              return;
-            }
-            for (i$ = 0, len$ = (ref$ = mutation.removedNodes).length; i$ < len$; ++i$) {
-              node = ref$[i$];
-              if (node !== bind_element) {
-                return;
-              }
-              observer.disconnect();
-              setTimeout(fn$, 1000);
-            }
-            function fn$(){
-              if (!bind_element.parentNode) {
-                this$._tap = function(){};
-              } else {
-                observer.observe(bind_element.parentNode, {
-                  childList: true
-                });
-              }
-            }
-          });
-        });
-        observer.observe(bind_element.parentNode, {
-          childList: true,
-          subtree: false
-        });
+    _tap: function(){
+      if (this.bind && this.action) {
+        return this.bind[this.action]();
       }
-    },
-    _tap: function(){}
+    }
   };
 }).call(this);
