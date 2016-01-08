@@ -74,7 +74,7 @@ Polymer.cs.behaviors.cs-notify = [
 			@parentNode?.removeChild(@)
 			return
 		if @timeout
-			setTimeout(@_schedule_hide, @timeout * 1000)
+			setTimeout(@~_schedule_hide, @timeout * 1000)
 			@timeout = 0
 	_show : !->
 		if @content

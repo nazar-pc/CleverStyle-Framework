@@ -105,7 +105,7 @@
           return;
         }
         if (this.timeout) {
-          setTimeout(this._schedule_hide, this.timeout * 1000);
+          setTimeout(bind$(this, '_schedule_hide'), this.timeout * 1000);
           this.timeout = 0;
         }
       },
