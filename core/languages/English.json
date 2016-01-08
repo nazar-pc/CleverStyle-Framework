@@ -515,6 +515,8 @@
 		"security"						: "Security",
 		"key_expire"					: "Key expires after",
 		"key_expire_info"				: "For some operations temporary keys are created that may contain some attached information, and are used to ensure the safety and/or to store some temporary data. Enter time interval after which the keys will be considered obsolete and invalid.",
+		"gravatar_support"				: "Gravatar support",
+		"gravatar_support_info"			: "Will load user's avatars from Gravatar if not specified in user's profile explicitly",
 		//Mail
 		"mail"						: "Mail",
 		"smtp"						: "SMTP",

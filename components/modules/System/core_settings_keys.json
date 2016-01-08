@@ -21,6 +21,7 @@
 	"cookie_domain",
 	"inserts_limit",
 	"key_expire",
+	"gravatar_support",
 	"session_expire",
 	"update_ratio",
 	"sign_in_attempts_block_count",

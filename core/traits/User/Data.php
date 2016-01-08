@@ -493,9 +493,10 @@ trait Data {
 	function avatar ($size = null, $user = false) {
 		$user   = (int)$user ?: $this->id;
 		$avatar = $this->get('avatar', $user);
-		if (!$avatar && $this->id != User::GUEST_ID) {
+		$Config = Config::instance();
+		if (!$avatar && $this->id != User::GUEST_ID && $Config->core['gravatar_support']) {
 			$email_hash     = md5($this->get('email', $user));
-			$default_avatar = urlencode(Config::instance()->core_url().'/includes/img/guest.svg');
+			$default_avatar = urlencode($Config->core_url().'/includes/img/guest.svg');
 			$avatar         = "https://www.gravatar.com/avatar/$email_hash?d=mm&s=$size&d=$default_avatar";
 		}
 		if (!$avatar) {

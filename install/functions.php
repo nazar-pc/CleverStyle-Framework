@@ -171,6 +171,7 @@ function install_process ($fs, $argv = null) {
 		'cookie_domain'                     => [$domain],
 		'inserts_limit'                     => 1000,
 		'key_expire'                        => 120,
+		'gravatar_support'                  => 0,
 		'session_expire'                    => 2592000,
 		'update_ratio'                      => 75,
 		'sign_in_attempts_block_count'      => 0,

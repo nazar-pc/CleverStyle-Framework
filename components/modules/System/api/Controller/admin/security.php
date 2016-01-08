@@ -22,6 +22,7 @@ trait security {
 		Page::instance()->json(
 			[
 				'key_expire'        => $Config->core['key_expire'],
+				'gravatar_support'  => $Config->core['gravatar_support'],
 				'show_tooltips'     => $Config->core['show_tooltips'],
 				'simple_admin_mode' => $Config->core['simple_admin_mode'],
 				'applied'           => $Config->cancel_available()
@@ -44,13 +45,15 @@ trait security {
 	 */
 	protected static function admin_security_settings_common () {
 		if (!isset(
-			$_POST['key_expire']
+			$_POST['key_expire'],
+			$_POST['gravatar_support']
 		)
 		) {
 			throw new ExitException(400);
 		}
-		$Config                     = Config::instance();
-		$Config->core['key_expire'] = (int)$_POST['key_expire'];
+		$Config                           = Config::instance();
+		$Config->core['key_expire']       = (int)$_POST['key_expire'];
+		$Config->core['gravatar_support'] = (int)(bool)$_POST['gravatar_support'];
 	}
 	/**
 	 * @param string $value
