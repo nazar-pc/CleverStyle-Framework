@@ -245,7 +245,7 @@ trait Includes {
 		/**
 		 * If CSS and JavaScript compression enabled
 		 */
-		if ($Config->core['cache_compress_js_css'] && !(admin_path() && current_module() == Config::SYSTEM_MODULE)) {
+		if ($Config->core['cache_compress_js_css'] && !(admin_path() && isset($_GET['debug']))) {
 			$includes = $this->get_includes_for_page_with_compression();
 		} else {
 			/**

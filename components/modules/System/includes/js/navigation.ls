@@ -60,7 +60,9 @@ L				= cs.Language
 		go(
 			location.href.match(/admin\/System\/\w+\/\w+/)[0]
 		)
-	else if location.href == document.baseURI + 'admin' || location.href == document.baseURI + 'admin/System'
-		go('admin/System/components/modules')
+	else
+		href = location.href.split('?')[0]
+		if href == document.baseURI + 'admin' || href == document.baseURI + 'admin/System'
+			go('admin/System/components/modules')
 addEventListener('popstate', popstate)
 popstate()

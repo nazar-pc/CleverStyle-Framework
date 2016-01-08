@@ -53,10 +53,14 @@
       $links.filter("[href='" + href + "']").prop('primary', true).parent().parent().prev().prop('primary', true);
     }
     function popstate(e){
+      var href;
       if (location.href.indexOf('admin/System') !== -1) {
         go(location.href.match(/admin\/System\/\w+\/\w+/)[0]);
-      } else if (location.href === document.baseURI + 'admin' || location.href === document.baseURI + 'admin/System') {
-        go('admin/System/components/modules');
+      } else {
+        href = location.href.split('?')[0];
+        if (href === document.baseURI + 'admin' || href === document.baseURI + 'admin/System') {
+          go('admin/System/components/modules');
+        }
       }
     }
     addEventListener('popstate', popstate);
