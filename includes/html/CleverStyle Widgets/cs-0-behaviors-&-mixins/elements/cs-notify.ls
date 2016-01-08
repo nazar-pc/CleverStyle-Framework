@@ -56,12 +56,12 @@ Polymer.cs.behaviors.cs-notify = [
 		else
 			setTimeout(@~_schedule_show)
 	_schedule_show : !->
-		promise = promise.then ~>
+		promise := promise.then ~>
 			new Promise (resolve) !~>
 				@resolve = resolve
 				@_show()
 	_schedule_hide : !->
-		promise = promise.then ~>
+		promise := promise.then ~>
 			new Promise (resolve) !~>
 				@resolve = resolve
 				@_hide()

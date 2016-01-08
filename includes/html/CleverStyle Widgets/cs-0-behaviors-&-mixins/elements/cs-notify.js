@@ -73,7 +73,7 @@
         }
       },
       _schedule_show: function(){
-        var promise, this$ = this;
+        var this$ = this;
         promise = promise.then(function(){
           return new Promise(function(resolve){
             this$.resolve = resolve;
@@ -82,7 +82,7 @@
         });
       },
       _schedule_hide: function(){
-        var promise, this$ = this;
+        var this$ = this;
         promise = promise.then(function(){
           return new Promise(function(resolve){
             this$.resolve = resolve;
