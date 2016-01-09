@@ -25,17 +25,20 @@
       }()));
     },
     _tooltip_for_element: function(element){
-      var show, hide;
+      var show, hide, this$ = this;
       if (this._tooltip_binding_added) {
         return;
       }
       this._tooltip_binding_added = true;
       this._initialize_tooltip();
       element.tooltip = element.tooltip || element.getAttribute('tooltip');
-      show = tooltip_element._show.bind(tooltip_element, element);
-      hide = tooltip_element._hide.bind(tooltip_element, element);
-      element.addEventListener('mouseenter', show);
-      element.addEventListener('pointerenter', show);
+      show = this._schedule_show.bind(this, element);
+      hide = function(){
+        this$._cancel_schedule_show();
+        tooltip_element._hide(element);
+      };
+      element.addEventListener('mousemove', show);
+      element.addEventListener('pointermove', show);
       element.addEventListener('mouseleave', hide);
       element.addEventListener('pointerleave', hide);
     },
@@ -43,6 +46,15 @@
       if (!tooltip_element) {
         tooltip_element = document.createElement('cs-tooltip');
         document.documentElement.appendChild(tooltip_element);
+      }
+    },
+    _schedule_show: function(element){
+      this._cancel_schedule_show();
+      this.show_timeout = setTimeout(tooltip_element._show.bind(tooltip_element, element), 100);
+    },
+    _cancel_schedule_show: function(){
+      if (this.show_timeout) {
+        clearTimeout(this.show_timeout);
       }
     }
   };

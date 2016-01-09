@@ -20,13 +20,24 @@ Polymer.{}cs.{}behaviors.tooltip =
 		@_tooltip_binding_added = true
 		@_initialize_tooltip()
 		element.tooltip	= element.tooltip || element.getAttribute('tooltip')
-		show			= tooltip_element._show.bind(tooltip_element, element)
-		hide			= tooltip_element._hide.bind(tooltip_element, element)
-		element.addEventListener('mouseenter', show)
-		element.addEventListener('pointerenter', show)
+		show			= @_schedule_show.bind(@, element)
+		hide			= !~>
+			@_cancel_schedule_show()
+			tooltip_element._hide(element)
+		element.addEventListener('mousemove', show)
+		element.addEventListener('pointermove', show)
 		element.addEventListener('mouseleave', hide)
 		element.addEventListener('pointerleave', hide)
 	_initialize_tooltip : !->
 		if !tooltip_element
 			tooltip_element := document.createElement('cs-tooltip')
 			document.documentElement.appendChild(tooltip_element)
+	_schedule_show : (element) !->
+		@_cancel_schedule_show()
+		@show_timeout = setTimeout(
+			tooltip_element._show.bind(tooltip_element, element)
+			100
+		)
+	_cancel_schedule_show : !->
+		if @show_timeout
+			clearTimeout(@show_timeout)
