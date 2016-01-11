@@ -19,9 +19,9 @@ use
  *
  *  System/Index/construct
  *
- *  System/Index/preload
+ *  System/Index/load/before
  *
- *  System/Index/postload
+ *  System/Index/load/after
  *
  * @method static Index instance($check = false)
  *
@@ -191,26 +191,6 @@ class Index {
 		$this->execute_router();
 	}
 	/**
-	 * Simple wrapper for form buttons
-	 *
-	 * @param string $name
-	 * @param bool   $disabled
-	 *
-	 * @return string
-	 */
-	protected function form_button ($name, $disabled = false) {
-		$L = Language::instance();
-		return h::{'button[is=cs-button]'}(
-			$L->$name,
-			[
-				'name'    => $name,
-				'type'    => 'submit',
-				'tooltip' => $L->{$name.'_info'},
-				$disabled ? 'disabled' : false
-			]
-		);
-	}
-	/**
 	 * Blocks rendering
 	 */
 	protected function render_blocks () {
@@ -363,8 +343,8 @@ class Index {
 			 */
 			$Page->warning(get_core_ml_text('closed_title'));
 		}
-		Event::instance()->fire('System/Index/preload');
+		Event::instance()->fire('System/Index/load/before');
 		$this->render_page();
-		Event::instance()->fire('System/Index/postload');
+		Event::instance()->fire('System/Index/load/after');
 	}
 }
