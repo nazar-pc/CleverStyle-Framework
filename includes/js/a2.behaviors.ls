@@ -23,6 +23,7 @@ cs.{}Polymer.behaviors =
 			@properties	=
 				Language	: create_property(@Language)
 				L			: create_property(@Language)
+			@__			= @__
 		Language	: cs.Language
 		properties	:
 			Language	: create_property(::Language)

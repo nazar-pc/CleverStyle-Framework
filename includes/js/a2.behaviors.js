@@ -31,6 +31,7 @@
           Language: create_property(this$.Language),
           L: create_property(this$.Language)
         };
+        this$.__ = this$.__;
         return this$;
       } function ctor$(){} ctor$.prototype = prototype;
       prototype.Language = cs.Language;
