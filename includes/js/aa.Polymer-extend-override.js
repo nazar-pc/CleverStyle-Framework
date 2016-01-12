@@ -16,7 +16,6 @@
       if (delay_registration[prototype.is]) {
         new_prototype = delay_registration[prototype.is];
         if (!new_prototype.overrides) {
-          delete new_prototype.overrides;
           new_prototype.behaviors = (prototype.behaviors || (prototype.behaviors = [])).slice().concat(new_prototype.behaviors || []);
           if (prototype['extends']) {
             new_prototype['extends'] = prototype['extends'];
@@ -25,6 +24,7 @@
           delete prototype['extends'];
           new_prototype.behaviors.unshift(prototype);
         }
+        delete new_prototype.overrides;
         prototype = new_prototype;
         delete delay_registration[prototype.is];
       }

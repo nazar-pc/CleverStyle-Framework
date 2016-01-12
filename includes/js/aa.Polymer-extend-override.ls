@@ -12,13 +12,13 @@ window.Polymer		= class extends Polymer
 			new_prototype	= delay_registration[prototype.is]
 			# Possibility to create completely alternative implementation without actually extending
 			if !new_prototype.overrides
-				delete new_prototype.overrides
 				new_prototype.behaviors = prototype.[]behaviors.slice().concat(new_prototype.behaviors || [])
 				if prototype.extends
 					new_prototype.extends	= prototype.extends
 				delete prototype.behaviors
 				delete prototype.extends
 				new_prototype.behaviors.unshift(prototype)
+			delete new_prototype.overrides
 			prototype = new_prototype
 			delete delay_registration[prototype.is]
 		if prototype.is == prototype.extends
