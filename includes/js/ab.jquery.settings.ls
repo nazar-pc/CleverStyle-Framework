@@ -5,7 +5,6 @@
  * @license   MIT License, see license.txt
  */
 $.ajaxSetup(
-	type		: 'post'
 	contents	:
 		script	: false
 	error		: (xhr) !->

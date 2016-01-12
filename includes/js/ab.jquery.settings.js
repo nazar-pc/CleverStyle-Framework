@@ -7,7 +7,6 @@
  */
 (function(){
   $.ajaxSetup({
-    type: 'post',
     contents: {
       script: false
     },
