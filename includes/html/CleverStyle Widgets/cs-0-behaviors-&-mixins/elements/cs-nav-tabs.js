@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer.cs.behaviors.csNavTabs = [
-    Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, {
+    Polymer.cs.behaviors['this'], {
       hostAttributes: {
         role: 'group'
       },
@@ -29,7 +29,9 @@
             return;
           }
         }
-        this.selected = 0;
+        if (!this.selected) {
+          this.selected = 0;
+        }
       },
       _tap: function(e){
         var target, i$, ref$, len$, index, element, this$ = this;

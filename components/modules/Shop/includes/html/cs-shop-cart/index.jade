@@ -12,7 +12,7 @@ dom-module#cs-shop-cart
 			form.cs-margin-top(is="cs-form")
 				label [[L.shipping_type]]
 				div
-					select(is="cs-select" value="{{shipping_type}}")
+					select(is="cs-select" selected="{{shipping_type}}")
 						template(is="dom-repeat" items="[[shipping_types]]" as="type")
 							option(value="[[type.id]]" selected="[[equal(type.id, shipping_type)]]") [[type.title]]
 					= ' '
@@ -27,7 +27,7 @@ dom-module#cs-shop-cart
 				label [[L.comment]]
 				textarea(is="cs-textarea" autosize value="{{comment}}")
 				label(hidden="[[equal(payment_methods.length, 1)]]") [[L.payment_method]]
-				select(is="cs-select" value="{{payment_method}}")
+				select(is="cs-select" selected="{{payment_method}}")
 					template(is="dom-repeat" items="[[payment_methods]]" as="details")
 						option(value="[[details.method]]") [[details.title]]
 				#payment_method_description.cs-margin-bottom

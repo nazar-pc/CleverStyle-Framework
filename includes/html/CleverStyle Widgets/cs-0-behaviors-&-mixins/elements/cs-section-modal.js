@@ -10,7 +10,7 @@
   body = document.body;
   html = document.documentElement;
   Polymer.cs.behaviors.csSectionModal = [
-    Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, {
+    Polymer.cs.behaviors['this'], {
       properties: {
         asIs: {
           reflectToAttribute: true,

@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer.cs.behaviors.csSectionSwitcher = [
-    Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, {
+    Polymer.cs.behaviors['this'], {
       properties: {
         selected: {
           notify: true,
@@ -23,7 +23,9 @@
             return;
           }
         }
-        this.selected = 0;
+        if (!this.selected) {
+          this.selected = 0;
+        }
       },
       _selected_changed: function(){
         var i$, ref$, len$, index, element;

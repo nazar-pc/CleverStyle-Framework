@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer.cs.behaviors.csNavPagination = [
-    Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, {
+    Polymer.cs.behaviors['this'], {
       hostAttributes: {
         role: 'group'
       },

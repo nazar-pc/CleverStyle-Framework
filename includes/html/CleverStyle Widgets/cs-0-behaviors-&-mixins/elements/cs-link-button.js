@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer.cs.behaviors.csLinkButton = [
-    Polymer.cs.behaviors.button, Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, {
+    Polymer.cs.behaviors.button, Polymer.cs.behaviors.tight, Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, {
       hostAttributes: {
         role: 'button'
       }

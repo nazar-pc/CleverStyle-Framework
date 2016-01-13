@@ -9,14 +9,14 @@ dom-module#cs-system-admin-users-list
 			button(is="cs-button") [[L.show_columns]]
 		section(is="cs-section-switcher")
 			div
-				select(is="cs-select" compact value="[[search_column]]")
+				select(is="cs-select" compact selected="{{search_column}}")
 					option(selected value="") [[L.all_columns]]
 					template(is="dom-repeat" items="[[all_columns]]" as="column")
 						option(value="[[column]]") [[column]]
 				= ' '
 				[[L.search_mode]]
 				= ' '
-				select(is="cs-select" compact value="{{search_mode}}")
+				select(is="cs-select" compact selected="{{search_mode}}")
 					template(is="dom-repeat" items="[[search_modes]]" as="mode")
 						option(value="[[mode]]" selected="[[equal(mode, search_mode)]]") [[mode]]
 				= ' '

@@ -6,7 +6,6 @@
  */
 Polymer.cs.behaviors.cs-nav-pagination = [
 	Polymer.cs.behaviors.this
-	Polymer.cs.behaviors.tooltip
 	hostAttributes	:
 		role	: 'group'
 	properties		:

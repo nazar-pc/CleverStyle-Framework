@@ -23,6 +23,10 @@
         reflectToAttribute: true,
         type: Boolean
       },
+      forceFullsize: {
+        reflectToAttribute: true,
+        type: Boolean
+      },
       icon: {
         reflectToAttribute: true,
         type: String

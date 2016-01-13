@@ -6,7 +6,6 @@
  */
 Polymer.cs.behaviors.cs-section-switcher = [
 	Polymer.cs.behaviors.this
-	Polymer.cs.behaviors.tooltip
 	properties	:
 		selected	:
 			notify		: true
@@ -16,7 +15,8 @@ Polymer.cs.behaviors.cs-section-switcher = [
 		for element in @children
 			if element.active
 				return
-		@selected = 0
+		if !@selected
+			@selected = 0
 	_selected_changed : !->
 		for element, index in @children
 			if element.tagName == 'TEMPLATE'

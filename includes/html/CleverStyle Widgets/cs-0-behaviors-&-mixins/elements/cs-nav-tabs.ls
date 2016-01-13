@@ -6,7 +6,6 @@
  */
 Polymer.cs.behaviors.cs-nav-tabs = [
 	Polymer.cs.behaviors.this
-	Polymer.cs.behaviors.tooltip
 	hostAttributes	:
 		role	: 'group'
 	properties		:
@@ -20,7 +19,8 @@ Polymer.cs.behaviors.cs-nav-tabs = [
 		for element in @children
 			if element.active
 				return
-		@selected = 0
+		if !@selected
+			@selected = 0
 	_tap : (e) !->
 		target = do ~>
 			for path, index in e.path

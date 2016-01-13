@@ -6,24 +6,27 @@
  */
 Polymer.{}cs.{}behaviors.button =
 	properties	:
-		action		:
+		action			:
 			type	: String
 			value	: 'button_action'
-		active		:
+		active			:
 			notify				: true
 			reflectToAttribute	: true
 			type				: Boolean
-		bind		: Object
-		empty		:
+		bind			: Object
+		empty			:
 			reflectToAttribute	: true
 			type				: Boolean
-		icon		:
+		force-fullsize	:
+			reflectToAttribute	: true
+			type				: Boolean
+		icon			:
 			reflectToAttribute	: true
 			type				: String
-		iconAfter	:
+		iconAfter		:
 			reflectToAttribute	: true
 			type				: String
-		primary		:
+		primary			:
 			reflectToAttribute	: true
 			type				: Boolean
 	listeners	:

@@ -6,6 +6,7 @@
  */
 Polymer.cs.behaviors.cs-progress = [
 	Polymer.cs.behaviors.tight
+	Polymer.cs.behaviors.tooltip
 	properties	:
 		infinite		: Boolean
 		textProgress	: Boolean # Chromium only

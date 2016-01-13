@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer.cs.behaviors.csSelect = [
-    Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value, {
+    Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, {
       listeners: {
         'value-changed': '_value_changed'
       },

@@ -6,6 +6,7 @@
  */
 Polymer.cs.behaviors.cs-link-button = [
 	Polymer.cs.behaviors.button
+	Polymer.cs.behaviors.tight
 	Polymer.cs.behaviors.this
 	Polymer.cs.behaviors.tooltip
 	hostAttributes	:

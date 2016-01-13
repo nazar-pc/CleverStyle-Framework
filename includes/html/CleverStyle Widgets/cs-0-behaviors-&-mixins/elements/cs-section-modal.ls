@@ -8,7 +8,6 @@ body									= document.body
 html									= document.documentElement
 Polymer.cs.behaviors.cs-section-modal	= [
 	Polymer.cs.behaviors.this
-	Polymer.cs.behaviors.tooltip
 	properties	:
 		asIs		:
 			reflectToAttribute	: true

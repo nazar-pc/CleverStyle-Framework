@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer.cs.behaviors.csProgress = [
-    Polymer.cs.behaviors.tight, {
+    Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, {
       properties: {
         infinite: Boolean,
         textProgress: Boolean
