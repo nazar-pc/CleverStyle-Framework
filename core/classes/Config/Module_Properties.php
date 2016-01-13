@@ -34,16 +34,6 @@ class Module_Properties {
 		$this->module      = $module;
 	}
 	/**
-	 * @deprecated
-	 * @todo Remove after first stable release, kept for compatibility reasons to smooth upgrade process
-	 * @see  enabled
-	 *
-	 * @return bool
-	 */
-	function active () {
-		return $this->enabled();
-	}
-	/**
 	 * Whether module is enabled
 	 *
 	 * @return bool

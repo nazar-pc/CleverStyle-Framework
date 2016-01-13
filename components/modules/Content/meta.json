@@ -1,36 +1,34 @@
 {
-	"package"         : "Content",
-	"category"        : "modules",
-	"version"         : "1.18.0+build-47",
-	"description"     : "Simple content functionality. May be used by other components or stand-alone.",
-	"author"          : "Nazar Mokrynskyi",
-	"website"         : "cleverstyle.org/cms",
-	"license"         : "MIT License",
-	"update_versions" : [
-		"1.3"
-	],
-	"db"              : [
+	"package"             : "Content",
+	"category"            : "modules",
+	"version"             : "1.19.0+build-48",
+	"description"         : "Simple content functionality. May be used by other components or stand-alone.",
+	"author"              : "Nazar Mokrynskyi",
+	"website"             : "cleverstyle.org/cms",
+	"license"             : "MIT License",
+	"update_from_version" : "1.18",
+	"db"                  : [
 		"content"
 	],
-	"db_support"      : [
+	"db_support"          : [
 		"MySQLi"
 	],
-	"provide"         : "content",
-	"require"         : [
+	"provide"             : "content",
+	"require"             : [
 		"System>=3.145",
 		"System<4.0"
 	],
-	"optional"        : [
+	"optional"            : [
 		"Plupload",
 		"TinyMCE",
 		"file_upload",
 		"editor"
 	],
-	"multilingual"    : [
+	"multilingual"        : [
 		"interface",
 		"content"
 	],
-	"languages"       : [
+	"languages"           : [
 		"English",
 		"Русский",
 		"Українська"

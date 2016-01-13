@@ -1,15 +1,12 @@
 {
 	"package"             : "Shop",
 	"category"            : "modules",
-	"version"             : "0.152.6+build-238",
+	"version"             : "0.153.0+build-239",
 	"description"         : "Shop functionality",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/cms",
 	"license"             : "MIT License",
-	"update_from_version" : "0.107",
-	"update_versions"     : [
-		"0.118"
-	],
+	"update_from_version" : "0.152",
 	"db"                  : [
 		"shop"
 	],
