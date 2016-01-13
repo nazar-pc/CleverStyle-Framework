@@ -302,7 +302,7 @@ Fixes and small improvements:
 Deprecations:
 * `\cs\Core::api_request()` method
 * `\cs\User::system()` method
-* `\cs\Config::$can_be_admin` property (use method with the same name instead
+* `\cs\Config::$can_be_admin` property (use method with the same name instead)
 * `\cs\Config::$server` property
 * `\cs\Config::$route` property (use `\cs\Route::$route` instead)
 * `\cs\Config::process_route()` method (use `\cs\Route::process_route()` instead)
@@ -543,7 +543,7 @@ Fixes and small improvements:
 * `\cs\DB\_Abstract` trait refactored.
 * Simplifications and PhpDoc improvements in `\cs\Language`
 * PhpDoc fix and reformatting of `\cs\Language\Prefix`
-* Sacrifice a bit of performance (loop will not be too big to cause any measurable performance issues)  to make `\cs\DB\MySQLi::f()` code smaller and simpler
+* Sacrifice a bit of performance (loop will not be too big to cause any measurable performance issues) to make `\cs\DB\MySQLi::f()` code smaller and simpler
 * Huge refactoring of `\cs\Language::change()`, should be simpler to understand and easier to modify now
 * Fix for showing/hiding smtp settings in administration
 * Refactoring of `\cs\Mail::send_to()`
@@ -803,7 +803,7 @@ Fixes and small improvements:
 * WebSockets: WebSockets are no longer assumed to be running on `127.0.0.1`, real servers pool is used instead
 * WebSockets: Duplicated addresses of single server in pool now handled nicely
 * Additional check for host correctness in `$_SERVER` wrapper
-* Additional protection against timing attacks  when working with sessions
+* Additional protection against timing attacks when working with sessions
 * Fix for `Vary` header, should be `Accept-Language` instead of `Content-Language`
 * WebSockets: Disconnection event added
 * Added contributing file that points to new page on wiki with explanations how to setup everything and send patch back
@@ -900,5 +900,384 @@ Possible partial compatibility breaking (very unlikely, but still possible):
 * `\cs\Group::get()` signature changed, rarely used argument dropped
 * `\cs\Group::set()` method signature changed, group data will be dropped and not available anymore
 * `data` column dropped from groups table
+
+Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
+
+# 3.145.7+build-1787: Pure frontend
+
+This release is a bit revolutionary. Few very important steps were made towards excellence and it took quite a lot of time to get here, but result is awesome!
+
+First important step is migration from Polymer 0.5.x to Polymer 1.x. This is a big step, significant bc-break, but eventually improved performance, new features and improved API worth it.
+
+Second big step is cleaning frontend from UI framework (historically, jQuery UI was used initially and UIkit later), now UIkit is removed and CleverStyle Widgets added instead.
+This important step resulted in significant JS/CSS size reduction, awesome Shadow DOM and data-bindings integration (it was very buggy in UIkit and not maintained by upstream developers).
+
+Another consequence of dropping UI framework is that NO STYLING IS APPLIED TO PAGE BY DEFAULT! Literally nothing!
+There are some defaults that can be optionally used, but nothing is used by default. This gives developers complete freedom in styling without fighting with styling overrides and third-party themes can be ported without any conflicts in very short time.
+
+And one more good thing on frontend - all system UI is now based on Web Components and interacts with server through API, so backend is cleaner and frontend can be modified if needed without any issues.
+
+On backend side new Uploader module added that is radically simplified re-implementation of Plupload module (and compatible with it).
+
+Also quality of backend code improved significantly according to Scrutinizer results.
+
+Comprehensive change log is below and [documentation](https://github.com/nazar-pc/CleverStyle-CMS/wiki) is updated accordingly already (and extended to better cover frontend things)!
+
+New components:
+* **Uploader** module (replaces Plupload, which was deprecated and will be removed after release), is based on Plupload module, but uses simple standalone implementation of files uploading as wrapper around `$.ajax`, almost the same API as was in Plupload modules before (now API is the same in both)
+* **Service Worker cache** module added as attempt to improve subsequent page loads with Service Worker (if available, still experimental)
+
+New features:
+* System and all components migrated from Polymer 0.5.x to Polymer 1.x
+* Polymer behaviors added:
+  * `cs.Polymer.behaviors.Language` for multilingual support in custom elements
+  * `cs.Polymer.behaviors.cs` for access to `window.cs` as just `cs` in custom elements
+* The whole administration interface now works through API purely on frontend side (including navigation between pages, there are API endpoints to everything configurable in administration)
+* All user-facing interface like profile settings and password changing now works through API purely on frontend side
+* Full PHP 7 support
+* CleverStyle Widgets added instead of UIkit (which was removed entirely) with following custom elements:
+  * `cs-button`
+  * `cs-form`
+  * `cs-icon`
+  * `cs-input-text`
+  * `cs-label-button`
+  * `cs-label-switcher`
+  * `cs-link-button`
+  * `cs-nav-button-group`
+  * `cs-nav-dropdown`
+  * `cs-nav-pagination`
+  * `cs-nav-tabs`
+  * `cs-notify`
+  * `cs-progress`
+  * `cs-section-modal`
+  * `cs-section-switcher`
+  * `cs-select`
+  * `cs-textarea`
+  * `cs-tooltip`
+* Jade is used instead of plain HTML for custom elements
+* LiveScript is used for all new code instead of CoffeeScript
+* Few useful methods added on frontend
+  * `cs.ui.modal()`
+  * `cs.ui.simple_modal()`
+  * `cs.ui.notify()`
+  * `cs.ui.alert()`
+  * `cs.ui.confirm()`
+* Flexy-plexy now included instead of UIkit's grid system
+* Shared styles added (should be declared explicitly in order to be used, nothing is used by default, also usage on global level doesn't affect custom elements, each element should explicitly declare usage as well):
+  * `normalize` provides custom elements-aware version of normalize.css
+  * `basic-styles-alone` provides custom provide advanced basic styling (including sane typography) on top of `normalize`
+  * `advanced-styles-alone` contains utility classes added instead of ones found in UIkit:
+    * `.cs-text-primary`
+    * `.cs-text-success`
+    * `.cs-text-warning`
+    * `.cs-text-error`
+    * `.cs-text-center`
+    * `.cs-text-left`
+    * `.cs-text-right`
+    * `.cs-text-lead`
+    * `.cs-text-bold`
+    * `.cs-text-italic`
+    * `.cs-block-primary`
+    * `.cs-block-success`
+    * `.cs-block-warning`
+    * `.cs-block-error`
+    * `.cs-margin`
+    * `.cs-margin-top`
+    * `.cs-margin-bottom`
+    * `.cs-margin-left`
+    * `.cs-margin-right`
+    * `.cs-margin-none`
+    * `.cs-padding`
+    * `.cs-padding-top`
+    * `.cs-padding-bottom`
+    * `.cs-padding-left`
+    * `.cs-padding-right`
+    * `.cs-padding-none`
+    * `.cs-cursor-pointer`
+    * `.cs-table`
+  * `basic-styles` is `normalize` and `basic-styles-alone` together
+  * `advanced-styles` is `basic-styles` and `advanced-styles-alone` together
+* `\cs\ExitException` can now handle error codes and messages, used instead of `error_code()` + `Page::instance()->error()`
+* JS polyfills are now separated and included only for IE/Edge browsers, since all other browsers already have support for all necessary features
+* `cs.Event` is now Promise-based, accepts Promise as callback result
+* New backend events:
+  * `OAuth2/custom_allow_access_page`
+  * `admin/System/components/modules/default` (replaces `admin/System/components/modules/default_module/process`)
+  * `admin/System/components/plugins/update/before` (replaces `admin/System/components/plugins/update/process/before`)
+  * `admin/System/components/plugins/update/after` (replaces `admin/System/components/plugins/update/process/after`)
+  * `admin/System/components/modules/update/before` (replaces `admin/System/components/modules/update/process/before`)
+  * `admin/System/components/modules/update/after` (replaces `admin/System/components/modules/update/process/after`)
+  * `admin/System/components/modules/uninstall/before`
+  * `admin/System/components/modules/uninstall/after`
+  * `admin/System/components/modules/install/before`
+  * `admin/System/components/modules/install/after`
+  * `admin/System/components/modules/update_system/before` (replaces `admin/System/components/modules/update_system/process/before`)
+  * `admin/System/components/modules/update_system/after` (replaces `admin/System/components/modules/update_system/process/after`)
+  * `admin/System/components/modules/enable/before` (replaces `admin/System/components/modules/enable/process`)
+  * `admin/System/components/modules/enable/after`
+  * `admin/System/components/modules/disable/before` (replaces `admin/System/components/modules/disable/process`)
+  * `admin/System/components/modules/disable/after`
+  * `admin/System/components/plugins/enable/before` (replaces `admin/System/components/plugins/enable/process`)
+  * `admin/System/components/plugins/enable/after`
+  * `admin/System/components/plugins/disable/before` (replaces `admin/System/components/plugins/disable/process`)
+  * `admin/System/components/plugins/disable/after`
+  * `System/Page/display/before` (replaces `System/Page/pre_display`)
+  * `System/Page/display/after` (replaces `System/Page/display`)
+  * `admin/System/components/themes/current/before`
+  * `admin/System/components/themes/current/after`
+  * `admin/System/components/themes/update/before`
+  * `admin/System/components/themes/update/after`
+  * `System/Index/load/before` (replaces `System/Index/preload`)
+  * `System/Index/load/after` (replaces `System/Index/postload`)
+* New frontend events:
+  * `admin/System/components/modules/default/before`
+  * `admin/System/components/modules/default/after`
+  * `admin/System/components/plugins/disable/before`
+  * `admin/System/components/plugins/disable/after`
+  * `admin/System/components/modules/disable/before`
+  * `admin/System/components/modules/disable/after`
+  * `admin/System/components/modules/enable/before`
+  * `admin/System/components/modules/enable/after`
+  * `admin/System/components/plugins/enable/before`
+  * `admin/System/components/plugins/enable/after`
+  * `admin/System/components/plugins/update/before`
+  * `admin/System/components/plugins/update/after`
+  * `admin/System/components/plugins/update/before`
+  * `admin/System/components/plugins/update/after`
+  * `admin/System/components/modules/update/before`
+  * `admin/System/components/modules/update/after`
+  * `admin/System/components/modules/uninstall/before`
+  * `admin/System/components/modules/uninstall/after`
+  * `admin/System/components/modules/install/before`
+  * `admin/System/components/modules/install/after`
+  * `admin/System/components/modules/update_system/before`
+  * `admin/System/components/modules/update_system/after`
+  * `admin/System/components/themes/current/before`
+  * `admin/System/components/themes/current/after`
+  * `admin/System/components/themes/update/before`
+  * `admin/System/components/themes/update/after`
+  * `cs-system-sign-in`
+* No need for `session` in XHR request body (yay!)
+* New constants
+  * `\cs\Config::SYSTEM_MODULE`
+  * `\cs\Config::SYSTEM_THEME`
+  * `\cs\Config\Module_Properties::ENABLED`
+  * `\cs\Config\Module_Properties::DISABLED`
+  * `\cs\Config\Module_Properties::UNINSTALLED`
+* Support for nested structures in JSON files with translations
+* Added useful methods for `\cs\Config\Module_Properties`:
+  * `enabled()` (replaces `active()`)
+  * `disabled()`
+  * `installed()`
+  * `uninstalled()`
+* Added prefix support to `cs.Language` like `cs.Language(prefix)`, works similarly to `new \cs\Language\Prefix($prefix)` on backend
+* Also prefix support added to Language behavior for Polymer `cs.Polymer.behaviors.Language(prefix)`
+* System, TinyMCE: New wrapper elements added in order to simplify working with WYSIWYG editor and provide Shadow DOM support (replaces helper functions `editor_deinitialization()`, `editor_reinitialization()` and `editor_focus()`, they are not needed anymore):
+  * `cs-editor`
+  * `cs-editor-inline`
+  * `cs-editor-simple`
+  * `cs-editor-simple-inline`
+* Allow to capture only AJAX errors with specific status code using callbacks like `error_404`, other status codes will use generic error processing
+* Added possibility to override implementation of Polymer element using `extends` or `overrides` with the same name as element similarly to what was present when using Polymer 0.5.x, but without actual extending custom elements (because it is not supported yet by Polymer 1.x)
+* Make session and some other cookies HTTP only
+* Do not make language redirects, we can modify page URL to include language prefix on frontend without any help from backend
+* `\cs\Language\Prefix` now can return regular translation if prefixed version not found similarly to how it works on frontend
+* Separate IE-specific polyfills and include them only for IE/Edge, will also simplify removal their support in future
+* Custom build of WebComponents.js added with polyfills removed
+* Use compressed CSS/JS/HTML in administration unless `?debug` is present in URL
+
+Updates:
+* New upstream version of Polymer 1.x with patches on top of it
+* New upstream version of WebComponents.js
+* New upstream version of autosize
+* New git version of jQuery 3.0
+* New upstream version of PHPMailer
+* New upstream version of HybridAuth
+  * New providers:
+    * Slack
+    * WarGaming
+    * Xuite
+  * Removed providers:
+    * Viadeo
+* New upstream version of TinyMCE with patches for Shadow DOM support and with standalone JS core instead of jQuery-based (with new `codesample` plugin added)
+* New upstream version on Picturefill
+* New upstream version on BananaHTML
+* New git version on Composer
+* New upstream version of UPF
+* New upstream version of jsSHA
+
+Fixes and small improvements:
+* Users search API fix
+* Dropped layout attributes from Polymer 0.5 in favor of iron-flex-layout
+* Removing Polymer inclusion from Web Components, since Polymer is already here
+* New upstream version of `run-tests.php` from PHP repository
+* Refresh styling when all components are ready
+* Improve includes processing to handle `<style is="custom-style">` and new CSS imports nicely `<link href="style.css" rel="import" type="css">`
+* JS minification added
+* Do not inline in CSS files bigger than 3 KiB
+* Handle relative links with query string in CSS
+* Add query string with part of md5 digest to track content changes
+* Fixes for `\cs\CRUD` and `\cs\CRUD_helpers` traits
+* Dropped common theme styles as unnecessary
+* Cookie path configuration is not necessary, especially, since installation into subdirectory is not supported
+* `cs-table` is only used as class since now
+* `.cs-table` moved into advanced styles and doesn't penetrate Shadow DOM by default
+* Fix for default configuration options were not set during modules installation
+* Small tweak to prevent error in some cases
+* Upload only release tags
+* Handle nicely `style[include]` as special feature in Polymer
+* Do not join various styles in minifier - it requires quite complex regexps and doesn't benefit that much
+* Do not remove semicolons in minifier - this causes problems for Polymer with some rules
+* Add hashes even to non-cached includes in order to avoid problems in production, when CDN caches files in administration interface
+* Permissions API fix
+* TinyMCE: TinyMCE now sets textarea value after each change
+* Unused translations removed
+* Packages manipulation functions are now in standalone class instead of trait
+* Fix for dependencies resolution when there is multiple requirements/conflicts for the same package
+* Generic API endpoint for files uploads in administration (for phar CleverStyle CMS-specific installers, simple checks are present)
+* Fix for 501 status code not returned if HTTP method not implemented
+* Using `rmdir_recursive()` in some places instead of some custom alternatives
+* User block with sign-in/sign-out and other features are now custom element, no global event listeners for some classes
+* Sign in, registration and restore password modal dialogs are pretty generic, so they are not in theme, but in system itself
+* Fix for multilingual redirect and `link[rel=alternate][hreflang]`
+* Remove redundant usages of `h::prepare_attr_value()` since with BananaHTML it will be applied to attributed automatically
+* User's profile page removed
+* Improving PhpDoc on `\cs\DB\_Abstract`, removed redundant `$indexed` argument for `::fs()`, `::fas()`, `::qfs()` and `::qfas()` methods since id does nothing in this context
+* `\cs\Config::instance()->core['themes']` option removed since it is actually redundant
+* OAuth2: Do not send 403 because Windows Phone in particular will have difficulties with this
+* New method `\cs\Config::cancel_available()` added to easily check whether it is possible to cancel applied changes of configuration
+* `\cs\Config::cancel()` now returns boolean result
+* Hide Static pages module in main menu
+* Composer: Do not run Composer's update when Composer itself is manipulated
+* Composer: Do not use Composer while it is not actually enabled
+* Blogs: Show head actions regardless on presence of posts in current list
+* Fix for absolute path determination in FileSystem cache engine under OS Windows
+* Fix for filling basic settings during modules installation because events now fired from API
+* Improve security by not allowing jQuery to execute JS after AJAX responses with `Content-Type: application/javascript`
+* Simplified `cs.Event` internals by utilizing advanced features of Promises
+* Improved JS minification when complex comments structures present
+* Fix for admin pages includes included on regular pages
+* `cs.Language` source moved into own file
+* Switch from `apc_*` functions to `apcu_*`
+* Fix for includes from regular pages were not included in administration (inverse should not be true however)
+* Do not force `box-sizing` on everything, this might and will break some third-party components
+* Composer assets: Add `iron-flex-layout` to Bower packages provided by system
+* `set_core_ml_text()` function added similarly to `get_core_ml_text()`
+* Automatic cleanup of old unused options from core settings
+* Plupload: Plupload module modified so that it can now be disabled and new uploaded files will be served by other module, but plupload's files will be still around
+* Composer: Composer module fix for installing components
+* Composer assets: UIkit is not provided by system anymore
+* `\cs\Session::is_session_owner()` method added for checking session data against user agent, remote addr and IP to confirm that this is the same user tries to use session
+* WebSockets: WebSockets module now uses actual headers to get user agent and other things about client rather that asking JS client to send them explicitly
+* `\cs\Language` methods updated:
+  * `get()` got `$prefix` argument
+  * `format()` got `$language` and `$prefix` arguments
+* `\cs\Language\Prefix` methods updated:
+  * `format()` got `$language` argument
+* Use native `Promise.all()` instead of jQuery's `$.when()`
+* Administration navigation on frontend, no page-specific markup on backend
+* Fix for Cookie domain detection during installation
+* Fix for Docker image building
+* GD package added to Dockerfile to enable Photo gallery module in demo
+* Photo gallery: Fix for incorrect image deletion in Photo gallery module when preview was not yet created
+* Raise MySQL and MariaDB versions requirements since Shop module requires FULLTEXT indexes on InnoDB table
+* Use MariaDB 10.1 instead of MySQL 5.5 from default packages when building Docker image
+* Shop: Small API fixes and nicer handling the case when user name was not specified during order completion
+* Shop: Fix for total price number on orders page in Firefox
+* Support id field other than `id` in `\cs\CRUD_helpers` trait since `\cs\CRUD` already supports this
+* Gravatar support is now optional and configurable; it is disabled by default for new installations and enabled for upgraded installations to preserve existing behavior
+* Do not delete backup fs and meta files, might be useful on later stages for upgrade scripts
+* Some UI fixes, no forcing styling on `[hidden]` elements, target elements should care about this by themselves
+
+Deprecations:
+* Plupload module deprecated and is left only for smoother transition and will be removed after release, please, migrate to Uploader
+* `\cs\Page::error()` usage is highly discouraged, use `\cs\ExitException` instead
+* `\cs\Config\Module_Properties::active()` (replaced with `\cs\Config\Module_Properties::enable()`, will be removed after release)
+
+Dropped backward compatibility:
+* All deprecated functionality was dropped
+* All components now require System of version >= 3.x, but < 4.0 since API will be backward-compatible for whole 3.x series
+* Dropped update support from System versions older than previous release, the same for all components
+* Dropped UIkit completely, CleverStyle Widgets are used instead
+* All helpers in `$.cs` and `$().cs()` removed, they worked primarily with UIkit which is not present anymore
+* `data-title` attribute support dropped from system, `tooltip` attribute can be used with the same result (only for regular elements, not custom)
+* Tenebris theme was not actively used/maintainer, and thus removed:(
+* `\ExitException` refactored into `\cs\ExitException` for better consistency
+* Internally used JS functions removed:
+  * `cs.blocks_toggle()`
+  * `cs.async_call()`
+  * `cs.observe_inserts_on()`
+* `error_code()` function, use `\cs\ExitException` instead, it provides complete replacement
+* Removed backend events:
+  * `admin/System/components/modules/default_module/prepare`
+  * `admin/System/components/modules/default_module/process` (replaced with `admin/System/components/modules/default`)
+  * `admin/System/components/plugins/disable/prepare`
+  * `admin/System/components/plugins/disable/process` (replaced with `admin/System/components/plugins/disable/before`)
+  * `admin/System/components/modules/disable/prepare`
+  * `admin/System/components/modules/disable/process` (replaced with `admin/System/components/modules/disable/before`)
+  * `admin/System/components/modules/enable/prepare`
+  * `admin/System/components/modules/enable/process` (replaced with `admin/System/components/modules/enable/before`)
+  * `admin/System/components/plugins/enable/prepare`
+  * `admin/System/components/plugins/enable/process` (replaced with `admin/System/components/plugins/enable/before`)
+  * `admin/System/components/plugins/update/prepare`
+  * `admin/System/components/plugins/update/process/before` (replaced with `admin/System/components/plugins/update/before`)
+  * `admin/System/components/plugins/update/process/after` (replaced with `admin/System/components/plugins/update/after`)
+  * `admin/System/components/modules/update/prepare`
+  * `admin/System/components/modules/update/process/before` (replaced with `admin/System/components/modules/update/before`)
+  * `admin/System/components/modules/update/process/after` (replaced with `admin/System/components/modules/update/after`)
+  * `admin/System/components/modules/uninstall/prepare`
+  * `admin/System/components/modules/uninstall/process` (replaced with `admin/System/components/modules/uninstall/before` and `admin/System/components/modules/uninstall/after`)
+  * `admin/System/components/modules/install/prepare`
+  * `admin/System/components/modules/install/process` (replaced with `admin/System/components/modules/install/before` and `admin/System/components/modules/install/after`)
+  * `admin/System/components/modules/db/prepare`
+  * `admin/System/components/modules/storage/prepare`
+  * `admin/System/components/modules/db/process`
+  * `admin/System/components/modules/storage/process`
+  * `admin/System/components/modules/update_system/prepare`
+  * `admin/System/components/modules/update_system/process/before` (replaced with `admin/System/components/modules/update_system/before`)
+  * `admin/System/components/modules/update_system/process/after` (replaced with `admin/System/components/modules/update_system/after`)
+  * `System/Page/pre_display` (replaced with `System/Page/display/before`)
+  * `System/Page/display` (replaced with `System/Page/display/after`)
+  * `System/profile/settings`
+  * `System/profile/info`
+  * `System/Route/pre_routing_replace`
+  * `System/Index/preload` (replaced with `System/Index/load/before`)
+  * `System/Index/postload` (replaced with `System/Index/load/after`)
+* `cs\modules\System\admin\Controller\packages_manipulation::recursive_directory_removal()` method removed since there is `rmdir_recursive()` function already in latest version of UPF
+* Generic settings page removed
+* Methods `\cs\Config::reload_languages()` and `\cs\Config::reload_themes()` removed, since they are not used anymore
+* Method `\cs\Config::can_be_admin()` removed because of corresponding functionality was removed from system core
+* OAuth2: Dropped support for `Access-token` header or request parameter
+* Helper functions on frontend removed since they are not needed anymore (replaced with elements `cs-editor`, `cs-editor-inline`, `cs-editor-simple` and `cs-editor-simple-inline`):
+  * `editor_deinitialization()`
+  * `editor_reinitialization()`
+  * `editor_focus()`
+* Replace and routing options removed from core settings as rarely used and such that can be easily implemented using third-party tools
+* Removed following system core options and corresponding functionality:
+  * ip_black_list
+  * ip_admin_list_only
+  * ip_admin_list
+* `cs.getcookie()` and `cs.setcookie()` alongside with jQuery cookie plugin removed on frontend
+* `\cs\Index` lost many ugly designed features which existing modules do not use anymore
+  * Removed properties:
+    * `Content`
+    * `form`
+    * `file_upload`
+    * `form_attributes`
+    * `buttons`
+    * `save_button`
+    * `apply_button`
+    * `cancel_button_back`
+    * `custom_buttons`
+    * `action`
+  * Removed methods:
+    * `content()`
+    * `in_admin()`
+    * `apply()`
+    * `save()`
+    * `cancel()`
+* Cookie prefix and domain are not needed on frontend anymore
+* Also specifying protocol doesn't make sense since already available on frontend
+* Do not enforce `POST` method in `$.ajax()` calls, it is explicitly specified where necessary
 
 Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
