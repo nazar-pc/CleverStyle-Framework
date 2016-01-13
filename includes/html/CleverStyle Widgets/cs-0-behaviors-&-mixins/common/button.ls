@@ -23,7 +23,7 @@ Polymer.{}cs.{}behaviors.button =
 		icon			:
 			reflectToAttribute	: true
 			type				: String
-		iconAfter		:
+		icon-after		:
 			reflectToAttribute	: true
 			type				: String
 		primary			:

@@ -66,7 +66,7 @@ Polymer.cs.behaviors.cs-section-modal	= [
 				if @parentNode.tagName != 'HTML'
 					html.appendChild(@)
 				# Put modal opening into stack of functions to call
-				setTimeout(@open.bind(@), 0)
+				setTimeout(@~open, 0)
 			else
 				@opened = true
 		@

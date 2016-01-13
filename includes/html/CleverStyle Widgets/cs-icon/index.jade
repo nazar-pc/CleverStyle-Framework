@@ -4,8 +4,5 @@ style
 dom-module#cs-icon
 	link(rel="import" href="style.css" type="css")
 	template
-		span.fa-stack(hidden="[[!multiple_icons.length]]")
-			template(is="dom-repeat" items="[[multiple_icons]]")
-				i(class$="[[item]]")
-		i(class$="[[single_icon]]" hidden="[[!single_icon]]")
+		#content
 	script(src="script.js")

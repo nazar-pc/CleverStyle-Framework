@@ -90,7 +90,7 @@
             if (this.parentNode.tagName !== 'HTML') {
               html.appendChild(this);
             }
-            setTimeout(this.open.bind(this), 0);
+            setTimeout(bind$(this, 'open'), 0);
           } else {
             this.opened = true;
           }
@@ -105,4 +105,7 @@
       }
     }
   ];
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

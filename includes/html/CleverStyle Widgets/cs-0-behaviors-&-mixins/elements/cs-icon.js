@@ -11,7 +11,7 @@
       hostAttributes: {
         hidden: true
       },
-      observers: ['_icon_changed(icon)'],
+      observers: ['_icon_changed(icon, flipX, flipY, mono, rotate, spin, spinStep)'],
       properties: {
         icon: {
           reflectToAttribute: true,
@@ -46,42 +46,21 @@
           reflectToAttribute: true,
           type: Boolean,
           value: false
-        },
-        multiple_icons: {
-          computed: '_multiple_icons(icon, flipX, flipY, mono, rotate, spin, spinStep)',
-          type: Array
-        },
-        single_icon: {
-          computed: '_single_icon(icon, flipX, flipY, mono, rotate, spin, spinStep)',
-          type: String
         }
       },
-      _icon_changed: function(icon){
+      ready: function(){
+        this.scopeSubtree(this.$.content, true);
+      },
+      _icon_changed: function(icon, flipX, flipY, mono, rotate, spin, spinStep){
+        var content, icons, multiple_icons, i$, len$, index, icon_class;
         if (!icon) {
           this.setAttribute('hidden', '');
-        } else {
-          this.removeAttribute('hidden');
+          return;
         }
-      },
-      _multiple_icons: function(icon, flipX, flipY, mono, rotate, spin, spinStep){
-        if (icon.split(' ').length > 1) {
-          return this.icon_class(icon, flipX, flipY, mono, rotate, spin, spinStep);
-        } else {
-          return [];
-        }
-      },
-      _single_icon: function(icon, flipX, flipY, mono, rotate, spin, spinStep){
-        if (icon.split(' ').length > 1) {
-          return '';
-        } else {
-          return this.icon_class(icon, flipX, flipY, mono, rotate, spin, spinStep);
-        }
-      },
-      icon_class: function(icon, flipX, flipY, mono, rotate, spin, spinStep){
-        var icons, multiple_icons, icons_classes, res$, i$, len$, index, icon_class;
+        this.removeAttribute('hidden');
+        content = '';
         icons = icon.split(' ');
         multiple_icons = icons.length > 1;
-        res$ = [];
         for (i$ = 0, len$ = icons.length; i$ < len$; ++i$) {
           index = i$;
           icon = icons[i$];
@@ -107,14 +86,12 @@
           if (multiple_icons) {
             icon_class.push(index ? 'fa-stack-1x fa-inverse' : 'fa-stack-2x');
           }
-          res$.push(icon_class.join(' '));
+          content += "<i class=\"" + icon_class.join(' ') + "\"></i>";
         }
-        icons_classes = res$;
         if (multiple_icons) {
-          return icons_classes;
-        } else {
-          return icons_classes[0];
+          content = "<span class=\"fa-stack\">" + content + "</span>";
         }
+        this.$.content.innerHTML = content;
       }
     }
   ];
