@@ -17,7 +17,7 @@
 	],
 	"provide"         : "social_integration",
 	"require"         : [
-		"System>=3.108",
+		"System>=3.145",
 		"System<4.0"
 	],
 	"multilingual"    : [

@@ -18,7 +18,7 @@
 	],
 	"provide"             : "blogs",
 	"require"             : [
-		"System>=3.105",
+		"System>=3.145",
 		"System<4.0",
 		"Tags>=1.0",
 		"Tags<2.0",

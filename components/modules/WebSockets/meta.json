@@ -18,7 +18,7 @@
 	],
 	"provide"          : "websockets",
 	"require"          : [
-		"System>=3.135",
+		"System>=3.145",
 		"System<4.0",
 		"composer"
 	],

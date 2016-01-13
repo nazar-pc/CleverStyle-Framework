@@ -7,7 +7,7 @@
 	"website"     : "cleverstyle.org/cms",
 	"license"     : "MIT License",
 	"require"     : [
-		"System>=3.99",
+		"System>=3.145",
 		"System<4.0"
 	]
 }

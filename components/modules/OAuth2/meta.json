@@ -18,7 +18,7 @@
 	],
 	"provide"             : "oauth2",
 	"require"             : [
-		"System>=3.105",
+		"System>=3.145",
 		"System<4.0"
 	],
 	"multilingual"        : [

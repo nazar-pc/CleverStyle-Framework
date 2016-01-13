@@ -8,7 +8,7 @@
 	"license"     : "MIT License",
 	"provide"     : "simpleimage",
 	"require"     : [
-		"System>=3.99",
+		"System>=3.145",
 		"System<4.0"
 	]
 }

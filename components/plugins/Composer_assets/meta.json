@@ -12,7 +12,7 @@
 		"npm"
 	],
 	"require"          : [
-		"System>=3.90",
+		"System>=3.145",
 		"System<4.0",
 		"composer"
 	],
