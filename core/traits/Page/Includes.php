@@ -352,7 +352,7 @@ trait Includes {
 	protected function get_includes_for_page_without_compression ($Config) {
 		// To determine all dependencies and stuff we need `$Config` object to be already created
 		if ($Config) {
-			list($dependencies, $includes_map) = $this->includes_dependencies_and_map(admin_path());
+			list($dependencies, $includes_map) = $this->includes_dependencies_and_map();
 			$system_includes = $includes_map[''];
 			list($includes, $dependencies_includes, $dependencies, $current_url) = $this->get_includes_prepare($dependencies, '/');
 			foreach ($includes_map as $url => $local_includes) {
@@ -466,11 +466,10 @@ trait Includes {
 	 * Getting of HTML, JS and CSS files list to be included
 	 *
 	 * @param bool $absolute If <i>true</i> - absolute paths to files will be returned
-	 * @param bool $with_disabled
 	 *
 	 * @return array
 	 */
-	protected function get_includes_list ($absolute = false, $with_disabled = false) {
+	protected function get_includes_list ($absolute = false) {
 		$theme_dir  = THEMES."/$this->theme";
 		$theme_pdir = "themes/$this->theme";
 		$get_files  = function ($dir, $prefix_path) {
@@ -492,13 +491,7 @@ trait Includes {
 		unset($theme_dir, $theme_pdir);
 		$Config = Config::instance();
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
-			if (
-				$module_data['active'] == Config\Module_Properties::UNINSTALLED ||
-				(
-					$module_data['active'] == Config\Module_Properties::DISABLED &&
-					!$with_disabled
-				)
-			) {
+			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
 				continue;
 			}
 			foreach (['html', 'js', 'css'] as $type) {
@@ -617,15 +610,13 @@ trait Includes {
 	/**
 	 * Get dependencies of components between each other (only that contains some HTML, JS and CSS files) and mapping HTML, JS and CSS files to URL paths
 	 *
-	 * @param bool $with_disabled
-	 *
 	 * @return array[] [$dependencies, $includes_map]
 	 */
-	protected function includes_dependencies_and_map ($with_disabled = false) {
+	protected function includes_dependencies_and_map () {
 		/**
 		 * Get all includes
 		 */
-		$all_includes = $this->get_includes_list(true, $with_disabled);
+		$all_includes = $this->get_includes_list(true);
 		$includes_map = [];
 		/**
 		 * Array [package => [list of packages it depends on]]
@@ -639,13 +630,7 @@ trait Includes {
 		 */
 		$Config = Config::instance();
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
-			if (
-				$module_data['active'] == Config\Module_Properties::UNINSTALLED ||
-				(
-					$module_data['active'] == Config\Module_Properties::DISABLED &&
-					!$with_disabled
-				)
-			) {
+			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
 				continue;
 			}
 			if (file_exists(MODULES."/$module_name/meta.json")) {
