@@ -170,7 +170,7 @@ class Packages_manipulation {
 	 */
 	static function update_php_sql ($target_directory, $old_version, $db_array = null) {
 		$meta = file_get_json("$target_directory/meta.json");
-		if (!$meta['update_versions']) {
+		if (!isset($meta['update_versions'])) {
 			return;
 		}
 		foreach ($meta['update_versions'] as $version) {
