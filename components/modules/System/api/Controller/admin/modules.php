@@ -632,6 +632,7 @@ trait modules {
 			$Config->core['site_mode'] = 1;
 			static::admin_modules_save();
 		}
+		static::admin_modules_cleanup();
 	}
 	/**
 	 * Delete module completely
