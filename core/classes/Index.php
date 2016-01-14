@@ -6,8 +6,6 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-use
-	h;
 
 /**
  * Provides next events:
@@ -32,12 +30,6 @@ class Index {
 		Singleton,
 		Index\Router;
 
-	/**
-	 * Appends to the end of title
-	 *
-	 * @var string
-	 */
-	protected $append_to_title = '';
 	/**
 	 * Name of current module
 	 *
