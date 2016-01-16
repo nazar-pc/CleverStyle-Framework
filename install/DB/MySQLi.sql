@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS `[prefix]sessions` (
   `remote_addr` varchar(32) NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
   `ip` varchar(32) NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
   `data` mediumtext NOT NULL,
-  PRIMARY KEY (`id`(32),`expire`,`user_agent`(191),`remote_addr`(32),`ip`(32)),
+  PRIMARY KEY (`id`(32)),
+  KEY `expire` (`expire`),
   KEY `user` (`user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
