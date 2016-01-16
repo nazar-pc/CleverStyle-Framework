@@ -31,10 +31,13 @@ if (!$Cache->set('test', 5)) {
 }
 $Cache->disable();
 if ($Cache->cache_state() !== false) {
-	die('::disable() method does not work');
+	die('::cache_state() method does not work');
 }
 if ($Cache->test !== false) {
 	die('Value still exists');
+}
+if ($Cache->get('xuz', function () {return 5;}) !== 5) {
+	die('Callback is not called for disabled cache');
 }
 ?>
 Done

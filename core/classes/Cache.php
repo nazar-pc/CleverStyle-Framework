@@ -56,7 +56,7 @@ class Cache {
 	 */
 	function get ($item, $callback = null) {
 		if (!$this->state) {
-			return false;
+			return is_callable($callback) ? $callback() : false;
 		}
 		$item = trim($item, '/');
 		$data = $this->engine_instance->get($item);
