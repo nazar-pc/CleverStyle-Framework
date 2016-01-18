@@ -8,7 +8,7 @@ RewriteBase /
 <FilesMatch ".*/.*">
 	Options -FollowSymLinks
 </FilesMatch>
-<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|eot|ttc|ttf|svg|svgz|woff)$">
+<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|eot|ttc|ttf|svg|svgz|woff|woff2)$">
 	RewriteEngine Off
 </FilesMatch>
 <Files license.txt>
