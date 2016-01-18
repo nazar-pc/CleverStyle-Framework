@@ -151,7 +151,7 @@ class Includes_processing {
 		/**
 		 * Set of symbols that are safe to be concatenated without new line with anything else
 		 */
-		$regexp = '[:;,.+\-*\/{}?><^\'"\[\]=&\(\)]';
+		$regexp = '[:;,.+\-*\/{}?><^\'"\[\]=&\(]';
 		foreach ($data as $index => &$d) {
 			$next_line = isset($data[$index + 1]) ? trim($data[$index + 1]) : '';
 			/**
