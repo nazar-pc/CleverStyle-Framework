@@ -15,7 +15,7 @@
 		@apply (--cs-form-legend);
 	}
 
-	> label:not([is]) {
+	> label:not([is]):not([hidden]) {
 		display : block;
 
 		@apply (--cs-form-label);
