@@ -74,7 +74,7 @@ class Route {
 				$protocol == $_SERVER->protocol
 			) {
 				foreach (explode(';', $urls) as $url) {
-					if (mb_strpos("$_SERVER->host$this->raw_relative_address", $url) === 0) {
+					if (mb_strpos("$_SERVER->host/$this->raw_relative_address", "$url/") === 0) {
 						$this->mirror_index = $i;
 						break 2;
 					}
@@ -86,8 +86,7 @@ class Route {
 		 * If match was not found - mirror is not allowed!
 		 */
 		if ($this->mirror_index === -1) {
-			trigger_error("Mirror $_SERVER->host not allowed", E_USER_ERROR);
-			throw new ExitException(400);
+			throw new ExitException("Mirror $_SERVER->host not allowed", 400);
 		}
 		/**
 		 * Remove trailing slashes
