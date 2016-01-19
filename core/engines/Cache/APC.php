@@ -9,89 +9,41 @@ namespace cs\Cache;
 /**
  * Provides cache functionality based on APCu
  */
-class APC extends _Abstract {
-	protected $apc;
-	protected $root_versions_cache = [];
-	function __construct () {
-		$this->apc = extension_loaded('apc');
+class APC extends _Abstract_with_namespace {
+	/**
+	 * @inheritdoc
+	 */
+	protected function available_internal () {
+		return (bool)extension_loaded('apc');
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function get ($item) {
-		if (!$this->apc) {
-			return false;
-		}
-		return apcu_fetch(
-			$this->namespaces_imitation($item)
-		);
+	protected function get_internal ($item) {
+		return apcu_fetch($item);
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function set ($item, $data) {
-		if (!$this->apc) {
-			return false;
-		}
-		return apcu_store(
-			$this->namespaces_imitation($item),
-			$data
-		);
+	protected function set_internal ($item, $data) {
+		return apcu_store($item, $data);
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function del ($item) {
-		if (!$this->apc) {
-			return false;
-		}
-		apcu_delete($this->namespaces_imitation($item));
-		apcu_inc('/'.DOMAIN."/$item");
-		unset($this->root_versions_cache['/'.DOMAIN."/$item"]);
-		return true;
-	}
-	/**
-	 * Namespaces imitation
-	 *
-	 * Accepts item as parameter, returns item string that uses namespaces (needed for fast deletion of large branches of cache elements).
-	 *
-	 * @param $item
-	 *
-	 * @return string
-	 */
-	protected function namespaces_imitation ($item) {
-		$exploded = explode('/', $item);
-		$count    = count($exploded);
-		if ($count > 1) {
-			$item_path = DOMAIN;
-			--$count;
-			for ($i = 0; $i < $count; ++$i) {
-				$item_path .= '/'.$exploded[$i];
-				if (!$i && isset($this->root_versions_cache["/$item_path"])) {
-					$exploded[$i] .= '/'.$this->root_versions_cache["/$item_path"];
-					continue;
-				}
-				$version = apcu_fetch("/$item_path");
-				if ($version === false) {
-					apcu_store("/$item_path", 0);
-					$version = 0;
-				}
-				$exploded[$i] .= "/$version";
-				if (!$i) {
-					$this->root_versions_cache["/$item_path"] = $version;
-				}
-			}
-			return DOMAIN.'/'.implode('/', $exploded);
-		}
-		return DOMAIN."/$item";
+	protected function del_internal ($item) {
+		return apcu_delete($item);
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function clean () {
-		if (!$this->apc) {
-			return false;
-		}
+	protected function increment_internal ($item) {
+		return apcu_inc($item);
+	}
+	/**
+	 * @inheritdoc
+	 */
+	protected function clean_internal () {
 		return apcu_clear_cache();
 	}
 }

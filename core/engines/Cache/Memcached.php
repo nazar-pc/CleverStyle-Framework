@@ -6,17 +6,18 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\Cache;
-use            cs\Core;
+use
+	cs\Core;
+
 /**
  * Provides cache functionality based on Memcached.
  * Support optionally base configuration option Core::instance()->memcached_host and Core::instance()->memcached_port
  */
-class Memcached extends _Abstract {
+class Memcached extends _Abstract_with_namespace {
 	/**
 	 * @var \Memcached
 	 */
 	protected $memcached;
-	protected $root_versions_cache = [];
 	function __construct () {
 		if (!extension_loaded('memcached')) {
 			return;
@@ -28,80 +29,37 @@ class Memcached extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function get ($item) {
-		if (!$this->memcached) {
-			return false;
-		}
-		return $this->memcached->get(
-			$this->namespaces_imitation($item)
-		);
+	protected function available_internal () {
+		return (bool)$this->memcached;
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function set ($item, $data) {
-		if (!$this->memcached) {
-			return false;
-		}
-		return $this->memcached->set(
-			$this->namespaces_imitation($item),
-			$data
-		);
+	protected function get_internal ($item) {
+		return $this->memcached->get($item);
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function del ($item) {
-		if (!$this->memcached) {
-			return false;
-		}
-		$this->memcached->delete($this->namespaces_imitation($item));
-		$this->memcached->increment('/'.DOMAIN."/$item");
-		unset($this->root_versions_cache['/'.DOMAIN."/$item"]);
-		return true;
-	}
-	/**
-	 * Namespaces imitation
-	 *
-	 * Accepts item as parameter, returns item string that uses namespaces (needed for fast deletion of large branches of cache elements).
-	 *
-	 * @param $item
-	 *
-	 * @return string
-	 */
-	protected function namespaces_imitation ($item) {
-		$exploded = explode('/', $item);
-		$count    = count($exploded);
-		if ($count > 1) {
-			$item_path = DOMAIN;
-			--$count;
-			for ($i = 0; $i < $count; ++$i) {
-				$item_path .= '/'.$exploded[$i];
-				if (!$i && isset($this->root_versions_cache["/$item_path"])) {
-					$exploded[$i] .= '/'.$this->root_versions_cache["/$item_path"];
-					continue;
-				}
-				$version = $this->memcached->get("/$item_path");
-				if ($version === false) {
-					$this->memcached->set("/$item_path", 0);
-					$version = 0;
-				}
-				$exploded[$i] .= "/$version";
-				if (!$i) {
-					$this->root_versions_cache["/$item_path"] = $version;
-				}
-			}
-			return DOMAIN.'/'.implode('/', $exploded);
-		}
-		return DOMAIN."/$item";
+	protected function set_internal ($item, $data) {
+		return $this->memcached->set($item, $data);
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function clean () {
-		if (!$this->memcached) {
-			return false;
-		}
+	protected function del_internal ($item) {
+		return $this->memcached->delete($item);
+	}
+	/**
+	 * @inheritdoc
+	 */
+	protected function increment_internal ($item) {
+		return $this->memcached->increment($item);
+	}
+	/**
+	 * @inheritdoc
+	 */
+	protected function clean_internal () {
 		return $this->memcached->flush();
 	}
 	/**
