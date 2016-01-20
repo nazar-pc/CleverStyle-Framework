@@ -14,6 +14,7 @@ use
 	cs\DB,
 	cs\Language,
 	cs\Page;
+
 /**
  * Utility functions, necessary during packages manipulation (installation/uninstallation, enabling/disabling)
  */
@@ -169,11 +170,7 @@ class Packages_manipulation {
 	 * @param array|null $db_array `$Config->components['modules'][$module]['db']` if module or system
 	 */
 	static function update_php_sql ($target_directory, $old_version, $db_array = null) {
-		$meta = file_get_json("$target_directory/meta.json");
-		if (!isset($meta['update_versions'])) {
-			return;
-		}
-		foreach ($meta['update_versions'] as $version) {
+		foreach (self::get_update_versions($target_directory) as $version) {
 			if (version_compare($old_version, $version, '<')) {
 				/**
 				 * PHP update script
@@ -187,6 +184,24 @@ class Packages_manipulation {
 				}
 			}
 		}
+	}
+	/**
+	 * @param string $target_directory
+	 *
+	 * @return string[]
+	 */
+	protected static function get_update_versions ($target_directory) {
+		$update_versions = _mb_substr(get_files_list("$target_directory/meta/update"), 0, -4) ?: [];
+		foreach (get_files_list("$target_directory/meta/update_db", false, 'd') ?: [] as $db) {
+			/** @noinspection SlowArrayOperationsInLoopInspection */
+			$update_versions = array_merge(
+				$update_versions,
+				get_files_list("$target_directory/meta/update_db/$db", false, 'd') ?: []
+			);
+		}
+		$update_versions = array_unique($update_versions);
+		usort($update_versions, 'version_compare');
+		return $update_versions;
 	}
 	/**
 	 * @param string $directory        Base path to SQL files
