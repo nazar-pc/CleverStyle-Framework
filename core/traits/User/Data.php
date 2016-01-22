@@ -8,6 +8,7 @@
 namespace cs\User;
 use
 	cs\Config,
+	cs\Event,
 	cs\Language,
 	cs\Session,
 	cs\User,
@@ -242,6 +243,25 @@ trait Data {
 				strpos($value, 'https://') !== 0
 			) {
 				$value = '';
+			} else {
+				$old_value = $this->get($item, $user);
+				if ($value !== $old_value) {
+					$Event = Event::instance();
+					$Event->fire(
+						'System/upload_files/del_tag',
+						[
+							'url' => $old_value,
+							'tag' => "users/$user/avatar"
+						]
+					);
+					$Event->fire(
+						'System/upload_files/add_tag',
+						[
+							'url' => $value,
+							'tag' => "users/$user/avatar"
+						]
+					);
+				}
 			}
 		}
 		$this->update_cache[$user]    = true;

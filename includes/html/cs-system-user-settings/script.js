@@ -10,7 +10,7 @@
   L = cs.Language;
   Polymer({
     'is': 'cs-system-user-setings',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.cs, cs.Polymer.behaviors.Language],
     properties: {
       languages: Array,
       timezones: Array,
@@ -49,6 +49,13 @@
         this$.set('timezones', timezones_list);
         this$.set('user_data', user_data);
       });
+      if (typeof cs.file_upload == 'function') {
+        cs.file_upload(this.$['upload-avatar'], function(files){
+          if (files.length) {
+            this$.set('user_data.avatar', files[0]);
+          }
+        });
+      }
     },
     _save: function(e){
       e.preventDefault();

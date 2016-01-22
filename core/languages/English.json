@@ -450,6 +450,7 @@
 		"block_until_info"					: "If you specify the current time or the past - the lock is released",
 		"undefined"							: "Undefined",
 		"avatar"							: "Avatar",
+		"upload_avatar"						: "Upload avatar",
 		"password_too_easy"					: "Password too simple, so it was not changed",
 		"password_too_short"				: "Password too short, so it was not changed",
 		"a"									: "A",

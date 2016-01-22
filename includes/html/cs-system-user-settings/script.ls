@@ -7,7 +7,10 @@
 L	= cs.Language
 Polymer(
 	'is'		: 'cs-system-user-setings'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.cs
+		cs.Polymer.behaviors.Language
+	]
 	properties	:
 		languages	: Array
 		timezones	: Array
@@ -41,6 +44,12 @@ Polymer(
 			@set('languages', languages_list)
 			@set('timezones', timezones_list)
 			@set('user_data', user_data)
+		cs.file_upload?(
+			@$['upload-avatar']
+			(files) !~>
+				if files.length
+					@set('user_data.avatar', files[0])
+		)
 	_save : (e) !->
 		e.preventDefault()
 		$.ajax(
