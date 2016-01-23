@@ -1,7 +1,4 @@
 {
 	"admin/Photo_gallery" : "admin.css",
-	"Photo_gallery"       : [
-		"general.css",
-		"general.js"
-	]
+	"Photo_gallery"       : "general.*"
 }
