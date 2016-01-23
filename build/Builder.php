@@ -361,7 +361,7 @@ RewriteBase /
 <FilesMatch ".*/.*">
 	Options -FollowSymLinks
 </FilesMatch>
-<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|eot|ttc|ttf|svg|svgz|woff|woff2)$">
+<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|svg|svgz|ttc|ttf|otf|woff|woff2|eot)$">
 	RewriteEngine Off
 </FilesMatch>
 <Files license.txt>
