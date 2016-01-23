@@ -8,9 +8,6 @@
 (function(){
   Polymer.cs.behaviors.csIcon = [
     Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, {
-      hostAttributes: {
-        hidden: true
-      },
       observers: ['_icon_changed(icon, flipX, flipY, mono, rotate, spin, spinStep)'],
       properties: {
         icon: {
@@ -50,43 +47,45 @@
       },
       ready: function(){
         this.scopeSubtree(this.$.content, true);
+        this.hidden = this.icon === undefined;
       },
       _icon_changed: function(icon, flipX, flipY, mono, rotate, spin, spinStep){
         var content, icons, multiple_icons, i$, len$, index, icon_class;
         if (!icon) {
-          this.setAttribute('hidden', '');
+          this.hidden = true;
           return;
+        } else if (this.hidden) {
+          this.hidden = false;
         }
-        this.removeAttribute('hidden');
         content = '';
         icons = icon.split(' ');
         multiple_icons = icons.length > 1;
         for (i$ = 0, len$ = icons.length; i$ < len$; ++i$) {
           index = i$;
           icon = icons[i$];
-          icon_class = ['fa fa-' + icon];
+          icon_class = "fa fa-" + icon;
           if (flipX) {
-            icon_class.push('fa-flip-horizontal');
+            icon_class += ' fa-flip-horizontal';
           }
           if (flipY) {
-            icon_class.push('fa-flip-vertical');
+            icon_class += ' fa-flip-vertical';
           }
           if (mono) {
-            icon_class.push('fa-fw');
+            icon_class += ' fa-fw';
           }
           if (rotate) {
-            icon_class.push('fa-rotate-' + rotate);
+            icon_class += " fa-rotate-" + rotate;
           }
           if (spin) {
-            icon_class.push('fa-spin');
+            icon_class += ' fa-spin';
           }
           if (spinStep) {
-            icon_class.push('fa-pulse');
+            icon_class += ' fa-pulse';
           }
           if (multiple_icons) {
-            icon_class.push(index ? 'fa-stack-1x fa-inverse' : 'fa-stack-2x');
+            icon_class += index ? ' fa-stack-1x fa-inverse' : ' fa-stack-2x';
           }
-          content += "<i class=\"" + icon_class.join(' ') + "\"></i>";
+          content += "<i class=\"" + icon_class + "\"></i>";
         }
         if (multiple_icons) {
           content = "<span class=\"fa-stack\">" + content + "</span>";
