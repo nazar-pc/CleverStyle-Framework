@@ -1281,3 +1281,55 @@ Dropped backward compatibility:
 * Do not enforce `POST` method in `$.ajax()` calls, it is explicitly specified where necessary
 
 Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
+
+# 3.152.1+build-1808: Few things here and there
+
+This release is incomparably smaller than previous.
+It contains several fixes and few nice improvements, dropped upgrade support from versions older than latest stable, but overall nothing dramatic.
+
+New components:
+* None
+
+New features:
+* WOFF2 support
+* Generic abstract class `\cs\Cache\_Abstract_with_namespace` now provides common abstraction for simplified cache engine implementation in cases when there is no native namespace support (APC, Memcached for now)
+* Allow avatar uploading in profile settings if necessary module is present
+
+Updates:
+* New git version of jQuery 3.0
+* New upstream version of HybridAuth
+  * New providers:
+    * DigitalOcean
+    * GitLab
+    * MixCloud
+    * StackExchange
+* New git version of TinyMCE with patches for Shadow DOM support
+* Composer updated to 1.0.0-alpha11
+
+Fixes and small improvements:
+* Improved `cs-icon` performance
+* Fix for including CSS/JS/HTML on administration pages because of compression used - always build public for installed but disabled modules
+* Run cleanup on System update to clean caches
+* Fix for getting cache item results in `false` being returned when caching is not working even if `$callback` argument was specified
+* Optimized sessions table indexes
+* Small form fix
+* Remove `)` from safe symbols in JS minifier
+* Improved mirror check, port number was ignored
+* Better error messages handling
+* Composer: Autoloader from Composer module now included as early as possible
+* `update_versions` is not needed in `meta.json` anymore (but will be present in `meta.json` until 4.x release in order to keep possibility to upgrade from older 3.x versions that rely on `update_versions`)
+* Old unused CSS removed
+* Fix for `cs` behavior
+* Small fix for optional System dependencies
+* TinyMCE: `readme.md` added with instructions how to get custom TinyMCE build with Shadow DOM support
+* Fix for `h::checkbox` rendering and functioning
+* Few smaller fixes
+
+Deprecations:
+* None
+
+Dropped backward compatibility:
+* Dropped upgrade support from versions earlier than latest stable
+* Dropped hack for upgrade from 2.x versions
+
+Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
