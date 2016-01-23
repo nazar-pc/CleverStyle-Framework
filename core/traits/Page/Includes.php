@@ -744,29 +744,25 @@ trait Includes {
 		foreach ($map as $path => $files) {
 			foreach ((array)$files as $file) {
 				$extension = file_extension($file);
-				switch ($extension) {
-					case 'css':
-					case 'js':
-					case 'html':
-						$file                              = "$includes_dir/$extension/$file";
-						$includes_map[$path][$extension][] = $file;
-						$all_includes[$extension]          = array_diff($all_includes[$extension], [$file]);
-						break;
-					default:
-						$file = rtrim($file, '*');
-						/**
-						 * Wildcard support, it is possible to specify just path prefix and all files with this prefix will be included
-						 */
-						foreach (['css', 'js', 'html'] as $extension) {
-							$base_path   = "$includes_dir/$extension/$file";
-							$found_files = get_files_list("$includes_dir/$extension", "/.*\\.$extension$/i", 'f', true, true, 'name', '!include') ?: [];
-							foreach ($found_files as $f) {
-								if (strpos($f, $base_path) === 0) {
-									$includes_map[$path][$extension][] = $f;
-									$all_includes[$extension]          = array_diff($all_includes[$extension], [$f]);
-								}
-							}
+				if (in_array($extension, ['css', 'js', 'html'])) {
+					$file                              = "$includes_dir/$extension/$file";
+					$includes_map[$path][$extension][] = $file;
+					$all_includes[$extension]          = array_diff($all_includes[$extension], [$file]);
+				} else {
+					$file = rtrim($file, '*');
+					/**
+					 * Wildcard support, it is possible to specify just path prefix and all files with this prefix will be included
+					 */
+					$found_files = array_filter(
+						get_files_list($includes_dir, '/.*\.(css|js|html)$/i', 'f', '', true, 'name', '!include') ?: [],
+						function ($f) use ($file) {
+							// We need only files with specified mask and only those located in directory that corresponds to file's extension
+							return preg_match("#^(css|js|html)/$file.*\\1$#i", $f);
 						}
+					);
+					// Drop first level directory
+					$found_files = _preg_replace('#^[^/]+/(.*)#', '$1', $found_files);
+					$this->process_map([$path => $found_files], $includes_dir, $includes_map, $all_includes);
 				}
 			}
 		}
