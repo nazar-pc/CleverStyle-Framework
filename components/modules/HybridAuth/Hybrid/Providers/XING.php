@@ -38,7 +38,7 @@ class Hybrid_Providers_XING extends Hybrid_Provider_Model_OAuth1
         $this->api->curl_auth_header = false;
 
         // allows to specify which picture size to retrieve
-        require_once('XINGUserPictureSize.php');
+        require_once( 'XINGUserPictureSize.php' );
     }
 
     /**
