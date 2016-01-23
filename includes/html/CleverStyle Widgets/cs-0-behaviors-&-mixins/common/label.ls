@@ -33,9 +33,13 @@ Polymer.{}cs.{}behaviors.label =
 		for input in inputs
 			let (input = input)
 				input.addEventListener('change', !~>
-					@value					= input.value
-					@active					= @local_input.value ~= input.value
-					@local_input.checked	= @local_input.value ~= input.value
+					if @local_input.type == 'radio'
+						@value					= input.value
+						@active					= @local_input.value ~= input.value
+						@local_input.checked	= @local_input.value ~= input.value
+					else
+						# For checkbox just alternating active property is enough
+						@active					= !@active
 				)
 				if input.checked
 					@value	= input.value

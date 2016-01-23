@@ -12,6 +12,7 @@ use
 	cs\Language,
 	cs\Page,
 	cs\Session;
+
 /**
  * Class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
  */
@@ -250,7 +251,6 @@ abstract class Base extends BananaHTML {
 	 * @param array $item
 	 */
 	protected static function common_checkbox_radio_post (&$item) {
-		$item['tag'] = 'input';
 		if (isset($item['value'], $item['checked'])) {
 			$item['checked'] = $item['value'] == $item['checked'];
 		}

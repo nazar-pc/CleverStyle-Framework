@@ -54,9 +54,13 @@
       function fn$(input){
         var this$ = this;
         input.addEventListener('change', function(){
-          this$.value = input.value;
-          this$.active = this$.local_input.value == input.value;
-          this$.local_input.checked = this$.local_input.value == input.value;
+          if (this$.local_input.type === 'radio') {
+            this$.value = input.value;
+            this$.active = this$.local_input.value == input.value;
+            this$.local_input.checked = this$.local_input.value == input.value;
+          } else {
+            this$.active = !this$.active;
+          }
         });
         if (input.checked) {
           this.value = input.value;
