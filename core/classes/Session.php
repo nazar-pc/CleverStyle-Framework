@@ -30,6 +30,7 @@
 namespace cs;
 use
 	cs\Cache\Prefix;
+
 /**
  * Class responsible for current user session
  *
@@ -43,7 +44,7 @@ class Session {
 	/**
 	 * Id of current session
 	 *
-	 * @var string
+	 * @var false|string
 	 */
 	protected $session_id;
 	/**
@@ -356,12 +357,8 @@ class Session {
 	 * @return bool
 	 */
 	function is_session_owner ($session_id, $user_agent, $remote_addr, $ip) {
-		return $this->is_session_owner_internal(
-			$this->get($session_id),
-			$user_agent,
-			$remote_addr,
-			$ip
-		);
+		$session_data = $this->get($session_id);
+		return $session_data ? $this->is_session_owner_internal($session_data, $user_agent, $remote_addr, $ip) : false;
 	}
 	/**
 	 * Whether session data belongs to current visitor (user agent, remote addr and ip check)
