@@ -8,6 +8,7 @@
 namespace cs\Permission;
 use
 	cs\Cache;
+
 /**
  * Class Any with common methods for User and Group classes
  *
@@ -49,7 +50,7 @@ trait Any {
 					FROM `$table`
 					WHERE `id` = '$id'"
 				);
-				if ($permissions_array) {
+				if (is_array($permissions_array)) {
 					$permissions = [];
 					foreach ($permissions_array as $permission) {
 						$permissions[$permission['permission']] = (int)(bool)$permission['value'];

@@ -1,12 +1,12 @@
 <?php
 /**
- * @package		Photo gallery
- * @category	modules
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2013-2016, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   Photo gallery
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2013-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs\modules\Photo_gallery;
+namespace cs\modules\Photo_gallery;
 use
 	cs\Cache\Prefix,
 	cs\Config,
@@ -266,21 +266,26 @@ class Photo_gallery {
 	 * @return array|false
 	 */
 	function get_galleries_list () {
-		$L		= Language::instance();
-		return $this->cache->get("galleries/list/$L->clang", function () {
-			$data	= [];
-			foreach (
-				$this->db()->qfas(
+		$L = Language::instance();
+		return $this->cache->get(
+			"galleries/list/$L->clang",
+			function () {
+				$data      = [];
+				$galleries = $this->db()->qfas(
 					"SELECT `id`
 					FROM `[prefix]photo_gallery_galleries`
 					WHERE `active` = 1
 					ORDER BY `order` ASC"
-				) as $gallery
-			) {
-				$data[$this->get_gallery($gallery)['path']]	= $gallery;
+				);
+				foreach ($galleries ?: [] as $gallery) {
+					$gallery = $this->get_gallery($gallery);
+					if (is_array($gallery)) {
+						$data[$gallery['path']] = $gallery['id'];
+					}
+				}
+				return $data;
 			}
-			return $data;
-		});
+		);
 	}
 	/**
 	 * Get data of specified gallery

@@ -40,7 +40,7 @@ class Page {
 	 *
 	 * @var array
 	 */
-	public    $level              = [
+	public $level   = [
 		'Head'      => 0,
 		'pre_Body'  => 1,
 		'Left'      => 3,
@@ -50,9 +50,14 @@ class Page {
 		'Right'     => 3,
 		'post_Body' => 1
 	];
-	public    $link               = [];
-	public    $Search             = [];
-	public    $Replace            = [];
+	public $link    = [];
+	public $Search  = [];
+	public $Replace = [];
+	/**
+	 * @todo this should be better moved to method, which might be used both as getter and setter
+	 *
+	 * @var false|string
+	 */
 	public    $canonical_url      = false;
 	protected $theme;
 	protected $error_showed       = false;
@@ -346,6 +351,8 @@ class Page {
 	}
 	/**
 	 * Specify canonical url of current page
+	 *
+	 * @todo this should not render link immediately, since on repeated call this will cause multiple canonical links, which is odd
 	 *
 	 * @param string $url
 	 *

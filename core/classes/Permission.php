@@ -9,6 +9,7 @@ namespace cs;
 use
 	cs\Cache\Prefix,
 	cs\DB\Accessor;
+
 /**
  * Class for permissions manipulating
  *
@@ -216,7 +217,7 @@ class Permission {
 							`group`
 						FROM `[prefix]permissions`'
 					);
-					if (!$data) {
+					if (!is_array($data)) {
 						return [];
 					}
 					$all_permissions = [];

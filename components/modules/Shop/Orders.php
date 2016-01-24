@@ -104,7 +104,7 @@ class Orders {
 	 */
 	function get ($id) {
 		$data = $this->read($id);
-		if (!$data) {
+		if (!is_array($data)) {
 			return false;
 		}
 		if (is_array($id)) {
