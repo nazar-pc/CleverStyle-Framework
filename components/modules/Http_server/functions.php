@@ -10,6 +10,7 @@ namespace {
 	use
 		cs\Config,
 		cs\Route;
+
 	/**
 	 * Return request id from Request object
 	 *
@@ -207,7 +208,7 @@ namespace {
 	/**
 	 * Is current path from administration area?
 	 *
-	 * @param bool|null $admin_path
+	 * @param bool|int|null $admin_path
 	 *
 	 * @return bool
 	 */
@@ -230,7 +231,7 @@ namespace {
 	/**
 	 * Is current path from api area?
 	 *
-	 * @param bool|null $api_path
+	 * @param bool|int|null $api_path
 	 *
 	 * @return bool
 	 */
@@ -253,7 +254,7 @@ namespace {
 	/**
 	 * Name of currently used module (for generation of current page)
 	 *
-	 * @param null|string $current_module
+	 * @param null|int|string $current_module
 	 *
 	 * @return string
 	 */
@@ -276,7 +277,7 @@ namespace {
 	/**
 	 * Is current page a home page?
 	 *
-	 * @param bool|null $home_page
+	 * @param bool|int|null $home_page
 	 *
 	 * @return bool
 	 */
