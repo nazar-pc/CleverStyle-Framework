@@ -342,7 +342,7 @@ class Session {
 	 */
 	protected function is_good_session ($session_data) {
 		return
-			is_array($session_data) &&
+			isset($session_data['expire'], $session_data['user']) &&
 			$session_data['expire'] > time() &&
 			$this->is_user_active($session_data['user']);
 	}
@@ -376,14 +376,10 @@ class Session {
 		 *
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		if ($user_agent === null) {
-			$user_agent = $_SERVER->user_agent;
-		}
-		if ($remote_addr === null) {
+		if ($user_agent === null && $remote_addr === null && $ip === null) {
+			$user_agent  = $_SERVER->user_agent;
 			$remote_addr = $_SERVER->remote_addr;
-		}
-		if ($ip === null) {
-			$ip = $_SERVER->ip;
+			$ip          = $_SERVER->ip;
 		}
 		return
 			md5($session_data['user_agent']) == md5($user_agent) &&
@@ -662,12 +658,17 @@ class Session {
 	 *
 	 */
 	function get_data ($item, $session_id = null) {
+		$session_data = $this->get_data_internal($session_id);
+		return isset($session_data['data'][$item]) ? $session_data['data'][$item] : false;
+	}
+	/*
+	 * @param null|string $session_id
+	 *
+	 * @return array|false
+	 */
+	protected function get_data_internal ($session_id) {
 		$session_id = $session_id ?: $this->session_id;
-		if (!is_md5($session_id)) {
-			return false;
-		}
-		$session_data = $this->get_internal($session_id);
-		return $session_data && isset($session_data['data'][$item]) ? $session_data['data'][$item] : false;
+		return is_md5($session_id) ? $this->get_internal($session_id) : false;
 	}
 	/**
 	 * Store data with session
@@ -680,12 +681,8 @@ class Session {
 	 *
 	 */
 	function set_data ($item, $value, $session_id = null) {
-		$session_id = $session_id ?: $this->session_id;
-		if (!is_md5($session_id)) {
-			return false;
-		}
-		$session_data = $this->get_internal($session_id);
-		if (!$session_data) {
+		$session_data = $this->get_data_internal($session_id);
+		if (!isset($session_data['data'])) {
 			return false;
 		}
 		$session_data['data'][$item] = $value;
@@ -701,12 +698,8 @@ class Session {
 	 *
 	 */
 	function del_data ($item, $session_id = null) {
-		$session_id = $session_id ?: $this->session_id;
-		if (!is_md5($session_id)) {
-			return false;
-		}
-		$session_data = $this->get_internal($session_id);
-		if (!$session_data) {
+		$session_data = $this->get_data_internal($session_id);
+		if (!isset($session_data['data'])) {
 			return false;
 		}
 		if (!isset($session_data['data'][$item])) {
