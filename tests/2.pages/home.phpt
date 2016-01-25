@@ -69,6 +69,7 @@ shutdown_function();
 			© Powered by <a target="_blank" href="http://cleverstyle.org/cms" title="CleverStyle CMS">CleverStyle CMS</a>
 		</div>
 	</footer>
+	<script src="/storage/pcache/webcomponents.js?%s"></script>
 	<script src="/storage/pcache/_CleverStyle_en.js?%s"></script>
 	<link href="/storage/pcache/_CleverStyle_en.html?%s" rel="import">
 
