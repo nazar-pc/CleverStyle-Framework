@@ -246,8 +246,10 @@ trait Includes {
 		 * If CSS and JavaScript compression enabled
 		 */
 		if ($Config->core['cache_compress_js_css'] && !(admin_path() && isset($_GET['debug']))) {
+			$this->webcomponents_polyfill(true);
 			$includes = $this->get_includes_for_page_with_compression();
 		} else {
+			$this->webcomponents_polyfill(false);
 			/**
 			 * Language translation is added explicitly only when compression is disabled, otherwise it will be in compressed JS file
 			 */
@@ -276,6 +278,30 @@ trait Includes {
 				'file',
 				true
 			);
+		}
+	}
+	/**
+	 * Hack: Add WebComponents Polyfill for browsers without native Shadow DOM support
+	 *
+	 * TODO: Probably, some effective User Agent-based check might be used here
+	 *
+	 * @param bool $with_compression
+	 */
+	protected function webcomponents_polyfill ($with_compression) {
+		if (!isset($_COOKIE['shadow_dom']) || $_COOKIE['shadow_dom'] != 1) {
+			$file = 'includes/js/WebComponents-polyfill/webcomponents-custom.min.js';
+			if ($with_compression) {
+				$compressed_file = PUBLIC_CACHE.'/webcomponents.js';
+				if (!file_exists($compressed_file)) {
+					$content = file_get_contents(DIR."/$file");
+					file_put_contents($compressed_file, gzencode($content, 9), LOCK_EX | FILE_BINARY);
+					file_put_contents("$compressed_file.hash", substr(md5($content), 0, 5));
+				}
+				$hash = file_get_contents("$compressed_file.hash");
+				$this->js_internal("storage/pcache/webcomponents.js?$hash", 'file', true);
+			} else {
+				$this->js_internal($file, 'file', true);
+			}
 		}
 	}
 	protected function add_system_configs () {

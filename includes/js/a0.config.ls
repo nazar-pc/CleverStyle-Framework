@@ -1,10 +1,11 @@
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2014-2016, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-window.Polymer	= dom : 'shadow'
+window.WebComponents	= window.WebComponents || {}
+window.Polymer			= dom : 'shadow'
 ###
  # Load configuration from special script elements
 ###
