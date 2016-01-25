@@ -1,0 +1,36 @@
+/**
+ * @package    CleverStyle CMS
+ * @subpackage DarkEnergy theme
+ * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
+ * @license    MIT License, see license.txt
+ */
+body[app-shell] {
+	margin : 0;
+
+	> #body > {
+		aside > *,
+		section,
+		footer {
+			> * {
+				opacity : 0;
+			}
+		}
+	}
+
+	.cs-mobile-menu {
+		color     : #b7b7b7;
+		border    : none;
+		font-size : inherit;
+	}
+}
+
+body > #body > {
+	aside > *,
+	section,
+	footer {
+		> * {
+			transition : opacity 200ms
+		}
+	}
+}

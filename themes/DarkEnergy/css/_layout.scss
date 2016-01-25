@@ -38,10 +38,12 @@ html {
 .cs-mobile-menu {
 	background : #262626;
 	color      : #b7b7b7;
-	height     : auto;
+	// Hack: To override button's height in browsers without native Shadow DOM
+	height     : 3.5em !important;
 	width      : 100%;
 
-	> div {
+	div {
+		// Hack: To override button's display in browsers without native Shadow DOM
 		text-align : right;
 		width      : 100%;
 
