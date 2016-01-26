@@ -1333,3 +1333,38 @@ Dropped backward compatibility:
 * Dropped hack for upgrade from 2.x versions
 
 Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
+
+# 3.155.0+build-1818: Security update
+
+This release fixes important flaw in permissions system, update ASAP!
+
+Besides extremely important security update, DarkEnergy theme now uses App Shell for better page load experience and WebComponents.js polyfill is only loaded in browsers that needs it, improving page load for browsers with native Shadow DOM support.
+
+Security fixes:
+* Security fix for permissions system to administration pages when no permissions present for target page
+
+New components:
+* None
+
+New features:
+* Added OTF fonts support
+* App Shell approach added to DarkEnergy theme to improve load experience
+* WebComponents.js polyfill is only included when needed (not included in Chrome browser on subsequent page opening; only on subsequent opening because of feature detection on frontend)
+
+Updates:
+* None
+
+Fixes and small improvements:
+* Fixes for modern mime types for font files
+* Refactoring of some system components that resulted in improved code quality
+* Generate `WebComponentsReady` even if WebComponents.js not included
+* Shop: Fix in Shop module for situation when item removed, but order is still present
+* Various small fixes and PhpDoc improvements
+
+Deprecations:
+* None
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* jQuery ready event is now completely standalone again (not likely, but potential BC-break)
+
+Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
