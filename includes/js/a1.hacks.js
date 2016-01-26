@@ -13,11 +13,8 @@
   document.addEventListener('WebComponentsReady', function(){
     Polymer.updateStyles();
     setTimeout(function(){
-      document.body.removeAttribute('unresolved');
-      setTimeout(function(){
-        document.body.removeAttribute('unresolved-transition');
-      }, 250);
-    });
+      document.body.removeAttribute('unresolved-transition');
+    }, 250);
   });
   if (!((ref$ = window.WebComponents) != null && ref$.flags)) {
     addEventListener('load', function(){
