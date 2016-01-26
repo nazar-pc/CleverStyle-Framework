@@ -103,7 +103,8 @@ Page::instance()
 									array_map(
 										function ($item) use ($Categories, $Items, $module_path, $items_path) {
 											$item = $Items->get($item['item']);
-											return h::a(
+											// In case when item no longer exists - show ? instead
+											return $item ? h::a(
 												$item['title'],
 												[
 													'href'   => "$module_path/$items_path/".
@@ -113,9 +114,9 @@ Page::instance()
 																":$item[id]",
 													'target' => '_blank'
 												]
-											);
+											) : '?';
 										},
-										$Orders->get_items($order['id'])
+										$Orders->get_items($order['id']) ?: []
 									)
 								),
 								h::a(

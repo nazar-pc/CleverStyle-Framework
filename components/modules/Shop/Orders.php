@@ -155,16 +155,16 @@ class Orders {
 	 *
 	 * @param int $id
 	 *
-	 * @return array
+	 * @return array[]|false
 	 */
 	function get_statuses ($id) {
 		return $this->db()->qfa(
 			[
 				"SELECT
-				`id`,
-				`date`,
-				`status`,
-				`comment`
+					`id`,
+					`date`,
+					`status`,
+					`comment`
 				FROM `{$this->table}_history`
 				WHERE `id` = '%d'",
 				$id
@@ -176,20 +176,19 @@ class Orders {
 	 *
 	 * @param int $id
 	 *
-	 * @return array
+	 * @return array[]|false
 	 */
 	function get_items ($id) {
 		return $this->db()->qfa(
 			[
 				"SELECT
-				`id`,
-				`item`,
-				`units`,
-				`price`,
-				`unit_price`
+					`id`,
+					`item`,
+					`units`,
+					`price`,
+					`unit_price`
 				FROM `{$this->table}_items`
-				WHERE
-				`id` = '%d'",
+				WHERE `id` = '%d'",
 				$id
 			]
 		) ?: [];
