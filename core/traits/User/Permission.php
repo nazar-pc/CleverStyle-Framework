@@ -70,27 +70,19 @@ trait Permission {
 			$permission = $all_permission[$group][$label];
 			if (isset($this->permissions[$user][$permission])) {
 				return (bool)$this->permissions[$user][$permission];
-			} else {
-				$group_label_exploded = explode('/', "$group/$label");
-				/**
-				 * Default permissions values:
-				 *
-				 * - only administrators have access to `admin/*` URLs by default
-				 * - only administrators have access to `api/{module}/admin/*` URLs by default
-				 * - all other URLs are available to everyone by default
-				 */
-				return $this->admin()
-					? true
-					:
-					$group_label_exploded[0] !== 'admin' &&
-					(
-						$group_label_exploded[0] !== 'api' ||
-						@$group_label_exploded[2] !== 'admin'
-					);
 			}
-		} else {
-			return true;
 		}
+		$group_label_exploded = explode('/', "$group/$label");
+		/**
+		 * Default permissions values:
+		 *
+		 * - only administrators have access to `admin/*` URLs by default
+		 * - only administrators have access to `api/{module}/admin/*` URLs by default
+		 * - all other URLs are available to everyone by default
+		 */
+		return $this->admin()
+			? true
+			: $group_label_exploded[0] !== 'admin' && ($group_label_exploded[0] !== 'api' || @$group_label_exploded[2] !== 'admin');
 	}
 	/**
 	 * Set permission state for specified user
