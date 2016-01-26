@@ -6,11 +6,11 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var ready_callback, ref$, value, date;
+  var ref$, value, date;
   if (document.body.hasAttribute('unresolved')) {
     document.body.setAttribute('unresolved-transition', '');
   }
-  ready_callback = function(){
+  document.addEventListener('WebComponentsReady', function(){
     Polymer.updateStyles();
     setTimeout(function(){
       document.body.removeAttribute('unresolved');
@@ -18,11 +18,13 @@
         document.body.removeAttribute('unresolved-transition');
       }, 250);
     });
-  };
-  if ((ref$ = window.WebComponents) != null && ref$.flags) {
-    document.addEventListener('WebComponentsReady', ready_callback);
-  } else {
-    addEventListener('load', ready_callback);
+  });
+  if (!((ref$ = window.WebComponents) != null && ref$.flags)) {
+    addEventListener('load', function(){
+      document.dispatchEvent(new CustomEvent('WebComponentsReady', {
+        bubbles: true
+      }));
+    });
   }
   if (document.cookie.indexOf('shadow_dom=1') === -1) {
     value = 'registerElement' in document && 'import' in document.createElement('link') && 'content' in document.createElement('template') ? 1 : 0;

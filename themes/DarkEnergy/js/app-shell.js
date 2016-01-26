@@ -7,7 +7,7 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  $(function(){
+  document.addEventListener('WebComponentsReady', function(){
     document.body.removeAttribute('app-shell');
   });
 }).call(this);
