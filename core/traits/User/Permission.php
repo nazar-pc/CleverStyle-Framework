@@ -65,13 +65,7 @@ trait Permission {
 				}
 			);
 		}
-		$all_permission = Cache::instance()->{'permissions/all'} ?: System_Permission::instance()->get_all();
-		if (isset($all_permission[$group][$label])) {
-			$permission = $all_permission[$group][$label];
-			if (isset($this->permissions[$user][$permission])) {
-				return (bool)$this->permissions[$user][$permission];
-			}
-		}
+		$all_permission       = Cache::instance()->{'permissions/all'} ?: System_Permission::instance()->get_all();
 		$group_label_exploded = explode('/', "$group/$label");
 		/**
 		 * Default permissions values:
@@ -80,9 +74,14 @@ trait Permission {
 		 * - only administrators have access to `api/{module}/admin/*` URLs by default
 		 * - all other URLs are available to everyone by default
 		 */
-		return $this->admin()
-			? true
-			: $group_label_exploded[0] !== 'admin' && ($group_label_exploded[0] !== 'api' || @$group_label_exploded[2] !== 'admin');
+		$admin_section = $group_label_exploded[0] === 'admin' || ($group_label_exploded[0] === 'api' && @$group_label_exploded[2] === 'admin');
+		if (isset($all_permission[$group][$label])) {
+			$permission = $all_permission[$group][$label];
+			return isset($this->permissions[$user][$permission])
+				? (bool)$this->permissions[$user][$permission]
+				: !$admin_section;
+		}
+		return !$admin_section || $this->admin();
 	}
 	/**
 	 * Set permission state for specified user
