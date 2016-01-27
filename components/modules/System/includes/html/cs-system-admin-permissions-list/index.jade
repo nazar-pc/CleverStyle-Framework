@@ -1,9 +1,9 @@
 dom-module#cs-system-admin-permissions-list
 	template
 		style(include="advanced-styles")
-		h2.cs-text-center(hidden="[[permissions.length]]")
+		h2.cs-text-center(hidden="[[or(permissions.length, permissions_loaded)]]")
 			cs-icon(icon="spinner" spin)
-		table.cs-table(center list hidden="[[!permissions.length]]")
+		table.cs-table(center list hidden="[[!and(permissions.length, permissions_loaded)]]")
 			tr
 				th [[L.action]]
 				th id
