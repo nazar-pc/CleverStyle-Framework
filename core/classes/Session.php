@@ -698,9 +698,6 @@ class Session {
 	 */
 	function del_data ($item, $session_id = null) {
 		$session_data = $this->get_data_internal($session_id);
-		if (!isset($session_data['data'])) {
-			return false;
-		}
 		if (!isset($session_data['data'][$item])) {
 			return true;
 		}
