@@ -50,9 +50,9 @@ class Session {
 	/**
 	 * User id of current session
 	 *
-	 * @var false|int
+	 * @var int
 	 */
-	protected $user_id  = false;
+	protected $user_id  = User::GUEST_ID;
 	protected $is_admin = false;
 	protected $is_user  = false;
 	protected $is_bot   = false;
@@ -107,18 +107,6 @@ class Session {
 			 */
 			$this->bots_detection();
 		}
-		/**
-		 * If session not found and visitor is not bot - create new session
-		 */
-		if (!$this->user_id) {
-			$this->user_id = User::GUEST_ID;
-			/**
-			 * Do not create session for API requests
-			 */
-			if (!api_path()) {
-				$this->add();
-			}
-		}
 		$this->update_user_is();
 		Event::instance()->fire('System/Session/init/after');
 	}
@@ -139,11 +127,12 @@ class Session {
 		/**
 		 * If bot is cached
 		 */
-		$this->user_id = $Cache->$bot_hash;
+		$bot_id = $Cache->$bot_hash;
 		/**
 		 * If bot found in cache - exit from here
 		 */
-		if ($this->user_id) {
+		if ($bot_id) {
+			$this->user_id = $bot_id;
 			return;
 		}
 		/**
@@ -286,7 +275,7 @@ class Session {
 	/**
 	 * Returns user id of current session
 	 *
-	 * @return false|int
+	 * @return int
 	 */
 	function get_user () {
 		return $this->user_id;
@@ -494,13 +483,16 @@ class Session {
 	/**
 	 * Create the session for the user with specified id
 	 *
-	 * @param false|int $user
-	 * @param bool      $delete_current_session
+	 * @param int  $user
+	 * @param bool $delete_current_session
 	 *
 	 * @return false|string Session id on success, `false` otherwise
 	 */
-	function add ($user = false, $delete_current_session = true) {
-		$user = (int)$user ?: User::GUEST_ID;
+	function add ($user, $delete_current_session = true) {
+		$user = (int)$user;
+		if (!$user) {
+			return false;
+		}
 		if ($delete_current_session && is_md5($this->session_id)) {
 			$this->del_internal($this->session_id, false);
 		}
@@ -682,6 +674,13 @@ class Session {
 	 */
 	function set_data ($item, $value, $session_id = null) {
 		$session_data = $this->get_data_internal($session_id);
+		/**
+		 * If there is no session yet - let's create one
+		 */
+		if (!$session_data) {
+			$session_id   = $this->add(User::GUEST_ID);
+			$session_data = $this->get_data_internal($session_id);
+		}
 		if (!isset($session_data['data'])) {
 			return false;
 		}
