@@ -46,9 +46,32 @@ trait Permission {
 		if ($user == User::ROOT_ID) {
 			return true;
 		}
-		if (!$user) {
+		$group_label_exploded = explode('/', "$group/$label");
+		/**
+		 * Default permissions values:
+		 *
+		 * - only administrators have access to `admin/*` URLs by default
+		 * - only administrators have access to `api/{module}/admin/*` URLs by default
+		 * - all other URLs are available to everyone by default
+		 */
+		$admin_section = $group_label_exploded[0] === 'admin' || ($group_label_exploded[0] === 'api' && @$group_label_exploded[2] === 'admin');
+		if (!$user || ($admin_section && !$this->admin())) {
 			return false;
 		}
+		$all_permission = Cache::instance()->{'permissions/all'} ?: System_Permission::instance()->get_all();
+		if (isset($all_permission[$group][$label])) {
+			$user_permissions = $this->get_permission_internal($user);
+			$permission_id    = $all_permission[$group][$label];
+			return isset($user_permissions[$permission_id]) ? (bool)$user_permissions[$permission_id] : !$admin_section;
+		}
+		return true;
+	}
+	/**
+	 * @param int $user
+	 *
+	 * @return array
+	 */
+	protected function get_permission_internal ($user) {
 		if (!isset($this->permissions[$user])) {
 			$this->permissions[$user] = $this->cache->get(
 				"permissions/$user",
@@ -65,23 +88,7 @@ trait Permission {
 				}
 			);
 		}
-		$all_permission       = Cache::instance()->{'permissions/all'} ?: System_Permission::instance()->get_all();
-		$group_label_exploded = explode('/', "$group/$label");
-		/**
-		 * Default permissions values:
-		 *
-		 * - only administrators have access to `admin/*` URLs by default
-		 * - only administrators have access to `api/{module}/admin/*` URLs by default
-		 * - all other URLs are available to everyone by default
-		 */
-		$admin_section = $group_label_exploded[0] === 'admin' || ($group_label_exploded[0] === 'api' && @$group_label_exploded[2] === 'admin');
-		if (isset($all_permission[$group][$label])) {
-			$permission = $all_permission[$group][$label];
-			return isset($this->permissions[$user][$permission])
-				? (bool)$this->permissions[$user][$permission]
-				: !$admin_section;
-		}
-		return !$admin_section || $this->admin();
+		return $this->permissions[$user];
 	}
 	/**
 	 * Set permission state for specified user
