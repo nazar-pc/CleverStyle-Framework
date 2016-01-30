@@ -14,7 +14,7 @@ class APC extends _Abstract_with_namespace {
 	 * @inheritdoc
 	 */
 	protected function available_internal () {
-		return (bool)extension_loaded('apc');
+		return function_exists('apcu_fetch');
 	}
 	/**
 	 * @inheritdoc
