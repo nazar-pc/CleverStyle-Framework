@@ -11,7 +11,7 @@ env:
     - REPORT_EXIT_STATUS=1
 before_script:
   - mysql -e 'CREATE DATABASE `cscms.travis`;'
-  - echo yes | pecl install `if [[ $(php -v | grep -q 'PHP 7') ]]; then echo apcu && echo 'extension = apcu.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; else echo apcu-4.0.8; fi`
+  - echo yes | pecl install `if [[ "$(php -v | grep 'PHP 7')" ]]; then echo apcu && echo 'extension = apcu.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; else echo apcu-4.0.8; fi`
   - php -v | grep -q 'PHP 7' || echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script:
   - php run-tests.php -P --show-diff tests
