@@ -40,7 +40,7 @@ class Page {
 	 *
 	 * @var array
 	 */
-	public $level   = [
+	public $level = [
 		'Head'      => 0,
 		'pre_Body'  => 1,
 		'Left'      => 3,
@@ -50,18 +50,33 @@ class Page {
 		'Right'     => 3,
 		'post_Body' => 1
 	];
-	public $link    = [];
-	public $Search  = [];
-	public $Replace = [];
 	/**
-	 * @todo this should be better moved to method, which might be used both as getter and setter
-	 *
+	 * @var array[]
+	 */
+	protected $link = [];
+	/**
+	 * @var string[]
+	 */
+	protected $search_replace = [];
+	/**
 	 * @var false|string
 	 */
-	public    $canonical_url      = false;
+	protected $canonical_url      = false;
 	protected $theme;
 	protected $error_showed       = false;
 	protected $finish_called_once = false;
+	/**
+	 * @param string $property
+	 *
+	 * @return false|null|string
+	 */
+	function __get ($property) {
+		// For internal use by \cs\Meta class
+		if ($property === 'canonical_url') {
+			return $this->canonical_url;
+		}
+		return false;
+	}
 	/**
 	 * Initialization: setting of title and theme according to specified parameters
 	 *
@@ -197,7 +212,7 @@ class Page {
 					'href' => $this->get_favicon_path()
 				]
 			).
-			h::link($this->link ?: false);
+			h::link(array_values($this->link) ?: false);
 		/**
 		 * Addition of CSS, JavaScript and Web Components includes
 		 */
@@ -271,13 +286,9 @@ class Page {
 	 */
 	function replace ($search, $replace = '') {
 		if (is_array($search)) {
-			foreach ($search as $i => $val) {
-				$this->Search[]  = $val;
-				$this->Replace[] = is_array($replace) ? $replace[$i] : $replace;
-			}
+			$this->search_replace = $search + $this->search_replace;
 		} else {
-			$this->Search[]  = $search;
-			$this->Replace[] = $replace;
+			$this->search_replace[$search] = $replace;
 		}
 		return $this;
 	}
@@ -289,15 +300,10 @@ class Page {
 	 * @return string
 	 */
 	protected function process_replacing ($content) {
-		array_map(
-			function ($search, $replace) use (&$content) {
-				$content = _preg_replace($search, $replace, $content) ?: str_replace($search, $replace, $content);
-			},
-			$this->Search,
-			$this->Replace
-		);
-		$this->Search  = [];
-		$this->Replace = [];
+		foreach ($this->search_replace as $search => $replace) {
+			$content = _preg_replace($search, $replace, $content) ?: str_replace($search, $replace, $content);
+		}
+		$this->search_replace = [];
 		return $content;
 	}
 	/**
@@ -309,7 +315,7 @@ class Page {
 	 */
 	function link ($data) {
 		if ($data !== false) {
-			$this->link[] = [$data];
+			$this->link[] = $data;
 		}
 		return $this;
 	}
@@ -352,20 +358,17 @@ class Page {
 	/**
 	 * Specify canonical url of current page
 	 *
-	 * @todo this should not render link immediately, since on repeated call this will cause multiple canonical links, which is odd
-	 *
 	 * @param string $url
 	 *
 	 * @return Page
 	 */
 	function canonical_url ($url) {
-		$this->canonical_url = $url;
-		return $this->link(
-			[
-				'href' => $this->canonical_url,
-				'rel'  => 'canonical'
-			]
-		);
+		$this->canonical_url         = $url;
+		$this->link['canonical_url'] = [
+			'href' => $this->canonical_url,
+			'rel'  => 'canonical'
+		];
+		return $this;
 	}
 	/**
 	 * Adding text to the title page
