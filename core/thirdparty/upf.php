@@ -244,7 +244,7 @@ function __get_files_list ($dir, $mask, $mode, $prefix_path, $subfolders, $sort,
 			--$limit;
 			$item = $file;
 			if ($prefix_path) {
-				$item = $prefix_path === true ? $file_path : "$prefix_path/$file";
+				$item = $prefix_path === true ? $file_path : ($prefix_path ? "$prefix_path/$file" : $file);
 			}
 			if (!$apply) {
 				$add_to_list_function($list, $item, $file_path);
@@ -255,7 +255,7 @@ function __get_files_list ($dir, $mask, $mode, $prefix_path, $subfolders, $sort,
 				$file_path,
 				$mask,
 				$mode,
-				$prefix_path === true || $prefix_path === false ? $prefix_path : "$prefix_path/$file",
+				$prefix_path === true || $prefix_path === false ? $prefix_path : ($prefix_path ? "$prefix_path/$file" : $file),
 				$subfolders,
 				$sort,
 				$exclusion,
