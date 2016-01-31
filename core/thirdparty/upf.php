@@ -1,7 +1,6 @@
 <?php
 /**
- * @package    CleverStyle CMS
- * @subpackage UPF (Useful PHP Functions)
+ * @package    UPF (Useful PHP Functions)
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright  Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
@@ -182,7 +181,7 @@ function get_files_list (
 				break;
 		}
 	}
-	return array_values($list) ?: false;
+	return array_values($list);
 }
 
 /**
