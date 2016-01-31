@@ -15,20 +15,20 @@ class BananaHTML {
 	/**
 	 * Attributes that doesn't have closing tag
 	 *
-	 * @var string[]
+	 * @var array
 	 */
 	protected static $unpaired_tags = [
-		'area',
-		'base',
-		'br',
-		'col',
-		'frame',
-		'hr',
-		'img',
-		'input',
-		'link',
-		'meta',
-		'param'
+		'area'  => 1,
+		'base'  => 1,
+		'br'    => 1,
+		'col'   => 1,
+		'frame' => 1,
+		'hr'    => 1,
+		'img'   => 1,
+		'input' => 1,
+		'link'  => 1,
+		'meta'  => 1,
+		'param' => 1
 	];
 	/**
 	 * Line padding for a structured source code (adds tabs)
@@ -79,26 +79,13 @@ class BananaHTML {
 				$data['href'] = static::url_with_hash($data['href']);
 			}
 		}
-		uksort(
-			$data,
-			function ($key_1, $key_2) use ($data) {
-				// Next 2 `if` statements for consistent behavior under PHP5 and PHP7/HHVM
-				if (is_int($key_1)) {
-					$key_1 = $data[$key_1];
-				}
-				if (is_int($key_2)) {
-					$key_2 = $data[$key_2];
-				}
-				return strcmp($key_1, $key_2);
-			}
-		);
+		static::data_prepare_normalize_attributes($data);
+		ksort($data);
 		foreach ($data as $key => $value) {
 			if ($value === false) {
 				continue;
 			}
-			if (is_int($key)) {
-				$attributes .= " $value";
-			} elseif ($value === true) {
+			if ($value === true) {
 				$attributes .= " $key";
 			} else {
 				$value = static::prepare_attr_value($value);
@@ -106,6 +93,15 @@ class BananaHTML {
 			}
 		}
 		return true;
+	}
+	/**
+	 * @param array $data
+	 */
+	protected static function data_prepare_normalize_attributes (&$data) {
+		for ($i = 0; isset($data[$i]); ++$i) {
+			$data[$data[$i]] = true;
+			unset($data[$i]);
+		}
 	}
 	/**
 	 * Adds, if necessary, slash or domain at the beginning of the url, provides correct absolute/relative url
@@ -1088,7 +1084,7 @@ class BananaHTML {
 	protected static function render_tag ($tag, $in, $attributes) {
 		if (method_exists(get_called_class(), $tag)) {
 			return static::$tag($in, $attributes);
-		} elseif (in_array($tag, static::$unpaired_tags)) {
+		} elseif (isset(static::$unpaired_tags[$tag])) {
 			$attributes['in'] = $in;
 			return static::u_wrap($attributes, $tag);
 		}
