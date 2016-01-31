@@ -1,10 +1,10 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @subpackage	UPF (Useful PHP Functions)
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2016, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package    CleverStyle CMS
+ * @subpackage UPF (Useful PHP Functions)
+ * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright  Copyright (c) 2011-2016, Nazar Mokrynskyi
+ * @license    MIT License, see license.txt
  */
 
 /**
@@ -95,27 +95,28 @@ function time_limit_pause ($pause = true) {
 		@ini_set('max_input_time', $time_limit['max_input_time']);
 	}
 }
+
 /**
  * Function for getting content of a directory
  *
- * @param	string		$dir			Directory for searching
- * @param	bool|string	$mask			Regexp for items
- * @param	string		$mode			Mode of searching<br>
- * 										<b>f</b> - files only (default)<br>
- * 										<b>d</b> - directories only<br>
- * 										<b>fd</b> - both files and directories
- * @param	bool|string	$prefix_path	Path to be added to the beginning of every found item. If <b>true</b> - prefix will
- * 										be absolute path to item on server.
- * @param	bool		$subfolders		Search in subdirectories or not
- * @param	bool		$sort			Sort mode in format <b>mode|order</b>:<br>
- * 										Possible values for mode: <b>name</b> (default), <b>date</b>, <b>size</b>
- * 										Possible values for mode: <b>asc</b> (default), <b>desc</b>
- * @param	bool|string	$exclusion		If specified file exists in scanned directory - it will be excluded from scanning
- * @param	bool		$system_files	Show system files: .htaccess .htpasswd .gitignore
- * @param	callable	$apply			Apply function to each found item, return nothing (sorting will not work, items will be processed as they found)
- * @param	int|null	$limit			If specified - limits total number of found items (if $limit items found - stop further searching)
+ * @param string      $dir          Directory for searching
+ * @param bool|string $mask         Regexp for items
+ * @param string      $mode         Mode of searching<br>
+ *                                  <b>f</b> - files only (default)<br>
+ *                                  <b>d</b> - directories only<br>
+ *                                  <b>fd</b> - both files and directories
+ * @param bool|string $prefix_path  Path to be added to the beginning of every found item. If <b>true</b> - prefix will
+ *                                  be absolute path to item on server.
+ * @param bool        $subfolders   Search in subdirectories or not
+ * @param bool        $sort         Sort mode in format <b>mode|order</b>:<br>
+ *                                  Possible values for mode: <b>name</b> (default), <b>date</b>, <b>size</b>
+ *                                  Possible values for mode: <b>asc</b> (default), <b>desc</b>
+ * @param bool|string $exclusion    If specified file exists in scanned directory - it will be excluded from scanning
+ * @param bool        $system_files Show system files: .htaccess .htpasswd .gitignore
+ * @param callable    $apply        Apply function to each found item, return nothing (sorting will not work, items will be processed as they found)
+ * @param int|null    $limit        If specified - limits total number of found items (if $limit items found - stop further searching)
  *
- * @return	array|bool
+ * @return    array|bool
  */
 function get_files_list (
 	$dir,
@@ -129,158 +130,188 @@ function get_files_list (
 	$apply			= null,
 	$limit			= null
 ) {
+	$dir = rtrim($dir, '/');
 	/**
-	 * Wrapped in internal closure in order to use &$limit
+	 * If custom prefix for path was specified
 	 */
-	static $func;
-	!isset($func) && $func = function ($dir, $mask, $mode, $prefix_path, $subfolders, $sort, $exclusion, $system_files, $apply, &$limit) {
-		if ($mode == 'df') {
-			$mode = 'fd';
+	if ($prefix_path !== true && $prefix_path) {
+		$prefix_path = rtrim($prefix_path, '/');
+	}
+	if ($mode == 'df') {
+		$mode = 'fd';
+	}
+	/**
+	 * Default sorting
+	 */
+	if ($sort === false) {
+		$sort   = 'name';
+		$sort_x = ['name', 'asc'];
+	} else {
+		$sort   = mb_strtolower($sort);
+		$sort_x = explode('|', $sort);
+		if (@$sort_x[1] != 'desc') {
+			$sort_x[1] = 'asc';
 		}
-		$dir	= rtrim($dir, '/').'/';
-		if (!is_dir($dir) || ($exclusion !== false && file_exists($dir.$exclusion))) {
-			return false;
-		}
-		/**
-		 * Default sorting
-		 */
-		if ($sort === false) {
-			$sort	= 'name';
-			$sort_x	= ['name', 'asc'];
-		} else {
-			$sort	= mb_strtolower($sort);
-			$sort_x	= explode('|', $sort);
-			if (@$sort_x[1] != 'desc') {
-				$sort_x[1] = 'asc';
-			}
-		}
-		/**
-		 * Sort by
-		 */
-		if (@$sort_x[0] == 'date') {
-			$prepare_for_sort = function (&$list, $tmp, $link) {
-				/**
-				 * File access or modification time, access time may be unavailable on some configurations
-				 */
-				$list[fileatime($link) ?: filemtime($link)] = $tmp;
-			};
-		} elseif (@$sort_x[0] == 'size') {
-			$prepare_for_sort = function (&$list, $tmp, $link) {
-				$list[filesize($link)] = $tmp;
-			};
-		} else {
-			$prepare_for_sort = function (&$list, $tmp) {
-				$list[] = $tmp;
-			};
-		}
-		$list	= [];
-		/**
-		 * If custom prefix for path was specified
-		 */
-		if ($prefix_path !== true && $prefix_path) {
-			$prefix_path = rtrim($prefix_path, '/').'/';
-		}
-		$dirc	= opendir($dir);
-		if (!is_resource($dirc)) {
-			return false;
-		}
-		while (($file = readdir($dirc)) !== false) {
-			/**
-			 * Limit of found files reached (updated at the end of iteration before nex iteration or recursive opening of nested directory)
-			 */
-			if ($limit < 0) {
-				break;
-			}
-			if (
-				(
-					$mask &&
-					!preg_match($mask, $file)
-					&&
-					(
-						!$subfolders || !is_dir($dir.$file)
-					)
-				) ||
-				$file == '.' ||
-				$file == '..' ||
-				(!$system_files &&
-					(
-						$file == '.htaccess' ||
-						$file == '.htpasswd' ||
-						$file == '.gitignore'
-					)
-				)
-			) {
-				continue;
-			}
-			if (
-				$mode == 'fd' ||
-				(
-					is_file($dir.$file) && $mode == 'f'
-				) ||
-				(
-					is_dir($dir.$file) && $mode == 'd'
-				)
-			) {
-				--$limit;
-				$item	= $prefix_path === true ? $dir.$file : $prefix_path.$file;
-				if (!is_callable($apply)) {
-					$prepare_for_sort($list, $item, $dir.$file);
+	}
+	$add_to_list_function = '__get_files_list_add_to_list';
+	/**
+	 * Sort by
+	 */
+	if (@$sort_x[0] == 'date') {
+		$add_to_list_function = '__get_files_list_add_to_list_date';
+	} elseif (@$sort_x[0] == 'size') {
+		$add_to_list_function = '__get_files_list_add_to_list_size';
+	}
+	$list = [];
+	__get_files_list($dir, $mask, $mode, $prefix_path, $subfolders, $sort, $exclusion, $system_files, $apply, $limit, $add_to_list_function, $list);
+	if ($list && @$sort_x) {
+		switch ($sort_x[0]) {
+			case 'date':
+			case 'size':
+				if ($sort_x[1] == 'desc') {
+					krsort($list);
+				} else {
+					ksort($list);
 				}
-			}
-			if ($limit >= 0) {
-				if ($subfolders && is_dir($dir.$file)) {
-					$list = array_merge(
-						$list,
-						get_files_list(
-							$dir.$file,
-							$mask,
-							$mode,
-							$prefix_path === true || $prefix_path === false ? $prefix_path : $prefix_path.$file,
-							$subfolders,
-							$sort,
-							$exclusion,
-							$system_files,
-							$apply,
-							$limit
-						) ?: []
-					);
+				break;
+			case 'name':
+				natcasesort($list);
+				if ($sort_x[1] == 'desc') {
+					$list = array_reverse($list);
 				}
-			}
-			/**
-			 * Apply custom operation to found item without waiting for result returning
-			 */
-			if (isset($item) && is_callable($apply)) {
-				$apply($item);
-			}
-			unset($item);
-			if ($limit < 0) {
 				break;
-			}
 		}
-		closedir($dirc);
-		unset($prepare_for_sort);
-		if ($list && @$sort_x) {
-			switch ($sort_x[0]) {
-				case 'date':
-				case 'size':
-					if ($sort_x[1] == 'desc') {
-						krsort($list);
-					} else {
-						ksort($list);
-					}
-				break;
-				case 'name':
-					natcasesort($list);
-					if ($sort_x[1] == 'desc') {
-						$list = array_reverse($list);
-					}
-				break;
-			}
-		}
-		return array_values($list);
-	};
-	return $func($dir, $mask, $mode, $prefix_path, $subfolders, $sort, $exclusion, $system_files, $apply, $limit);
+	}
+	return array_values($list) ?: false;
 }
+
+/**
+ * Function for internal use by get_files_list()
+ *
+ * @param string      $dir
+ * @param bool|string $mask
+ * @param string      $mode
+ * @param bool|string $prefix_path
+ * @param bool        $subfolders
+ * @param bool        $sort
+ * @param bool|string $exclusion
+ * @param bool        $system_files
+ * @param callable    $apply
+ * @param int|null    $limit
+ * @param string      $add_to_list_function
+ * @param string[]    $list
+ */
+function __get_files_list ($dir, $mask, $mode, $prefix_path, $subfolders, $sort, $exclusion, $system_files, $apply, &$limit, $add_to_list_function, &$list) {
+	if (!is_dir($dir) || ($exclusion !== false && file_exists("$dir/$exclusion"))) {
+		return;
+	}
+	$dir_handle = opendir($dir);
+	if ($dir_handle === false) {
+		return;
+	}
+	while ($limit >= 0 && ($file = readdir($dir_handle)) !== false) {
+		$file_path = "$dir/$file";
+		$is_dir    = is_dir($file_path);
+		if (
+			$file == '.' ||
+			$file == '..' ||
+			(
+				!$system_files &&
+				(
+					$file == '.htaccess' ||
+					$file == '.htpasswd' ||
+					$file == '.gitignore'
+				)
+			) ||
+			(
+				$mask &&
+				!preg_match($mask, $file) &&
+				(
+					!$subfolders || !$is_dir
+				)
+			)
+		) {
+			continue;
+		}
+		if (
+			$mode == 'fd' ||
+			(
+				!$is_dir && $mode == 'f'
+			) ||
+			(
+				$is_dir && $mode == 'd'
+			)
+		) {
+			--$limit;
+			$item = $file;
+			if ($prefix_path) {
+				$item = $prefix_path === true ? $file_path : "$prefix_path/$file";
+			}
+			if (!$apply) {
+				$add_to_list_function($list, $item, $file_path);
+			}
+		}
+		if ($limit >= 0 && $subfolders && $is_dir) {
+			__get_files_list(
+				$file_path,
+				$mask,
+				$mode,
+				$prefix_path === true || $prefix_path === false ? $prefix_path : "$prefix_path/$file",
+				$subfolders,
+				$sort,
+				$exclusion,
+				$system_files,
+				$apply,
+				$limit,
+				$add_to_list_function,
+				$list
+			);
+		}
+		/**
+		 * Apply custom operation to found item without waiting for result returning
+		 */
+		if (isset($item) && $apply) {
+			$apply($item);
+		}
+	}
+	closedir($dir_handle);
+}
+
+/**
+ * Function for internal use by get_files_list()
+ *
+ * @param string[] $list
+ * @param string   $item
+ * @param string   $location
+ */
+function __get_files_list_add_to_list_date (&$list, $item, $location) {
+	/**
+	 * File access or modification time, access time may be unavailable on some configurations
+	 */
+	$list[fileatime($location) ?: filemtime($location)] = $item;
+}
+
+/**
+ * Function for internal use by get_files_list()
+ *
+ * @param string[] $list
+ * @param string   $item
+ * @param string   $location
+ */
+function __get_files_list_add_to_list_size (&$list, $item, $location) {
+	$list[filesize($location)] = $item;
+}
+
+/**
+ * Function for internal use by get_files_list()
+ *
+ * @param string[] $list
+ * @param string   $item
+ */
+function __get_files_list_add_to_list (&$list, $item) {
+	$list[] = $item;
+}
+
 /**
  * Get file extension from filename
  *
