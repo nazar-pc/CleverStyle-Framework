@@ -11,7 +11,7 @@
     document.body.setAttribute('unresolved-transition', '');
   }
   document.addEventListener('WebComponentsReady', function(){
-    Polymer.updateStyles();
+    setTimeout(bind$(Polymer, 'updateStyles'));
     setTimeout(function(){
       document.body.removeAttribute('unresolved-transition');
     }, 250);
@@ -28,5 +28,8 @@
     date = new Date();
     date.setTime(date.getTime() + 30 * 24 * 3600 * 1000);
     document.cookie = ("shadow_dom=" + value + "; path=/; expires=") + date.toGMTString();
+  }
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
   }
 }).call(this);

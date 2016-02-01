@@ -8,7 +8,7 @@ if document.body.hasAttribute('unresolved')
 	document.body.setAttribute('unresolved-transition', '')
 document.addEventListener('WebComponentsReady', !->
 	# Since we may use some CSS variables and mixins, lets update styles to make sure we didn't leave any styles not applied
-	Polymer.updateStyles()
+	setTimeout(Polymer~updateStyles)
 	setTimeout (!->
 		document.body.removeAttribute('unresolved-transition')
 	), 250
