@@ -212,6 +212,14 @@ class Includes_processing {
 	static function html ($data, $file, $base_filename, $destination) {
 		static::html_process_scripts($data, $file, $base_filename, $destination);
 		static::html_process_links_and_styles($data, $file, $base_filename, $destination);
+		// Removing HTML comments (those that are mostly likely comments, to avoid problems)
+		$data = preg_replace_callback(
+			'/^\s*<!--([^>-].*[^-])?-->/Ums',
+			function ($matches) {
+				return mb_strpos('--', $matches[1]) === false ? '' : $matches[0];
+			},
+			$data
+		);
 		return preg_replace("/\n+/", "\n", $data);
 	}
 	/**
