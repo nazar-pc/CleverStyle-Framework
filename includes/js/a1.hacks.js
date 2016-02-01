@@ -11,16 +11,18 @@
     document.body.setAttribute('unresolved-transition', '');
   }
   document.addEventListener('WebComponentsReady', function(){
-    setTimeout(bind$(Polymer, 'updateStyles'));
+    Polymer.updateStyles();
     setTimeout(function(){
       document.body.removeAttribute('unresolved-transition');
     }, 250);
   });
   if (!((ref$ = window.WebComponents) != null && ref$.flags)) {
     addEventListener('load', function(){
-      document.dispatchEvent(new CustomEvent('WebComponentsReady', {
-        bubbles: true
-      }));
+      setTimeout(function(){
+        document.dispatchEvent(new CustomEvent('WebComponentsReady', {
+          bubbles: true
+        }));
+      });
     });
   }
   if (document.cookie.indexOf('shadow_dom=1') === -1) {
@@ -28,8 +30,5 @@
     date = new Date();
     date.setTime(date.getTime() + 30 * 24 * 3600 * 1000);
     document.cookie = ("shadow_dom=" + value + "; path=/; expires=") + date.toGMTString();
-  }
-  function bind$(obj, key, target){
-    return function(){ return (target || obj)[key].apply(obj, arguments) };
   }
 }).call(this);

@@ -8,17 +8,18 @@ if document.body.hasAttribute('unresolved')
 	document.body.setAttribute('unresolved-transition', '')
 document.addEventListener('WebComponentsReady', !->
 	# Since we may use some CSS variables and mixins, lets update styles to make sure we didn't leave any styles not applied
-	setTimeout(Polymer~updateStyles)
+	Polymer.updateStyles()
 	setTimeout (!->
 		document.body.removeAttribute('unresolved-transition')
 	), 250
 )
 if !window.WebComponents?.flags
 	addEventListener('load', !->
-		document.dispatchEvent(new CustomEvent(
-			'WebComponentsReady'
-			bubbles	: true
-		))
+		setTimeout !->
+			document.dispatchEvent(new CustomEvent(
+				'WebComponentsReady'
+				bubbles	: true
+			))
 	)
 # If there is native Shadow DOM support - lets store cookie so that we can skip loading Shadow DOM polyfill
 if document.cookie.indexOf('shadow_dom=1') == -1
