@@ -1,5 +1,5 @@
 --TEST--
-Basic features using APC cache engine
+Basic features using APCu cache engine
 --INI--
 apc.enable_cli	= 1
 --FILE--
@@ -7,7 +7,7 @@ apc.enable_cli	= 1
 namespace cs;
 include __DIR__.'/../custom_loader.php';
 Core::instance_stub([
-	'cache_engine'	=> 'APC'
+	'cache_engine'	=> 'APCu'
 ]);
 $Cache	= Cache::instance();
 if (!$Cache->cache_state()) {
