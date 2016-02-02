@@ -340,7 +340,8 @@ trait modules {
 		$Cache = System_cache::instance();
 		unset(
 			$Cache->functionality,
-			$Cache->languages
+			$Cache->languages,
+			$Cache->events_files_paths
 		);
 		clean_classes_cache();
 	}
@@ -504,6 +505,7 @@ trait modules {
 		$Config->components['modules'][$new_meta['package']] = ['active' => Config\Module_Properties::UNINSTALLED];
 		ksort($Config->components['modules'], SORT_STRING | SORT_FLAG_CASE);
 		static::admin_modules_save();
+		static::admin_modules_cleanup();
 	}
 	/**
 	 * Update module (or system if module name is System)
@@ -699,6 +701,7 @@ trait modules {
 		$modules = array_merge($modules_list, array_intersect_key($modules, $modules_list));
 		ksort($modules, SORT_STRING | SORT_FLAG_CASE);
 		static::admin_modules_save();
+		static::admin_modules_cleanup();
 	}
 	/**
 	 * Save changes

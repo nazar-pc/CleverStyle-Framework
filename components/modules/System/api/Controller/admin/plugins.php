@@ -17,6 +17,7 @@ use
 	cs\Page,
 	cs\Session,
 	cs\modules\System\Packages_manipulation;
+
 trait plugins {
 	/**
 	 * @param int[]    $route_ids
@@ -203,7 +204,11 @@ trait plugins {
 	}
 	protected static function admin_plugins_cleanup () {
 		clean_pcache();
-		unset(System_cache::instance()->functionality);
+		$Cache = System_cache::instance();
+		unset(
+			$Cache->functionality,
+			$Cache->events_files_paths
+		);
 		clean_classes_cache();
 	}
 	/**
@@ -274,6 +279,7 @@ trait plugins {
 		if (!Packages_manipulation::install_extract(PLUGINS."/$new_meta[package]", $tmp_location)) {
 			throw new ExitException($L->plugin_files_unpacking_error, 500);
 		}
+		static::admin_plugins_cleanup();
 	}
 	/**
 	 * Update plugin

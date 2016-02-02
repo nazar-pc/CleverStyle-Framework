@@ -113,18 +113,31 @@ class Event {
 	 * Initialize all events handlers
 	 */
 	protected function initialize () {
-		$modules = get_files_list(MODULES, false, 'd');
-		foreach ($modules as $module) {
-			_include(MODULES."/$module/events.php", false, false);
+		foreach ($this->events_files_paths() as $path) {
+			include DIR."/$path";
 		}
-		unset($modules, $module);
-		$plugins = get_files_list(PLUGINS, false, 'd');
-		if (!empty($plugins)) {
-			foreach ($plugins as $plugin) {
-				_include(PLUGINS."/$plugin/events.php", false, false);
-			}
-		}
-		unset($plugins, $plugin);
 		$this->initialized = true;
+	}
+	/**
+	 * @return string[]
+	 */
+	protected function events_files_paths () {
+		return Cache::instance()->get(
+			'events_files_paths',
+			function () {
+				$paths = [];
+				foreach (get_files_list(MODULES, false, 'd', 'components/modules') as $path) {
+					if (file_exists(DIR."/$path/events.php")) {
+						$paths[] = "$path/events.php";
+					}
+				}
+				foreach (get_files_list(PLUGINS, false, 'd', 'components/plugins') as $path) {
+					if (file_exists(DIR."/$path/events.php")) {
+						$paths[] = "$path/events.php";
+					}
+				}
+				return $paths;
+			}
+		);
 	}
 }
