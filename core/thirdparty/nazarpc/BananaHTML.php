@@ -1101,13 +1101,8 @@ class BananaHTML {
 		if (empty($array) || !is_array($array)) {
 			return false;
 		}
-		$count = count($array);
-		for ($i = 0; $i < $count; ++$i) {
-			if (!isset($array[$i])) {
-				return true;
-			}
-		}
-		return false;
+		// Very naive approach, but is enough in most cases
+		return !isset($array[count($array) - 1]);
 	}
 	/**
 	 * Checks whether array is indexed or not
@@ -1117,10 +1112,11 @@ class BananaHTML {
 	 * @return bool
 	 */
 	protected static function is_array_indexed ($array) {
-		if (empty($array) || !is_array($array)) {
+		if (!is_array($array)) {
 			return false;
 		}
-		return !static::is_array_assoc($array);
+		// Very naive approach, but is enough in most cases
+		return isset($array[count($array) - 1]);
 	}
 	/**
 	 * Works like <b>array_flip()</b> function, but is used when every item of array is not a string, but may be also array
