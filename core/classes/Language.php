@@ -142,7 +142,7 @@ class Language implements JsonSerializable {
 	/**
 	 * Check `*-Locale` header (for instance, `X-Facebook-Locale`) that exists in configuration
 	 *
-	 * @param array $active_languages
+	 * @param string[] $active_languages
 	 *
 	 * @return false|string
 	 */
@@ -155,7 +155,7 @@ class Language implements JsonSerializable {
 		 * For `X-Facebook-Locale` and other similar
 		 */
 		foreach ($_SERVER as $i => $v) {
-			if (preg_match('/.*_LOCALE$/i', $i)) {
+			if (stripos($i, '_LOCALE') !== false) {
 				$language = strtolower($v);
 				if (@in_array($aliases[$language], $active_languages)) {
 					return $aliases[$language];

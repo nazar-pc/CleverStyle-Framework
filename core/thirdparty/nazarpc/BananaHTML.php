@@ -220,16 +220,14 @@ class BananaHTML {
 			$in !== '0'
 		) {
 			$in = '';
-		}
-		if (
-			$in &&
+		} elseif (
 			$level &&
 			(
 				strpos($in, "\n") !== false ||
 				strpos($in, '<') !== false
 			)
 		) {
-			$in = $level ? "\n".static::level("$in\n", $level) : "\n$in\n";
+			$in = "\n".static::level("$in\n", $level);
 		}
 		return "<$tag$attributes>$in</$tag>".($level ? "\n" : '');
 	}
@@ -263,12 +261,12 @@ class BananaHTML {
 	 */
 	static function form ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return static::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic_internal(__FUNCTION__, func_get_args());
 		}
 		if ($in === false) {
 			return '';
 		} elseif (is_array($in)) {
-			return static::__callStatic(__FUNCTION__, [$in, $data]);
+			return static::__callStatic_internal(__FUNCTION__, [$in, $data]);
 		}
 		if (isset($in['method'])) {
 			$data['method'] = $in['method'];
@@ -308,14 +306,14 @@ class BananaHTML {
 	 */
 	static function input ($in = [], $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return static::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic_internal(__FUNCTION__, func_get_args());
 		}
 		if ($in === false) {
 			return '';
 		}
 		$in = static::input_merge($in, $data);
 		if (static::is_array_indexed($in) && is_array($in[0])) {
-			return static::__callStatic(__FUNCTION__, [$in, $data]);
+			return static::__callStatic_internal(__FUNCTION__, [$in, $data]);
 		}
 		if (isset($in['type']) && $in['type'] == 'radio') {
 			return static::input_radio($in);
@@ -407,7 +405,7 @@ class BananaHTML {
 	 */
 	protected static function select_common ($in, $data, $function) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return static::__callStatic(__FUNCTION__, [$in, $data]);
+			return static::__callStatic_internal(__FUNCTION__, [$in, $data]);
 		}
 		if ($in === false) {
 			return '';
@@ -549,7 +547,7 @@ class BananaHTML {
 	 */
 	protected static function textarea_common ($in = '', $data = [], $function) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return static::__callStatic($function, func_get_args());
+			return static::__callStatic_internal($function, func_get_args());
 		}
 		if ($in === false) {
 			return false;
@@ -630,12 +628,12 @@ class BananaHTML {
 	 */
 	static function button ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return static::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic_internal(__FUNCTION__, func_get_args());
 		}
 		if ($in === false) {
 			return '';
 		} elseif (is_array($in)) {
-			return static::__callStatic(__FUNCTION__, [$in, $data]);
+			return static::__callStatic_internal(__FUNCTION__, [$in, $data]);
 		}
 		if (is_array($in)) {
 			if (!isset($in['type'])) {
@@ -660,12 +658,12 @@ class BananaHTML {
 	 */
 	static function style ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return static::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic_internal(__FUNCTION__, func_get_args());
 		}
 		if ($in === false) {
 			return '';
 		} elseif (is_array($in)) {
-			return static::__callStatic(__FUNCTION__, [$in, $data]);
+			return static::__callStatic_internal(__FUNCTION__, [$in, $data]);
 		}
 		if (is_array($in)) {
 			if (!isset($in['type'])) {
@@ -719,35 +717,44 @@ class BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param string            $input
+	 * @param string            $selector
 	 * @param array|bool|string $data
 	 *
 	 * @return string
 	 */
-	static function __callStatic ($input, $data) {
+	static function __callStatic ($selector, $data) {
 		if ($data === false || $data === [false]) {
 			return false;
 		}
-		$data = (array)$data;
-		if (isset($data[1]) && $data[1] === false && !isset($data[2])) {
-			unset($data[1]);
-		}
-		$input = static::parse_nesting_selector(trim($input));
+		$selector = static::parse_nesting_selector(trim($selector));
 		/**
 		 * Analysis of called tag. If nested tags presented
 		 */
-		if (is_array($input)) {
-			return static::handle_nested_selectors($input, $data);
+		if (is_array($selector)) {
+			return static::handle_nested_selectors($selector, $data);
 		}
-		if (substr($input, -1) == '|') {
-			$input = substr($input, 0, -1);
-			$data  = [$data];
+		if (substr($selector, -1) == '|') {
+			$selector = substr($selector, 0, -1);
+			$data     = [$data];
+		}
+		return static::__callStatic_internal($selector, $data);
+	}
+	/**
+	 * @param string            $selector
+	 * @param array|bool|string $data
+	 *
+	 * @return bool|false|string
+	 */
+	protected static function __callStatic_internal ($selector, $data) {
+		$data = (array)$data;
+		if (isset($data[1]) && $data[1] === false && !isset($data[2])) {
+			unset($data[1]);
 		}
 		/**
 		 * Fix for `<textarea>`, `<select>`, `<optgroup>` and `<datalist>` tags because they accept indexed arrays as content by themselves
 		 * `\b(..)` is used to capture words only (string might be quite complex, this will help to avoid some false-positive results, other should be avoided intentionally)
 		 */
-		$element_that_supports_indexed_array_content = preg_match('/\b(textarea|select|optgroup|datalist)/', $input);
+		$element_that_supports_indexed_array_content = preg_match('/\b(textarea|select|optgroup|datalist)/', $selector);
 		/**
 		 * If associative array given then for every element of array separate copy of current tag will be created
 		 */
@@ -756,7 +763,7 @@ class BananaHTML {
 			 * If there are more than elements - we clearly have to render it like set of separate elements
 			 */
 			if (count($data) > 2) {
-				return static::render_array_of_elements($input, $data);
+				return static::render_array_of_elements($selector, $data);
 			}
 			/**
 			 * If there are 2 elements, where first element is not an array, but second is not an array too or is indexed array - also render it like set of separate elements
@@ -769,7 +776,7 @@ class BananaHTML {
 					static::is_array_indexed($data[1])
 				)
 			) {
-				return static::render_array_of_elements($input, $data);
+				return static::render_array_of_elements($selector, $data);
 			}
 			if (
 				!$element_that_supports_indexed_array_content &&
@@ -777,22 +784,22 @@ class BananaHTML {
 			) {
 				$output  = '';
 				$data[1] = isset($data[1]) ? $data[1] : [];
-				foreach ((array)$data[0] as $d) {
+				foreach ($data[0] as $d) {
 					if (
 						!is_array($d) ||
 						!isset($d[1]) ||
 						!static::is_array_assoc($d[1])
 					) {
-						$output .= static::__callStatic(
-							$input,
+						$output .= static::__callStatic_internal(
+							$selector,
 							[
 								$d,
 								$data[1]
 							]
 						);
 					} else {
-						$output .= static::__callStatic(
-							$input,
+						$output .= static::__callStatic_internal(
+							$selector,
 							[
 								$d[0],
 								static::smart_array_merge($data[1], $d[1])
@@ -813,10 +820,8 @@ class BananaHTML {
 					!static::is_array_indexed($data[1])
 				)
 			) {
-				return static::render_array_of_elements($input, $data);
+				return static::render_array_of_elements($selector, $data);
 			}
-		}
-		if (isset($data[0])) {
 			if (
 				!is_array($data[0]) ||
 				(
@@ -828,7 +833,7 @@ class BananaHTML {
 			}
 			$data = isset($data[1]) ? static::smart_array_merge($data[0], $data[1]) : $data[0];
 		}
-		list($tag, $attributes) = static::parse_tag_string($input);
+		list($tag, $attributes) = static::parse_tag_string($selector);
 		$attributes = static::smart_array_merge($attributes, $data);
 		list($in, $attributes) = static::prepare_content($tag, $attributes);
 		if (isset($attributes['insert'])) {
@@ -864,18 +869,18 @@ class BananaHTML {
 		return static::parse_nesting_selector($in, $space_position + 1);
 	}
 	/**
-	 * @param string[] $input
+	 * @param string[] $selector
 	 * @param array    $data
 	 *
 	 * @return string
 	 */
-	protected static function handle_nested_selectors ($input, $data) {
+	protected static function handle_nested_selectors ($selector, $data) {
 		/**
 		 * If tag name ends with pipe "|" symbol - for every element of array separate copy of current tag will be created
 		 */
-		if (strpos($input[0], '|') !== false) {
-			$input[0] = substr($input[0], 0, -1);
-			$output   = [];
+		if (strpos($selector[0], '|') !== false) {
+			$selector[0] = substr($selector[0], 0, -1);
+			$output      = [];
 			/**
 			 * When parameters are not taken in braces - make this operation, if it is necessary
 			 */
@@ -897,21 +902,20 @@ class BananaHTML {
 							static::is_array_indexed($d[1])
 						)
 					) {
-						$output[] = static::render_array_of_elements($input[1], $d);
+						$output[] = static::render_array_of_elements($selector[1], $d);
 					} else {
 						$output[] = [
-							static::__callStatic($input[1], $d[0]),
+							static::__callStatic_internal($selector[1], $d[0]),
 							isset($d[1]) ? $d[1] : false
 						];
 					}
 				} else {
-					$output[] = static::__callStatic($input[1], $d);
+					$output[] = static::__callStatic_internal($selector[1], $d);
 				}
 			}
-			unset($d);
 		} elseif (!isset($data[1]) || static::is_array_assoc($data[1])) {
-			$output  = static::__callStatic(
-				$input[1],
+			$output  = static::__callStatic_internal(
+				$selector[1],
 				[
 					isset($data[0]) ? $data[0] : '',
 					isset($data[1]) ? $data[1] : false
@@ -919,14 +923,14 @@ class BananaHTML {
 			);
 			$data[1] = [];
 		} else {
-			$output  = static::__callStatic(
-				$input[1],
+			$output  = static::__callStatic_internal(
+				$selector[1],
 				$data
 			);
 			$data[1] = [];
 		}
-		return static::__callStatic(
-			$input[0],
+		return static::__callStatic_internal(
+			$selector[0],
 			[
 				$output,
 				isset($data[1]) ? $data[1] : false
@@ -934,15 +938,15 @@ class BananaHTML {
 		);
 	}
 	/**
-	 * @param string $input
+	 * @param string $selector
 	 * @param array  $data
 	 *
 	 * @return string
 	 */
-	protected static function render_array_of_elements ($input, $data) {
+	protected static function render_array_of_elements ($selector, $data) {
 		$output = '';
 		foreach ($data as $d) {
-			$output .= static::__callStatic($input, $d);
+			$output .= static::__callStatic_internal($selector, $d);
 		}
 		return $output;
 	}
@@ -951,19 +955,19 @@ class BananaHTML {
 	 *
 	 * This method takes such string as input and returns pure tag name and array of attributes
 	 *
-	 * @param string $input
+	 * @param string $selector
 	 *
 	 * @return array [$tag, $attributes]
 	 */
-	protected static function parse_tag_string ($input) {
+	protected static function parse_tag_string ($selector) {
 		$attributes = [];
 		/**
 		 * Attributes processing
 		 */
-		$pos = mb_strpos($input, '[');
+		$pos = mb_strpos($selector, '[');
 		if ($pos !== false) {
-			$regular_attributes = explode('][', mb_substr($input, $pos + 1, -1));
-			$input              = mb_substr($input, 0, $pos);
+			$regular_attributes = explode('][', mb_substr($selector, $pos + 1, -1));
+			$selector           = mb_substr($selector, 0, $pos);
 			foreach ($regular_attributes as &$attr) {
 				/**
 				 * For attribute without value we just put `true`, as this will be treated as boolean attribute
@@ -976,25 +980,25 @@ class BananaHTML {
 		/**
 		 * Classes processing
 		 */
-		$pos = mb_strpos($input, '.');
+		$pos = mb_strpos($selector, '.');
 		if ($pos !== false) {
-			$attributes['class'] = trim(str_replace('.', ' ', mb_substr($input, $pos)));
-			$input               = mb_substr($input, 0, $pos);
+			$attributes['class'] = trim(str_replace('.', ' ', mb_substr($selector, $pos)));
+			$selector            = mb_substr($selector, 0, $pos);
 		}
 		unset($pos);
 		/**
 		 * Id and tag determination
 		 */
-		$input = explode('#', $input);
-		$tag   = $input[0];
+		$selector = explode('#', $selector);
+		$tag      = $selector[0];
 		/**
 		 * Convenient support of custom tags for Web Components
 		 *
 		 * Allows to write BananaHTML::custom_tag() that will be translated to <custom-tag></custom-tag>
 		 */
 		$tag = str_replace('_', '-', $tag);
-		if (isset($input[1])) {
-			$attributes['id'] = $input[1];
+		if (isset($selector[1])) {
+			$attributes['id'] = $selector[1];
 		}
 		return [$tag, $attributes];
 	}
@@ -1134,7 +1138,6 @@ class BananaHTML {
 		foreach ($array as $values) {
 			$size = max($size, count((array)$values));
 		}
-		unset($values);
 		foreach ($array as $key => $values) {
 			for ($i = 0; $i < $size; ++$i) {
 				if (is_array($values)) {
