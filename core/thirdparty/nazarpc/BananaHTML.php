@@ -878,7 +878,7 @@ class BananaHTML {
 		/**
 		 * If tag name ends with pipe "|" symbol - for every element of array separate copy of current tag will be created
 		 */
-		if (strpos($selector[0], '|') !== false) {
+		if (substr($selector[0], -1) == '|') {
 			$selector[0] = substr($selector[0], 0, -1);
 			$output      = [];
 			/**
@@ -905,16 +905,16 @@ class BananaHTML {
 						$output[] = static::render_array_of_elements($selector[1], $d);
 					} else {
 						$output[] = [
-							static::__callStatic_internal($selector[1], $d[0]),
+							static::__callStatic($selector[1], $d[0]),
 							isset($d[1]) ? $d[1] : false
 						];
 					}
 				} else {
-					$output[] = static::__callStatic_internal($selector[1], $d);
+					$output[] = static::__callStatic($selector[1], $d);
 				}
 			}
 		} elseif (!isset($data[1]) || static::is_array_assoc($data[1])) {
-			$output  = static::__callStatic_internal(
+			$output  = static::__callStatic(
 				$selector[1],
 				[
 					isset($data[0]) ? $data[0] : '',
@@ -923,10 +923,7 @@ class BananaHTML {
 			);
 			$data[1] = [];
 		} else {
-			$output  = static::__callStatic_internal(
-				$selector[1],
-				$data
-			);
+			$output  = static::__callStatic($selector[1], $data);
 			$data[1] = [];
 		}
 		return static::__callStatic_internal(
@@ -946,7 +943,7 @@ class BananaHTML {
 	protected static function render_array_of_elements ($selector, $data) {
 		$output = '';
 		foreach ($data as $d) {
-			$output .= static::__callStatic_internal($selector, $d);
+			$output .= static::__callStatic($selector, $d);
 		}
 		return $output;
 	}
