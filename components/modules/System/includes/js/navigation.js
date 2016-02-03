@@ -54,7 +54,7 @@
     }
     function popstate(e){
       var href;
-      if (location.href.indexOf('admin/System') !== -1) {
+      if (location.href.indexOf('admin/System/') !== -1) {
         go(location.href.match(/admin\/System\/\w+\/\w+/)[0]);
       } else {
         href = location.href.split('?')[0];

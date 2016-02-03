@@ -56,7 +56,7 @@ L				= cs.Language
 				.prev()
 					.prop('primary', true)
 !function popstate (e)
-	if location.href.indexOf('admin/System') != -1
+	if location.href.indexOf('admin/System/') != -1
 		go(
 			location.href.match(/admin\/System\/\w+\/\w+/)[0]
 		)
