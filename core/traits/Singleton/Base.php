@@ -82,7 +82,7 @@ trait Base {
 		}
 		foreach ($modified_classes[$class]['aliases'] as $alias) {
 			/**
-			 * If for whatever reason base class does or file that should be included does not exists
+			 * If for whatever reason base class does not exists or file that should be included does not exists
 			 */
 			if (
 				!class_exists($alias['original'], false) ||
