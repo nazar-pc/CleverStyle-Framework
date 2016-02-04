@@ -170,3 +170,5 @@ Now in `/some_dir` you'll have source code of CleverStyle CMS from container whi
 # How to install?
 
 [Read simple instructions in our wiki](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)
+
+# [Video tutorials for developers](https://www.youtube.com/watch?v=GVXHeCVbO_c&list=PLVUA3QJ02XIiKEzpD4dxoCENgzzJyNEnH)
