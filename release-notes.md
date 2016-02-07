@@ -1368,3 +1368,59 @@ Possible partial compatibility breaking (very unlikely, but still possible):
 * jQuery ready event is now completely standalone again (not likely, but potential BC-break)
 
 Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
+
+# 3.162.4+build-1841: Towards sub-1ms page rendering performance
+
+This release brings variety of performance tweaks starting from avoiding session creation for guests until necessary and finishing with tweaking third-party dependencies.
+The goal of sub-1ms rendering time for regular page is not reached yet, but we now have 1.2ms rendering time which is quite close.
+
+Generally, CleverStyle CMS core now works around 3x times faster in simple but common scenarios, which is amazing being already blazing fast!
+
+Also IE10 support was dropped from system core since IE10 is not supported anymore, but new plugin `Old_IE` is here is you still need to support it.
+
+Finally, take a look at [video tutorials for developers](https://www.youtube.com/watch?v=GVXHeCVbO_c&list=PLVUA3QJ02XIiKEzpD4dxoCENgzzJyNEnH) to start with CleverStyle CMS even faster.
+
+Security fixes:
+* Do not allow non-admin used to enter admin pages under any conditions even if permissions allow explicitly
+
+New components:
+* **Old_IE** plugin added to provide support for older IE versions (10 currently)
+
+New features:
+* Performance boost: do not create session for each visitor automatically, create only when it is necessary
+* Added removing HTML comments in HTML files processing
+* IE10 support dropped (use `Old_IE` plugin if IE10 support is still needed)
+* APCu cache engine added and APC now is actually APC (which is important for HHVM which doesn't provide apcu_* functions)
+* Small performance tweak: cache modules and plugins `events.php` file existence in order to avoid filesystem scan each time
+* Composer: Composer module now states itself as replacement for some bundled system dependencies
+
+Updates:
+* New upstream version of UPF:
+  * Refactoring of `get_files_list()` function resulted in improved performance
+  * Always return array from `get_files_list()` function
+  * * Fix for the case when `$prefix_path` is an empty string in `get_files_list()` function (unnecessary starting slash added)
+* New upstream version of BananaHTML:
+  * Small performance tweaks and refactoring
+  * Naive implementation of `::is_array_indexed()` and `::is_array_assoc()` methods, but should be enough in most cases, 10x+ better performance
+* New version of Polymer 1.2.4 + git with patches on top and removed Shady DOM support
+
+Fixes and small improvements:
+* `\cs\Session::get_user()` now returns integers only, which is simpler to handle
+* Fix for infinite loader if there are no permissions
+* Fixed APCu availability check, APC engine test unlocked for PHP 7
+* Duplicated calls of `\cs\Page::canonical_url()` will not cause duplicated links in page's source code anymore
+* Tiny hack to make sure styles properly upgraded with native Shadow DOM
+* Tiny performance improvement in `cs\Language::check_locale_header()` method
+* Tiny fix in administration navigation
+* Composer: UI fix for horizontal scrolling in modal
+* Composer: Fix for force update not working
+* Composer: Fix for stability requirements not satisfied because of https://github.com/composer/composer/issues/4889
+
+Deprecations:
+* None
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* Potential BC break (very unlikely) is that `$user` argument in `\cs\Session::add()` is now mandatory
+* Undocumented `\cs\Page::$link`, `::$Search` and `$Replace` properties now have protected access
+
+Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
