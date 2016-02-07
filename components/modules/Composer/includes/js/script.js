@@ -17,7 +17,7 @@
     return new Promise(function(resolve, reject){
       var this$ = this;
       $.getJSON('api/System/admin/modules', function(modules){
-        var i$, len$, module, force;
+        var i$, len$, module;
         for (i$ = 0, len$ = modules.length; i$ < len$; ++i$) {
           module = modules[i$];
           if (module.name === 'Composer' && module.active !== 1) {

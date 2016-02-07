@@ -12,6 +12,7 @@ use
 	cs\Event,
 	cs\Singleton,
 	Symfony\Component\Console\Input\ArrayInput;
+
 /**
  * Provides next events:
  *  Composer/generate_package
@@ -249,13 +250,16 @@ class Composer {
 		$package_name = "$meta[category]/$meta[package]";
 		$package      = [
 			'name'    => $package_name,
-			'version' => $meta['version'],
+			'version' => "1.0.0+$meta[version]",
 			'require' => isset($meta['require_composer']) ? $meta['require_composer'] : [],
 			'dist'    => [
 				'url'  => __DIR__.'/empty.zip',
 				'type' => 'zip'
 			]
 		];
+		if ($meta['package'] == 'Composer') {
+			$package['replace'] = file_get_json(__DIR__.'/packages_bundled_with_system.json');
+		}
 		Event::instance()->fire(
 			'Composer/generate_package',
 			[
@@ -263,14 +267,17 @@ class Composer {
 				'meta'    => $meta
 			]
 		);
-		if (!$package['require']) {
+		if (!$package['require'] && !isset($package['replace'])) {
 			return;
 		}
 		$composer['repositories'][]         = [
 			'type'    => 'package',
 			'package' => $package
 		];
-		$composer['require'][$package_name] = $meta['version'];
+		/**
+		 * 1.0.0 at the beginning in order to ignore stability issue: https://github.com/composer/composer/issues/4889
+		 */
+		$composer['require'][$package_name] = "1.0.0+$meta[version]";
 	}
 	/**
 	 * @param string $storage

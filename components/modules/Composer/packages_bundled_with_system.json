@@ -1,0 +1,5 @@
+{
+	"nazar-pc/bananahtml" : "*",
+	"nazar-pc/upf"        : "*",
+	"phpmailer/phpmailer" : "*"
+}

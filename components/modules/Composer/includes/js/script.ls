@@ -15,7 +15,7 @@ open_modal	= (action, package_name, category, force = false) ->
 			if module.name == 'Composer' && module.active != 1
 				resolve()
 				return
-		force	= if force then 'force' else ''
+		force	:= if force then 'force' else ''
 		modal	:= cs.ui.simple_modal("""<cs-composer action="#action" package="#package_name" category="#category" #force/>""")
 		$(modal).on('close', !->
 			cs.Event.fire('admin/Composer/canceled')
