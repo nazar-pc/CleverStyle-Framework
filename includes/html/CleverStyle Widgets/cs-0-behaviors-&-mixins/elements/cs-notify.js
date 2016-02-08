@@ -97,7 +97,9 @@
       },
       _transitionend: function(){
         var ref$;
-        this.resolve();
+        if (typeof this.resolve == 'function') {
+          this.resolve();
+        }
         if (!this.show) {
           if ((ref$ = this.parentNode) != null) {
             ref$.removeChild(this);

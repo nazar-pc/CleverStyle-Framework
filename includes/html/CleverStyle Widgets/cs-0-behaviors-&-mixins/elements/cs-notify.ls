@@ -69,7 +69,7 @@ Polymer.cs.behaviors.cs-notify = [
 		if e.target == @$.content || e.target == @$.icon
 			@_schedule_hide()
 	_transitionend : !->
-		@resolve()
+		@resolve?()
 		if !@show
 			@parentNode?.removeChild(@)
 			return
