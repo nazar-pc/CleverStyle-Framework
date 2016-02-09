@@ -421,7 +421,10 @@ trait Includes {
 		/**
 		 * Narrow the dependencies to current module only
 		 */
-		$dependencies = isset($dependencies[$current_module]) ? $dependencies[$current_module] : [];
+		$dependencies = array_merge(
+			isset($dependencies[$current_module]) ? $dependencies[$current_module] : [],
+			$dependencies['System']
+		);
 		return [$includes, $dependencies_includes, $dependencies, $current_url];
 	}
 	/**
