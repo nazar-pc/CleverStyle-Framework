@@ -1,5 +1,6 @@
 {
 	"bower-asset/iron-flex-layout" : "*",
+	"bower-asset/html.sortable"    : "*",
 	"bower-asset/jquery"           : "*",
 	"bower-asset/jssha"            : "*",
 	"bower-asset/polymer"          : "*",

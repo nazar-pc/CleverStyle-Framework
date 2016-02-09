@@ -9,19 +9,41 @@
 namespace cs\plugins\Composer_assets;
 use
 	cs\Event,
+	cs\ExitException,
 	Fxp\Composer\AssetPlugin\FxpAssetPlugin;
+
+/**
+ * @var \cs\_SERVER $_SERVER
+ */
+if (
+	$_SERVER->request_method == 'GET' &&
+	(
+		strpos($_SERVER->request_uri, '/bower_components') === 0 ||
+		strpos($_SERVER->request_uri, '/node_modules') === 0
+	)
+) {
+	$composer_lock   = @file_get_json(STORAGE.'/Composer/composer.lock');
+	$target_location = str_replace(
+		['/bower_components', '/node_modules'],
+		['/storage/Composer/vendor/bower-asset', '/storage/Composer/vendor/npm-asset'],
+		$_SERVER->request_uri
+	);
+	_header("Location: $target_location?$composer_lock[hash]", true, 301);
+	throw new ExitException(301);
+}
+
 Event::instance()
 	->on(
 		'Composer/generate_package',
 		function ($data) {
 			if (isset($data['meta']['require_bower']) && $data['meta']['require_bower']) {
 				foreach ((array)$data['meta']['require_bower'] as $package => $version) {
-					$data['package']['require']["bower-asset/$package"] = $version;
+					$data['package']['require']["bower-asset/$package"] = isset($version['version']) ? $version['version'] : $version;
 				}
 			}
 			if (isset($data['meta']['require_npm']) && $data['meta']['require_npm']) {
 				foreach ((array)$data['meta']['require_npm'] as $package => $version) {
-					$data['package']['require']["npm-asset/$package"] = $version;
+					$data['package']['require']["npm-asset/$package"] = isset($version['version']) ? $version['version'] : $version;
 				}
 			}
 			if ($data['meta']['package'] === 'Composer_assets') {
@@ -33,14 +55,14 @@ Event::instance()
 		'Composer/Composer',
 		function ($data) {
 			/**
+			 * @var \cs\modules\Composer\Application $Application
+			 */
+			$Application = $data['Application'];
+			/**
 			 * @var \Composer\Composer $Composer
 			 */
 			$Composer = $data['Composer'];
-			/**
-			 * @var \Composer\Plugin\PluginManager $PluginManager
-			 */
-			$PluginManager = $Composer->getPluginManager();
-			$PluginManager->addPlugin(new FxpAssetPlugin);
+			(new FxpAssetPlugin)->activate($Composer, $Application->getIO());
 		}
 	)
 	->on(
@@ -52,87 +74,85 @@ Event::instance()
 			if (!$composer_lock) {
 				return;
 			}
-			if (file_exists("$composer_assets_dir/$composer_lock[hash].json")) {
-				list($dependencies, $includes_map) = file_get_json("$composer_assets_dir/$composer_lock[hash].json");
-			} else {
-				rmdir_recursive($composer_assets_dir);
-				mkdir($composer_assets_dir, 0770);
-				$dependencies = [];
-				$includes_map = [];
-				foreach ($composer_lock['packages'] as $package) {
-					$package_name = $package['name'];
-					/**
-					 * System package, for consistency with system's internals prefix should be removed in dependencies
-					 */
-					if (
-						strpos($package_name, 'modules/') === 0 ||
-						strpos($package_name, 'plugins/') === 0
-					) {
-						$package_name = explode('/', $package_name, 2)[1];
-					}
-					if (isset($package['require'])) {
-						foreach (array_keys($package['require']) as $r) {
-							$dependencies[$package_name][] = $r;
+			rmdir_recursive($composer_assets_dir);
+			@mkdir($composer_assets_dir, 0770);
+			file_put_contents(
+				"$composer_assets_dir/require.js",
+				'requirejs.config({paths : '._json_encode(Assets_processing::get_requirejs_paths()).'});'
+			);
+			$dependencies = [];
+			$includes_map = [];
+			foreach ($composer_lock['packages'] as $package) {
+				$package_name = $package['name'];
+				if (strpos($package_name, '/') !== false) {
+					$package_name = explode('/', $package_name, 2)[1];
+				}
+				if (isset($package['require'])) {
+					foreach (array_keys($package['require']) as $r) {
+						if (strpos($r, '-asset/') !== false) {
+							$r = explode('/', $r, 2)[1];
 						}
-						unset($r);
-					}
-					if (isset($package['provide'])) {
-						foreach (array_keys($package['provide']) as $p) {
-							$dependencies[$p][] = $package_name;
-						}
-						unset($p);
-					}
-					if (isset($package['replace'])) {
-						foreach (array_keys($package['replace']) as $r) {
-							$dependencies[$r][] = $package_name;
-						}
-						unset($r);
-					}
-					/**
-					 * If current package is Bower or NPM package (we will analyse both configurations)
-					 */
-					if (strpos($package_name, '-asset/') !== false) {
-						$package_dir = "$composer_dir/vendor/$package_name";
-						$target_dir  = "$composer_assets_dir/$package_name";
-						mkdir($target_dir, 0770, true);
-						$Assets_processing = new Assets_processing($package_name, $package_dir, $target_dir, $includes_map);
-						/**
-						 * Bower is preferable for frontend, obviously
-						 */
-						if (file_exists("$package_dir/bower.json")) {
-							$bower = file_get_json("$package_dir/bower.json");
-							if (isset($bower['main'])) {
-								$Assets_processing->add($bower['main']);
-								continue;
-							}
-						}
-						/**
-						 * But sometimes NPM is also acceptable
-						 */
-						if (file_exists("$package_dir/package.json")) {
-							$npm = file_get_json("$package_dir/package.json");
-							/**
-							 * CSS is not the best friend of NPM, but sometimes such keys might happen
-							 */
-							if (isset($npm['style']) && is_string($npm['style'])) {
-								$Assets_processing->add($npm['style']);
-							} elseif (isset($npm['less']) && is_string($npm['less'])) {
-								$Assets_processing->add($npm['less']);
-							}
-							if (isset($npm['browser']) && is_string($npm['browser'])) {
-								$Assets_processing->add($npm['browser']);
-								continue;
-							}
-							if (isset($npm['main']) && is_string($npm['main'])) {
-								$Assets_processing->add($npm['main']);
-								continue;
-							}
-						}
+						$dependencies[$package_name][] = $r;
 					}
 				}
-				file_put_json("$composer_assets_dir/$composer_lock[hash].json", [$dependencies, $includes_map]);
+				if (isset($package['provide'])) {
+					foreach (array_keys($package['provide']) as $p) {
+						$dependencies[$p][] = $package_name;
+					}
+				}
+				if (isset($package['replace'])) {
+					foreach (array_keys($package['replace']) as $r) {
+						$dependencies[$r][] = $package_name;
+					}
+				}
+				/**
+				 * If current package is Bower or NPM package (we will analyse both configurations)
+				 */
+				if (strpos($package['name'], '-asset/') !== false) {
+					$package_dir = "$composer_dir/vendor/$package[name]";
+					$target_dir  = "$composer_assets_dir/$package_name";
+					Assets_processing::run($package_name, $package_dir, $target_dir, $includes_map);
+				}
 			}
 			$data['dependencies'] = array_merge_recursive($data['dependencies'], $dependencies);
 			$data['includes_map'] = array_merge_recursive($data['includes_map'], $includes_map);
+			// Hack: the whole thing is used to insert after last element from `/includes/js`, but before those of other components
+			$offset = count(
+				array_filter(
+					$data['includes_map']['']['js'],
+					function ($file) {
+						return strpos($file, DIR.'/includes') === 0;
+					}
+				)
+			);
+			array_splice($data['includes_map']['']['js'], $offset, 0, "$composer_assets_dir/require.js");
+		}
+	)
+	->on(
+		'Composer/updated',
+		function () {
+			// Allow public access to assets
+			$htaccess_contents = 'Allow From All
+<ifModule mod_headers.c>
+	Header always append X-Frame-Options DENY
+	Header set Content-Type application/octet-stream
+</ifModule>
+<ifModule mod_expires.c>
+	ExpiresActive On
+	ExpiresDefault "access plus 1 month"
+</ifModule>
+<ifModule mod_headers.c>
+	Header set Cache-Control "max-age=2592000, public"
+</ifModule>
+';
+			if (is_dir(STORAGE.'/Composer/vendor/bower-asset')) {
+				file_put_contents(STORAGE.'/Composer/vendor/bower-asset/.htaccess', $htaccess_contents);
+			}
+			if (is_dir(STORAGE.'/Composer/vendor/npm-asset')) {
+				file_put_contents(STORAGE.'/Composer/vendor/npm-asset/.htaccess', $htaccess_contents);
+			}
+			if (clean_pcache()) {
+				Event::instance()->fire('admin/System/general/optimization/clean_pcache');
+			}
 		}
 	);

@@ -4,19 +4,58 @@
 <p>To use this module you need to make few modifications in your component's <i>meta.json</i>:</p>
 <ul>
 	<li>Add dependency on <i>composer_assets</i> functionality</li>
-	<li>Mention required packages in <i>require_bower</i> or <i>require_npm</i> for Bower and NPM packages correspondingly in the same way as in <i>dependencies</i> of regular <i>bower.json</i> or <i>package.json</i></li>
-	<li>Even though NPM is supported (to some extent), Bower is preferred if available, since designed for frontend and integrates much better</li>
+	<li>Mention required packages in <i>require_bower</i> or <i>require_npm</i> for Bower and NPM packages</li>
 </ul>
+<p>There are two typical ways to use Bower and NPM dependencies (can be used simultaneously): AMD modules and explicit files inclusion</p>
+
+<h4>AMD modules</h4>
+<p>In case of AMD modules you just need to specify packages you want:</p>
 <pre>
 	<code>
 {
 	..
 	"require"       : "composer_assets",
 	"require_bower" : {
-		"animate.css" : "~3.3.0"
+		"d3" : "3.5.14"
+	},
+	"require_npm" : {
+		"lodash" : "4.3.0"
 	},
 	..
 }
 	</code>
 </pre>
-<p>NOTE: do not forget to specify other required fields of <i>meta.json</i> as specified <a href="https://github.com/nazar-pc/CleverStyle-CMS/wiki/Module-architecture#metajson">in documentation</a>.</p>
+<p>And then you can load them when needed using RequireJS:</p>
+<pre>
+	<code>
+require(['lodash', 'd3'], function (_, d3) {
+	// do stuff
+});
+	</code>
+</pre>
+
+<h4>Explicit files inclusion</h4>
+<p>Another way is to list necessary files explicitly, so that they will be included on page automatically, for this purpose a bit more verbose syntax is used:</p>
+<pre>
+	<code>
+{
+	..
+	"require"       : "composer_assets",
+	"require_bower" : {
+		"bootstrap" : {
+			"version" : "3.3.6",
+			"files"   : [
+				"dist/css/bootstrap.css",
+				"dist/js/bootstrap.js"
+			]
+		}
+	},
+	..
+}
+	</code>
+</pre>
+<p>No extra steps needed in this case.</p>
+
+<h4>/bower_components/* and /node_modules/*</h4>
+<p>If you have, let's say, <b>d3</b> installed, then opening <code>/bower_components/d3/d3.min.js</code> will also work and similarly for <b>lodash</b> <code>/node_modules/lodash/dist/lodash.min.js</code> will be available.</p>
+<p>It is not encouraged to use such paths directly, but might be useful in certain cases for cross-compatibility with third-party components.</p>

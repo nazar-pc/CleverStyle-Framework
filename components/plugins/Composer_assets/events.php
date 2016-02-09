@@ -9,12 +9,12 @@
 namespace cs\plugins\Composer_assets;
 use
 	cs\Event;
-Event::instance()
-	->on(
-		'admin/System/components/plugins/disable/after',
-		function ($data) {
-			if ($data['name'] === 'Composer_assets') {
-				rmdir_recursive(PUBLIC_STORAGE.'/Composer_assets');
-			}
+
+Event::instance()->on(
+	'admin/System/components/plugins/disable/after',
+	function ($data) {
+		if ($data['name'] === 'Composer_assets') {
+			rmdir_recursive(PUBLIC_STORAGE.'/Composer_assets');
 		}
-	);
+	}
+);

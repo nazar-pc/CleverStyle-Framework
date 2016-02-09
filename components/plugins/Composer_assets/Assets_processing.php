@@ -8,115 +8,179 @@
  */
 namespace cs\plugins\Composer_assets;
 use
+	cs\Cache,
+	cs\Config,
 	Exception,
 	cs\Page\Includes_processing,
 	Less_Parser,
 	Leafo\ScssPhp\Compiler as Scss_compiler;
 
 class Assets_processing {
-	/**
-	 * @var string
-	 */
-	protected $package_name;
-	/**
-	 * @var string
-	 */
-	protected $package_dir;
-	/**
-	 * @var string
-	 */
-	protected $target_dir;
-	/**
-	 * @var string[][]
-	 */
-	protected $includes_map;
+	static function get_requirejs_paths () {
+		$vendor_dir  = STORAGE.'/Composer/vendor';
+		$paths       = [];
+		$directories = array_merge(
+			get_files_list("$vendor_dir/bower-asset", false, 'd', true),
+			get_files_list("$vendor_dir/npm-asset", false, 'd', true)
+		);
+		foreach ($directories as $module_dir) {
+			$module_name         = basename($module_dir);
+			$relative_module_dir = 'storage'.substr($module_dir, strlen(STORAGE));
+			// Hopefully, bower.json is present and contains necessary information
+			$bower = @file_get_json("$module_dir/bower.json");
+			foreach (@(array)$bower['main'] as $main) {
+				if (preg_match('/\.js$/', $main)) {
+					$main = substr($main, 0, -3);
+					// There is a chance that minified file is present
+					if (file_exists("$module_dir/$main.min.js")) {
+						$main .= '.min';
+					}
+					if (file_exists("$module_dir/$main.js")) {
+						$paths[$module_name] = "$relative_module_dir/$main";
+						continue 2;
+					}
+				}
+			}
+			// If not - try package.json from npm
+			$package = @file_get_json("$module_dir/package.json");
+			// If we have browser-specific declaration - use it
+			$main = @$package['browser'] ?: (@$package['jspm']['main'] ?: @$package['main']);
+			if (preg_match('/\.js$/', $main)) {
+				$main = substr($main, 0, -3);
+			}
+			if ($main) {
+				// There is a chance that minified file is present
+				if (file_exists("$module_dir/$main.min.js")) {
+					$paths[$module_name] = "$relative_module_dir/$main.min";
+				} elseif (file_exists("$module_dir/$main.js")) {
+					$paths[$module_name] = "$relative_module_dir/$main";
+				} elseif (file_exists("$module_dir/dist/$main.min.js")) {
+					$paths[$module_name] = "$relative_module_dir/dist/$main.min";
+				} elseif (file_exists("$module_dir/dist/$main.js")) {
+					$paths[$module_name] = "$relative_module_dir/dist/$main";
+				}
+			}
+		}
+		return $paths;
+	}
 	/**
 	 * @param string     $package_name
 	 * @param string     $package_dir
 	 * @param string     $target_dir
 	 * @param string[][] $includes_map
 	 */
-	function __construct ($package_name, $package_dir, $target_dir, &$includes_map) {
-		$this->package_name = $package_name;
-		$this->package_dir  = $package_dir;
-		$this->target_dir   = $target_dir;
-		$this->includes_map = &$includes_map;
+	static function run ($package_name, $package_dir, $target_dir, &$includes_map) {
+		self::save_content(
+			self::get_content(
+				self::get_files($package_name),
+				$package_name,
+				$package_dir,
+				$target_dir
+			),
+			$package_name,
+			$target_dir,
+			$includes_map
+		);
 	}
 	/**
-	 * @param string|string[] $files
+	 * @param string $package_name
+	 *
+	 * @return string[]
 	 */
-	function add ($files) {
-		foreach ((array)$files as $file) {
-			$file = "$this->package_dir/$file";
+	protected static function get_files ($package_name) {
+		$Config = Config::instance();
+		$files  = [];
+		foreach ($Config->components['modules'] as $module_name => $module_data) {
+			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
+				continue;
+			}
+			if (file_exists(MODULES."/$module_name/meta.json")) {
+				$meta    = file_get_json(MODULES."/$module_name/meta.json");
+				$files[] = self::extract_files($meta, $package_name);
+			}
+		}
+		foreach ($Config->components['plugins'] as $plugin_name) {
+			if (file_exists(PLUGINS."/$plugin_name/meta.json")) {
+				$meta    = file_get_json(PLUGINS."/$plugin_name/meta.json");
+				$files[] = self::extract_files($meta, $package_name);
+			}
+		}
+		return array_unique(call_user_func_array('array_merge', $files));
+	}
+	/**
+	 * @param array  $meta
+	 * @param string $package_name
+	 *
+	 * @return string[]
+	 */
+	protected static function extract_files ($meta, $package_name) {
+		$meta += ['require_bower' => [], 'require_npm' => []];
+		$packages = $meta['require_bower'] + $meta['require_npm'];
+		return isset($packages[$package_name]['files']) ? $packages[$package_name]['files'] : [];
+	}
+	/**
+	 * @param string[] $files
+	 * @param string   $package_name
+	 * @param string   $package_dir
+	 * @param string   $target_dir
+	 *
+	 * @return string[][]
+	 */
+	protected static function get_content ($files, $package_name, $package_dir, $target_dir) {
+		$content = [];
+		if ($files) {
+			@mkdir($target_dir, 0770, true);
+		}
+		foreach ($files as $file) {
+			$file = "$package_dir/$file";
 			switch (file_extension($file)) {
 				case 'js':
-					$this->add_content(
-						file_get_contents($file),
-						'js'
-					);
+					$content['js'][] = file_get_contents($file);
 					break;
 				case 'css':
-					$this->add_content(
-						Includes_processing::css(
-							file_get_contents($file),
-							$file
-						),
-						'css'
+					$content['css'][] = Includes_processing::css(
+						file_get_contents($file),
+						$file
 					);
 					break;
 				case 'html':
-					$this->add_content(
-						Includes_processing::html(
-							file_get_contents($file),
-							$file,
-							$this->package_name,
-							$this->target_dir
-						),
-						'html'
+					$content['html'][] = Includes_processing::html(
+						file_get_contents($file),
+						$file,
+						$package_name,
+						$target_dir
 					);
 					break;
 				case 'less':
 					try {
-						$this->add_content(
-							Includes_processing::css(
-								(new Less_Parser)->parseFile($file)->getCss(),
-								$file
-							),
-							'css'
+						$content['css'][] = Includes_processing::css(
+							(new Less_Parser)->parseFile($file)->getCss(),
+							$file
 						);
 					} catch (Exception $e) {
 					}
 					break;
 				case 'scss':
-					$this->add_content(
-						Includes_processing::css(
-							(new Scss_compiler)->compile(file_get_contents($file)),
-							$file
-						),
-						'css'
+					$content['css'][] = Includes_processing::css(
+						(new Scss_compiler)->compile(file_get_contents($file)),
+						$file
 					);
 					break;
 			}
 		}
+		return $content;
 	}
 	/**
-	 * @param string $content
-	 * @param string $extension
+	 * @param string[][] $content
+	 * @param string     $package_name
+	 * @param string     $target_dir
+	 * @param string[][] $includes_map
 	 */
-	protected function add_content ($content, $extension) {
-		$target_file = $this->target_dir;
-		switch ($extension) {
-			case 'css':
-				$target_file .= '/style.css';
-				break;
-			case 'js':
-				$target_file .= '/script.js';
-				break;
-			case 'html':
-				$target_file .= '/index.html';
-				break;
+	protected static function save_content ($content, $package_name, $target_dir, &$includes_map) {
+		foreach ($content as $extension => $c) {
+			$target_file = "$target_dir/index.$extension";
+			file_put_contents($target_file, implode('', $c), FILE_APPEND);
+			$includes_map[$package_name][$extension][] = $target_file;
 		}
-		file_put_contents($target_file, $content, FILE_APPEND);
-		$this->includes_map[$this->package_name][$extension] = [$target_file];
 	}
 }
