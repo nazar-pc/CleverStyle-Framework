@@ -100,12 +100,13 @@ class Composer {
 				md5_file("$storage/tmp/composer.json") != md5_file("$storage/composer.json")
 			) {
 				$this->force_update = false;
-				$application        = new Application(
-					function ($Composer) use ($Event) {
+				$Application        = new Application(
+					function ($Composer) use ($Event, &$Application) {
 						$Event->fire(
 							'Composer/Composer',
 							[
-								'Composer' => $Composer
+								'Application' => $Application,
+								'Composer'    => $Composer
 							]
 						);
 					}
@@ -123,8 +124,8 @@ class Composer {
 				);
 				$output             = new Output;
 				$output->set_stream(fopen("$storage/last_execution.log", 'w'));
-				$application->setAutoExit(false);
-				$status_code = $application->run($input, $output);
+				$Application->setAutoExit(false);
+				$status_code = $Application->run($input, $output);
 				$description = $output->fetch();
 				if ($status_code == 0) {
 					rmdir_recursive("$storage/vendor");
@@ -250,7 +251,7 @@ class Composer {
 		$package_name = "$meta[category]/$meta[package]";
 		$package      = [
 			'name'    => $package_name,
-			'version' => "1.0.0+$meta[version]",
+			'version' => $meta['version'],
 			'require' => isset($meta['require_composer']) ? $meta['require_composer'] : [],
 			'dist'    => [
 				'url'  => __DIR__.'/empty.zip',
@@ -270,14 +271,14 @@ class Composer {
 		if (!$package['require'] && !isset($package['replace'])) {
 			return;
 		}
-		$composer['repositories'][]         = [
+		$composer['repositories'][] = [
 			'type'    => 'package',
 			'package' => $package
 		];
 		/**
-		 * 1.0.0 at the beginning in order to ignore stability issue: https://github.com/composer/composer/issues/4889
+		 * @alpha in order to ignore stability issue: https://github.com/composer/composer/issues/4889
 		 */
-		$composer['require'][$package_name] = "1.0.0+$meta[version]";
+		$composer['require'][$package_name] = "$meta[version]@alpha";
 	}
 	/**
 	 * @param string $storage
