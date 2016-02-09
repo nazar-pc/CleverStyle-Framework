@@ -393,6 +393,7 @@ trait Includes {
 				}
 			}
 			$includes = array_merge_recursive($system_includes, $dependencies_includes, $includes);
+			// TODO: DIR is not correct constant, MODULES, PLUGINS and STORAGE should be used explicitly in order to drop prefix correctly in generic case
 			$includes = _substr($includes, strlen(DIR.'/'));
 		} else {
 			$includes = $this->get_includes_list();

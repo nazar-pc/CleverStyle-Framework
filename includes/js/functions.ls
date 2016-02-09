@@ -18,11 +18,12 @@ String::replaceAt = (index, symbol) ->
 /**
  * Supports algorithms sha1, sha224, sha256, sha384, sha512
  *
+ * @param {object} jssha jsSHA object
  * @param {string} algo Chosen algorithm
  * @param {string} data String to be hashed
  * @return {string}
  */
-cs.hash = (algo, data) ->
+cs.hash = (jssha, algo, data) ->
 	algo = switch algo
 		when 'sha1' then 'SHA-1'
 		when 'sha224' then 'SHA-224'
@@ -30,7 +31,7 @@ cs.hash = (algo, data) ->
 		when 'sha384' then 'SHA-384'
 		when 'sha512' then 'SHA-512'
 		else algo
-	shaObj = new jsSHA(algo, 'TEXT')
+	shaObj = new jssha(algo, 'TEXT')
 	shaObj.update(data)
 	shaObj.getHash('HEX')
 /**
@@ -42,12 +43,13 @@ cs.hash = (algo, data) ->
 cs.sign_in = (login, password) !->
 	login		= String(login).toLowerCase()
 	password	= String(password)
+	jssha <-! require(['jssha'], _)
 	$.ajax(
 		url		: 'api/System/user/sign_in'
 		cache	: false
 		data	:
-			login		: cs.hash('sha224', login)
-			password	: cs.hash('sha512', cs.hash('sha512', password) + cs.public_key)
+			login		: cs.hash(jssha, 'sha224', login)
+			password	: cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', password) + cs.public_key)
 		type	: 'post'
 		success	: !->
 			location.reload()
@@ -97,11 +99,12 @@ cs.restore_password = (email) !->
 		cs.ui.alert(L.please_type_your_email)
 		return
 	email	= String(email).toLowerCase()
+	jssha <-! require(['jssha'], _)
 	$.ajax(
 		url		: 'api/System/user/restore_password'
 		cache	: false,
 		data	:
-			email: cs.hash('sha224', email)
+			email: cs.hash(jssha, 'sha224', email)
 		type	: 'post'
 		success	: (result) !->
 			if result == 'OK'
@@ -131,8 +134,9 @@ cs.change_password = (current_password, new_password, success, error) !->
 	else if cs.password_check(new_password) < cs.password_min_strength
 		cs.ui.alert(L.password_too_easy)
 		return
-	current_password	= cs.hash('sha512', cs.hash('sha512', String(current_password)) + cs.public_key)
-	new_password		= cs.hash('sha512', cs.hash('sha512', String(new_password)) + cs.public_key)
+	jssha <-! require(['jssha'], _)
+	current_password	= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + cs.public_key)
+	new_password		= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + cs.public_key)
 	$.ajax(
 		url		: 'api/System/user/change_password'
 		cache	: false

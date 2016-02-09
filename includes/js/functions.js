@@ -22,11 +22,12 @@
   /**
    * Supports algorithms sha1, sha224, sha256, sha384, sha512
    *
+   * @param {object} jssha jsSHA object
    * @param {string} algo Chosen algorithm
    * @param {string} data String to be hashed
    * @return {string}
    */
-  cs.hash = function(algo, data){
+  cs.hash = function(jssha, algo, data){
     var shaObj;
     algo = (function(){
       switch (algo) {
@@ -44,7 +45,7 @@
         return algo;
       }
     }());
-    shaObj = new jsSHA(algo, 'TEXT');
+    shaObj = new jssha(algo, 'TEXT');
     shaObj.update(data);
     return shaObj.getHash('HEX');
   };
@@ -57,17 +58,19 @@
   cs.sign_in = function(login, password){
     login = String(login).toLowerCase();
     password = String(password);
-    $.ajax({
-      url: 'api/System/user/sign_in',
-      cache: false,
-      data: {
-        login: cs.hash('sha224', login),
-        password: cs.hash('sha512', cs.hash('sha512', password) + cs.public_key)
-      },
-      type: 'post',
-      success: function(){
-        location.reload();
-      }
+    require(['jssha'], function(jssha){
+      $.ajax({
+        url: 'api/System/user/sign_in',
+        cache: false,
+        data: {
+          login: cs.hash(jssha, 'sha224', login),
+          password: cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', password) + cs.public_key)
+        },
+        type: 'post',
+        success: function(){
+          location.reload();
+        }
+      });
     });
   };
   /**
@@ -124,18 +127,20 @@
       return;
     }
     email = String(email).toLowerCase();
-    $.ajax({
-      url: 'api/System/user/restore_password',
-      cache: false,
-      data: {
-        email: cs.hash('sha224', email)
-      },
-      type: 'post',
-      success: function(result){
-        if (result === 'OK') {
-          cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>');
+    require(['jssha'], function(jssha){
+      $.ajax({
+        url: 'api/System/user/restore_password',
+        cache: false,
+        data: {
+          email: cs.hash(jssha, 'sha224', email)
+        },
+        type: 'post',
+        success: function(result){
+          if (result === 'OK') {
+            cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>');
+          }
         }
-      }
+      });
     });
   };
   /**
@@ -163,32 +168,35 @@
       cs.ui.alert(L.password_too_easy);
       return;
     }
-    current_password = cs.hash('sha512', cs.hash('sha512', String(current_password)) + cs.public_key);
-    new_password = cs.hash('sha512', cs.hash('sha512', String(new_password)) + cs.public_key);
-    $.ajax({
-      url: 'api/System/user/change_password',
-      cache: false,
-      data: {
-        current_password: current_password,
-        new_password: new_password
-      },
-      type: 'post',
-      success: function(result){
-        if (result === 'OK') {
-          if (success) {
-            success();
+    require(['jssha'], function(jssha){
+      var current_password, new_password;
+      current_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + cs.public_key);
+      new_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + cs.public_key);
+      $.ajax({
+        url: 'api/System/user/change_password',
+        cache: false,
+        data: {
+          current_password: current_password,
+          new_password: new_password
+        },
+        type: 'post',
+        success: function(result){
+          if (result === 'OK') {
+            if (success) {
+              success();
+            } else {
+              cs.ui.alert(L.password_changed_successfully);
+            }
           } else {
-            cs.ui.alert(L.password_changed_successfully);
+            if (error) {
+              error();
+            } else {
+              cs.ui.alert(result);
+            }
           }
-        } else {
-          if (error) {
-            error();
-          } else {
-            cs.ui.alert(result);
-          }
-        }
-      },
-      error: error || $.ajaxSettings.error
+        },
+        error: error || $.ajaxSettings.error
+      });
     });
   };
   /**
