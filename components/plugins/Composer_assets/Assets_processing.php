@@ -8,7 +8,6 @@
  */
 namespace cs\plugins\Composer_assets;
 use
-	cs\Cache,
 	cs\Config,
 	Exception,
 	cs\Page\Includes_processing,
