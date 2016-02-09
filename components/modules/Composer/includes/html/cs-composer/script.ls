@@ -50,9 +50,13 @@ Polymer(
 			(data) !~>
 				if @status || @canceled
 					return
+				if @parentElement.$?.content
+					scroll_after = @parentElement.$.content.scrollHeight - @parentElement.$.content.offsetHeight == @parentElement.$.content.scrollTop
 				$(@$.result)
 					.show()
 					.html(data)
+				if scroll_after
+					@parentElement.$.content.scrollTop = @parentElement.$.content.scrollHeight - @parentElement.$.content.offsetHeight
 				setTimeout(@~_update_progress, 1000)
 		)
 )

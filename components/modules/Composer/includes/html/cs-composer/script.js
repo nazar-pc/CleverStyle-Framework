@@ -61,10 +61,17 @@
     _update_progress: function(){
       var this$ = this;
       $.getJSON('api/Composer', function(data){
+        var ref$, scroll_after;
         if (this$.status || this$.canceled) {
           return;
         }
+        if ((ref$ = this$.parentElement.$) != null && ref$.content) {
+          scroll_after = this$.parentElement.$.content.scrollHeight - this$.parentElement.$.content.offsetHeight === this$.parentElement.$.content.scrollTop;
+        }
         $(this$.$.result).show().html(data);
+        if (scroll_after) {
+          this$.parentElement.$.content.scrollTop = this$.parentElement.$.content.scrollHeight - this$.parentElement.$.content.offsetHeight;
+        }
         setTimeout(bind$(this$, '_update_progress'), 1000);
       });
     }
