@@ -11,7 +11,7 @@
   L = cs.Language;
   Polymer({
     'is': 'cs-cleverstyle-header-user-block',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
     properties: {
       avatar: '',
       guest: Boolean,

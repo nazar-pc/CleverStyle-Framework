@@ -152,6 +152,8 @@
    * @param {Function} error
    */
   cs.change_password = function(current_password, new_password, success, error){
+    var L;
+    L = cs.Language('system_profile_');
     if (!current_password) {
       cs.ui.alert(L.please_type_current_password);
       return;

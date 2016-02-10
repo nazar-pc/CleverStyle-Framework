@@ -10,7 +10,7 @@
   L = cs.Language;
   Polymer({
     'is': 'cs-system-user-setings',
-    behaviors: [cs.Polymer.behaviors.cs, cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.cs, cs.Polymer.behaviors.Language('system_profile_')],
     properties: {
       languages: Array,
       timezones: Array,

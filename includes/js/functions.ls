@@ -119,6 +119,7 @@ cs.restore_password = (email) !->
  * @param {Function} error
  */
 cs.change_password = (current_password, new_password, success, error) !->
+	L = cs.Language('system_profile_')
 	if !current_password
 		cs.ui.alert(L.please_type_current_password)
 		return

@@ -7,7 +7,9 @@
 L	= cs.Language
 Polymer(
 	'is'		: 'cs-system-change-password'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language('system_profile_')
+	]
 	attached : !->
 		@$.current_password.focus()
 	_change_password : (e) !->

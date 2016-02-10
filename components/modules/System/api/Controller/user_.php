@@ -12,13 +12,14 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Language,
+	cs\Language\Prefix,
 	cs\Mail,
 	cs\Page,
 	cs\Session,
 	cs\User;
 trait user_ {
 	static function user_change_password () {
-		$L    = Language::instance();
+		$L    = new Prefix('system_profile_');
 		$Page = Page::instance();
 		$User = User::instance();
 		if (!isset($_POST['current_password'], $_POST['new_password'])) {
