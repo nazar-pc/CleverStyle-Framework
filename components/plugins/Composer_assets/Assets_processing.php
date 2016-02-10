@@ -15,53 +15,6 @@ use
 	Leafo\ScssPhp\Compiler as Scss_compiler;
 
 class Assets_processing {
-	static function get_requirejs_paths () {
-		$vendor_dir  = STORAGE.'/Composer/vendor';
-		$paths       = [];
-		$directories = array_merge(
-			get_files_list("$vendor_dir/bower-asset", false, 'd', true),
-			get_files_list("$vendor_dir/npm-asset", false, 'd', true)
-		);
-		foreach ($directories as $module_dir) {
-			$module_name         = basename($module_dir);
-			$relative_module_dir = 'storage'.substr($module_dir, strlen(STORAGE));
-			// Hopefully, bower.json is present and contains necessary information
-			$bower = @file_get_json("$module_dir/bower.json");
-			foreach (@(array)$bower['main'] as $main) {
-				if (preg_match('/\.js$/', $main)) {
-					$main = substr($main, 0, -3);
-					// There is a chance that minified file is present
-					if (file_exists("$module_dir/$main.min.js")) {
-						$main .= '.min';
-					}
-					if (file_exists("$module_dir/$main.js")) {
-						$paths[$module_name] = "$relative_module_dir/$main";
-						continue 2;
-					}
-				}
-			}
-			// If not - try package.json from npm
-			$package = @file_get_json("$module_dir/package.json");
-			// If we have browser-specific declaration - use it
-			$main = @$package['browser'] ?: (@$package['jspm']['main'] ?: @$package['main']);
-			if (preg_match('/\.js$/', $main)) {
-				$main = substr($main, 0, -3);
-			}
-			if ($main) {
-				// There is a chance that minified file is present
-				if (file_exists("$module_dir/$main.min.js")) {
-					$paths[$module_name] = "$relative_module_dir/$main.min";
-				} elseif (file_exists("$module_dir/$main.js")) {
-					$paths[$module_name] = "$relative_module_dir/$main";
-				} elseif (file_exists("$module_dir/dist/$main.min.js")) {
-					$paths[$module_name] = "$relative_module_dir/dist/$main.min";
-				} elseif (file_exists("$module_dir/dist/$main.js")) {
-					$paths[$module_name] = "$relative_module_dir/dist/$main";
-				}
-			}
-		}
-		return $paths;
-	}
 	/**
 	 * @param string     $package_name
 	 * @param string     $package_dir

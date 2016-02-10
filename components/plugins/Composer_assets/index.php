@@ -76,10 +76,6 @@ Event::instance()
 			}
 			rmdir_recursive($composer_assets_dir);
 			@mkdir($composer_assets_dir, 0770);
-			file_put_contents(
-				"$composer_assets_dir/require.js",
-				'requirejs.config({paths : '._json_encode(Assets_processing::get_requirejs_paths()).'});'
-			);
 			$dependencies = [];
 			$includes_map = [];
 			foreach ($composer_lock['packages'] as $package) {
@@ -116,16 +112,6 @@ Event::instance()
 			}
 			$data['dependencies'] = array_merge_recursive($data['dependencies'], $dependencies);
 			$data['includes_map'] = array_merge_recursive($data['includes_map'], $includes_map);
-			// Hack: the whole thing is used to insert after last element from `/includes/js`, but before those of other components
-			$offset = count(
-				array_filter(
-					$data['includes_map']['']['js'],
-					function ($file) {
-						return strpos($file, DIR.'/includes') === 0;
-					}
-				)
-			);
-			array_splice($data['includes_map']['']['js'], $offset, 0, "$composer_assets_dir/require.js");
 		}
 	)
 	->on(
@@ -154,5 +140,12 @@ Event::instance()
 			if (clean_pcache()) {
 				Event::instance()->fire('admin/System/general/optimization/clean_pcache');
 			}
+		}
+	)
+	->on(
+		'System/Page/requirejs',
+		function (&$data) {
+			$data['directories_to_browse'][] = STORAGE.'/Composer/vendor/bower-asset';
+			$data['directories_to_browse'][] = STORAGE.'/Composer/vendor/npm-asset';
 		}
 	);
