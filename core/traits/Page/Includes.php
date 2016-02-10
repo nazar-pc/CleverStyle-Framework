@@ -371,7 +371,7 @@ trait Includes {
 	 *
 	 * @param string|string[] $path
 	 *
-	 * @return string
+	 * @return string|string[]
 	 */
 	protected function absolute_path_to_relative ($path) {
 		if (is_array($path)) {
