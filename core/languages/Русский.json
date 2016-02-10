@@ -228,9 +228,6 @@
 		"MB"						: "МБ",
 		"KB"						: "КБ",
 		"Bytes"						: "Байт",
-		"curl_lib"					: "Библиотека cURL",
-		"apcu_module"				: "Модуль APCu",
-		"memcached_module"			: "Memcached модуль",
 		"cache_engine"				: "Движок кэша",
 	//Components
 	"components"			: "Компоненты",

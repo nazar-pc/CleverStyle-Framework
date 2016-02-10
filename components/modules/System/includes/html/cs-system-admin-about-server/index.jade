@@ -32,6 +32,10 @@ dom-module#cs-system-admin-about-server
 							td(class$="[[if(server_config.php_extensions.curl, 'cs-block-success cs-text-success', 'cs-block-error cs-text-error')]]")
 								[[if(server_config.php_extensions.curl, L.yes, L.no)]]
 						tr
+							td APC:
+							td
+								[[if(server_config.php_extensions.apc, L.yes, L.no)]]
+						tr
 							td APCu:
 							td
 								[[if(server_config.php_extensions.apcu, L.yes, L.no)]]

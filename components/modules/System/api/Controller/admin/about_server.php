@@ -13,6 +13,7 @@ use
 	cs\DB,
 	cs\Language,
 	cs\Page;
+
 trait about_server {
 	/**
 	 * Get information about server
@@ -33,6 +34,7 @@ trait about_server {
 				'php_extensions'   => [
 					'openssl'   => extension_loaded('openssl'),
 					'curl'      => extension_loaded('curl'),
+					'apc'       => extension_loaded('apc'),
 					'apcu'      => extension_loaded('apcu'),
 					'memcached' => extension_loaded('memcached')
 				],

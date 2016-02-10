@@ -228,9 +228,6 @@
 		"MB"						: "MB",
 		"KB"						: "KB",
 		"Bytes"						: "Bytes",
-		"curl_lib"					: "cURL library",
-		"apcu_module"				: "APCu module",
-		"memcached_module"			: "Memcached module",
 		"cache_engine"				: "Cache engine",
 	//Components
 	"components"			: "Components",
