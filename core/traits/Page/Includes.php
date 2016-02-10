@@ -29,6 +29,12 @@ use
  *    'key' => &$key //Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
  *  ]
  *
+ *  System/Page/requirejs
+ *  [
+ *    'paths'                 => &$paths,                // The same as `paths` in requirejs.config()
+ *    'directories_to_browse' => &$directories_to_browse // Where to look for AMD modules (typically bower_components and node_modules directories)
+ *  ]
+ *
  * Includes management for `cs\Page` class
  *
  * @property string $Title
@@ -257,6 +263,7 @@ trait Includes {
 			 * @var \cs\Page $this
 			 */
 			$this->config_internal(Language::instance(), 'cs.Language', true);
+			$this->config_internal($this->get_requirejs_paths(), 'requirejs.paths', true);
 			$includes = $this->get_includes_for_page_without_compression($Config);
 		}
 		$this->css_internal($includes['css'], 'file', true);
@@ -264,6 +271,125 @@ trait Includes {
 		$this->html_internal($includes['html'], 'file', true);
 		$this->add_includes_on_page_manually_added($Config);
 		return $this;
+	}
+	/**
+	 * @return string[]
+	 */
+	protected function get_requirejs_paths () {
+		$Config = Config::instance();
+		$paths  = [];
+		foreach ($Config->components['modules'] as $module_name => $module_data) {
+			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
+				continue;
+			}
+			$this->get_requirejs_paths_add_aliases(MODULES."/$module_name", $paths);
+		}
+		foreach ($Config->components['plugins'] as $plugin_name) {
+			$this->get_requirejs_paths_add_aliases(PLUGINS."/$plugin_name", $paths);
+		}
+		$directories_to_browse = [
+			DIR.'/bower_components',
+			DIR.'/node_modules'
+		];
+		Event::instance()->fire(
+			'System/Page/requirejs',
+			[
+				'paths'                 => &$paths,
+				'directories_to_browse' => &$directories_to_browse
+			]
+		);
+		foreach ($directories_to_browse as $dir) {
+			foreach (get_files_list($dir, false, 'd', true) as $d) {
+				$this->get_requirejs_paths_find_package($d, $paths);
+			}
+		}
+		return $paths;
+	}
+	/**
+	 * @param string   $dir
+	 * @param string[] $paths
+	 */
+	protected function get_requirejs_paths_add_aliases ($dir, &$paths) {
+		if (is_dir("$dir/includes/js")) {
+			$name         = basename($dir);
+			$paths[$name] = $this->absolute_path_to_relative("$dir/includes/js");
+			foreach ((array)@file_get_json("$dir/meta.json")['provide'] as $p) {
+				if (strpos($p, '/') !== false) {
+					$paths[$p] = $paths[$name];
+				}
+			}
+		}
+	}
+	/**
+	 * @param string   $dir
+	 * @param string[] $paths
+	 */
+	protected function get_requirejs_paths_find_package ($dir, &$paths) {
+		$path = $this->get_requirejs_paths_find_package_bower($dir) ?: $this->get_requirejs_paths_find_package_npm($dir);
+		if ($path) {
+			$paths[basename($dir)] = $this->absolute_path_to_relative(substr($path, 0, -3));
+		}
+	}
+	/**
+	 * @param string $dir
+	 *
+	 * @return string
+	 */
+	protected function get_requirejs_paths_find_package_bower ($dir) {
+		$bower = @file_get_json("$dir/bower.json");
+		foreach (@(array)$bower['main'] as $main) {
+			if (preg_match('/\.js$/', $main)) {
+				$main = substr($main, 0, -3);
+				// There is a chance that minified file is present
+				$main = file_exists_with_extension("$dir/$main", ['min.js', 'js']);
+				if ($main) {
+					return $main;
+				}
+			}
+		}
+		return null;
+	}
+	/**
+	 * @param string $dir
+	 *
+	 * @return false|string
+	 */
+	protected function get_requirejs_paths_find_package_npm ($dir) {
+		$package = @file_get_json("$dir/package.json");
+		// If we have browser-specific declaration - use it
+		$main = @$package['browser'] ?: (@$package['jspm']['main'] ?: @$package['main']);
+		if (preg_match('/\.js$/', $main)) {
+			$main = substr($main, 0, -3);
+		}
+		if ($main) {
+			// There is a chance that minified file is present
+			return file_exists_with_extension("$dir/$main", ['min.js', 'js']) ?: file_exists_with_extension("$dir/dist/$main", ['min.js', 'js']);
+		}
+	}
+	/**
+	 * Since modules, plugins and storage directories can be (at least theoretically) moved from default location - let's do proper path conversion
+	 *
+	 * @param string|string[] $path
+	 *
+	 * @return string
+	 */
+	protected function absolute_path_to_relative ($path) {
+		if (is_array($path)) {
+			foreach ($path as &$p) {
+				$p = $this->absolute_path_to_relative($p);
+			}
+			return $path;
+		}
+		if (strpos($path, MODULES) === 0) {
+			return 'components/modules'.substr($path, strlen(MODULES));
+		}
+		if (strpos($path, PLUGINS) === 0) {
+			return 'components/plugins'.substr($path, strlen(PLUGINS));
+		}
+		if (strpos($path, STORAGE) === 0) {
+			return 'storage'.substr($path, strlen(STORAGE));
+		}
+		return substr($path, strlen(DIR) + 1);
 	}
 	/**
 	 * Add JS polyfills for IE/Edge
@@ -393,8 +519,7 @@ trait Includes {
 				}
 			}
 			$includes = array_merge_recursive($system_includes, $dependencies_includes, $includes);
-			// TODO: DIR is not correct constant, MODULES, PLUGINS and STORAGE should be used explicitly in order to drop prefix correctly in generic case
-			$includes = _substr($includes, strlen(DIR.'/'));
+			$includes = $this->absolute_path_to_relative($includes);
 		} else {
 			$includes = $this->get_includes_list();
 		}
@@ -632,6 +757,7 @@ trait Includes {
 				};
 				if ($filename_prefix == '') {
 					$content = 'window.cs={Language:'._json_encode(Language::instance()).'};';
+					$content .= 'window.requirejs={paths:'._json_encode($this->get_requirejs_paths()).'};';
 				}
 		}
 		/** @noinspection PhpUndefinedVariableInspection */
