@@ -77,18 +77,22 @@ class Language implements JsonSerializable {
 		/**
 		 * @var _SERVER $_SERVER
 		 */
-		/**
-		 * Highest priority - `-Locale` header
-		 */
-		$language = $this->check_locale_header($Config->core['active_languages']);
-		/**
-		 * Second priority - URL
-		 */
-		$language = $language ?: $this->url_language($_SERVER->request_uri);
-		/**
-		 * Third - `Accept-Language` header
-		 */
-		$language = $language ?: $this->check_accept_header($Config->core['active_languages']);
+		if ($Config->core['multilingual']) {
+			/**
+			 * Highest priority - `-Locale` header
+			 */
+			$language = $this->check_locale_header($Config->core['active_languages']);
+			/**
+			 * Second priority - URL
+			 */
+			$language = $language ?: $this->url_language($_SERVER->request_uri);
+			/**
+			 * Third - `Accept-Language` header
+			 */
+			$language = $language ?: $this->check_accept_header($Config->core['active_languages']);
+		} else {
+			$language = $Config->core['language'];
+		}
 		$this->change($language ?: '');
 	}
 	/**

@@ -106,3 +106,7 @@ function get_footer () {
 		'© Powered by <a target="_blank" href="http://cleverstyle.org/cms" title="CleverStyle CMS">CleverStyle CMS</a>'
 	);
 }
+
+function level ($in, $level) {
+	return trim(h::level($in, $level))."\n";
+}

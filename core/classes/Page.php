@@ -133,7 +133,7 @@ class Page {
 	/**
 	 * Loading of theme template
 	 *
-	 * @return Page
+	 * @return bool
 	 */
 	protected function get_template () {
 		/**
@@ -145,6 +145,7 @@ class Page {
 		$theme_dir = THEMES."/$this->theme";
 		_include("$theme_dir/prepare.php", false, false);
 		ob_start();
+		$return = true;
 		/**
 		 * If website is closed and user is not an administrator - send `503 Service Unavailable` header and show closed site page
 		 */
@@ -159,11 +160,12 @@ class Page {
 				"<!doctype html>\n".
 				h::title(get_core_ml_text('closed_title')).
 				get_core_ml_text('closed_text');
+			$return = false;
 		} else {
 			_include("$theme_dir/index.php", false, false) || _include("$theme_dir/index.html");
 		}
 		$this->Html = ob_get_clean();
-		return $this;
+		return $return;
 	}
 	/**
 	 * Processing of template, substituting of content, preparing for the output
@@ -175,7 +177,9 @@ class Page {
 		/**
 		 * Loading of template
 		 */
-		$this->get_template();
+		if (!$this->get_template()) {
+			return;
+		}
 		/**
 		 * Forming page title
 		 */
@@ -190,11 +194,15 @@ class Page {
 			h::meta(
 				[
 					'charset' => 'utf-8'
-				],
+				]
+			).
+			h::meta(
 				$this->Description ? [
 					'name'    => 'description',
 					'content' => $this->Description
-				] : false,
+				] : false
+			).
+			h::meta(
 				[
 					'name'    => 'generator',
 					'content' => 'CleverStyle CMS by Mokrynskyi Nazar'

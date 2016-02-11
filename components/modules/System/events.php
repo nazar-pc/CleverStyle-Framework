@@ -10,6 +10,7 @@
 namespace cs;
 use
 	h;
+
 /**
  * Multilingual functionality: redirects and necessary meta-tags
  */
@@ -65,10 +66,11 @@ Event::instance()
 			$Page             = Page::instance();
 			$core_url         = $Config->core_url();
 			$base_url         = $Config->base_url();
-			$Page->Head .= h::{'link[rel=alternate]'}(
+			$Page->Head .= h::link(
 				[
 					'hreflang' => 'x-default',
-					'href'     => home_page() ? $core_url : "$core_url/$relative_address"
+					'href'     => home_page() ? $core_url : "$core_url/$relative_address",
+					'rel'      => 'alternate'
 				]
 			);
 			$clangs = Cache::instance()->get(
@@ -82,10 +84,11 @@ Event::instance()
 				}
 			);
 			foreach ($clangs as $clang) {
-				$Page->Head .= h::{'link[rel=alternate]|'}(
+				$Page->Head .= h::link(
 					[
 						'hreflang' => $clang,
-						'href'     => "$base_url/$clang/$relative_address"
+						'href'     => "$base_url/$clang/$relative_address",
+						'rel'      => 'alternate'
 					]
 				);
 			}
