@@ -726,6 +726,10 @@ class BananaHTML {
 		if ($data === false || $data === [false]) {
 			return false;
 		}
+		$fast_render = static::__callStatic_fast_render($selector, $data);
+		if ($fast_render) {
+			return $fast_render;
+		}
 		$selector = static::parse_nesting_selector(trim($selector));
 		/**
 		 * Analysis of called tag. If nested tags presented
@@ -733,11 +737,38 @@ class BananaHTML {
 		if (is_array($selector)) {
 			return static::handle_nested_selectors($selector, $data);
 		}
-		if (substr($selector, -1) == '|') {
-			$selector = substr($selector, 0, -1);
-			$data     = [$data];
-		}
 		return static::__callStatic_internal($selector, $data);
+	}
+	/**
+	 * Trying to render faster, many practical use cases fit here, so overhead should worth it
+	 *
+	 * @param string $selector
+	 * @param array  $data
+	 *
+	 * @return null|string
+	 */
+	protected static function __callStatic_fast_render ($selector, $data) {
+		if (
+			is_array($data) &&
+			isset($data[0]) &&
+			count($data) == 1 &&
+			strpos($selector, ' ') === false &&
+			strpos($selector, '[') === false &&
+			strpos($selector, '.') === false &&
+			strpos($selector, '#') === false
+		) {
+			if (is_scalar($data[0])) {
+				return static::render_tag($selector, $data[0], []);
+			}
+			if (
+				!isset($data[0]['in']) &&
+				!isset($data[0]['insert']) &&
+				static::is_array_assoc($data[0])
+			) {
+				return static::render_tag($selector, '', $data[0]);
+			}
+		}
+		return null;
 	}
 	/**
 	 * @param string            $selector
@@ -993,7 +1024,6 @@ class BananaHTML {
 		 *
 		 * Allows to write BananaHTML::custom_tag() that will be translated to <custom-tag></custom-tag>
 		 */
-		$tag = str_replace('_', '-', $tag);
 		if (isset($selector[1])) {
 			$attributes['id'] = $selector[1];
 		}
@@ -1083,6 +1113,7 @@ class BananaHTML {
 	 * @return false|string
 	 */
 	protected static function render_tag ($tag, $in, $attributes) {
+		$tag = str_replace('_', '-', $tag);
 		if (method_exists(get_called_class(), $tag)) {
 			return static::$tag($in, $attributes);
 		} elseif (isset(static::$unpaired_tags[$tag])) {
