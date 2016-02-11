@@ -179,10 +179,12 @@ STUB
 			"$this->root/includes",
 			"$this->root/templates",
 			"$this->root/themes/CleverStyle",
+			"$this->root/bower.json",
 			"$this->root/composer.json",
 			"$this->root/composer.lock",
 			"$this->root/index.php",
 			"$this->root/license.txt",
+			"$this->root/package.json",
 			"$this->root/Storage.php"
 		];
 		$files            = [];
