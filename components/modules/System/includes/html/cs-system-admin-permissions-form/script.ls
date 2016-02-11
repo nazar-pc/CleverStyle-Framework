@@ -1,28 +1,28 @@
-###*
+/**
  * @package    CleverStyle CMS
  * @subpackage System module
  * @category   modules
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
-###
+ */
 L	= cs.Language
 Polymer(
-	'is'		: 'cs-system-admin-groups-form'
+	'is'		: 'cs-system-admin-permissions-form'
 	behaviors	: [cs.Polymer.behaviors.Language]
 	properties	:
-		group_id	: Number
-		group_title	: ''
-		description	: ''
-	save	: ->
+		permission_id	: Number
+		group			: ''
+		label			: ''
+	save : !->
 		$.ajax(
-			url		: 'api/System/admin/groups' + (if @group_id then '/' + @group_id else '')
-			type	: if @group_id then 'put' else 'post'
+			url		: 'api/System/admin/permissions' + (if @permission_id then '/' + @permission_id else '')
+			type	: if @permission_id then 'put' else 'post'
 			data	:
-				id			: @group_id
-				title		: @group_title
-				description	: @description
-			success	: ->
+				id		: @permission_id
+				group	: @group
+				label	: @label
+			success	: !->
 				cs.ui.notify(L.changes_saved, 'success', 5)
 		)
 )

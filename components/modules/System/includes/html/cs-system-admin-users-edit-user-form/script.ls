@@ -1,31 +1,31 @@
-###*
+/**
  * @package    CleverStyle CMS
  * @subpackage System module
  * @category   modules
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
-###
+ */
 L	= cs.Language
 Polymer(
-	'is'			: 'cs-system-admin-users-edit-user-form'
-	behaviors		: [cs.Polymer.behaviors.Language]
-	properties		:
-		user_id				: -1
-		user_data			:
+	'is'		: 'cs-system-admin-users-edit-user-form'
+	behaviors	: [cs.Polymer.behaviors.Language]
+	properties	:
+		user_id		: -1
+		user_data	:
 			type	: Object
 			value	: {}
-		languages			: Array
-		timezones			: Array
-		block_until			:
+		languages	: Array
+		timezones	: Array
+		block_until	:
 			observer	: '_block_until'
 			type		: String
-	ready			: ->
+	ready : ->
 		Promise.all([
 			$.getJSON('api/System/languages')
 			$.getJSON('api/System/timezones')
 			$.getJSON('api/System/admin/users/' + @user_id)
-		]).then ([languages, timezones, data]) =>
+		]).then ([languages, timezones, data]) !~>
 			languages_list	= []
 			languages_list.push(
 				clanguage	: ''
@@ -49,7 +49,7 @@ Polymer(
 			@languages	= languages_list
 			@timezones	= timezones_list
 			block_until	= do ->
-				block_until	= data.block_until
+				block_until	:= data.block_until
 				date		= new Date
 				if parseInt(block_until)
 					date.setTime(parseInt(block_until) * 1000)
@@ -58,7 +58,7 @@ Polymer(
 				date.getFullYear() + '-' + z(date.getMonth() + 1) + '-' + z(date.getDate()) + 'T' + z(date.getHours()) + ':' + z(date.getMinutes())
 			@block_until	= block_until
 			@user_data		= data
-	_show_password	: (e) ->
+	_show_password : (e) !->
 		lock		= e.currentTarget
 		password	= lock.previousElementSibling
 		if password.type == 'password'
@@ -67,7 +67,7 @@ Polymer(
 		else
 			password.type	= 'password'
 			lock.icon		= 'lock'
-	_block_until	: ->
+	_block_until	: !->
 		block_until	= @block_until
 		date		= new Date
 		date.setFullYear(block_until.substr(0, 4))
@@ -78,13 +78,13 @@ Polymer(
 		date.setSeconds(0)
 		date.setMilliseconds(0)
 		@set('user_data.block_until', date.getTime() / 1000)
-	save			: ->
+	save			: !->
 		$.ajax(
 			url		: 'api/System/admin/users/' + @user_id
 			type	: 'patch'
 			data	:
 				user	: @user_data
-			success	: ->
+			success	: !->
 				cs.ui.notify(L.changes_saved, 'success', 5)
 		)
 )
