@@ -22,44 +22,31 @@ date_default_timezone_set('UTC');
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
 $Builder = new cs\Builder(DIR, DIR);
-$mode    = 'form';
-$cli     = PHP_SAPI == 'cli';
-if ($cli) {
-	$modules = [];
-	$plugins = [];
-	$themes  = [];
-	$suffix  = null;
-	for ($i = 1; $i < $argc; $i += 2) {
-		switch ($argv[$i]) {
-			case '-h':
-			case '--help':
-				$mode = 'form';
-				break;
-			case '-M':
-			case '--mode':
-				$mode = $argv[$i + 1];
-				break;
-			case '-m':
-			case '--modules':
-				$modules = explode(',', $argv[$i + 1]);
-				break;
-			case '-p':
-			case '--plugins':
-				$plugins = explode(',', $argv[$i + 1]);
-				break;
-			case '-t':
-			case '--themes':
-				$themes = explode(',', $argv[$i + 1]);
-				break;
-			case '-s':
-			case '--suffix':
-				$suffix = $argv[$i + 1];
-				break;
-		}
-	}
-	switch ($mode) {
-		case 'form':
-			echo 'CleverStyle CMS builder
+if (PHP_SAPI == 'cli') {
+	$options = getopt(
+		'hM:m:p:t:s:',
+		[
+			'help',
+			'mode:',
+			'modules:',
+			'plugins:',
+			'themes:',
+			'suffix:'
+		]
+	);
+	$mode    = @$options['M'] ?: @$options['mode'];
+	$modules = array_filter(explode(',', @$options['m'] ?: @$options['modules']));
+	$plugins = array_filter(explode(',', @$options['p'] ?: @$options['plugins']));
+	$themes  = array_filter(explode(',', @$options['t'] ?: @$options['themes']));
+	/** @noinspection NestedTernaryOperatorInspection */
+	$suffix = (@$options['s'] ?: @$options['suffix']) ?: null;
+	if (
+		@$options['h'] ||
+		@$options['help'] ||
+		!in_array($mode, ['core', 'module', 'plugin', 'theme'])
+	) {
+		echo <<<HELP
+CleverStyle CMS builder
 Builder is used for creating distributive of the CleverStyle CMS and its components.
 Usage: php build.php [-h] [-M <mode>] [-m <module>] [-p <plugin>] [-t <theme>] [-s <suffix>]
   -h
@@ -88,57 +75,47 @@ Example:
   php build.php -M core -m Plupload,Static_pages
   php build.php -M core -p TinyMCE -t DarkEnergy -s custom
   php build.php -M module -m Plupload,Static_pages
-';
-			break;
-		case 'core':
-			echo $Builder->core($modules, $plugins, $themes, $suffix)."\n";
-			break;
-		case 'module':
-		case 'plugin':
-		case 'theme':
-			foreach (${$mode.'s'} as $component) {
-				echo $Builder->$mode($component, $suffix)."\n";
-			}
+HELP;
+	} elseif ($mode == 'core') {
+		echo $Builder->core($modules, $plugins, $themes, $suffix)."\n";
+	} else {
+		foreach (${$mode.'s'} as $component) {
+			echo $Builder->$mode($component, $suffix)."\n";
+		}
 	}
-	return;
-}
-$content = '';
-$mode    = @$_POST['mode'] ?: $mode;
-
-switch ($mode) {
-	case 'form':
-		$content = $Builder->form();
-		break;
-	case 'core':
+} else {
+	$content = '';
+	$mode    = @$_POST['mode'] ?: 'form';
+	if ($mode == 'core') {
 		$content = $Builder->core(@$_POST['modules'] ?: [], @$_POST['plugins'] ?: [], @$_POST['themes'] ?: [], @$_POST['suffix']);
-		break;
-	case 'module':
-	case 'plugin':
-	case 'theme':
+	} elseif (in_array($mode, ['core', 'module', 'plugin', 'theme'])) {
 		foreach (@$_POST[$mode.'s'] as $component) {
 			$content .= $Builder->$mode($component, @$_POST['suffix']).h::br();
 		}
+	} else {
+		$content = $Builder->form();
+	}
+	echo
+		"<!doctype html>".
+		h::title('CleverStyle CMS Builder').
+		h::{'meta[charset=utf-8]'}().
+		h::link(
+			[
+				'href' => 'build/includes/style.css',
+				'rel'  => 'stylesheet'
+			]
+		).
+		h::script(
+			[
+				'src' => 'build/includes/functions.js'
+			]
+		)."\n".
+		h::header(
+			h::{'img[src=build/includes/logo.png]'}().
+			h::h1('CleverStyle CMS Builder')
+		).
+		h::section($content).
+		h::footer(
+			'Copyright (c) 2011-2016, Nazar Mokrynskyi'
+		);
 }
-echo
-	"<!doctype html>".
-	h::title('CleverStyle CMS Builder').
-	h::{'meta[charset=utf-8]'}().
-	h::link(
-		[
-			'href' => 'build/includes/style.css',
-			'rel'  => 'stylesheet'
-		]
-	).
-	h::script(
-		[
-			'src' => 'build/includes/functions.js'
-		]
-	)."\n".
-	h::header(
-		h::{'img[src=build/includes/logo.png]'}().
-		h::h1('CleverStyle CMS Builder')
-	).
-	h::section($content).
-	h::footer(
-		'Copyright (c) 2011-2016, Nazar Mokrynskyi'
-	);
