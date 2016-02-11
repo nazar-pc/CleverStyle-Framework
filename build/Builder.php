@@ -27,86 +27,7 @@ class Builder {
 	function __construct ($root, $target) {
 		$this->root   = $root;
 		$this->target = $target;
-		if (!file_exists($target)) {
-			mkdir($target);
-		}
-	}
-	/**
-	 * @return string
-	 */
-	function form () {
-		return h::{'form[method=post]'}(
-			h::nav(
-				'Build: '.
-				h::{'radio.build-mode[name=mode]'}(
-					[
-						'value'   => ['core', 'module', 'plugin', 'theme'],
-						'in'      => ['Core', 'Module', 'Plugin', 'Theme'],
-						'onclick' => 'change_mode(this.value, this);'
-					]
-				)
-			).
-			h::{'table tr| td'}(
-				[
-					'Modules',
-					'Plugins',
-					'Themes'
-				],
-				[
-					h::{'select#modules[name=modules[]][size=20][multiple] option'}(
-						$this->get_list_for_form("$this->root/components/modules", 'System')
-					),
-					h::{'select#plugins[name=plugins[]][size=20][multiple] option'}(
-						$this->get_list_for_form("$this->root/components/plugins")
-					),
-					h::{'select#themes[name=themes[]][size=20][multiple] option'}(
-						$this->get_list_for_form("$this->root/themes", 'CleverStyle')
-					)
-				]
-			).
-			h::{'input[name=suffix]'}(
-				[
-					'placeholder' => 'Package file suffix'
-				]
-			).
-			h::{'button.license'}(
-				'License',
-				[
-					'onclick' => "window.open('license.txt', 'license', 'location=no')"
-				]
-			).
-			h::{'button[type=submit]'}(
-				'Build'
-			)
-		);
-	}
-	/**
-	 * @param string $dir
-	 * @param string $exclude_dir
-	 *
-	 * @return array[]
-	 */
-	protected function get_list_for_form ($dir, $exclude_dir = '') {
-		$components = array_values(
-			array_filter(
-				get_files_list($dir, false, 'd'),
-				function ($module) use ($exclude_dir) {
-					return $module != $exclude_dir;
-				}
-			)
-		);
-		foreach ($components as &$component) {
-			$component = [
-				$component,
-				file_exists("$dir/$component/meta.json") ? [
-					'title' => 'Version: '.file_get_json("$dir/$component/meta.json")['version']
-				] : [
-					'title' => 'No meta.json file found',
-					'disabled'
-				]
-			];
-		}
-		return $components;
+		@mkdir($target);
 	}
 	/**
 	 * @param string[]    $modules
@@ -229,14 +150,16 @@ class Builder {
 		$phar->addFile("$this->root/license.txt", 'license.txt');
 		$phar->addFile("$this->root/components/modules/System/meta.json", 'meta.json');
 		$phar->setStub(
-			"<?php
+			<<<STUB
+<?php
 if (PHP_SAPI == 'cli') {
 	Phar::mapPhar('cleverstyle_cms.phar');
 	include 'phar://cleverstyle_cms.phar/install.php';
 } else {
 	Phar::webPhar(null, 'install.php');
 }
-__HALT_COMPILER();"
+__HALT_COMPILER();
+STUB
 		);
 		$phar->stopBuffering();
 		return "Done! CleverStyle CMS $version";
@@ -351,7 +274,9 @@ __HALT_COMPILER();"
 	 * @return string
 	 */
 	protected function get_htaccess () {
-		return 'AddDefaultCharset utf-8
+		/** @lang ApacheConfig */
+		return <<<HTACCESS
+AddDefaultCharset utf-8
 Options -Indexes -Multiviews +FollowSymLinks
 IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
 
@@ -372,7 +297,7 @@ RewriteBase /
 #</Files>
 
 RewriteRule .* index.php
-';
+HTACCESS;
 	}
 	/**
 	 * @param string      $module
