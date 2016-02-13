@@ -532,7 +532,10 @@ trait Data {
 	 * @return string
 	 */
 	function username ($user = false) {
-		$user     = (int)$user ?: $this->id;
+		$user = (int)$user ?: $this->id;
+		if ($user === User::GUEST_ID) {
+			return Language::instance()->system_profile_guest;
+		}
 		$username = $this->get('username', $user);
 		if (!$username) {
 			$username = $this->get('login', $user);

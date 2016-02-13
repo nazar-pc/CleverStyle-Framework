@@ -13,9 +13,9 @@
     'is': 'cs-cleverstyle-header-user-block',
     behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
     properties: {
-      avatar: '',
+      avatar: String,
       guest: Boolean,
-      username: '' + L.guest,
+      username: String,
       login: String
     },
     ready: function(){

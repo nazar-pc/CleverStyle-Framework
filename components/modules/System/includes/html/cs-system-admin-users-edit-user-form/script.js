@@ -12,7 +12,7 @@
   L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-users-edit-user-form',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
     properties: {
       user_id: -1,
       user_data: {

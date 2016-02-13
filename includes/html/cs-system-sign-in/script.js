@@ -10,7 +10,7 @@
   L = cs.Language;
   Polymer({
     'is': 'cs-system-sign-in',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
     ready: function(){
       cs.Event.fire('cs-system-sign-in', this);
     },

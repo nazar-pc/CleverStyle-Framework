@@ -12,9 +12,9 @@ Polymer(
 		cs.Polymer.behaviors.Language('system_profile_')
 	]
 	properties	:
-		avatar		: ''
+		avatar		: String
 		guest		: Boolean
-		username	: '' + L.guest
+		username	: String
 		login		: String
 	ready : !->
 		@guest	= !!cs.is_guest

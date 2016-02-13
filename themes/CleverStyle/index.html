@@ -19,7 +19,7 @@ $main_menu	= h::nav(
 $submenu	= admin_path() ? Menu::instance()->get_menu() : '';
 $User		= User::instance();
 $avatar		= $User->avatar();
-$username	= $User->guest() ? Language::instance()->guest : $User->username();
+$username	= $User->username();
 $login		= $User->login;
 ?><!doctype html>
 <!--pre_Html--><!--head-->

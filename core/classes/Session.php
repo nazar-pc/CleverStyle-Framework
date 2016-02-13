@@ -29,7 +29,8 @@
  */
 namespace cs;
 use
-	cs\Cache\Prefix;
+	cs\Language\Prefix as Language_prefix,
+	cs\Cache\Prefix as Cache_prefix;
 
 /**
  * Class responsible for current user session
@@ -58,11 +59,11 @@ class Session {
 	protected $is_bot   = false;
 	protected $is_guest = false;
 	/**
-	 * @var Prefix
+	 * @var Cache_prefix
 	 */
 	protected $cache;
 	/**
-	 * @var Prefix
+	 * @var Cache_prefix
 	 */
 	protected $users_cache;
 	protected $data_model = [
@@ -77,8 +78,8 @@ class Session {
 	];
 	protected $table      = '[prefix]sessions';
 	protected function construct () {
-		$this->cache       = new Prefix('sessions');
-		$this->users_cache = new Prefix('users');
+		$this->cache       = new Cache_prefix('sessions');
+		$this->users_cache = new Cache_prefix('users');
 		$this->initialize();
 	}
 	/**
@@ -455,7 +456,7 @@ class Session {
 		if (!$data) {
 			return false;
 		}
-		$L    = Language::instance();
+		$L    = new Language_prefix('system_profile_');
 		$Page = Page::instance();
 		switch ($data['status']) {
 			case User::STATUS_INACTIVE:
@@ -475,7 +476,7 @@ class Session {
 			/**
 			 * If user if blocked
 			 */
-			$Page->warning($L->your_account_blocked_until.' '.date($L->_datetime, $data['block_until']));
+			$Page->warning($L->your_account_blocked_until(date($L->_datetime, $data['block_until'])));
 			return false;
 		}
 		return true;

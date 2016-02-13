@@ -10,7 +10,7 @@
   L = cs.Language;
   Polymer({
     'is': 'cs-system-restore-password',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
     attached: function(){
       this.$.login.focus();
     },

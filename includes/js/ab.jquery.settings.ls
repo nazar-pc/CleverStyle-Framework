@@ -15,7 +15,7 @@ $.ajaxSetup(
 			if xhr.responseText
 				JSON.parse(xhr.responseText).error_description
 			else
-				cs.Language.server_connection_error.toString()
+				cs.Language.system_profile_server_connection_error
 			'warning'
 			5
 		)

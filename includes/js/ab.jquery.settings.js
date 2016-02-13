@@ -17,7 +17,7 @@
       }
       cs.ui.notify(xhr.responseText
         ? JSON.parse(xhr.responseText).error_description
-        : cs.Language.server_connection_error.toString(), 'warning', 5);
+        : cs.Language.system_profile_server_connection_error, 'warning', 5);
     }
   });
 }).call(this);

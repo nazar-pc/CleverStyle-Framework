@@ -17,6 +17,7 @@ use
 	cs\Page,
 	cs\Session,
 	cs\User;
+
 trait user_ {
 	static function user_change_password () {
 		$L    = new Prefix('system_profile_');
@@ -129,7 +130,7 @@ trait user_ {
 	}
 	static function user_sign_in () {
 		$Config = Config::instance();
-		$L      = Language::instance();
+		$L      = new Prefix('system_profile_');
 		$User   = User::instance();
 		if (!$User->guest()) {
 			return;
@@ -138,7 +139,7 @@ trait user_ {
 			$User->get_sign_in_attempts_count(@$_POST['login']) >= $Config->core['sign_in_attempts_block_count']
 		) {
 			$User->sign_in_result(false, @$_POST['login']);
-			throw new ExitException("$L->sign_in_attempts_ends_try_after ".format_time($Config->core['sign_in_attempts_block_time']), 403);
+			throw new ExitException($L->sign_in_attempts_ends_try_after(format_time($Config->core['sign_in_attempts_block_time'])), 403);
 		}
 		$id = $User->get_id(@$_POST['login']);
 		if (
@@ -152,7 +153,7 @@ trait user_ {
 			} elseif ($status == User::STATUS_INACTIVE) {
 				throw new ExitException($L->your_account_disabled, 403);
 			} elseif ($block_until > time()) {
-				throw new ExitException($L->your_account_blocked_until.' '.date($L->_datetime, $block_until), 403);
+				throw new ExitException($L->your_account_blocked_until(date($L->_datetime, $block_until)), 403);
 			}
 			Session::instance()->add($id);
 			$User->sign_in_result(true, $_POST['login']);
@@ -163,7 +164,7 @@ trait user_ {
 				$Config->core['sign_in_attempts_block_count'] &&
 				$User->get_sign_in_attempts_count(@$_POST['login']) >= $Config->core['sign_in_attempts_block_count'] * 2 / 3
 			) {
-				$content .= " $L->sign_in_attempts_left ".($Config->core['sign_in_attempts_block_count'] - $User->get_sign_in_attempts_count(@$_POST['login']));
+				$content .= ' '.$L->sign_in_attempts_left($Config->core['sign_in_attempts_block_count'] - $User->get_sign_in_attempts_count(@$_POST['login']));
 			}
 			throw new ExitException($content, 400);
 		}
