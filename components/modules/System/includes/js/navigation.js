@@ -42,7 +42,7 @@
       return e.which !== 1;
     });
     title_format = document.title;
-    L = cs.Language;
+    L = cs.Language('system_admin_');
     function go(href){
       var href_splitted;
       href_splitted = href.split('/');

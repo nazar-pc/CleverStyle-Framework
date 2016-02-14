@@ -86,21 +86,25 @@ function get_footer () {
 			$Page->Html = str_replace(
 				[
 					'<!--generate time-->',
+					'<!--memory usage-->',
 					'<!--peak memory usage-->'
 				],
 				[
-					format_time(round(microtime(true) - MICROTIME, 5)),
-					format_filesize(memory_get_usage(), 5).h::sup(format_filesize(memory_get_peak_usage(), 5))
+					round(microtime(true) - MICROTIME, 5),
+					round(memory_get_usage() / 1024 / 1024, 5),
+					round(memory_get_peak_usage() / 1024 / 1024, 5)
 				],
 				$Page->Html
 			);
 		}
 	);
 	return h::div(
-		Language::instance()->page_footer_info(
+		sprintf(
+			'Page generated in %s s; %d queries to DB in %f s; memory consumption %s MiB (peak %s MiB)',
 			'<!--generate time-->',
 			$db ? $db->queries() : 0,
-			format_time(round($db ? $db->time() : 0, 5)),
+			$db ? round($db->time(), 5) : 0,
+			'<!--memory usage-->',
 			'<!--peak memory usage-->'
 		),
 		'© Powered by <a target="_blank" href="http://cleverstyle.org/cms" title="CleverStyle CMS">CleverStyle CMS</a>'

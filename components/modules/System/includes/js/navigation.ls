@@ -39,7 +39,7 @@ $links		= $('body > header > nav a')
 		# Ignore left click
 		e.which != 1
 title_format	= document.title
-L				= cs.Language
+L				= cs.Language('system_admin_')
 !function go (href)
 	href_splitted	= href.split('/')
 	document.title	= sprintf(

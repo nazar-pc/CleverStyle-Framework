@@ -9,7 +9,7 @@
 Polymer(
 	'is'		: 'cs-system-admin-site-info'
 	behaviors	: [
-		cs.Polymer.behaviors.Language
+		cs.Polymer.behaviors.Language('system_admin_site_info_')
 		cs.Polymer.behaviors.admin.System.settings
 	]
 	properties	:

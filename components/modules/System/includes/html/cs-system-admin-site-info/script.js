@@ -10,7 +10,7 @@
 (function(){
   Polymer({
     'is': 'cs-system-admin-site-info',
-    behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.settings],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_site_info_'), cs.Polymer.behaviors.admin.System.settings],
     properties: {
       settings_api_url: 'api/System/admin/site_info',
       timezones: Array
