@@ -11,7 +11,8 @@ use
 	cs\Config,
 	cs\Language,
 	cs\Page,
-	cs\Session;
+	cs\Session,
+	cs\User;
 
 /**
  * Class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
@@ -61,7 +62,7 @@ abstract class Base extends BananaHTML {
 		) {
 			return static::input(
 				[
-					'value' => $Session->get_id(),
+					'value' => $Session->get_id() ?: $Session->add(User::GUEST_ID),
 					'type'  => 'hidden',
 					'name'  => 'session'
 				]
