@@ -144,7 +144,7 @@ Event::instance()
 	)
 	->on(
 		'System/Page/requirejs',
-		function (&$data) {
+		function ($data) {
 			$data['directories_to_browse'][] = STORAGE.'/Composer/vendor/bower-asset';
 			$data['directories_to_browse'][] = STORAGE.'/Composer/vendor/npm-asset';
 		}
