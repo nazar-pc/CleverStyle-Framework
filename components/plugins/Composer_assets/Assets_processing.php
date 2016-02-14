@@ -82,6 +82,14 @@ class Assets_processing {
 		$content = [];
 		if ($files) {
 			@mkdir($target_dir, 0770, true);
+			file_put_contents(
+				"$target_dir/.htaccess",
+				<<<HTACCESS
+<FilesMatch "\.css$">
+	Header set Content-Type text/css
+</FilesMatch>
+HTACCESS
+			);
 		}
 		foreach ($files as $file) {
 			$file = "$package_dir/$file";
