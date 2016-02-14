@@ -62,8 +62,7 @@ shutdown_function();
 	</div>
 	<footer>
 		<div>
-			Page generated in %f seconds, %d query(s) in DB in %f seconds, memory consumption %f MB<sup>%f MB</sup>
-
+			Page generated in %f s; %d queries to DB in %f s; memory consumption %f MiB (peak %f MiB)
 		</div>
 		<div>
 			© Powered by <a target="_blank" href="http://cleverstyle.org/cms" title="CleverStyle CMS">CleverStyle CMS</a>
