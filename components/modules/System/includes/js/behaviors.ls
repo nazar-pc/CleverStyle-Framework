@@ -6,7 +6,7 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L									= cs.Language
+L									= cs.Language('system_admin_')
 cs.{}Polymer.{}behaviors.{}admin.System	=
 	components	:
 		# Module/plugin enabling
@@ -16,7 +16,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 			# During enabling we don't care about those since module should be already installed
 			delete dependencies.db_support
 			delete dependencies.storage_support
-			translation_key	= if component_type == 'module' then 'enabling_of_module' else 'enabling_of_plugin'
+			translation_key	= if component_type == 'module' then 'modules_enabling_of_module' else 'plugins_enabling_of_plugin'
 			title			= "<h3>#{L[translation_key](component)}</h3>"
 			message			= ''
 			message_more	= ''
@@ -54,7 +54,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 		_disable_component : (component, component_type) !->
 			category			= component_type + 's'
 			dependent_packages	<~! $.getJSON("api/System/admin/#category/#component/dependent_packages", _)
-			translation_key		= if component_type == 'module' then 'disabling_of_module' else 'disabling_of_plugin'
+			translation_key		= if component_type == 'module' then 'modules_disabling_of_module' else 'plugins_disabling_of_plugin'
 			title				= "<h3>#{L[translation_key](component)}</h3>"
 			message				= ''
 			if Object.keys(dependent_packages).length
@@ -99,16 +99,16 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 			delete dependencies.storage_support
 			translation_key	=
 				switch category
-				| 'modules'	=> (if component == 'System' then 'updating_of_system' else 'updating_of_module')
-				| 'plugins'	=> 'updating_of_plugin'
-				| 'themes'	=> 'updating_of_theme'
+				| 'modules'	=> (if component == 'System' then 'modules_updating_of_system' else 'modules_updating_of_module')
+				| 'plugins'	=> 'plugins_updating_of_plugin'
+				| 'themes'	=> 'appearance_updating_of_theme'
 			title			= "<h3>#{L[translation_key](component)}</h3>"
 			message			= ''
 			translation_key	=
 				switch category
-				| 'modules'	=> (if component == 'System' then 'update_system' else 'update_module')
-				| 'plugins'	=> 'update_plugin'
-				| 'themes'	=> 'update_theme'
+				| 'modules'	=> (if component == 'System' then 'modules_update_system' else 'modules_update_module')
+				| 'plugins'	=> 'plugins_update_plugin'
+				| 'themes'	=> 'appearance_update_theme'
 			message_more	= '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>'
 			if Object.keys(dependencies).length
 				message	= @_compose_dependencies_message(component, dependencies)
@@ -153,9 +153,9 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 		_remove_completely_component : (component, category) !->
 			translation_key		=
 				switch category
-				| 'modules' => 'completely_remove_module'
-				| 'plugins'	=> 'completely_remove_plugin'
-				| 'themes'	=> 'completely_remove_theme'
+				| 'modules' => 'modules_completely_remove_module'
+				| 'plugins'	=> 'plugins_completely_remove_plugin'
+				| 'themes'	=> 'appearance_completely_remove_theme'
 			<~! cs.ui.confirm(L[translation_key](component), _)
 			$.ajax(
 				url		: "api/System/admin/#category/#component"
@@ -168,22 +168,24 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 		_compose_dependencies_message : (component, dependencies) ->
 			message = ''
 			for what, categories of dependencies
+				if categories instanceof Array
+					categories = {categories : [categories]}
 				for category, details of categories
 					for detail in details
 						message	+=
-							"<p>" +
+							"""<p class="cs-block-error cs-text-error">""" +
 							(switch what
 								case 'update_from'
 									if component == 'System'
-										L.update_system_impossible_from_version_to(detail.from, detail.to, detail.can_update_from)
+										L.modules_update_system_impossible_from_version_to(detail.from, detail.to, detail.can_update_from)
 									else
-										L.module_cant_be_updated_from_version_to(component, detail.from, detail.to, detail.can_update_from)
+										L.modules_module_cant_be_updated_from_version_to(component, detail.from, detail.to, detail.can_update_from)
 								case 'update_older'
 									translation_key =
 										switch category
-										| 'modules'	=> (if component == 'System' then 'update_system_impossible_older_version' else 'update_module_impossible_older_version')
-										| 'plugins'	=> 'update_plugin_impossible_older_version'
-										| 'themes'	=> 'update_theme_impossible_older_version'
+										| 'modules'	=> (if component == 'System' then 'modules_update_system_impossible_older_version' else 'modules_update_module_impossible_older_version')
+										| 'plugins'	=> 'plugins_update_plugin_impossible_older_version'
+										| 'themes'	=> 'appearance_update_theme_impossible_older_version'
 									L[translation_key](detail.from, detail.to)
 								case 'provide'
 									translation_key =
@@ -200,22 +202,22 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 										else
 											translation_key =
 												if category == 'modules'
-													'unsatisfactory_version_of_the_module'
+													'modules_unsatisfactory_version_of_the_module'
 												else
-													'unsatisfactory_version_of_the_plugin'
+													'plugins_unsatisfactory_version_of_the_plugin'
 											L[translation_key](detail.name, required, detail.existing)
 								case 'conflict'
 									for conflict in detail.conflicts
 										L.package_is_incompatible_with(conflict.package, conflict.conflicts_with, conflict.of_versions.filter(-> it !~= '0').join(' '))
 								case 'db_support'
-									L.compatible_databases_not_found(detail.supported.join('", "'))
+									L.modules_compatible_databases_not_found(detail.join('", "'))
 								case 'storage_support'
-									L.compatible_storages_not_found(detail.supported.join('", "'))
+									L.modules_compatible_storages_not_found(detail.join('", "'))
 							) +
 							"</p>"
-			"#message<p>#{L.dependencies_not_satisfied}</p>"
+			"""#message<p class="cs-block-error cs-text-error">#{L.dependencies_not_satisfied}</p>"""
 	upload :
-		# Generic ackage uploading, jqXHR object will be returned
+		# Generic package uploading, jqXHR object will be returned
 		_upload_package : (file_input, progress) ->
 			if !file_input.files.length
 				throw new Error('file should be selected')

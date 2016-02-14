@@ -13,11 +13,12 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Permission,
 	cs\Session,
 	cs\modules\System\Packages_manipulation;
+
 trait modules {
 	/**
 	 * @param int[]    $route_ids
@@ -120,7 +121,7 @@ trait modules {
 		}
 		$new_meta = file_get_json("$tmp_dir/meta.json");
 		if (!static::is_same_module($new_meta, $module)) {
-			throw new ExitException(Language::instance()->this_is_not_module_installer_file, 400);
+			throw new ExitException((new Prefix('system_admin_modules_'))->this_is_not_module_installer_file, 400);
 		}
 		Page::instance()->json(
 			Packages_manipulation::get_dependencies($new_meta)
@@ -486,7 +487,7 @@ trait modules {
 	 */
 	static function admin_modules_extract () {
 		$Config       = Config::instance();
-		$L            = Language::instance();
+		$L            = new Prefix('system_admin_modules_');
 		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
 		$tmp_dir      = "phar://$tmp_location";
 		if (
@@ -561,7 +562,7 @@ trait modules {
 	 */
 	protected static function update_module ($module, $existing_meta, $new_meta, $tmp_location, $route_ids, $route_path) {
 		$Config     = Config::instance();
-		$L          = Language::instance();
+		$L          = new Prefix('system_admin_modules_');
 		$module_dir = MODULES."/$module";
 		$enabled    = $Config->module($module)->enabled();
 		// If module is currently enabled - disable it temporary
@@ -604,7 +605,7 @@ trait modules {
 	 */
 	protected static function update_system ($module, $existing_meta, $new_meta, $tmp_location) {
 		$Config     = Config::instance();
-		$L          = Language::instance();
+		$L          = new Prefix('system_admin_modules_');
 		$module_dir = MODULES."/$module";
 		/**
 		 * Temporary close site

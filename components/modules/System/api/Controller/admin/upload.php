@@ -10,9 +10,10 @@
 namespace cs\modules\System\api\Controller\admin;
 use
 	cs\ExitException,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Session;
+
 trait upload {
 	/**
 	 * @throws ExitException
@@ -21,7 +22,7 @@ trait upload {
 		if (!isset($_FILES['file']) || !$_FILES['file']['tmp_name']) {
 			throw new ExitException(400);
 		}
-		$L    = Language::instance();
+		$L    = new Prefix('system_admin_');
 		$file = $_FILES['file'];
 		switch ($file['error']) {
 			case UPLOAD_ERR_INI_SIZE:

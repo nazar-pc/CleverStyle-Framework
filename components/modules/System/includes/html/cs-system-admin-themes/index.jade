@@ -11,10 +11,10 @@ dom-module#cs-system-admin-themes
 					td [[theme.name]]
 					td
 						cs-icon(icon="[[theme.icon]]")
-						button(is="cs-button" type="button" icon="book" tooltip="[[L.information_about_theme]]<br>[[L.click_to_view_details]]" hidden="[[!theme.readme]]")
+						button(is="cs-button" type="button" icon="book" tooltip="[[L.information_about_theme]]" hidden="[[!theme.readme]]")
 						section(is="cs-section-modal" content="[[theme.readme.content]]")
 						= ' '
-						button(is="cs-button" type="button" icon="legal" tooltip="[[L.license]]<br>[[L.click_to_view_details]]" hidden="[[!theme.license]]")
+						button(is="cs-button" type="button" icon="legal" tooltip="[[L.license]]" hidden="[[!theme.license]]")
 						section(is="cs-section-modal" content="[[theme.license.content]]")
 					td(left)
 						a(is="cs-link-button" icon="check" on-tap="_set_current" force-compact hidden="[[equal(theme.name, current_theme)]]") [[L.set_current_theme]]

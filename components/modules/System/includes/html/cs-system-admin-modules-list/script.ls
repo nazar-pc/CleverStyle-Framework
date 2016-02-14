@@ -6,7 +6,7 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L				= cs.Language
+L				= cs.Language('system_admin_modules_')
 active_switch	= (uninstalled, disabled, enabled) ->
 	switch @active
 	| -1	=> uninstalled
@@ -15,7 +15,7 @@ active_switch	= (uninstalled, disabled, enabled) ->
 Polymer(
 	'is'		: 'cs-system-admin-modules-list'
 	behaviors	: [
-		cs.Polymer.behaviors.Language
+		cs.Polymer.behaviors.Language('system_admin_modules_')
 		cs.Polymer.behaviors.admin.System.components
 		cs.Polymer.behaviors.admin.System.upload
 	]
@@ -150,7 +150,7 @@ Polymer(
 					cs.ui.notify(message, 'error', 5)
 					return
 			if meta && meta.optional
-				message_more	+= '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>'
+				message_more	+= '<p class="cs-text-success cs-block-success">' + L.system_admin_for_complete_feature_set(meta.optional.join(', ')) + '</p>'
 			form	= if meta then @_databases_storages_form(meta, databases, storages) else ''
 			modal	= cs.ui.confirm(
 				"""<h3>#{L.installation_of_module(module)}</h3>

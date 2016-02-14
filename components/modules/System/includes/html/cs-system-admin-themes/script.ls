@@ -10,7 +10,7 @@ L				= cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-themes'
 	behaviors	: [
-		cs.Polymer.behaviors.Language
+		cs.Polymer.behaviors.Language('system_admin_appearance_')
 		cs.Polymer.behaviors.admin.System.components
 		cs.Polymer.behaviors.admin.System.upload
 	]

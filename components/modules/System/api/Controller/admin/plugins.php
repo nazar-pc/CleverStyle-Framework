@@ -13,7 +13,7 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Session,
 	cs\modules\System\Packages_manipulation;
@@ -109,7 +109,7 @@ trait plugins {
 			$existing_meta['package'] !== $new_meta['package'] ||
 			$existing_meta['category'] !== $new_meta['category']
 		) {
-			throw new ExitException(Language::instance()->this_is_not_plugin_installer_file, 400);
+			throw new ExitException((new Prefix('system_admin_modules_'))->this_is_not_plugin_installer_file, 400);
 		}
 		Page::instance()->json(
 			Packages_manipulation::get_dependencies($new_meta)
@@ -263,7 +263,7 @@ trait plugins {
 	 * @throws ExitException
 	 */
 	static function admin_plugins_extract () {
-		$L            = Language::instance();
+		$L            = new Prefix('system_admin_modules_');
 		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
 		$tmp_dir      = "phar://$tmp_location";
 		if (
@@ -301,7 +301,7 @@ trait plugins {
 			throw new ExitException(400);
 		}
 		$Config  = Config::instance();
-		$L       = Language::instance();
+		$L       = new Prefix('system_admin_modules_');
 		$plugin  = $route_path[2];
 		$plugins = get_files_list(PLUGINS, false, 'd');
 		if (!in_array($plugin, $plugins, true)) {

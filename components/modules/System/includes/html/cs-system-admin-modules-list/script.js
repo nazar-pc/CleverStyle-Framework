@@ -9,7 +9,7 @@
  */
 (function(){
   var L, active_switch;
-  L = cs.Language;
+  L = cs.Language('system_admin_modules_');
   active_switch = function(uninstalled, disabled, enabled){
     switch (this.active) {
     case -1:
@@ -22,7 +22,7 @@
   };
   Polymer({
     'is': 'cs-system-admin-modules-list',
-    behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.components, cs.Polymer.behaviors.admin.System.upload],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_modules_'), cs.Polymer.behaviors.admin.System.components, cs.Polymer.behaviors.admin.System.upload],
     properties: {
       default_module: String
     },
@@ -165,7 +165,7 @@
           }
         }
         if (meta && meta.optional) {
-          message_more += '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>';
+          message_more += '<p class="cs-text-success cs-block-success">' + L.system_admin_for_complete_feature_set(meta.optional.join(', ')) + '</p>';
         }
         form = meta ? this$._databases_storages_form(meta, databases, storages) : '';
         modal = cs.ui.confirm("<h3>" + L.installation_of_module(module) + "</h3>\n" + message + "\n" + message_more + "\n" + form, function(){

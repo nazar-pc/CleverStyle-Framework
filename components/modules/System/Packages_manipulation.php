@@ -12,7 +12,7 @@ use
 	cs\Config,
 	cs\Core,
 	cs\DB,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page;
 
 /**
@@ -28,7 +28,7 @@ class Packages_manipulation {
 		if (!isset($_FILES[$file_name]) || !$_FILES[$file_name]['tmp_name']) {
 			return false;
 		}
-		$L    = Language::instance();
+		$L    = new Prefix('system_admin_');
 		$Page = Page::instance();
 		switch ($_FILES[$file_name]['error']) {
 			case UPLOAD_ERR_INI_SIZE:
@@ -296,10 +296,10 @@ class Packages_manipulation {
 			unset($package, $details);
 		}
 		if (!self::check_dependencies_db($meta['db_support'])) {
-			$dependencies['supported'] = $meta['db_support'];
+			$dependencies['db_support'] = $meta['db_support'];
 		}
 		if (!self::check_dependencies_storage($meta['storage_support'])) {
-			$dependencies['supported'] = $meta['storage_support'];
+			$dependencies['storage_support'] = $meta['storage_support'];
 		}
 		return $dependencies;
 	}

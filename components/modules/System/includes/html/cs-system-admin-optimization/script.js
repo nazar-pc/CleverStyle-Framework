@@ -12,7 +12,7 @@
   L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-optimization',
-    behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.settings],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_optimization_'), cs.Polymer.behaviors.admin.System.settings],
     properties: {
       path_prefix: '',
       settings_api_url: 'api/System/admin/optimization'

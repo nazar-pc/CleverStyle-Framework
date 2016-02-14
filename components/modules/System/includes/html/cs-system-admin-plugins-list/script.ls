@@ -6,7 +6,7 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L				= cs.Language
+L				= cs.Language('system_admin_plugins_')
 active_switch	= (disabled, enabled) ->
 	switch @active
 	| 0		=> disabled
@@ -14,7 +14,7 @@ active_switch	= (disabled, enabled) ->
 Polymer(
 	'is'		: 'cs-system-admin-plugins-list'
 	behaviors	: [
-		cs.Polymer.behaviors.Language
+		cs.Polymer.behaviors.Language('system_admin_plugins_')
 		cs.Polymer.behaviors.admin.System.components
 		cs.Polymer.behaviors.admin.System.upload
 	]

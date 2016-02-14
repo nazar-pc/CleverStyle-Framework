@@ -9,7 +9,7 @@
  */
 (function(){
   var L, ref$, ref1$;
-  L = cs.Language;
+  L = cs.Language('system_admin_');
   ((ref$ = (ref1$ = cs.Polymer || (cs.Polymer = {})).behaviors || (ref1$.behaviors = {})).admin || (ref$.admin = {})).System = {
     components: {
       _enable_component: function(component, component_type, meta){
@@ -19,7 +19,7 @@
           var translation_key, title, message, message_more, modal;
           delete dependencies.db_support;
           delete dependencies.storage_support;
-          translation_key = component_type === 'module' ? 'enabling_of_module' : 'enabling_of_plugin';
+          translation_key = component_type === 'module' ? 'modules_enabling_of_module' : 'plugins_enabling_of_plugin';
           title = "<h3>" + L[translation_key](component) + "</h3>";
           message = '';
           message_more = '';
@@ -61,7 +61,7 @@
         category = component_type + 's';
         $.getJSON("api/System/admin/" + category + "/" + component + "/dependent_packages", function(dependent_packages){
           var translation_key, title, message, type, packages, i$, len$, _package, modal;
-          translation_key = component_type === 'module' ? 'disabling_of_module' : 'disabling_of_plugin';
+          translation_key = component_type === 'module' ? 'modules_disabling_of_module' : 'plugins_disabling_of_plugin';
           title = "<h3>" + L[translation_key](component) + "</h3>";
           message = '';
           if (Object.keys(dependent_packages).length) {
@@ -114,15 +114,15 @@
             switch (category) {
             case 'modules':
               if (component === 'System') {
-                return 'updating_of_system';
+                return 'modules_updating_of_system';
               } else {
-                return 'updating_of_module';
+                return 'modules_updating_of_module';
               }
               break;
             case 'plugins':
-              return 'updating_of_plugin';
+              return 'plugins_updating_of_plugin';
             case 'themes':
-              return 'updating_of_theme';
+              return 'appearance_updating_of_theme';
             }
           }());
           title = "<h3>" + L[translation_key](component) + "</h3>";
@@ -131,15 +131,15 @@
             switch (category) {
             case 'modules':
               if (component === 'System') {
-                return 'update_system';
+                return 'modules_update_system';
               } else {
-                return 'update_module';
+                return 'modules_update_module';
               }
               break;
             case 'plugins':
-              return 'update_plugin';
+              return 'plugins_update_plugin';
             case 'themes':
-              return 'update_theme';
+              return 'appearance_update_theme';
             }
           }());
           message_more = '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>';
@@ -192,11 +192,11 @@
         translation_key = (function(){
           switch (category) {
           case 'modules':
-            return 'completely_remove_module';
+            return 'modules_completely_remove_module';
           case 'plugins':
-            return 'completely_remove_plugin';
+            return 'plugins_completely_remove_plugin';
           case 'themes':
-            return 'completely_remove_theme';
+            return 'appearance_completely_remove_theme';
           }
         }());
         cs.ui.confirm(L[translation_key](component), function(){
@@ -215,23 +215,28 @@
         message = '';
         for (what in dependencies) {
           categories = dependencies[what];
+          if (categories instanceof Array) {
+            categories = {
+              categories: [categories]
+            };
+          }
           for (category in categories) {
             details = categories[category];
             for (i$ = 0, len$ = details.length; i$ < len$; ++i$) {
               detail = details[i$];
-              message += "<p>" + (fn$()) + "</p>";
+              message += "<p class=\"cs-block-error cs-text-error\">" + (fn$()) + "</p>";
             }
           }
         }
-        return message + "<p>" + L.dependencies_not_satisfied + "</p>";
+        return message + "<p class=\"cs-block-error cs-text-error\">" + L.dependencies_not_satisfied + "</p>";
         function fn$(){
           var i$, ref$, len$, results$ = [], results1$ = [];
           switch (what) {
           case 'update_from':
             if (component === 'System') {
-              return L.update_system_impossible_from_version_to(detail.from, detail.to, detail.can_update_from);
+              return L.modules_update_system_impossible_from_version_to(detail.from, detail.to, detail.can_update_from);
             } else {
-              return L.module_cant_be_updated_from_version_to(component, detail.from, detail.to, detail.can_update_from);
+              return L.modules_module_cant_be_updated_from_version_to(component, detail.from, detail.to, detail.can_update_from);
             }
             break;
           case 'update_older':
@@ -239,15 +244,15 @@
               switch (category) {
               case 'modules':
                 if (component === 'System') {
-                  return 'update_system_impossible_older_version';
+                  return 'modules_update_system_impossible_older_version';
                 } else {
-                  return 'update_module_impossible_older_version';
+                  return 'modules_update_module_impossible_older_version';
                 }
                 break;
               case 'plugins':
-                return 'update_plugin_impossible_older_version';
+                return 'plugins_update_plugin_impossible_older_version';
               case 'themes':
-                return 'update_theme_impossible_older_version';
+                return 'appearance_update_theme_impossible_older_version';
               }
             }());
             return L[translation_key](detail.from, detail.to);
@@ -261,7 +266,7 @@
               if (category === 'unknown') {
                 results$.push(L.package_or_functionality_not_found(detail.name + required));
               } else {
-                translation_key = category === 'modules' ? 'unsatisfactory_version_of_the_module' : 'unsatisfactory_version_of_the_plugin';
+                translation_key = category === 'modules' ? 'modules_unsatisfactory_version_of_the_module' : 'plugins_unsatisfactory_version_of_the_plugin';
                 results$.push(L[translation_key](detail.name, required, detail.existing));
               }
             }
@@ -275,9 +280,9 @@
             return results1$;
             break;
           case 'db_support':
-            return L.compatible_databases_not_found(detail.supported.join('", "'));
+            return L.modules_compatible_databases_not_found(detail.join('", "'));
           case 'storage_support':
-            return L.compatible_storages_not_found(detail.supported.join('", "'));
+            return L.modules_compatible_storages_not_found(detail.join('", "'));
           }
           function fn$(it){
             return it != '0';

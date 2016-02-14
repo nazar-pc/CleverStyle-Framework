@@ -10,7 +10,7 @@
 (function(){
   Polymer({
     'is': 'cs-system-admin-languages',
-    behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.settings],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_languages_'), cs.Polymer.behaviors.admin.System.settings],
     properties: {
       settings_api_url: 'api/System/admin/languages'
     }

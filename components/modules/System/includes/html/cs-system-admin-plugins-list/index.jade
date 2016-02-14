@@ -16,10 +16,10 @@ dom-module#cs-system-admin-plugins-list
 					td
 						cs-icon(icon="[[plugin.icon]]" tooltip="[[plugin.icon_text]]")
 						= ' '
-						button(is="cs-button" type="button" icon="book" tooltip="[[L.information_about_plugin]]<br>[[L.click_to_view_details]]" hidden="[[!plugin.readme]]")
+						button(is="cs-button" type="button" icon="book" tooltip="[[L.information_about_plugin]]" hidden="[[!plugin.readme]]")
 						section(is="cs-section-modal" content="[[plugin.readme.content]]")
 						= ' '
-						button(is="cs-button" type="button" icon="legal" tooltip="[[L.license]]<br>[[L.click_to_view_details]]" hidden="[[!plugin.license]]")
+						button(is="cs-button" type="button" icon="legal" tooltip="[[L.license]]" hidden="[[!plugin.license]]")
 						section(is="cs-section-modal" content="[[plugin.license.content]]")
 					td
 						button(is="cs-button" type="button" icon="minus" on-tap="_disable" tooltip="[[L.disable]]" hidden="[[equal(plugin.active, 0)]]")

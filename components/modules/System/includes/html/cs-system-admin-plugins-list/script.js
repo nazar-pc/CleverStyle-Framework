@@ -9,7 +9,7 @@
  */
 (function(){
   var L, active_switch;
-  L = cs.Language;
+  L = cs.Language('system_admin_plugins_');
   active_switch = function(disabled, enabled){
     switch (this.active) {
     case 0:
@@ -20,7 +20,7 @@
   };
   Polymer({
     'is': 'cs-system-admin-plugins-list',
-    behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.components, cs.Polymer.behaviors.admin.System.upload],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_plugins_'), cs.Polymer.behaviors.admin.System.components, cs.Polymer.behaviors.admin.System.upload],
     ready: function(){
       this.reload();
     },
