@@ -6,10 +6,12 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L	= cs.Language
+L	= cs.Language('system_admin_databases_')
 Polymer(
 	'is'		: 'cs-system-admin-databases-form'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language('system_admin_databases_')
+	]
 	properties	:
 		add				: Boolean
 		database-index	: Number

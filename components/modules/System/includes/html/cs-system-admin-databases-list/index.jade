@@ -20,8 +20,6 @@ dom-module#cs-system-admin-databases-list
 						a(is="cs-link-button" on-tap="_add" icon="plus" tooltip="[[L.add]] [[L.mirror]] [[L.of_db]]")
 						template(is="dom-if" if="[[index]]")
 							= ' '
-							button(is="cs-button" on-tap="_test_connection" icon="signal" tooltip="[[L.test_connection]]")
-							= ' '
 							a(is="cs-link-button" on-tap="_edit" icon="pencil" tooltip="[[L.edit]] [[L.db]]")
 							= ' '
 							a(is="cs-link-button" on-tap="_delete" icon="trash" tooltip="[[L.delete]] [[L.db]]")

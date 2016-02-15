@@ -171,7 +171,7 @@ trait databases {
 		}
 		if ($used_by) {
 			throw new ExitException(
-				Language::instance()->db_used_by_modules.': '.implode(', ', $used_by),
+				Language::instance()->system_admin_blocks_db_used_by_modules(implode(', ', $used_by)),
 				409
 			);
 		}

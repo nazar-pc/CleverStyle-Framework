@@ -10,7 +10,7 @@ L				= cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-storages-list'
 	behaviors	: [
-		cs.Polymer.behaviors.Language
+		cs.Polymer.behaviors.Language('system_admin_storages_')
 	]
 	ready : !->
 		@reload()

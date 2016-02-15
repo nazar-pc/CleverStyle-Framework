@@ -9,10 +9,10 @@
  */
 (function(){
   var L;
-  L = cs.Language;
+  L = cs.Language('system_admin_databases_');
   Polymer({
     'is': 'cs-system-admin-databases-form',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_databases_')],
     properties: {
       add: Boolean,
       databaseIndex: Number,

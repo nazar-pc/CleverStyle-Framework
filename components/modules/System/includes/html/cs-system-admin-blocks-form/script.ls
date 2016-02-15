@@ -9,7 +9,9 @@
 L	= cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-blocks-form'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language('system_admin_blocks_')
+	]
 	properties	:
 		block		: Object
 		index		: Number
