@@ -6,14 +6,16 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L				= cs.Language
+L				= cs.Language('system_admin_users_')
 STATUS_ACTIVE	= 1
 STATUS_INACTIVE	= 0
 GUEST_ID		= 1
 ROOT_ID			= 2
 Polymer(
 	'is'		: 'cs-system-admin-users-list'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language('system_admin_users_')
+	]
 	properties	:
 		search_column		: ''
 		search_mode			: 'LIKE'
@@ -110,13 +112,13 @@ Polymer(
 					do ->
 						type			=
 							if user.is_root || user.is_admin
-								'a'
+								'admin'
 							else if user.is_user
-								'u'
+								'user'
 							else if user.is_bot
-								'b'
+								'bot'
 							else
-								'g'
+								'guest'
 						user.type		= L[type]
 						user.type_info	= L[type + '_info']
 				@set('users', data.users)

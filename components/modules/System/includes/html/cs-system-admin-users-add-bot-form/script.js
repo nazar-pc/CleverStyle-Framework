@@ -12,7 +12,7 @@
   L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-users-add-bot-form',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_users_')],
     properties: {
       can_save: {
         type: Boolean,

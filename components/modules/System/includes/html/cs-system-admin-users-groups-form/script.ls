@@ -10,7 +10,9 @@ BOT_GROUP_ID	= 3
 L				= cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-users-groups-form'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language('system_admin_users_')
+	]
 	properties	:
 		user			: ''
 		user_groups		: Array

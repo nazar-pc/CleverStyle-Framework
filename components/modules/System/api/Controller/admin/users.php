@@ -10,9 +10,10 @@
 namespace cs\modules\System\api\Controller\admin;
 use
 	cs\ExitException,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\User;
+
 trait users {
 	/**
 	 * Get user's data or data of several specified groups if specified in ids query parameter or allows to search for users by login or email (users id will
@@ -51,7 +52,7 @@ trait users {
 		$Page->json($result);
 	}
 	protected static function admin_users___get_post_process ($data) {
-		$L                          = Language::instance();
+		$L                          = new Prefix('system_admin_users_');
 		$data['reg_date_formatted'] = $data['reg_date'] ? date($L->_date, $data['reg_date']) : $L->undefined;
 		$data['reg_ip_formatted']   = hex2ip($data['reg_ip'], 10);
 		return $data;
@@ -90,7 +91,7 @@ trait users {
 		if (!$user_data && ($is_bot || !isset($_POST['user']['password']))) {
 			throw new ExitException(400);
 		}
-		$L = Language::instance();
+		$L = new Prefix('system_admin_users_');
 		if (
 			isset($user_data['login']) &&
 			$user_data['login'] !== $User->get('login', $user_id) &&

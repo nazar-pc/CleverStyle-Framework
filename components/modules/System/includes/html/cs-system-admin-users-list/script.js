@@ -9,14 +9,14 @@
  */
 (function(){
   var L, STATUS_ACTIVE, STATUS_INACTIVE, GUEST_ID, ROOT_ID;
-  L = cs.Language;
+  L = cs.Language('system_admin_users_');
   STATUS_ACTIVE = 1;
   STATUS_INACTIVE = 0;
   GUEST_ID = 1;
   ROOT_ID = 2;
   Polymer({
     'is': 'cs-system-admin-users-list',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_users_')],
     properties: {
       search_column: '',
       search_mode: 'LIKE',
@@ -128,10 +128,10 @@
             (function(){
               var type;
               type = user.is_root || user.is_admin
-                ? 'a'
+                ? 'admin'
                 : user.is_user
-                  ? 'u'
-                  : user.is_bot ? 'b' : 'g';
+                  ? 'user'
+                  : user.is_bot ? 'bot' : 'guest';
               user.type = L[type];
               return user.type_info = L[type + '_info'];
             })();

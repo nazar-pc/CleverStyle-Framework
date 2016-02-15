@@ -26,5 +26,5 @@ Polymer(
 	_change_password : !->
 		cs.ui.simple_modal("<cs-system-change-password/>")
 	_general_settings : !->
-		cs.ui.simple_modal("<cs-system-user-setings/>")
+		cs.ui.simple_modal("<cs-system-user-settings/>")
 )

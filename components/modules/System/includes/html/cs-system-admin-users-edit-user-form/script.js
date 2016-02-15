@@ -9,10 +9,10 @@
  */
 (function(){
   var L;
-  L = cs.Language;
+  L = cs.Language('system_admin_users_');
   Polymer({
     'is': 'cs-system-admin-users-edit-user-form',
-    behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_users_')],
     properties: {
       user_id: -1,
       user_data: {

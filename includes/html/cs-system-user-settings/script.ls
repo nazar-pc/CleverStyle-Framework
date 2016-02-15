@@ -6,7 +6,7 @@
  */
 L	= cs.Language
 Polymer(
-	'is'		: 'cs-system-user-setings'
+	'is'		: 'cs-system-user-settings'
 	behaviors	: [
 		cs.Polymer.behaviors.cs
 		cs.Polymer.behaviors.Language('system_profile_')

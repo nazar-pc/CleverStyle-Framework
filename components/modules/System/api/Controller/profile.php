@@ -40,7 +40,6 @@ trait profile {
 			throw new ExitException(400);
 		}
 		$Config = Config::instance();
-		$L      = Language::instance();
 		$User   = User::instance();
 		if ($User->guest()) {
 			throw new ExitException(403);
@@ -77,7 +76,7 @@ trait profile {
 				$User->get_id(hash('sha224', $user_data['login'])) !== false
 			)
 		) {
-			throw new ExitException($L->login_occupied, 400);
+			throw new ExitException(Language::instance()->system_admin_users_login_occupied, 400);
 		}
 		if (!$User->set($user_data)) {
 			throw new ExitException(500);

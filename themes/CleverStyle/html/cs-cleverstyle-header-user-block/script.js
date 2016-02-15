@@ -32,7 +32,7 @@
       cs.ui.simple_modal("<cs-system-change-password/>");
     },
     _general_settings: function(){
-      cs.ui.simple_modal("<cs-system-user-setings/>");
+      cs.ui.simple_modal("<cs-system-user-settings/>");
     }
   });
 }).call(this);
