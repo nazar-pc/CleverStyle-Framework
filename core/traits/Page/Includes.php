@@ -455,9 +455,6 @@ trait Includes {
 			'cs',
 			true
 		);
-		if ($User->guest()) {
-			$this->config_internal(get_core_ml_text('rules'), 'cs.rules_text', true);
-		}
 		if ($User->admin()) {
 			$this->config_internal((int)$Config->core['simple_admin_mode'], 'cs.simple_admin_mode', true);
 		}

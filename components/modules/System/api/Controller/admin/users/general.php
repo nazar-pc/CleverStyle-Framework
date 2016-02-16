@@ -31,7 +31,6 @@ trait general {
 				'require_registration_confirmation' => $Config->core['require_registration_confirmation'],
 				'registration_confirmation_time'    => $Config->core['registration_confirmation_time'],
 				'auto_sign_in_after_registration'   => $Config->core['auto_sign_in_after_registration'],
-				'rules'                             => get_core_ml_text('rules'),
 				'show_tooltips'                     => $Config->core['show_tooltips'],
 				'simple_admin_mode'                 => $Config->core['simple_admin_mode'],
 				'applied'                           => $Config->cancel_available()
@@ -63,8 +62,7 @@ trait general {
 			$_POST['allow_user_registration'],
 			$_POST['require_registration_confirmation'],
 			$_POST['registration_confirmation_time'],
-			$_POST['auto_sign_in_after_registration'],
-			$_POST['rules']
+			$_POST['auto_sign_in_after_registration']
 		)
 		) {
 			throw new ExitException(400);
@@ -80,7 +78,6 @@ trait general {
 		$Config->core['require_registration_confirmation'] = (int)(bool)$_POST['require_registration_confirmation'];
 		$Config->core['registration_confirmation_time']    = (int)$_POST['registration_confirmation_time'];
 		$Config->core['auto_sign_in_after_registration']   = (int)(bool)$_POST['auto_sign_in_after_registration'];
-		$Config->core['rules']                             = set_core_ml_text('rules', xap($_POST['rules'], true));
 	}
 	/**
 	 * Save general users settings

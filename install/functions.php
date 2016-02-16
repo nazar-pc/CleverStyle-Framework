@@ -193,7 +193,6 @@ function install_process ($fs, $argv = null) {
 		'auto_sign_in_after_registration'   => 1,
 		'registration_confirmation_time'    => 1,
 		'mail_signature'                    => '',
-		'rules'                             => '',
 		'show_tooltips'                     => 1,
 		'remember_user_ip'                  => 0,
 		'simple_admin_mode'                 => !isset($_POST['mode']) || $_POST['mode'] ? 1 : 0,

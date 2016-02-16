@@ -43,7 +43,6 @@
 	"auto_sign_in_after_registration",
 	"registration_confirmation_time",
 	"mail_signature",
-	"rules",
 	"show_tooltips",
 	"remember_user_ip",
 	"simple_admin_mode",

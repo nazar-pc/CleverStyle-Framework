@@ -486,9 +486,7 @@
 				"auto_sign_in_after_registration"        : "Auto sign in after registration",
 				"auto_sign_in_after_registration_info"   : "For the user convenience - after completion of the registration, user session will be created automatically",
 				"registration_confirmation_time"         : "Time for registration confirmation",
-				"registration_confirmation_time_info"    : "Если в течении указанного времени (в днях) аккаунт не будет подтвержден - он будет удален",
-				"rules"                                  : "Site rules",
-				"rules_info"                             : "Site rules to be displayed at registration"
+				"registration_confirmation_time_info"    : "Если в течении указанного времени (в днях) аккаунт не будет подтвержден - он будет удален"
 			}
 		},
 		"profile_" : {

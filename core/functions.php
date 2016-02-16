@@ -336,10 +336,10 @@ function get_core_ml_text ($item) {
  */
 function set_core_ml_text ($item, $value) {
 	$Config = Config::instance(true);
-	if (!$Config) {
+	if (!$Config || !isset($Config->core[$item])) {
 		return false;
 	}
-	return Text::instance()->set($Config->module('System')->db('texts'), 'System/Config/core', $Config->core[$item], $value);
+	return Text::instance()->set($Config->module('System')->db('texts'), 'System/Config/core', $item, $value);
 }
 
 /**
