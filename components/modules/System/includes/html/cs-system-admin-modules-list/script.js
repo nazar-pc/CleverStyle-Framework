@@ -354,7 +354,7 @@
       module = e.model.module.name;
       meta = e.model.module.meta;
       Promise.all([$.getJSON('api/System/admin/databases'), $.getJSON("api/System/admin/modules/" + module + "/db")]).then(function(arg$){
-        var databases, databases_mapping, form, modal, index, db_name;
+        var databases, databases_mapping, form, modal, db_name, index;
         databases = arg$[0], databases_mapping = arg$[1];
         form = meta ? this$._databases_storages_form(meta, databases, []) : '';
         modal = cs.ui.confirm("<h3>" + L.db_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n" + form, function(){
@@ -367,9 +367,9 @@
             }
           });
         });
-        for (index in databases_mapping) {
-          db_name = databases_mapping[index];
-          modal.querySelector("[name=db[" + db_name + "]]").selected = index;
+        for (db_name in databases_mapping) {
+          index = databases_mapping[db_name];
+          modal.querySelector("[name='db[" + db_name + "]']").selected = index;
         }
       });
     },
@@ -378,7 +378,7 @@
       module = e.model.module.name;
       meta = e.model.module.meta;
       Promise.all([$.getJSON('api/System/admin/storages'), $.getJSON("api/System/admin/modules/" + module + "/storage")]).then(function(arg$){
-        var storages, storages_mapping, form, modal, index, storage_name;
+        var storages, storages_mapping, form, modal, storage_name, index;
         storages = arg$[0], storages_mapping = arg$[1];
         form = meta ? this$._databases_storages_form(meta, [], storages) : '';
         modal = cs.ui.confirm("<h3>" + L.storage_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n" + form, function(){
@@ -391,9 +391,9 @@
             }
           });
         });
-        for (index in storages_mapping) {
-          storage_name = storages_mapping[index];
-          modal.querySelector("[name=storage[" + storage_name + "]]").selected = index;
+        for (storage_name in storages_mapping) {
+          index = storages_mapping[storage_name];
+          modal.querySelector("[name='storage[" + storage_name + "]']").selected = index;
         }
       });
     },

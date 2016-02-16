@@ -353,8 +353,8 @@ Polymer(
 							cs.ui.notify(L.changes_saved, 'success', 5)
 					)
 			)
-			for index, db_name of databases_mapping
-				modal.querySelector("[name=db[#db_name]]").selected = index
+			for db_name, index of databases_mapping
+				modal.querySelector("[name='db[#db_name]']").selected = index
 	_storage_settings : (e) !->
 		module	= e.model.module.name
 		meta	= e.model.module.meta
@@ -376,8 +376,8 @@ Polymer(
 							cs.ui.notify(L.changes_saved, 'success', 5)
 					)
 			)
-			for index, storage_name of storages_mapping
-				modal.querySelector("[name=storage[#storage_name]]").selected = index
+			for storage_name, index of storages_mapping
+				modal.querySelector("[name='storage[#storage_name]']").selected = index
 	_update_modules_list : !->
 		$.ajax(
 			url		: 'api/System/admin/modules'
