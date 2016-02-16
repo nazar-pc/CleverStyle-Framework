@@ -9,7 +9,9 @@
 L	= cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-groups-form'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language('system_admin_groups_')
+	]
 	properties	:
 		group_id	: Number
 		group_title	: ''

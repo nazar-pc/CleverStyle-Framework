@@ -9,13 +9,13 @@
  */
 (function(){
   var L, ADMIN_GROUP_ID, USER_GROUP_ID, BOT_GROUP_ID;
-  L = cs.Language;
+  L = cs.Language('system_admin_groups_');
   ADMIN_GROUP_ID = 1;
   USER_GROUP_ID = 2;
   BOT_GROUP_ID = 3;
   Polymer({
     'is': 'cs-system-admin-groups-list',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_groups_')],
     properties: {
       groups: []
     },

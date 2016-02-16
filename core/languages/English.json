@@ -111,64 +111,11 @@
 	"changes_save_error"	: "Unable to save changes",
 	"changes_canceled"		: "Changes canceled",
 	"action"				: "Action",
-	//Users
-		//Groups
-		"groups"					: "Groups",
-		"group_name"				: "Group name",
-		"group_description"			: "Description",
-		"edit_group_information"	: "Edit group information",
-		"edit_group_permissions"	: "Edit group permissions",
-		"permissions_for_group"		: "Permissions for group %s",
-		"allow"						: "Allow",
-		"deny"						: "Deny",
-		"invert"					: "Invert",
-		"allow_all"					: "Allow all",
-		"deny_all"					: "Deny all",
-		"add_group"					: "Add group",
-		"sure_delete_group"			: "Are you sure you want to delete group %s?",
-		"not_specified"				: "Not specified",
-		"adding_a_group"			: "Adding a group",
-		"editing_of_group"			: "Editing of group %s",
-		//Permissions
-		"permissions"							: "Permissions",
-		"label"									: "Label",
-		"group"									: "Group",
-		"sure_delete_permission"				: "Are you sure you want to delete permission <b>%s</b>?",
-		"add_permission"						: "Add permission",
-		"adding_permission"						: "Adding permission",
-		"editing_permission"					: "Editing of permission %s",
-		//Security
-		"security"						: "Security",
-		"key_expire"					: "Key expires after",
-		"key_expire_info"				: "For some operations temporary keys are created that may contain some attached information, and are used to ensure the safety and/or to store some temporary data. Enter time interval after which the keys will be considered obsolete and invalid.",
-		"gravatar_support"				: "Gravatar support",
-		"gravatar_support_info"			: "Will load user's avatars from Gravatar if not specified in user's profile explicitly",
-		//Mail
-		"mail"						: "Mail",
-		"smtp"						: "SMTP",
-		"smtp_info"					: "Use SMTP for mail sending",
-		"smtp_host"					: "SMTP host",
-		"smtp_host_info"			: "SMTP server address, you can specify main and reserve servers separated by ;",
-		"smtp_port"					: "SMTP port",
-		"smtp_port_info"			: "Default is 25 for connection without encryption, and 465 for SSL",
-		"smtp_secure"				: "SMTP security",
-		"smtp_secure_info"			: "Allows you to use encryption when sending mail",
-		"smtp_auth"					: "SMTP authentication",
-		"smtp_user"					: "SMTP user",
-		"smtp_password"				: "SMTP password",
-		"mail_from"					: "Sender email",
-		"mail_from_info"			: "To send the mail via SMTP email should correspond to the account",
-		"mail_from_name"			: "Sender email",
-		"mail_signature"			: "Mail signature",
-		"mail_signature_info"		: "Signature will be appended to every sent email",
-		"test_email_sending"		: "Test email sending",
-		"test_email_sending_failed"	: "Email sending failed, check your configuration",
 
 	"system_" : {
 		"admin_"   : {
 			"components"                            : "Components",
 			"general"                               : "General",
-			"users"                                 : "Users",
 			"for_complete_feature_set"              : "For complete feature set %s packages or functionalities must be installed and enabled",
 			"force_enable_not_recommended"          : "Force enabling (not recommended)",
 			"force_disable_not_recommended"         : "Force disabling (not recommended)",
@@ -251,7 +198,6 @@
 				"sure_to_delete_block"               : "Are you sure want to remove block %s?",
 				"edit_permissions"                   : "Edit permissions",
 				"permissions_for_block"              : "Permissions for block %s",
-				"type_username_or_email_press_enter" : "Enter username of email, press Enter",
 				"adding_a_block"                     : "Block addition",
 				"editing_a_block"                    : "Editing of block %s"
 			},
@@ -290,6 +236,19 @@
 				"addition_of_db"       : "Addition of DB",
 				"editing_the_database" : "Editing the DB %s"
 			},
+			"groups"                                : "Groups",
+			"groups_"                               : {
+				"group_name"             : "Group name",
+				"group_description"      : "Description",
+				"edit_group_information" : "Edit group information",
+				"edit_group_permissions" : "Edit group permissions",
+				"permissions_for_group"  : "Permissions for group %s",
+				"add_group"              : "Add group",
+				"sure_delete_group"      : "Are you sure you want to delete group %s?",
+				"not_specified"          : "Not specified",
+				"adding_a_group"         : "Adding a group",
+				"editing_of_group"       : "Editing of group %s"
+			},
 			"languages"                             : "Languages",
 			"languages_"                            : {
 				"default_language"      : "Default language",
@@ -298,6 +257,27 @@
 				"active_languages_info" : "Allows allow the use of one language, and prohibit the use of others. To select multiple languages use the the Ctrl key.",
 				"multilingual"          : "Multilingual",
 				"multilingual_info"     : "Allows to change the language of interface and content on this site, activates all multilingual features of site"
+			},
+			"mail"                                  : "Mail",
+			"mail_"                                 : {
+				"smtp"                      : "SMTP",
+				"smtp_info"                 : "Use SMTP for mail sending",
+				"smtp_host"                 : "SMTP host",
+				"smtp_host_info"            : "SMTP server address, you can specify main and reserve servers separated by ;",
+				"smtp_port"                 : "SMTP port",
+				"smtp_port_info"            : "Default is 25 for connection without encryption, and 465 for SSL",
+				"smtp_secure"               : "SMTP security",
+				"smtp_secure_info"          : "Allows you to use encryption when sending mail",
+				"smtp_auth"                 : "SMTP authentication",
+				"smtp_user"                 : "SMTP user",
+				"smtp_password"             : "SMTP password",
+				"mail_from"                 : "Sender email",
+				"mail_from_info"            : "To send the mail via SMTP email should correspond to the account",
+				"mail_from_name"            : "Sender email",
+				"mail_signature"            : "Mail signature",
+				"mail_signature_info"       : "Signature will be appended to every sent email",
+				"test_email_sending"        : "Test email sending",
+				"test_email_sending_failed" : "Email sending failed, check your configuration"
 			},
 			"modules"                               : "Modules",
 			"modules_"                              : {
@@ -371,8 +351,24 @@
 				"clean_settings_cache"       : "Clear settings cache",
 				"clean_scripts_styles_cache" : "Clear the cache of scripts and styles"
 			},
+			"permissions"                           : "Permissions",
 			"permissions_"                          : {
-				"inherited" : "Inherited"
+				"groups"                                : "Groups",
+				"users"                                 : "Users",
+				"label"                     : "Label",
+				"group"                     : "Group",
+				"sure_delete_permission"    : "Are you sure you want to delete permission <b>%s</b>?",
+				"add_permission"            : "Add permission",
+				"adding_permission"         : "Adding permission",
+				"editing_permission"        : "Editing of permission %s",
+				"allow"                     : "Allow",
+				"deny"                      : "Deny",
+				"invert"                    : "Invert",
+				"allow_all"                 : "Allow all",
+				"deny_all"                  : "Deny all",
+				"inherited"                 : "Inherited",
+				"changing_settings_warning" : "ATTENTION: changing settings can break site",
+				"type_username_or_email_press_enter" : "Enter username of email, press Enter"
 			},
 			"plugins"                               : "Plugins",
 			"plugins_"                              : {
@@ -392,6 +388,13 @@
 				"completely_remove_plugin"                : "Remove plugin %s completely?",
 				"complete_plugin_removal"                 : "Complete plugin removal",
 				"license"                                 : "License"
+			},
+			"security_"                             : {
+				"security"              : "Security",
+				"key_expire"            : "Key expires after",
+				"key_expire_info"       : "For some operations temporary keys are created that may contain some attached information, and are used to ensure the safety and/or to store some temporary data. Enter time interval after which the keys will be considered obsolete and invalid.",
+				"gravatar_support"      : "Gravatar support",
+				"gravatar_support_info" : "Will load user's avatars from Gravatar if not specified in user's profile explicitly"
 			},
 			"site_info"                             : "Site info",
 			"site_info_"                            : {
@@ -443,6 +446,7 @@
 				"simple_admin_mode"      : "Simple mode of administration",
 				"simple_admin_mode_info" : "Some functionality may be too complicated to set up, and even excessive for a beginner administrator. This option allows you to hide some of the settings, making system management easier and more intuitive."
 			},
+			"users"                                 : "Users",
 			"users_"                                : {
 				"search"                      : "Search",
 				"show_columns"                : "Show columns",

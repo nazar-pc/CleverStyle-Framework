@@ -9,10 +9,10 @@
  */
 (function(){
   var L;
-  L = cs.Language;
+  L = cs.Language('system_admin_permissions_');
   Polymer({
     'is': 'cs-system-admin-permissions-list',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_permissions_')],
     properties: {
       permissions: [],
       permissions_loaded: false

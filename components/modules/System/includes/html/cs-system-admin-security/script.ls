@@ -6,11 +6,10 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L = cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-security'
 	behaviors	: [
-		cs.Polymer.behaviors.Language
+		cs.Polymer.behaviors.Language('system_admin_security_')
 		cs.Polymer.behaviors.admin.System.settings
 	]
 	properties	:

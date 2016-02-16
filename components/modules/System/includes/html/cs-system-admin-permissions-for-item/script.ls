@@ -9,7 +9,9 @@
 L	= cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-permissions-for-item'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language('system_admin_permissions_')
+	]
 	properties	:
 		group		: ''
 		label		: ''
@@ -39,6 +41,7 @@ Polymer(
 					@set('users', users)
 			)
 		$shadowRoot	= $(@shadowRoot)
+		$(@$.form).submit -> false
 		$search		= $(@$.search)
 		$search
 			.keyup (event) !~>

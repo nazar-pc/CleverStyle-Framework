@@ -9,7 +9,7 @@
 Polymer(
 	'is'		: 'cs-system-admin-users-general'
 	behaviors	: [
-		cs.Polymer.behaviors.Language('users_general_')
+		cs.Polymer.behaviors.Language('system_admin_users_general_')
 		cs.Polymer.behaviors.admin.System.settings
 	]
 	properties	:

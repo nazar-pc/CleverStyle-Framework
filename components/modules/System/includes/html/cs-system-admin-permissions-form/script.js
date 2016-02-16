@@ -12,7 +12,7 @@
   L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-permissions-form',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_permissions_')],
     properties: {
       permission_id: Number,
       group: '',

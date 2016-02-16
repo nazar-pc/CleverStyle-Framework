@@ -9,7 +9,7 @@
  */
 (function(){
   var L;
-  L = cs.Language;
+  L = cs.Language('system_admin_storages_');
   Polymer({
     'is': 'cs-system-admin-storages-list',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_storages_')],

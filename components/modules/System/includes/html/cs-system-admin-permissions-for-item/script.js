@@ -12,7 +12,7 @@
   L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-permissions-for-item',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_permissions_')],
     properties: {
       group: '',
       label: '',
@@ -49,6 +49,9 @@
         });
       });
       $shadowRoot = $(this.shadowRoot);
+      $(this.$.form).submit(function(){
+        return false;
+      });
       $search = $(this.$.search);
       $search.keyup(function(event){
         var text;
