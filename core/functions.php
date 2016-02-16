@@ -29,27 +29,26 @@ spl_autoload_register(function ($class) {
 	if (isset($cache[$class])) {
 		return require_once $cache[$class];
 	}
-	$prepared_class_name	= ltrim($class, '\\');
-	if (substr($prepared_class_name, 0, 3) == 'cs\\') {
-		$prepared_class_name	= substr($prepared_class_name, 3);
+	$prepared_class_name = ltrim($class, '\\');
+	if (strpos($prepared_class_name, 'cs\\') === 0) {
+		$prepared_class_name = substr($prepared_class_name, 3);
 	}
-	$prepared_class_name	= explode('\\', $prepared_class_name);
-	$namespace				= count($prepared_class_name) > 1 ? implode('/', array_slice($prepared_class_name, 0, -1)) : '';
-	$class_name				= array_pop($prepared_class_name);
+	$prepared_class_name = explode('\\', $prepared_class_name);
+	$namespace           = count($prepared_class_name) > 1 ? implode('/', array_slice($prepared_class_name, 0, -1)) : '';
+	$class_name          = array_pop($prepared_class_name);
 	/**
 	 * Try to load classes from different places. If not found in one place - try in another.
 	 */
 	if (
-		_require_once($file = DIR."/core/classes/$namespace/$class_name.php", false) ||		//Core classes
-		_require_once($file = DIR."/core/thirdparty/$namespace/$class_name.php", false) ||	//Third party classes
-		_require_once($file = DIR."/core/traits/$namespace/$class_name.php", false) ||		//Core traits
-		_require_once($file = ENGINES."/$namespace/$class_name.php", false) ||				//Core engines
-		_require_once($file = MODULES."/../$namespace/$class_name.php", false)				//Classes in modules and plugins
+		_require_once($file = DIR."/core/classes/$namespace/$class_name.php", false) ||    //Core classes
+		_require_once($file = DIR."/core/thirdparty/$namespace/$class_name.php", false) || //Third party classes
+		_require_once($file = DIR."/core/traits/$namespace/$class_name.php", false) ||     //Core traits
+		_require_once($file = ENGINES."/$namespace/$class_name.php", false) ||             //Core engines
+		_require_once($file = MODULES."/../$namespace/$class_name.php", false)             //Classes in modules and plugins
 	) {
 		$cache[$class] = realpath($file);
-		if (!is_dir(CACHE.'/classes')) {
-			@mkdir(CACHE.'/classes', 0770, true);
-		}
+		/** @noinspection MkdirRaceConditionInspection */
+		@mkdir(CACHE.'/classes', 0770, true);
 		file_put_json(CACHE.'/classes/autoload', $cache);
 		return true;
 	}
