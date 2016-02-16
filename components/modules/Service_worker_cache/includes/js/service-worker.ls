@@ -12,7 +12,6 @@ addEventListener('fetch', (event) !->
 	event.respondWith(
 		caches.match(event.request).then (response) ->
 			if response
-				console.log 'in cache'
 				response
 			else
 				request_copy = event.request.clone()

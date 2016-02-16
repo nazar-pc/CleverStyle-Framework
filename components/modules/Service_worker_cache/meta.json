@@ -1,7 +1,7 @@
 {
 	"package"     : "Service_worker_cache",
 	"category"    : "modules",
-	"version"     : "0.1.0+build-1",
+	"version"     : "0.1.1+build-2",
 	"description" : "Uses Service Worker to cache requests to static assets like CSS/JS/HTML/fonts/images to improve subsequent page loads, especially on bad internet connection",
 	"author"      : "Nazar Mokrynskyi",
 	"website"     : "cleverstyle.org/cms",

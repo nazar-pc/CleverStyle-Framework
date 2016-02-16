@@ -26,7 +26,6 @@ Polymer(
 		]).then ([groups, user_groups_ids]) !~>
 			user_groups		= []
 			other_groups	= []
-			console.log user_groups_ids
 			for group, group of groups
 				if group.id ~= BOT_GROUP_ID
 					continue
@@ -57,7 +56,6 @@ Polymer(
 				$(@$['other-groups']).children('div:not(:first)').removeClass('cs-block-success cs-text-success').addClass('cs-block-warning cs-text-warning')
 			)
 	save : !->
-		console.log($(@$['user-groups']).children('div:not(:first)').map(-> @group).get())
 		$.ajax(
 			url		: "api/System/admin/users/#{@user}/groups"
 			data	:

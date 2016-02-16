@@ -14,7 +14,6 @@
     event.respondWith(caches.match(event.request).then(function(response){
       var request_copy;
       if (response) {
-        console.log('in cache');
         return response;
       } else {
         request_copy = event.request.clone();
