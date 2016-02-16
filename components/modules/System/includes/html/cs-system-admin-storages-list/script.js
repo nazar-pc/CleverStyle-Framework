@@ -42,7 +42,7 @@
       storage_model = this.$.storages_list.modelForElement(e.target);
       storage = e.model.storage || storage_model.storage;
       name = storage.host + '/' + storage.connection;
-      cs.ui.confirm(L.sure_to_delete + " " + name + "?", function(){
+      cs.ui.confirm(L.sure_to_delete(name), function(){
         $.ajax({
           url: 'api/System/admin/storages/' + storage.index,
           type: 'delete',

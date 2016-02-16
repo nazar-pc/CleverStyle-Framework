@@ -56,7 +56,7 @@ Polymer(
 		mirror			= e.model.mirror
 		name			= @_database_name(database, mirror)
 		cs.ui.confirm(
-			"#{L.sure_to_delete} #name?"
+			L.sure_to_delete(name)
 			!~>
 				$.ajax(
 					url		:

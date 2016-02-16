@@ -7,7 +7,7 @@
  */
 (function(){
   var L, x$, slice$ = [].slice;
-  L = cs.Language;
+  L = cs.Language('system_profile_');
   /**
    * Adds method for symbol replacing at specified position
    *
@@ -152,8 +152,6 @@
    * @param {Function} error
    */
   cs.change_password = function(current_password, new_password, success, error){
-    var L;
-    L = cs.Language('system_profile_');
     if (!current_password) {
       cs.ui.alert(L.please_type_current_password);
       return;

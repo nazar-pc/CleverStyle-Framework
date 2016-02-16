@@ -26,7 +26,7 @@ Polymer(
 	_smtp_auth : (smtp, smtp_auth) ->
 		smtp ~= 1 && smtp_auth ~= 1
 	_test_email : !->
-		email = prompt(L.email)
+		email = prompt('Email')
 		if email
 			$.ajax(
 				url		: 'api/System/admin/mail'

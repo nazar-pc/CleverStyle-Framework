@@ -11,7 +11,7 @@ namespace cs\modules\System;
 use
 	cs\Config,
 	cs\Event,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Mail,
 	cs\Page,
 	cs\Route,
@@ -39,7 +39,7 @@ class Controller {
 	}
 	static function profile_registration_confirmation () {
 		$Config = Config::instance();
-		$L      = Language::instance();
+		$L      = new Prefix('system_profile_');
 		$Page   = Page::instance();
 		$Route  = Route::instance();
 		$User   = User::instance();
@@ -86,7 +86,7 @@ class Controller {
 	}
 	static function profile_restore_password_confirmation () {
 		$Config = Config::instance();
-		$L      = Language::instance();
+		$L      = new Prefix('system_profile_');
 		$Page   = Page::instance();
 		$Route  = Route::instance();
 		$User   = User::instance();
@@ -125,8 +125,8 @@ class Controller {
 			_setcookie('restore_password_confirm', 1, 0, true);
 			_header("Location: {$Config->base_url()}/System/profile/restore_password_confirmation");
 		} else {
-			$Page->title($L->sending_reg_mail_error_title);
-			$Page->warning($L->sending_reg_mail_error);
+			$Page->title($L->sending_restore_password_mail_error_title);
+			$Page->warning($L->sending_restore_password_mail_error);
 		}
 	}
 	static function robots_txt () {

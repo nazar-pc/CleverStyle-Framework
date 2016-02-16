@@ -43,7 +43,7 @@ trait user_ {
 	}
 	static function user_registration () {
 		$Config = Config::instance();
-		$L      = Language::instance();
+		$L      = new Prefix('system_profile_');
 		$Page   = Page::instance();
 		$User   = User::instance();
 		if (!isset($_POST['email'])) {
@@ -96,7 +96,7 @@ trait user_ {
 	}
 	static function user_restore_password () {
 		$Config = Config::instance();
-		$L      = Language::instance();
+		$L      = new Prefix('system_profile_');
 		$Page   = Page::instance();
 		$User   = User::instance();
 		if (!isset($_POST['email'])) {

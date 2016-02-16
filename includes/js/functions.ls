@@ -4,7 +4,7 @@
  * @copyright	Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-L = cs.Language
+L = cs.Language('system_profile_')
 /**
  * Adds method for symbol replacing at specified position
  *
@@ -119,7 +119,6 @@ cs.restore_password = (email) !->
  * @param {Function} error
  */
 cs.change_password = (current_password, new_password, success, error) !->
-	L = cs.Language('system_profile_')
 	if !current_password
 		cs.ui.alert(L.please_type_current_password)
 		return

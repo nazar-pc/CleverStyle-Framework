@@ -67,7 +67,7 @@
       database = e.model.database || database_model.database;
       mirror = e.model.mirror;
       name = this._database_name(database, mirror);
-      cs.ui.confirm(L.sure_to_delete + " " + name + "?", function(){
+      cs.ui.confirm(L.sure_to_delete(name), function(){
         $.ajax({
           url: 'api/System/admin/databases/' + database.index + (mirror ? '/' + mirror.index : ''),
           type: 'delete',

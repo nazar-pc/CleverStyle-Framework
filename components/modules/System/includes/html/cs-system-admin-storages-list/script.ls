@@ -41,7 +41,7 @@ Polymer(
 		storage			= e.model.storage || storage_model.storage
 		name			= storage.host + '/' + storage.connection
 		cs.ui.confirm(
-			"#{L.sure_to_delete} #name?"
+			L.sure_to_delete(name)
 			!~>
 				$.ajax(
 					url		: 'api/System/admin/storages/' + storage.index

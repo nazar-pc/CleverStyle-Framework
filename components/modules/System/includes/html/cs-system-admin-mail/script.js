@@ -32,7 +32,7 @@
     },
     _test_email: function(){
       var email;
-      email = prompt(L.email);
+      email = prompt('Email');
       if (email) {
         $.ajax({
           url: 'api/System/admin/mail',
