@@ -1,50 +1,36 @@
 {
 	//Service information
-	"clanguage_en"       : "russian",
+	"clanguage_en"     : "russian",
 	//ISO 639-1
-	"clang"              : "ru",
+	"clang"            : "ru",
 	//ISO 3166-1 Alpha-2
-	"cregion"            : "ru",
-	"content_language"   : "ru",
+	"cregion"          : "ru",
+	"content_language" : "ru",
 	//Regional parameters, syntax of PHP function date()
-	"_datetime_long"     : "l, d F Y, H:i",
-	"_datetime"          : "d.m.Y H:i",
-	"_date"              : "d.m.Y",
-	"_time"              : "H:i",
-	//Common
-	"add"                : "Добавить",
-	"delete"             : "Удалить",
-	"edit"               : "Редактировать",
-	"yes"                : "Да",
-	"no"                 : "Нет",
-	"none"               : "Нет",
-	"done"               : "Готово",
-	"time"               : "Время",
-	"empty"              : "Пусто",
-	"System"             : "Система",
-	"enable"             : "Включить",
-	"disable"            : "Отключить",
-	"enabled"            : "Включен",
-	"remove"             : "Удалить",
-	"off"                : "Выкл.",
-	"on"                 : "Вкл.",
-	"0"                  : "Выкл.",
-	"1"                  : "Вкл.",
-	"seconds"            : "секунд",
-	"minutes"            : "минут",
-	"hours"              : "часов",
-	"days"               : "дней",
-	"months"             : "месяцев",
-	"years"              : "лет",
-	"TB"                 : "ТБ",
-	"GB"                 : "ГБ",
-	"MB"                 : "МБ",
-	"KB"                 : "КБ",
-	"Bytes"              : "Байт",
-	//Administration
-	"system_"            : {
-		"home"     : "Главная",
-		"admin_"   : {
+	"_datetime_long"   : "l, d F Y, H:i",
+	"_datetime"        : "d.m.Y H:i",
+	"_date"            : "d.m.Y",
+	"_time"            : "H:i",
+	// System
+	"System"           : "Система",
+	"system_"          : {
+		"time_"     : {
+			"seconds" : "секунд",
+			"minutes" : "минут",
+			"hours"   : "часов",
+			"days"    : "дней",
+			"months"  : "месяцев",
+			"years"   : "лет"
+		},
+		"filesize_" : {
+			"TiB"   : "ТиБ",
+			"GiB"   : "ГиБ",
+			"MiB"   : "МиБ",
+			"KiB"   : "КиБ",
+			"Bytes" : "Байт"
+		},
+		"home"      : "Главная",
+		"admin_"    : {
 			"administration"                        : "Администрирование",
 			"components"                            : "Компоненты",
 			"general"                               : "Общие",
@@ -71,6 +57,8 @@
 			"changes_saved"                         : "Изменения сохранены",
 			"cancel"                                : "Отменить",
 			"cancel_info"                           : "Отменить примененные изменения",
+			"off"                                   : "Выкл.",
+			"on"                                    : "Вкл.",
 			"about_server"                          : "О сервере",
 			"about_server_"                         : {
 				"information_about_system" : "Информация о системе",
@@ -97,7 +85,9 @@
 				"php_extensions"           : "Расширения PHP",
 				"openssl_warning"          : "ПРЕДУПРЕЖДЕНИЕ: библиотека openssl не найдена, сайт не будет работать с максимальным уровнем безопасности, настоятельно рекомендуется установить данную библиотеку.",
 				"cache_engine"             : "Движок кэша",
-				"license"                  : "Лицензия"
+				"license"                  : "Лицензия",
+				"yes"                      : "Да",
+				"no"                       : "Нет"
 			},
 			"appearance"                            : "Внешний вид",
 			"appearance_"                           : {
@@ -147,7 +137,11 @@
 				"adding_a_block"        : "Добавление блока",
 				"editing_a_block"       : "Редактирование блока %s",
 				"save"                  : "Сохранить",
-				"changes_saved"         : "Изменения сохранены"
+				"changes_saved"         : "Изменения сохранены",
+				"delete"                : "Удалить",
+				"edit"                  : "Редактировать",
+				"yes"                   : "Да",
+				"no"                    : "Нет"
 			},
 			"databases"                             : "Базы данных",
 			"databases_"                            : {
@@ -188,7 +182,10 @@
 				"sure_to_delete"       : "Вы уверены, что хотите удалить %s?",
 				"action"               : "Действие",
 				"save"                 : "Сохранить",
-				"changes_saved"        : "Изменения сохранены"
+				"changes_saved"        : "Изменения сохранены",
+				"add"                  : "Добавить",
+				"delete"               : "Удалить",
+				"edit"                 : "Редактировать"
 			},
 			"groups"                                : "Группы",
 			"groups_"                               : {
@@ -204,7 +201,8 @@
 				"editing_of_group"       : "Редактирование группы %s",
 				"action"                 : "Действие",
 				"save"                   : "Сохранить",
-				"changes_saved"          : "Изменения сохранены"
+				"changes_saved"          : "Изменения сохранены",
+				"delete"                 : "Удалить"
 			},
 			"languages"                             : "Языки",
 			"languages_"                            : {
@@ -234,7 +232,8 @@
 				"mail_signature"            : "Подпись в письме",
 				"mail_signature_info"       : "Подпись будет добавляться в конец каждого отправленного email",
 				"test_email_sending"        : "Проверка отправки email",
-				"test_email_sending_failed" : "Отправка email завершилась ошибкой, проверьте вашу конфигурацию"
+				"test_email_sending_failed" : "Отправка email завершилась ошибкой, проверьте вашу конфигурацию",
+				"done"                      : "Готово"
 			},
 			"modules"                               : "Модули",
 			"modules_"                              : {
@@ -293,11 +292,17 @@
 				"core_storage"                             : "Хранилище ядра",
 				"action"                                   : "Действие",
 				"state"                                    : "Состояние",
+				"enable"                                   : "Включить",
+				"disable"                                  : "Отключить",
+				"enabled"                                  : "Включен",
 				"disabled"                                 : "Отключен",
 				"install"                                  : "Установить",
 				"uninstall"                                : "Удалить",
 				"uninstalled"                              : "Удален",
-				"changes_saved"                            : "Изменения сохранены"
+				"none"                                     : "Нет",
+				"changes_saved"                            : "Изменения сохранены",
+				"yes"                                      : "Да",
+				"no"                                       : "Нет"
 			},
 			"optimization"                          : "Оптимизация",
 			"optimization_"                         : {
@@ -313,7 +318,8 @@
 				"update_ratio_info"          : "Значение указывается в процентах от максимального значения.<br>Некоторые опции имеют граничные временные пределы, например, время сессии авторизации пользователя. Чтобы не обновлять её при каждой загрузке страницы и используется коэффициент обновления, который снижает нагрузку на систему.<br>К примеру, время сессии стоит, 4 дня, а коэффициент обновления 0.75 - то если пользователь зайдёт на сайт через 1-3 дня - сессия не обновится, а если через позже 3 дней, но раньше 4 - сессия обновится.<br>Может использоваться не только для временных пределов, но и других целей.<br>Особенно полезная опция при большой посещаемости.",
 				"partial_cache_cleaning"     : "Частичная очистка кэша",
 				"clean_settings_cache"       : "Очистить кэш параметров",
-				"clean_scripts_styles_cache" : "Очистить кэш скриптов и стилей"
+				"clean_scripts_styles_cache" : "Очистить кэш скриптов и стилей",
+				"done"                       : "Готово"
 			},
 			"permissions"                           : "Разрешения",
 			"permissions_"                          : {
@@ -335,7 +341,9 @@
 				"type_username_or_email_press_enter" : "Введите имя пользователя или email, нажмите Enter",
 				"action"                             : "Действие",
 				"save"                               : "Сохранить",
-				"changes_saved"                      : "Изменения сохранены"
+				"changes_saved"                      : "Изменения сохранены",
+				"delete"                             : "Удалить",
+				"edit"                               : "Редактировать"
 			},
 			"plugins"                               : "Плагины",
 			"plugins_"                              : {
@@ -357,8 +365,14 @@
 				"license"                                 : "Лицензия",
 				"action"                                  : "Действие",
 				"state"                                   : "Состояние",
+				"enable"                                  : "Включить",
+				"disable"                                 : "Отключить",
+				"enabled"                                 : "Включен",
 				"disabled"                                : "Отключен",
-				"changes_saved"                           : "Изменения сохранены"
+				"none"                                    : "Нет",
+				"changes_saved"                           : "Изменения сохранены",
+				"yes"                                     : "Да",
+				"no"                                      : "Нет"
 			},
 			"security"                              : "Безопасность",
 			"security_"                             : {
@@ -405,7 +419,9 @@
 				"sure_to_delete"          : "Вы уверены, что хотите удалить %s?",
 				"action"                  : "Действие",
 				"save"                    : "Сохранить",
-				"changes_saved"           : "Изменения сохранены"
+				"changes_saved"           : "Изменения сохранены",
+				"delete"                  : "Удалить",
+				"edit"                    : "Редактировать"
 			},
 			"system"                                : "Система",
 			"system_"                               : {
@@ -507,7 +523,7 @@
 				"action"                                 : "Действие"
 			}
 		},
-		"profile_" : {
+		"profile_"  : {
 			"hello"                                     : "Здравствуйте, %s!",
 			"guest"                                     : "Гость",
 			"sign_in"                                   : "Войти",
@@ -577,7 +593,7 @@
 			"system_default"                            : "По-умолчанию в системе"
 		}
 	},
-	"l_"                 : {
+	"l_"               : {
 		"January"   : "Января",
 		"February"  : "Февраля",
 		"March"     : "Марта",

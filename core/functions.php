@@ -14,6 +14,7 @@ use
 	cs\Config,
 	cs\Index,
 	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Text,
 	cs\User;
@@ -253,20 +254,20 @@ function format_filesize ($size, $round = false) {
 	if (!is_numeric($size)) {
 		return $size;
 	}
-	$L		= Language::instance();
-	$unit	= '';
-	if($size >= 1099511627776) {
+	$L    = new Prefix('system_filesize_');
+	$unit = '';
+	if ($size >= 1099511627776) {
 		$size /= 1099511627776;
-		$unit = " $L->TB";
-	} elseif($size >= 1073741824) {
+		$unit = " $L->TiB";
+	} elseif ($size >= 1073741824) {
 		$size /= 1073741824;
-		$unit = " $L->GB";
+		$unit = " $L->GiB";
 	} elseif ($size >= 1048576) {
 		$size /= 1048576;
-		$unit = " $L->MB";
+		$unit = " $L->MiB";
 	} elseif ($size >= 1024) {
 		$size /= 1024;
-		$unit = " $L->KB";
+		$unit = " $L->KiB";
 	} else {
 		$size = "$size $L->Bytes";
 	}

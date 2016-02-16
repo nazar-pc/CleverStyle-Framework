@@ -5,12 +5,12 @@ dom-module#cs-system-admin-users-general
 		form.cs-text-center(is="cs-form")
 			+input("session_expire", null, "number", 1)
 			= ' '
-			[[L.seconds]]
+			[[L.system_time_seconds]]
 			+input("sign_in_attempts_block_count", null, "number")
 			+input("sign_in_attempts_block_time", "equal(settings.sign_in_attempts_block_count, 0)", "number", 1)
 			span(hidden="[[equal(settings.sign_in_attempts_block_count, 0)]]")
 				= ' '
-				[[L.seconds]]
+				[[L.system_time_seconds]]
 			+on-off-switcher("remember_user_ip")
 			+input("password_min_length", null, "number", 4)
 			+input("password_min_strength", null, "number", 0, 7)
@@ -19,7 +19,7 @@ dom-module#cs-system-admin-users-general
 			+input("registration_confirmation_time", "!registration_with_confirmation", "number", 1)
 			span(hidden="[[!registration_with_confirmation]]")
 				= ' '
-				[[L.days]]
+				[[L.system_time_days]]
 			+on-off-switcher("auto_sign_in_after_registration", "!registration_with_confirmation")
 			+footer-buttons
 	script(src="script.js")

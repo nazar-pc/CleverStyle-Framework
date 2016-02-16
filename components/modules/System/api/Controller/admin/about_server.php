@@ -11,7 +11,7 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Core,
 	cs\DB,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page;
 
 trait about_server {
@@ -20,7 +20,7 @@ trait about_server {
 	 */
 	static function admin_about_server_get () {
 		$Core = Core::instance();
-		$L    = Language::instance();
+		$L    = new Prefix('system_filesize_');
 		$hhvm = defined('HHVM_VERSION');
 		Page::instance()->json(
 			[
@@ -28,7 +28,7 @@ trait about_server {
 				'server_type'      => static::admin_about_server_get_server_api(),
 				'available_ram'    => $hhvm ? '' : str_replace(
 					['K', 'M', 'G'],
-					[" $L->KB", " $L->MB", " $L->GB"],
+					[" $L->KiB", " $L->MiB", " $L->GiB"],
 					ini_get('memory_limit')
 				),
 				'php_extensions'   => [
@@ -56,14 +56,14 @@ trait about_server {
 					'upload_size_limit'      => format_filesize(
 						str_replace(
 							['K', 'M', 'G'],
-							[" $L->KB", " $L->MB", " $L->GB"],
+							[" $L->KiB", " $L->MiB", " $L->GiB"],
 							ini_get('upload_max_filesize')
 						)
 					),
 					'post_max_size'          => format_filesize(
 						str_replace(
 							['K', 'M', 'G'],
-							[" $L->KB", " $L->MB", " $L->GB"],
+							[" $L->KiB", " $L->MiB", " $L->GiB"],
 							ini_get('post_max_size')
 						)
 					),

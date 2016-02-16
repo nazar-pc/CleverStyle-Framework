@@ -5,7 +5,7 @@ dom-module#cs-system-admin-security
 		form.cs-text-center(is="cs-form")
 			+input("key_expire", null, "number", 1)
 			= ' '
-			[[L.seconds]]
+			[[L.system_time_seconds]]
 			+on-off-switcher("gravatar_support")
 			+footer-buttons
 	script(src="script.js")

@@ -427,17 +427,17 @@ class Language implements JsonSerializable {
 		} else {
 			switch ($type) {
 				case 's':
-					return "$in $this->seconds";
+					return "$in $this->system_time_seconds";
 				case 'm':
-					return "$in $this->minutes";
+					return "$in $this->system_time_minutes";
 				case 'h':
-					return "$in $this->hours";
+					return "$in $this->system_time_hours";
 				case 'd':
-					return "$in $this->days";
+					return "$in $this->system_time_days";
 				case 'M':
-					return "$in $this->months";
+					return "$in $this->system_time_months";
 				case 'y':
-					return "$in $this->years";
+					return "$in $this->system_time_years";
 			}
 		}
 		return $in;

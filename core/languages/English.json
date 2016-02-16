@@ -1,50 +1,36 @@
 {
 	//Service information
-	"clanguage_en"       : "english",
+	"clanguage_en"     : "english",
 	//ISO 639-1
-	"clang"              : "en",
+	"clang"            : "en",
 	//ISO 3166-1 Alpha-2
-	"cregion"            : "us",
-	"content_language"   : "en",
+	"cregion"          : "us",
+	"content_language" : "en",
 	//Regional parameters, syntax of PHP function date()
-	"_datetime_long"     : "l, d F Y, h:i a",
-	"_datetime"          : "m.d.Y h:i a",
-	"_date"              : "m.d.Y",
-	"_time"              : "h:i a",
-	//Common
-	"add"                : "Add",
-	"delete"             : "Delete",
-	"edit"               : "Edit",
-	"yes"                : "Yes",
-	"no"                 : "No",
-	"none"               : "None",
-	"done"               : "Done",
-	"time"               : "Time",
-	"empty"              : "Empty",
-	"System"             : "System",
-	"enable"             : "Enable",
-	"disable"            : "Disable",
-	"enabled"            : "Enabled",
-	"remove"             : "Remove",
-	"off"                : "Off",
-	"on"                 : "On",
-	"0"                  : "Off",
-	"1"                  : "On",
-	"seconds"            : "seconds",
-	"minutes"            : "minutes",
-	"hours"              : "hours",
-	"days"               : "days",
-	"months"             : "months",
-	"years"              : "years",
-	"TB"                 : "TB",
-	"GB"                 : "GB",
-	"MB"                 : "MB",
-	"KB"                 : "KB",
-	"Bytes"              : "Bytes",
-	//Administration
-	"system_"            : {
-		"home"     : "Home",
-		"admin_"   : {
+	"_datetime_long"   : "l, d F Y, h:i a",
+	"_datetime"        : "m.d.Y h:i a",
+	"_date"            : "m.d.Y",
+	"_time"            : "h:i a",
+	// System
+	"System"           : "System",
+	"system_"          : {
+		"time_"     : {
+			"seconds" : "seconds",
+			"minutes" : "minutes",
+			"hours"   : "hours",
+			"days"    : "days",
+			"months"  : "months",
+			"years"   : "years"
+		},
+		"filesize_" : {
+			"TiB"   : "TiB",
+			"GiB"   : "GiB",
+			"MiB"   : "MiB",
+			"KiB"   : "KiB",
+			"Bytes" : "Bytes"
+		},
+		"home"      : "Home",
+		"admin_"    : {
 			"administration"                        : "Administration",
 			"components"                            : "Components",
 			"general"                               : "General",
@@ -71,6 +57,8 @@
 			"changes_saved"                         : "Changes saved",
 			"cancel"                                : "Cancel",
 			"cancel_info"                           : "Cancel applied changes",
+			"off"                                   : "Off",
+			"on"                                    : "On",
 			"about_server"                          : "About server",
 			"about_server_"                         : {
 				"information_about_system" : "Information about system",
@@ -97,7 +85,9 @@
 				"php_extensions"           : "PHP extensions",
 				"openssl_warning"          : "WARNING: library OpenSSL not found, the site will not work with the maximum level of security, strongly recommended to install this library.",
 				"cache_engine"             : "Cache engine",
-				"license"                  : "License"
+				"license"                  : "License",
+				"yes"                      : "Yes",
+				"no"                       : "No"
 			},
 			"appearance"                            : "Appearance",
 			"appearance_"                           : {
@@ -147,7 +137,11 @@
 				"adding_a_block"        : "Block addition",
 				"editing_a_block"       : "Editing of block %s",
 				"save"                  : "Save",
-				"changes_saved"         : "Changes saved"
+				"changes_saved"         : "Changes saved",
+				"delete"                : "Delete",
+				"edit"                  : "Edit",
+				"yes"                   : "Yes",
+				"no"                    : "No"
 			},
 			"databases"                             : "Databases",
 			"databases_"                            : {
@@ -188,7 +182,10 @@
 				"sure_to_delete"       : "Are you sure you want to delete %s?",
 				"action"               : "Action",
 				"save"                 : "Save",
-				"changes_saved"        : "Changes saved"
+				"changes_saved"        : "Changes saved",
+				"add"                  : "Add",
+				"delete"               : "Delete",
+				"edit"                 : "Edit"
 			},
 			"groups"                                : "Groups",
 			"groups_"                               : {
@@ -204,7 +201,8 @@
 				"editing_of_group"       : "Editing of group %s",
 				"action"                 : "Action",
 				"save"                   : "Save",
-				"changes_saved"          : "Changes saved"
+				"changes_saved"          : "Changes saved",
+				"delete"                 : "Delete"
 			},
 			"languages"                             : "Languages",
 			"languages_"                            : {
@@ -234,7 +232,8 @@
 				"mail_signature"            : "Mail signature",
 				"mail_signature_info"       : "Signature will be appended to every sent email",
 				"test_email_sending"        : "Test email sending",
-				"test_email_sending_failed" : "Email sending failed, check your configuration"
+				"test_email_sending_failed" : "Email sending failed, check your configuration",
+				"done"                      : "Done"
 			},
 			"modules"                               : "Modules",
 			"modules_"                              : {
@@ -293,11 +292,17 @@
 				"core_storage"                             : "Core storage",
 				"action"                                   : "Action",
 				"state"                                    : "State",
+				"enable"                                   : "Enable",
+				"disable"                                  : "Disable",
+				"enabled"                                  : "Enabled",
 				"disabled"                                 : "Disabled",
 				"install"                                  : "Install",
 				"uninstall"                                : "Uninstall",
 				"uninstalled"                              : "Uninstalled",
-				"changes_saved"                            : "Changes saved"
+				"none"                                     : "None",
+				"changes_saved"                            : "Changes saved",
+				"yes"                                      : "Yes",
+				"no"                                       : "No"
 			},
 			"optimization"                          : "Optimization",
 			"optimization_"                         : {
@@ -313,7 +318,8 @@
 				"update_ratio_info"          : "The value is specified as a percentage of the maximum value.<br>Some options have time limits boundary, for example, time of authorization session. In order not to update it every time you load the page update ratio is used, which reduces the load on the system.<br>Ащк example, session timeout is, 4 days, and the update ratio 0.75 - if the user visits the site within 1-3 days - session will not be updated, and if later than three days but less than 4 - session will be updated.<br>It can be used not only for the time limits, but also for others purposes.<br>Especially useful option when high traffic to the site.",
 				"partial_cache_cleaning"     : "Partial cache cleaning",
 				"clean_settings_cache"       : "Clear settings cache",
-				"clean_scripts_styles_cache" : "Clear the cache of scripts and styles"
+				"clean_scripts_styles_cache" : "Clear the cache of scripts and styles",
+				"done"                       : "Done"
 			},
 			"permissions"                           : "Permissions",
 			"permissions_"                          : {
@@ -335,7 +341,9 @@
 				"type_username_or_email_press_enter" : "Enter username of email, press Enter",
 				"action"                             : "Action",
 				"save"                               : "Save",
-				"changes_saved"                      : "Changes saved"
+				"changes_saved"                      : "Changes saved",
+				"delete"                             : "Delete",
+				"edit"                               : "Edit"
 			},
 			"plugins"                               : "Plugins",
 			"plugins_"                              : {
@@ -357,8 +365,14 @@
 				"license"                                 : "License",
 				"action"                                  : "Action",
 				"state"                                   : "State",
+				"enable"                                  : "Enable",
+				"disable"                                 : "Disable",
+				"enabled"                                 : "Enabled",
 				"disabled"                                : "Disabled",
-				"changes_saved"                           : "Changes saved"
+				"none"                                    : "None",
+				"changes_saved"                           : "Changes saved",
+				"yes"                                     : "Yes",
+				"no"                                      : "No"
 			},
 			"security_"                             : {
 				"security"              : "Security",
@@ -405,7 +419,9 @@
 				"sure_to_delete"          : "Are you sure you want to delete %s?",
 				"action"                  : "Action",
 				"save"                    : "Save",
-				"changes_saved"           : "Changes saved"
+				"changes_saved"           : "Changes saved",
+				"delete"                  : "Delete",
+				"edit"                    : "Edit"
 			},
 			"system"                                : "System",
 			"system_"                               : {
@@ -507,7 +523,7 @@
 				"registration_confirmation_time_info"    : "Если в течении указанного времени (в днях) аккаунт не будет подтвержден - он будет удален"
 			}
 		},
-		"profile_" : {
+		"profile_"  : {
 			"hello"                                     : "Hello, %s!",
 			"guest"                                     : "Guest",
 			"sign_in"                                   : "Sign in",
@@ -577,7 +593,7 @@
 			"system_default"                            : "Default in system"
 		}
 	},
-	"l_"                 : {
+	"l_"               : {
 		"January"   : "January",
 		"February"  : "February",
 		"March"     : "March",
