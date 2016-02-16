@@ -318,7 +318,7 @@ namespace cs\Singleton {
 				return require_once $cache[$class];
 			}
 			$prepared_class_name = ltrim($class, '\\');
-			if (substr($prepared_class_name, 0, 3) == 'cs\\') {
+			if (strpos($prepared_class_name, 'cs\\') === 0) {
 				$prepared_class_name = substr($prepared_class_name, 3);
 			}
 			$prepared_class_name = explode('\\', $prepared_class_name);
@@ -335,9 +335,8 @@ namespace cs\Singleton {
 				_require_once($file = MODULES."/../$namespace/$class_name.php", false)             //Classes in modules and plugins
 			) {
 				$cache[$class] = realpath($file);
-				if (!is_dir(CACHE.'/Http_server/classes')) {
-					@mkdir(CACHE.'/Http_server/classes', 0770, true);
-				}
+				/** @noinspection MkdirRaceConditionInspection */
+				@mkdir(CACHE.'/Http_server/classes', 0770, true);
 				file_put_json(CACHE.'/Http_server/classes/autoload', $cache);
 				return true;
 			}
