@@ -1,77 +1,57 @@
 //Translation provided by Dmitry Kirsanov <extramid@gmail.com>, edited by Nazar Mokrynskyi
 {
 	//Service information
-	"clanguage_en"        : "ukrainian",
+	"clanguage_en"     : "ukrainian",
 	//ISO 639-1
-	"clang"               : "uk",
+	"clang"            : "uk",
 	//ISO 3166-1 Alpha-2
-	"cregion"             : "ua",
-	"content_language"    : "uk",
+	"cregion"          : "ua",
+	"content_language" : "uk",
 	//Regional parameters, syntax of PHP function date()
-	"_datetime_long"      : "l, d F Y, H:i",
-	"_datetime"           : "d.m.Y H:i",
-	"_date"               : "d.m.Y",
-	"_time"               : "H:i",
+	"_datetime_long"   : "l, d F Y, H:i",
+	"_datetime"        : "d.m.Y H:i",
+	"_date"            : "d.m.Y",
+	"_time"            : "H:i",
 	//Common
-	"home"                : "Головна",
-	"add"                 : "Додати",
-	"delete"              : "Видалити",
-	"edit"                : "Редагувати",
-	"yes"                 : "Так",
-	"no"                  : "Ні",
-	"none"                : "Немає",
-	"done"                : "Готово",
-	"time"                : "Час",
-	"empty"               : "Пусто",
-	"state"               : "Стан",
-	"System"              : "Система",
-	"enable"              : "Увімкнути",
-	"disable"             : "Вимкнути",
-	"enabled"             : "Увімкнений",
-	"disabled"            : "Вимкнений",
-	"deleted"             : "видалений",
-	"remove"              : "Видалити",
-	"removed"             : "Видалений",
-	"install"             : "Встановити",
-	"uninstall"           : "Видалити",
-	"installed"           : "Встановлений",
-	"uninstalled"         : "Видалений",
-	"off"                 : "Вимкн.",
-	"on"                  : "Увімкн.",
-	"0"                   : "Вимкн.",
-	"1"                   : "Увімкн.",
-	"seconds"             : "секунд",
-	"minutes"             : "хвилин",
-	"hours"               : "годин",
-	"days"                : "днів",
-	"months"              : "місяців",
-	"years"               : "років",
-	"TB"                  : "ТБ",
-	"GB"                  : "ГБ",
-	"MB"                  : "МБ",
-	"KB"                  : "КБ",
-	"Bytes"               : "Байт",
+	"add"              : "Додати",
+	"delete"           : "Видалити",
+	"edit"             : "Редагувати",
+	"yes"              : "Так",
+	"no"               : "Ні",
+	"none"             : "Немає",
+	"done"             : "Готово",
+	"time"             : "Час",
+	"empty"            : "Пусто",
+	"System"           : "Система",
+	"enable"           : "Увімкнути",
+	"disable"          : "Вимкнути",
+	"enabled"          : "Увімкнений",
+	"remove"           : "Видалити",
+	"off"              : "Вимкн.",
+	"on"               : "Увімкн.",
+	"0"                : "Вимкн.",
+	"1"                : "Увімкн.",
+	"seconds"          : "секунд",
+	"minutes"          : "хвилин",
+	"hours"            : "годин",
+	"days"             : "днів",
+	"months"           : "місяців",
+	"years"            : "років",
+	"TB"               : "ТБ",
+	"GB"               : "ГБ",
+	"MB"               : "МБ",
+	"KB"               : "КБ",
+	"Bytes"            : "Байт",
 	//Administration
-	"administration"      : "Адміністрування",
-	"apply"               : "Застосувати",
-	"apply_info"          : "Застосувати зміни без зберігання (у випадку неправильного налаштування все можна відмінити). У випадку повної відмови системи потрібно буде вручну очистити кеш.",
-	"save"                : "Зберегти",
-	"save_info"           : "Зберегти зміни",
-	"cancel"              : "Скасувати",
-	"cancel_info"         : "Скасувати застосовані зміни",
-	"reset"               : "Очистити",
-	"reset_info"          : "Очистити всі зміни на поточній сторінці",
-	"changes_applied"     : "Зміни застосовані",
-	"check_applied"       : " (перевірте правильність і при необхідності збережіть або скасуйте)",
-	"changes_saved"       : "Зміни збережені",
-	"changes_apply_error" : "Помилка застосування змін",
-	"changes_save_error"  : "Помилка збереження змін",
-	"changes_canceled"    : "Зміни скасовано",
-	"action"              : "Дія",
-	"system_"             : {
+	"system_"          : {
+		"home"     : "Головна",
 		"admin_"   : {
+			"administration"                        : "Адміністрування",
 			"components"                            : "Компоненти",
 			"general"                               : "Загальні",
+			"changes_applied"                       : "Зміни застосовані (перевірте правильність і при необхідності збережіть або скасуйте)",
+			"changes_apply_error"                   : "Помилка застосування змін",
+			"changes_canceled"                      : "Зміни скасовано",
 			"for_complete_feature_set"              : "Для повного набору функцій %s пакети або функціональності повинні бути встановлені та ввімкнені",
 			"force_enable_not_recommended"          : "Примусове увімкнення (не рекомендується)",
 			"force_disable_not_recommended"         : "Примусове вимкнення (не рекомендується)",
@@ -85,6 +65,13 @@
 			"file_too_large"                        : "Файл занадто великий, файли такого розміру заборонені до завантаження",
 			"temporary_folder_is_missing"           : "Тимчасова папка відсутня",
 			"cant_write_file_to_disk"               : "Не вдається записати завантажений файл на диск",
+			"apply"                                 : "Застосувати",
+			"apply_info"                            : "Застосувати зміни без зберігання (у випадку неправильного налаштування все можна відмінити). У випадку повної відмови системи потрібно буде вручну очистити кеш.",
+			"save"                                  : "Зберегти",
+			"save_info"                             : "Зберегти зміни",
+			"changes_saved"                         : "Зміни збережені",
+			"cancel"                                : "Скасувати",
+			"cancel_info"                           : "Скасувати застосовані зміни",
 			"about_server"                          : "Про сервер",
 			"about_server_"                         : {
 				"information_about_system" : "Інформація про систему",
@@ -128,7 +115,10 @@
 				"complete_theme_removal"                 : "Повне видалення теми",
 				"theme_name"                             : "Назва теми",
 				"information_about_theme"                : "Інформація про тему",
-				"license"                                : "Ліцензія"
+				"license"                                : "Ліцензія",
+				"action"                                 : "Дія",
+				"state"                                  : "Стан",
+				"changes_saved"                          : "Зміни збережені"
 			},
 			"blocks"                                : "Блоки",
 			"blocks_"                               : {
@@ -156,7 +146,9 @@
 				"edit_permissions"      : "Редагувати дозволи",
 				"permissions_for_block" : "Дозволи для блоку %s",
 				"adding_a_block"        : "Додавання блоку",
-				"editing_a_block"       : "Редагування блоку %s"
+				"editing_a_block"       : "Редагування блоку %s",
+				"save"                  : "Зберегти",
+				"changes_saved"         : "Зміни збережені"
 			},
 			"databases"                             : "Бази даних",
 			"databases_"                            : {
@@ -194,7 +186,10 @@
 				"of_db"                : "БД",
 				"addition_of_db"       : "Додавання БД",
 				"editing_the_database" : "Редагування %s",
-				"sure_to_delete"       : "Ви впевнені, що хочете видалити %s?"
+				"sure_to_delete"       : "Ви впевнені, що хочете видалити %s?",
+				"action"               : "Дія",
+				"save"                 : "Зберегти",
+				"changes_saved"        : "Зміни збережені"
 			},
 			"groups"                                : "Групи",
 			"groups_"                               : {
@@ -207,7 +202,10 @@
 				"sure_delete_group"      : "Ви дійсно бажаєте видалити групу %s?",
 				"not_specified"          : "Не вказано",
 				"adding_a_group"         : "Додавання групи",
-				"editing_of_group"       : "Редагування групи %s"
+				"editing_of_group"       : "Редагування групи %s",
+				"action"                 : "Дія",
+				"save"                   : "Зберегти",
+				"changes_saved"          : "Зміни збережені"
 			},
 			"languages"                             : "Мови",
 			"languages_"                            : {
@@ -293,7 +291,14 @@
 				"databases"                                : "Бази даних",
 				"core_db"                                  : "БД ядра",
 				"storages"                                 : "Сховища",
-				"core_storage"                             : "Сховище ядра"
+				"core_storage"                             : "Сховище ядра",
+				"action"                                   : "Дія",
+				"state"                                    : "Стан",
+				"disabled"                                 : "Вимкнений",
+				"install"                                  : "Встановити",
+				"uninstall"                                : "Видалити",
+				"uninstalled"                              : "Видалений",
+				"changes_saved"                            : "Зміни збережені"
 			},
 			"optimization"                          : "Оптимізація",
 			"optimization_"                         : {
@@ -328,7 +333,10 @@
 				"deny_all"                           : "Заборонити все",
 				"inherited"                          : "Успадковано",
 				"changing_settings_warning"          : "УВАГА: зміна налаштувань може привести до непрацездатності сайту",
-				"type_username_or_email_press_enter" : "Введіть ім'я користувача або email, натисніть Enter"
+				"type_username_or_email_press_enter" : "Введіть ім'я користувача або email, натисніть Enter",
+				"action"                             : "Дія",
+				"save"                               : "Зберегти",
+				"changes_saved"                      : "Зміни збережені"
 			},
 			"plugins"                               : "Плагіни",
 			"plugins_"                              : {
@@ -347,7 +355,11 @@
 				"update_plugin"                           : "Плагін %s вже встановлений. Ви справді бажаєте оновити плагін з версії %s до версії %s?",
 				"completely_remove_plugin"                : "Видалити плагін %s повністю?",
 				"complete_plugin_removal"                 : "Повне видалення плагіна",
-				"license"                                 : "Ліцензія"
+				"license"                                 : "Ліцензія",
+				"action"                                  : "Дія",
+				"state"                                   : "Стан",
+				"disabled"                                : "Вимкнений",
+				"changes_saved"                           : "Зміни збережені"
 			},
 			"security"                              : "Безпека",
 			"security_"                             : {
@@ -391,7 +403,10 @@
 				"test_connection"         : "Протестувати з'єднання",
 				"success"                 : "успішно",
 				"failed"                  : "безуспішно",
-				"sure_to_delete"          : "Ви впевнені, що хочете видалити %s?"
+				"sure_to_delete"          : "Ви впевнені, що хочете видалити %s?",
+				"action"                  : "Дія",
+				"save"                    : "Зберегти",
+				"changes_saved"           : "Зміни збережені"
 			},
 			"system"                                : "Система",
 			"system_"                               : {
@@ -465,7 +480,10 @@
 				"adding_a_bot"                : "Додавання бота",
 				"editing_of_user_information" : "Редагування інформації користувача %s",
 				"editing_of_bot_information"  : "Редагування інформації бота %s",
-				"user_already_exists"         : "Користувач з таким email вже існує"
+				"user_already_exists"         : "Користувач з таким email вже існує",
+				"action"                      : "Дія",
+				"save"                        : "Зберегти",
+				"changes_saved"               : "Зміни збережені"
 			},
 			"users_general_"                        : {
 				"session_expire"                         : "Сесія закінчується через",
@@ -554,10 +572,13 @@
 			"restore_password_success_mail"             : "Відновлення паролю на %s успішно завершено",
 			"restore_password_success_mail_body"        : "<h3>Привіт, %s!</h3><p>Вітаємо, Відновлення паролю на сайті %s пройшло успішно. У цілях безпеки, пароль був згенерований автоматично. Ви завжди можете його змініти на інший у <a href=\"%s\">налаштуваннях вашого профілю на сайті</a>.</p><p>Ваші дані для входу на сайт:</p><table border=\"0\"><tr><td>Логін:</td><td>%s</td></tr><tr><td>Пароль:</td><td>%s</td></tr></table><p>Не відповідайте на цей лист, він був згенерований автоматично і не потребує відповіді.</p>",
 			"sending_restore_password_mail_error"       : "Під час відправлення листа на ваш email виникла помилка. Перевірте доступність вашого email і спробуйте знову. Відновлення паролю перервано.",
-			"sending_restore_password_mail_error_title" : "Під час відправлення листа на ваш email виникла помилка"
+			"sending_restore_password_mail_error_title" : "Під час відправлення листа на ваш email виникла помилка",
+			"save"                                      : "Зберегти",
+			"changes_saved"                             : "Зміни збережені",
+			"system_default"                            : "За замовчуванням в системі"
 		}
 	},
-	"l_"                  : {
+	"l_"               : {
 		"January"   : "Січня",
 		"February"  : "Лютого",
 		"March"     : "Березня",

@@ -7,7 +7,7 @@
  */
 (function(){
   var L;
-  L = cs.Language;
+  L = cs.Language('system_profile_');
   Polymer({
     'is': 'cs-system-user-settings',
     behaviors: [cs.Polymer.behaviors.cs, cs.Polymer.behaviors.Language('system_profile_')],

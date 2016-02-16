@@ -6,7 +6,7 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L									= cs.Language('system_admin_')
+L										= cs.Language('system_admin_')
 cs.{}Polymer.{}behaviors.{}admin.System	=
 	components	:
 		# Module/plugin enabling
@@ -257,7 +257,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				data	: @settings
 				success	: !~>
 					@_reload_settings()
-					cs.ui.notify(L.changes_applied + L.check_applied, 'warning', 5)
+					cs.ui.notify(L.changes_applied, 'warning', 5)
 				error	: !->
 					cs.ui.notify(L.changes_apply_error, 'error', 5)
 			)

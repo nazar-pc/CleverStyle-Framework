@@ -312,7 +312,7 @@ cs.{}ui
 			..bind		= modal
 			..addEventListener('click', ok_callback)
 		cancel	= document.createElement('button', 'cs-button')
-			..innerHTML	= L.cancel
+			..innerHTML	= L.system_admin_cancel
 			..action	= 'close'
 			..bind		= modal
 			..addEventListener('click', cancel_callback || ->)

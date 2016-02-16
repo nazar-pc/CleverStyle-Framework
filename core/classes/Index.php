@@ -157,10 +157,10 @@ class Index {
 		if (!api_path()) {
 			$L = Language::instance();
 			if (admin_path()) {
-				$Page->title($L->administration);
+				$Page->title($L->system_admin_administration);
 			}
 			$Page->title(
-				$L->{home_page() ? 'home' : $this->module}
+				$L->{home_page() ? 'system_home' : $this->module}
 			);
 		}
 	}

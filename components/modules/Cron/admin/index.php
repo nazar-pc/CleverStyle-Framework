@@ -8,9 +8,10 @@
  */
 namespace cs;
 use
-	h;
+	h,
+	cs\Language\Prefix;
 
-$L    = Language::instance();
+$L    = new Prefix('system_admin_');
 $Page = Page::instance();
 if (isset($_POST['tasks'])) {
 	$filename = TEMP.'/'.uniqid('cron', true);

@@ -384,7 +384,7 @@
     y$.bind = modal;
     y$.addEventListener('click', ok_callback);
     z$ = cancel = document.createElement('button', 'cs-button');
-    z$.innerHTML = L.cancel;
+    z$.innerHTML = L.system_admin_cancel;
     z$.action = 'close';
     z$.bind = modal;
     z$.addEventListener('click', cancel_callback || function(){});

@@ -1,76 +1,56 @@
 {
 	//Service information
-	"clanguage_en"        : "russian",
+	"clanguage_en"       : "russian",
 	//ISO 639-1
-	"clang"               : "ru",
+	"clang"              : "ru",
 	//ISO 3166-1 Alpha-2
-	"cregion"             : "ru",
-	"content_language"    : "ru",
+	"cregion"            : "ru",
+	"content_language"   : "ru",
 	//Regional parameters, syntax of PHP function date()
-	"_datetime_long"      : "l, d F Y, H:i",
-	"_datetime"           : "d.m.Y H:i",
-	"_date"               : "d.m.Y",
-	"_time"               : "H:i",
+	"_datetime_long"     : "l, d F Y, H:i",
+	"_datetime"          : "d.m.Y H:i",
+	"_date"              : "d.m.Y",
+	"_time"              : "H:i",
 	//Common
-	"home"                : "Главная",
-	"add"                 : "Добавить",
-	"delete"              : "Удалить",
-	"edit"                : "Редактировать",
-	"yes"                 : "Да",
-	"no"                  : "Нет",
-	"none"                : "Нет",
-	"done"                : "Готово",
-	"time"                : "Время",
-	"empty"               : "Пусто",
-	"state"               : "Состояние",
-	"System"              : "Система",
-	"enable"              : "Включить",
-	"disable"             : "Отключить",
-	"enabled"             : "Включен",
-	"disabled"            : "Отключен",
-	"deleted"             : "Удален",
-	"remove"              : "Удалить",
-	"removed"             : "Удален",
-	"install"             : "Установить",
-	"uninstall"           : "Удалить",
-	"installed"           : "Установлен",
-	"uninstalled"         : "Удален",
-	"off"                 : "Выкл.",
-	"on"                  : "Вкл.",
-	"0"                   : "Выкл.",
-	"1"                   : "Вкл.",
-	"seconds"             : "секунд",
-	"minutes"             : "минут",
-	"hours"               : "часов",
-	"days"                : "дней",
-	"months"              : "месяцев",
-	"years"               : "лет",
-	"TB"                  : "ТБ",
-	"GB"                  : "ГБ",
-	"MB"                  : "МБ",
-	"KB"                  : "КБ",
-	"Bytes"               : "Байт",
+	"add"                : "Добавить",
+	"delete"             : "Удалить",
+	"edit"               : "Редактировать",
+	"yes"                : "Да",
+	"no"                 : "Нет",
+	"none"               : "Нет",
+	"done"               : "Готово",
+	"time"               : "Время",
+	"empty"              : "Пусто",
+	"System"             : "Система",
+	"enable"             : "Включить",
+	"disable"            : "Отключить",
+	"enabled"            : "Включен",
+	"remove"             : "Удалить",
+	"off"                : "Выкл.",
+	"on"                 : "Вкл.",
+	"0"                  : "Выкл.",
+	"1"                  : "Вкл.",
+	"seconds"            : "секунд",
+	"minutes"            : "минут",
+	"hours"              : "часов",
+	"days"               : "дней",
+	"months"             : "месяцев",
+	"years"              : "лет",
+	"TB"                 : "ТБ",
+	"GB"                 : "ГБ",
+	"MB"                 : "МБ",
+	"KB"                 : "КБ",
+	"Bytes"              : "Байт",
 	//Administration
-	"administration"      : "Администрирование",
-	"apply"               : "Применить",
-	"apply_info"          : "Применить изменения без сохранения, в случае неправильной настройки всё можно будет отменить. В случае полного отказа движка нужно будет вручную очистить кэш.",
-	"save"                : "Сохранить",
-	"save_info"           : "Сохранить изменения",
-	"cancel"              : "Отменить",
-	"cancel_info"         : "Отменить примененные изменения",
-	"reset"               : "Сбросить",
-	"reset_info"          : "Сбросить все изменения на текущей странице",
-	"changes_applied"     : "Изменения применены",
-	"check_applied"       : " (проверьте правильность и при необходимости сохраните или отмените)",
-	"changes_saved"       : "Изменения сохранены",
-	"changes_apply_error" : "Ошибка применения изменений",
-	"changes_save_error"  : "Ошибка сохранения изменений",
-	"changes_canceled"    : "Изменения отменены",
-	"action"              : "Действие",
-	"system_"             : {
+	"system_"            : {
+		"home"     : "Главная",
 		"admin_"   : {
+			"administration"                        : "Администрирование",
 			"components"                            : "Компоненты",
 			"general"                               : "Общие",
+			"changes_applied"                       : "Изменения применены (проверьте правильность и при необходимости сохраните или отмените)",
+			"changes_apply_error"                   : "Ошибка применения изменений",
+			"changes_canceled"                      : "Изменения отменены",
 			"for_complete_feature_set"              : "Для полного набора функций %s пакеты или функциональности должны быть установлены и включены",
 			"force_enable_not_recommended"          : "Принудительное включение (не рекомендуется)",
 			"force_disable_not_recommended"         : "Принудительное отключение (не рекомендуется)",
@@ -84,6 +64,13 @@
 			"file_too_large"                        : "Файл слишком большой, файлы такого размера запрещены к загрузке",
 			"temporary_folder_is_missing"           : "Временная папка отсутствует",
 			"cant_write_file_to_disk"               : "Не удалось записать загруженный файл на диск",
+			"apply"                                 : "Применить",
+			"apply_info"                            : "Применить изменения без сохранения, в случае неправильной настройки всё можно будет отменить. В случае полного отказа движка нужно будет вручную очистить кэш.",
+			"save"                                  : "Сохранить",
+			"save_info"                             : "Сохранить изменения",
+			"changes_saved"                         : "Изменения сохранены",
+			"cancel"                                : "Отменить",
+			"cancel_info"                           : "Отменить примененные изменения",
 			"about_server"                          : "О сервере",
 			"about_server_"                         : {
 				"information_about_system" : "Информация о системе",
@@ -127,7 +114,10 @@
 				"complete_theme_removal"                 : "Полное удаление темы",
 				"theme_name"                             : "Название темы",
 				"information_about_theme"                : "Информация о теме",
-				"license"                                : "Лицензия"
+				"license"                                : "Лицензия",
+				"action"                                 : "Действие",
+				"state"                                  : "Состояние",
+				"changes_saved"                          : "Изменения сохранены"
 			},
 			"blocks"                                : "Блоки",
 			"blocks_"                               : {
@@ -155,7 +145,9 @@
 				"edit_permissions"      : "Редактировать разрешения",
 				"permissions_for_block" : "Разрешения для блока %s",
 				"adding_a_block"        : "Добавление блока",
-				"editing_a_block"       : "Редактирование блока %s"
+				"editing_a_block"       : "Редактирование блока %s",
+				"save"                  : "Сохранить",
+				"changes_saved"         : "Изменения сохранены"
 			},
 			"databases"                             : "Базы данных",
 			"databases_"                            : {
@@ -193,7 +185,10 @@
 				"of_db"                : "БД",
 				"addition_of_db"       : "Добавление БД",
 				"editing_the_database" : "Редактирование %s",
-				"sure_to_delete"       : "Вы уверены, что хотите удалить %s?"
+				"sure_to_delete"       : "Вы уверены, что хотите удалить %s?",
+				"action"               : "Действие",
+				"save"                 : "Сохранить",
+				"changes_saved"        : "Изменения сохранены"
 			},
 			"groups"                                : "Группы",
 			"groups_"                               : {
@@ -206,7 +201,10 @@
 				"sure_delete_group"      : "Вы действительно хотите удалить группу %s?",
 				"not_specified"          : "Не указано",
 				"adding_a_group"         : "Добавление группы",
-				"editing_of_group"       : "Редактирование группы %s"
+				"editing_of_group"       : "Редактирование группы %s",
+				"action"                 : "Действие",
+				"save"                   : "Сохранить",
+				"changes_saved"          : "Изменения сохранены"
 			},
 			"languages"                             : "Языки",
 			"languages_"                            : {
@@ -292,7 +290,14 @@
 				"databases"                                : "Базы данных",
 				"core_db"                                  : "БД ядра",
 				"storages"                                 : "Хранилища",
-				"core_storage"                             : "Хранилище ядра"
+				"core_storage"                             : "Хранилище ядра",
+				"action"                                   : "Действие",
+				"state"                                    : "Состояние",
+				"disabled"                                 : "Отключен",
+				"install"                                  : "Установить",
+				"uninstall"                                : "Удалить",
+				"uninstalled"                              : "Удален",
+				"changes_saved"                            : "Изменения сохранены"
 			},
 			"optimization"                          : "Оптимизация",
 			"optimization_"                         : {
@@ -327,7 +332,10 @@
 				"deny_all"                           : "Запретить всё",
 				"inherited"                          : "Унаследовано",
 				"changing_settings_warning"          : "ВНИМАНИЕ: изменение настроек может привести к неработоспособности сайта",
-				"type_username_or_email_press_enter" : "Введите имя пользователя или email, нажмите Enter"
+				"type_username_or_email_press_enter" : "Введите имя пользователя или email, нажмите Enter",
+				"action"                             : "Действие",
+				"save"                               : "Сохранить",
+				"changes_saved"                      : "Изменения сохранены"
 			},
 			"plugins"                               : "Плагины",
 			"plugins_"                              : {
@@ -346,7 +354,11 @@
 				"update_plugin"                           : "Плагин %s уже установлен. Вы действительно хотите обновить плагин с версии %s до версии %s?",
 				"completely_remove_plugin"                : "Удалить плагин %s полностью?",
 				"complete_plugin_removal"                 : "Полное удаление плагина",
-				"license"                                 : "Лицензия"
+				"license"                                 : "Лицензия",
+				"action"                                  : "Действие",
+				"state"                                   : "Состояние",
+				"disabled"                                : "Отключен",
+				"changes_saved"                           : "Изменения сохранены"
 			},
 			"security"                              : "Безопасность",
 			"security_"                             : {
@@ -390,7 +402,10 @@
 				"test_connection"         : "Протестировать соединение",
 				"success"                 : "успешно",
 				"failed"                  : "безуспешно",
-				"sure_to_delete"          : "Вы уверены, что хотите удалить %s?"
+				"sure_to_delete"          : "Вы уверены, что хотите удалить %s?",
+				"action"                  : "Действие",
+				"save"                    : "Сохранить",
+				"changes_saved"           : "Изменения сохранены"
 			},
 			"system"                                : "Система",
 			"system_"                               : {
@@ -464,7 +479,9 @@
 				"adding_a_bot"                : "Добавление бота",
 				"editing_of_user_information" : "Редактирование информации пользователя %s",
 				"editing_of_bot_information"  : "Редактирование информации бота %s",
-				"user_already_exists"         : "Пользователь с таким email уже существует"
+				"user_already_exists"         : "Пользователь с таким email уже существует",
+				"save"                        : "Сохранить",
+				"changes_saved"               : "Изменения сохранены"
 			},
 			"users_general_"                        : {
 				"session_expire"                         : "Сессия истекает через",
@@ -486,7 +503,8 @@
 				"auto_sign_in_after_registration"        : "Автоматический вход после регистрации",
 				"auto_sign_in_after_registration_info"   : "Для удобства пользователя - по завершению регистрации автоматически входить под созданным аккаунтом",
 				"registration_confirmation_time"         : "Время на подтверждение регистрации",
-				"registration_confirmation_time_info"    : "Если в течении указанного времени (в днях) аккаунт не будет подтвержден - он будет удален"
+				"registration_confirmation_time_info"    : "Если в течении указанного времени (в днях) аккаунт не будет подтвержден - он будет удален",
+				"action"                                 : "Действие"
 			}
 		},
 		"profile_" : {
@@ -553,10 +571,13 @@
 			"restore_password_success_mail"             : "Восстановление пароля на %s успешно завершено",
 			"restore_password_success_mail_body"        : "<h3>Здравствуйте, %s!</h3><p>Поздравляем, восстановление пароля на сайте %s прошло успешно. В целях безопасности пароль был сгенерирован автоматически, вы всегда можете его сменить на другой в <a href=\"%s\">настройках вашего профиля на сайте</a>.</p><p>Ваши данные для входа на сайт:</p><table border=\"0\"><tr><td>Логин:</td><td>%s</td></tr><tr><td>Пароль:</td><td>%s</td></tr></table><p>Не отвечайте на это письмо, оно было отправлено автоматически и не требует ответа.</p>",
 			"sending_restore_password_mail_error"       : "Во время отправки письма на ваш email произошла ошибка. Проверьте доступность вашего email, и попробуйте снова. Восстановление пароля прервано.",
-			"sending_restore_password_mail_error_title" : "Во время отправки письма на ваш email произошла ошибка"
+			"sending_restore_password_mail_error_title" : "Во время отправки письма на ваш email произошла ошибка",
+			"save"                                      : "Сохранить",
+			"changes_saved"                             : "Изменения сохранены",
+			"system_default"                            : "По-умолчанию в системе"
 		}
 	},
-	"l_"                  : {
+	"l_"                 : {
 		"January"   : "Января",
 		"February"  : "Февраля",
 		"March"     : "Марта",

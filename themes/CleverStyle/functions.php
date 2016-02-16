@@ -31,7 +31,7 @@ function get_main_menu () {
 	 */
 	if ($User->admin()) {
 		$main_menu_items[] = h::a(
-			$L->administration,
+			$L->system_admin_administration,
 			[
 				'href' => 'admin'
 			]
@@ -41,7 +41,7 @@ function get_main_menu () {
 	 * Home item
 	 */
 	$main_menu_items[] = h::a(
-		$L->home,
+		$L->system_home,
 		[
 			'href' => '/'
 		]

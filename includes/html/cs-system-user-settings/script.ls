@@ -4,7 +4,7 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-L	= cs.Language
+L	= cs.Language('system_profile_')
 Polymer(
 	'is'		: 'cs-system-user-settings'
 	behaviors	: [
