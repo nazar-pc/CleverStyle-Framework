@@ -6,7 +6,7 @@
  * @license		MIT License, see license.txt
 ###
 $ ->
-	L				= cs.Language
+	L				= cs.Language('photo_gallery_')
 	add_button		= $('.cs-photo-gallery-add-images')
 	if add_button.length
 		cs.file_upload(
@@ -21,10 +21,10 @@ $ ->
 					type	: 'post'
 					success	: (result) ->
 						if !result.length || !result
-							alert L.photo_gallery_images_not_supported
+							alert L.images_not_supported
 							return
 						if files.length != result.length
-							alert L.photo_gallery_some_images_not_supported
+							alert L.some_images_not_supported
 						location.href	= 'Photo_gallery/edit_images/' + result.join(',')
 				)
 			null
@@ -39,7 +39,7 @@ $ ->
 			'click',
 			'.cs-photo-gallery-image-delete'
 			->
-				if confirm L.photo_gallery_sure_to_delete_image
+				if confirm L.sure_to_delete_image
 					$.ajax(
 						'api/Photo_gallery/images/' + $(this).data('image'),
 						cache	: false

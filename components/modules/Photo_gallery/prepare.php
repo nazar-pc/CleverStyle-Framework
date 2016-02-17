@@ -1,19 +1,19 @@
 <?php
 /**
- * @package        Photo gallery
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2013-2016, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   Photo gallery
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2013-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\Photo_gallery;
 
 use
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\User;
 
-$L    = Language::instance();
+$L    = new Prefix('photo_gallery_');
 $Page = Page::instance();
 if (isset($_POST['edit_images'])) {
 	$User          = User::instance();

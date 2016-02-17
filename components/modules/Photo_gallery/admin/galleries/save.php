@@ -8,10 +8,10 @@
  */
 namespace cs\modules\Photo_gallery;
 use
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page;
 
-$L             = Language::instance();
+$L             = new Prefix('photo_gallery_');
 $Page          = Page::instance();
 $Photo_gallery = Photo_gallery::instance();
 if (isset($_POST['add'])) {
