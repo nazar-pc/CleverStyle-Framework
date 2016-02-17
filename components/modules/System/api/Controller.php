@@ -14,6 +14,7 @@ use
 	cs\modules\System\api\Controller\profile,
 	cs\modules\System\api\Controller\profiles,
 	cs\modules\System\api\Controller\user_;
+
 class Controller {
 	use
 		admin\about_server,
@@ -40,4 +41,5 @@ class Controller {
 		profile,
 		profiles,
 		user_;
+	static function blank () { }
 }
