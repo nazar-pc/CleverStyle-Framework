@@ -7,7 +7,9 @@
  */
 Polymer(
 	'is'		: 'cs-hybridauth-sign-in'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language('hybridauth_')
+	]
 	properties	:
 		providers	: do (providers = cs.hybridauth.providers) ->
 			for provider of providers

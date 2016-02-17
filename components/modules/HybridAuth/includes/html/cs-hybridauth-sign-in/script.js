@@ -9,7 +9,7 @@
 (function(){
   Polymer({
     'is': 'cs-hybridauth-sign-in',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('hybridauth_')],
     properties: {
       providers: function(providers){
         var provider, results$ = [];

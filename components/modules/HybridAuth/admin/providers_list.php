@@ -8,9 +8,10 @@
  */
 namespace cs;
 use
+	cs\Language\Prefix,
 	h;
 
-$L    = Language::instance();
+$L    = new Prefix('hybridauth_');
 $Page = Page::instance();
 if (isset($_POST['providers'], $_POST['enable_contacts_detection'])) {
 	if (Config::instance()->module('HybridAuth')->set(

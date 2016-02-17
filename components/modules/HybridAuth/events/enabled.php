@@ -11,14 +11,15 @@ use
 	cs\Config,
 	cs\DB,
 	cs\Event,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page;
+
 Event::instance()
 	->on(
 		'System/Page/display/before',
 		function () {
 			$Config        = Config::instance();
-			$L             = Language::instance();
+			$L             = new Prefix('hybridauth_');
 			$icons_mapping = function ($provider) {
 				switch ($provider) {
 					case 'Google':
@@ -62,9 +63,9 @@ Event::instance()
 			$cdb->q(
 				[
 					"DELETE FROM `[prefix]users_social_integration`
-				WHERE `id` = '%s'",
+					WHERE `id` = '%s'",
 					"DELETE FROM `[prefix]users_social_integration_contacts`
-				WHERE `id` = '%s'"
+					WHERE `id` = '%s'"
 				],
 				$data['id']
 			);

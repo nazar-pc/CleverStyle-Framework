@@ -15,7 +15,7 @@ use
 	cs\Event,
 	cs\ExitException,
 	cs\Key,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Mail,
 	cs\Page,
 	cs\Route,
@@ -58,7 +58,7 @@ class Controller {
 		$Page               = Page::instance();
 		$User               = User::instance();
 		$Social_integration = Social_integration::instance();
-		$L                  = Language::instance();
+		$L                  = new Prefix('hybridauth_');
 		/**
 		 * Confirmation of accounts merging
 		 */
@@ -139,7 +139,9 @@ class Controller {
 	/**
 	 * @param string[] $route
 	 * @param Page     $Page
-	 * @param Language $L
+	 * @param Prefix   $L
+	 *
+	 * @throws ExitException
 	 */
 	protected static function merge_confirmation ($route, $Page, $L) {
 		if (!isset($route[1])) {
@@ -150,7 +152,7 @@ class Controller {
 		 */
 		$data = self::get_data_by_confirmation_code($route[1]);
 		if (!$data) {
-			$Page->warning($L->hybridauth_merge_confirm_code_invalid);
+			$Page->warning($L->merge_confirm_code_invalid);
 			return;
 		}
 		/**
@@ -164,7 +166,7 @@ class Controller {
 		);
 		self::save_hybridauth_session();
 		$Page->success(
-			$L->hybridauth_merging_confirmed_successfully($L->{$data['provider']})
+			$L->merging_confirmed_successfully($L->{$data['provider']})
 		);
 	}
 	/**
@@ -214,7 +216,7 @@ class Controller {
 	 * @param Social_integration $Social_integration
 	 * @param User               $User
 	 * @param Page               $Page
-	 * @param Language           $L
+	 * @param Prefix             $L
 	 *
 	 * @throws ExitException
 	 */
@@ -280,7 +282,7 @@ class Controller {
 	 */
 	protected static function authenticate_hybridauth ($provider) {
 		try {
-			return get_hybridauth_instance($provider)->authenticate($provider)->getUserProfile();
+			return get_hybridauth_instance($provider)::authenticate($provider)->getUserProfile();
 		} catch (ExitException $e) {
 			throw $e;
 		} catch (Exception $e) {
@@ -312,7 +314,7 @@ class Controller {
 		) {
 			return false;
 		}
-		$L      = Language::instance();
+		$L      = new Prefix('hybridauth_');
 		$Page   = Page::instance();
 		$User   = User::instance();
 		$result = $email_from_user ? $User->registration($email) : $User->registration($email, false, false);
@@ -333,8 +335,8 @@ class Controller {
 		return $result;
 	}
 	/**
-	 * @param Page     $Page
-	 * @param Language $L
+	 * @param Page   $Page
+	 * @param Prefix $L
 	 */
 	protected function email_form ($Page, $L) {
 		$Page->content(
@@ -356,7 +358,7 @@ class Controller {
 	 * @param Social_integration $Social_integration
 	 * @param User               $User
 	 * @param Page               $Page
-	 * @param Language           $L
+	 * @param Prefix             $L
 	 * @param Config             $Config
 	 *
 	 * @throws ExitException
@@ -381,8 +383,8 @@ class Controller {
 			$id                    = $User->get_id(hash('sha224', strtolower($_POST['email'])));
 			$HybridAuth_data['id'] = $id;
 			$confirmation_code     = self::set_data_generate_confirmation_code($HybridAuth_data);
-			$title                 = $L->hybridauth_merge_confirmation_mail_title(get_core_ml_text('name'));
-			$body                  = $L->hybridauth_merge_confirmation_mail_body(
+			$title                 = $L->merge_confirmation_mail_title(get_core_ml_text('name'));
+			$body                  = $L->merge_confirmation_mail_body(
 				$User->username($id) ?: strstr($_POST['email'], '@', true),
 				get_core_ml_text('name'),
 				$L->$provider,
@@ -393,7 +395,7 @@ class Controller {
 				_setcookie('HybridAuth_referer', '');
 				$Page->content(
 					h::p(
-						$L->hybridauth_merge_confirmation($L->$provider)
+						$L->merge_confirmation($L->$provider)
 					)
 				);
 			}
@@ -439,7 +441,7 @@ class Controller {
 		 */
 		if (!$result) {
 			User::instance()->registration_cancel();
-			$L = Language::instance();
+			$L = new Prefix('hybridauth_');
 			Page::instance()
 				->title($L->sending_reg_mail_error_title)
 				->warning($L->sending_reg_mail_error);
@@ -531,7 +533,7 @@ class Controller {
 	 * @param string $provider
 	 */
 	protected static function finish_registration_send_email ($user_id, $password, $provider) {
-		$L         = Language::instance();
+		$L         = new Prefix('hybridauth_');
 		$User      = User::instance();
 		$user_data = $User->$user_id;
 		$base_url  = Config::instance()->base_url();
@@ -559,7 +561,7 @@ class Controller {
 	 */
 	protected static function get_adapter ($provider) {
 		try {
-			return get_hybridauth_instance($provider)->getAdapter($provider);
+			return get_hybridauth_instance($provider)::getAdapter($provider);
 		} catch (ExitException $e) {
 			throw $e;
 		} catch (Exception $e) {
