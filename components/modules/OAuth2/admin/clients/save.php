@@ -9,10 +9,10 @@
 namespace cs\modules\OAuth2;
 use
 	cs\Config,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page;
 
-$L      = Language::instance();
+$L      = new Prefix('oauth2_');
 $Page   = Page::instance();
 $OAuth2 = OAuth2::instance();
 if (isset($_POST['mode'])) {
