@@ -184,9 +184,14 @@ class Text {
 		$L      = Language::instance();
 		$cdb    = DB::instance()->$database();
 		/**
+		 * Security check, do not allow to silently substitute text from another item
+		 */
+		if (preg_match('/^\{¶(\d+)\}$/', $text)) {
+			return false;
+		}
+		/**
 		 * @var \cs\DB\_Abstract $cdb
 		 */
-		$text = str_replace('{¶', '{&para;', $text);
 		// Find existing text id
 		$id = $cdb->qfs(
 			[
