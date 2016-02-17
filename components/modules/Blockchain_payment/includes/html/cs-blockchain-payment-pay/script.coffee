@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
 ###
-L = cs.Language
+L = cs.Language('blockchain_payment_')
 Polymer(
 	properties		:
 		description		: ''
@@ -13,11 +13,11 @@ Polymer(
 		amount			: Number
 		progress_text	:
 			type	: string
-			value	: L.blockchain_payment_waiting_for_payment
+			value	: L.waiting_for_payment
 	ready			: ->
 		$ =>
 			@set('description', JSON.parse(@description))
-			@set('text', L.blockchain_payment_scan_or_transfer(@amount, @address))
+			@set('text', L.scan_or_transfer(@amount, @address))
 			$(@$.qr).qrcode(
 				height	: 512
 				text	: 'bitcoin:' + @address + '?amount=' + @amount
@@ -33,7 +33,7 @@ Polymer(
 					location.reload()
 					return
 				if parseInt(data.paid)
-					@set('progress_text', L.blockchain_payment_waiting_for_confirmations)
+					@set('progress_text', L.waiting_for_confirmations)
 				setTimeout (=>
 					@update_status()
 				), 5000

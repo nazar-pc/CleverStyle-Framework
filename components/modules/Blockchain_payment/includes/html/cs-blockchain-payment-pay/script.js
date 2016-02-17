@@ -11,7 +11,7 @@
 (function() {
   var L;
 
-  L = cs.Language;
+  L = cs.Language('blockchain_payment_');
 
   Polymer({
     properties: {
@@ -20,14 +20,14 @@
       amount: Number,
       progress_text: {
         type: string,
-        value: L.blockchain_payment_waiting_for_payment
+        value: L.waiting_for_payment
       }
     },
     ready: function() {
       return $((function(_this) {
         return function() {
           _this.set('description', JSON.parse(_this.description));
-          _this.set('text', L.blockchain_payment_scan_or_transfer(_this.amount, _this.address));
+          _this.set('text', L.scan_or_transfer(_this.amount, _this.address));
           $(_this.$.qr).qrcode({
             height: 512,
             text: 'bitcoin:' + _this.address + '?amount=' + _this.amount,
@@ -48,7 +48,7 @@
               return;
             }
             if (parseInt(data.paid)) {
-              _this.set('progress_text', L.blockchain_payment_waiting_for_confirmations);
+              _this.set('progress_text', L.waiting_for_confirmations);
             }
             return setTimeout((function() {
               return _this.update_status();

@@ -8,10 +8,10 @@
  */
 use
 	cs\Config,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page;
 
-$L           = Language::instance();
+$L           = new Prefix('blockchain_payment_');
 $Page        = Page::instance();
 $module_data = Config::instance()->module('Blockchain_payment');
 if (isset($_POST['bitcoin_address'], $_POST['bitcoin_address'])) {
