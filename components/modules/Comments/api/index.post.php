@@ -11,9 +11,10 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\User;
+
 /**
  * Provides next events:
  *  api/Comments/add
@@ -33,7 +34,7 @@ if (!User::instance()->user()) {
 if (!isset($_POST['item'], $_POST['text'], $_POST['parent'], $_POST['module'])) {
 	throw new ExitException(400);
 }
-$L    = Language::instance();
+$L    = new Prefix('comments_');
 $Page = Page::instance();
 if (!$_POST['text'] || !strip_tags($_POST['text'])) {
 	throw new ExitException($L->comment_cant_be_empty, 400);

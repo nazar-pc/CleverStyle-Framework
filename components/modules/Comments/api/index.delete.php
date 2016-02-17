@@ -12,7 +12,7 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route,
 	cs\User;
@@ -48,7 +48,7 @@ Event::instance()->fire(
 		'module'        => $_POST['module']
 	]
 );
-$L    = Language::instance();
+$L    = new Prefix('comments_');
 $Page = Page::instance();
 if (!is_object($Comments)) {
 	throw new ExitException($L->comment_deleting_server_error, 500);

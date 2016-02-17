@@ -1,25 +1,28 @@
 <?php
 /**
- * @package		Comments
- * @category	modules
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2016, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   Comments
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace	cs\modules\Comments;
-use			cs\DB\Accessor,
-			h,
-			cs\Cache\Prefix,
-			cs\Config,
-			cs\Language,
-			cs\User,
-			cs\Singleton;
+use
+	cs\DB\Accessor,
+	h,
+	cs\Cache\Prefix as Cache_prefix,
+	cs\Config,
+	cs\Language,
+	cs\Language\Prefix as Language_prefix,
+	cs\User,
+	cs\Singleton;
 
 /**
  * @method static Comments instance($check = false)
  */
 class Comments {
-	use	Accessor,
+	use
+		Accessor,
 		Singleton;
 
 	/**
@@ -27,7 +30,7 @@ class Comments {
 	 */
 	protected	$module;
 	/**
-	 * @var Prefix
+	 * @var Cache_prefix
 	 */
 	protected	$cache;
 	/**
@@ -37,7 +40,7 @@ class Comments {
 
 	protected function construct () {
 		$this->module	= current_module();
-		$this->cache	= new Prefix("Comments/$this->module");
+		$this->cache	= new Cache_prefix("Comments/$this->module");
 	}
 	/**
 	 * Set module (current module assumed by default)
@@ -46,7 +49,7 @@ class Comments {
 	 */
 	function set_module ($module) {
 		$this->module	= $module;
-		$this->cache	= new Prefix("Comments/$this->module");
+		$this->cache	= new Cache_prefix("Comments/$this->module");
 	}
 	/**
 	 * Returns database index
@@ -404,7 +407,7 @@ class Comments {
 	 * @return string
 	 */
 	function block ($item) {
-		$L	= Language::instance();
+		$L	= new Language_prefix('comments_');
 		return h::{'section#comments.cs-comments-comments'}(
 			$L->comments.':'.
 			(
