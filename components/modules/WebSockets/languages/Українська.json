@@ -1,14 +1,20 @@
 {
-	"WebSockets"                       : "WebSockets",
-	"websockets_security_key"          : "Ключ безпеки",
-	"websockets_security_key_info"     : "Ключ безпеки використовується для генерації адрес, які не можуть бути вгаданими. Рядок має бути випадковим.",
-	"websockets_listen_port"           : "Слухати порт",
-	"websockets_listen_port_info"      : "Порт на якому WebSockets-сервер буде слухати вхідні з'єднання. Не повинен бути зайнятий нічим іншим, інакше сервер не запуститься",
-	"websockets_listen_on"             : "Слухати на",
-	"websockets_listen_on_info"        : "Адреса, на якій сервер повинен слухати вхідні з'єднання. Поскільки спереду зазвичай стоїть якийсь реверсивний проксі (на кшталт Nginx), краще вибрати 127.0.0.1",
-	"websockets_dns_server"            : "DNS сервер",
-	"websockets_dns_server_info"       : "IP DNS серверу, який буде використовуватись для визначення IP адрес WebSockets мастер-серверу з його доменного імені",
-	"websockets_server_is_running"     : "Сервер WebSockets запущено",
-	"websockets_server_is_not_running" : "Сервер WebSockets не запущено",
-	"websockets_start_server"          : "Запустити сервер WebSockets"
+	"WebSockets"  : "WebSockets",
+	"websockets_" : {
+		"security_key"          : "Ключ безпеки",
+		"security_key_info"     : "Ключ безпеки використовується для генерації адрес, які не можуть бути вгаданими. Рядок має бути випадковим.",
+		"listen_port"           : "Слухати порт",
+		"listen_port_info"      : "Порт на якому WebSockets-сервер буде слухати вхідні з'єднання. Не повинен бути зайнятий нічим іншим, інакше сервер не запуститься",
+		"listen_on"             : "Слухати на",
+		"listen_on_info"        : "Адреса, на якій сервер повинен слухати вхідні з'єднання. Поскільки спереду зазвичай стоїть якийсь реверсивний проксі (на кшталт Nginx), краще вибрати 127.0.0.1",
+		"dns_server"            : "DNS сервер",
+		"dns_server_info"       : "IP DNS серверу, який буде використовуватись для визначення IP адрес WebSockets мастер-серверу з його доменного імені",
+		"server_is_running"     : "Сервер WebSockets запущено",
+		"server_is_not_running" : "Сервер WebSockets не запущено",
+		"start_server"          : "Запустити сервер WebSockets",
+		"save"                  : "Зберегти",
+		"save_info"             : "Зберегти зміни",
+		"changes_saved"         : "Зміни збережені",
+		"changes_save_error"    : "Помилка збереження змін"
+	}
 }

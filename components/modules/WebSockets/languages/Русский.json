@@ -1,14 +1,20 @@
 {
-	"WebSockets"                       : "WebSockets",
-	"websockets_security_key"          : "Ключ безопасности",
-	"websockets_security_key_info"     : "Ключ безопасности используется для генерации адресов, которые не могут быть угаданными. Строка должна быть случайной.",
-	"websockets_listen_port"           : "Слушать порт",
-	"websockets_listen_port_info"      : "Порт на котором WebSockets-сервер будет слушать входящие соединения. Не должен быть занят ничем другим, иначе сервер не запустится",
-	"websockets_listen_on"             : "Слушать на",
-	"websockets_listen_on_info"        : "Адресс, на котором сервер должен слушать входящие соединения. Посколько спереди обычно стоит какой-то реверсивный прокси (вроде Nginx), лучше выбрать 127.0.0.1",
-	"websockets_dns_server"            : "DNS сервер",
-	"websockets_dns_server_info"       : "IP DNS сервера, котрый будет использоваться для определения IP адреса WebSockets мастер-сервера из его доменного имени",
-	"websockets_server_is_running"     : "Сервер WebSockets запущен",
-	"websockets_server_is_not_running" : "Сервер WebSockets не запущен",
-	"websockets_start_server"          : "Запустить сервер WebSockets"
+	"WebSockets"  : "WebSockets",
+	"websockets_" : {
+		"security_key"          : "Ключ безопасности",
+		"security_key_info"     : "Ключ безопасности используется для генерации адресов, которые не могут быть угаданными. Строка должна быть случайной.",
+		"listen_port"           : "Слушать порт",
+		"listen_port_info"      : "Порт на котором WebSockets-сервер будет слушать входящие соединения. Не должен быть занят ничем другим, иначе сервер не запустится",
+		"listen_on"             : "Слушать на",
+		"listen_on_info"        : "Адресс, на котором сервер должен слушать входящие соединения. Посколько спереди обычно стоит какой-то реверсивный прокси (вроде Nginx), лучше выбрать 127.0.0.1",
+		"dns_server"            : "DNS сервер",
+		"dns_server_info"       : "IP DNS сервера, котрый будет использоваться для определения IP адреса WebSockets мастер-сервера из его доменного имени",
+		"server_is_running"     : "Сервер WebSockets запущен",
+		"server_is_not_running" : "Сервер WebSockets не запущен",
+		"start_server"          : "Запустить сервер WebSockets",
+		"save"                  : "Сохранить",
+		"save_info"             : "Сохранить изменения",
+		"changes_saved"         : "Изменения сохранены",
+		"changes_save_error"    : "Ошибка сохранения изменений"
+	}
 }
