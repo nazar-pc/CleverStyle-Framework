@@ -265,7 +265,7 @@ abstract class _Abstract {
 	 * Similar to ::f() method, with parameter <b>$single_column</b> = true
 	 *
 	 * @param false|object|resource $query_result
-	 * @param bool                  $array   If <b>true</b> returns array of associative arrays of all fetched rows
+	 * @param bool                  $array If <b>true</b> returns array of associative arrays of all fetched rows
 	 *
 	 * @return false|int|int[]|string|string[]
 	 */
@@ -326,8 +326,8 @@ abstract class _Abstract {
 	 *
 	 * Combination of ::q() and ::fs() methods
 	 *
-	 * @param array|string $query   SQL query string, or you can put all parameters, that ::q() function can accept in form of array
-	 * @param bool         $array   If <b>true</b> returns array of associative arrays of all fetched rows
+	 * @param array|string $query SQL query string, or you can put all parameters, that ::q() function can accept in form of array
+	 * @param bool         $array If <b>true</b> returns array of associative arrays of all fetched rows
 	 *
 	 * @return false|int|int[]|string|string[]
 	 */
@@ -458,7 +458,7 @@ abstract class _Abstract {
 	 * @param string       $table
 	 * @param false|string $like
 	 *
-	 * @return false|string[]
+	 * @return string[]
 	 */
 	function columns ($table, $like = false) {
 		if (!$table) {
@@ -466,9 +466,9 @@ abstract class _Abstract {
 		}
 		if ($like) {
 			$like    = $this->s($like);
-			$columns = $this->qfa("SHOW COLUMNS FROM `$table` LIKE $like");
+			$columns = $this->qfa("SHOW COLUMNS FROM `$table` LIKE $like") ?: [];
 		} else {
-			$columns = $this->qfa("SHOW COLUMNS FROM `$table`");
+			$columns = $this->qfa("SHOW COLUMNS FROM `$table`") ?: [];
 		}
 		foreach ($columns as &$column) {
 			$column = $column['Field'];
@@ -480,14 +480,14 @@ abstract class _Abstract {
 	 *
 	 * @param false|string $like
 	 *
-	 * @return false|string[]
+	 * @return string[]
 	 */
 	function tables ($like = false) {
 		if ($like) {
 			$like = $this->s($like);
-			return $this->qfas("SHOW TABLES FROM `$this->database` LIKE $like");
+			return $this->qfas("SHOW TABLES FROM `$this->database` LIKE $like") ?: [];
 		} else {
-			return $this->qfas("SHOW TABLES FROM `$this->database`");
+			return $this->qfas("SHOW TABLES FROM `$this->database`") ?: [];
 		}
 	}
 	/**

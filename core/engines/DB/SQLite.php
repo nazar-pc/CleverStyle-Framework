@@ -127,7 +127,7 @@ class SQLite extends _Abstract {
 		if (!$table) {
 			return false;
 		}
-		$columns = $this->qfa("PRAGMA table_info(`$table`)");
+		$columns = $this->qfa("PRAGMA table_info(`$table`)") ?: [];
 		foreach ($columns as &$column) {
 			$column = $column['name'];
 		}
@@ -163,7 +163,7 @@ class SQLite extends _Abstract {
 					`type` = 'table' AND
 					`name` != 'sqlite_sequence' AND
 					`name` LIKE $like"
-			);
+			) ?: [];
 		} else {
 			return $this->qfas(
 				"SELECT `name`
@@ -171,7 +171,7 @@ class SQLite extends _Abstract {
 				WHERE
 					`type` = 'table' AND
 					`name` != 'sqlite_sequence'"
-			);
+			) ?: [];
 		}
 	}
 	/**
