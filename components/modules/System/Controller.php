@@ -17,26 +17,6 @@ use
 	cs\Route,
 	cs\User;
 class Controller {
-	static function profile () {
-		$rc       = &Route::instance()->route;
-		$subparts = file_get_json(__DIR__.'/index.json')[$rc[0]];
-		$User     = User::instance();
-		if (
-			(
-				!isset($rc[1]) && $User->user()
-			) ||
-			(
-				isset($rc[1]) && !in_array($rc[1], $subparts)
-			)
-		) {
-			if (isset($rc[1])) {
-				$rc[2] = $rc[1];
-			} else {
-				$rc[2] = $User->login;
-			}
-			$rc[1] = $subparts[0];
-		}
-	}
 	static function profile_registration_confirmation () {
 		$Config = Config::instance();
 		$L      = new Prefix('system_profile_');
