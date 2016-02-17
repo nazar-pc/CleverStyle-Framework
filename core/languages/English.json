@@ -321,7 +321,8 @@
 				"partial_cache_cleaning"     : "Partial cache cleaning",
 				"clean_settings_cache"       : "Clear settings cache",
 				"clean_scripts_styles_cache" : "Clear the cache of scripts and styles",
-				"done"                       : "Done"
+				"done"                       : "Done",
+				"error"                      : "Error"
 			},
 			"permissions"                           : "Permissions",
 			"permissions_"                          : {

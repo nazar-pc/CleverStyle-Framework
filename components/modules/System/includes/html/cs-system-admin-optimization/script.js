@@ -9,7 +9,7 @@
  */
 (function(){
   var L;
-  L = cs.Language;
+  L = cs.Language('system_admin_optimization_');
   Polymer({
     'is': 'cs-system-admin-optimization',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_optimization_'), cs.Polymer.behaviors.admin.System.settings],

@@ -321,7 +321,8 @@
 				"partial_cache_cleaning"     : "Частичная очистка кэша",
 				"clean_settings_cache"       : "Очистить кэш параметров",
 				"clean_scripts_styles_cache" : "Очистить кэш скриптов и стилей",
-				"done"                       : "Готово"
+				"done"                       : "Готово",
+				"error"                      : "Ошибка"
 			},
 			"permissions"                           : "Разрешения",
 			"permissions_"                          : {
