@@ -8,9 +8,10 @@
  */
 namespace cs;
 use
+	cs\Language\Prefix,
 	h;
 
-$L           = Language::instance();
+$L           = new Prefix('uploader_');
 $Page        = Page::instance();
 $module_data = Config::instance()->module('Uploader');
 if (isset($_POST['max_file_size'], $_POST['confirmation_time'])) {
@@ -27,7 +28,6 @@ if (isset($_POST['max_file_size'], $_POST['confirmation_time'])) {
 	}
 }
 
-$L = Language::instance();
 $Page->content(
 	h::{'form[is=cs-form]'}(
 		h::label("$L->upload_size_limit (b, kb, mb, gb)").
