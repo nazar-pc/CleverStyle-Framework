@@ -11,15 +11,16 @@ use
 	h,
 	cs\Config,
 	cs\ExitException,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\User;
+
 $Config = Config::instance();
 $User   = User::instance();
 if (!$User->user()) {
 	throw new ExitException(403);
 }
-$L    = Language::instance();
+$L    = new Prefix('blogs_');
 $Page = Page::instance();
 if (empty($_POST['title'])) {
 	$Page->warning($L->post_title_empty);

@@ -9,10 +9,10 @@
 namespace cs\modules\Blogs;
 use
 	h,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page;
 
-$L    = Language::instance();
+$L    = new Prefix('blogs_');
 $Page = Page::instance();
 $Page->title($L->browse_sections);
 $Page->content(

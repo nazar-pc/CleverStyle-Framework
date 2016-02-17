@@ -12,7 +12,7 @@
   Polymer({
     'is': 'cs-blogs-posts-post',
     'extends': 'article',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {
       post: {},
       comments_enabled: false

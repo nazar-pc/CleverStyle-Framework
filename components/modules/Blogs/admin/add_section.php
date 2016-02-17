@@ -10,12 +10,12 @@ namespace cs\modules\Blogs;
 use
 	h,
 	cs\Config,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route;
 
 $Config = Config::instance();
-$L      = Language::instance();
+$L      = new Prefix('blogs_');
 $Page   = Page::instance();
 $Route  = Route::instance();
 $Page->title($L->addition_of_posts_section);
@@ -34,7 +34,7 @@ $Page->content(
 		h::label($L->section_title).
 		h::{'input[is=cs-input-text][name=title]'}().
 		($Config->core['simple_admin_mode'] ? false :
-			h::{'label info'}('section_path').
+			h::{'label info'}('blogs_section_path').
 			h::{'input[is=cs-input-text][name=path]'}()
 		).
 		h::p(

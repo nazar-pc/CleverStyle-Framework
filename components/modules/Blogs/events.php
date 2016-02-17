@@ -7,12 +7,15 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
+use
+	cs\Language\Prefix;
+
 Event::instance()
 	->on(
 		'System/Route/routing_replace',
 		function ($data) {
 			$rc = explode('/', $data['rc']);
-			$L  = Language::instance();
+			$L  = new Prefix('blogs_');
 			if ($rc[0] != 'Blogs' && $rc[0] != path($L->Blogs)) {
 				return;
 			}

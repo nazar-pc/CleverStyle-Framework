@@ -10,13 +10,13 @@ namespace cs\modules\Blogs;
 use
 	h,
 	cs\Config,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route;
 
 $section = Sections::instance()->get(Route::instance()->route[1]);
 $Config  = Config::instance();
-$L       = Language::instance();
+$L       = new Prefix('blogs_');
 $Page    = Page::instance();
 $Page->title($L->editing_of_posts_section($section['title']));
 $Page->content(
@@ -38,7 +38,7 @@ $Page->content(
 			]
 		).
 		($Config->core['simple_admin_mode'] ? false :
-			h::{'label info'}('section_path').
+			h::{'label info'}('blogs_section_path').
 			h::{'input[is=cs-input-text][name=path]'}(
 				[
 					'value' => $section['path']

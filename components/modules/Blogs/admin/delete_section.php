@@ -9,12 +9,12 @@
 namespace cs\modules\Blogs;
 use
 	h,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route;
 
 $section = Sections::instance()->get(Route::instance()->route[1]);
-$L       = Language::instance();
+$L       = new Prefix('blogs_');
 $Page    = Page::instance();
 $Page->title($L->deletion_of_posts_section($section['title']));
 $Page->content(

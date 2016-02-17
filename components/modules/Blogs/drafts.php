@@ -10,7 +10,7 @@ namespace cs\modules\Blogs;
 use
 	cs\Config,
 	cs\Event,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route,
 	cs\User;
@@ -19,7 +19,7 @@ if (!Event::instance()->fire('Blogs/drafts')) {
 	return;
 }
 $Config = Config::instance();
-$L      = Language::instance();
+$L      = new Prefix('blogs_');
 $Page   = Page::instance();
 $Posts  = Posts::instance();
 $Route  = Route::instance();

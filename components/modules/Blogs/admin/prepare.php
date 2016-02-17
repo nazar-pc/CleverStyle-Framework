@@ -11,10 +11,11 @@ use
 	h,
 	cs\Config,
 	cs\DB,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\User;
+
 function get_sections_rows ($structure = null, $level = 0) {
-	$L			= Language::instance();
+	$L			= new Prefix('blogs_');
 	$root		= false;
 	$module		= path($L->Blogs);
 	if ($structure === null) {
@@ -77,7 +78,8 @@ function get_sections_select_section ($current = null, $structure = null, $level
 	];
 	if ($structure === null) {
 		$structure			= Sections::instance()->get_structure();
-		$list['in'][]		= Language::instance()->root_section;
+		$L					= new Prefix('blogs_');
+		$list['in'][]		= $L->root_section;
 		$list['value'][]	= 0;
 	} else {
 		if ($structure['id'] == $current) {
@@ -99,7 +101,7 @@ function get_posts_rows ($page = 1) {
 	$Posts		= Posts::instance();
 	$Sections	= Sections::instance();
 	$Config		= Config::instance();
-	$L			= Language::instance();
+	$L			= new Prefix('blogs_');
 	$User		= User::instance();
 	$module		= path($L->Blogs);
 	$page		= (int)$page ?: 1;

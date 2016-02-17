@@ -9,13 +9,13 @@
 namespace cs\modules\Blogs;
 use
 	cs\Config,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page;
 
 if (!isset($_POST['mode'])) {
 	return;
 }
-$L        = Language::instance();
+$L        = new Prefix('blogs_');
 $Page     = Page::instance();
 $Posts    = Posts::instance();
 $Sections = Sections::instance();

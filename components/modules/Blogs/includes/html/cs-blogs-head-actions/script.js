@@ -9,13 +9,9 @@
  */
 
 (function() {
-  var L;
-
-  L = cs.Language;
-
   Polymer({
     'is': 'cs-blogs-head-actions',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {
       admin: false,
       can_write_post: false

@@ -12,7 +12,7 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route,
 	cs\User;
@@ -23,7 +23,7 @@ if (!Event::instance()->fire('Blogs/new_post')) {
 
 $Config      = Config::instance();
 $module_data = $Config->module('Blogs');
-$L           = Language::instance();
+$L           = new Prefix('blogs_');
 $Page        = Page::instance();
 $Route       = Route::instance();
 $User        = User::instance();

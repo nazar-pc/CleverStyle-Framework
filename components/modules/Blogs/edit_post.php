@@ -12,7 +12,7 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route,
 	cs\User;
@@ -24,7 +24,7 @@ if (!Event::instance()->fire('Blogs/edit_post')) {
 $Posts       = Posts::instance();
 $Config      = Config::instance();
 $module_data = $Config->module('Blogs');
-$L           = Language::instance();
+$L           = new Prefix('blogs_');
 $Page        = Page::instance();
 $Route       = Route::instance();
 $User        = User::instance();
@@ -97,7 +97,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 }
 $disabled     = [];
 $max_sections = $module_data->max_sections;
-$content      = uniqid('post_content');
+$content      = uniqid('post_content', true);
 $Page->replace($content, isset($_POST['content']) ? $_POST['content'] : $post['content']);
 $sections = get_sections_select_post($disabled);
 if (count($sections['in']) > 1) {

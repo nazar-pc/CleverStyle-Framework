@@ -10,12 +10,12 @@ namespace cs\modules\Blogs;
 use
 	h,
 	cs\Config,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route;
 
 $Config = Config::instance();
-$L      = Language::instance();
+$L      = new Prefix('blogs_');
 $Page   = Page::instance();
 $Route  = Route::instance();
 $page   = isset($Route->route[1]) ? (int)$Route->route[1] : 1;

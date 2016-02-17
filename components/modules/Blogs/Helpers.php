@@ -9,7 +9,7 @@
 namespace cs\modules\Blogs;
 use
 	cs\Config,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\User,
 	h;
@@ -27,7 +27,7 @@ class Helpers {
 	 */
 	static function show_posts_list ($posts, $posts_count, $page, $base_url) {
 		$module_data = Config::instance()->module('Blogs');
-		$L           = Language::instance();
+		$L           = new Prefix('blogs_');
 		$Page        = Page::instance();
 		$User        = User::instance();
 		$Page->content(

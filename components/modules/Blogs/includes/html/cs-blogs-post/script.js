@@ -9,14 +9,10 @@
  */
 
 (function() {
-  var L;
-
-  L = cs.Language;
-
   Polymer({
     'is': 'cs-blogs-post',
     'extends': 'article',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {
       can_edit: false,
       can_delete: false,

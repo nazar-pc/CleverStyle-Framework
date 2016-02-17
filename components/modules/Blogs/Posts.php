@@ -9,9 +9,10 @@
 namespace cs\modules\Blogs;
 use
 	cs\Event,
-	cs\Cache\Prefix,
+	cs\Cache\Prefix as Cache_prefix,
 	cs\Config,
 	cs\Language,
+	cs\Language\Prefix as Language_prefix,
 	cs\User,
 	cs\CRUD,
 	cs\Singleton,
@@ -39,12 +40,12 @@ class Posts {
 	protected $table_sections              = '[prefix]blogs_posts_sections';
 	protected $table_tags                  = '[prefix]blogs_posts_tags';
 	/**
-	 * @var Prefix
+	 * @var Cache_prefix
 	 */
 	protected $cache;
 
 	protected function construct () {
-		$this->cache = new Prefix('Blogs');
+		$this->cache = new Cache_prefix('Blogs');
 		if (Config::instance()->module('Blogs')->allow_iframes_without_content) {
 			$this->data_model['content'] = 'ml:html_iframe';
 		}
@@ -180,7 +181,7 @@ class Posts {
 				'title'
 			);
 		}
-		$L            = Language::instance();
+		$L            = new Language_prefix('blogs_');
 		$base_url     = Config::instance()->base_url();
 		$module_path  = path($L->Blogs);
 		$section_path = "$base_url/$module_path/".path($L->section);

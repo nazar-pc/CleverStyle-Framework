@@ -10,7 +10,7 @@ namespace cs\modules\Blogs;
 use
 	cs\Config,
 	cs\Event,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page\Meta,
 	cs\Page,
 	cs\Route;
@@ -19,7 +19,7 @@ if (!Event::instance()->fire('Blogs/latest_posts')) {
 	return;
 }
 $Config = Config::instance();
-$L      = Language::instance();
+$L      = new Prefix('blogs_');
 $Meta   = Meta::instance();
 $Page   = Page::instance();
 $Posts  = Posts::instance();

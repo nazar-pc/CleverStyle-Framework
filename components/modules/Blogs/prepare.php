@@ -8,7 +8,8 @@
  */
 namespace cs\modules\Blogs;
 use
-	cs\Language;
+	cs\Language\Prefix;
+
 if (!api_path() && !function_exists(__NAMESPACE__.'\\get_sections_select_post')) {
 	function get_sections_select_post (&$disabled, $current = null, $structure = null, $level = 0) {
 		$list = [
@@ -17,7 +18,8 @@ if (!api_path() && !function_exists(__NAMESPACE__.'\\get_sections_select_post'))
 		];
 		if ($structure === null) {
 			$structure       = Sections::instance()->get_structure();
-			$list['in'][]    = Language::instance()->root_section;
+			$L               = new Prefix('blogs_');
+			$list['in'][]    = $L->root_section;
 			$list['value'][] = 0;
 		} else {
 			if ($structure['id'] == $current) {
