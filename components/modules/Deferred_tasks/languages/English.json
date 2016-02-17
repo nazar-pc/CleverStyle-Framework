@@ -1,9 +1,14 @@
 {
-	"Deferred_tasks"							: "Deferred tasks",
-	"deferred_tasks_security_key"				: "Security key",
-	"deferred_tasks_security_key_info"			: "Security key is used in order to generate urls that can't be guessed. String should be random.",
-	"deferred_tasks_max_number_of_workers"		: "Max number of workers",
-	"deferred_tasks_max_number_of_workers_info"	: "Maximum numbers of tasks that can be executed at the same time",
-	"deferred_tasks_insert_line_into_cron"		: "Add next line to your cron file",
-	"deferred_tasks_or_use_online_services"		: "or use next url for online cron services"
+	"Deferred_tasks"  : "Deferred tasks",
+	"deferred_tasks_" : {
+		"security_key"               : "Security key",
+		"security_key_info"          : "Security key is used in order to generate urls that can't be guessed. String should be random.",
+		"max_number_of_workers"      : "Max number of workers",
+		"max_number_of_workers_info" : "Maximum numbers of tasks that can be executed at the same time",
+		"insert_line_into_cron"      : "Add next line to your cron file",
+		"or_use_online_services"     : "or use next url for online cron services",
+		"save"                       : "Save",
+		"save_info"                  : "Save changes",
+		"changes_saved"              : "Changes saved"
+	}
 }

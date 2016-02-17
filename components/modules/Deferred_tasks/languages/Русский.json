@@ -1,9 +1,14 @@
 {
-	"Deferred_tasks"							: "Отложенные задачи",
-	"deferred_tasks_security_key"				: "Ключ безопасности",
-	"deferred_tasks_security_key_info"			: "Ключ безопасности используется для генерации адресов, которые не могут быть угаданными. Строка должна быть случайной.",
-	"deferred_tasks_max_number_of_workers"		: "Максимальное количество воркеров",
-	"deferred_tasks_max_number_of_workers_info"	: "Максимальное количество задач, которые могут быть запущены одновременно",
-	"deferred_tasks_insert_line_into_cron"		: "Добавьте следующую строчку в ваш cron файл",
-	"deferred_tasks_or_use_online_services"		: "или используйте следующий адрес для online cron сервисов"
+	"Deferred_tasks"  : "Отложенные задачи",
+	"deferred_tasks_" : {
+		"security_key"               : "Ключ безопасности",
+		"security_key_info"          : "Ключ безопасности используется для генерации адресов, которые не могут быть угаданными. Строка должна быть случайной.",
+		"max_number_of_workers"      : "Максимальное количество воркеров",
+		"max_number_of_workers_info" : "Максимальное количество задач, которые могут быть запущены одновременно",
+		"insert_line_into_cron"      : "Добавьте следующую строчку в ваш cron файл",
+		"or_use_online_services"     : "или используйте следующий адрес для online cron сервисов",
+		"save"                       : "Сохранить",
+		"save_info"                  : "Сохранить изменения",
+		"changes_saved"              : "Изменения сохранены"
+	}
 }
