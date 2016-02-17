@@ -15,25 +15,24 @@ class MySQLi extends _Abstract {
 	 * @inheritdoc
 	 */
 	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8mb4', $prefix = '') {
-		$this->connecting_time = microtime(true);
+		$start = microtime(true);
 		/**
 		 * Parsing of $host variable, detecting port and persistent connection
 		 */
 		list($host, $port) = $this->get_host_and_port($host);
 		$this->instance = @new \MySQLi($host, $user, $password, $database, $port);
-		if (is_object($this->instance) && !$this->instance->connect_errno) {
-			$this->database = $database;
-			/**
-			 * Changing DB charset
-			 */
-			if ($charset && $charset != $this->instance->character_set_name()) {
-				$this->instance->set_charset($charset);
-			}
-			$this->connected = true;
-		} else {
+		if (!is_object($this->instance) || $this->instance->connect_errno) {
 			return;
 		}
-		$this->connecting_time = microtime(true) - $this->connecting_time;
+		$this->database = $database;
+		/**
+		 * Changing DB charset
+		 */
+		if ($charset && $charset != $this->instance->character_set_name()) {
+			$this->instance->set_charset($charset);
+		}
+		$this->connected       = true;
+		$this->connecting_time = microtime(true) - $start;
 		$this->db_type         = 'mysql';
 		$this->prefix          = $prefix;
 	}

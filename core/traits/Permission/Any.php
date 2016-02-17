@@ -107,7 +107,7 @@ trait Any {
 			$return =
 				$return &&
 				$this->db_prime()->insert(
-					"INSERT INTO `$table`
+					"REPLACE INTO `$table`
 						(
 							`id`,
 							`permission`,
@@ -116,8 +116,7 @@ trait Any {
 							'$id',
 							'%d',
 							'%d'
-						)
-					ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)",
+						)",
 					$insert_update
 				);
 		}

@@ -35,7 +35,7 @@ class Social_integration {
 	 */
 	function add ($user_id, $provider, $identifier, $profile) {
 		return $this->db_prime()->q(
-			"INSERT INTO `[prefix]users_social_integration`
+			"REPLACE INTO `[prefix]users_social_integration`
 				(
 					`id`,
 					`provider`,
@@ -46,10 +46,7 @@ class Social_integration {
 					'%s',
 					'%s',
 					'%s'
-				)
-			ON DUPLICATE KEY UPDATE
-				`id`		= VALUES(`id`),
-				`profile`	= VALUES(`profile`)",
+				)",
 			$user_id,
 			$provider,
 			$identifier,

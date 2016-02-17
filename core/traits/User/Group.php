@@ -97,7 +97,7 @@ trait Group {
 		$return =
 			$return &&
 			$this->db_prime()->insert(
-				"INSERT INTO `[prefix]users_groups`
+				"REPLACE INTO `[prefix]users_groups`
 					(
 						`id`,
 						`group`,
@@ -106,8 +106,7 @@ trait Group {
 						'$user',
 						'%d',
 						'%d'
-					)
-				ON DUPLICATE KEY UPDATE `priority` = VALUES(`priority`)",
+					)",
 				$insert_update
 			);
 		unset($insert_update);

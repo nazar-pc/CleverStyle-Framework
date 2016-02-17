@@ -413,7 +413,7 @@ trait Data {
 			}
 			unset($i, $v);
 			$result = $this->db_prime()->insert(
-				"INSERT INTO `[prefix]users_data`
+				"REPLACE INTO `[prefix]users_data`
 					(
 						`id`,
 						`item`,
@@ -422,13 +422,12 @@ trait Data {
 						$user,
 						'%s',
 						'%s'
-					)
-				ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)",
+					)",
 				$params
 			);
 		} else {
 			$result = $this->db_prime()->q(
-				"INSERT INTO `[prefix]users_data`
+				"REPLACE INTO `[prefix]users_data`
 					(
 						`id`,
 						`item`,
@@ -437,8 +436,7 @@ trait Data {
 						'$user',
 						'%s',
 						'%s'
-					)
-				ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)",
+					)",
 				$item,
 				_json_encode($value)
 			);

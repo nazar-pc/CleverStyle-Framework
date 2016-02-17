@@ -35,7 +35,11 @@ function install_form () {
 			).
 			h::{'tr.expert td'}(
 				'Database host:',
-				h::{'input[name=db_host][value=localhost]'}()
+				h::{'input[name=db_host][value=localhost]'}(
+					[
+						'placeholder' => 'Relative or absolute path to DB for SQLite'
+					]
+				)
 			).
 			h::{'tr td'}(
 				'Database name:',
@@ -121,22 +125,13 @@ function install_process ($fs, $argv = null) {
 	require_once DIR.'/fs/'.$fs['core/engines/DB/_Abstract.php'];
 	require_once DIR.'/fs/'.$fs["core/engines/DB/$_POST[db_engine].php"];
 	require_once DIR.'/fs/'.$fs['core/classes/False_class.php'];
-	$_SERVER = new \cs\_SERVER($_SERVER);
 	/**
-	 * @var \cs\DB\_Abstract $cdb
+	 * DataBase structure import
 	 */
-	$cdb = "cs\\DB\\$_POST[db_engine]";
-	$cdb = new $cdb(
-		$_POST['db_name'],
-		$_POST['db_user'],
-		$_POST['db_password'],
-		$_POST['db_host'],
-		$_POST['db_charset'],
-		$_POST['db_prefix']
-	);
-	if (!(is_object($cdb) && $cdb->connected())) {
-		return 'Database connection failed! Installation aborted.';
+	if (!file_exists(DIR."/install/DB/$_POST[db_engine].sql")) {
+		return "Can't find system tables structure for selected database engine! Installation aborted.";
 	}
+	$_SERVER = new \cs\_SERVER($_SERVER);
 	/**
 	 * General system configuration
 	 */
@@ -297,10 +292,19 @@ function install_process ($fs, $argv = null) {
 	}
 	chmod(ROOT.'/config/main.json', 0600);
 	/**
-	 * DataBase structure import
+	 * @var \cs\DB\_Abstract $cdb
 	 */
-	if (!file_exists(DIR."/install/DB/$_POST[db_engine].sql")) {
-		return "Can't find system tables structure for selected database engine! Installation aborted.";
+	$cdb = "cs\\DB\\$_POST[db_engine]";
+	$cdb = new $cdb(
+		$_POST['db_name'],
+		$_POST['db_user'],
+		$_POST['db_password'],
+		$_POST['db_host'],
+		$_POST['db_charset'],
+		$_POST['db_prefix']
+	);
+	if (!(is_object($cdb) && $cdb->connected())) {
+		return 'Database connection failed! Installation aborted.';
 	}
 	if (!$cdb->q(
 		array_filter(
@@ -364,7 +368,7 @@ function install_process ($fs, $argv = null) {
 		$_POST['admin_email'],
 		hash('sha224', $_POST['admin_email']),
 		time(),
-		$_SERVER->remote_addr,
+		ip2hex($_SERVER->remote_addr),
 		1
 	)
 	) {
@@ -377,9 +381,7 @@ function install_process ($fs, $argv = null) {
 	$warning   = false;
 	$cli       = PHP_SAPI == 'cli';
 	$installer = $cli ? ROOT."/$argv[0]" : ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME);
-	if (is_writable($installer)) {
-		unlink($installer);
-	} else {
+	if (!is_writable($installer) || !unlink($installer)) {
 		$warning = "Please, remove installer file $installer for security!\n";
 	}
 	if ($cli) {
