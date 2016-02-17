@@ -11,7 +11,7 @@
 (function() {
   $(function() {
     var L, make_modal;
-    L = cs.Language;
+    L = cs.Language('shop_');
     make_modal = function(shipping_types, order_statuses, payment_methods, title, action) {
       var details, method, modal, payment_methods_list, shipping_types_list;
       shipping_types = (function() {
@@ -69,7 +69,7 @@
         return results;
       })();
       payment_methods_list = payment_methods_list.join('');
-      modal = $(cs.ui.simple_modal("<form>\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<p hidden>\n		" + L.shop_datetime + ": <span class=\"date\"></span>\n	</p>\n	<p>\n		" + L.shop_user + ": <span class=\"username\"></span>, id: <input is=\"cs-input-text\" compact name=\"user\" required>\n	</p>\n	<p>\n		<div class=\"items\"></div>\n		<button is=\"cs-button\" class=\"add-item\">" + L.shop_add_item + "</button>\n	</p>\n	<p>\n		" + L.shop_shipping_type + ": <select is=\"cs-select\" name=\"shipping_type\" required>" + shipping_types_list + "</select>\n	</p>\n	<p>\n		" + L.shop_shipping_cost + ": <input is=\"cs-input-text\" name=\"shipping_cost\"> (<span id=\"shipping_cost\"></span>)\n	</p>\n	<p>\n		" + L.shop_shipping_username + ": <input is=\"cs-input-text\" name=\"shipping_username\">\n	</p>\n	<p>\n		" + L.shop_shipping_phone + ": <input is=\"cs-input-text\" name=\"shipping_phone\">\n	</p>\n	<p>\n		" + L.shop_shipping_address + ": <textarea is=\"cs-textarea\" autosize name=\"shipping_address\"></textarea>\n	</p>\n	<p>\n		" + L.shop_payment_method + ": <select is=\"cs-select\" name=\"payment_method\" required>" + payment_methods_list + "</select>\n	</p>\n	<p>\n		" + L.shop_paid + ":\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"paid\" value=\"1\"> " + L.shop_yes + "</label>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"paid\" value=\"0\" checked> " + L.shop_no + "</label>\n	</p>\n	<p>\n		" + L.shop_status + ": <select is=\"cs-select\" name=\"status\" required>" + order_statuses + "</select>\n	</p>\n	<p>\n		" + L.shop_comment + ": <textarea is=\"cs-textarea\" autosize name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n	</p>\n</form>"));
+      modal = $(cs.ui.simple_modal("<form>\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<p hidden>\n		" + L.datetime + ": <span class=\"date\"></span>\n	</p>\n	<p>\n		" + L.user + ": <span class=\"username\"></span>, id: <input is=\"cs-input-text\" compact name=\"user\" required>\n	</p>\n	<p>\n		<div class=\"items\"></div>\n		<button is=\"cs-button\" class=\"add-item\">" + L.add_item + "</button>\n	</p>\n	<p>\n		" + L.shipping_type + ": <select is=\"cs-select\" name=\"shipping_type\" required>" + shipping_types_list + "</select>\n	</p>\n	<p>\n		" + L.shipping_cost + ": <input is=\"cs-input-text\" name=\"shipping_cost\"> (<span id=\"shipping_cost\"></span>)\n	</p>\n	<p>\n		" + L.shipping_username + ": <input is=\"cs-input-text\" name=\"shipping_username\">\n	</p>\n	<p>\n		" + L.shipping_phone + ": <input is=\"cs-input-text\" name=\"shipping_phone\">\n	</p>\n	<p>\n		" + L.shipping_address + ": <textarea is=\"cs-textarea\" autosize name=\"shipping_address\"></textarea>\n	</p>\n	<p>\n		" + L.payment_method + ": <select is=\"cs-select\" name=\"payment_method\" required>" + payment_methods_list + "</select>\n	</p>\n	<p>\n		" + L.paid + ":\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"paid\" value=\"1\"> " + L.yes + "</label>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"paid\" value=\"0\" checked> " + L.no + "</label>\n	</p>\n	<p>\n		" + L.status + ": <select is=\"cs-select\" name=\"status\" required>" + order_statuses + "</select>\n	</p>\n	<p>\n		" + L.comment + ": <textarea is=\"cs-textarea\" autosize name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n	</p>\n</form>"));
       (function() {
         var timeout;
         timeout = 0;
@@ -104,7 +104,7 @@
           callback = function(item_data) {
             var total_price;
             total_price = item_data.price * item.units;
-            items_container.append("<p>\n	" + L.shop_item + ": <input is=\"cs-input-text\" compact value=\"-\" class=\"title\" readonly>\n	id: <input is=\"cs-input-text\" compact name=\"items[item][]\" value=\"" + item.item + "\" required>\n	" + L.shop_unit_price + " <input is=\"cs-input-text\" compact name=\"items[unit_price][]\" value=\"" + item.unit_price + "\" required> (<span class=\"unit-price\">" + item_data.price + "</span>)\n	" + L.shop_units + " <input is=\"cs-input-text\" compact name=\"items[units][]\" value=\"" + item.units + "\" required>\n	" + L.shop_total_price + " <input is=\"cs-input-text\" compact name=\"items[price][]\" value=\"" + item.price + "\" required> (<span class=\"item-price\" data-original-price=\"" + item_data.price + "\">" + total_price + "</span>)\n	<button is=\"cs-button\" icon=\"close\" type=\"button\" class=\"delete-item\"></button>\n</p>");
+            items_container.append("<p>\n	" + L.item + ": <input is=\"cs-input-text\" compact value=\"-\" class=\"title\" readonly>\n	id: <input is=\"cs-input-text\" compact name=\"items[item][]\" value=\"" + item.item + "\" required>\n	" + L.unit_price + " <input is=\"cs-input-text\" compact name=\"items[unit_price][]\" value=\"" + item.unit_price + "\" required> (<span class=\"unit-price\">" + item_data.price + "</span>)\n	" + L.units + " <input is=\"cs-input-text\" compact name=\"items[units][]\" value=\"" + item.units + "\" required>\n	" + L.total_price + " <input is=\"cs-input-text\" compact name=\"items[price][]\" value=\"" + item.price + "\" required> (<span class=\"item-price\" data-original-price=\"" + item_data.price + "\">" + total_price + "</span>)\n	<button is=\"cs-button\" icon=\"close\" type=\"button\" class=\"delete-item\"></button>\n</p>");
             return items_container.children(':last').find('.title').val(item_data.title);
           };
           if (item.item) {
@@ -164,7 +164,7 @@
       return Promise.all([$.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods')]).then(function(arg) {
         var modal, order_statuses, payment_methods, shipping_types;
         shipping_types = arg[0], order_statuses = arg[1], payment_methods = arg[2];
-        modal = make_modal(shipping_types, order_statuses, payment_methods, L.shop_order_addition, L.shop_add);
+        modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_addition, L.add);
         return modal.find('form').submit(function() {
           var data;
           data = $(this).serialize();
@@ -179,7 +179,7 @@
                 type: 'put',
                 data: data,
                 success: function() {
-                  alert(L.shop_added_successfully);
+                  alert(L.added_successfully);
                   return location.reload();
                 }
               });
@@ -221,7 +221,7 @@
       return Promise.all([$.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods'), $.getJSON("api/Shop/admin/orders/" + id), $.getJSON("api/Shop/admin/orders/" + id + "/items")]).then(function(arg) {
         var items, modal, order, order_statuses, payment_methods, shipping_types;
         shipping_types = arg[0], order_statuses = arg[1], payment_methods = arg[2], order = arg[3], items = arg[4];
-        modal = make_modal(shipping_types, order_statuses, payment_methods, L.shop_order_edition, L.shop_edit);
+        modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_edition, L.edit);
         modal.find('form').submit(function() {
           var data;
           data = $(this).serialize();
@@ -235,7 +235,7 @@
                 type: 'put',
                 data: data,
                 success: function() {
-                  alert(L.shop_edited_successfully);
+                  alert(L.edited_successfully);
                   return location.reload();
                 }
               });
@@ -262,12 +262,12 @@
     }).on('mousedown', '.cs-shop-order-delete', function() {
       var id;
       id = $(this).data('id');
-      if (confirm(L.shop_sure_want_to_delete)) {
+      if (confirm(L.sure_want_to_delete)) {
         return $.ajax({
           url: "api/Shop/admin/orders/" + id,
           type: 'delete',
           success: function() {
-            alert(L.shop_deleted_successfully);
+            alert(L.deleted_successfully);
             return location.reload();
           }
         });

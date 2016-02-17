@@ -139,6 +139,11 @@
 		"paid_success_notification"                : "You have successfully paid for order #%s, thank you!",
 		"paid_error_notification"                  : "Your payment for order #%s finished with error:(",
 		"register_to_finish_order"                 : "In order to finish order you need to be registered user (do not worry, items in your cart will be kept if you register now)",
-		"characteristics"                          : "Characteristics"
+		"characteristics"                          : "Characteristics",
+		"none"                                     : "None",
+		"save"                                     : "Save",
+		"save_info"                                : "Save changes",
+		"changes_saved"                            : "Changes saved",
+		"changes_save_error"                       : "Unable to save changes"
 	}
 }

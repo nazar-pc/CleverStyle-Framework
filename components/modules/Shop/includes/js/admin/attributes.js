@@ -11,7 +11,7 @@
 (function() {
   $(function() {
     var L, make_modal, set_attribute_types;
-    L = cs.Language;
+    L = cs.Language('shop_');
     set_attribute_types = [1, 2, 6, 9];
     make_modal = function(types, title, action) {
       var index, type;
@@ -25,12 +25,12 @@
         return results;
       })();
       types = types.join('');
-      return cs.ui.simple_modal("<form is=\"cs-form\">\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<label>" + L.shop_attribute_type + "</label>\n	<select is=\"cs-select\" name=\"type\" required>" + types + "</select>\n	<label>" + L.shop_possible_values + "</label>\n	<textarea is=\"cs-textarea\" autosize name=\"value\"></textarea>\n	<label>" + L.shop_title + "</label>\n	<input is=\"cs-input-text\" name=\"title\" required>\n	<label>" + L.shop_title_internal + "</label>\n	<input is=\"cs-input-text\" name=\"title_internal\" required>\n	<br>\n	<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n</form>");
+      return cs.ui.simple_modal("<form is=\"cs-form\">\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<label>" + L.attribute_type + "</label>\n	<select is=\"cs-select\" name=\"type\" required>" + types + "</select>\n	<label>" + L.possible_values + "</label>\n	<textarea is=\"cs-textarea\" autosize name=\"value\"></textarea>\n	<label>" + L.title + "</label>\n	<input is=\"cs-input-text\" name=\"title\" required>\n	<label>" + L.title_internal + "</label>\n	<input is=\"cs-input-text\" name=\"title_internal\" required>\n	<br>\n	<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n</form>");
     };
     return $('html').on('mousedown', '.cs-shop-attribute-add', function() {
       return $.getJSON('api/Shop/admin/attributes/types', function(types) {
         var $modal;
-        $modal = $(make_modal(types, L.shop_attribute_addition, L.shop_add));
+        $modal = $(make_modal(types, L.attribute_addition, L.add));
         return $modal.on('submit', 'form', function() {
           var type, value;
           type = $modal.find('[name=type]').val();
@@ -45,7 +45,7 @@
               value: value
             },
             success: function() {
-              alert(L.shop_added_successfully);
+              alert(L.added_successfully);
               return location.reload();
             }
           });
@@ -67,7 +67,7 @@
       return Promise.all([$.getJSON('api/Shop/admin/attributes/types'), $.getJSON("api/Shop/admin/attributes/" + id)]).then(function(arg) {
         var $modal, attribute, types;
         types = arg[0], attribute = arg[1];
-        $modal = $(make_modal(types, L.shop_attribute_edition, L.shop_edit));
+        $modal = $(make_modal(types, L.attribute_edition, L.edit));
         $modal.on('submit', 'form', function() {
           var type, value;
           type = $modal.find('[name=type]').val();
@@ -82,7 +82,7 @@
               value: value
             },
             success: function() {
-              alert(L.shop_edited_successfully);
+              alert(L.edited_successfully);
               return location.reload();
             }
           });
@@ -105,12 +105,12 @@
     }).on('mousedown', '.cs-shop-attribute-delete', function() {
       var id;
       id = $(this).data('id');
-      if (confirm(L.shop_sure_want_to_delete)) {
+      if (confirm(L.sure_want_to_delete)) {
         return $.ajax({
           url: "api/Shop/admin/attributes/" + id,
           type: 'delete',
           success: function() {
-            alert(L.shop_deleted_successfully);
+            alert(L.deleted_successfully);
             return location.reload();
           }
         });

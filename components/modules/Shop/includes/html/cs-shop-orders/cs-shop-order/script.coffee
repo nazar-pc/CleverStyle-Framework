@@ -5,10 +5,12 @@
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
 ###
-L	= cs.Language
+L	= cs.Language('shop_')
 Polymer(
 	'is'				: 'cs-shop-order'
-	behaviors			: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language('shop_')
+	]
 	properties			:
 		order_id			: Number
 		date				: Number
@@ -19,7 +21,7 @@ Polymer(
 		paid				: Boolean
 	ready				: ->
 		@show_pay_now				= !@paid && @payment_method != 'shop:cash'
-		@order_number				= sprintf('' + L.shop_order_number, @order_id)
+		@order_number				= sprintf('' + Lorder_number, @order_id)
 		@order_status				= @querySelector('#order_status').textContent
 		@shipping_type				= @querySelector('#shipping_type').textContent
 		@shipping_cost_formatted	= sprintf(cs.shop.settings.price_formatting, @shipping_cost)

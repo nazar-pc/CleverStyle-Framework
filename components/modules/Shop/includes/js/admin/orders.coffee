@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
 ###
 $ ->
-	L = cs.Language
-	make_modal = (shipping_types, order_statuses, payment_methods, title, action) ->
+	L			= cs.Language('shop_')
+	make_modal	= (shipping_types, order_statuses, payment_methods, title, action) ->
 		shipping_types	= do ->
 			shipping_types_ = {}
 			for shipping_type, shipping_type of shipping_types
@@ -40,43 +40,43 @@ $ ->
 		modal					= $(cs.ui.simple_modal("""<form>
 			<h3 class="cs-text-center">#{title}</h3>
 			<p hidden>
-				#{L.shop_datetime}: <span class="date"></span>
+				#{L.datetime}: <span class="date"></span>
 			</p>
 			<p>
-				#{L.shop_user}: <span class="username"></span>, id: <input is="cs-input-text" compact name="user" required>
+				#{L.user}: <span class="username"></span>, id: <input is="cs-input-text" compact name="user" required>
 			</p>
 			<p>
 				<div class="items"></div>
-				<button is="cs-button" class="add-item">#{L.shop_add_item}</button>
+				<button is="cs-button" class="add-item">#{L.add_item}</button>
 			</p>
 			<p>
-				#{L.shop_shipping_type}: <select is="cs-select" name="shipping_type" required>#{shipping_types_list}</select>
+				#{L.shipping_type}: <select is="cs-select" name="shipping_type" required>#{shipping_types_list}</select>
 			</p>
 			<p>
-				#{L.shop_shipping_cost}: <input is="cs-input-text" name="shipping_cost"> (<span id="shipping_cost"></span>)
+				#{L.shipping_cost}: <input is="cs-input-text" name="shipping_cost"> (<span id="shipping_cost"></span>)
 			</p>
 			<p>
-				#{L.shop_shipping_username}: <input is="cs-input-text" name="shipping_username">
+				#{L.shipping_username}: <input is="cs-input-text" name="shipping_username">
 			</p>
 			<p>
-				#{L.shop_shipping_phone}: <input is="cs-input-text" name="shipping_phone">
+				#{L.shipping_phone}: <input is="cs-input-text" name="shipping_phone">
 			</p>
 			<p>
-				#{L.shop_shipping_address}: <textarea is="cs-textarea" autosize name="shipping_address"></textarea>
+				#{L.shipping_address}: <textarea is="cs-textarea" autosize name="shipping_address"></textarea>
 			</p>
 			<p>
-				#{L.shop_payment_method}: <select is="cs-select" name="payment_method" required>#{payment_methods_list}</select>
+				#{L.payment_method}: <select is="cs-select" name="payment_method" required>#{payment_methods_list}</select>
 			</p>
 			<p>
-				#{L.shop_paid}:
-				<label is="cs-label-button"><input type="radio" name="paid" value="1"> #{L.shop_yes}</label>
-				<label is="cs-label-button"><input type="radio" name="paid" value="0" checked> #{L.shop_no}</label>
+				#{L.paid}:
+				<label is="cs-label-button"><input type="radio" name="paid" value="1"> #{L.yes}</label>
+				<label is="cs-label-button"><input type="radio" name="paid" value="0" checked> #{L.no}</label>
 			</p>
 			<p>
-				#{L.shop_status}: <select is="cs-select" name="status" required>#{order_statuses}</select>
+				#{L.status}: <select is="cs-select" name="status" required>#{order_statuses}</select>
 			</p>
 			<p>
-				#{L.shop_comment}: <textarea is="cs-textarea" autosize name="comment"></textarea>
+				#{L.comment}: <textarea is="cs-textarea" autosize name="comment"></textarea>
 			</p>
 			<p>
 				<button is="cs-button" primary type="submit">#{action}</button>
@@ -105,11 +105,11 @@ $ ->
 				callback	= (item_data) ->
 					total_price	= item_data.price * item.units
 					items_container.append("""<p>
-						#{L.shop_item}: <input is="cs-input-text" compact value="-" class="title" readonly>
+						#{L.item}: <input is="cs-input-text" compact value="-" class="title" readonly>
 						id: <input is="cs-input-text" compact name="items[item][]" value="#{item.item}" required>
-						#{L.shop_unit_price} <input is="cs-input-text" compact name="items[unit_price][]" value="#{item.unit_price}" required> (<span class="unit-price">#{item_data.price}</span>)
-						#{L.shop_units} <input is="cs-input-text" compact name="items[units][]" value="#{item.units}" required>
-						#{L.shop_total_price} <input is="cs-input-text" compact name="items[price][]" value="#{item.price}" required> (<span class="item-price" data-original-price="#{item_data.price}">#{total_price}</span>)
+						#{L.unit_price} <input is="cs-input-text" compact name="items[unit_price][]" value="#{item.unit_price}" required> (<span class="unit-price">#{item_data.price}</span>)
+						#{L.units} <input is="cs-input-text" compact name="items[units][]" value="#{item.units}" required>
+						#{L.total_price} <input is="cs-input-text" compact name="items[price][]" value="#{item.price}" required> (<span class="item-price" data-original-price="#{item_data.price}">#{total_price}</span>)
 						<button is="cs-button" icon="close" type="button" class="delete-item"></button>
 					</p>""")
 					items_container.children(':last').find('.title').val(item_data.title)
@@ -169,7 +169,7 @@ $ ->
 				$.getJSON('api/Shop/admin/order_statuses')
 				$.getJSON('api/Shop/payment_methods')
 			]).then ([shipping_types, order_statuses, payment_methods]) ->
-				modal = make_modal(shipping_types, order_statuses, payment_methods, L.shop_order_addition, L.shop_add)
+				modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_addition, L.add)
 				modal.find('form').submit ->
 					data	= $(@).serialize()
 					$.ajax(
@@ -183,7 +183,7 @@ $ ->
 								type    : 'put'
 								data    : data
 								success : ->
-									alert(L.shop_added_successfully)
+									alert(L.added_successfully)
 									location.reload()
 							)
 					)
@@ -240,7 +240,7 @@ $ ->
 				$.getJSON("api/Shop/admin/orders/#{id}")
 				$.getJSON("api/Shop/admin/orders/#{id}/items")
 			]).then ([shipping_types, order_statuses, payment_methods, order, items]) ->
-				modal	= make_modal(shipping_types, order_statuses, payment_methods, L.shop_order_edition, L.shop_edit)
+				modal	= make_modal(shipping_types, order_statuses, payment_methods, L.order_edition, L.edit)
 				modal.find('form').submit ->
 					data	= $(@).serialize()
 					$.ajax(
@@ -253,7 +253,7 @@ $ ->
 								type    : 'put'
 								data    : data
 								success : ->
-									alert(L.shop_edited_successfully)
+									alert(L.edited_successfully)
 									location.reload()
 							)
 					)
@@ -275,12 +275,12 @@ $ ->
 		)
 		.on('mousedown', '.cs-shop-order-delete', ->
 			id = $(@).data('id')
-			if confirm(L.shop_sure_want_to_delete)
+			if confirm(L.sure_want_to_delete)
 				$.ajax(
 					url     : "api/Shop/admin/orders/#{id}"
 					type    : 'delete'
 					success : ->
-						alert(L.shop_deleted_successfully)
+						alert(L.deleted_successfully)
 						location.reload()
 				)
 		)

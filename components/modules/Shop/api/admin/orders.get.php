@@ -31,9 +31,15 @@ if (isset($Route->ids[0], $Route->path[2])) {
 			$Page->json(
 				array_map(
 					function ($status) use ($Language) {
-						$status['date_formatted'] = $Language->to_locale(
-							date($Language->{TIME - $status['date'] < 24 * 3600 ? '_time' : '_datetime_long'}, $status['date'])
-						);
+						if (TIME - $status['date'] < 24 * 3600) {
+							$status['date_formatted'] = $Language->to_locale(
+								date($Language->_time, $status['date'])
+							);
+						} else {
+							$status['date_formatted'] = $Language->to_locale(
+								date($Language->_datetime_long, $status['date'])
+							);
+						}
 						return $status;
 					},
 					$Orders->get_statuses($Route->ids[0])

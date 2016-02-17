@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
 ###
 $ ->
-	L					= cs.Language
+	L					= cs.Language('shop_')
 	set_attribute_types	= [1, 2, 6, 9] # Attributes types that represents sets: TYPE_INT_SET, TYPE_FLOAT_SET, TYPE_STRING_SET, TYPE_COLOR_SET
 	make_modal			= (types, title, action) ->
 		types		=
@@ -15,13 +15,13 @@ $ ->
 		types		= types.join('')
 		cs.ui.simple_modal("""<form is="cs-form">
 			<h3 class="cs-text-center">#{title}</h3>
-			<label>#{L.shop_attribute_type}</label>
+			<label>#{L.attribute_type}</label>
 			<select is="cs-select" name="type" required>#{types}</select>
-			<label>#{L.shop_possible_values}</label>
+			<label>#{L.possible_values}</label>
 			<textarea is="cs-textarea" autosize name="value"></textarea>
-			<label>#{L.shop_title}</label>
+			<label>#{L.title}</label>
 			<input is="cs-input-text" name="title" required>
-			<label>#{L.shop_title_internal}</label>
+			<label>#{L.title_internal}</label>
 			<input is="cs-input-text" name="title_internal" required>
 			<br>
 			<button is="cs-button" primary type="submit">#{action}</button>
@@ -29,7 +29,7 @@ $ ->
 	$('html')
 		.on('mousedown', '.cs-shop-attribute-add', ->
 			$.getJSON('api/Shop/admin/attributes/types', (types) ->
-				$modal	= $(make_modal(types, L.shop_attribute_addition, L.shop_add))
+				$modal	= $(make_modal(types, L.attribute_addition, L.add))
 				$modal
 					.on('submit', 'form', ->
 						type = $modal.find('[name=type]').val()
@@ -47,7 +47,7 @@ $ ->
 								title_internal : $modal.find('[name=title_internal]').val()
 								value          : value
 							success : ->
-								alert(L.shop_added_successfully)
+								alert(L.added_successfully)
 								location.reload()
 						)
 						return false
@@ -68,7 +68,7 @@ $ ->
 				$.getJSON('api/Shop/admin/attributes/types')
 				$.getJSON("api/Shop/admin/attributes/#{id}")
 			]).then ([types, attribute]) ->
-				$modal	= $(make_modal(types, L.shop_attribute_edition, L.shop_edit))
+				$modal	= $(make_modal(types, L.attribute_edition, L.edit))
 				$modal
 					.on('submit', 'form', ->
 						type = $modal.find('[name=type]').val()
@@ -86,7 +86,7 @@ $ ->
 								title_internal : $modal.find('[name=title_internal]').val()
 								value          : value
 							success : ->
-								alert(L.shop_edited_successfully)
+								alert(L.edited_successfully)
 								location.reload()
 						)
 						return false
@@ -106,12 +106,12 @@ $ ->
 		)
 		.on('mousedown', '.cs-shop-attribute-delete', ->
 			id = $(@).data('id')
-			if confirm(L.shop_sure_want_to_delete)
+			if confirm(L.sure_want_to_delete)
 				$.ajax(
 					url     : "api/Shop/admin/attributes/#{id}"
 					type    : 'delete'
 					success : ->
-						alert(L.shop_deleted_successfully)
+						alert(L.deleted_successfully)
 						location.reload()
 				)
 		)

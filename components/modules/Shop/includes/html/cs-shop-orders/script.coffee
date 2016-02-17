@@ -7,5 +7,7 @@
 ###
 Polymer(
 	'is'		: 'cs-shop-orders'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language('shop_')
+	]
 );

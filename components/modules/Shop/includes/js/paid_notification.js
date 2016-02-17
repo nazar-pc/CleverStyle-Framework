@@ -12,15 +12,15 @@
   $(function() {
     var L, query;
     if (cs.route[0] === 'orders_' && location.search) {
-      L = cs.Language;
+      L = cs.Language('shop_');
       query = location.search.substr(1).split('&');
       return query.forEach(function(q) {
         q = q.split('=');
         switch (q[0]) {
           case 'paid_success':
-            return cs.ui.notify(L.shop_paid_success_notification(q[1]), 'success');
+            return cs.ui.notify(L.paid_success_notification(q[1]), 'success');
           case 'paid_error':
-            return cs.ui.notify(L.shop_paid_error_notification(q[1]), 'error');
+            return cs.ui.notify(L.paid_error_notification(q[1]), 'error');
         }
       });
     }

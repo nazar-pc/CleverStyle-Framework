@@ -12,9 +12,9 @@ dom-module#cs-shop-item
 					= ' '
 					cs-shop-add-to-cart(item_id="[[item_id]]")
 					= ' '
-					span.cs-text-lead ([[L.shop_in_stock]]: [[in_stock]])
+					span.cs-text-lead ([[L.in_stock]]: [[in_stock]])
 				content(select="#description")
 		template(is="dom-if" if="[[show_attributes]]")
-			h2.cs-margin-top [[L.shop_characteristics]]
+			h2.cs-margin-top [[L.characteristics]]
 			content(select="#attributes")
 	script(src="script.js")

@@ -12,7 +12,7 @@
   Polymer({
     'is': 'cs-shop-category-item',
     'extends': 'article',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('shop_')],
     properties: {
       href: String,
       price: String,

@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
 ###
 $ ->
-	L = cs.Language
-	make_modal = (attributes, categories, title, action) ->
+	L			= cs.Language('shop_')
+	make_modal	= (attributes, categories, title, action) ->
 		attributes	= do ->
 			attributes_	= {}
 			keys		= []
@@ -43,46 +43,46 @@ $ ->
 		modal		= $(cs.ui.simple_modal("""<form>
 			<h3 class="cs-text-center">#{title}</h3>
 			<p>
-				#{L.shop_parent_category}:
+				#{L.parent_category}:
 				<select is="cs-select" name="parent" required>
 					<option value="0">#{L.none}</option>
 					#{categories}
 				</select>
 			</p>
 			<p>
-				#{L.shop_title}: <input is="cs-input-text" name="title" required>
+				#{L.title}: <input is="cs-input-text" name="title" required>
 			</p>
 			<p>
-				#{L.shop_description}: <textarea is="cs-textarea" autosize name="description"></textarea>
+				#{L.description}: <textarea is="cs-textarea" autosize name="description"></textarea>
 			</p>
 			<p class="image" hidden style="width: 150px">
-				#{L.shop_image}:
+				#{L.image}:
 				<a target="_blank">
 					<img>
 					<br>
-					<button is="cs-button" force-compact type="button" class="remove-image" style="width: 100%">#{L.shop_remove_image}</button>
+					<button is="cs-button" force-compact type="button" class="remove-image" style="width: 100%">#{L.remove_image}</button>
 				</a>
 				<input type="hidden" name="image">
 			</p>
 			<p>
-				<button is="cs-button" tight type="button" class="set-image">#{L.shop_set_image}</button>
+				<button is="cs-button" tight type="button" class="set-image">#{L.set_image}</button>
 				<progress is="cs-progress" hidden></progress>
 			</p>
 			<p>
-				#{L.shop_category_attributes}: <select is="cs-select" name="attributes[]" multiple required size="5">#{attributes}</select>
+				#{L.category_attributes}: <select is="cs-select" name="attributes[]" multiple required size="5">#{attributes}</select>
 			</p>
 			<p>
-				#{L.shop_title_attribute}: <select is="cs-select" name="title_attribute" required>#{attributes}</select>
+				#{L.title_attribute}: <select is="cs-select" name="title_attribute" required>#{attributes}</select>
 			</p>
 			<p>
-				#{L.shop_description_attribute}:
+				#{L.description_attribute}:
 				<select is="cs-select" name="description_attribute" required>
 					<option value="0">#{L.none}</option>
 					#{attributes}
 				</select>
 			</p>
 			<p>
-				#{L.shop_visible}:
+				#{L.visible}:
 				<label is="cs-label-button"><input type="radio" name="visible" value="1" checked> #{L.yes}</label>
 				<label is="cs-label-button"><input type="radio" name="visible" value="0"> #{L.no}</label>
 			</p>
@@ -122,7 +122,7 @@ $ ->
 					uploader.destroy()
 		else
 			modal.find('.set-image').click ->
-				image	= prompt(L.shop_image_url)
+				image	= prompt(L.image_url)
 				if image
 					modal.set_image(image)
 		modal
@@ -132,14 +132,14 @@ $ ->
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
 			]).then ([attributes, categories]) ->
-				modal = make_modal(attributes, categories, L.shop_category_addition, L.shop_add)
+				modal = make_modal(attributes, categories, L.category_addition, L.add)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : 'api/Shop/admin/categories'
 						type    : 'post'
 						data    : $(@).serialize()
 						success : ->
-							alert(L.shop_added_successfully)
+							alert(L.added_successfully)
 							location.reload()
 					)
 					return false
@@ -151,14 +151,14 @@ $ ->
 				$.getJSON('api/Shop/admin/categories')
 				$.getJSON("api/Shop/admin/categories/#{id}")
 			]).then ([attributes, categories, category]) ->
-				modal = make_modal(attributes, categories, L.shop_category_edition, L.shop_edit)
+				modal = make_modal(attributes, categories, L.category_edition, L.edit)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : "api/Shop/admin/categories/#{id}"
 						type    : 'put'
 						data    : $(@).serialize()
 						success : ->
-							alert(L.shop_edited_successfully)
+							alert(L.edited_successfully)
 							location.reload()
 					)
 					return false
@@ -174,12 +174,12 @@ $ ->
 		)
 		.on('mousedown', '.cs-shop-category-delete', ->
 			id = $(@).data('id')
-			if confirm(L.shop_sure_want_to_delete_category)
+			if confirm(L.sure_want_to_delete_category)
 				$.ajax(
 					url     : "api/Shop/admin/categories/#{id}"
 					type    : 'delete'
 					success : ->
-						alert(L.shop_deleted_successfully)
+						alert(L.deleted_successfully)
 						location.reload()
 				)
 		)

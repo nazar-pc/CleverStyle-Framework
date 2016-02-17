@@ -8,7 +8,9 @@
 Polymer(
 	'is'		: 'cs-shop-item'
 	'extends'	: 'section'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language('shop_')
+	]
 	properties	:
 		header_title	: ''
 		item_id			: Number

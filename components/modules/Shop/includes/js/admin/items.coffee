@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
 ###
 $ ->
-	L = cs.Language
+	L							= cs.Language('shop_')
 	set_attribute_types			= [1, 2, 6, 9]	# Attributes types that represents sets: TYPE_INT_SET, TYPE_FLOAT_SET, TYPE_STRING_SET, TYPE_COLOR_SET
 	color_set_attribute_type	= [1, 2, 6, 9]	# Attributes types that represents color set: TYPE_COLOR_SET
 	string_attribute_types		= [5]			# Attributes types that represents string: TYPE_STRING
@@ -43,7 +43,7 @@ $ ->
 		modal			= $(cs.ui.simple_modal("""<form>
 			<h3 class="cs-text-center">#{title}</h3>
 			<p>
-				#{L.shop_category}: <select is="cs-select" name="category" required>#{categories_list}</select>
+				#{L.category}: <select is="cs-select" name="category" required>#{categories_list}</select>
 			</p>
 			<div></div>
 		</form>"""))
@@ -115,34 +115,34 @@ $ ->
 			attributes_list	= attributes_list.join('')
 			$this.parent().next().html("""
 				<p>
-					#{L.shop_price}: <input is="cs-input-text" name="price" type="number" value="0" required>
+					#{L.price}: <input is="cs-input-text" name="price" type="number" value="0" required>
 				</p>
 				<p>
-					#{L.shop_in_stock}: <input is="cs-input-text" name="in_stock" type="number" value="1" step="1">
+					#{L.in_stock}: <input is="cs-input-text" name="in_stock" type="number" value="1" step="1">
 				</p>
 				<p>
-					#{L.shop_available_soon}:
-					<label is="cs-label-button"><input type="radio" name="soon" value="1"> #{L.shop_yes}</label>
-					<label is="cs-label-button"><input type="radio" name="soon" value="0" checked> #{L.shop_no}</label>
+					#{L.available_soon}:
+					<label is="cs-label-button"><input type="radio" name="soon" value="1"> #{L.yes}</label>
+					<label is="cs-label-button"><input type="radio" name="soon" value="0" checked> #{L.no}</label>
 				</p>
 				<p>
-					#{L.shop_listed}:
-					<label is="cs-label-button"><input type="radio" name="listed" value="1" checked> #{L.shop_yes}</label>
-					<label is="cs-label-button"><input type="radio" name="listed" value="0"> #{L.shop_no}</label>
+					#{L.listed}:
+					<label is="cs-label-button"><input type="radio" name="listed" value="1" checked> #{L.yes}</label>
+					<label is="cs-label-button"><input type="radio" name="listed" value="0"> #{L.no}</label>
 				</p>
 				<p>
 					<span class="images" style="display: block"></span>
-					<button is="cs-button" tight type="button" class="add-images">#{L.shop_add_images}</button>
+					<button is="cs-button" tight type="button" class="add-images">#{L.add_images}</button>
 					<progress is="cs-progress" hidden></progress>
 					<input type="hidden" name="images">
 				</p>
 				<p>
 					<div class="videos"></div>
-					<button is="cs-button" type="button" class="add-video">#{L.shop_add_video}</button>
+					<button is="cs-button" type="button" class="add-video">#{L.add_video}</button>
 				</p>
 				#{attributes_list}
 				<p>
-					#{L.shop_tags}: <input is="cs-input-text" name="tags" placeholder="shop, high quality, e-commerce">
+					#{L.tags}: <input is="cs-input-text" name="tags" placeholder="shop, high quality, e-commerce">
 				</p>
 				<p>
 					<button is="cs-button" primary type="submit">#{action}</button>
@@ -171,7 +171,7 @@ $ ->
 					images_container.append("""<a href="#{image}" target="_blank" style="display: inline-block; padding: .5em; width: 150px">
 						<img src="#{image}">
 						<br>
-						<button is="cs-button" force-compact type="button" class="remove-image" style="width: 100%">#{L.shop_remove_image}</button>
+						<button is="cs-button" force-compact type="button" class="remove-image" style="width: 100%">#{L.remove_image}</button>
 					</a>""")
 				modal.update_images()
 			if cs.file_upload
@@ -194,7 +194,7 @@ $ ->
 						uploader.destroy()
 			else
 				modal.find('.add-images').click ->
-					image	= prompt(L.shop_image_url)
+					image	= prompt(L.image_url)
 					if image
 						modal.add_images([image])
 			modal.on('click', '.remove-image', ->
@@ -219,12 +219,12 @@ $ ->
 					videos_container.append("""<p>
 						<cs-icon icon="sort" class="handle"></cs-icon>
 						<select is="cs-select" name="videos[type][]" class="video-type">
-							<option value="supported_video">#{L.shop_youtube_vimeo_url}</option>
-							<option value="iframe">#{L.shop_iframe_url_or_embed_code}</option>
-							<option value="direct_url">#{L.shop_direct_video_url}</option>
+							<option value="supported_video">#{L.youtube_vimeo_url}</option>
+							<option value="iframe">#{L.iframe_url_or_embed_code}</option>
+							<option value="direct_url">#{L.direct_video_url}</option>
 						</select>
-						<textarea is="cs-textarea" autosize name="videos[video][]" placeholder="#{L.shop_url_or_code}" class="video-video" rows="3"></textarea>
-						<input is="cs-input-text" name="videos[poster][]" class="video-poster" placeholder="#{L.shop_video_poster}">
+						<textarea is="cs-textarea" autosize name="videos[video][]" placeholder="#{L.url_or_code}" class="video-video" rows="3"></textarea>
+						<input is="cs-input-text" name="videos[poster][]" class="video-poster" placeholder="#{L.video_poster}">
 						<button is="cs-button" icon="close" type="button" class="delete-video"></button>
 						<progress is="cs-progress" hidden full-width></progress>
 					</p>""")
@@ -309,7 +309,7 @@ $ ->
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
 			]).then ([attributes, categories]) ->
-				modal = make_modal(attributes, categories, L.shop_item_addition, L.shop_add)
+				modal = make_modal(attributes, categories, L.item_addition, L.add)
 				modal.find("[name=category]").change()
 				modal.find('form').submit ->
 					$.ajax(
@@ -317,7 +317,7 @@ $ ->
 						type    : 'post'
 						data    : $(@).serialize()
 						success : ->
-							alert(L.shop_added_successfully)
+							alert(L.added_successfully)
 							location.reload()
 					)
 					return false
@@ -329,14 +329,14 @@ $ ->
 				$.getJSON('api/Shop/admin/categories')
 				$.getJSON("api/Shop/admin/items/#{id}")
 			]).then ([attributes, categories, item]) ->
-				modal = make_modal(attributes, categories, L.shop_item_edition, L.shop_edit)
+				modal = make_modal(attributes, categories, L.item_edition, L.edit)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : "api/Shop/admin/items/#{id}"
 						type    : 'put'
 						data    : $(@).serialize()
 						success : ->
-							alert(L.shop_edited_successfully)
+							alert(L.edited_successfully)
 							location.reload()
 					)
 					return false
@@ -345,12 +345,12 @@ $ ->
 		)
 		.on('mousedown', '.cs-shop-item-delete', ->
 			id = $(@).data('id')
-			if confirm(L.shop_sure_want_to_delete)
+			if confirm(L.sure_want_to_delete)
 				$.ajax(
 					url     : "api/Shop/admin/items/#{id}"
 					type    : 'delete'
 					success : ->
-						alert(L.shop_deleted_successfully)
+						alert(L.deleted_successfully)
 						location.reload()
 				)
 		)

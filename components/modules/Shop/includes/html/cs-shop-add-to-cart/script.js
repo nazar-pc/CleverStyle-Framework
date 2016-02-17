@@ -9,10 +9,10 @@
  */
 
 (function() {
-  (function(cart, L) {
+  (function(cart) {
     return Polymer({
       'is': 'cs-shop-add-to-cart',
-      behaviors: [cs.Polymer.behaviors.Language],
+      behaviors: [cs.Polymer.behaviors.Language('shop_')],
       properties: {
         item_id: Number,
         in_cart: 0
@@ -24,6 +24,6 @@
         return this.set('in_cart', cart.add(this.item_id));
       }
     });
-  })(cs.shop.cart, cs.Language);
+  })(cs.shop.cart);
 
 }).call(this);

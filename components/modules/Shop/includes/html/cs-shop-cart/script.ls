@@ -12,7 +12,9 @@ cart	= shop.cart
 params	= cart.params
 Polymer(
 	'is'						: 'cs-shop-cart'
-	behaviors					: [cs.Polymer.behaviors.Language('shop_')]
+	behaviors					: [
+		cs.Polymer.behaviors.Language('shop_')
+	]
 	properties					:
 		items					: Array
 		shipping_types			:

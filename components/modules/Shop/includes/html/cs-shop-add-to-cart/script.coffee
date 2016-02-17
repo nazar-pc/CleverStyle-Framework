@@ -5,10 +5,12 @@
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
 ###
-do (cart = cs.shop.cart, L = cs.Language) ->
+do (cart = cs.shop.cart) ->
 	Polymer(
 		'is'		: 'cs-shop-add-to-cart'
-		behaviors	: [cs.Polymer.behaviors.Language]
+		behaviors	: [
+			cs.Polymer.behaviors.Language('shop_')
+		]
 		properties	:
 			item_id		: Number
 			in_cart		: 0
