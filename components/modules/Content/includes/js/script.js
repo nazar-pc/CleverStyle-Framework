@@ -15,10 +15,10 @@
 
   $(function() {
     var L;
-    L = cs.Language;
+    L = cs.Language('content_');
     $('body').on('click', '.cs-content-add', function() {
       var content, key, modal_body, title, type;
-      modal_body = $("<form is=\"cs-form\">\n	<label>" + L.content_key + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"key\">\n	<label>" + L.content_title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content_content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html\">\n		<textarea is=\"cs-textarea\" autosize class=\"cs-margin-bottom\"></textarea>\n	</cs-editor>\n	<label>" + L.content_type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.content_save + "</button>\n	</div>\n</form>");
+      modal_body = $("<form is=\"cs-form\">\n	<label>" + L.key + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"key\">\n	<label>" + L.title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html\">\n		<textarea is=\"cs-textarea\" autosize class=\"cs-margin-bottom\"></textarea>\n	</cs-editor>\n	<label>" + L.type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.save + "</button>\n	</div>\n</form>");
       modal_body.appendTo(document.body);
       key = modal_body.find('[name=key]');
       title = modal_body.find('[name=title]');
@@ -58,7 +58,7 @@
         type: 'get',
         success: function(data) {
           var content, modal_body, title, type;
-          modal_body = $("<form is=\"cs-form\">\n	<label>" + L.content_key + "</label>\n	<input is=\"cs-input-text\" readonly value=\"" + data.key + "\">\n	<label>" + L.content_title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content_content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html\">\n		<textarea is=\"cs-textarea\" autosize class=\"cs-margin-bottom\"></textarea>\n	</cs-editor>\n	<label>" + L.content_type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.content_save + "</button>\n	</div>\n</form>");
+          modal_body = $("<form is=\"cs-form\">\n	<label>" + L.key + "</label>\n	<input is=\"cs-input-text\" readonly value=\"" + data.key + "\">\n	<label>" + L.title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html\">\n		<textarea is=\"cs-textarea\" autosize class=\"cs-margin-bottom\"></textarea>\n	</cs-editor>\n	<label>" + L.type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.save + "</button>\n	</div>\n</form>");
           title = modal_body.find('[name=title]').val(data.title);
           content = modal_body.find('.' + data.type).val(data.content);
           modal_body.find('.text, .html').not('.' + data.type).hide();
@@ -91,7 +91,7 @@
       });
     }).on('click', '.cs-content-delete', function() {
       var key;
-      if (!confirm(L.content_delete + "?")) {
+      if (!confirm(L["delete"] + "?")) {
         return;
       }
       key = $(this).data('key');
@@ -109,7 +109,7 @@
       showed_button = false;
       show_edit_button = function(key, x, y, container) {
         var button;
-        button = $("<button is=\"cs-button\" class=\"cs-content-edit\" data-key=\"" + key + "\">" + L.content_edit + "</button>").css('position', 'absolute').offset({
+        button = $("<button is=\"cs-button\" class=\"cs-content-edit\" data-key=\"" + key + "\">" + L.edit + "</button>").css('position', 'absolute').offset({
           top: y,
           left: x
         }).appendTo(container);

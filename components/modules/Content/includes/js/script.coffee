@@ -8,29 +8,29 @@
 if !cs.is_admin
 	return
 $ ->
-	L	= cs.Language
+	L	= cs.Language('content_')
 	$('body')
 		.on(
 			'click'
 			'.cs-content-add'
 			->
 				modal_body	= $("""<form is="cs-form">
-					<label>#{L.content_key}</label>
+					<label>#{L.key}</label>
 					<input is="cs-input-text" type="text" name="key">
-					<label>#{L.content_title}</label>
+					<label>#{L.title}</label>
 					<input is="cs-input-text" type="text" name="title">
-					<label>#{L.content_content}</label>
+					<label>#{L.content}</label>
 					<textarea is="cs-textarea" autosize class="text cs-margin-bottom"></textarea>
 					<cs-editor class="html">
 						<textarea is="cs-textarea" autosize class="cs-margin-bottom"></textarea>
 					</cs-editor>
-					<label>#{L.content_type}</label>
+					<label>#{L.type}</label>
 					<select is="cs-select" name="type">
 						<option value="text">text</option>
 						<option value="html">html</option>
 					</select>
 					<div>
-						<button is="cs-button" type="button" primary>#{L.content_save}</button>
+						<button is="cs-button" type="button" primary>#{L.save}</button>
 					</div>
 				</form>""")
 				modal_body.appendTo(document.body)
@@ -70,22 +70,22 @@ $ ->
 					type	: 'get'
 					success	: (data) ->
 						modal_body	= $("""<form is="cs-form">
-							<label>#{L.content_key}</label>
+							<label>#{L.key}</label>
 							<input is="cs-input-text" readonly value="#{data.key}">
-							<label>#{L.content_title}</label>
+							<label>#{L.title}</label>
 							<input is="cs-input-text" type="text" name="title">
-							<label>#{L.content_content}</label>
+							<label>#{L.content}</label>
 							<textarea is="cs-textarea" autosize class="text cs-margin-bottom"></textarea>
 							<cs-editor class="html">
 								<textarea is="cs-textarea" autosize class="cs-margin-bottom"></textarea>
 							</cs-editor>
-							<label>#{L.content_type}</label>
+							<label>#{L.type}</label>
 							<select is="cs-select" name="type">
 								<option value="text">text</option>
 								<option value="html">html</option>
 							</select>
 							<div>
-								<button is="cs-button" type="button" primary>#{L.content_save}</button>
+								<button is="cs-button" type="button" primary>#{L.save}</button>
 							</div>
 						</form>""")
 						title	= modal_body.find('[name=title]').val(data.title)
@@ -117,7 +117,7 @@ $ ->
 			'click'
 			'.cs-content-delete'
 			->
-				if !confirm("#{L.content_delete}?")
+				if !confirm("#{L.delete}?")
 					return
 				key = $(@).data('key')
 				$.ajax(
@@ -131,7 +131,7 @@ $ ->
 		mousemove_timeout	= 0
 		showed_button		= false
 		show_edit_button	= (key, x, y, container) ->
-			button = $("""<button is="cs-button" class="cs-content-edit" data-key="#{key}">#{L.content_edit}</button>""")
+			button = $("""<button is="cs-button" class="cs-content-edit" data-key="#{key}">#{L.edit}</button>""")
 				.css('position', 'absolute')
 				.offset(
 					top		: y

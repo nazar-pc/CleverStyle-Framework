@@ -1,16 +1,20 @@
 {
-	"Content"                    : "Content",
-	"content_key"                : "Key",
-	"content_title"              : "Title",
-	"content_type"               : "Type",
-	"content_content"            : "Content",
-	"content_action"             : "Action",
-	"content_edit"               : "Edit",
-	"content_delete"             : "Delete",
-	"content_add"                : "Add",
-	"content_save"               : "Save",
-	"content_simple_insert"      : "Simple insert",
-	"content_simple_insert_info" : "Allows to insert content with html snippets (look at readme, but be careful, not recommended on websites with user input, because will allow them to use snippets)",
-	"content_yes"                : "Yes",
-	"content_no"                 : "No"
+	"Content"  : "Content",
+	"content_" : {
+		"key"                : "Key",
+		"title"              : "Title",
+		"type"               : "Type",
+		"content"            : "Content",
+		"action"             : "Action",
+		"edit"               : "Edit",
+		"delete"             : "Delete",
+		"add"                : "Add",
+		"save"               : "Save",
+		"simple_insert"      : "Simple insert",
+		"simple_insert_info" : "Allows to insert content with html snippets (look at readme, but be careful, not recommended on websites with user input, because will allow them to use snippets)",
+		"yes"                : "Yes",
+		"no"                 : "No",
+		"save_info"          : "Save changes",
+		"changes_saved"      : "Changes saved"
+	}
 }
