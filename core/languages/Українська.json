@@ -60,6 +60,8 @@
 			"cancel_info"                           : "Скасувати застосовані зміни",
 			"off"                                   : "Вимкн.",
 			"on"                                    : "Увімкн.",
+			"enable"                                : "Увімкнути",
+			"disable"                               : "Вимкнути",
 			"about_server"                          : "Про сервер",
 			"about_server_"                         : {
 				"information_about_system" : "Інформація про систему",

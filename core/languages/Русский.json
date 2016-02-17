@@ -59,6 +59,8 @@
 			"cancel_info"                           : "Отменить примененные изменения",
 			"off"                                   : "Выкл.",
 			"on"                                    : "Вкл.",
+			"enable"                                : "Включить",
+			"disable"                               : "Отключить",
 			"about_server"                          : "О сервере",
 			"about_server_"                         : {
 				"information_about_system" : "Информация о системе",
