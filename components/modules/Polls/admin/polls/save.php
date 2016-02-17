@@ -9,10 +9,10 @@
 namespace cs\modules\Polls;
 
 use
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page;
 
-$L       = Language::instance();
+$L       = new Prefix('polls_');
 $Page    = Page::instance();
 $Options = Options::instance();
 $Polls   = Polls::instance();

@@ -1,16 +1,22 @@
 {
-	"Polls"                         : "Опросы",
-	"polls"                         : "Опросы",
-	"polls_poll"                    : "Опрос",
-	"polls_action"                  : "Действие",
-	"polls_add"                     : "Добавить",
-	"polls_edit"                    : "Редактировать",
-	"polls_delete"                  : "Удалить",
-	"polls_yes"                     : "Да",
-	"polls_new_poll"                : "Новый опрос",
-	"polls_poll_title"              : "Название опроса",
-	"polls_answers_one_per_line"    : "Ответы, по одному на строку",
-	"polls_editing_of_poll"         : "Редактирование опроса %s",
-	"polls_deleting_of_poll"        : "Удаление опроса %s",
-	"poll_sure_want_to_delete_poll" : "Вы действительно хотите удалить опрос %s?"
+	"Polls"  : "Опросы",
+	"polls_" : {
+		"poll"                     : "Опрос",
+		"action"                   : "Действие",
+		"add"                      : "Добавить",
+		"edit"                     : "Редактировать",
+		"delete"                   : "Удалить",
+		"yes"                      : "Да",
+		"new_poll"                 : "Новый опрос",
+		"poll_title"               : "Название опроса",
+		"answers_one_per_line"     : "Ответы, по одному на строку",
+		"editing_of_poll"          : "Редактирование опроса %s",
+		"deleting_of_poll"         : "Удаление опроса %s",
+		"sure_want_to_delete_poll" : "Вы действительно хотите удалить опрос %s?",
+		"save"                     : "Сохранить",
+		"save_info"                : "Сохранить изменения",
+		"changes_saved"            : "Изменения сохранены",
+		"changes_save_error"       : "Ошибка сохранения изменений",
+		"cancel"                   : "Отменить"
+	}
 }

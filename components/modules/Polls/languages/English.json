@@ -1,16 +1,22 @@
 {
-	"Polls"                         : "Polls",
-	"polls"                         : "Polls",
-	"polls_poll"                    : "Poll",
-	"polls_action"                  : "Action",
-	"polls_add"                     : "Add",
-	"polls_edit"                    : "Edit",
-	"polls_delete"                  : "Delete",
-	"polls_yes"                     : "Yes",
-	"polls_new_poll"                : "New poll",
-	"polls_poll_title"              : "Poll title",
-	"polls_answers_one_per_line"    : "Answers, one per line",
-	"polls_editing_of_poll"         : "Editing of poll %s",
-	"polls_deleting_of_poll"        : "Deleting of poll %s",
-	"poll_sure_want_to_delete_poll" : "Are you sure want to delete poll %s?"
+	"Polls"  : "Polls",
+	"polls_" : {
+		"poll"                     : "Poll",
+		"action"                   : "Action",
+		"add"                      : "Add",
+		"edit"                     : "Edit",
+		"delete"                   : "Delete",
+		"yes"                      : "Yes",
+		"new_poll"                 : "New poll",
+		"poll_title"               : "Poll title",
+		"answers_one_per_line"     : "Answers, one per line",
+		"editing_of_poll"          : "Editing of poll %s",
+		"deleting_of_poll"         : "Deleting of poll %s",
+		"sure_want_to_delete_poll" : "Are you sure want to delete poll %s?",
+		"save"                     : "Save",
+		"save_info"                : "Save changes",
+		"changes_saved"            : "Changes saved",
+		"changes_save_error"       : "Unable to save changes",
+		"cancel"                   : "Cancel"
+	}
 }
