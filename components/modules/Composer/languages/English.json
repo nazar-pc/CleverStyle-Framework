@@ -1,11 +1,16 @@
 {
-	"composer_force_update"          : "Force update",
-	"composer_updated_successfully"  : "Updated successfully",
-	"composer_update_failed"         : "Update failed",
-	"composer_dependencies_conflict" : "Update failed, dependencies conflict",
-	"composer_last_log"              : "Log of last execution:",
-	"composer_composer_updating"     : "Composer updating (might take few minutes)",
-	"composer_general"               : "General",
-	"composer_auth_json"             : "auth.json",
-	"composer_auth_json_contents"    : "auth.json contents:"
+	"composer_" : {
+		"force_update"          : "Force update",
+		"updated_successfully"  : "Updated successfully",
+		"update_failed"         : "Update failed",
+		"dependencies_conflict" : "Update failed, dependencies conflict",
+		"last_log"              : "Log of last execution:",
+		"composer_updating"     : "Composer updating (might take few minutes)",
+		"general"               : "General",
+		"auth_json"             : "auth.json",
+		"auth_json_contents"    : "auth.json contents:",
+		"save"                  : "Save",
+		"save_info"             : "Save changes",
+		"changes_saved"         : "Changes saved"
+	}
 }

@@ -5,10 +5,12 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-L	= cs.Language
+L	= cs.Language('composer_')
 Polymer(
 	'is'		: 'cs-composer'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language('composer_')
+	]
 	properties	:
 		action		: String
 		canceled	: Boolean
@@ -30,9 +32,9 @@ Polymer(
 			success	: (result) !~>
 				status =
 					switch result.code
-					| 0 => L.composer_updated_successfully
-					| 1 => L.composer_update_failed
-					| 2 => L.composer_dependencies_conflict
+					| 0 => L.updated_successfully
+					| 1 => L.update_failed
+					| 2 => L.dependencies_conflict
 				@status	= status
 				if result.description
 					$(@$.result)

@@ -8,10 +8,10 @@
  */
 (function(){
   var L;
-  L = cs.Language;
+  L = cs.Language('composer_');
   Polymer({
     'is': 'cs-composer',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language('composer_')],
     properties: {
       action: String,
       canceled: Boolean,
@@ -38,11 +38,11 @@
           status = (function(){
             switch (result.code) {
             case 0:
-              return L.composer_updated_successfully;
+              return L.updated_successfully;
             case 1:
-              return L.composer_update_failed;
+              return L.update_failed;
             case 2:
-              return L.composer_dependencies_conflict;
+              return L.dependencies_conflict;
             }
           }());
           this$.status = status;
