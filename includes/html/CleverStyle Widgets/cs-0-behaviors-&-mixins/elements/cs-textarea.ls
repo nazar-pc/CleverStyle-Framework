@@ -21,11 +21,15 @@ Polymer.cs.behaviors.cs-textarea = [
 	_autosize_changed : !->
 		@_do_autosizing()
 	_do_autosizing : !->
-		if !@initialized
+		if !@initialized || @autosize == undefined
 			return
 		# Apply autosizing only if autosize plugin available: https://github.com/jackmoore/autosize
-		if !autosize
-			return
+		if window.autosize
+			@_do_autosizing_callback(autosize)
+		# RequireJS module is also fine
+		else if window.require
+			require(['autosize'], @~_do_autosizing_callback)
+	_do_autosizing_callback : (autosize) !->
 		if @autosize
 			autosize(@)
 			autosize.update(@)

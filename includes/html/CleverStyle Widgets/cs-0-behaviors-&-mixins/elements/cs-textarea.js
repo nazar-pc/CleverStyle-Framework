@@ -24,12 +24,16 @@
         this._do_autosizing();
       },
       _do_autosizing: function(){
-        if (!this.initialized) {
+        if (!this.initialized || this.autosize === undefined) {
           return;
         }
-        if (!autosize) {
-          return;
+        if (window.autosize) {
+          this._do_autosizing_callback(autosize);
+        } else if (window.require) {
+          require(['autosize'], bind$(this, '_do_autosizing_callback'));
         }
+      },
+      _do_autosizing_callback: function(autosize){
         if (this.autosize) {
           autosize(this);
           autosize.update(this);

@@ -12,5 +12,6 @@ define('sprintf-js', -> {sprintf, vsprintf})
 requirejs.config(
 	baseUrl	: '/'
 	paths	:
-		jssha	: 'includes/js/modules/jsSHA-2.0.2'
+		jssha		: 'includes/js/modules/jsSHA-2.0.2'
+		autosize	: 'includes/js/modules/autosize.min'
 )
