@@ -9,10 +9,10 @@
 namespace cs\modules\Static_pages;
 use
 	h,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page;
 
-$L = Language::instance();
+$L = new Prefix('static_pages_');
 Page::instance()->content(
 	h::{'table.cs-table[list]'}(
 		h::{'tr th'}(

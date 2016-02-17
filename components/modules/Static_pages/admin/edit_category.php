@@ -9,13 +9,13 @@
 namespace cs\modules\Static_pages;
 use
 	h,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route;
 
-$L     = Language::instance();
-$id    = (int)Route::instance()->route[1];
-$data  = Categories::instance()->get($id);
+$L    = new Prefix('static_pages_');
+$id   = (int)Route::instance()->route[1];
+$data = Categories::instance()->get($id);
 Page::instance()
 	->title($L->editing_of_page_category($data['title']))
 	->content(
@@ -34,7 +34,7 @@ Page::instance()
 					'value' => $data['title']
 				]
 			).
-			h::{'label info'}('category_path').
+			h::{'label info'}('static_pages_category_path').
 			h::{'input[is=cs-input-text][name=path]'}(
 				[
 					'value' => $data['path']

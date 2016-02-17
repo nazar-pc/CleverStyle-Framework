@@ -8,13 +8,13 @@
  */
 namespace cs\modules\Static_pages;
 use
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page;
 
 if (!isset($_POST['mode'])) {
 	return;
 }
-$L          = Language::instance();
+$L          = new Prefix('static_pages_');
 $Page       = Page::instance();
 $Pages      = Pages::instance();
 $Categories = Categories::instance();

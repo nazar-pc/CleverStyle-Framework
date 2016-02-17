@@ -9,12 +9,12 @@
 namespace cs\modules\Static_pages;
 use
 	h,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route;
 
+$L     = new Prefix('static_pages_');
 $Route = Route::instance();
-$L     = Language::instance();
 Page::instance()->title($L->adding_of_page)
 	->content(
 		h::{'form[is=cs-form][action=admin/Static_pages]'}(
@@ -25,8 +25,8 @@ Page::instance()->title($L->adding_of_page)
 				h::th(
 					$L->category,
 					$L->page_title,
-					h::info('page_path'),
-					h::info('page_interface')
+					h::info('static_pages_page_path'),
+					h::info('static_pages_page_interface')
 				),
 				h::td(
 					h::{'select[is=cs-select][full-width][name=category][size=5]'}(

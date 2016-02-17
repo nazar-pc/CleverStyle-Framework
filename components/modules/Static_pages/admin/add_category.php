@@ -9,11 +9,11 @@
 namespace cs\modules\Static_pages;
 use
 	h,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route;
 
-$L     = Language::instance();
+$L     = new Prefix('static_pages_');
 $Route = Route::instance();
 Page::instance()
 	->title($L->addition_of_page_category)
@@ -29,7 +29,7 @@ Page::instance()
 			).
 			h::label($L->category_title).
 			h::{'input[is=cs-input-text][name=title]'}().
-			h::{'label info'}('category_path').
+			h::{'label info'}('static_pages_category_path').
 			h::{'input[is=cs-input-text][name=path]'}().
 			h::p(
 				h::{'button[is=cs-button][type=submit][name=mode][value=add_category]'}(

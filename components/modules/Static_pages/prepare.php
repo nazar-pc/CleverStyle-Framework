@@ -11,14 +11,14 @@ use
 	h,
 	cs\Config,
 	cs\ExitException,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page\Meta,
 	cs\Page,
 	cs\Route,
 	cs\User;
 
 $Config     = Config::instance();
-$L          = Language::instance();
+$L          = new Prefix('static_pages_');
 $Pages      = Pages::instance();
 $Categories = Categories::instance();
 if (home_page()) {

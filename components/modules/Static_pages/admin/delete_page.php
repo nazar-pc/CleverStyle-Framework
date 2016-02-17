@@ -9,11 +9,11 @@
 namespace cs\modules\Static_pages;
 use
 	h,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route;
 
-$L     = Language::instance();
+$L     = new Prefix('static_pages_');
 $id    = (int)Route::instance()->route[1];
 $title = Pages::instance()->get($id)['title'];
 Page::instance()

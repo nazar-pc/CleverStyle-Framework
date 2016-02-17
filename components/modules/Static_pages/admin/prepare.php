@@ -9,13 +9,14 @@
 namespace cs\modules\Static_pages;
 use
 	h,
-	cs\Language,
+	cs\Language\Prefix,
 	cs\Page,
 	cs\Route;
+
 $Page = Page::instance();
 $Page->css('components/modules/Static_pages/includes/css/style.css');
 function get_categories_rows ($structure = null, $level = 0, $parent_categories = []) {
-	$L    = Language::instance();
+	$L    = new Prefix('static_pages_');
 	$root = false;
 	if ($structure === null) {
 		$structure          = Pages::instance()->get_structure();
@@ -86,7 +87,8 @@ function get_categories_list ($current = null, $structure = null, $level = 0) {
 	];
 	if ($structure === null) {
 		$structure       = Pages::instance()->get_structure();
-		$list['in'][]    = Language::instance()->root_category;
+		$L               = new Prefix('static_pages_');
+		$list['in'][]    = $L->root_category;
 		$list['value'][] = 0;
 	} else {
 		if ($structure['id'] == $current) {
@@ -106,7 +108,7 @@ function get_categories_list ($current = null, $structure = null, $level = 0) {
 }
 
 function get_pages_rows () {
-	$L          = Language::instance();
+	$L          = new Prefix('static_pages_');
 	$Pages      = Pages::instance();
 	$Categories = Categories::instance();
 	$categories = array_slice(Route::instance()->route, 2);
