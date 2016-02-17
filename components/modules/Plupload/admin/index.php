@@ -9,9 +9,10 @@
  */
 namespace cs;
 use
+	cs\Language\Prefix,
 	h;
 
-$L    = Language::instance();
+$L    = new Prefix('plupload_');
 $Page = Page::instance();
 if (isset($_POST['max_file_size'], $_POST['confirmation_time'])) {
 	$module_data = Config::instance()->module('Plupload');
