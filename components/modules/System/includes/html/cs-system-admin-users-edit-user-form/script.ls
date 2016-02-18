@@ -10,6 +10,7 @@ L	= cs.Language('system_admin_users_')
 Polymer(
 	'is'		: 'cs-system-admin-users-edit-user-form'
 	behaviors	: [
+		cs.Polymer.behaviors.cs
 		cs.Polymer.behaviors.Language('system_admin_users_')
 	]
 	properties	:
@@ -22,7 +23,7 @@ Polymer(
 		block_until	:
 			observer	: '_block_until'
 			type		: String
-	ready : ->
+	ready : !->
 		Promise.all([
 			$.getJSON('api/System/languages')
 			$.getJSON('api/System/timezones')
@@ -60,6 +61,12 @@ Polymer(
 				date.getFullYear() + '-' + z(date.getMonth() + 1) + '-' + z(date.getDate()) + 'T' + z(date.getHours()) + ':' + z(date.getMinutes())
 			@block_until	= block_until
 			@user_data		= data
+		cs.file_upload?(
+			@$['upload-avatar']
+			(files) !~>
+				if files.length
+					@set('user_data.avatar', files[0])
+		)
 	_show_password : (e) !->
 		lock		= e.currentTarget
 		password	= lock.previousElementSibling

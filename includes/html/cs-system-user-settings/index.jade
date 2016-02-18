@@ -18,7 +18,7 @@ dom-module#cs-system-user-settings
 					option(value="[[timezone.timezone]]" selected="[[equal(timezone.timezone, user_data.timezone)]]") [[timezone.description]]
 			label [[L.avatar]]
 			label
-				img(src="[[user_data.avatar]]" hidden="[[!user_data.avatar]]")
+				img(src="[[if(user_data.avatar, user_data.avatar, '')]]" hidden="[[!user_data.avatar]]")
 			input(is="cs-input-text" type="text" value="{{user_data.avatar}}")
 			div.cs-padding-bottom
 				button#upload-avatar(is="cs-button" type="button" icon="upload" hidden="[[!cs.file_upload]]") [[L.upload_avatar]]

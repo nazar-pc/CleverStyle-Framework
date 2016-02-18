@@ -12,7 +12,7 @@
   L = cs.Language('system_admin_users_');
   Polymer({
     'is': 'cs-system-admin-users-edit-user-form',
-    behaviors: [cs.Polymer.behaviors.Language('system_admin_users_')],
+    behaviors: [cs.Polymer.behaviors.cs, cs.Polymer.behaviors.Language('system_admin_users_')],
     properties: {
       user_id: -1,
       user_data: {
@@ -28,7 +28,7 @@
     },
     ready: function(){
       var this$ = this;
-      return Promise.all([$.getJSON('api/System/languages'), $.getJSON('api/System/timezones'), $.getJSON('api/System/admin/users/' + this.user_id)]).then(function(arg$){
+      Promise.all([$.getJSON('api/System/languages'), $.getJSON('api/System/timezones'), $.getJSON('api/System/admin/users/' + this.user_id)]).then(function(arg$){
         var languages, timezones, data, languages_list, i$, len$, language, timezones_list, description, timezone, block_until;
         languages = arg$[0], timezones = arg$[1], data = arg$[2];
         languages_list = [];
@@ -72,6 +72,13 @@
         this$.block_until = block_until;
         this$.user_data = data;
       });
+      if (typeof cs.file_upload == 'function') {
+        cs.file_upload(this.$['upload-avatar'], function(files){
+          if (files.length) {
+            this$.set('user_data.avatar', files[0]);
+          }
+        });
+      }
     },
     _show_password: function(e){
       var lock, password;
