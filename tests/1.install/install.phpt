@@ -1,7 +1,7 @@
 --TEST--
 Installation of distributive
 --ARGS--
--sn Web-site -su http://cscms.travis -dh 127.0.0.1 -dn cscms.travis -du travis -dp "" -ae admin@cscms.travis -ap 1111
+-sn Web-site -su http://cscms.travis -dh 127.0.0.1 -dn cscms.travis -du travis -dp "" -dr 'xyz_' -ae admin@cscms.travis -ap 1111
 --FILE--
 <?php
 $root		= __DIR__.'/../..';
