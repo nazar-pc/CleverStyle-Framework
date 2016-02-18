@@ -38,7 +38,19 @@ $Event->fire('event/data_modification', [
 if ($test != 'failed') {
 	die('Event unsubscribing not working');
 }
+
+$callback = function () {
+	echo "This should not be visible\n";
+};
+$Event->on('off_test', $callback);
+$Event->on('off_test', function () {
+	echo "This should be visible\n";
+});
+// Only one event unsubscribed
+$Event->off('off_test', $callback);
+$Event->fire('off_test');
 ?>
 Done
 --EXPECT--
+This should be visible
 Done
