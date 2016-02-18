@@ -67,7 +67,7 @@ class Permission {
 					$group,
 					$label
 				]
-			);
+			) ?: [];
 		} /** @noinspection NotOptimalIfConditionsInspection */ elseif ($group !== null) {
 			return $this->db()->qfa(
 				[
@@ -79,7 +79,7 @@ class Permission {
 					WHERE `group` = '%s'",
 					$group
 				]
-			);
+			) ?: [];
 		} /** @noinspection NotOptimalIfConditionsInspection */ elseif ($label !== null) {
 			return $this->db()->qfa(
 				[
@@ -91,7 +91,7 @@ class Permission {
 					WHERE `label` = '%s'",
 					$label
 				]
-			);
+			) ?: [];
 		} else {
 			$id = (int)$id;
 			if (!$id) {
@@ -105,7 +105,7 @@ class Permission {
 				FROM `[prefix]permissions`
 				WHERE `id` = '$id'
 				LIMIT 1"
-			);
+			) ?: false;
 		}
 	}
 	/**

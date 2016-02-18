@@ -9,16 +9,16 @@ var_dump('all groups', $Group->get_all());
 var_dump('group 1', $Group->get(1));
 var_dump('group 1 and 2', $Group->get([1, 2]));
 $id = $Group->add('Group 1', '');
-var_dump('new group added', $id);
-if (!$id) {
-  exit;
-}
+var_dump('new group added', $id, $Group->get($id));
+var_dump('group modification', $Group->set($id, 'Group 1', 'Description added'), $Group->get($id));
 var_dump('group permissions', $Group->get_permissions($id));
-var_dump(Permission::instance()->get_all());
-var_dump('set group permissions', $Group->set_permissions([2 => 0], $id));
-var_dump('check modified group permissions', $Group->get_permissions($id));
-var_dump('reset modified group permissions', $Group->set_permissions([2 => -1], $id));
-var_dump('check modified group permissions again', $Group->get_permissions($id));
+var_dump('set group permissions', $Group->set_permissions([2 => 0], $id), $Group->get_permissions($id));
+var_dump('reset modified group permissions', $Group->set_permissions([2 => -1], $id), $Group->get_permissions($id));
+var_dump('set group permissions once again', $Group->set_permissions([2 => 0], $id), $Group->get_permissions($id));
+var_dump('reset all group permissions', $Group->del_permissions_all($id), $Group->get_permissions($id));
+$id = $Group->add('test', 'test');
+var_dump('another group added', $id, $Group->get($id));
+var_dump('delete group', $Group->del($id), $Group->get($id));
 ?>
 --EXPECT--
 string(10) "all groups"
@@ -62,30 +62,57 @@ array(2) {
 }
 string(15) "new group added"
 int(4)
+array(3) {
+  ["id"]=>
+  string(1) "4"
+  ["title"]=>
+  string(7) "Group 1"
+  ["description"]=>
+  string(0) ""
+}
+string(18) "group modification"
+bool(true)
+array(3) {
+  ["id"]=>
+  string(1) "4"
+  ["title"]=>
+  string(7) "Group 1"
+  ["description"]=>
+  string(17) "Description added"
+}
 string(17) "group permissions"
 array(0) {
 }
-array(2) {
-  ["admin/System"]=>
-  array(1) {
-    ["index"]=>
-    int(1)
-  }
-  ["api/System"]=>
-  array(1) {
-    ["index"]=>
-    int(2)
-  }
-}
 string(21) "set group permissions"
 bool(true)
-string(32) "check modified group permissions"
 array(1) {
   [2]=>
   int(0)
 }
 string(32) "reset modified group permissions"
 bool(true)
-string(38) "check modified group permissions again"
 array(0) {
 }
+string(32) "set group permissions once again"
+bool(true)
+array(1) {
+  [2]=>
+  int(0)
+}
+string(27) "reset all group permissions"
+bool(true)
+array(0) {
+}
+string(19) "another group added"
+int(5)
+array(3) {
+  ["id"]=>
+  string(1) "5"
+  ["title"]=>
+  string(4) "test"
+  ["description"]=>
+  string(4) "test"
+}
+string(12) "delete group"
+bool(true)
+bool(false)
