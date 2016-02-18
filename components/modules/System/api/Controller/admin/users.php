@@ -129,6 +129,10 @@ trait users {
 			if (!$result) {
 				throw new ExitException(500);
 			}
+			if ($result === 'exists') {
+				$L = new Prefix('system_admin_users_');
+				throw new ExitException($L->user_already_exists, 400);
+			}
 			status_code(201);
 			$Page->json(
 				[
