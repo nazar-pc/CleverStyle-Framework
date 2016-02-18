@@ -18,8 +18,7 @@ $u = $db->f($result, true);
 var_dump('single row single column', $u);
 
 $result = $db->q('SELECT `id`, `login` from `[prefix]users`');
-$u = $db->f($result, false, true);
-var_dump('multiple rows', $u);
+var_dump('multiple rows', $db->n($result), $db->f($result, false, true));
 
 $result = $db->q('SELECT `id`, `login` from `[prefix]users`');
 $u = $db->f($result, true, true);
@@ -89,6 +88,7 @@ array(2) {
 string(24) "single row single column"
 string(1) "2"
 string(13) "multiple rows"
+int(2)
 array(2) {
   [0]=>
   array(2) {
