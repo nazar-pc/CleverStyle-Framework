@@ -27,7 +27,7 @@
       });
       $.ajax({
         url: 'api/Composer',
-        type: this.action !== 'install' ? 'delete' : 'post',
+        type: this.action === 'uninstall' ? 'delete' : 'post',
         data: {
           name: this['package'],
           category: this.category,

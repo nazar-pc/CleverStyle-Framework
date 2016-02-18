@@ -41,10 +41,14 @@
     return open_modal('install', data.name, 'modules');
   }).on('admin/System/components/modules/uninstall/before', function(data){
     return open_modal('uninstall', data.name, 'modules');
+  }).on('admin/System/components/modules/update/after', function(data){
+    return open_modal('update', data.name, 'modules');
   }).on('admin/System/components/plugins/enable/before', function(data){
     return open_modal('install', data.name, 'plugins');
   }).on('admin/System/components/plugins/disable/before', function(data){
     return open_modal('uninstall', data.name, 'plugins');
+  }).on('admin/System/components/plugins/update/after', function(data){
+    return open_modal('update', data.name, 'plugins');
   });
   $('.cs-composer-admin-force-update').click(function(){
     open_modal('install', 'Composer', 'modules', true);

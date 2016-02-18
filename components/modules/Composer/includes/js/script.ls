@@ -32,11 +32,17 @@ cs.Event
 	.on('admin/System/components/modules/uninstall/before', (data) ->
 		open_modal('uninstall', data.name, 'modules')
 	)
+	.on('admin/System/components/modules/update/after', (data) ->
+		open_modal('update', data.name, 'modules')
+	)
 	.on('admin/System/components/plugins/enable/before', (data) ->
 		open_modal('install', data.name, 'plugins')
 	)
 	.on('admin/System/components/plugins/disable/before', (data) ->
 		open_modal('uninstall', data.name, 'plugins')
+	)
+	.on('admin/System/components/plugins/update/after', (data) ->
+		open_modal('update', data.name, 'plugins')
 	)
 $('.cs-composer-admin-force-update').click !->
 	open_modal('install', 'Composer', 'modules', true)

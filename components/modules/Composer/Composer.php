@@ -170,11 +170,14 @@ class Composer {
 	 */
 	protected function prepare ($storage) {
 		if (!is_dir($storage)) {
+			/** @noinspection MkdirRaceConditionInspection */
 			@mkdir($storage, 0770);
 		}
 		rmdir_recursive("$storage/home");
+		/** @noinspection MkdirRaceConditionInspection */
 		@mkdir("$storage/home", 0770);
 		rmdir_recursive("$storage/tmp");
+		/** @noinspection MkdirRaceConditionInspection */
 		@mkdir("$storage/tmp", 0770);
 		putenv("COMPOSER_HOME=$storage/home");
 		@ini_set('display_errors', 1);

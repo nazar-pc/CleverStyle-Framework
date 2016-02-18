@@ -24,7 +24,7 @@ Polymer(
 		)
 		$.ajax(
 			url		: 'api/Composer'
-			type	: if @action != 'install' then 'delete' else 'post'
+			type	: if @action == 'uninstall' then 'delete' else 'post'
 			data	:
 				name		: @package
 				category	: @category
