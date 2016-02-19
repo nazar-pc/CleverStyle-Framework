@@ -195,7 +195,7 @@ Fixes and small improvements:
 * Event class simplification
 * Improvement of server type detection
 * `__invoke()` added to `\cs\False_class`
-* Show information about module even if it is not installed 
+* Show information about module even if it is not installed
 
 Deprecations:
 * `DB::instance()->queries` and `->time` properties
@@ -230,7 +230,7 @@ New features:
   * admin/System/components/plugins/enable/process
   * admin/System/components/plugins/disable/process
   * admin/System/components/plugins/update/process/before
-  * admin/System/components/plugins/update/process/before 
+  * admin/System/components/plugins/update/process/before
 * Http server and WebSockets modules now depends on Composer module and does not include dependencies inside!
 
 Updates:
@@ -1422,5 +1422,94 @@ Deprecations:
 Possible partial compatibility breaking (very unlikely, but still possible):
 * Potential BC break (very unlikely) is that `$user` argument in `\cs\Session::add()` is now mandatory
 * Undocumented `\cs\Page::$link`, `::$Search` and `$Replace` properties now have protected access
+
+Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
+
+# 3.174.2+build-1883: RequireJS integration, Bower/NPM integration with system and SQLite support
+
+RequireJS is now bundled with system, it also includes aliases to all bundled third-party components like jQuery or jsSHA, so that they can be used transparently, some components are no longer loaded unconditionally, but are used as AMD modules instead only when needed.
+Bower/NPM packages installed in website directory are now flawlessly picked by system and aliases to all modules created based on contents of `bower.json` or `package.json` files, so that they are all available as AMD modules for RequireJS.
+Composer assets plugin reached 1.0 version and changed its behavior: no files included automatically (files should be now specified explicitly) and integration with system's RequireJS was added. Now all Bower/NPM packages installed using Composer assets plugin will be automatically available as AMD modules, moreover, direct files inclusion within paths `/bower_components` and `/node_modules` will be available to smooth integration even further (though it is not encouraged way of using it).
+
+Another major feature is SQLite support. SQLite database engine was added alongside with ability to install system using SQLite database (no explicit SQLite support within components yet).
+
+The last major change under the hood is translations namespacing. This will ease translations management and support in future.
+
+There was also BananaHTML update which contains performance tweaks for real-world use-cases using simplified rendering path.
+
+Security fixes:
+* Small potential security fix in `\cs\Text:set()`
+
+New components:
+* None
+
+New features:
+* RequireJS bundled with system
+  * jsSHA is not loaded by default, only on demand using RequireJS
+  * autosize library moved to modules and is now loaded only when necessary
+* Modules/plugins RequireJS aliases added, so that `Blogs/xyz` will be loaded by RequireJS as `components/modules/Blogs/includes/js/xyz.js` (functionality might also be used instead of direct module/plugin name)
+* Support for automatic AMD modules detection for root `bower_components` and `node_modules` directories added to provide flawless integration with any third-party tools
+* New event:
+  * `System/Page/requirejs` added
+* Composer assets: Backward incompatible version of Composer assets plugin with multiple improvements:
+  * RequireJS support
+  * Possibility to specify explicitly which files should be included from package
+  * Handling `/bower_components/*` and `/node_modules/*` paths for installed packages which are not present in corresponding root directories
+* All translations are now namespaced, system translations significantly restructured, unsed translation keys removed
+* Basic SQLite support:
+  * SQLite database engine
+  * System installation and operation with SQLite database engine
+  * Conversion of some certain MySQL queries to SQLite equivalents if possible for compatibility
+  * Some SQL queries modified to be compatible with both MySQL and SQLite
+
+Updates:
+* New upstream version of sprintf.js
+* Composer upgraded to Git version
+* New upstream version of BananaHTML:
+  * Separate, faster path for typical use case added to improve performance in real-world applications
+
+Fixes and small improvements:
+* Tiny fix for notification
+* Prevent page scrolling in browsers where possible when modal is opened
+* Fix for link to module's administration page
+* Include CSS/JS/HTML files targeted for System module on all other pages
+* Composer: `Composer/Composer` event now have one more argument called `Application`
+* Composer: Usability improvement in Composer module: modal's content is scrolling as new data appearing if before update modal was scrolled till the end
+* APC and APCu showed separately in about server information (for HHVM that only supports APC)
+* Builder refactoring, using `getopt()` instead of manually inspecting CLI arguments
+* All system code converted from CoffeeScript to LiveScript
+* Builder class refactored to only contain methods related to builder itself, web and cli interfaces moved to separate files
+* `bower.json` and `package.json` will now be included into distributive if present
+* Guest's username returned from translations in `cs\User::username()` avoiding checking this manually
+* Fix for Chromium now willing loading stylesheet with Content-Type `application/octet-stream`
+* Fix for reporting incompatible databases and storages
+* Create session for CSRF
+* Fix for module's databases and storages settings
+* Fix for setting value in `set_core_ml_text()` function
+* Old redundant method removed
+* Stop returning `false` from `\cs\DB\_Abstract::columns()` and `::tables()`, return empty array instead
+* Old IE: URL polyfill removed from Old_IE plugin since it is already available in system itself
+* Fix for URL polyfill was Template polyfill indeed in system core
+* `api/System/blank` endpoint added, primarily for benchmarking purposes (to avoid UI overhead)
+* Composer: Update Composer on package update in addition to installation/uninstallation
+* Return correct error message when trying to register existing user in administration interface
+* Added avatar uploading support when editing user profile in administration
+* Tests:
+  * Test for prefixed language usage added
+  * Better event test
+  * Improved MySQLi database engine tests added
+  * Group tests added
+  * Added permissions tests
+* Normalized `\cs\Permission::get()` result (`false` or empty array on failure instead of `null`)
+* Better fix for `WebComponentsReady` event in Chromium
+* Various small fixes and tweaks
+
+Deprecations:
+* None
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* `cs.hash()` signature changes, requires jssha AMD module to be loaded first
+* Composer assets plugin will not include any files completely automatically anymore, explicit files listing required or AMD module loading can be used
+* Site rules configuration removed from system
 
 Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
