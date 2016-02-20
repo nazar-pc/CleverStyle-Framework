@@ -158,9 +158,9 @@ class Request {
 		 * Clean objects pool
 		 */
 		objects_pool([]);
-		admin_path(-1);
-		api_path(-1);
-		current_module(-1);
-		home_page(-1);
+		admin_path(false);
+		api_path(false);
+		current_module('');
+		home_page(false);
 	}
 }
