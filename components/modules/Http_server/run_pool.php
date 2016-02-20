@@ -11,13 +11,11 @@ namespace cs\modules\Http_server;
  * Running Http server in background on any platform
  *
  * @param int  $port
- * @param bool $async
  */
-function cross_platform_server_in_background ($port, $async) {
+function cross_platform_server_in_background ($port) {
 	$exec       = defined('HHVM_VERSION') ? 'hhvm' : 'php';
-	$async      = $async ? '-a' : '';
 	$supervisor = 'php '.__DIR__.'/supervisor.php';
-	$cmd        = "$exec ".__DIR__."/run_server.php -p $port $async";
+	$cmd        = "$exec ".__DIR__."/run_server.php -p $port";
 	if (substr(PHP_OS, 0, 3) != 'WIN') {
 		exec("$supervisor '$cmd' > /dev/null &");
 	} else {
@@ -25,14 +23,11 @@ function cross_platform_server_in_background ($port, $async) {
 	}
 }
 
-$async = false;
 for ($i = 1; isset($argv[$i]); ++$i) {
 	switch ($argv[$i]) {
 		case '-p':
 			$port = $argv[++$i];
 			break;
-		case '-a':
-			$async = true;
 	}
 }
 if (!isset($port)) {
@@ -40,9 +35,6 @@ if (!isset($port)) {
 Usage: php components/modules/Http_server/run_server.php -p <port> [-a]
   -p - Is used to specify on which port server should listen for incoming connections, can be number, range or
        coma-separated number or range (8080. 8080-8081 or 8080,8081,9000-9005)
-  -a - Prepare server for asynchronous processing (decrease system optimizations, but might
-       be useful if other code will benefit from this), using asynchronous code without this
-       option will result in unpredictable behavior
 ';
 	return;
 }
@@ -59,6 +51,6 @@ foreach (explode(',', $port) as $p) {
 unset($p, $port);
 sort($ports);
 foreach ($ports as $p) {
-	cross_platform_server_in_background($p, $async);
+	cross_platform_server_in_background($p);
 }
 echo "Pool of Http servers started!\n";

@@ -12,52 +12,18 @@ namespace {
 		cs\Route;
 
 	/**
-	 * Return request id from Request object
-	 *
-	 * @return string
-	 */
-	if (!ASYNC_HTTP_SERVER) {
-		function get_request_id () {
-			return 1;
-		}
-	} else {
-		function get_request_id () {
-			static $request_index;
-			$backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS);
-			if (!isset($request_index)) {
-				foreach (array_reverse($backtrace) as $i => $b) {
-					if (isset($b['object']->__request_id)) {
-						$request_index = -$i - 1;
-						break;
-					}
-				}
-			}
-			return array_slice($backtrace, $request_index, 1)[0]['object']->__request_id;
-		}
-	}
-	/**
 	 * Objects pool for usage in Singleton, optimized for WebServer
 	 *
-	 * @param string        $request_id
 	 * @param null|object[] $update_objects_pool
 	 *
 	 * @return object[]
 	 */
-	function &objects_pool ($request_id, $update_objects_pool = null) {
+	function &objects_pool ($update_objects_pool = null) {
 		static $objects_pool = [];
-		if (!isset($objects_pool[$request_id])) {
-			$objects_pool[$request_id] = [];
-		}
 		if (is_array($update_objects_pool)) {
-			if (empty($update_objects_pool)) {
-				unset($objects_pool[$request_id]);
-				$null = null;
-				return $null;
-			} else {
-				$objects_pool[$request_id] = $update_objects_pool;
-			}
+			$objects_pool = $update_objects_pool;
 		}
-		return $objects_pool[$request_id];
+		return $objects_pool;
 	}
 
 	/** @noinspection PhpInconsistentReturnPointsInspection */
@@ -76,54 +42,40 @@ namespace {
 	 */
 	function _header ($string, $replace = true, $http_response_code = null) {
 		static $headers = [];
-		$request_id = get_request_id();
 		if ($string === null) {
-			if (isset($headers[$request_id])) {
-				$return = $headers[$request_id];
-				unset($headers[$request_id]);
-				return $return;
-			}
-			return [];
+			$return  = $headers;
+			$headers = [];
+			return $return;
 		}
 		if (strcasecmp(substr($string, 0, 4), 'http') === 0) {
-			_http_response_code(explode(' ', $string)[1], $request_id);
+			_http_response_code(explode(' ', $string)[1]);
 			/** @noinspection PhpInconsistentReturnPointsInspection */
 			return;
 		}
-		if (!isset($headers[$request_id])) {
-			$headers[$request_id] = [];
-		}
 		$string = _trim(explode(':', $string, 2));
 		if ($replace) {
-			$headers[$request_id][$string[0]] = [$string[1]];
+			$headers[$string[0]] = [$string[1]];
 		} else {
-			$headers[$request_id][$string[0]][] = $string[1];
+			$headers[$string[0]][] = $string[1];
 		}
 		if ($http_response_code) {
-			_http_response_code($http_response_code, $request_id);
+			_http_response_code($http_response_code);
 		}
 	}
 
 	/**
 	 * Get or Set the HTTP response code (similar to built-in function)
 	 *
-	 * @param int  $response_code The optional response_code will set the response code.
-	 * @param null $request_id    Used internally
+	 * @param int $response_code The optional response_code will set the response code.
 	 *
 	 * @return int The current response code. By default the return value is int(200).
 	 */
-	function _http_response_code ($response_code = 0, $request_id = null) {
-		static $codes = [];
-		$request_id = $request_id ?: get_request_id();
-		if ($response_code == 0) {
-			if (isset($codes[$request_id])) {
-				$code = $codes[$request_id];
-				unset($codes[$request_id]);
-				return $code;
-			}
-			return 200;
+	function _http_response_code ($response_code = 0) {
+		static $code = 200;
+		if ($response_code != 0) {
+			$code = $response_code;
 		}
-		return $codes[$request_id] = $response_code;
+		return $code;
 	}
 
 	/**
@@ -139,15 +91,7 @@ namespace {
 	 */
 	function _setcookie ($name, $value, $expire = 0, $httponly = false) {
 		static $domain, $prefix, $secure;
-		$request_id = get_request_id();
-		if (ASYNC_HTTP_SERVER) {
-			if (!isset($_COOKIE[$request_id])) {
-				$_COOKIE[$request_id] = [];
-			}
-			$request_cookie = &$_COOKIE[$request_id];
-		} else {
-			$request_cookie = &$_COOKIE;
-		}
+		$request_cookie = &$_COOKIE;
 		if (!isset($prefix)) {
 			$Config = Config::instance(true);
 			/**
@@ -190,111 +134,70 @@ namespace {
 	 */
 	function _getcookie ($name) {
 		static $prefix;
-		$request_id = get_request_id();
-		if (ASYNC_HTTP_SERVER) {
-			if (!isset($_COOKIE[$request_id])) {
-				return false;
-			}
-			$request_cookie = &$_COOKIE[$request_id];
-		} else {
-			$request_cookie = &$_COOKIE;
-		}
 		if (!isset($prefix)) {
 			$prefix = Config::instance(true)->core['cookie_prefix'] ?: '';
 		}
-		return isset($request_cookie[$prefix.$name]) ? $request_cookie[$prefix.$name] : false;
+		return isset($_COOKIE[$prefix.$name]) ? $_COOKIE[$prefix.$name] : false;
 	}
 
 	/**
 	 * Is current path from administration area?
 	 *
-	 * @param bool|int|null $admin_path
+	 * @param bool|null $admin_path
 	 *
 	 * @return bool
 	 */
 	function admin_path ($admin_path = null) {
-		static $stored_admin_path = [];
-		$request_id = get_request_id();
-		if ($admin_path === -1) {
-			unset($stored_admin_path[$request_id]);
-			return true;
-		}
-		if (!isset($stored_admin_path[$request_id])) {
-			$stored_admin_path[$request_id] = false;
-		}
+		static $stored_admin_path = false;
 		if ($admin_path !== null) {
-			$stored_admin_path[$request_id] = $admin_path;
+			$stored_admin_path = (bool)$admin_path;
 		}
-		return $stored_admin_path[$request_id];
+		return $stored_admin_path;
 	}
 
 	/**
 	 * Is current path from api area?
 	 *
-	 * @param bool|int|null $api_path
+	 * @param bool|null $api_path
 	 *
 	 * @return bool
 	 */
 	function api_path ($api_path = null) {
-		static $stored_api_path = [];
-		$request_id = get_request_id();
-		if ($api_path === -1) {
-			unset($stored_api_path[$request_id]);
-			return true;
-		}
-		if (!isset($stored_api_path[$request_id])) {
-			$stored_api_path[$request_id] = false;
-		}
+		static $stored_api_path = false;
 		if ($api_path !== null) {
-			$stored_api_path[$request_id] = $api_path;
+			$stored_api_path = (bool)$api_path;
 		}
-		return $stored_api_path[$request_id];
+		return $stored_api_path;
 	}
 
 	/**
 	 * Name of currently used module (for generation of current page)
 	 *
-	 * @param null|int|string $current_module
+	 * @param null|string $current_module
 	 *
 	 * @return string
 	 */
 	function current_module ($current_module = null) {
-		static $stored_current_module = [];
-		$request_id = get_request_id();
-		if ($current_module === -1) {
-			unset($stored_current_module[$request_id]);
-			return true;
-		}
-		if (!isset($stored_current_module[$request_id])) {
-			$stored_current_module[$request_id] = '';
-		}
+		static $stored_current_module = '';
 		if ($current_module !== null) {
-			$stored_current_module[$request_id] = $current_module;
+			$stored_current_module = $current_module;
 		}
-		return $stored_current_module[$request_id];
+		return $stored_current_module;
 	}
 
 	/**
 	 * Is current page a home page?
 	 *
-	 * @param bool|int|null $home_page
+	 * @param bool|null $home_page
 	 *
 	 * @return bool
 	 */
 	function home_page ($home_page = null) {
-		static $stored_home_page = [];
-		$request_id = get_request_id();
-		if ($home_page === -1) {
-			unset($stored_home_page[$request_id]);
-			return true;
-		}
-		if (!isset($stored_home_page[$request_id])) {
-			$stored_home_page[$request_id] = false;
-		}
+		static $stored_home_page = false;
 		if ($home_page !== null) {
-			$stored_home_page[$request_id] = $home_page;
+			$stored_home_page = (bool)$home_page;
 		}
-		return $stored_home_page[$request_id];
+		return $stored_home_page;
 	}
 }
 

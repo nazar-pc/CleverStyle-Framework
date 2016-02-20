@@ -26,10 +26,3 @@ foreach (glob(CUSTOM.'/*.php') ?: [] as $custom) {
 	include $custom;
 }
 unset($custom);
-if (ASYNC_HTTP_SERVER) {
-	require __DIR__.'/Superglobals_wrapper.php'; //Inclusion of wrapper for `$_SERVER` `$_GET`, `$_POST`, `$_REQUEST` for http server
-	$_GET     = new Superglobals_wrapper();
-	$_POST    = new Superglobals_wrapper();
-	$_REQUEST = new Superglobals_wrapper();
-	$_SERVER  = new Superglobals_wrapper();
-}

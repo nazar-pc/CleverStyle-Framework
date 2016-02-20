@@ -9,6 +9,7 @@
 namespace cs;
 use
 	cs\Singleton\Base;
+
 /**
  * @inheritdoc
  */
@@ -19,17 +20,8 @@ trait Singleton {
 	 */
 	static function instance ($check = false) {
 		static $instance;
-		$class = get_called_class();
-		$request_specific_classes = ASYNC_HTTP_SERVER ? [
-			'cs\\Event',
-			'cs\\Index',
-			'cs\\Language',
-			'cs\\Menu',
-			'cs\\Page',
-			'cs\\Page\\Meta',
-			'cs\\Route',
-			'cs\\Session'
-		] : [
+		$class                    = get_called_class();
+		$request_specific_classes = [
 			'cs\\Event',
 			'cs\\Index',
 			'cs\\Menu',
@@ -39,8 +31,7 @@ trait Singleton {
 			'cs\\Session'
 		];
 		if (in_array($class, $request_specific_classes)) {
-			$request_id   = get_request_id();
-			$objects_pool = &objects_pool($request_id);
+			$objects_pool = &objects_pool();
 			if (isset($objects_pool[$class]) && $objects_pool[$class]) {
 				return $objects_pool[$class];
 			}

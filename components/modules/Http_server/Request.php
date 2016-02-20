@@ -15,8 +15,8 @@ use
 	cs\Index,
 	cs\Page,
 	cs\User;
+
 class Request {
-	public $__request_id;
 	/**
 	 * @var \React\Http\Request
 	 */
@@ -30,20 +30,17 @@ class Request {
 	 * @param \React\Http\Response $response
 	 */
 	function __construct ($request, $response) {
-		$this->request      = $request;
-		$this->response     = $response;
-		$this->__request_id = ASYNC_HTTP_SERVER ? md5(random_bytes(100)) : 1;
+		$this->request  = $request;
+		$this->response = $response;
 	}
 	/**
 	 * @param string $data
 	 */
 	function __invoke ($data) {
 		$this->bootstrap();
-		$request    = $this->request;
-		$request_id = $this->__request_id;
+		$request = $this->request;
 		$this->fill_superglobals(
-			$this->prepare_superglobals($request, $data, $request_id),
-			$request_id
+			$this->prepare_superglobals($request, $data)
 		);
 		ob_start();
 		try {
@@ -57,7 +54,7 @@ class Request {
 		} catch (\Exception $e) {
 			// Handle generic exceptions to avoid server from stopping
 		}
-		$this->response->writeHead(_http_response_code(0, $request_id), _header(null));
+		$this->response->writeHead(_http_response_code(0), _header(null));
 		$this->response->end(ob_get_clean());
 		$this->cleanup();
 		$request->close();
@@ -72,11 +69,10 @@ class Request {
 	/**
 	 * @param \React\HTTP\Request $request
 	 * @param string              $data
-	 * @param int|string          $request_id
 	 *
 	 * @return array
 	 */
-	protected function prepare_superglobals ($request, $data, $request_id) {
+	protected function prepare_superglobals ($request, $data) {
 		$SERVER = [
 			'SERVER_SOFTWARE' => 'ReactPHP'
 		];
@@ -107,7 +103,7 @@ class Request {
 			if (strpos($SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded') === 0) {
 				parse_str($data, $POST);
 			} elseif (preg_match('#^application/([^+\s]+\+)?json#', $SERVER['CONTENT_TYPE'])) {
-				$POST[$request_id] = json_decode($data, true);
+				$POST = json_decode($data, true);
 			}
 		}
 		return [
@@ -118,23 +114,14 @@ class Request {
 		];
 	}
 	/**
-	 * @param array      $SUPERGLOBALS
-	 * @param int|string $request_id
+	 * @param array $SUPERGLOBALS
 	 */
-	protected function fill_superglobals ($SUPERGLOBALS, $request_id) {
-		if (ASYNC_HTTP_SERVER) {
-			$_SERVER[$request_id]  = new _SERVER($SUPERGLOBALS['SERVER']);
-			$_COOKIE[$request_id]  = $SUPERGLOBALS['COOKIE'];
-			$_GET[$request_id]     = $SUPERGLOBALS['GET'];
-			$_POST[$request_id]    = $SUPERGLOBALS['POST'];
-			$_REQUEST[$request_id] = $SUPERGLOBALS['POST'] + $SUPERGLOBALS['GET'];
-		} else {
-			$_SERVER  = new _SERVER($SUPERGLOBALS['SERVER']);
-			$_COOKIE  = $SUPERGLOBALS['COOKIE'];
-			$_GET     = $SUPERGLOBALS['GET'];
-			$_POST    = $SUPERGLOBALS['POST'];
-			$_REQUEST = $SUPERGLOBALS['POST'] + $SUPERGLOBALS['GET'];
-		}
+	protected function fill_superglobals ($SUPERGLOBALS) {
+		$_SERVER  = new _SERVER($SUPERGLOBALS['SERVER']);
+		$_COOKIE  = $SUPERGLOBALS['COOKIE'];
+		$_GET     = $SUPERGLOBALS['GET'];
+		$_POST    = $SUPERGLOBALS['POST'];
+		$_REQUEST = $SUPERGLOBALS['POST'] + $SUPERGLOBALS['GET'];
 	}
 	/**
 	 * @throws ExitException
@@ -167,20 +154,10 @@ class Request {
 	 * Various cleanups after processing of current request to free used memory
 	 */
 	function cleanup () {
-		$request_id = $this->__request_id;
 		/**
 		 * Clean objects pool
 		 */
-		objects_pool($request_id, []);
-		if (ASYNC_HTTP_SERVER) {
-			unset(
-				$_COOKIE[$request_id],
-				$_SERVER[$request_id],
-				$_GET[$request_id],
-				$_POST[$request_id],
-				$_REQUEST[$request_id]
-			);
-		}
+		objects_pool([]);
 		admin_path(-1);
 		api_path(-1);
 		current_module(-1);
