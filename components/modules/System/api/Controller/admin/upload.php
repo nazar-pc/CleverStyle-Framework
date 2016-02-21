@@ -19,7 +19,7 @@ trait upload {
 	 * @throws ExitException
 	 */
 	static function admin_upload_post () {
-		if (!isset($_FILES['file']) || !$_FILES['file']['tmp_name']) {
+		if (!isset($_FILES['file']['tmp_name'])) {
 			throw new ExitException(400);
 		}
 		$L    = new Prefix('system_admin_');
