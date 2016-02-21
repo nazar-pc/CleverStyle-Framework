@@ -104,12 +104,15 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				| 'themes'	=> 'appearance_updating_of_theme'
 			title			= "<h3>#{L[translation_key](component)}</h3>"
 			message			= ''
-			translation_key	=
-				switch category
-				| 'modules'	=> (if component == 'System' then 'modules_update_system' else 'modules_update_module')
-				| 'plugins'	=> 'plugins_update_plugin'
-				| 'themes'	=> 'appearance_update_theme'
-			message_more	= '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>'
+			if component == 'System'
+				message_more	= '<p class>' + L.modules_update_system(existing_meta.version, new_meta.version) + '</p>'
+			else
+				translation_key	=
+					switch category
+					| 'modules'	=> 'modules_update_module'
+					| 'plugins'	=> 'plugins_update_plugin'
+					| 'themes'	=> 'appearance_update_theme'
+				message_more	= '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>'
 			if Object.keys(dependencies).length
 				message	= @_compose_dependencies_message(component, dependencies)
 				if cs.simple_admin_mode

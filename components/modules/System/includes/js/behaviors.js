@@ -127,22 +127,21 @@
           }());
           title = "<h3>" + L[translation_key](component) + "</h3>";
           message = '';
-          translation_key = (function(){
-            switch (category) {
-            case 'modules':
-              if (component === 'System') {
-                return 'modules_update_system';
-              } else {
+          if (component === 'System') {
+            message_more = '<p class>' + L.modules_update_system(existing_meta.version, new_meta.version) + '</p>';
+          } else {
+            translation_key = (function(){
+              switch (category) {
+              case 'modules':
                 return 'modules_update_module';
+              case 'plugins':
+                return 'plugins_update_plugin';
+              case 'themes':
+                return 'appearance_update_theme';
               }
-              break;
-            case 'plugins':
-              return 'plugins_update_plugin';
-            case 'themes':
-              return 'appearance_update_theme';
-            }
-          }());
-          message_more = '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>';
+            }());
+            message_more = '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>';
+          }
           if (Object.keys(dependencies).length) {
             message = this$._compose_dependencies_message(component, dependencies);
             if (cs.simple_admin_mode) {
