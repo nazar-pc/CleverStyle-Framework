@@ -24,7 +24,7 @@ use
  * @method \cs\DB\_Abstract db_prime()
  * @method false|int        get_id(string $login_hash)
  * @method bool             set_groups(int[] $groups, false|int $user = false)
- * @method false|string     get(array|string $item, mixed|null $value, false|int $user = false)
+ * @method false|string     get(array|string $item, false|int $user = false)
  * @method bool             set(array|string $item, mixed|null $value = null, false|int $user = false)
  * @method bool             del_permissions_all(false|int $user = false)
  */
