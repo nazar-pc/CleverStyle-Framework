@@ -17,8 +17,6 @@ use
 	cs\Singleton;
 
 /**
- * @method static Categories instance($check = false)
- *
  * Provides next events:<br>
  *  Shop/Categories/get<code>
  *  [

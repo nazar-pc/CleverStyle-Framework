@@ -14,9 +14,6 @@ use
 	cs\CRUD,
 	cs\Singleton;
 
-/**
- * @method static Options instance($check = false)
- */
 class Options {
 	use
 		Common_actions,

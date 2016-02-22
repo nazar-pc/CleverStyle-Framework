@@ -12,9 +12,6 @@ use
 	cs\CRUD_helpers,
 	cs\Singleton;
 
-/**
- * @method static Transactions instance($check = false)
- */
 class Transactions {
 	use CRUD_helpers {
 		search as crud_search;

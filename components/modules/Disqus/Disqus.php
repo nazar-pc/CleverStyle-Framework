@@ -1,20 +1,18 @@
 <?php
 /**
- * @package		Disqus
- * @category	modules
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2013-2016, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   Disqus
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2013-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs\modules\Disqus;
-use			h,
-			cs\Config,
-			cs\Page,
-			cs\Singleton;
+namespace cs\modules\Disqus;
+use
+	h,
+	cs\Config,
+	cs\Page,
+	cs\Singleton;
 
-/**
- * @method static Disqus instance($check = false)
- */
 class Disqus {
 	use	Singleton;
 

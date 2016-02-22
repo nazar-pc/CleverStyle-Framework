@@ -1,9 +1,9 @@
 <?php
 /**
- * @package        CleverStyle CMS
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2014-2016, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs;
 use
@@ -13,8 +13,6 @@ use
  *
  * Provides next events:<br>
  *  admin/System/Menu
- *
- * @method static Menu instance($check = false)
  */
 class Menu {
 	use

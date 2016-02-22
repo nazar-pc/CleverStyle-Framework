@@ -21,8 +21,6 @@ namespace cs;
  *
  *  System/Index/load/after
  *
- * @method static Index instance($check = false)
- *
  * @property string[] $controller_path Path that will be used by controller to render page
  */
 class Index {

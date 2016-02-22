@@ -14,9 +14,6 @@ use
 	cs\Language\Prefix as Language_prefix,
 	cs\Singleton;
 
-/**
- * @method static Order_statuses instance($check = false)
- */
 class Order_statuses {
 	use
 		Singleton,

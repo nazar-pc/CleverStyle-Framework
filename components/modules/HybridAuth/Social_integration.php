@@ -13,9 +13,7 @@ use
 	cs\User,
 	cs\DB\Accessor,
 	cs\Singleton;
-/**
- * @method static Social_integration instance($check = false)
- */
+
 class Social_integration {
 	use
 		Accessor,

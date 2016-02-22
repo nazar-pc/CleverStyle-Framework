@@ -14,9 +14,6 @@ use
 	cs\Config,
 	cs\Language;
 
-/**
- * @method static Pages instance($check = false)
- */
 class Pages {
 	use
 		CRUD,

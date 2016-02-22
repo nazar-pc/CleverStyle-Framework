@@ -16,8 +16,6 @@ use
 	cs\Singleton;
 
 /**
- * @method static Orders instance($check = false)
- *
  * Provides next events:<br>
  *  Shop/Orders/get<code>
  *  [

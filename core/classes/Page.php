@@ -11,9 +11,6 @@ use
 	cs\Page\Includes,
 	cs\Page\Meta;
 
-/**
- * @method static Page instance($check = false)
- */
 class Page {
 	use
 		Singleton,

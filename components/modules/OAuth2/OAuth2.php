@@ -1,10 +1,10 @@
 <?php
 /**
- * @package        OAuth2
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2016, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   OAuth2
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\OAuth2;
 use
@@ -15,10 +15,7 @@ use
 	cs\DB\Accessor,
 	cs\Singleton;
 
-//TODO: user CRUD trait
-/**
- * @method static OAuth2 instance($check = false)
- */
+//TODO: use CRUD trait
 class OAuth2 {
 	use
 		Accessor,

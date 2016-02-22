@@ -10,8 +10,6 @@ namespace cs;
  * Provides next events:
  *  System/Route/routing_replace
  *  ['rc'    => &$rc] //Reference to string with current route, this string can be changed
- *
- * @method static Route instance($check = false)
  */
 class Route {
 	use

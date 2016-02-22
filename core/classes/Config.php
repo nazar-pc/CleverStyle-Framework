@@ -12,8 +12,6 @@ namespace cs;
  *  System/Config/init/before
  *
  *  System/Config/init/after
- *
- * @method static Config instance($check = false)
  */
 class Config {
 	use

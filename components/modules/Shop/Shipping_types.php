@@ -16,8 +16,6 @@ use
 	cs\Singleton;
 
 /**
- * @method static Shipping_types instance($check = false)
- *
  * Provides next events:<br>
  *  Shop/Shipping_types/get_for_user<code>
  *  [

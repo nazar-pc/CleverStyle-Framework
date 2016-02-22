@@ -10,8 +10,6 @@ use            h;
 /**
  * Core class.
  * Provides loading of base system configuration
- *
- * @method static Core instance($check = false)
  */
 class Core {
 	use Singleton;

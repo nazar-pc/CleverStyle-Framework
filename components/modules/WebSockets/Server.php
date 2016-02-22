@@ -24,9 +24,7 @@ use
 	cs\User,
 	Exception,
 	SplObjectStorage;
-/**
- * @method static Server instance($check = false)
- */
+
 class Server implements MessageComponentInterface {
 	use
 		Singleton;

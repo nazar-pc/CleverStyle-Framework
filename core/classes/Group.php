@@ -24,8 +24,6 @@ use
 	cs\Permission\Any;
 /**
  * Class for groups manipulating
- *
- * @method static Group instance($check = false)
  */
 class Group {
 	use

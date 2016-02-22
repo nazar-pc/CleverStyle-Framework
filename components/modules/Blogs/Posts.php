@@ -18,9 +18,6 @@ use
 	cs\Singleton,
 	cs\plugins\Json_ld\Json_ld;
 
-/**
- * @method static Posts instance($check = false)
- */
 class Posts {
 	use
 		CRUD,

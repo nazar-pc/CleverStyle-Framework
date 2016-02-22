@@ -13,9 +13,6 @@ use
 	cs\plugins\Tags\Tags as Tags_trait,
 	cs\Singleton;
 
-/**
- * @method static Tags instance($check = false)
- */
 class Tags {
 	use
 		Tags_trait,

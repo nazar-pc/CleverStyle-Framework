@@ -34,8 +34,6 @@ use
 
 /**
  * Class responsible for current user session
- *
- * @method static Session instance($check = false)
  */
 class Session {
 	use

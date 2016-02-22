@@ -14,9 +14,6 @@ use
 	cs\CRUD,
 	cs\Singleton;
 
-/**
- * @method static Polls instance($check = false)
- */
 class Polls {
 	use
 		Common_actions,

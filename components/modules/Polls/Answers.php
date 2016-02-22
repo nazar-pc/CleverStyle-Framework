@@ -14,9 +14,6 @@ use
 	cs\CRUD,
 	cs\Singleton;
 
-/**
- * @method static Answers instance($check = false)
- */
 class Answers {
 	use
 		CRUD,

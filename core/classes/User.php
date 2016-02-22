@@ -46,6 +46,7 @@ use
 	cs\User\Group as User_group,
 	cs\User\Management as User_management,
 	cs\User\Permission as User_permission;
+
 /**
  * Class for users manipulating
  *
@@ -64,8 +65,6 @@ use
  * @property int    $status        '-1' - not activated (for example after registration), 0 - inactive, 1 - active
  * @property int    $block_until   unix timestamp
  * @property string $avatar
- *
- * @method static User instance($check = false)
  */
 class User {
 	use

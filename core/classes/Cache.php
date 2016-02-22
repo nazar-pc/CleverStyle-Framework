@@ -7,9 +7,6 @@
  */
 namespace cs;
 
-/**
- * @method static Cache instance($check = false)
- */
 class Cache {
 	use Singleton;
 	/**

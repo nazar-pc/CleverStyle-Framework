@@ -17,9 +17,6 @@ use
 	cs\DB\Accessor,
 	cs\Singleton;
 
-/**
- * @method static Sections instance($check = false)
- */
 class Sections {
 	use
 		Accessor,
