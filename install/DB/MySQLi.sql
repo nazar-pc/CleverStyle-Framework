@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]users` (
   `login` varchar(1024) NOT NULL,
   `login_hash` varchar(56) NOT NULL COMMENT 'hash method - sha224',
   `username` varchar(1024) NOT NULL DEFAULT '',
-  `password_hash` varchar(128) NOT NULL DEFAULT '' COMMENT 'hash method - sha512',
+  `password_hash` varchar(255) NOT NULL DEFAULT '',
   `email` varchar(1024) NOT NULL DEFAULT '',
   `email_hash` varchar(56) NOT NULL DEFAULT '' COMMENT 'hash method - sha224',
   `language` varchar(255) NOT NULL DEFAULT '',
@@ -108,7 +108,6 @@ CREATE TABLE IF NOT EXISTS `[prefix]users` (
   PRIMARY KEY (`id`),
   KEY `login` (`login`(5),`username`(5),`email`(5)),
   KEY `login_hash` (`login_hash`(5)),
-  KEY `password_hash` (`password_hash`(5)),
   KEY `email_hash` (`email_hash`(5)),
   KEY `language` (`language`(3)),
   KEY `status` (`status`)

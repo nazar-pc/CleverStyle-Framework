@@ -10,7 +10,7 @@ CREATE TABLE "[prefix]config" (
 CREATE TABLE "[prefix]groups" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
   "title" varchar(1024) NOT NULL,
-  "description" text NOT NULL
+  "description" TEXT NOT NULL
 );
 
 INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('Administrators', 'Administrators'), ('Users', 'Users'), ('Bots', 'Bots');
@@ -78,7 +78,7 @@ CREATE TABLE "[prefix]users" (
   "login" varchar(1024) NOT NULL,
   "login_hash" varchar(56) NOT NULL,
   "username" varchar(1024) NOT NULL DEFAULT '',
-  "password_hash" varchar(128) NOT NULL DEFAULT '',
+  "password_hash" varchar(255) NOT NULL DEFAULT '',
   "email" varchar(1024) NOT NULL DEFAULT '',
   "email_hash" varchar(56) NOT NULL DEFAULT '',
   "language" varchar(255) NOT NULL DEFAULT '',
@@ -118,7 +118,6 @@ CREATE TABLE "[prefix]users_permissions" (
 CREATE INDEX "[prefix]texts_label" ON "[prefix]texts" ("label","group");
 CREATE INDEX "[prefix]users_login" ON "[prefix]users" ("login","username","email");
 CREATE INDEX "[prefix]users_login_hash" ON "[prefix]users" ("login_hash");
-CREATE INDEX "[prefix]users_password_hash" ON "[prefix]users" ("password_hash");
 CREATE INDEX "[prefix]users_email_hash" ON "[prefix]users" ("email_hash");
 CREATE INDEX "[prefix]users_language" ON "[prefix]users" ("language");
 CREATE INDEX "[prefix]users_status" ON "[prefix]users" ("status");
