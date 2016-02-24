@@ -90,9 +90,6 @@ trait Base {
 				!file_exists(CUSTOM."/classes/$alias[path].php")
 			) {
 				clean_classes_cache();
-				/**
-				 * @var static $instance
-				 */
 				$instance = new $class;
 				$instance->construct();
 				return $instance;
@@ -100,9 +97,6 @@ trait Base {
 			class_alias($alias['original'], $alias['alias']);
 			require_once CUSTOM."/classes/$alias[path].php";
 		}
-		/**
-		 * @var static $instance
-		 */
 		$instance = new $modified_classes[$class]['final_class'];
 		$instance->construct();
 		return $instance;
