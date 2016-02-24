@@ -9,7 +9,6 @@
 namespace cs\modules\Http_server;
 use
 	cs\_SERVER,
-	cs\Config,
 	cs\ExitException,
 	cs\Language,
 	cs\Index,
