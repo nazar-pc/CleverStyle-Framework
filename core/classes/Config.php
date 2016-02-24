@@ -169,6 +169,8 @@ class Config {
 			return false;
 		}
 		unset($Cache->{'languages'});
+		date_default_timezone_set($this->core['timezone']);
+		$this->fill_mirrors();
 		Event::instance()->fire('System/Config/changed');
 		return true;
 	}
