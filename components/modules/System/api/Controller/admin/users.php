@@ -176,15 +176,6 @@ trait users {
 		}
 		$cdb   = User::instance()->db();
 		$where = static::admin_users___search_prepare_where($mode, $text, $column ?: $search_options['columns'], $cdb);
-		/**
-		 * Deleted users do not have any email, login or password, all of them are empty strings
-		 */
-		$where =
-			"$where AND
-			(
-				`login`	!= `password_hash` OR
-				`email`	!= `password_hash`
-			)";
 		$count = $cdb->qfs(
 			[
 				"SELECT COUNT(`id`)

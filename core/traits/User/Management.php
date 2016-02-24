@@ -407,57 +407,41 @@ trait Management {
 	 * @param int|int[] $user User id or array of users ids
 	 */
 	function del_user ($user) {
-		$this->del_user_internal($user);
-	}
-	/**
-	 * Delete specified user or array of users
-	 *
-	 * @param int|int[] $user
-	 * @param bool      $update
-	 */
-	protected function del_user_internal ($user, $update = true) {
-		$Cache = $this->cache;
-		Event::instance()->fire(
-			'System/User/del/before',
-			[
-				'id' => $user
-			]
-		);
 		if (is_array($user)) {
 			foreach ($user as $id) {
-				$this->del_user_internal($id, false);
+				$this->del_user($id);
 			}
-			$user = implode(',', $user);
-			$this->db_prime()->q(
-				"DELETE FROM `[prefix]users`
-				WHERE `id` IN ($user)"
-			);
-			unset($Cache->{'/'});
 			return;
 		}
 		$user = (int)$user;
 		if (!$user) {
 			return;
 		}
+		Event::instance()->fire(
+			'System/User/del/before',
+			[
+				'id' => $user
+			]
+		);
 		$this->set_groups([], $user);
 		$this->del_permissions_all($user);
-		if ($update) {
-			unset(
-				$Cache->{hash('sha224', $this->get('login', $user))},
-				$Cache->$user
-			);
-			$this->db_prime()->q(
-				"DELETE FROM `[prefix]users`
-				WHERE `id` = $user
-				LIMIT 1"
-			);
-			Event::instance()->fire(
-				'System/User/del/after',
-				[
-					'id' => $user
-				]
-			);
-		}
+		$Cache      = $this->cache;
+		$login_hash = hash('sha224', $this->get('login', $user));
+		$this->db_prime()->q(
+			"DELETE FROM `[prefix]users`
+			WHERE `id` = $user
+			LIMIT 1"
+		);
+		unset(
+			$Cache->$login_hash,
+			$Cache->$user
+		);
+		Event::instance()->fire(
+			'System/User/del/after',
+			[
+				'id' => $user
+			]
+		);
 	}
 	/**
 	 * Add bot
@@ -517,7 +501,7 @@ trait Management {
 				'login'    => $user_agent,
 				'email'    => $ip
 			],
-			'',
+			null,
 			$id
 		);
 		unset($this->cache->bots);
