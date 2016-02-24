@@ -19,13 +19,13 @@ foreach (glob(CUSTOM.'/*.php') ?: [] as $custom) {
 	include $custom;
 }
 unset($custom);
+Core::instance();
 try {
 	try {
 		/**
 		 * System running
 		 */
 		try {
-			Language::instance();
 			Index::instance();
 		} catch (ExitException $e) {
 			if ($e->getCode()) {

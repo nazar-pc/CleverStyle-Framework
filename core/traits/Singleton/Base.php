@@ -8,6 +8,7 @@
 namespace cs\Singleton;
 use
 	cs\False_class;
+
 /**
  * Singleton trait
  *
@@ -45,7 +46,7 @@ trait Base {
 			return $instance;
 		}
 		$class = get_called_class();
-		if (substr($class, 0, 2) != 'cs') {
+		if (strpos($class, 'cs') !== 0) {
 			return False_class::instance();
 		}
 		$custom_class_base = 'cs\\custom'.substr($class, 2);
@@ -89,6 +90,9 @@ trait Base {
 				!file_exists(CUSTOM."/classes/$alias[path].php")
 			) {
 				clean_classes_cache();
+				/**
+				 * @var static $instance
+				 */
 				$instance = new $class;
 				$instance->construct();
 				return $instance;
@@ -96,6 +100,9 @@ trait Base {
 			class_alias($alias['original'], $alias['alias']);
 			require_once CUSTOM."/classes/$alias[path].php";
 		}
+		/**
+		 * @var static $instance
+		 */
 		$instance = new $modified_classes[$class]['final_class'];
 		$instance->construct();
 		return $instance;

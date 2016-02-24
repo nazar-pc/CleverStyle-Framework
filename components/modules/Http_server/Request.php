@@ -128,12 +128,11 @@ class Request {
 	 */
 	protected function execute_request () {
 		try {
-			/**
-			 * @var \cs\custom\Config $Config
-			 */
-			$Config = Config::instance(true);
-			$Config->reinit();
-			Language::instance();
+			$L            = Language::instance(true);
+			$url_language = $L->url_language();
+			if ($url_language) {
+				$L->change($url_language);
+			}
 			Index::instance();
 		} catch (ExitException $e) {
 			if ($e->getCode()) {

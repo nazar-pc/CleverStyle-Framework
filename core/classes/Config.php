@@ -63,6 +63,7 @@ class Config {
 	 * @throws ExitException
 	 */
 	protected function construct () {
+		Event::instance()->fire('System/Config/init/before');
 		/**
 		 * Reading settings from cache and defining missing data
 		 */
@@ -78,34 +79,13 @@ class Config {
 			}
 			unset($part, $value);
 		}
-		Event::instance()->fire('System/Config/init/before');
-		/**
-		 * System initialization with current configuration
-		 */
-		$this->init();
+		date_default_timezone_set($this->core['timezone']);
+		$this->fill_mirrors();
 		Event::instance()->fire('System/Config/init/after');
 		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
 			$this->core['default_module'] = self::SYSTEM_MODULE;
 			$this->save();
 		}
-	}
-	/**
-	 * Engine initialization (or reinitialization if necessary)
-	 *
-	 * @throws ExitException
-	 */
-	protected function init () {
-		Language::instance()->init();
-		$Page = Page::instance();
-		$Page->init(
-			get_core_ml_text('name'),
-			$this->core['theme']
-		);
-		/**
-		 * Setting system timezone
-		 */
-		date_default_timezone_set($this->core['timezone']);
-		$this->fill_mirrors();
 	}
 	/**
 	 * Is used to fill `$this->mirrors` using current configuration
@@ -189,13 +169,7 @@ class Config {
 			return false;
 		}
 		unset($Cache->{'languages'});
-		$L = Language::instance();
-		if ($this->core['multilingual'] && User::instance(true)) {
-			$L->change(User::instance()->language);
-		} else {
-			$L->change($this->core['language']);
-		}
-		$this->init();
+		Event::instance()->fire('System/Config/changed');
 		return true;
 	}
 	/**

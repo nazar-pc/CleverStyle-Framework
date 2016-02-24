@@ -56,22 +56,39 @@ class Language implements JsonSerializable {
 	 * Set basic language
 	 */
 	protected function construct () {
-		$Core = Core::instance();
-		$this->change($Core->language);
-	}
-	/**
-	 * Initialization
-	 *
-	 * Is called from Config class by system. Usually there is no need to call it manually.
-	 */
-	function init () {
 		$Config = Config::instance(true);
+		$Core   = Core::instance();
+		$this->change($Core->language);
 		/**
 		 * We need Config for initialization
 		 */
 		if (!$Config) {
-			return;
+			Event::instance()->once(
+				'System/Config/init/after',
+				function () {
+					$this->init();
+				}
+			);
+		} else {
+			$this->init();
 		}
+		Event::instance()->on(
+			'System/Config/changed',
+			function () {
+				$Config = Config::instance();
+				if ($Config->core['multilingual'] && User::instance(true)) {
+					$this->change(User::instance()->language);
+				} else {
+					$this->change($Config->core['language']);
+				}
+			}
+		);
+	}
+	/**
+	 * Initialization: set default language based on system configuration and request-specific parameters
+	 */
+	protected function init () {
+		$Config = Config::instance();
 		/**
 		 * @var _SERVER $_SERVER
 		 */
@@ -300,11 +317,11 @@ class Language implements JsonSerializable {
 	 */
 	protected function can_be_changed_to ($Config, $language) {
 		return
-			//Config not loaded yet
+			// Config not loaded yet
 			!$Config->core ||
-			//Set to language that is configured on system level
+			// Set to language that is configured on system level
 			$language == $Config->core['language'] ||
-			//Set to active language
+			// Set to active language
 			(
 				$Config->core['multilingual'] &&
 				in_array($language, $Config->core['active_languages'])

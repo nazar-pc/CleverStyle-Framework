@@ -74,17 +74,37 @@ class Page {
 		}
 		return false;
 	}
+	protected function construct () {
+		$Config = Config::instance(true);
+		/**
+		 * We need Config for initialization
+		 */
+		if (!$Config) {
+			Event::instance()->once(
+				'System/Config/init/after',
+				function () {
+					$this->init();
+				}
+			);
+		} else {
+			$this->init();
+		}
+		Event::instance()->on(
+			'System/Config/changed',
+			function () {
+				$this->init();
+			}
+		);
+	}
 	/**
-	 * Initialization: setting of title and theme according to specified parameters
-	 *
-	 * @param string $title
-	 * @param string $theme
+	 * Initialization: setting of title and theme according to system configuration
 	 *
 	 * @return Page
 	 */
-	function init ($title, $theme) {
-		$this->Title[0] = htmlentities($title, ENT_COMPAT, 'utf-8');
-		$this->set_theme($theme);
+	protected function init () {
+		$Config         = Config::instance();
+		$this->Title[0] = htmlentities(get_core_ml_text('name'), ENT_COMPAT, 'utf-8');
+		$this->set_theme($Config->core['theme']);
 		return $this;
 	}
 	/**

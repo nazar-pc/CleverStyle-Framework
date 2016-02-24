@@ -20,7 +20,6 @@ Config::instance_stub([
 	]
 ]);
 $L = Language::instance();
-$L->init();
 echo $L->clang;
 ?>
 --EXPECT--
