@@ -23,7 +23,9 @@
           bubbles: true
         }));
       });
-      setTimeout(bind$(Polymer, 'updateStyles'), 1000);
+      if (document.cookie.indexOf('shadow_dom=1')) {
+        setTimeout(bind$(Polymer, 'updateStyles'), 1000);
+      }
     });
   }
   if (document.cookie.indexOf('shadow_dom=1') === -1) {
