@@ -12,6 +12,8 @@ namespace cs;
  *  System/Config/init/before
  *
  *  System/Config/init/after
+ *
+ *  System/Config/changed
  */
 class Config {
 	use
