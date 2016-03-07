@@ -31,7 +31,9 @@
           cs.Event.fire('admin/Composer/canceled');
         });
         cs.Event.once('admin/Composer/updated', function(){
-          modal.close();
+          if (!force) {
+            modal.close();
+          }
           resolve();
         });
       });

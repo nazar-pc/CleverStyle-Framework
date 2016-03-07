@@ -253,11 +253,8 @@ class Composer {
 		$package      = [
 			'name'    => $package_name,
 			'version' => $meta['version'],
-			'require' => isset($meta['require_composer']) ? $meta['require_composer'] : [],
-			'dist'    => [
-				'url'  => __DIR__.'/empty.zip',
-				'type' => 'zip'
-			]
+			'type'    => 'metapackage',
+			'require' => isset($meta['require_composer']) ? $meta['require_composer'] : []
 		];
 		if ($meta['package'] == 'Composer') {
 			$package['replace'] = file_get_json(__DIR__.'/packages_bundled_with_system.json');

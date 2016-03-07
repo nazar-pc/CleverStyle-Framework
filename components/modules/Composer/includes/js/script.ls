@@ -21,7 +21,8 @@ open_modal	= (action, package_name, category, force = false) ->
 			cs.Event.fire('admin/Composer/canceled')
 		)
 		cs.Event.once('admin/Composer/updated', !->
-			modal.close()
+			if !force
+				modal.close()
 			resolve()
 		)
 	)

@@ -30,17 +30,18 @@ Polymer(
 				category	: @category
 				force		: @force
 			success	: (result) !~>
-				status =
+				@_save_scroll_position()
+				@status =
 					switch result.code
 					| 0 => L.updated_successfully
 					| 1 => L.update_failed
 					| 2 => L.dependencies_conflict
-				@status	= status
 				if result.description
 					$(@$.result)
 						.show()
 						.html(result.description)
-				if !result.code && !@force
+					@_restore_scroll_position()
+				if !result.code
 					setTimeout (!->
 						cs.Event.fire('admin/Composer/updated')
 					), 2000
@@ -52,13 +53,18 @@ Polymer(
 			(data) !~>
 				if @status || @canceled
 					return
-				if @parentElement.$?.content
-					scroll_after = @parentElement.$.content.scrollHeight - @parentElement.$.content.offsetHeight == @parentElement.$.content.scrollTop
+				@_save_scroll_position()
 				$(@$.result)
 					.show()
 					.html(data)
-				if scroll_after
-					@parentElement.$.content.scrollTop = @parentElement.$.content.scrollHeight - @parentElement.$.content.offsetHeight
+				@_restore_scroll_position()
 				setTimeout(@~_update_progress, 1000)
 		)
+	_save_scroll_position : !->
+		@_scroll_after	= false
+		if @parentElement.$?.content
+			@_scroll_after = @parentElement.$.content.scrollHeight - @parentElement.$.content.offsetHeight == @parentElement.$.content.scrollTop
+	_restore_scroll_position : !->
+		if @_scroll_after
+			@parentElement.$.content.scrollTop = @parentElement.$.content.scrollHeight - @parentElement.$.content.offsetHeight
 )
