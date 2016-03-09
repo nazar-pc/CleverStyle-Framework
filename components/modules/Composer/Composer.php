@@ -273,10 +273,7 @@ class Composer {
 			'type'    => 'package',
 			'package' => $package
 		];
-		/**
-		 * @alpha in order to ignore stability issue: https://github.com/composer/composer/issues/4889
-		 */
-		$composer['require'][$package_name] = "$meta[version]@alpha";
+		$composer['require'][$package_name] = $meta['version'];
 	}
 	/**
 	 * @param string $storage
