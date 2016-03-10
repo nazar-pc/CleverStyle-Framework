@@ -12,7 +12,7 @@ dom-module#cs-cleverstyle-header-user-block
 			template(is="dom-if" if="[[guest]]")
 				nav(is="cs-nav-button-group")
 					button(is="cs-button" primary icon="sign-in" type="button" on-tap="_sign_in" small-button) [[L.sign_in]]
-					button(is="cs-button" icon="pencil" tooltip="[[L.quick_registration_form]]" type="button" on-tap="_registration" small-button) [[L.registration]]
+					button(is="cs-button" icon="pencil" tooltip="[[L.registration_quick_form]]" type="button" on-tap="_registration" small-button) [[L.registration]]
 			template(is="dom-if" if="[[!guest]]")
 				nav(is="cs-nav-button-group")
 					button(is="cs-button" type="button" icon="cog" small-button) [[L.settings]]

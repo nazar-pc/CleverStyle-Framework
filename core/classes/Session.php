@@ -454,7 +454,7 @@ class Session {
 		if (!$data) {
 			return false;
 		}
-		$L    = new Language_prefix('system_profile_');
+		$L    = new Language_prefix('system_profile_sign_in_');
 		$Page = Page::instance();
 		switch ($data['status']) {
 			case User::STATUS_INACTIVE:

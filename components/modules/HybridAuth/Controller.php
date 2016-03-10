@@ -327,8 +327,8 @@ class Controller {
 		}
 		if (!$result || $result == 'error') {
 			$Page
-				->title($L->reg_server_error)
-				->warning($L->reg_server_error);
+				->title($L->registration_server_error)
+				->warning($L->registration_server_error);
 			self::redirect(true);
 			return false;
 		}
@@ -412,8 +412,8 @@ class Controller {
 		/**
 		 * Registration is successful, but confirmation is needed
 		 */
-		$title = $L->reg_need_confirmation_mail(get_core_ml_text('name'));
-		$body  = $L->reg_need_confirmation_mail_body(
+		$title = $L->registration_need_confirmation_mail(get_core_ml_text('name'));
+		$body  = $L->registration_need_confirmation_mail_body(
 			self::get_adapter($provider)->getUserProfile()->displayName ?: strstr($result['email'], '@', true),
 			get_core_ml_text('name'),
 			"$core_url/profile/registration_confirmation/$result[reg_key]",
@@ -422,7 +422,7 @@ class Controller {
 		if (self::send_registration_mail($_POST['email'], $title, $body)) {
 			self::update_data($provider);
 			_setcookie('HybridAuth_referer', '');
-			$Page->content($L->reg_confirmation);
+			$Page->content($L->registration_confirmation);
 		}
 	}
 	/**
@@ -443,8 +443,8 @@ class Controller {
 			User::instance()->registration_cancel();
 			$L = new Prefix('hybridauth_');
 			Page::instance()
-				->title($L->sending_reg_mail_error_title)
-				->warning($L->sending_reg_mail_error);
+				->title($L->registration_mail_sending_error_title)
+				->warning($L->registration_mail_sending_error);
 			self::redirect(true);
 		}
 		return $result;
@@ -537,8 +537,8 @@ class Controller {
 		$User      = User::instance();
 		$user_data = $User->$user_id;
 		$base_url  = Config::instance()->base_url();
-		$title     = $L->reg_success_mail(get_core_ml_text('name'));
-		$body      = $L->reg_success_mail_body(
+		$title     = $L->registration_success_mail(get_core_ml_text('name'));
+		$body      = $L->registration_success_mail_body(
 			self::get_adapter($provider)->getUserProfile()->displayName ?: $user_data->username(),
 			get_core_ml_text('name'),
 			"$base_url/profile/settings",

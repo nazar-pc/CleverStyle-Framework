@@ -16,17 +16,18 @@ use
 	cs\Page,
 	cs\Route,
 	cs\User;
+
 class Controller {
 	static function profile_registration_confirmation () {
 		$Config = Config::instance();
-		$L      = new Prefix('system_profile_');
+		$L      = new Prefix('system_profile_registration_');
 		$Page   = Page::instance();
 		$Route  = Route::instance();
 		$User   = User::instance();
 		if (_getcookie('reg_confirm')) {
 			_setcookie('reg_confirm', '');
-			$Page->title($L->reg_success_title);
-			$Page->success($L->reg_success);
+			$Page->title($L->success_title);
+			$Page->success($L->success);
 			return;
 		} elseif (!$User->guest()) {
 			$Page->title($L->you_are_already_registered_title);
@@ -43,7 +44,7 @@ class Controller {
 			$Page->warning($L->invalid_confirmation_code);
 			return;
 		}
-		$body = $L->reg_success_mail_body(
+		$body = $L->success_mail_body(
 			strstr($result['email'], '@', true),
 			get_core_ml_text('name'),
 			$Config->core_url().'/profile/settings',
@@ -52,7 +53,7 @@ class Controller {
 		);
 		if (Mail::instance()->send_to(
 			$result['email'],
-			$L->reg_success_mail(get_core_ml_text('name')),
+			$L->success_mail(get_core_ml_text('name')),
 			$body
 		)
 		) {
@@ -60,20 +61,20 @@ class Controller {
 			_header("Location: {$Config->base_url()}/System/profile/registration_confirmation");
 		} else {
 			$User->registration_cancel();
-			$Page->title($L->sending_reg_mail_error_title);
-			$Page->warning($L->sending_reg_mail_error);
+			$Page->title($L->mail_sending_error_title);
+			$Page->warning($L->mail_sending_error);
 		}
 	}
 	static function profile_restore_password_confirmation () {
 		$Config = Config::instance();
-		$L      = new Prefix('system_profile_');
+		$L      = new Prefix('system_profile_restore_password_');
 		$Page   = Page::instance();
 		$Route  = Route::instance();
 		$User   = User::instance();
 		if (_getcookie('restore_password_confirm')) {
 			_setcookie('restore_password_confirm', '');
-			$Page->title($L->restore_password_success_title);
-			$Page->success($L->restore_password_success);
+			$Page->title($L->success_title);
+			$Page->success($L->success);
 			return;
 		} elseif (!$User->guest()) {
 			$Page->title($L->you_are_already_registered_title);
@@ -92,8 +93,8 @@ class Controller {
 		}
 		if (Mail::instance()->send_to(
 			$User->get('email', $result['id']),
-			$L->restore_password_success_mail(get_core_ml_text('name')),
-			$L->restore_password_success_mail_body(
+			$L->success_mail(get_core_ml_text('name')),
+			$L->success_mail_body(
 				$User->username($result['id']),
 				get_core_ml_text('name'),
 				$Config->core_url().'/profile/settings',
@@ -105,8 +106,8 @@ class Controller {
 			_setcookie('restore_password_confirm', 1, 0, true);
 			_header("Location: {$Config->base_url()}/System/profile/restore_password_confirmation");
 		} else {
-			$Page->title($L->sending_restore_password_mail_error_title);
-			$Page->warning($L->sending_restore_password_mail_error);
+			$Page->title($L->mail_sending_error_title);
+			$Page->warning($L->mail_sending_error);
 		}
 	}
 	static function robots_txt () {

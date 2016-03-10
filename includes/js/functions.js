@@ -96,7 +96,7 @@
    */
   cs.registration = function(email){
     if (!email) {
-      cs.ui.alert(L.please_type_your_email);
+      cs.ui.alert(L.registration_please_type_your_email);
       return;
     }
     email = String(email).toLowerCase();
@@ -108,10 +108,10 @@
       },
       type: 'post',
       success: function(result){
-        if (result === 'reg_confirmation') {
-          cs.ui.simple_modal('<div>' + L.reg_confirmation + '</div>');
-        } else if (result === 'reg_success') {
-          cs.ui.simple_modal('<div>' + L.reg_success + '</div>');
+        if (result === 'registration_confirmation') {
+          cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>');
+        } else if (result === 'registration_success') {
+          cs.ui.simple_modal('<div>' + L.registration_success + '</div>');
         }
       }
     });
@@ -123,7 +123,7 @@
    */
   cs.restore_password = function(email){
     if (!email) {
-      cs.ui.alert(L.please_type_your_email);
+      cs.ui.alert(L.restore_password_please_type_your_email);
       return;
     }
     email = String(email).toLowerCase();
