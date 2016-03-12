@@ -27,13 +27,13 @@ Polymer(
 		)
 	add_group : !->
 		$(cs.ui.simple_modal("""
-			<h3>#{L.adding_a_group}</h3>
+			<h3>#{L.group_addition}</h3>
 			<cs-system-admin-groups-form/>
 		""")).on('close', @~reload)
 	edit_group : (e) !->
 		group	= e.model.group
 		$(cs.ui.simple_modal("""
-			<h3>#{L.editing_of_group(group.title)}</h3>
+			<h3>#{L.editing_group(group.title)}</h3>
 			<cs-system-admin-groups-form group_id="#{group.id}" group_title="#{cs.prepare_attr_value(group.title)}" description="#{cs.prepare_attr_value(group.description)}"/>
 		""")).on('close', @~reload)
 	delete_group : (e) !->

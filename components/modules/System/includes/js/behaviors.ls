@@ -101,7 +101,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				switch category
 				| 'modules'	=> (if component == 'System' then 'modules_updating_of_system' else 'modules_updating_of_module')
 				| 'plugins'	=> 'plugins_updating_of_plugin'
-				| 'themes'	=> 'appearance_updating_of_theme'
+				| 'themes'	=> 'appearance_updating_theme'
 			title			= "<h3>#{L[translation_key](component)}</h3>"
 			message			= ''
 			if component == 'System'

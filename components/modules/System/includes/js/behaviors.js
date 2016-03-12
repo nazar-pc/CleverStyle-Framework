@@ -122,7 +122,7 @@
             case 'plugins':
               return 'plugins_updating_of_plugin';
             case 'themes':
-              return 'appearance_updating_of_theme';
+              return 'appearance_updating_theme';
             }
           }());
           title = "<h3>" + L[translation_key](component) + "</h3>";

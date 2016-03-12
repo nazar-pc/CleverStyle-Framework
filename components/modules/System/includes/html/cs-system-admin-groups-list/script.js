@@ -32,12 +32,12 @@
       });
     },
     add_group: function(){
-      $(cs.ui.simple_modal("<h3>" + L.adding_a_group + "</h3>\n<cs-system-admin-groups-form/>")).on('close', bind$(this, 'reload'));
+      $(cs.ui.simple_modal("<h3>" + L.group_addition + "</h3>\n<cs-system-admin-groups-form/>")).on('close', bind$(this, 'reload'));
     },
     edit_group: function(e){
       var group;
       group = e.model.group;
-      $(cs.ui.simple_modal("<h3>" + L.editing_of_group(group.title) + "</h3>\n<cs-system-admin-groups-form group_id=\"" + group.id + "\" group_title=\"" + cs.prepare_attr_value(group.title) + "\" description=\"" + cs.prepare_attr_value(group.description) + "\"/>")).on('close', bind$(this, 'reload'));
+      $(cs.ui.simple_modal("<h3>" + L.editing_group(group.title) + "</h3>\n<cs-system-admin-groups-form group_id=\"" + group.id + "\" group_title=\"" + cs.prepare_attr_value(group.title) + "\" description=\"" + cs.prepare_attr_value(group.description) + "\"/>")).on('close', bind$(this, 'reload'));
     },
     delete_group: function(e){
       var group, this$ = this;

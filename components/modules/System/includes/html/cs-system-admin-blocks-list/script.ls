@@ -70,13 +70,13 @@ Polymer(
 		""")
 	_add_block : !->
 		$(cs.ui.simple_modal("""
-			<h3>#{L.adding_a_block}</h3>
+			<h3>#{L.block_addition}</h3>
 			<cs-system-admin-blocks-form/>
 		""")).on('close', !~>
 			@_reload()
 		)
 	_edit_block : (e) !->
-		title	= L.editing_a_block(e.model.item.title)
+		title	= L.editing_block(e.model.item.title)
 		$(cs.ui.simple_modal("""
 			<h3>#title</h3>
 			<cs-system-admin-blocks-form index="#{e.model.item.index}"/>
