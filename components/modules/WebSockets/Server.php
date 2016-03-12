@@ -8,7 +8,7 @@
  */
 namespace cs\modules\WebSockets;
 use
-	Ratchet\Client\Factory as Client_factory,
+	Ratchet\Client\Connector as Client_connector,
 	Ratchet\Client\WebSocket as Client_websocket,
 	Ratchet\ConnectionInterface,
 	Ratchet\Http\HttpServer,
@@ -85,7 +85,7 @@ class Server implements MessageComponentInterface {
 	 */
 	protected $loop;
 	/**
-	 * @var Client_factory
+	 * @var Client_connector
 	 */
 	protected $client_connector;
 	/**
@@ -146,7 +146,7 @@ class Server implements MessageComponentInterface {
 			$this->listen_locally
 		);
 		$this->loop             = $this->io_server->loop;
-		$this->client_connector = new Client_factory(
+		$this->client_connector = new Client_connector(
 			$this->loop,
 			(new Dns_factory)->create(
 				$this->dns_server,
@@ -322,7 +322,7 @@ class Server implements MessageComponentInterface {
 		if ($servers) {
 			shuffle($servers);
 			$loop      = Loop_factory::create();
-			$connector = new Client_factory($loop);
+			$connector = new Client_connector($loop);
 			$connector($servers[0])->then(
 				function (Client_websocket $connection) use ($message) {
 					$connection->send(

@@ -8,7 +8,7 @@
  */
 namespace cs\modules\WebSockets;
 use
-	Ratchet\Client\Factory as Client_factory,
+	Ratchet\Client\Connector as Client_connector,
 	Ratchet\Client\WebSocket as Client_websocket,
 	React\EventLoop\Factory as Loop_factory,
 	cs\Config;
@@ -21,7 +21,7 @@ function is_server_running () {
 	if ($servers) {
 		shuffle($servers);
 		$loop      = Loop_factory::create();
-		$connector = new Client_factory($loop);
+		$connector = new Client_connector($loop);
 		$connector($servers[0])->then(
 			function (Client_websocket $connection) use ($loop, &$connected) {
 				$connected = true;
@@ -54,7 +54,7 @@ function is_exec_available () {
 function cross_platform_server_in_background () {
 	$supervisor = 'php '.__DIR__.'/supervisor.php';
 	$cmd        = 'php '.__DIR__.'/start_cli.php '.Config::instance()->core_url();
-	if (substr(PHP_OS, 0, 3) != 'WIN') {
+	if (strpos(PHP_OS, 'WIN') !== 0) {
 		exec("$supervisor '$cmd' > /dev/null &");
 	} else {
 		pclose(popen("start /B $supervisor '$cmd'", 'r'));
