@@ -27,6 +27,8 @@ trait Singleton {
 			'cs\\Menu',
 			'cs\\Page',
 			'cs\\Page\\Meta',
+			'cs\\Request',
+			'cs\\Response',
 			'cs\\Route',
 			'cs\\Session'
 		];

@@ -6,10 +6,12 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\Request;
+use
+	cs\Config;
 
 trait Cookie {
 	/**
-	 * Cookie array, similar to `$_COOKIE`
+	 * Cookie array, similar to `$_COOKIE`, but also contains un-prefixed keys according to system configuration
 	 *
 	 * @var array
 	 */
@@ -19,5 +21,15 @@ trait Cookie {
 	 */
 	function init_cookie ($cookie = []) {
 		$this->cookie = $cookie;
+		/**
+		 * Fill un-prefixed keys according to system configuration
+		 */
+		$prefix        = Config::instance()->core['cookie_prefix'];
+		$prefix_length = strlen($prefix);
+		foreach ($cookie as $key => $value) {
+			if (strpos($key, $prefix) === 0) {
+				$this->cookie[substr($key, $prefix_length)] = $value;
+			}
+		}
 	}
 }

@@ -53,7 +53,7 @@ trait Server {
 	 */
 	public $schema;
 	/**
-	 * Protocol, for instance: `http/1.0`, `http/1.1` (default)
+	 * Protocol, for instance: `HTTP/1.0`, `HTTP/1.1` (default), HTTP/2.0
 	 *
 	 * @var string
 	 */
@@ -127,7 +127,7 @@ trait Server {
 			'REQUEST_URI'          => '',
 			'REQUEST_METHOD'       => 'GET',
 			'HTTP_USER_AGENT'      => '',
-			'SERVER_PROTOCOL'      => 'http/1.1'
+			'SERVER_PROTOCOL'      => 'HTTP/1.1'
 		];
 		$this->fill_server_properties($server);
 	}
@@ -143,7 +143,7 @@ trait Server {
 		$this->dnt          = $server['HTTP_DNT'] == 1;
 		$this->secure       = $this->secure($server);
 		$this->schema       = $this->secure ? 'https' : 'http';
-		$this->protocol     = strtolower($server['SERVER_PROTOCOL']);
+		$this->protocol     = $server['SERVER_PROTOCOL'];
 		$this->host         = $this->host($server);
 		$this->ip           = $this->ip($_SERVER);
 		$this->query_string = $server['QUERY_STRING'];
