@@ -13,6 +13,7 @@ use
 	cs\Language,
 	cs\Index,
 	cs\Page,
+	cs\Request as System_request,
 	cs\User;
 
 class Request {
@@ -34,6 +35,8 @@ class Request {
 	}
 	/**
 	 * @param string $data
+	 *
+	 * @throws ExitException
 	 */
 	function __invoke ($data) {
 		$this->bootstrap();
@@ -114,6 +117,8 @@ class Request {
 	}
 	/**
 	 * @param array $SUPERGLOBALS
+	 *
+	 * @throws ExitException
 	 */
 	protected function fill_superglobals ($SUPERGLOBALS) {
 		$_SERVER  = new _SERVER($SUPERGLOBALS['SERVER']);
@@ -121,6 +126,7 @@ class Request {
 		$_GET     = $SUPERGLOBALS['GET'];
 		$_POST    = $SUPERGLOBALS['POST'];
 		$_REQUEST = $SUPERGLOBALS['POST'] + $SUPERGLOBALS['GET'];
+		System_request::instance()->init_from_globals();
 	}
 	/**
 	 * @throws ExitException

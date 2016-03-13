@@ -26,6 +26,7 @@ try {
 		 * System running
 		 */
 		try {
+			Request::instance()->init_from_globals();
 			Index::instance();
 		} catch (ExitException $e) {
 			if ($e->getCode()) {

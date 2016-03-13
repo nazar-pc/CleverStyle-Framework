@@ -81,6 +81,9 @@ AddEncoding gzip .html
 	}
 	/**
 	 * Fill `$_POST` and `$_REQUEST` when there is request method different than POST or if Content-Type is JSON
+	 *
+	 * @deprecated Use `cs\Request` instead
+	 * @todo Remove in 4.x
 	 */
 	protected function fill_post_request () {
 		/**

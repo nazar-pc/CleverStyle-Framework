@@ -13,6 +13,9 @@ use
 /**
  * Generic wrapper for `$_SERVER` to make its usage easier and more secure
  *
+ * @deprecated Use `cs\Request` instead, it provides very similar, but more powerful interface
+ * @todo Remove in 4.x
+ *
  * @property string $language       Language accepted by client, `''` by default
  * @property string $version        Version accepted by client, will match `/^[0-9\.]+$/`, useful for API, `1` by default
  * @property string $content_type   Content type, `''` by default
