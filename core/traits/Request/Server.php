@@ -138,7 +138,7 @@ trait Server {
 	 */
 	protected function fill_server_properties ($server) {
 		$this->language     = $server['HTTP_ACCEPT_LANGUAGE'];
-		$this->version      = preg_match('/^[0-9\.]+$/', $server['HTTP_ACCEPT_VERSION']) ? $server['HTTP_ACCEPT_VERSION'] : 1;
+		$this->version      = preg_match('/^[0-9\.]+$/', $server['HTTP_ACCEPT_VERSION']) ? $server['HTTP_ACCEPT_VERSION'] : '1';
 		$this->content_type = $server['CONTENT_TYPE'];
 		$this->dnt          = $server['HTTP_DNT'] == 1;
 		$this->secure       = $this->secure($server);
