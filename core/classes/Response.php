@@ -45,13 +45,13 @@ class Response {
 	/**
 	 * Initialize response object with specified data
 	 *
-	 * @param string              $body
-	 * @param resource|string     $body_stream String, like `php://output` or resource, like `fopen('php://output', 'ba+')`, if present, `$body` is ignored
-	 * @param string[]|string[][] $headers     Headers are normalized to lowercase keys with hyphen as separator, for instance: `connection`, `referer`,
-	 *                                         `content-type`, `accept-language`; Values might be strings in case of single value or array of strings in case
-	 *                                         of multiple values with the same field name
-	 * @param int                 $code        HTTP status code
-	 * @param string              $protocol    Protocol, for instance: `HTTP/1.0`, `HTTP/1.1` (default), HTTP/2.0
+	 * @param string               $body
+	 * @param null|resource|string $body_stream String, like `php://output` or resource, like `fopen('php://output', 'ba+')`, if present, `$body` is ignored
+	 * @param string[]|string[][]  $headers     Headers are normalized to lowercase keys with hyphen as separator, for instance: `connection`, `referer`,
+	 *                                          `content-type`, `accept-language`; Values might be strings in case of single value or array of strings in case
+	 *                                          of multiple values with the same field name
+	 * @param int                  $code        HTTP status code
+	 * @param string               $protocol    Protocol, for instance: `HTTP/1.0`, `HTTP/1.1` (default), HTTP/2.0
 	 */
 	function init ($body = '', $body_stream = null, $headers = [], $code = 200, $protocol = 'HTTP/1.1') {
 		$this->protocol = $protocol;
@@ -108,8 +108,6 @@ class Response {
 	 * @param string $value
 	 * @param int    $expire
 	 * @param bool   $httponly
-	 *
-	 * @return bool
 	 */
 	function cookie ($name, $value, $expire = 0, $httponly = false) {
 		$Request = Request::instance();
