@@ -92,8 +92,8 @@ class Response {
 	/**
 	 * Make redirect to specified location
 	 *
-	 * @param string   $location
-	 * @param int|null $code
+	 * @param string $location
+	 * @param int    $code
 	 *
 	 * @return Response
 	 */
