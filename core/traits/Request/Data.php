@@ -38,11 +38,21 @@ trait Data {
 	/**
 	 * Get data item by name
 	 *
-	 * @param string $name
+	 * @param string|string[] $name
 	 *
-	 * @return false|mixed Data if exists or `false` otherwise
+	 * @return false|mixed|mixed[] Data if exists or `false` otherwise
 	 */
 	function data ($name) {
+		if (is_array($name)) {
+			foreach ($name as &$n) {
+				if (!isset($this->data[$n])) {
+					return false;
+				}
+				$n = $this->data[$n];
+			}
+			return $name;
+		}
+		/** @noinspection OffsetOperationsInspection */
 		return isset($this->data[$name]) ? $this->data[$name] : false;
 	}
 }
