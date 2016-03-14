@@ -8,7 +8,6 @@
  */
 namespace {
 	use
-		cs\Request,
 		cs\Response;
 
 	/**
