@@ -49,8 +49,8 @@ Event::instance()
 	->on(
 		'System/User/registration/confirmation/after',
 		function () {
-			$Request = Request::instance();
-			if ($redirect_to = @$Request->cookie['HybridAuth_referer']) {
+			$redirect_to = Request::instance()->cookie('HybridAuth_referer');
+			if ($redirect_to) {
 				$Response = Response::instance();
 				$Response->header('refresh', "5; url=$redirect_to");
 				$Response->cookie('HybridAuth_referer', '');

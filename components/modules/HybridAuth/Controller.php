@@ -128,9 +128,8 @@ class Controller {
 	 * @throws ExitException
 	 */
 	protected static function redirect ($with_delay = false) {
-		$Request     = Request::instance();
 		$Response    = Response::instance();
-		$redirect_to = @$Request->cookie['HybridAuth_referer'] ?: Config::instance()->base_url();
+		$redirect_to = Request::instance()->cookie('HybridAuth_referer') ?: Config::instance()->base_url();
 		$Response->cookie('HybridAuth_referer', '');
 		if ($with_delay) {
 			$Response->header('refresh', "5; url=$redirect_to");

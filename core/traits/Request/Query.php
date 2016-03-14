@@ -20,4 +20,14 @@ trait Query {
 	function init_query ($query = []) {
 		$this->query = $query;
 	}
+	/**
+	 * Get query parameter by name
+	 *
+	 * @param string $name
+	 *
+	 * @return false|mixed Query parameter content if exists or `false` otherwise
+	 */
+	function query ($name) {
+		return isset($this->query[$name]) ? $this->query[$name] : false;
+	}
 }

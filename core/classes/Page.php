@@ -480,7 +480,7 @@ class Page {
 		/**
 		 * Hack for 403 after sign out in administration
 		 */
-		if ($error_code == 403 && isset($Request->cookie['sign_out']) && !$Request->api_path) {
+		if ($error_code == 403 && !$Request->api_path && $Request->cookie('sign_out')) {
 			$Response->redirect('/');
 			$this->Content = '';
 			throw new ExitException;

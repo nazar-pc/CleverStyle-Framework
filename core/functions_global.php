@@ -45,8 +45,7 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false) {
  * @return false|string
  */
 function _getcookie ($name) {
-	$Request = Request::instance();
-	return isset($Request->cookie[$name]) ? $Request->cookie[$name] : false;
+	return Request::instance()->cookie($name);
 }
 
 /**

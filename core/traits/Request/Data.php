@@ -35,4 +35,14 @@ trait Data {
 		$this->data        = $data;
 		$this->data_stream = is_string($data_stream) ? fopen($data_stream, 'br') : $data_stream;
 	}
+	/**
+	 * Get data item by name
+	 *
+	 * @param string $name
+	 *
+	 * @return false|mixed Data if exists or `false` otherwise
+	 */
+	function data ($name) {
+		return isset($this->data[$name]) ? $this->data[$name] : false;
+	}
 }

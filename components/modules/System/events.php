@@ -43,9 +43,7 @@ Event::instance()
 			 * Security check
 			 */
 			if (
-				(
-					!isset($Request->headers['x-requested-with']) || $Request->headers['x-requested-with'] !== 'XMLHttpRequest'
-				) &&
+				$Request->header('x-requested-with') !== 'XMLHttpRequest' &&
 				(
 					!isset($_POST['session']) || $_POST['session'] != $Session->get_id()
 				)

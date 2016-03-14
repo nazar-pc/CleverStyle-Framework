@@ -34,4 +34,14 @@ trait Cookie {
 			}
 		}
 	}
+	/**
+	 * Get cookie by name
+	 *
+	 * @param string $name
+	 *
+	 * @return false|string Cookie content if exists or `false` otherwise
+	 */
+	function cookie ($name) {
+		return isset($this->cookie[$name]) ? $this->cookie[$name] : false;
+	}
 }

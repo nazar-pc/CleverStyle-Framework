@@ -99,7 +99,7 @@ class Session {
 		/**
 		 * If session exists
 		 */
-		if (isset($Request->cookie['session'])) {
+		if ($Request->cookie('session')) {
 			$this->user_id = $this->load();
 		} elseif (!$Request->api_path) {
 			/**
@@ -300,8 +300,7 @@ class Session {
 	protected function get_internal ($session_id) {
 		if (!$session_id) {
 			if (!$this->session_id) {
-				$Request          = Request::instance();
-				$this->session_id = @$Request->cookie['session'] ?: false;
+				$this->session_id = Request::instance()->cookie('session');
 			}
 			$session_id = $this->session_id;
 		}

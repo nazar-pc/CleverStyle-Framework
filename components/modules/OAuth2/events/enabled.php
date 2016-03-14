@@ -33,7 +33,7 @@ Event::instance()
 			if (!$Request->api_path) {
 				return;
 			}
-			if (isset($Request->headers['authorization']) && preg_match('/Bearer ([0-9a-z]{32})/i', $Request->headers['authorization'], $access_token)) {
+			if (preg_match('/Bearer ([0-9a-z]{32})/i', $Request->header('authorization'), $access_token)) {
 				$access_token = $access_token[1];
 			} else {
 				return;

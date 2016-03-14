@@ -243,4 +243,14 @@ trait Server {
 			isset($server['HTTP_X_FORWARDED_PROTO']) && $server['HTTP_X_FORWARDED_PROTO'] === 'https'
 		);
 	}
+	/**
+	 * Get header by name
+	 *
+	 * @param string $name
+	 *
+	 * @return false|string Header content if exists or `false` otherwise
+	 */
+	function header ($name) {
+		return isset($this->headers[$name]) ? $this->headers[$name] : false;
+	}
 }

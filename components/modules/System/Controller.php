@@ -27,7 +27,7 @@ class Controller {
 		$Response = Response::instance();
 		$Route    = Route::instance();
 		$User     = User::instance();
-		if (isset($Request->cookie['reg_confirm'])) {
+		if ($Request->cookie('reg_confirm')) {
 			$Response->cookie('reg_confirm', '');
 			$Page->title($L->success_title);
 			$Page->success($L->success);
@@ -69,13 +69,13 @@ class Controller {
 		}
 	}
 	static function profile_restore_password_confirmation () {
-		$L     = new Prefix('system_profile_restore_password_');
-		$Page  = Page::instance();
+		$L        = new Prefix('system_profile_restore_password_');
+		$Page     = Page::instance();
 		$Request  = Request::instance();
 		$Response = Response::instance();
-		$Route = Route::instance();
-		$User  = User::instance();
-		if (isset($Request->cookie['restore_password_confirm'])) {
+		$Route    = Route::instance();
+		$User     = User::instance();
+		if ($Request->cookie('restore_password_confirm')) {
 			$Response->cookie('restore_password_confirm', '');
 			$Page->title($L->success_title);
 			$Page->success($L->success);
