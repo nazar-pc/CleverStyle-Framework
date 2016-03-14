@@ -319,7 +319,6 @@ class Index {
 		}
 		$this->called_once = true;
 		$Config            = Config::instance();
-		$Page              = Page::instance();
 		/**
 		 * If site is closed
 		 */
@@ -331,7 +330,7 @@ class Index {
 			/**
 			 * Warning about closed site
 			 */
-			$Page->warning(get_core_ml_text('closed_title'));
+			Page::instance()->warning(get_core_ml_text('closed_title'));
 		}
 		Event::instance()->fire('System/Index/load/before');
 		$this->render_page();

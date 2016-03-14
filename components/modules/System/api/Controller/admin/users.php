@@ -124,7 +124,6 @@ trait users {
 			throw new ExitException(400);
 		}
 		$User = User::instance();
-		$Page = Page::instance();
 		if ($_POST['type'] === 'user' && isset($_POST['email'])) {
 			$result = $User->registration($_POST['email'], false, false);
 			if (!$result) {
@@ -135,7 +134,7 @@ trait users {
 				throw new ExitException($L->user_already_exists, 400);
 			}
 			Response::instance()->code = 201;
-			$Page->json(
+			Page::instance()->json(
 				[
 					'login'    => $User->get('login', $result['id']),
 					'password' => $result['password']
