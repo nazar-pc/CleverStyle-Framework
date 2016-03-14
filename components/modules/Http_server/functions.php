@@ -76,7 +76,8 @@ namespace cs\Singleton {
 				_require_once($file = DIR."/core/thirdparty/$namespace/$class_name.php", false) || //Third party classes
 				_require_once($file = DIR."/core/traits/$namespace/$class_name.php", false) ||     //Core traits
 				_require_once($file = ENGINES."/$namespace/$class_name.php", false) ||             //Core engines
-				_require_once($file = MODULES."/../$namespace/$class_name.php", false)             //Classes in modules and plugins
+				_require_once($file = MODULES."/../$namespace/$class_name.php", false) ||          //Classes in modules
+				_require_once($file = PLUGINS."/../$namespace/$class_name.php", false)             //Classes in plugins
 			) {
 				$cache[$class] = realpath($file);
 				/** @noinspection MkdirRaceConditionInspection */
