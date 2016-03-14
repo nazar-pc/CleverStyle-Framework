@@ -8,9 +8,10 @@
  */
 namespace cs\modules\Blogs;
 use
-	cs\Language\Prefix;
+	cs\Language\Prefix,
+	cs\Request;
 
-if (!api_path() && !function_exists(__NAMESPACE__.'\\get_sections_select_post')) {
+if (!Request::instance()->api_path && !function_exists(__NAMESPACE__.'\\get_sections_select_post')) {
 	function get_sections_select_post (&$disabled, $current = null, $structure = null, $level = 0) {
 		$list = [
 			'in'    => [],

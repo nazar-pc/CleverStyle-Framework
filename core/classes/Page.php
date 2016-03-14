@@ -156,7 +156,7 @@ class Page {
 		/**
 		 * Theme is fixed for administration, and may vary for other pages
 		 */
-		if (admin_path()) {
+		if (Request::instance()->admin_path) {
 			$this->theme = 'CleverStyle';
 		}
 		$theme_dir = THEMES."/$this->theme";
@@ -166,10 +166,11 @@ class Page {
 		/**
 		 * If website is closed and user is not an administrator - send `503 Service Unavailable` header and show closed site page
 		 */
+		/** @noinspection NotOptimalIfConditionsInspection */
 		if (
 			!Config::instance()->core['site_mode'] &&
 			!User::instance(true)->admin() &&
-			status_code(503) &&
+			(Response::instance()->code == 503) &&
 			!_include("$theme_dir/closed.php", false, false) &&
 			!_include("$theme_dir/closed.html", false, false)
 		) {
@@ -474,24 +475,26 @@ class Page {
 			return;
 		}
 		$this->error_showed = true;
+		$Request            = Request::instance();
 		$Response           = Response::instance();
 		/**
 		 * Hack for 403 after sign out in administration
 		 */
-		if ($error_code == 403 && !api_path() && _getcookie('sign_out')) {
+		if ($error_code == 403 && isset($Request->cookie['sign_out']) && !$Request->api_path) {
 			$Response->redirect('/');
 			$this->Content = '';
 			throw new ExitException;
 		}
 		interface_off();
-		$status_text       = status_code($error_code);
+		$Response->code    = $error_code;
+		$status_text       = status_code_string($error_code);
 		$error_description = $status_text;
 		if (is_array($custom_text)) {
 			list($error_code, $error_description) = $custom_text;
 		} elseif ($custom_text) {
 			$error_description = $custom_text;
 		}
-		if ($json || api_path()) {
+		if ($json || $Request->api_path) {
 			if ($json) {
 				$Response->header('content-type', 'application/json; charset=utf-8');
 				interface_off();
@@ -510,7 +513,7 @@ class Page {
 			) {
 				echo
 					"<!doctype html>\n".
-					h::title(status_code($error_code)).
+					h::title($status_text).
 					$error_description;
 			}
 			$this->Content = ob_get_clean();
@@ -541,13 +544,13 @@ class Page {
 		/**
 		 * For AJAX and API requests only content without page template
 		 */
-		$api = api_path();
-		if ($api || !$this->interface) {
+		$api_path = Request::instance()->api_path;
+		if ($api_path || !$this->interface) {
 			/**
 			 * Processing of replacing in content
 			 */
 			/** @noinspection NestedTernaryOperatorInspection */
-			$Response->body = $this->process_replacing($this->Content ?: ($api ? 'null' : ''));
+			$Response->body = $this->process_replacing($this->Content ?: ($api_path ? 'null' : ''));
 		} else {
 			Event::instance()->fire('System/Page/display/before');
 			/**

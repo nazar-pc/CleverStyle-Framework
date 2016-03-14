@@ -98,7 +98,7 @@ class Route {
 					substr($processed_route['relative_address'], 16),
 					301
 				);
-				throw new ExitException(301);
+				throw new ExitException;
 			} else {
 				throw new ExitException(400);
 			}
@@ -117,11 +117,11 @@ class Route {
 				$this->path[] = $item;
 			}
 		}
-		$this->relative_address = $processed_route['relative_address'];
-		admin_path($processed_route['ADMIN']);
-		api_path($processed_route['API']);
-		current_module($processed_route['MODULE']);
-		home_page($processed_route['HOME']);
+		$this->relative_address  = $processed_route['relative_address'];
+		$Request->admin_path     = $processed_route['ADMIN'];
+		$Request->api_path       = $processed_route['API'];
+		$Request->current_module = $processed_route['MODULE'];
+		$Request->home_page      = $processed_route['HOME'];
 	}
 	/**
 	 * Check whether referer is local

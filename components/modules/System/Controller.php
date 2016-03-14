@@ -14,18 +14,21 @@ use
 	cs\Language\Prefix,
 	cs\Mail,
 	cs\Page,
+	cs\Request,
 	cs\Response,
 	cs\Route,
 	cs\User;
 
 class Controller {
 	static function profile_registration_confirmation () {
-		$L     = new Prefix('system_profile_registration_');
-		$Page  = Page::instance();
-		$Route = Route::instance();
-		$User  = User::instance();
-		if (_getcookie('reg_confirm')) {
-			_setcookie('reg_confirm', '');
+		$L        = new Prefix('system_profile_registration_');
+		$Page     = Page::instance();
+		$Request  = Request::instance();
+		$Response = Response::instance();
+		$Route    = Route::instance();
+		$User     = User::instance();
+		if (isset($Request->cookie['reg_confirm'])) {
+			$Response->cookie('reg_confirm', '');
 			$Page->title($L->success_title);
 			$Page->success($L->success);
 			return;
@@ -57,8 +60,8 @@ class Controller {
 			$body
 		)
 		) {
-			_setcookie('reg_confirm', 1, 0, true);
-			Response::instance()->redirect('/System/profile/registration_confirmation');
+			$Response->cookie('reg_confirm', 1, 0, true);
+			$Response->redirect('/System/profile/registration_confirmation');
 		} else {
 			$User->registration_cancel();
 			$Page->title($L->mail_sending_error_title);
@@ -68,10 +71,12 @@ class Controller {
 	static function profile_restore_password_confirmation () {
 		$L     = new Prefix('system_profile_restore_password_');
 		$Page  = Page::instance();
+		$Request  = Request::instance();
+		$Response = Response::instance();
 		$Route = Route::instance();
 		$User  = User::instance();
-		if (_getcookie('restore_password_confirm')) {
-			_setcookie('restore_password_confirm', '');
+		if (isset($Request->cookie['restore_password_confirm'])) {
+			$Response->cookie('restore_password_confirm', '');
 			$Page->title($L->success_title);
 			$Page->success($L->success);
 			return;
@@ -102,8 +107,8 @@ class Controller {
 			)
 		)
 		) {
-			_setcookie('restore_password_confirm', 1, 0, true);
-			Response::instance()->redirect('/System/profile/restore_password_confirmation');
+			$Response->cookie('restore_password_confirm', 1, 0, true);
+			$Response->redirect('/System/profile/restore_password_confirmation');
 		} else {
 			$Page->title($L->mail_sending_error_title);
 			$Page->warning($L->mail_sending_error);

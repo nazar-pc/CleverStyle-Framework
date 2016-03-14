@@ -360,7 +360,7 @@ class Hybrid_Auth {
 		}
 
 		if ($mode == "PHP") {
-			_header("Location: $url");
+			\cs\Response::instance()->redirect($url);
 		} elseif ($mode == "JS") {
 			echo '<html>';
 			echo '<head>';

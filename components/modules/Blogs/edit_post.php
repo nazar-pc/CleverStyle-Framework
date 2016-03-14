@@ -14,6 +14,7 @@ use
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Response,
 	cs\Route,
 	cs\User;
 
@@ -77,7 +78,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 			if ($save) {
 				if ($Posts->set($post['id'], $_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft)) {
 					interface_off();
-					_header('Location: '.$Config->base_url()."/$module/$post[path]:$post[id]");
+					Response::instance()->redirect($Config->base_url()."/$module/$post[path]:$post[id]");
 					return;
 				} else {
 					$Page->warning($L->post_saving_error);
@@ -87,7 +88,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 		case 'delete':
 			if ($Posts->del($post['id'])) {
 				interface_off();
-				_header('Location: '.$Config->base_url()."/$module");
+				Response::instance()->redirect($Config->base_url()."/$module");
 				return;
 			} else {
 				$Page->warning($L->post_deleting_error);

@@ -123,6 +123,7 @@ class Request {
 	 * @throws ExitException
 	 */
 	protected function fill_superglobals ($SUPERGLOBALS) {
+		// Hack: Filling $_SERVER is primarily needed for HybridAuth (many hard dependencies on `$_SERVER`)
 		$_SERVER  = new _SERVER($SUPERGLOBALS['SERVER']);
 		$_COOKIE  = $SUPERGLOBALS['COOKIE'];
 		$_GET     = $SUPERGLOBALS['GET'];
@@ -175,9 +176,5 @@ class Request {
 		 * Clean objects pool
 		 */
 		objects_pool([]);
-		admin_path(false);
-		api_path(false);
-		current_module('');
-		home_page(false);
 	}
 }

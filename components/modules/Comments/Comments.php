@@ -14,6 +14,7 @@ use
 	cs\Config,
 	cs\Language,
 	cs\Language\Prefix as Language_prefix,
+	cs\Request,
 	cs\User,
 	cs\Singleton;
 
@@ -36,7 +37,7 @@ class Comments {
 	public		$avatar_size	= 36;
 
 	protected function construct () {
-		$this->module	= current_module();
+		$this->module	= Request::instance()->current_module;
 		$this->cache	= new Cache_prefix("Comments/$this->module");
 	}
 	/**

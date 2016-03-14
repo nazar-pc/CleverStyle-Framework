@@ -46,7 +46,7 @@ class Hybrid_Providers_Twitter extends Hybrid_Provider_Model_OAuth1 {
 			}
 			$responseObj = array('x_reverse_auth_parameters' => $stage1, 'x_reverse_auth_target' => $this->config["keys"]["key"]);
 			$response = json_encode($responseObj);
-			_header("Content-Type: application/json", true, 200);
+			\cs\Response::instance()->header('Content-Type', 'application/json');
 			echo $response;
 			throw new \cs\ExitException;
 		}

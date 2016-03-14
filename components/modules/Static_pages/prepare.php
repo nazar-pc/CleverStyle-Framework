@@ -14,14 +14,16 @@ use
 	cs\Language\Prefix,
 	cs\Page\Meta,
 	cs\Page,
+	cs\Request,
 	cs\Route,
 	cs\User;
 
 $Config     = Config::instance();
 $L          = new Prefix('static_pages_');
+$Request    = Request::instance();
 $Pages      = Pages::instance();
 $Categories = Categories::instance();
-if (home_page()) {
+if ($Request->home_page) {
 	$page = $Pages->get($Pages->get_structure()['pages']['index']);
 } else {
 	$Route = Route::instance();
@@ -44,7 +46,7 @@ if (isset($_POST['save'])) {
 	$page = $Pages->get($page['id']);
 }
 if ($page['interface']) {
-	if (!home_page()) {
+	if (!$Request->home_page) {
 		$Page->Title[1] = $page['title'];
 	}
 	$Page->Description = description($page['content']);
@@ -55,7 +57,7 @@ if ($page['interface']) {
 	}
 	unset($images);
 	$canonical_url = $Config->base_url();
-	if (home_page()) {
+	if ($Request->home_page) {
 		$Page->canonical_url($canonical_url);
 	} else {
 		$category      = $page['category'];

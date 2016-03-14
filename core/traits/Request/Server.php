@@ -171,7 +171,7 @@ trait Server {
 		$this->headers = $headers;
 	}
 	/**
-	 * The best guessed IP of client (based on all known headers), `$this->remote_addr` by default
+	 * The best guessed IP of client (based on all known headers), `127.0.0.1` by default
 	 *
 	 * @param string[] $server
 	 *

@@ -95,12 +95,13 @@ class Session {
 	 */
 	protected function initialize () {
 		Event::instance()->fire('System/Session/init/before');
+		$Request = Request::instance();
 		/**
 		 * If session exists
 		 */
-		if (_getcookie('session')) {
+		if (isset($Request->cookie['session'])) {
 			$this->user_id = $this->load();
-		} elseif (!api_path()) {
+		} elseif (!$Request->api_path) {
 			/**
 			 * Try to detect bot, not necessary for API request
 			 */
@@ -299,7 +300,8 @@ class Session {
 	protected function get_internal ($session_id) {
 		if (!$session_id) {
 			if (!$this->session_id) {
-				$this->session_id = _getcookie('session');
+				$Request          = Request::instance();
+				$this->session_id = @$Request->cookie['session'] ?: false;
 			}
 			$session_id = $this->session_id;
 		}
@@ -499,7 +501,7 @@ class Session {
 			return $this->add(User::GUEST_ID);
 		}
 		$session_data = $this->create_unique_session($user);
-		_setcookie('session', $session_data['id'], $session_data['expire'], true);
+		Response::instance()->cookie('session', $session_data['id'], $session_data['expire'], true);
 		$this->load_initialization($session_data['id'], $session_data['user']);
 		/**
 		 * Delete old sessions using probability and system configuration of inserts limits and update ratio
@@ -580,7 +582,7 @@ class Session {
 		);
 		unset($this->cache->$session_id);
 		$this->session_id = false;
-		_setcookie('session', '');
+		Response::instance()->cookie('session', '');
 		$result = $this->delete($session_id);
 		if ($result) {
 			if ($create_guest_session) {

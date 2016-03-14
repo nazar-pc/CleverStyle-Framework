@@ -5,7 +5,7 @@ Meta functionality with title and description
 namespace cs;
 use cs\Page\Meta;
 include __DIR__.'/../../custom_loader.php';
-home_page(true);
+Request::instance()->home_page = true;
 Config::instance_stub(
 	[
 		'core'		=> [

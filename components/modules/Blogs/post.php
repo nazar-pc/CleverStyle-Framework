@@ -14,6 +14,7 @@ use
 	cs\ExitException,
 	cs\Page\Meta,
 	cs\Page,
+	cs\Response,
 	cs\Route,
 	cs\User;
 
@@ -50,8 +51,7 @@ if (
 	throw new ExitException(404);
 }
 if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
-	status_code(303);
-	_header("Location: $post[url]");
+	Response::instance()->redirect($post['url'], 303);
 	return;
 }
 $Page->title($post['title']);

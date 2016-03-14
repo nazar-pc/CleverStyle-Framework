@@ -252,7 +252,7 @@ trait Includes {
 		/**
 		 * If CSS and JavaScript compression enabled
 		 */
-		if ($Config->core['cache_compress_js_css'] && !(admin_path() && isset($_GET['debug']))) {
+		if ($Config->core['cache_compress_js_css'] && !(Request::instance()->admin_path && isset($_GET['debug']))) {
 			$this->webcomponents_polyfill(true);
 			$includes = $this->get_includes_for_page_with_compression();
 		} else {
@@ -430,16 +430,17 @@ trait Includes {
 	}
 	protected function add_system_configs () {
 		$Config         = Config::instance();
+		$Request        = Request::instance();
 		$Route          = Route::instance();
 		$User           = User::instance();
-		$current_module = current_module();
+		$current_module = $Request->current_module;
 		$this->config_internal(
 			[
 				'base_url'              => $Config->base_url(),
-				'current_base_url'      => $Config->base_url().'/'.(admin_path() ? 'admin/' : '').$current_module,
+				'current_base_url'      => $Config->base_url().'/'.($Request->admin_path ? 'admin/' : '').$current_module,
 				'public_key'            => Core::instance()->public_key,
 				'module'                => $current_module,
-				'in_admin'              => (int)admin_path(),
+				'in_admin'              => (int)$Request->admin_path,
 				'is_admin'              => (int)$User->admin(),
 				'is_user'               => (int)$User->user(),
 				'is_guest'              => (int)$User->guest(),
@@ -527,18 +528,19 @@ trait Includes {
 	 * @return array
 	 */
 	protected function get_includes_prepare ($dependencies, $separator) {
+		$Request               = Request::instance();
 		$includes              = [
 			'css'  => [],
 			'js'   => [],
 			'html' => []
 		];
 		$dependencies_includes = $includes;
-		$current_module        = current_module();
+		$current_module        = $Request->current_module;
 		/**
 		 * Current URL based on controller path (it better represents how page was rendered)
 		 */
 		$current_url = array_slice(Index::instance()->controller_path, 1);
-		$current_url = (admin_path() ? "admin$separator" : '')."$current_module$separator".implode($separator, $current_url);
+		$current_url = ($Request->admin_path ? "admin$separator" : '')."$current_module$separator".implode($separator, $current_url);
 		/**
 		 * Narrow the dependencies to current module only
 		 */
@@ -559,11 +561,12 @@ trait Includes {
 		$url_exploded = explode($separator, $url);
 		/** @noinspection NestedTernaryOperatorInspection */
 		$url_module = $url_exploded[0] != 'admin' ? $url_exploded[0] : (@$url_exploded[1] ?: '');
+		$Request    = Request::instance();
 		return
 			$url_module !== Config::SYSTEM_MODULE &&
 			in_array($url_module, $dependencies) &&
 			(
-				admin_path() || admin_path() == ($url_exploded[0] == 'admin')
+				$Request->admin_path || $Request->admin_path == ($url_exploded[0] == 'admin')
 			);
 	}
 	protected function add_versions_hash ($includes) {

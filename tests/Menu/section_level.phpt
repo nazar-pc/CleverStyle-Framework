@@ -4,7 +4,7 @@ Section level menu
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-current_module('System');
+Request::instance()->current_module = 'System';
 Event::instance_stub();
 $Menu = Menu::instance();
 $Menu->add_section_item(

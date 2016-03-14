@@ -19,12 +19,13 @@ use
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Response,
 	cs\User;
 
 if (!function_exists(__NAMESPACE__.'\\error_redirect')) {
 	function error_redirect ($error, $description) {
-		_header(
-			'Location: '.http_build_url(
+		Response::instance()->redirect(
+			http_build_url(
 				urldecode($_GET['redirect_uri']),
 				[
 					'error'             => $error,
@@ -32,7 +33,6 @@ if (!function_exists(__NAMESPACE__.'\\error_redirect')) {
 					'state'             => isset($_GET['state']) ? $_GET['state'] : false
 				]
 			),
-			true,
 			302
 		);
 		interface_off();
@@ -185,6 +185,7 @@ if (!$User->user()) {
 		return;
 	}
 }
+$Response = Response::instance();
 /**
  * Authorization processing
  */
@@ -194,8 +195,8 @@ if (isset($_POST['mode'])) {
 			$OAuth2->add_access($client['id']);
 			break;
 		default:
-			_header(
-				'Location: '.http_build_url(
+			$Response->redirect(
+				http_build_url(
 					urldecode($redirect_uri),
 					[
 						'error'             => 'access_denied',
@@ -203,7 +204,6 @@ if (isset($_POST['mode'])) {
 						'state'             => isset($_GET['state']) ? $_GET['state'] : false
 					]
 				),
-				true,
 				302
 			);
 			$Page->Content = '';
@@ -231,15 +231,14 @@ if (!$code) {
 }
 switch ($_GET['response_type']) {
 	case 'code':
-		_header(
-			'Location: '.http_build_url(
+		$Response->redirect(
+			http_build_url(
 				urldecode($redirect_uri),
 				[
 					'code'  => $code,
 					'state' => isset($_GET['state']) ? $_GET['state'] : false
 				]
 			),
-			true,
 			302
 		);
 		$Page->Content = '';
@@ -248,8 +247,8 @@ switch ($_GET['response_type']) {
 		$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], $redirect_uri);
 		if ($token_data) {
 			unset($token_data['refresh_token']);
-			_header(
-				'Location: '.uri_for_token(
+			$Response->redirect(
+				uri_for_token(
 					http_build_url(
 						urldecode($redirect_uri),
 						array_merge(
@@ -260,7 +259,6 @@ switch ($_GET['response_type']) {
 						)
 					)
 				),
-				true,
 				302
 			);
 			$Page->Content = '';
@@ -270,8 +268,9 @@ switch ($_GET['response_type']) {
 			return;
 		}
 	case 'guest_token':
-		_header('Cache-Control: no-store');
-		_header('Pragma: no-cache');
+		$Response
+			->header('cache-control', 'no-store')
+			->header('pragma', 'no-cache');
 		interface_off();
 		if ($User->user()) {
 			$e = new ExitException(

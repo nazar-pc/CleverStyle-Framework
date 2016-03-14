@@ -12,6 +12,7 @@ use
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Response,
 	cs\User;
 
 trait users {
@@ -133,7 +134,7 @@ trait users {
 				$L = new Prefix('system_admin_users_');
 				throw new ExitException($L->user_already_exists, 400);
 			}
-			status_code(201);
+			Response::instance()->code = 201;
 			$Page->json(
 				[
 					'login'    => $User->get('login', $result['id']),
@@ -142,7 +143,7 @@ trait users {
 			);
 		} elseif ($_POST['type'] === 'bot' && isset($_POST['name'], $_POST['user_agent'], $_POST['ip'])) {
 			if ($User->add_bot($_POST['name'], $_POST['user_agent'], $_POST['ip'])) {
-				status_code(201);
+				Response::instance()->code = 201;
 			} else {
 				throw new ExitException(500);
 			}

@@ -610,7 +610,7 @@ class SimpleImage {
 		}
 
 		// Output the image
-		_header('Content-Type: '.$mimetype);
+		\cs\Response::instance()->header('content-type', $mimetype);
 		switch ($mimetype) {
 			case 'image/gif':
 				imagegif($this->image);

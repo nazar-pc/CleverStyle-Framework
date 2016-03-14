@@ -11,6 +11,7 @@ use
 	h,
 	cs\Config,
 	cs\Page,
+	cs\Request,
 	cs\Singleton;
 
 class Disqus {
@@ -26,7 +27,7 @@ class Disqus {
 	protected	$shortname;
 
 	protected function construct () {
-		$this->module		= current_module();
+		$this->module		= Request::instance()->current_module;
 		$this->shortname	= Config::instance()->module('Disqus')->shortname;
 	}
 	/**

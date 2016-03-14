@@ -8,7 +8,8 @@
  */
 namespace cs;
 use
-	cs\Language\Prefix;
+	cs\Language\Prefix,
+	cs\Request;
 
 Event::instance()
 	->on(
@@ -69,7 +70,7 @@ Event::instance()
 					break;
 				case $module_data->enabled():
 					require __DIR__.'/events/enabled.php';
-					if (current_module() == 'Blogs') {
+					if (Request::instance()->current_module == 'Blogs') {
 						require __DIR__.'/events/enabled/admin.php';
 					}
 				case $module_data->installed():

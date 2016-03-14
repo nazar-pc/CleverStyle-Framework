@@ -520,7 +520,7 @@ class DraugiemApi {
 
 		//Set up P3P policy to allow cookies in iframe with IE
 		if(strpos($user_agent, 'MSIE')){
-			_header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
+			\cs\Response::instance()->header('P3P', 'CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
 		}
 
 		//Workaround for Safari - post a form with Javascript to create session cookie

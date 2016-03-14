@@ -18,6 +18,8 @@ use
 	cs\Language\Prefix,
 	cs\Mail,
 	cs\Page,
+	cs\Request,
+	cs\Response,
 	cs\Route,
 	cs\Session,
 	cs\User;
@@ -77,15 +79,15 @@ class Controller {
 			self::redirect();
 			return;
 		}
+		$referer = Request::instance()->referer;
 		/**
 		 * If referer is internal website address, but not HybridAuth module - save referer to cookie
-		 * @var \cs\_SERVER $_SERVER
 		 */
 		if (
-			strpos($_SERVER->referer, $Config->base_url()) === 0 &&
-			strpos($_SERVER->referer, $Config->base_url().'/HybridAuth') === false
+			strpos($referer, $Config->base_url()) === 0 &&
+			strpos($referer, $Config->base_url().'/HybridAuth') === false
 		) {
-			_setcookie('HybridAuth_referer', $_SERVER->referer, 0, true);
+			Response::instance()->cookie('HybridAuth_referer', $referer, 0, true);
 		}
 		require_once __DIR__.'/Hybrid/Auth.php';
 		require_once __DIR__.'/Hybrid/Endpoint.php';
@@ -126,12 +128,14 @@ class Controller {
 	 * @throws ExitException
 	 */
 	protected static function redirect ($with_delay = false) {
-		$redirect_to = _getcookie('HybridAuth_referer') ?: Config::instance()->base_url();
-		$action      = $with_delay ? 'Refresh: 5; url=' : 'Location: ';
-		_header($action.$redirect_to);
-		_setcookie('HybridAuth_referer', '');
-		if (!$with_delay) {
-			status_code(301);
+		$Request     = Request::instance();
+		$Response    = Response::instance();
+		$redirect_to = @$Request->cookie['HybridAuth_referer'] ?: Config::instance()->base_url();
+		$Response->cookie('HybridAuth_referer', '');
+		if ($with_delay) {
+			$Response->header('refresh', "5; url=$redirect_to");
+		} else {
+			$Response->redirect($redirect_to, 301);
 			interface_off();
 			throw new ExitException;
 		}
@@ -392,7 +396,7 @@ class Controller {
 				$L->time($Config->core['registration_confirmation_time'], 'd')
 			);
 			if (self::send_registration_mail($_POST['email'], $title, $body)) {
-				_setcookie('HybridAuth_referer', '');
+				Response::instance()->cookie('HybridAuth_referer', '');
 				$Page->content(
 					h::p(
 						$L->merge_confirmation($L->$provider)
@@ -421,7 +425,7 @@ class Controller {
 		);
 		if (self::send_registration_mail($_POST['email'], $title, $body)) {
 			self::update_data($provider);
-			_setcookie('HybridAuth_referer', '');
+			Response::instance()->cookie('HybridAuth_referer', '');
 			$Page->content($L->registration_confirmation);
 		}
 	}

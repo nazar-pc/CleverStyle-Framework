@@ -28,6 +28,9 @@ class ExitException extends Exception {
 		} else {
 			$this->message = $message;
 		}
+		if ($this->code) {
+			Response::instance()->code = $this->code;
+		}
 	}
 	/**
 	 * @return bool

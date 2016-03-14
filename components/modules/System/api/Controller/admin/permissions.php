@@ -13,7 +13,9 @@ use
 	cs\Group,
 	cs\Page,
 	cs\Permission,
+	cs\Response,
 	cs\User;
+
 trait permissions {
 	/**
 	 * Get array of permissions data or data of specific permission if id specified
@@ -44,7 +46,7 @@ trait permissions {
 			throw new ExitException(400);
 		}
 		if (Permission::instance()->add($_POST['group'], $_POST['label'])) {
-			status_code(201);
+			Response::instance()->code = 201;
 		} else {
 			throw new ExitException(500);
 		}

@@ -10,6 +10,7 @@ namespace cs\modules\HybridAuth;
 use
 	Hybrid_Auth,
 	cs\Config,
+	cs\Request,
 	cs\Session,
 	cs\User;
 
@@ -31,7 +32,7 @@ function get_hybridauth_instance ($provider = null, $base_url = null) {
 			'providers' => $Config->module('HybridAuth')->providers
 		]
 	);
-	if ($User->user() && current_module() != 'HybridAuth') {
+	if ($User->user() && Request::instance()->current_module != 'HybridAuth') {
 		$HybridAuth->restoreSessionData(serialize($User->get_data('HybridAuth_session')));
 	}
 	return $HybridAuth;

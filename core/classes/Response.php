@@ -54,6 +54,8 @@ class Response {
 	 *                                          of multiple values with the same field name
 	 * @param int                  $code        HTTP status code
 	 * @param string               $protocol    Protocol, for instance: `HTTP/1.0`, `HTTP/1.1` (default), HTTP/2.0
+	 *
+	 * @return Response
 	 */
 	function init ($body = '', $body_stream = null, $headers = [], $code = 200, $protocol = 'HTTP/1.1') {
 		$this->protocol = $protocol;
@@ -64,6 +66,7 @@ class Response {
 			fclose($this->body_stream);
 		}
 		$this->data_stream = is_string($body_stream) ? fopen($body_stream, 'ba+') : $body_stream;
+		return $this;
 	}
 	/**
 	 * Set raw HTTP header
@@ -72,6 +75,8 @@ class Response {
 	 * @param string $value        Value, empty string will cause header removal
 	 * @param bool   $replace      The optional replace parameter indicates whether the header should replace a previous similar header, or add a second header
 	 *                             of the same type. By default it will replace
+	 *
+	 * @return Response
 	 */
 	function header ($field, $value, $replace = true) {
 		$field = strtolower($field);
@@ -82,20 +87,20 @@ class Response {
 		} else {
 			$this->headers[$field][] = $value;
 		}
+		return $this;
 	}
 	/**
 	 * Make redirect to specified location
 	 *
 	 * @param string   $location
-	 * @param int|null $code Defaults to 302 if current code is not 201 or 3xx
+	 * @param int|null $code
+	 *
+	 * @return Response
 	 */
-	function redirect ($location, $code = null) {
+	function redirect ($location, $code = 302) {
 		$this->header('location', $location);
-		if ($code !== null) {
-			$this->code = $code;
-		} elseif ($this->code !== 201 && $this->code >= 300 && $this->code < 400) {
-			$this->code = 302;
-		}
+		$this->code = $code;
+		return $this;
 	}
 	/**
 	 * Function for setting cookies, taking into account cookies prefix. Parameters like in system `setcookie()` function, but $path, $domain and $secure
@@ -107,6 +112,8 @@ class Response {
 	 * @param string $value
 	 * @param int    $expire
 	 * @param bool   $httponly
+	 *
+	 * @return Response
 	 */
 	function cookie ($name, $value, $expire = 0, $httponly = false) {
 		$Request = Request::instance();
@@ -143,7 +150,8 @@ class Response {
 		if ($httponly) {
 			$header[] = 'HttpOnly';
 		}
-		$this->header('Set-Cookie', implode('; ', $header), false);
+		$this->header('set-cookie', implode('; ', $header), false);
+		return $this;
 	}
 	/**
 	 * Provides standard output for all the response data

@@ -11,7 +11,9 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\ExitException,
 	cs\Group,
-	cs\Page;
+	cs\Page,
+	cs\Response;
+
 trait groups {
 	/**
 	 * Get array of groups data or data of specific group if id specified or data of several specified groups if specified in ids query parameter
@@ -49,7 +51,7 @@ trait groups {
 			throw new ExitException(400);
 		}
 		if (Group::instance()->add($_POST['title'], $_POST['description'])) {
-			status_code(201);
+			Response::instance()->code = 201;
 		} else {
 			throw new ExitException(500);
 		}

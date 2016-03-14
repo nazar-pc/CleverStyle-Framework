@@ -62,17 +62,18 @@ class Index {
 	 */
 	function construct () {
 		$Config     = Config::instance();
+		$Request    = Request::instance();
 		$Route      = Route::instance();
 		$this->path = &$Route->path;
 		$this->ids  = &$Route->ids;
 		if ($this->closed_site($Config)) {
 			return;
 		}
-		$this->module            = current_module();
+		$this->module            = $Request->current_module;
 		$this->working_directory = MODULES."/$this->module";
-		if (admin_path()) {
+		if ($Request->admin_path) {
 			$this->working_directory .= '/admin';
-		} elseif (api_path()) {
+		} elseif ($Request->api_path) {
 			$this->working_directory .= '/api';
 		}
 		if (!is_dir($this->working_directory)) {
@@ -109,7 +110,7 @@ class Index {
 			return false;
 		}
 		return
-			!api_path() ||
+			!Request::instance()->api_path ||
 			$this->module != 'System' ||
 			Route::instance()->route !== ['user', 'sign_in'];
 	}
@@ -122,9 +123,10 @@ class Index {
 	 */
 	protected function check_permission ($label) {
 		$permission_group = $this->module;
-		if (admin_path()) {
+		$Request          = Request::instance();
+		if ($Request->admin_path) {
 			$permission_group = "admin/$permission_group";
-		} elseif (api_path()) {
+		} elseif ($Request->api_path) {
 			$permission_group = "api/$permission_group";
 		}
 		return User::instance()->get_permission($permission_group, $label);
@@ -137,7 +139,7 @@ class Index {
 	protected function render_page () {
 		$this->render_title();
 		$this->render_content();
-		if (!api_path()) {
+		if (!Request::instance()->api_path) {
 			$this->render_blocks();
 		}
 	}
@@ -145,17 +147,18 @@ class Index {
 	 * Render page title
 	 */
 	protected function render_title () {
-		$Page = Page::instance();
+		$Page    = Page::instance();
+		$Request = Request::instance();
 		/**
 		 * Add generic Home or Module name title
 		 */
-		if (!api_path()) {
+		if (!$Request->api_path) {
 			$L = Language::instance();
-			if (admin_path()) {
+			if ($Request->admin_path) {
 				$Page->title($L->system_admin_administration);
 			}
 			$Page->title(
-				$L->{home_page() ? 'system_home' : $this->module}
+				$L->{$Request->home_page ? 'system_home' : $this->module}
 			);
 		}
 	}
@@ -322,7 +325,7 @@ class Index {
 		 */
 		if (!$Config->core['site_mode']) {
 			if ($this->closed_site($Config)) {
-				status_code(503);
+				Response::instance()->code = 503;
 				return;
 			}
 			/**

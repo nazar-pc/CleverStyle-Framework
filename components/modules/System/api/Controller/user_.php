@@ -15,6 +15,7 @@ use
 	cs\Language\Prefix,
 	cs\Mail,
 	cs\Page,
+	cs\Response,
 	cs\Session,
 	cs\User;
 
@@ -180,7 +181,7 @@ trait user_ {
 			/**
 			 * Hack for 403 after sign out in administration
 			 */
-			_setcookie('sign_out', 1, TIME + 5, true);
+			Response::instance()->cookie('sign_out', 1, TIME + 5, true);
 			Page::instance()->json(1);
 		}
 	}

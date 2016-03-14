@@ -12,6 +12,8 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
+	cs\Request,
+	cs\Response,
 	cs\User;
 
 Event::instance()
@@ -24,13 +26,14 @@ Event::instance()
 	->on(
 		'System/User/construct/before',
 		function () {
+			$Request = Request::instance();
 			/**
 			 * Works only for API requests
 			 */
-			if (!api_path()) {
+			if (!$Request->api_path) {
 				return;
 			}
-			if (isset($_SERVER['HTTP_AUTHORIZATION']) && preg_match('/Bearer ([0-9a-z]{32})/i', $_SERVER['HTTP_AUTHORIZATION'], $access_token)) {
+			if (isset($Request->headers['authorization']) && preg_match('/Bearer ([0-9a-z]{32})/i', $Request->headers['authorization'], $access_token)) {
 				$access_token = $access_token[1];
 			} else {
 				return;
@@ -74,13 +77,10 @@ Event::instance()
 				// TODO: add some mark if this is client-side only token, so that it can be accounted by components
 				// Also ADMIN access should be blocked for client-side only tokens
 			}
-			/**
-			 * @var \cs\_SERVER $_SERVER
-			 */
-			$_SERVER->user_agent = "OAuth2-$client[name]-$client[id]";
+			$Request->user_agent = "OAuth2-$client[name]-$client[id]";
 			$_POST['session']    = $token_data['session'];
 			$_REQUEST['session'] = $token_data['session'];
-			_setcookie('session', $token_data['session'], 0, true);
+			Response::instance()->cookie('session', $token_data['session'], 0, true);
 			if (!Config::instance()->module('OAuth2')->guest_tokens) {
 				Event::instance()->on(
 					'System/User/construct/after',

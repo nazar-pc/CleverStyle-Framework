@@ -11,6 +11,7 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Page,
+	cs\Response,
 	cs\Route;
 
 if (!isset(
@@ -39,8 +40,7 @@ $id = Categories::instance()->add(
 if (!$id) {
 	throw new ExitException(500);
 }
-status_code(201);
-$Config = Config::instance();
+Response::instance()->code = 201;
 Page::instance()->json(
-	$Config->core_url().'/'.Route::instance()->relative_address."/$id"
+	Config::instance()->core_url().'/'.Route::instance()->relative_address."/$id"
 );

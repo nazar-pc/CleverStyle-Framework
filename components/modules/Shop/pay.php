@@ -12,8 +12,10 @@ use
 	cs\Event,
 	cs\ExitException,
 	cs\Language\Prefix,
+	cs\Response,
 	cs\Route,
 	cs\User;
+
 $Config = Config::instance();
 $L      = new Prefix('shop_');
 $Orders = Orders::instance();
@@ -23,7 +25,7 @@ if (!$order || $order['user'] != User::instance()->id) {
 }
 interface_off();
 if ($order['paid'] || $order['payment_method'] == Orders::PAYMENT_METHOD_CASH) {
-	_header('Location: '.$Config->core_url().'/'.path($L->shop).'/'.path($L->orders));
+	Response::instance()->redirect($Config->base_url().'/'.path($L->shop).'/'.path($L->orders));
 	return;
 }
 Event::instance()->fire(

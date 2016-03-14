@@ -87,7 +87,7 @@ class Hybrid_Endpoint {
 	 * @return void
 	 */
 	protected function processOpenidXRDS() {
-		_header("Content-Type: application/xrds+xml");
+		\cs\Response::instance()->header('content-type', 'application/xrds+xml');
 
 		$output = str_replace("{RETURN_TO_URL}", str_replace(
 						array("<", ">", "\"", "'", "&"), array("&lt;", "&gt;", "&quot;", "&apos;", "&amp;"), Hybrid_Auth::getCurrentUrl(false)

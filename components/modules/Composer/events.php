@@ -9,7 +9,8 @@
 namespace cs\modules\Composer;
 use
 	cs\Config,
-	cs\Event;
+	cs\Event,
+	cs\Request;
 
 Event::instance()->on(
 	'System/Index/construct',
@@ -20,7 +21,7 @@ Event::instance()->on(
 				require __DIR__.'/events/uninstalled.php';
 				break;
 			case $module_data->enabled():
-				if (current_module() == 'Composer') {
+				if (Request::instance()->current_module == 'Composer') {
 					require __DIR__.'/events/enabled/admin.php';
 				}
 			case $module_data->installed():

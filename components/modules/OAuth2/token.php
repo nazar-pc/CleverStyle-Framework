@@ -12,10 +12,12 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Page,
+	cs\Response,
 	cs\User;
 
-_header('Cache-Control: no-store');
-_header('Pragma: no-cache');
+Response::instance()
+	->header('cache-control', 'no-store')
+	->header('pragma', 'no-cache');
 interface_off();
 /**
  * Errors processing

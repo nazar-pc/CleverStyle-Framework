@@ -13,6 +13,8 @@ use
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Request,
+	cs\Response,
 	cs\User;
 
 $Config   = Config::instance();
@@ -49,7 +51,7 @@ if (isset($_GET['section'])) {
 $title[]  = $L->latest_posts;
 $title    = implode($Config->core['title_delimiter'], $title);
 $base_url = $Config->base_url();
-_header('Content-Type: application/atom+xml');
+Response::instance()->header('content-type', 'application/atom+xml');
 interface_off();
 
 function get_favicon_path ($theme) {
@@ -62,20 +64,18 @@ function get_favicon_path ($theme) {
 	return 'favicon.ico';
 }
 
-/**
- * @var \cs\_SERVER $_SERVER
- */
+$url = $Config->core_url().Request::instance()->uri;
 $Page->content(
 	"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n".
 	h::feed(
 		h::title($title).
-		h::id($Config->core_url().$_SERVER->request_uri).
+		h::id($url).
 		str_replace(
 			'>',
 			'/>',
 			h::link(
 				[
-					'href' => $Config->core_url().$_SERVER->request_uri,
+					'href' => $url,
 					'rel'  => 'self'
 				]
 			)

@@ -14,6 +14,7 @@ use
 	cs\ExitException,
 	cs\Language,
 	cs\Page,
+	cs\Response,
 	cs\Route,
 	cs\User;
 
@@ -88,7 +89,7 @@ if (isset($_GET['secret'])) {
 			]
 		);
 		interface_off();
-		_header("Location: $callback");
+		Response::instance()->redirect($callback);
 		return;
 	}
 	$Page->content(

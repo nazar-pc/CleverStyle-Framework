@@ -13,6 +13,7 @@ use
 	cs\Route,
 	cs\Singleton,
 	h;
+use cs\Request;
 
 /**
  * Meta class for generation of various meta tags
@@ -66,7 +67,7 @@ class Meta {
 	 * @param string  $type
 	 * @param mixed[] $params
 	 *
-	 * @return $this
+	 * @return Meta
 	 */
 	function __call ($type, $params) {
 		if (!$params) {
@@ -151,7 +152,7 @@ class Meta {
 			/** @noinspection NestedTernaryOperatorInspection */
 			$this->og(
 				'url',
-				home_page()
+				Request::instance()->home_page
 					? $Config->base_url()
 					: ($Page->canonical_url ?: $Config->base_url().'/'.Route::instance()->relative_address)
 			);

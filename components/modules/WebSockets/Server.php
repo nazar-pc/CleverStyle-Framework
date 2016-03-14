@@ -19,6 +19,7 @@ use
 	React\EventLoop\Factory as Loop_factory,
 	cs\Config,
 	cs\Event,
+	cs\Request,
 	cs\Session,
 	cs\Singleton,
 	cs\User,
@@ -110,6 +111,7 @@ class Server implements MessageComponentInterface {
 	protected $remember_session_ip;
 	protected function construct () {
 		$Config                    = Config::instance();
+		$Request                   = Request::instance();
 		$module_data               = $Config->module('WebSockets');
 		$this->listen_port         = $module_data->listen_port;
 		$this->listen_locally      = $module_data->listen_locally ? '127.0.0.1' : '0.0.0.0';
@@ -119,10 +121,7 @@ class Server implements MessageComponentInterface {
 		$this->pool                = Pool::instance();
 		$this->clients             = new SplObjectStorage;
 		$this->servers             = new SplObjectStorage;
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
-		$this->address = ($_SERVER->secure ? 'wss' : 'ws')."://$_SERVER->host/WebSockets";
+		$this->address             = ($Request->secure ? 'wss' : 'ws')."://$Request->host/WebSockets";
 	}
 	/**
 	 * Run WebSockets server

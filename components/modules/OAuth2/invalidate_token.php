@@ -8,10 +8,12 @@
  */
 namespace cs\modules\OAuth2;
 use
-	cs\ExitException;
+	cs\ExitException,
+	cs\Response;
 
-_header('Cache-Control: no-store');
-_header('Pragma: no-cache');
+Response::instance()
+	->header('cache-control', 'no-store')
+	->header('pragma', 'no-cache');
 $OAuth2 = OAuth2::instance();
 if (!isset($_POST['access_token'])) {
 	$e = new ExitException(

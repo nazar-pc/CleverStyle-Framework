@@ -13,11 +13,8 @@ use
 Event::instance()->on(
 	'System/Page/display/before',
 	function () {
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
 		if (
-			strpos($_SERVER->user_agent, 'MSIE 10') !== false &&
+			strpos(Request::instance()->user_agent, 'MSIE 10') !== false &&
 			in_array('Old_IE', Config::instance()->components['plugins'])
 		) {
 			Page::instance()->Head .=

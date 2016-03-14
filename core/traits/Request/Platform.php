@@ -13,15 +13,15 @@ trait Platform {
 	 *
 	 * @var bool
 	 */
-	public $admin;
+	public $admin_path;
 	/**
 	 * Request to api section
 	 *
 	 * @var bool
 	 */
-	public $api;
+	public $api_path;
 	/**
-	 * Current module, `System` by default
+	 * Current module
 	 *
 	 * @var string
 	 */
@@ -33,9 +33,9 @@ trait Platform {
 	 */
 	public $home_page;
 	function init_platform () {
-		$this->admin          = false;
-		$this->api            = false;
-		$this->current_module = 'System';
+		$this->admin_path     = false;
+		$this->api_path       = false;
+		$this->current_module = '';
 		$this->home_page      = false;
 	}
 }

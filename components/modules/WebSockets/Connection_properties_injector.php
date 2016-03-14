@@ -8,7 +8,6 @@
  */
 namespace cs\modules\WebSockets;
 use
-	cs\_SERVER,
 	cs\Language,
 	Ratchet\ConnectionInterface,
 	Ratchet\Http\HttpServerInterface,
@@ -28,23 +27,40 @@ class Connection_properties_injector implements HttpServerInterface {
 	public function onOpen (ConnectionInterface $conn, RequestInterface $request = null) {
 		$L = Language::instance();
 		/** @noinspection PhpUndefinedFieldInspection */
-		$SERVER            = new _SERVER(
+		$ip               = $this->ip(
 			[
-				'REMOTE_ADDR'              => $conn->remoteAddress,
-				'HTTP_X_FORWARDED_FOR'     => $request->getHeader('X-Forwarded-For'),
-				'HTTP_CLIENT_IP'           => $request->getHeader('Client-IP'),
-				'HTTP_X_FORWARDED'         => $request->getHeader('X-Forwarded'),
-				'HTTP_X_CLUSTER_CLIENT_IP' => $request->getHeader('X-Cluster-Client-IP'),
-				'HTTP_FORWARDED_FOR'       => $request->getHeader('Forwarded-For'),
-				'HTTP_FORWARDED'           => $request->getHeader('Forwarded')
+				$conn->remoteAddress,
+				$request->getHeader('X-Forwarded-For'),
+				$request->getHeader('Client-IP'),
+				$request->getHeader('X-Forwarded'),
+				$request->getHeader('X-Cluster-Client-IP'),
+				$request->getHeader('Forwarded-For'),
+				$request->getHeader('Forwarded')
 			]
 		);
-		$conn->user_agent  = $request->getHeader('User-Agent');
-		$conn->session_id  = $request->getCookie('session');
-		$conn->remote_addr = $SERVER->remote_addr;
-		$conn->ip          = $SERVER->ip;
+		$conn->user_agent = $request->getHeader('User-Agent');
+		$conn->session_id = $request->getCookie('session');
+		/** @noinspection PhpUndefinedFieldInspection */
+		$conn->remote_addr = $conn->remoteAddress;
+		$conn->ip          = $ip;
 		$conn->language    = $L->url_language($request->getPath()) ?: $L->clanguage;
 		$this->delegate->onOpen($conn, $request);
+	}
+	/**
+	 * The best guessed IP of client (based on all known headers), `127.0.0.1` by default
+	 *
+	 * @param string[] $source_ips
+	 *
+	 * @return string
+	 */
+	protected function ip ($source_ips) {
+		foreach ($source_ips as $ip) {
+			$ip = trim(explode(',', $ip)[0]);
+			if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+				return $ip;
+			}
+		}
+		return '127.0.0.1';
 	}
 	/**
 	 * {@inheritdoc}

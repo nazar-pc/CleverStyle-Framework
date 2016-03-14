@@ -38,12 +38,13 @@ Event::instance()
 					$L->change($User->get('language', $user_id));
 				}
 			}
+			$Request = Request::instance();
 			/**
 			 * Security check
 			 */
 			if (
 				(
-					!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest'
+					!isset($Request->headers['x-requested-with']) || $Request->headers['x-requested-with'] !== 'XMLHttpRequest'
 				) &&
 				(
 					!isset($_POST['session']) || $_POST['session'] != $Session->get_id()
@@ -69,7 +70,7 @@ Event::instance()
 			$Page->Head .= h::link(
 				[
 					'hreflang' => 'x-default',
-					'href'     => home_page() ? $core_url : "$core_url/$relative_address",
+					'href'     => Request::instance()->home_page ? $core_url : "$core_url/$relative_address",
 					'rel'      => 'alternate'
 				]
 			);
@@ -97,7 +98,7 @@ Event::instance()
 	->on(
 		'System/Index/construct',
 		function () {
-			if (current_module() == 'System') {
+			if (Request::instance()->current_module == 'System') {
 				require __DIR__.'/events/admin.php';
 			}
 		}

@@ -12,6 +12,7 @@ use
 	cs\Config,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Response,
 	cs\User;
 
 $Config        = Config::instance();
@@ -76,7 +77,7 @@ if (count($galleries) > 1) {
 } elseif (count($galleries) == 1) {
 	interface_off();
 	$path = array_keys($galleries)[0];
-	_header("Location: {$Config->base_url()}/$module/$path", true, 307);
+	Response::instance()->redirect($Config->base_url()."/$module/$path", 307);
 } else {
 	$Page->content(
 		$L->no_galleries_yet

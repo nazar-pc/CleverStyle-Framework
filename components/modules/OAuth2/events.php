@@ -19,8 +19,9 @@ Event::instance()
 						$rc[1] = explode('?', $rc[1], 2)[0];
 					}
 					$data['rc'] = implode('/', $rc);
-					_header('Cache-Control: no-store');
-					_header('Pragma: no-cache');
+					Response::instance()
+						->header('cache-control', 'no-store')
+						->header('pragma', 'no-cache');
 				}
 				$POST = (array)$_POST;
 				Event::instance()->on(

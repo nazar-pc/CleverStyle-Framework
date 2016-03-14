@@ -10,26 +10,26 @@ namespace cs\plugins\Composer_assets;
 use
 	cs\Event,
 	cs\ExitException,
+	cs\Request,
+	cs\Response,
 	Fxp\Composer\AssetPlugin\FxpAssetPlugin;
 
-/**
- * @var \cs\_SERVER $_SERVER
- */
+$Request = Request::instance();
 if (
-	$_SERVER->request_method == 'GET' &&
+	$Request->ethod == 'GET' &&
 	(
-		strpos($_SERVER->request_uri, '/bower_components') === 0 ||
-		strpos($_SERVER->request_uri, '/node_modules') === 0
+		strpos($Request->uri, '/bower_components') === 0 ||
+		strpos($Request->uri, '/node_modules') === 0
 	)
 ) {
 	$composer_lock   = @file_get_json(STORAGE.'/Composer/composer.lock');
 	$target_location = str_replace(
 		['/bower_components', '/node_modules'],
 		['/storage/Composer/vendor/bower-asset', '/storage/Composer/vendor/npm-asset'],
-		$_SERVER->request_uri
+		$Request->uri
 	);
-	_header("Location: $target_location?$composer_lock[hash]", true, 301);
-	throw new ExitException(301);
+	Response::instance()->redirect("Location: $target_location?$composer_lock[hash]", 301);
+	throw new ExitException;
 }
 
 Event::instance()

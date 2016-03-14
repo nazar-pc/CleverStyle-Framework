@@ -8,6 +8,7 @@
 namespace cs;
 use
 	h;
+
 /**
  * Menu class is used in administration for generating second and third level of menu
  *
@@ -26,7 +27,7 @@ class Menu {
 	 */
 	function get_menu () {
 		Event::instance()->fire('admin/System/Menu');
-		$current_module = current_module();
+		$current_module = Request::instance()->current_module;
 		if (isset($this->section_items[$current_module])) {
 			$content = $this->render_sections($current_module);
 		} else {

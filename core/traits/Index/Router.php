@@ -8,6 +8,7 @@
 namespace cs\Index;
 use
 	cs\ExitException,
+	cs\Request,
 	cs\Response;
 
 /**
@@ -84,7 +85,7 @@ trait Router {
 			/**
 			 * We need exact paths for API request (or `_` ending if available) and less strict mode for other cases that allows go deeper automatically
 			 */
-			if ($path !== '_' && api_path()) {
+			if ($path !== '_' && Request::instance()->api_path) {
 				throw new ExitException(404);
 			}
 		} elseif (!isset($structure[$path]) && !in_array($path, $structure)) {
@@ -133,7 +134,7 @@ trait Router {
 	 */
 	protected function files_router_handler_internal ($dir, $basename, $required) {
 		$included = _include("$dir/$basename.php", false, false) !== false;
-		if (!api_path()) {
+		if (!Request::instance()->api_path) {
 			return;
 		}
 		$included = _include("$dir/$basename.$this->request_method.php", false, false) !== false || $included;
@@ -168,10 +169,11 @@ trait Router {
 	 * @throws ExitException
 	 */
 	protected function controller_router () {
-		$suffix = '';
-		if (admin_path()) {
+		$suffix  = '';
+		$Request = Request::instance();
+		if ($Request->admin_path) {
 			$suffix = '\\admin';
-		} elseif (api_path()) {
+		} elseif ($Request->api_path) {
 			$suffix = '\\api';
 		}
 		$controller_class = "cs\\modules\\$this->module$suffix\\Controller";
@@ -210,7 +212,7 @@ trait Router {
 		$included =
 			method_exists($controller_class, $method_name) &&
 			$controller_class::$method_name($this->ids, $this->path) !== false;
-		if (!api_path()) {
+		if (!Request::instance()->api_path) {
 			return;
 		}
 		$included =

@@ -14,6 +14,7 @@ use
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Response,
 	cs\Route,
 	cs\User;
 
@@ -68,7 +69,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 				$id    = $Posts->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft);
 				if ($id) {
 					interface_off();
-					_header('Location: '.$Config->base_url()."/$module/".$Posts->get($id)['path'].":$id");
+					Response::instance()->redirect($Config->base_url()."/$module/".$Posts->get($id)['path'].":$id");
 					return;
 				} else {
 					$Page->warning($L->post_adding_error);

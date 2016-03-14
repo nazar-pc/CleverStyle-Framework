@@ -52,7 +52,7 @@ function _getcookie ($name) {
 /**
  * Is current path from administration area?
  *
- * @deprecated Use `cs\Response::$admin` instead
+ * @deprecated Use `cs\Response::$admin_path` instead
  * @todo       Remove in 4.x
  *
  * @param bool|null $admin_path
@@ -62,15 +62,15 @@ function _getcookie ($name) {
 function admin_path ($admin_path = null) {
 	$Request = Request::instance();
 	if ($admin_path !== null) {
-		$Request->admin = (bool)$admin_path;
+		$Request->admin_path = (bool)$admin_path;
 	}
-	return $Request->admin;
+	return $Request->admin_path;
 }
 
 /**
  * Is current path from api area?
  *
- * @deprecated Use `cs\Response::$api` instead
+ * @deprecated Use `cs\Response::$api_path` instead
  * @todo       Remove in 4.x
  *
  * @param bool|null $api_path
@@ -80,9 +80,9 @@ function admin_path ($admin_path = null) {
 function api_path ($api_path = null) {
 	$Request = Request::instance();
 	if ($api_path !== null) {
-		$Request->api = (bool)$api_path;
+		$Request->api_path = (bool)$api_path;
 	}
-	return $Request->api;
+	return $Request->api_path;
 }
 
 /**

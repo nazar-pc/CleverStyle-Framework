@@ -12,6 +12,8 @@ use
 	cs\DB,
 	cs\Event,
 	cs\Language\Prefix,
+	cs\Request,
+	cs\Response,
 	cs\Page;
 
 Event::instance()
@@ -47,9 +49,11 @@ Event::instance()
 	->on(
 		'System/User/registration/confirmation/after',
 		function () {
-			if ($referer = _getcookie('HybridAuth_referer')) {
-				_header("Refresh: 5; url=$referer");
-				_setcookie('HybridAuth_referer', '');
+			$Request = Request::instance();
+			if ($redirect_to = @$Request->cookie['HybridAuth_referer']) {
+				$Response = Response::instance();
+				$Response->header('refresh', "5; url=$redirect_to");
+				$Response->cookie('HybridAuth_referer', '');
 			}
 		}
 	)

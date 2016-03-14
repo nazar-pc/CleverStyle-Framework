@@ -10,6 +10,7 @@ namespace cs\modules\OAuth2;
 use
 	cs\Cache\Prefix,
 	cs\Config,
+	cs\Request,
 	cs\Session,
 	cs\User,
 	cs\DB\Accessor,
@@ -320,15 +321,13 @@ class OAuth2 {
 		) {
 			return false;
 		}
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
-		$user_agent          = $_SERVER->user_agent;
+		$Request             = Request::instance();
+		$user_agent          = $Request->user_agent;
 		$current_session     = $Session->get_id();
-		$_SERVER->user_agent = "OAuth2-$client[name]-$client[id]";
+		$Request->user_agent = "OAuth2-$client[name]-$client[id]";
 		$Session->add($Session->get_user(), false);
 		$new_session         = $Session->get_id();
-		$_SERVER->user_agent = $user_agent;
+		$Request->user_agent = $user_agent;
 		$Session->load($current_session);
 		unset($user_agent, $current_session);
 		/** @noinspection LoopWhichDoesNotLoopInspection */

@@ -11,6 +11,7 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Page,
+	cs\Response,
 	cs\Route,
 	cs\Session;
 
@@ -69,7 +70,7 @@ foreach ($recalculated['items'] as $item) {
 	$item_data = $Items->get($item['id']);
 	$Orders->add_item($id, $item['id'], $item['units'], $item['price'], $item_data['price']);
 }
-status_code(201);
+Response::instance()->code = 201;
 Page::instance()->json(
 	$Config->core_url().'/'.Route::instance()->relative_address."/$id"
 );

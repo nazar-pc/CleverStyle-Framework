@@ -11,7 +11,8 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Language\Prefix;
+	cs\Language\Prefix,
+	cs\Response;
 
 Event::instance()
 	->on(
@@ -49,7 +50,7 @@ Event::instance()
 			if (!$id) {
 				throw new ExitException(500);
 			}
-			_header('Location: '.Config::instance()->base_url()."/Blockchain_payment/$id", true, 307);
+			Response::instance()->redirect("/Blockchain_payment/$id", 307);
 			return false;
 		}
 	);
