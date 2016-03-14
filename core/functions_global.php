@@ -12,7 +12,6 @@
  * This particular file contains functions that work with global state (cookies, headers, status codes, etc.)
  */
 use
-	cs\Config,
 	cs\Request,
 	cs\Response;
 
