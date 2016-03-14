@@ -8,6 +8,7 @@
  */
 namespace cs\modules\WebSockets;
 use
+	cs\Config,
 	cs\Language,
 	Ratchet\ConnectionInterface,
 	Ratchet\Http\HttpServerInterface,
@@ -39,7 +40,7 @@ class Connection_properties_injector implements HttpServerInterface {
 			]
 		);
 		$conn->user_agent = $request->getHeader('User-Agent');
-		$conn->session_id = $request->getCookie('session');
+		$conn->session_id = $request->getCookie(Config::instance()->core['cookie_prefix'].'session');
 		/** @noinspection PhpUndefinedFieldInspection */
 		$conn->remote_addr = $conn->remoteAddress;
 		$conn->ip          = $ip;
