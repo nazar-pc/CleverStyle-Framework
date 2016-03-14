@@ -22,12 +22,41 @@ if ($cli) {
 mb_internal_encoding('utf-8');
 define('ROOT', getcwd());    //Path to site root
 $fs = json_decode(file_get_contents(DIR.'/fs.json'), true);
+/**
+ * Special autoloader for installer
+ */
+spl_autoload_register(
+	function ($class) use ($fs) {
+		$prepared_class_name = ltrim($class, '\\');
+		if (strpos($prepared_class_name, 'cs\\') === 0) {
+			$prepared_class_name = substr($prepared_class_name, 3);
+		}
+		$prepared_class_name = explode('\\', $prepared_class_name);
+		$namespace           = count($prepared_class_name) > 1 ? implode('/', array_slice($prepared_class_name, 0, -1)) : '';
+		$class_name          = array_pop($prepared_class_name);
+		/**
+		 * Try to load classes from different places. If not found in one place - try in another.
+		 */
+		if (
+			strlen($file = @$fs[str_replace('//', '/', "core/classes/$namespace/$class_name.php")]) ||    //Core classes
+			strlen($file = @$fs[str_replace('//', '/', "core/thirdparty/$namespace/$class_name.php")]) || //Third party classes
+			strlen($file = @$fs[str_replace('//', '/', "core/traits/$namespace/$class_name.php")]) ||     //Core traits
+			strlen($file = @$fs[str_replace('//', '/', "core/engines/$namespace/$class_name.php")]) ||    //Core engines
+			strlen($file = @$fs[str_replace('//', '/', "components/$namespace/$class_name.php")])         //Classes in modules and plugins
+		) {
+			require_once DIR."/fs/$file";
+			return true;
+		}
+		return false;
+	},
+	true,
+	true
+);
 require DIR.'/fs/'.$fs['core/thirdparty/upf.php'];
 require DIR.'/fs/'.$fs['core/functions.php'];
-require DIR.'/fs/'.$fs['core/thirdparty/nazarpc/BananaHTML.php'];
-require DIR.'/fs/'.$fs['core/classes/h/Base.php'];
-require DIR.'/fs/'.$fs['core/classes/h.php'];
 require DIR.'/install/functions.php';
+// Remove default autoloader, since we have special autoloader suitable for operating inside installer where default will fail hard
+spl_autoload_unregister(spl_autoload_functions()[0]);
 date_default_timezone_set('UTC');
 if ($cli) {
 	$help        = false;

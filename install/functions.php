@@ -119,23 +119,6 @@ function install_process ($fs, $argv = null) {
 	 */
 	define('DEBUG', false);
 	/**
-	 * TODO: autoloader for installer
-	 */
-	require_once DIR.'/fs/'.$fs['core/traits/Singleton/Base.php'];
-	require_once DIR.'/fs/'.$fs['core/traits/Singleton.php'];
-	require_once DIR.'/fs/'.$fs['core/classes/Config.php'];
-	require_once DIR.'/fs/'.$fs['core/traits/Request/Cookie.php'];
-	require_once DIR.'/fs/'.$fs['core/traits/Request/Data.php'];
-	require_once DIR.'/fs/'.$fs['core/traits/Request/Files.php'];
-	require_once DIR.'/fs/'.$fs['core/traits/Request/Platform.php'];
-	require_once DIR.'/fs/'.$fs['core/traits/Request/Query.php'];
-	require_once DIR.'/fs/'.$fs['core/traits/Request/Server.php'];
-	require_once DIR.'/fs/'.$fs['core/classes/Request.php'];
-	require_once DIR.'/fs/'.$fs['core/classes/DB.php'];
-	require_once DIR.'/fs/'.$fs['core/engines/DB/_Abstract.php'];
-	require_once DIR.'/fs/'.$fs["core/engines/DB/$_POST[db_engine].php"];
-	require_once DIR.'/fs/'.$fs['core/classes/False_class.php'];
-	/**
 	 * DataBase structure import
 	 */
 	if (!file_exists(DIR."/install/DB/$_POST[db_engine].sql")) {
