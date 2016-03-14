@@ -10,6 +10,7 @@ use
 	cs\Request\Cookie,
 	cs\Request\Data,
 	cs\Request\Files,
+	cs\Request\Platform,
 	cs\Request\Query,
 	cs\Request\Server;
 
@@ -19,6 +20,7 @@ class Request {
 		Cookie,
 		Data,
 		Files,
+		Platform,
 		Query,
 		Server;
 
@@ -40,6 +42,7 @@ class Request {
 		$this->init_data($data, $data_stream);
 		$this->init_cookie($cookie);
 		$this->init_files($files);
+		$this->init_platform();
 	}
 	/**
 	 * Initialize request object from superglobals `$_SERVER`, `$_GET`, `$_POST`, `$_COOKIE` and `$_FILES` (including parsing `php://input` in case of custom
@@ -53,6 +56,7 @@ class Request {
 		$this->init_cookie($_COOKIE);
 		// TODO: parse input stream for handling files when using request methods other than POST (complete multipart messages support needed actually)
 		$this->init_files($_FILES);
+		$this->init_platform();
 	}
 	/**
 	 * Parse data from input stream if necessary (JSON, custom request methods)

@@ -127,6 +127,7 @@ function install_process ($fs, $argv = null) {
 	require_once DIR.'/fs/'.$fs['core/traits/Request/Cookie.php'];
 	require_once DIR.'/fs/'.$fs['core/traits/Request/Data.php'];
 	require_once DIR.'/fs/'.$fs['core/traits/Request/Files.php'];
+	require_once DIR.'/fs/'.$fs['core/traits/Request/Platform.php'];
 	require_once DIR.'/fs/'.$fs['core/traits/Request/Query.php'];
 	require_once DIR.'/fs/'.$fs['core/traits/Request/Server.php'];
 	require_once DIR.'/fs/'.$fs['core/classes/Request.php'];

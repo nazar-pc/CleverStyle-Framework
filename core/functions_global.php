@@ -52,61 +52,73 @@ function _getcookie ($name) {
 /**
  * Is current path from administration area?
  *
+ * @deprecated Use `cs\Response::$admin` instead
+ * @todo       Remove in 4.x
+ *
  * @param bool|null $admin_path
  *
  * @return bool
  */
 function admin_path ($admin_path = null) {
-	static $stored_admin_path = false;
+	$Request = Request::instance();
 	if ($admin_path !== null) {
-		$stored_admin_path = (bool)$admin_path;
+		$Request->admin = (bool)$admin_path;
 	}
-	return $stored_admin_path;
+	return $Request->admin;
 }
 
 /**
  * Is current path from api area?
+ *
+ * @deprecated Use `cs\Response::$api` instead
+ * @todo       Remove in 4.x
  *
  * @param bool|null $api_path
  *
  * @return bool
  */
 function api_path ($api_path = null) {
-	static $stored_api_path = false;
+	$Request = Request::instance();
 	if ($api_path !== null) {
-		$stored_api_path = (bool)$api_path;
+		$Request->api = (bool)$api_path;
 	}
-	return $stored_api_path;
+	return $Request->api;
 }
 
 /**
  * Name of currently used module (for generation of current page)
+ *
+ * @deprecated Use `cs\Response::$current_module` instead
+ * @todo       Remove in 4.x
  *
  * @param null|string $current_module
  *
  * @return string
  */
 function current_module ($current_module = null) {
-	static $stored_current_module = '';
+	$Request = Request::instance();
 	if ($current_module !== null) {
-		$stored_current_module = $current_module;
+		$Request->current_module = $current_module;
 	}
-	return $stored_current_module;
+	return $Request->current_module;
 }
 
 /**
  * Is current page a home page?
+ *
+ * @deprecated Use `cs\Response::$home_page` instead
+ * @todo       Remove in 4.x
  *
  * @param bool|null $home_page
  *
  * @return bool
  */
 function home_page ($home_page = null) {
-	static $stored_home_page = false;
+	$Request = Request::instance();
 	if ($home_page !== null) {
-		$stored_home_page = (bool)$home_page;
+		$Request->home_page = (bool)$home_page;
 	}
-	return $stored_home_page;
+	return $Request->home_page;
 }
 
 /**
