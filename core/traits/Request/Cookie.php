@@ -26,9 +26,11 @@ trait Cookie {
 		 */
 		$prefix        = Config::instance()->core['cookie_prefix'];
 		$prefix_length = strlen($prefix);
-		foreach ($cookie as $key => $value) {
-			if (strpos($key, $prefix) === 0) {
-				$this->cookie[substr($key, $prefix_length)] = $value;
+		if ($prefix_length) {
+			foreach ($cookie as $key => $value) {
+				if (strpos($key, $prefix) === 0) {
+					$this->cookie[substr($key, $prefix_length)] = $value;
+				}
 			}
 		}
 	}

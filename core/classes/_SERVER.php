@@ -14,7 +14,7 @@ use
  * Generic wrapper for `$_SERVER` to make its usage easier and more secure
  *
  * @deprecated Use `cs\Request` instead, it provides very similar, but more powerful interface
- * @todo Remove in 4.x
+ * @todo       Remove in 4.x
  *
  * @property string $language       Language accepted by client, `''` by default
  * @property string $version        Version accepted by client, will match `/^[0-9\.]+$/`, useful for API, `1` by default
@@ -32,132 +32,35 @@ use
  * @property string $user_agent     User agent
  */
 class _SERVER implements ArrayAccess, Iterator {
-	public    $language       = '';
-	public    $version        = '';
-	public    $content_type   = '';
-	public    $dnt            = false;
-	public    $host           = '';
-	public    $ip             = '';
-	public    $protocol       = '';
-	public    $query_string   = '';
-	public    $referer        = '';
-	public    $remote_addr    = '';
-	public    $request_method = '';
-	public    $request_uri    = '';
-	public    $secure         = false;
-	public    $user_agent     = '';
-	protected $_SERVER        = [];
+	protected $_SERVER;
 
-	function __construct ($SERVER) {
+	function __construct (array $SERVER) {
 		$this->_SERVER = $SERVER;
-		$this->update($SERVER);
 	}
-	protected function update ($SERVER) {
-		/**
-		 * Add some defaults to avoid isset() hell below
-		 */
-		$SERVER += [
-			'HTTP_ACCEPT_LANGUAGE' => '',
-			'HTTP_ACCEPT_VERSION'  => '',
-			'CONTENT_TYPE'         => '',
-			'HTTP_DNT'             => 0,
-			'QUERY_STRING'         => '',
-			'HTTP_REFERER'         => '',
-			'REMOTE_ADDR'          => '127.0.0.1',
-			'REQUEST_URI'          => '',
-			'REQUEST_METHOD'       => '',
-			'HTTP_USER_AGENT'      => ''
-		];
-		$this->language       = $SERVER['HTTP_ACCEPT_LANGUAGE'];
-		$this->version        = preg_match('/^[0-9\.]+$/', $SERVER['HTTP_ACCEPT_VERSION']) ? $SERVER['HTTP_ACCEPT_VERSION'] : 1;
-		$this->content_type   = $SERVER['CONTENT_TYPE'];
-		$this->dnt            = $SERVER['HTTP_DNT'] == 1;
-		$this->secure         = $this->secure($SERVER);
-		$this->protocol       = $this->secure ? 'https' : 'http';
-		$this->host           = $this->host($SERVER);
-		$this->ip             = $this->ip($_SERVER);
-		$this->query_string   = $SERVER['QUERY_STRING'];
-		$this->referer        = filter_var($SERVER['HTTP_REFERER'], FILTER_VALIDATE_URL) ? $SERVER['HTTP_REFERER'] : '';
-		$this->remote_addr    = $SERVER['REMOTE_ADDR'];
-		$this->request_uri    = $SERVER['REQUEST_URI'];
-		$this->request_method = $SERVER['REQUEST_METHOD'];
-		$this->user_agent     = $SERVER['HTTP_USER_AGENT'];
-	}
-	/**
-	 * The best guessed IP of client (based on all known headers), `$this->remote_addr` by default
-	 *
-	 * @param array $SERVER
-	 *
-	 * @return string
-	 */
-	protected function ip ($SERVER) {
-		$all_possible_keys = [
-			'HTTP_X_FORWARDED_FOR',
-			'HTTP_CLIENT_IP',
-			'HTTP_X_FORWARDED',
-			'HTTP_X_CLUSTER_CLIENT_IP',
-			'HTTP_FORWARDED_FOR',
-			'HTTP_FORWARDED'
-		];
-		foreach ($all_possible_keys as $key) {
-			if (isset($SERVER[$key])) {
-				$ip = trim(explode(',', $SERVER[$key])[0]);
-				if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-					return $ip;
-				}
-			}
+	function __get ($key) {
+		$Request = Request::instance();
+		switch ($key) {
+			case 'language':
+			case 'version':
+			case 'content_type':
+			case 'dnt':
+			case 'secure':
+			case 'host':
+			case 'ip':
+			case 'query_string':
+			case 'referer':
+			case 'remote_addr':
+			case 'user_agent':
+				return $Request->$key;
+			case 'request_method':
+				return $Request->method;
+			case 'request_uri':
+				return $this->_SERVER['REQUEST_URI'];
+			case 'protocol':
+				return $Request->schema;
+			default:
+				return false;
 		}
-		return isset($SERVER['REMOTE_ADDR']) ? '127.0.0.1' : '';
-	}
-	/**
-	 * The best guessed host
-	 *
-	 * @throws ExitException
-	 *
-	 * @param array $SERVER
-	 *
-	 * @return string
-	 */
-	protected function host ($SERVER) {
-		$host          = isset($SERVER['SERVER_NAME']) ? $SERVER['SERVER_NAME'] : '';
-		$port          = '';
-		$expected_port = $this->secure ? 443 : 80;
-		if (!$host && isset($SERVER['HTTP_X_FORWARDED_HOST'])) {
-			$host = $SERVER['HTTP_X_FORWARDED_HOST'];
-			if (
-				isset($SERVER['HTTP_X_FORWARDED_PORT']) &&
-				$SERVER['HTTP_X_FORWARDED_PORT'] != $expected_port
-			) {
-				$port = (int)$SERVER['HTTP_X_FORWARDED_PORT'];
-			}
-		} elseif (isset($SERVER['HTTP_HOST'])) {
-			/** @noinspection NotOptimalIfConditionsInspection */
-			if (!$host || filter_var($host, FILTER_VALIDATE_IP)) {
-				$host = $SERVER['HTTP_HOST'];
-			} elseif (strpos($SERVER['HTTP_HOST'], ':') !== false) {
-				$port = (int)explode(':', $SERVER['HTTP_HOST'])[1];
-				if ($port == $expected_port) {
-					$port = '';
-				}
-			}
-		}
-		if (preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host) !== '') {
-			trigger_error("Invalid host", E_USER_ERROR);
-			throw new ExitException(400);
-		}
-		return $host.($port ? ":$port" : '');
-	}
-	/**
-	 * Secure protocol detection
-	 *
-	 * @param array $SERVER
-	 *
-	 * @return bool
-	 */
-	protected function secure ($SERVER) {
-		return isset($SERVER['HTTPS']) && $SERVER['HTTPS'] ? $SERVER['HTTPS'] !== 'off' : (
-			isset($SERVER['HTTP_X_FORWARDED_PROTO']) && $SERVER['HTTP_X_FORWARDED_PROTO'] === 'https'
-		);
 	}
 	/**
 	 * Whether key exists (from original `$_SERVER` superglobal)
@@ -187,7 +90,6 @@ class _SERVER implements ArrayAccess, Iterator {
 	 */
 	function offsetSet ($index, $value) {
 		$this->_SERVER[$index] = $value;
-		$this->update($this->_SERVER);
 	}
 	/**
 	 * Unset key (from original `$_SERVER` superglobal)

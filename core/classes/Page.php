@@ -142,7 +142,7 @@ class Page {
 	 * @return Page
 	 */
 	function json ($add) {
-		_header('Content-Type: application/json; charset=utf-8', true);
+		Response::instance()->header('content-type', 'application/json; charset=utf-8');
 		interface_off();
 		$this->Content = _json_encode($add);
 		return $this;
@@ -195,7 +195,7 @@ class Page {
 		 * Loading of template
 		 */
 		if (!$this->get_template()) {
-			return;
+			return $this;
 		}
 		/**
 		 * Forming page title
@@ -313,6 +313,7 @@ class Page {
 		if (is_array($search)) {
 			$this->search_replace = $search + $this->search_replace;
 		} else {
+			/** @noinspection OffsetOperationsInspection */
 			$this->search_replace[$search] = $replace;
 		}
 		return $this;
@@ -473,11 +474,12 @@ class Page {
 			return;
 		}
 		$this->error_showed = true;
+		$Response           = Response::instance();
 		/**
 		 * Hack for 403 after sign out in administration
 		 */
 		if ($error_code == 403 && !api_path() && _getcookie('sign_out')) {
-			_header('Location: /', true, 302);
+			$Response->redirect('/');
 			$this->Content = '';
 			throw new ExitException;
 		}
@@ -491,7 +493,7 @@ class Page {
 		}
 		if ($json || api_path()) {
 			if ($json) {
-				_header('Content-Type: application/json; charset=utf-8', true);
+				$Response->header('content-type', 'application/json; charset=utf-8');
 				interface_off();
 			}
 			$this->json(
@@ -532,6 +534,10 @@ class Page {
 			return;
 		}
 		$this->finish_called_once = true;
+		$Response                 = Response::instance();
+		if (is_resource($Response->body_stream)) {
+			return;
+		}
 		/**
 		 * For AJAX and API requests only content without page template
 		 */
@@ -540,7 +546,8 @@ class Page {
 			/**
 			 * Processing of replacing in content
 			 */
-			echo $this->process_replacing($this->Content ?: ($api ? 'null' : ''));
+			/** @noinspection NestedTernaryOperatorInspection */
+			$Response->body = $this->process_replacing($this->Content ?: ($api ? 'null' : ''));
 		} else {
 			Event::instance()->fire('System/Page/display/before');
 			/**
@@ -552,7 +559,7 @@ class Page {
 			 */
 			$this->Html = $this->process_replacing($this->Html);
 			Event::instance()->fire('System/Page/display/after');
-			echo rtrim($this->Html);
+			$Response->body = rtrim($this->Html);
 		}
 	}
 }

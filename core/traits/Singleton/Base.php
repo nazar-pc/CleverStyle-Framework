@@ -61,7 +61,7 @@ trait Base {
 				'aliases'     => &$aliases,
 				'final_class' => &$next_alias
 			];
-			$classes                  = glob(CUSTOM.'/classes/'.substr($class, 2).'_*.php');
+			$classes                  = defined('CUSTOM') ? glob(CUSTOM.'/classes/'.substr($class, 2).'_*.php') : [];
 			foreach ($classes as $custom_class) {
 				// Path to file with customized class
 				$custom_class = str_replace(CUSTOM.'/classes/', '', substr($custom_class, 0, -4));
@@ -75,9 +75,6 @@ trait Base {
 					'path'     => $custom_class
 				];
 				$next_alias      = "cs\\custom\\$custom_class";
-			}
-			if (!is_dir(CACHE.'/classes')) {
-				@mkdir(CACHE.'/classes', 0770, true);
 			}
 			modified_classes($modified_classes);
 		}

@@ -241,12 +241,9 @@ class Config {
 		if (Route::instance()->mirror_index === -1) {
 			return '';
 		}
-		/**
-		 * @var _SERVER $_SERVER
-		 */
-		$base_url = "$_SERVER->protocol://$_SERVER->host";
-		$L        = Language::instance();
+		$base_url = $this->core_url();
 		if ($this->core['multilingual']) {
+			$L = Language::instance();
 			$base_url .= "/$L->clang";
 		}
 		return $base_url;
@@ -257,10 +254,8 @@ class Config {
 	 * @return string
 	 */
 	function core_url () {
-		/**
-		 * @var _SERVER $_SERVER
-		 */
-		return "$_SERVER->protocol://$_SERVER->host";
+		$Request = Request::instance();
+		return "$Request->schema://$Request->host";
 	}
 	/**
 	 * Get object for getting db and storage configuration of module

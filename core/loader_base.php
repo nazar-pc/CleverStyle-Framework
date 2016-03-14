@@ -11,8 +11,6 @@ require DIR.'/core/functions.php';                //Inclusion of general system 
 
 error_reporting(E_ALL);
 
-header('Content-Type: text/html; charset=utf-8');
-header('Vary: Accept-Language,User-Agent,Cookie');
 mb_internal_encoding('utf-8');
 /**
  * Defining of basic constants with paths to system directories

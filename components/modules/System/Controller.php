@@ -14,16 +14,16 @@ use
 	cs\Language\Prefix,
 	cs\Mail,
 	cs\Page,
+	cs\Response,
 	cs\Route,
 	cs\User;
 
 class Controller {
 	static function profile_registration_confirmation () {
-		$Config = Config::instance();
-		$L      = new Prefix('system_profile_registration_');
-		$Page   = Page::instance();
-		$Route  = Route::instance();
-		$User   = User::instance();
+		$L     = new Prefix('system_profile_registration_');
+		$Page  = Page::instance();
+		$Route = Route::instance();
+		$User  = User::instance();
 		if (_getcookie('reg_confirm')) {
 			_setcookie('reg_confirm', '');
 			$Page->title($L->success_title);
@@ -47,7 +47,7 @@ class Controller {
 		$body = $L->success_mail_body(
 			strstr($result['email'], '@', true),
 			get_core_ml_text('name'),
-			$Config->core_url().'/profile/settings',
+			Config::instance()->core_url().'/profile/settings',
 			$User->get('login', $result['id']),
 			$result['password']
 		);
@@ -58,7 +58,7 @@ class Controller {
 		)
 		) {
 			_setcookie('reg_confirm', 1, 0, true);
-			_header("Location: {$Config->base_url()}/System/profile/registration_confirmation");
+			Response::instance()->redirect('/System/profile/registration_confirmation');
 		} else {
 			$User->registration_cancel();
 			$Page->title($L->mail_sending_error_title);
@@ -66,11 +66,10 @@ class Controller {
 		}
 	}
 	static function profile_restore_password_confirmation () {
-		$Config = Config::instance();
-		$L      = new Prefix('system_profile_restore_password_');
-		$Page   = Page::instance();
-		$Route  = Route::instance();
-		$User   = User::instance();
+		$L     = new Prefix('system_profile_restore_password_');
+		$Page  = Page::instance();
+		$Route = Route::instance();
+		$User  = User::instance();
 		if (_getcookie('restore_password_confirm')) {
 			_setcookie('restore_password_confirm', '');
 			$Page->title($L->success_title);
@@ -97,14 +96,14 @@ class Controller {
 			$L->success_mail_body(
 				$User->username($result['id']),
 				get_core_ml_text('name'),
-				$Config->core_url().'/profile/settings',
+				Config::instance()->core_url().'/profile/settings',
 				$User->get('login', $result['id']),
 				$result['password']
 			)
 		)
 		) {
 			_setcookie('restore_password_confirm', 1, 0, true);
-			_header("Location: {$Config->base_url()}/System/profile/restore_password_confirmation");
+			Response::instance()->redirect('/System/profile/restore_password_confirmation');
 		} else {
 			$Page->title($L->mail_sending_error_title);
 			$Page->warning($L->mail_sending_error);

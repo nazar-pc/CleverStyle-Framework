@@ -89,10 +89,7 @@ class Index {
 			_include(PLUGINS."/$plugin/index.php", false, false);
 		}
 		_include("$this->working_directory/prepare.php", false, false);
-		/**
-		 * @var _SERVER $_SERVER
-		 */
-		$this->request_method = strtolower($_SERVER->request_method);
+		$this->request_method = strtolower(Request::instance()->method);
 		if (!preg_match('/^[a-z_]+$/', $this->request_method)) {
 			throw new ExitException(400);
 		}

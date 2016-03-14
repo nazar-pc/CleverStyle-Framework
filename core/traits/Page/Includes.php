@@ -12,6 +12,7 @@ use
 	cs\Event,
 	cs\Index,
 	cs\Language,
+	cs\Request,
 	cs\Route,
 	cs\User,
 	h;
@@ -395,10 +396,7 @@ trait Includes {
 	 * Add JS polyfills for IE/Edge
 	 */
 	protected function ie_edge () {
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
-		if (preg_match('/Trident|Edge/', $_SERVER->user_agent)) {
+		if (preg_match('/Trident|Edge/', Request::instance()->user_agent)) {
 			$this->js_internal(
 				get_files_list(DIR."/includes/js/microsoft_sh*t", "/.*\\.js$/i", 'f', "includes/js/microsoft_sh*t", true),
 				'file',

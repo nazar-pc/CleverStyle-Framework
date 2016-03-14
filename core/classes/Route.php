@@ -56,35 +56,33 @@ class Route {
 	 * @throws ExitException
 	 */
 	protected function construct () {
-		$Config = Config::instance();
-		/**
-		 * @var _SERVER $_SERVER
-		 */
-		$this->raw_relative_address = urldecode(trim($_SERVER->request_uri, '/'));
+		$Config                     = Config::instance();
+		$Request                    = Request::instance();
+		$this->raw_relative_address = urldecode(trim($Request->uri, '/'));
 		$this->raw_relative_address = null_byte_filter($this->raw_relative_address);
 		/**
 		 * Search for url matching in all mirrors
 		 */
 		foreach ($Config->core['url'] as $i => $address) {
-			list($protocol, $urls) = explode('://', $address, 2);
+			list($schema, $urls) = explode('://', $address, 2);
 			if (
 				$this->mirror_index === -1 &&
-				$protocol == $_SERVER->protocol
+				$schema == $Request->schema
 			) {
 				foreach (explode(';', $urls) as $url) {
-					if (mb_strpos("$_SERVER->host/$this->raw_relative_address", "$url/") === 0) {
+					if (mb_strpos("$Request->host/$this->raw_relative_address", "$url/") === 0) {
 						$this->mirror_index = $i;
 						break 2;
 					}
 				}
 			}
 		}
-		unset($address, $i, $urls, $url, $protocol);
+		unset($address, $i, $urls, $url, $schema);
 		/**
 		 * If match was not found - mirror is not allowed!
 		 */
 		if ($this->mirror_index === -1) {
-			throw new ExitException("Mirror $_SERVER->host not allowed", 400);
+			throw new ExitException("Mirror $Request->host not allowed", 400);
 		}
 		/**
 		 * Remove trailing slashes
@@ -94,9 +92,12 @@ class Route {
 		/**
 		 * Redirection processing
 		 */
-		if (mb_strpos($processed_route['relative_address'], 'System/redirect/') === 0) {
+		if (strpos($processed_route['relative_address'], 'System/redirect/') === 0) {
 			if ($this->is_referer_local($Config)) {
-				_header('Location: '.substr($processed_route['relative_address'], 16), true, 301);
+				Response::instance()->redirect(
+					substr($processed_route['relative_address'], 16),
+					301
+				);
 				throw new ExitException(301);
 			} else {
 				throw new ExitException(400);
@@ -130,13 +131,11 @@ class Route {
 	 * @return bool
 	 */
 	protected function is_referer_local ($Config) {
-		/**
-		 * @var _SERVER $_SERVER
-		 */
-		if (!$_SERVER->referer) {
+		$referer = Request::instance()->referer;
+		if (!$referer) {
 			return false;
 		}
-		list($referer_protocol, $referer_host) = explode('://', $_SERVER->referer);
+		list($referer_protocol, $referer_host) = explode('://', $referer);
 		$referer_host = explode('/', $referer_host)[0];
 		foreach ($Config->core['url'] as $address) {
 			list($protocol, $urls) = explode('://', $address, 2);

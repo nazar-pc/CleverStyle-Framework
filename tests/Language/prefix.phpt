@@ -4,7 +4,6 @@ Basic Language functionality
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-include __DIR__.'/../_SERVER.php';
 $L	= new Language\Prefix('system_');
 echo $L->system_home."\n";
 echo $L->home."\n";

@@ -16,6 +16,7 @@ use
 	cs\Language,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Response,
 	cs\Text,
 	cs\User;
 /**
@@ -65,6 +66,7 @@ function clean_classes_cache () {
 		unlink(CACHE.'/classes/modified');
 	}
 }
+
 /**
  * Get or set modified classes (used in Singleton trait)
  *
@@ -74,6 +76,11 @@ function clean_classes_cache () {
  */
 function modified_classes ($updated_modified_classes = null) {
 	static $modified_classes;
+	if (!defined('CACHE')) {
+		return [];
+	}
+	/** @noinspection MkdirRaceConditionInspection */
+	@mkdir(CACHE.'/classes', 0770, true);
 	if (!isset($modified_classes)) {
 		$modified_classes = file_exists(CACHE.'/classes/modified') ? file_get_json(CACHE.'/classes/modified') : [];
 	}
@@ -83,6 +90,7 @@ function modified_classes ($updated_modified_classes = null) {
 	}
 	return $modified_classes;
 }
+
 /**
  * Correct termination
  *
@@ -345,17 +353,16 @@ function set_core_ml_text ($item, $value) {
 /**
  * Sends header with string representation of http status code, for example "404 Not Found" for corresponding server protocol
  *
+ * @deprecated Use `cs\Response::$code` instead
+ * @todo       Remove in 4.x
+ *
  * @param int $code Status code
  *
  * @return null|string String representation of status code code
  */
 function status_code ($code) {
-	$string_code = status_code_string($code);
-	if (!$string_code) {
-		return null;
-	}
-	_header("$_SERVER[SERVER_PROTOCOL] $string_code", true, (int)$code);
-	return $string_code;
+	Response::instance()->code = $code;
+	return status_code_string($code);
 }
 
 /**
@@ -365,7 +372,7 @@ function status_code ($code) {
  *
  * @return null|string
  */
-function status_code_string ($code){
+function status_code_string ($code) {
 	switch ($code) {
 		case 201:
 			$string_code = '201 Created';

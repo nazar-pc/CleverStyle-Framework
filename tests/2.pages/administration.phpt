@@ -4,8 +4,9 @@ Home page rendering
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-include __DIR__.'/../_SERVER.php';
-$_SERVER->request_uri = '/admin';
+$Request       = Request::instance();
+$Request->path = '/admin';
+$Request->uri  = '/admin';
 // Simulate regular initialization
 try {
 	try {
@@ -20,6 +21,7 @@ try {
 	}
 } catch (ExitException $e) {
 }
+echo Response::instance()->body;
 ?>
 --EXPECT--
 <!doctype html>

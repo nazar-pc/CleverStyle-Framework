@@ -10,7 +10,6 @@ if (!is_dir("$root/cscms.travis")) {
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-include __DIR__.'/../_SERVER.php';
 /**
  * @var DB\_Abstract $cdb
  */

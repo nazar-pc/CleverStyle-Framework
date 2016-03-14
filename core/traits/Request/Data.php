@@ -19,6 +19,8 @@ trait Data {
 	 *
 	 * Make sure you're controlling position in stream where you read something, if code in some other place might seek on this stream
 	 *
+	 * Stream is read-only
+	 *
 	 * @var null|resource
 	 */
 	public $data_stream;

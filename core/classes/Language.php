@@ -6,7 +6,6 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-
 use
 	JsonSerializable;
 
@@ -89,21 +88,20 @@ class Language implements JsonSerializable {
 	 */
 	protected function init () {
 		$Config = Config::instance();
-		/**
-		 * @var _SERVER $_SERVER
-		 */
 		if ($Config->core['multilingual']) {
 			/**
 			 * Highest priority - `-Locale` header
 			 */
+			/** @noinspection PhpParamsInspection */
 			$language = $this->check_locale_header($Config->core['active_languages']);
 			/**
 			 * Second priority - URL
 			 */
-			$language = $language ?: $this->url_language($_SERVER->request_uri);
+			$language = $language ?: $this->url_language(Request::instance()->path);
 			/**
 			 * Third - `Accept-Language` header
 			 */
+			/** @noinspection PhpParamsInspection */
 			$language = $language ?: $this->check_accept_header($Config->core['active_languages']);
 		} else {
 			$language = $Config->core['language'];
@@ -113,12 +111,15 @@ class Language implements JsonSerializable {
 	/**
 	 * Does URL have language prefix
 	 *
-	 * @param false|string $url Relative url, `$_SERVER->request_uri` by default
+	 * @param false|string $url Relative url, `Request::instance()->path` by default
 	 *
 	 * @return false|string If there is language prefix - language will be returned, `false` otherwise
 	 */
 	function url_language ($url = false) {
-		$url = $url ?: $_SERVER->request_uri;
+		/**
+		 * @var string $url
+		 */
+		$url = $url ?: Request::instance()->path;
 		if (isset($this->localized_url[$url])) {
 			return $this->localized_url[$url];
 		}
@@ -138,15 +139,12 @@ class Language implements JsonSerializable {
 	 * @return false|string
 	 */
 	protected function check_accept_header ($active_languages) {
-		/**
-		 * @var _SERVER $_SERVER
-		 */
 		$aliases          = $this->get_aliases();
 		$accept_languages = array_filter(
 			explode(
 				',',
 				strtolower(
-					strtr($_SERVER->language, '-', '_')
+					strtr(Request::instance()->language, '-', '_')
 				)
 			)
 		);
@@ -166,15 +164,12 @@ class Language implements JsonSerializable {
 	 * @return false|string
 	 */
 	protected function check_locale_header ($active_languages) {
-		/**
-		 * @var _SERVER $_SERVER
-		 */
 		$aliases = $this->get_aliases();
 		/**
 		 * For `X-Facebook-Locale` and other similar
 		 */
-		foreach ($_SERVER as $i => $v) {
-			if (stripos($i, '_LOCALE') !== false) {
+		foreach (Request::instance()->headers as $i => $v) {
+			if (stripos($i, '-locale') !== false) {
 				$language = strtolower($v);
 				if (@in_array($aliases[$language], $active_languages)) {
 					return $aliases[$language];
@@ -279,7 +274,10 @@ class Language implements JsonSerializable {
 		if ($language == $this->clanguage) {
 			return true;
 		}
-		$Config   = Config::instance(true);
+		$Config = Config::instance(true);
+		/**
+		 * @var string $language
+		 */
 		$language = $language ?: $Config->core['language'];
 		if (
 			!$language ||
@@ -304,7 +302,7 @@ class Language implements JsonSerializable {
 		 */
 		$this->clanguage = $language;
 		_include(LANGUAGES."/$language.php", false, false);
-		_header("Content-Language: $this->content_language");
+		Response::instance()->header('content-language', $this->content_language);
 		return true;
 	}
 	/**

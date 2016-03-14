@@ -140,9 +140,6 @@ class User {
 			return false;
 		}
 		$time = time();
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
 		return $this->db()->qfs(
 			[
 				"SELECT COUNT(`expire`)
@@ -154,7 +151,7 @@ class User {
 						`ip`			= '%s'
 					)",
 				$login_hash,
-				ip2hex($_SERVER->ip)
+				ip2hex(Request::instance()->ip)
 			]
 		);
 	}
@@ -168,10 +165,7 @@ class User {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return;
 		}
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
-		$ip   = ip2hex($_SERVER->ip);
+		$ip   = ip2hex(Request::instance()->ip);
 		$time = time();
 		if ($success) {
 			$this->db_prime()->q(

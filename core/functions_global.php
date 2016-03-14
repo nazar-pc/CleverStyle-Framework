@@ -13,10 +13,15 @@
  */
 use
 	cs\Config,
-	cs\Route;
+	cs\Request,
+	cs\Response;
+
 /**
  * Function for setting cookies on all mirrors and taking into account cookies prefix. Parameters like in system function, but $path, $domain and $secure
  * are skipped, they are detected automatically, and $api parameter added in the end.
+ *
+ * @deprecated Use `cs\Response::cookie()` instead
+ * @todo       Remove in 4.x
  *
  * @param string $name
  * @param string $value
@@ -26,51 +31,23 @@ use
  * @return bool
  */
 function _setcookie ($name, $value, $expire = 0, $httponly = false) {
-	static $domain, $prefix, $secure;
-	if (!isset($prefix)) {
-		$Config = Config::instance(true);
-		$prefix = '';
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
-		$secure = $_SERVER->secure;
-		$domain = $_SERVER->host;
-		if ($Config) {
-			$Route          = Route::instance();
-			$prefix         = $Config->core['cookie_prefix'];
-			$cookie_domains = $Config->core['cookie_domain'];
-			$domain         = isset($cookie_domains[$Route->mirror_index]) ? $cookie_domains[$Route->mirror_index] : $cookie_domains[0];
-		}
-	}
-	if ($value === '') {
-		unset($_COOKIE[$prefix.$name]);
-	} else {
-		$_COOKIE[$prefix.$name] = $value;
-	}
-	return setcookie(
-		$prefix.$name,
-		$value,
-		$expire,
-		'/',
-		$domain,
-		$secure,
-		$httponly
-	);
+	Response::instance()->cookie($name, $value, $expire, $httponly);
+	return true;
 }
 
 /**
  * Function for getting of cookies, taking into account cookies prefix
  *
- * @param $name
+ * @deprecated Use `cs\Request::$cookie` instead
+ * @todo       Remove in 4.x
+ *
+ * @param string $name
  *
  * @return false|string
  */
 function _getcookie ($name) {
-	static $prefix;
-	if (!isset($prefix)) {
-		$prefix = Config::instance(true)->core['cookie_prefix'] ?: '';
-	}
-	return isset($_COOKIE[$prefix.$name]) ? $_COOKIE[$prefix.$name] : false;
+	$Request = Request::instance();
+	return isset($Request->cookie[$name]) ? $Request->cookie[$name] : false;
 }
 
 /**
@@ -136,6 +113,9 @@ function home_page ($home_page = null) {
 /**
  * Send a raw HTTP header
  *
+ * @deprecated Use `cs\Response` instead
+ * @todo       Remove in 4.x
+ *
  * @param string   $string             There are two special-case header calls. The first is a header that starts with the string "HTTP/" (case is not
  *                                     significant), which will be used to figure out the HTTP status code to send. For example, if you have configured Apache
  *                                     to use a PHP script to handle requests for missing files (using the ErrorDocument directive), you may want to make sure
@@ -145,6 +125,11 @@ function home_page ($home_page = null) {
  * @param int|null $http_response_code Forces the HTTP response code to the specified value
  */
 function _header ($string, $replace = true, $http_response_code = null) {
-	header($string, $replace, $http_response_code);
+	$Response = Response::instance();
+	list($field, $value) = explode(';', $string, 2);
+	$Response->header(trim($field), trim($value), $replace);
+	if ($http_response_code !== null) {
+		$Response->code = $http_response_code;
+	}
 }
 

@@ -9,7 +9,8 @@
 namespace {
 	use
 		cs\Config,
-		cs\Route;
+		cs\Request,
+		cs\Response;
 
 	/**
 	 * Objects pool for usage in Singleton, optimized for WebServer
@@ -26,9 +27,11 @@ namespace {
 		return $objects_pool;
 	}
 
-	/** @noinspection PhpInconsistentReturnPointsInspection */
 	/**
 	 * Send a raw HTTP header (similar to built-in function)
+	 *
+	 * @deprecated Use `cs\Response` instead
+	 * @todo       Remove in 4.x
 	 *
 	 * @param string   $string             There are two special-case header calls. The first is a header that starts with the string "HTTP/" (case is not
 	 *                                     significant), which will be used to figure out the HTTP status code to send. For example, if you have configured
@@ -41,46 +44,34 @@ namespace {
 	 * @return mixed
 	 */
 	function _header ($string, $replace = true, $http_response_code = null) {
-		static $headers = [];
-		if ($string === null) {
-			$return  = $headers;
-			$headers = [];
-			return $return;
-		}
-		if (strcasecmp(substr($string, 0, 4), 'http') === 0) {
-			_http_response_code(explode(' ', $string)[1]);
-			/** @noinspection PhpInconsistentReturnPointsInspection */
-			return;
-		}
-		$string = _trim(explode(':', $string, 2));
-		if ($replace) {
-			$headers[$string[0]] = [$string[1]];
-		} else {
-			$headers[$string[0]][] = $string[1];
-		}
-		if ($http_response_code) {
-			_http_response_code($http_response_code);
+		$Response = Response::instance();
+		list($field, $value) = explode(';', $string, 2);
+		$Response->header(trim($field), trim($value), $replace);
+		if ($http_response_code !== null) {
+			$Response->code = $http_response_code;
 		}
 	}
 
 	/**
 	 * Get or Set the HTTP response code (similar to built-in function)
 	 *
+	 * @deprecated Use `cs\Request::$code` instead
+	 * @todo       Remove in 4.x
+	 *
 	 * @param int $response_code The optional response_code will set the response code.
 	 *
 	 * @return int The current response code. By default the return value is int(200).
 	 */
-	function _http_response_code ($response_code = 0) {
-		static $code = 200;
-		if ($response_code != 0) {
-			$code = $response_code;
-		}
-		return $code;
+	function _http_response_code ($response_code) {
+		Response::instance()->code = $response_code;
 	}
 
 	/**
 	 * Function for setting cookies on all mirrors and taking into account cookies prefix. Parameters like in system function, but $path, $domain and $secure
 	 * are skipped, they are detected automatically, and $api parameter added in the end.
+	 *
+	 * @deprecated Use `cs\Response::cookie()` instead
+	 * @todo       Remove in 4.x
 	 *
 	 * @param string $name
 	 * @param string $value
@@ -90,54 +81,23 @@ namespace {
 	 * @return bool
 	 */
 	function _setcookie ($name, $value, $expire = 0, $httponly = false) {
-		static $domain, $prefix, $secure;
-		$request_cookie = &$_COOKIE;
-		if (!isset($prefix)) {
-			$Config = Config::instance(true);
-			/**
-			 * @var \cs\_SERVER $_SERVER
-			 */
-			$prefix = '';
-			$secure = $_SERVER->secure;
-			$domain = $_SERVER->host;
-			if ($Config) {
-				$Route          = Route::instance();
-				$prefix         = $Config->core['cookie_prefix'];
-				$cookie_domains = $Config->core['cookie_domain'];
-				$domain         = isset($cookie_domains[$Route->mirror_index]) ? $cookie_domains[$Route->mirror_index] : $cookie_domains[0];
-			}
-		}
-		if ($value === '') {
-			unset($request_cookie[$prefix.$name]);
-		} else {
-			$request_cookie[$prefix.$name] = $value;
-		}
-		_header(
-			'Set-Cookie: '.
-			rawurlencode($prefix.$name).'='.rawurlencode($value).
-			($expire || !$value ? '; expires='.gmdate('D, d-M-Y H:i:s', $expire).' GMT' : '').
-			"; path=/".
-			($domain ? "; domain=$domain" : '').
-			($secure ? '; secure' : '').
-			($httponly ? '; HttpOnly' : ''),
-			false
-		);
+		Response::instance()->cookie($name, $value, $expire, $httponly);
 		return true;
 	}
 
 	/**
 	 * Function for getting of cookies, taking into account cookies prefix
 	 *
+	 * @deprecated Use `cs\Request::$cookie` instead
+	 * @todo       Remove in 4.x
+	 *
 	 * @param $name
 	 *
 	 * @return false|string
 	 */
 	function _getcookie ($name) {
-		static $prefix;
-		if (!isset($prefix)) {
-			$prefix = Config::instance(true)->core['cookie_prefix'] ?: '';
-		}
-		return isset($_COOKIE[$prefix.$name]) ? $_COOKIE[$prefix.$name] : false;
+		$Request = Request::instance();
+		return isset($Request->cookie[$name]) ? $Request->cookie[$name] : false;
 	}
 
 	/**

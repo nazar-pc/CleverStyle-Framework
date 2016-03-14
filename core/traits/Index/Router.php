@@ -7,7 +7,8 @@
  */
 namespace cs\Index;
 use
-	cs\ExitException;
+	cs\ExitException,
+	cs\Response;
 
 /**
  * @property bool     $module          Name of current module
@@ -153,8 +154,7 @@ trait Router {
 	 */
 	protected function handler_not_found ($available_methods) {
 		if ($available_methods) {
-			$available_methods = implode(', ', $available_methods);
-			_header("Allow: $available_methods");
+			Response::instance()->header('Allow', implode(', ', $available_methods));
 			if ($this->request_method !== 'options') {
 				throw new ExitException(501);
 			}

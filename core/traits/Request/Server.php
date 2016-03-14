@@ -6,8 +6,6 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\Request;
-use
-	cs\ExitException;
 
 trait Server {
 	/**
@@ -71,7 +69,7 @@ trait Server {
 	 */
 	public $referer;
 	/**
-	 * Where request came from, not necessary real IP of client
+	 * Where request came from, not necessary real IP of client, `127.0.0.1` by default
 	 *
 	 * @var string
 	 */
@@ -82,6 +80,12 @@ trait Server {
 	 * @var string
 	 */
 	public $path;
+	/**
+	 * URI
+	 *
+	 * @var string
+	 */
+	public $uri;
 	/**
 	 * Uppercase method, GET by default
 	 *
@@ -95,7 +99,7 @@ trait Server {
 	 */
 	public $secure;
 	/**
-	 * User agent, `127.0.0.1` by default
+	 * User agent
 	 *
 	 * @var string
 	 */
@@ -108,8 +112,6 @@ trait Server {
 	public $headers;
 	/**
 	 * @param string[] $server Typically `$_SERVER`
-	 *
-	 * @throws ExitException
 	 */
 	function init_server ($server = []) {
 		$this->fill_headers($server);
@@ -133,8 +135,6 @@ trait Server {
 	}
 	/**
 	 * @param string[] $server
-	 *
-	 * @throws ExitException
 	 */
 	protected function fill_server_properties ($server) {
 		$this->language     = $server['HTTP_ACCEPT_LANGUAGE'];
@@ -150,6 +150,7 @@ trait Server {
 		$this->referer      = filter_var($server['HTTP_REFERER'], FILTER_VALIDATE_URL) ? $server['HTTP_REFERER'] : '';
 		$this->remote_addr  = $server['REMOTE_ADDR'];
 		$this->path         = explode('?', $server['REQUEST_URI'], 2)[0];
+		$this->uri          = $server['REQUEST_URI'];
 		$this->method       = strtoupper($server['REQUEST_METHOD']);
 		$this->user_agent   = $server['HTTP_USER_AGENT'];
 	}
@@ -200,8 +201,6 @@ trait Server {
 	 *
 	 * @param string[] $server
 	 *
-	 * @throws ExitException
-	 *
 	 * @return string
 	 */
 	protected function host ($server) {
@@ -228,8 +227,7 @@ trait Server {
 			}
 		}
 		if (preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host) !== '') {
-			trigger_error("Invalid host", E_USER_WARNING);
-			throw new ExitException(400);
+			return '';
 		}
 		return $host.($port ? ":$port" : '');
 	}

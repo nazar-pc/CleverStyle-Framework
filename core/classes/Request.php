@@ -33,8 +33,6 @@ class Request {
 	 * @param array                $files       Typically `$_FILES`; might be like native PHP array `$_FILES` or normalized; each file item MUST contain keys
 	 *                                          `name`,
 	 *                                          `type`, `size`, `error` and at least one of `tmp_name` or `stream`
-	 *
-	 * @throws ExitException
 	 */
 	function init ($server, $query, $data, $data_stream, $cookie, $files) {
 		$this->init_server($server);
@@ -46,8 +44,6 @@ class Request {
 	/**
 	 * Initialize request object from superglobals `$_SERVER`, `$_GET`, `$_POST`, `$_COOKIE` and `$_FILES` (including parsing `php://input` in case of custom
 	 * request methods)
-	 *
-	 * @throws ExitException
 	 */
 	function init_from_globals () {
 		// Hack: we override out `$_SERVER`, so conversion from iterator to an array is needed
@@ -55,7 +51,7 @@ class Request {
 		$this->init_query($_GET);
 		$this->init_data($this->init_from_globals_get_data(), 'php://input');
 		$this->init_cookie($_COOKIE);
-		// TODO: parse input stream for handling files when using request methods other than POST
+		// TODO: parse input stream for handling files when using request methods other than POST (complete multipart messages support needed actually)
 		$this->init_files($_FILES);
 	}
 	/**

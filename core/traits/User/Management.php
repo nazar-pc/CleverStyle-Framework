@@ -122,11 +122,8 @@ trait Management {
 		) {
 			return 'exists';
 		}
-		$Config   = Config::instance();
-		$password = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
+		$Config       = Config::instance();
+		$password     = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$reg_key      = md5(random_bytes(1000));
 		$confirmation = $confirmation && $Config->core['require_registration_confirmation'];
 		if ($this->db_prime()->q(
@@ -154,7 +151,7 @@ trait Management {
 			$email,
 			$email_hash,
 			time(),
-			ip2hex($_SERVER->ip),
+			ip2hex(Request::instance()->ip),
 			$reg_key,
 			!$confirmation ? 1 : -1
 		)

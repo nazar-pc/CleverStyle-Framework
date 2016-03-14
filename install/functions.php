@@ -118,9 +118,18 @@ function install_process ($fs, $argv = null) {
 	 * Connecting to the DataBase
 	 */
 	define('DEBUG', false);
-	require_once DIR.'/fs/'.$fs['core/classes/_SERVER.php'];
+	/**
+	 * TODO: autoloader for installer
+	 */
 	require_once DIR.'/fs/'.$fs['core/traits/Singleton/Base.php'];
 	require_once DIR.'/fs/'.$fs['core/traits/Singleton.php'];
+	require_once DIR.'/fs/'.$fs['core/classes/Config.php'];
+	require_once DIR.'/fs/'.$fs['core/traits/Request/Cookie.php'];
+	require_once DIR.'/fs/'.$fs['core/traits/Request/Data.php'];
+	require_once DIR.'/fs/'.$fs['core/traits/Request/Files.php'];
+	require_once DIR.'/fs/'.$fs['core/traits/Request/Query.php'];
+	require_once DIR.'/fs/'.$fs['core/traits/Request/Server.php'];
+	require_once DIR.'/fs/'.$fs['core/classes/Request.php'];
 	require_once DIR.'/fs/'.$fs['core/classes/DB.php'];
 	require_once DIR.'/fs/'.$fs['core/engines/DB/_Abstract.php'];
 	require_once DIR.'/fs/'.$fs["core/engines/DB/$_POST[db_engine].php"];
@@ -131,14 +140,15 @@ function install_process ($fs, $argv = null) {
 	if (!file_exists(DIR."/install/DB/$_POST[db_engine].sql")) {
 		return "Can't find system tables structure for selected database engine! Installation aborted.";
 	}
-	$_SERVER = new \cs\_SERVER($_SERVER);
+	$Request = \cs\Request::instance();
 	/**
 	 * General system configuration
 	 */
 	if (isset($_POST['site_url'])) {
 		$url = $_POST['site_url'];
 	} else {
-		$url = "$_SERVER->protocol://$_SERVER->host$_SERVER->request_uri";
+		$Request->init_from_globals();
+		$url = "$Request->schema://$Request->host$Request->path";
 		$url = implode('/', array_slice(explode('/', $url), 0, -2));    //Remove 2 last items
 	}
 	preg_match('#//([^/]+)#', $url, $domain);
@@ -157,7 +167,6 @@ function install_process ($fs, $argv = null) {
 		'put_js_after_body'                 => 1,
 		'theme'                             => 'CleverStyle',
 		'language'                          => $_POST['language'],
-		'allow_change_language'             => 0,
 		'active_languages'                  => [$_POST['language']],
 		'multilingual'                      => 0,
 		'db_balance'                        => 0,
@@ -303,7 +312,7 @@ function install_process ($fs, $argv = null) {
 		$_POST['db_charset'],
 		$_POST['db_prefix']
 	);
-	if (!(is_object($cdb) && $cdb->connected())) {
+	if (!is_object($cdb) || !$cdb->connected()) {
 		return 'Database connection failed! Installation aborted.';
 	}
 	if (!$cdb->q(
@@ -368,7 +377,7 @@ function install_process ($fs, $argv = null) {
 		$_POST['admin_email'],
 		hash('sha224', $_POST['admin_email']),
 		time(),
-		ip2hex($_SERVER->remote_addr),
+		ip2hex($Request->remote_addr),
 		1
 	)
 	) {

@@ -39,6 +39,8 @@ class Response {
 	/**
 	 * Body in form of stream (might be used instead of `$this->body` in some cases, if present, `$this->body` is ignored)
 	 *
+	 * Stream is read/write
+	 *
 	 * @var resource
 	 */
 	public $body_stream;
@@ -46,7 +48,7 @@ class Response {
 	 * Initialize response object with specified data
 	 *
 	 * @param string               $body
-	 * @param null|resource|string $body_stream String, like `php://output` or resource, like `fopen('php://output', 'ba+')`, if present, `$body` is ignored
+	 * @param null|resource|string $body_stream String, like `php://temp` or resource, like `fopen('php://temp', 'ba+')`, if present, `$body` is ignored
 	 * @param string[]|string[][]  $headers     Headers are normalized to lowercase keys with hyphen as separator, for instance: `connection`, `referer`,
 	 *                                          `content-type`, `accept-language`; Values might be strings in case of single value or array of strings in case
 	 *                                          of multiple values with the same field name
@@ -76,11 +78,8 @@ class Response {
 		if ($value === '') {
 			unset($this->headers[$field]);
 		} elseif ($replace || !isset($this->headers[$field])) {
-			$this->headers[$field] = $value;
+			$this->headers[$field] = [$value];
 		} else {
-			if (!is_array($this->headers[$field])) {
-				$this->headers[$field] = (array)$this->headers[$field];
-			}
 			$this->headers[$field][] = $value;
 		}
 	}
@@ -145,5 +144,24 @@ class Response {
 			$header[] = 'HttpOnly';
 		}
 		$this->header('Set-Cookie', implode('; ', $header), false);
+	}
+	/**
+	 * Provides standard output for all the response data
+	 */
+	function standard_output () {
+		foreach ($this->headers as $header => $value) {
+			foreach ($value as $v) {
+				header("$header: $v", false);
+			}
+		}
+		http_response_code($this->code);
+		if (is_resource($this->body_stream)) {
+			$position = ftell($this->body_stream);
+			rewind($this->body_stream);
+			stream_copy_to_stream($this->body_stream, fopen('php:://output', 'w'));
+			fseek($this->body_stream, $position);
+		} else {
+			echo $this->body;
+		}
 	}
 }

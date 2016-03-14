@@ -4,18 +4,22 @@ Sign in test
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-include __DIR__.'/../_SERVER.php';
-// Simulate regular initialization
-$_SERVER->request_uri    = '/api/System/user/sign_in';
-$_SERVER->request_method = 'POST';
-Event::instance()->on('System/User/construct/after', function () {
-	$_POST['login']    = hash('sha224', 'admin');
-	$_POST['password'] = hash('sha512', hash('sha512', 1111).Core::instance()->public_key);
-});
+$Request         = Request::instance();
+$Request->path   = '/api/System/user/sign_in';
+$Request->uri    = '/api/System/user/sign_in';
+$Request->method = 'POST';
+Event::instance()->on(
+	'System/User/construct/after',
+	function () {
+		$_POST['login']    = hash('sha224', 'admin');
+		$_POST['password'] = hash('sha512', hash('sha512', 1111).Core::instance()->public_key);
+	}
+);
 Language::instance();
 Index::instance();
 shutdown_function(true);
 shutdown_function();
+echo Response::instance()->body;
 ?>
 --EXPECT--
 null

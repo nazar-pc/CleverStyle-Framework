@@ -113,15 +113,13 @@ class Session {
 	 * Try to determine whether visitor is a known bot, bots have no sessions
 	 */
 	protected function bots_detection () {
-		$Cache = $this->users_cache;
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
+		$Cache   = $this->users_cache;
+		$Request = Request::instance();
 		/**
 		 * For bots: login is user agent, email is IP
 		 */
-		$login    = $_SERVER->user_agent;
-		$email    = $_SERVER->ip;
+		$login    = $Request->user_agent;
+		$email    = $Request->ip;
 		$bot_hash = hash('sha224', $login.$email);
 		/**
 		 * If bot is cached
@@ -361,13 +359,12 @@ class Session {
 	protected function is_session_owner_internal ($session_data, $user_agent = null, $remote_addr = null, $ip = null) {
 		/**
 		 * md5() as protection against timing attacks
-		 *
-		 * @var \cs\_SERVER $_SERVER
 		 */
 		if ($user_agent === null && $remote_addr === null && $ip === null) {
-			$user_agent  = $_SERVER->user_agent;
-			$remote_addr = $_SERVER->remote_addr;
-			$ip          = $_SERVER->ip;
+			$Request     = Request::instance();
+			$user_agent  = $Request->user_agent;
+			$remote_addr = $Request->remote_addr;
+			$ip          = $Request->ip;
 		}
 		return
 			md5($session_data['user_agent']) == md5($user_agent) &&
@@ -525,12 +522,10 @@ class Session {
 	 * @return array Session data
 	 */
 	protected function create_unique_session ($user) {
-		$Config = Config::instance();
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
-		$remote_addr = ip2hex($_SERVER->remote_addr);
-		$ip          = ip2hex($_SERVER->ip);
+		$Config      = Config::instance();
+		$Request     = Request::instance();
+		$remote_addr = ip2hex($Request->remote_addr);
+		$ip          = ip2hex($Request->ip);
 		/**
 		 * Many guests open only one page (or do not store any cookies), so create guest session only for 5 minutes max initially
 		 */
@@ -544,7 +539,7 @@ class Session {
 			'user'        => $user,
 			'created'     => time(),
 			'expire'      => $expire,
-			'user_agent'  => $_SERVER->user_agent,
+			'user_agent'  => $Request->user_agent,
 			'remote_addr' => $remote_addr,
 			'ip'          => $ip,
 			'data'        => []

@@ -21,6 +21,18 @@ chdir(DIR);
 
 require DIR.'/core/loader_base.php';      //Inclusion of loader base
 require DIR.'/core/functions_global.php'; //Inclusion of functions that work with global state
+$_SERVER = [
+	'HTTP_HOST'            => 'cscms.travis',
+	'HTTP_USER_AGENT'      => 'CleverStyle CMS test',
+	'HTTP_ACCEPT_LANGUAGE' => 'en-us;q=0.5,en;q=0.3',
+	'SERVER_NAME'          => 'cscms.travis',
+	'REMOTE_ADDR'          => '127.0.0.1',
+	'DOCUMENT_ROOT'        => realpath(__DIR__.'/../cscms.travis'),
+	'SERVER_PROTOCOL'      => 'HTTP/1.1',
+	'REQUEST_METHOD'       => 'GET',
+	'QUERY_STRING'         => '',
+	'REQUEST_URI'          => '/'
+];
 /**
  * Wrapper around default `$_SERVER` superglobal
  */
@@ -39,3 +51,15 @@ if (!defined('DOMAIN')) {
 ob_start();
 include __DIR__.'/Mock_object.php';
 include __DIR__.'/Singleton.php';
+
+Request::instance()->init_from_globals();
+Response::instance()->init(
+	'',
+	null,
+	[
+		'Content-Type' => 'text/html; charset=utf-8',
+		'Vary'         => 'Accept-Language,User-Agent,Cookie'
+	],
+	200,
+	$_SERVER['SERVER_PROTOCOL']
+);

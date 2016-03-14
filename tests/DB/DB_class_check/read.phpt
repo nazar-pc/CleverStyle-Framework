@@ -24,7 +24,7 @@ array(6) {
   string(10) "__prefix__"
 }
 string(19) "Connection: succeed"
-object(cs\DB\Fake)#8 (9) {
+object(cs\DB\Fake)#16 (9) {
   ["connected":protected]=>
   bool(true)
   ["db_type":protected]=>

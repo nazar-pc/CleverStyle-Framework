@@ -14,6 +14,7 @@ use
 	cs\Index,
 	cs\Page,
 	cs\Request as System_request,
+	cs\Response as System_response,
 	cs\User;
 
 class Request {
@@ -39,12 +40,10 @@ class Request {
 	 * @throws ExitException
 	 */
 	function __invoke ($data) {
-		$this->bootstrap();
 		$request = $this->request;
 		$this->fill_superglobals(
 			$this->prepare_superglobals($request, $data)
 		);
-		ob_start();
 		try {
 			try {
 				$this->execute_request();
@@ -56,17 +55,20 @@ class Request {
 		} catch (\Exception $e) {
 			// Handle generic exceptions to avoid server from stopping
 		}
-		$this->response->writeHead(_http_response_code(0), _header(null));
-		$this->response->end(ob_get_clean());
+		$Response = System_response::instance();
+		$this->response->writeHead($Response->code, $Response->headers);
+		if (is_resource($Response->body_stream)) {
+			$position = ftell($Response->body_stream);
+			rewind($Response->body_stream);
+			while (!feof($Response->body_stream)) {
+				$this->response->write(fread($Response->body_stream, 1024));
+			}
+			fseek($Response->body_stream, $position);
+		} else {
+			$this->response->end($Response->body);
+		}
 		$this->cleanup();
 		$request->close();
-	}
-	/**
-	 * Various preparations before processing of current request
-	 */
-	protected function bootstrap () {
-		_header('Content-Type: text/html; charset=utf-8');
-		_header('Vary: Accept-Language,User-Agent,Cookie');
 	}
 	/**
 	 * @param \React\HTTP\Request $request
@@ -126,7 +128,18 @@ class Request {
 		$_GET     = $SUPERGLOBALS['GET'];
 		$_POST    = $SUPERGLOBALS['POST'];
 		$_REQUEST = $SUPERGLOBALS['POST'] + $SUPERGLOBALS['GET'];
+		// TODO: Move this initialization separately
 		System_request::instance()->init_from_globals();
+		System_response::instance()->init(
+			'',
+			null,
+			[
+				'Content-Type' => 'text/html; charset=utf-8',
+				'Vary'         => 'Accept-Language,User-Agent,Cookie'
+			],
+			200,
+			$_SERVER['SERVER_PROTOCOL']
+		);
 	}
 	/**
 	 * @throws ExitException
