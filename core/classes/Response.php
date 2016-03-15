@@ -60,7 +60,7 @@ class Response {
 	function init ($body = '', $body_stream = null, $headers = [], $code = 200, $protocol = 'HTTP/1.1') {
 		$this->protocol = $protocol;
 		$this->code     = $code;
-		$this->headers  = $headers;
+		$this->headers  = _array($headers);
 		$this->body     = $body;
 		if ($this->body_stream) {
 			fclose($this->body_stream);

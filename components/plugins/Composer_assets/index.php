@@ -16,7 +16,7 @@ use
 
 $Request = Request::instance();
 if (
-	$Request->ethod == 'GET' &&
+	$Request->method == 'GET' &&
 	(
 		strpos($Request->uri, '/bower_components') === 0 ||
 		strpos($Request->uri, '/node_modules') === 0

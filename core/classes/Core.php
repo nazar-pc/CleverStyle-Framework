@@ -7,6 +7,7 @@
  */
 namespace cs;
 use            h;
+
 /**
  * Core class.
  * Provides loading of base system configuration
@@ -83,23 +84,20 @@ AddEncoding gzip .html
 	 * Fill `$_POST` and `$_REQUEST` when there is request method different than POST or if Content-Type is JSON
 	 *
 	 * @deprecated Use `cs\Request` instead
-	 * @todo Remove in 4.x
+	 * @todo       Remove in 4.x
 	 */
 	protected function fill_post_request () {
-		/**
-		 * @var _SERVER $_SERVER
-		 */
-		if (!$_SERVER->content_type) {
+		if (!@$_SERVER['CONTENT_TYPE']) {
 			return;
 		}
 		/**
 		 * Support for JSON requests, filling $_POST array for request method different than POST
 		 */
-		if (preg_match('#^application/([^+\s]+\+)?json#', $_SERVER->content_type)) {
+		if (preg_match('#^application/([^+\s]+\+)?json#', $_SERVER['CONTENT_TYPE'])) {
 			$_POST = _json_decode(@file_get_contents('php://input')) ?: [];
 		} elseif (
-			strtolower($_SERVER->request_method) !== 'post' &&
-			strpos($_SERVER->content_type, 'application/x-www-form-urlencoded') === 0
+			strtolower($_SERVER['REQUEST_METHOD']) !== 'post' &&
+			strpos($_SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded') === 0
 		) {
 			@parse_str(file_get_contents('php://input'), $_POST);
 		}
