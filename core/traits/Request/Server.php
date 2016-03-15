@@ -75,17 +75,17 @@ trait Server {
 	 */
 	public $remote_addr;
 	/**
-	 * Path
-	 *
-	 * @var string
-	 */
-	public $path;
-	/**
 	 * URI
 	 *
 	 * @var string
 	 */
 	public $uri;
+	/**
+	 * Path
+	 *
+	 * @var string
+	 */
+	public $path;
 	/**
 	 * Uppercase method, GET by default
 	 *
@@ -149,8 +149,8 @@ trait Server {
 		$this->query_string = $server['QUERY_STRING'];
 		$this->referer      = filter_var($server['HTTP_REFERER'], FILTER_VALIDATE_URL) ? $server['HTTP_REFERER'] : '';
 		$this->remote_addr  = $server['REMOTE_ADDR'];
-		$this->path         = explode('?', $server['REQUEST_URI'], 2)[0];
-		$this->uri          = $server['REQUEST_URI'];
+		$this->uri          = null_byte_filter(urldecode($server['REQUEST_URI']));
+		$this->path         = explode('?', $this->uri, 2)[0];
 		$this->method       = strtoupper($server['REQUEST_METHOD']);
 		$this->user_agent   = $server['HTTP_USER_AGENT'];
 	}
