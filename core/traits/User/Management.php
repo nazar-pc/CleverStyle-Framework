@@ -10,6 +10,7 @@ use
 	cs\Config,
 	cs\Core,
 	cs\Event,
+	cs\Request,
 	cs\Session,
 	cs\User;
 
