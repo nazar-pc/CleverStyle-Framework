@@ -47,13 +47,22 @@ class Controller {
 			$Page->warning($L->invalid_confirmation_code);
 			return;
 		}
-		$body = $L->success_mail_body(
-			strstr($result['email'], '@', true),
-			get_core_ml_text('name'),
-			Config::instance()->core_url().'/profile/settings',
-			$User->get('login', $result['id']),
-			$result['password']
-		);
+		if ($result['password']) {
+			$body = $L->success_mail_with_password_body(
+				strstr($result['email'], '@', true),
+				get_core_ml_text('name'),
+				Config::instance()->core_url().'/profile/settings',
+				$User->get('login', $result['id']),
+				$result['password']
+			);
+		} else {
+			$body = $L->success_mail_body(
+				strstr($result['email'], '@', true),
+				get_core_ml_text('name'),
+				Config::instance()->core_url().'/profile/settings',
+				$User->get('login', $result['id'])
+			);
+		}
 		if (Mail::instance()->send_to(
 			$result['email'],
 			$L->success_mail(get_core_ml_text('name')),

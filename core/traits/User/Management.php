@@ -124,9 +124,8 @@ trait Management {
 			return 'exists';
 		}
 		$Config       = Config::instance();
-		$password     = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-		$reg_key      = md5(random_bytes(1000));
 		$confirmation = $confirmation && $Config->core['require_registration_confirmation'];
+		$reg_key      = md5(random_bytes(1000));
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]users` (
 				`login`,
@@ -158,7 +157,11 @@ trait Management {
 		)
 		) {
 			$this->reg_id = $this->db_prime()->id();
-			$this->set_password($password, $this->reg_id);
+			$password     = '';
+			if ($confirmation) {
+				$password = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
+				$this->set_password($password, $this->reg_id);
+			}
 			if (!$confirmation) {
 				$this->set_groups([User::USER_GROUP_ID], $this->reg_id);
 			}
@@ -230,8 +233,11 @@ trait Management {
 		}
 		$this->reg_id = $data['id'];
 		$Config       = Config::instance();
-		$password     = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-		$this->set_password($password, $this->reg_id);
+		$password     = '';
+		if (!$this->get('password_hash', $data['id'])) {
+			$password = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
+			$this->set_password($password, $this->reg_id);
+		}
 		$this->set('status', User::STATUS_ACTIVE, $this->reg_id);
 		$this->set_groups([User::USER_GROUP_ID], $this->reg_id);
 		Session::instance()->add($this->reg_id);

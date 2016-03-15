@@ -15,6 +15,7 @@ use
 	cs\Language\Prefix,
 	cs\Mail,
 	cs\Page,
+	cs\Request,
 	cs\Response,
 	cs\Session,
 	cs\User;
@@ -43,22 +44,23 @@ trait user_ {
 		}
 	}
 	static function user_registration () {
-		$Config = Config::instance();
-		$L      = new Prefix('system_profile_registration_');
-		$Page   = Page::instance();
-		$User   = User::instance();
-		if (!isset($_POST['email'])) {
+		$Config  = Config::instance();
+		$L       = new Prefix('system_profile_registration_');
+		$Page    = Page::instance();
+		$Request = Request::instance();
+		$User    = User::instance();
+		if (!isset($Request->data['email'])) {
 			throw new ExitException(400);
 		} elseif (!$User->guest()) {
 			$Page->json('reload');
 			return;
 		} elseif (!$Config->core['allow_user_registration']) {
 			throw new ExitException($L->prohibited, 403);
-		} elseif (empty($_POST['email'])) {
+		} elseif (empty($Request->data['email'])) {
 			throw new ExitException($L->please_type_your_email, 400);
 		}
-		$_POST['email'] = mb_strtolower($_POST['email']);
-		$result         = $User->registration($_POST['email']);
+		$email  = mb_strtolower($Request->data['email']);
+		$result = $User->registration($email);
 		if ($result === false) {
 			throw new ExitException($L->please_type_correct_email, 400);
 		} elseif ($result == 'error') {
@@ -67,24 +69,47 @@ trait user_ {
 			throw new ExitException($L->error_exists, 400);
 		}
 		$confirm = $result['reg_key'] !== true;
+		if ($Request->data['username']) {
+			$User->set('username', $Request->data['username'], $result['id']);
+		}
+		// Actually `sha512(sha512(password) + public_key)` instead of plain password
+		if ($Request->data['password']) {
+			$User->set_password($Request->data['password'], $result['id'], true);
+		}
+		if ($Request->data['language']) {
+			$User->set('language', $Request->data['language'], $result['id']);
+		}
+		if ($Request->data['timezone']) {
+			$User->set('timezone', $Request->data['timezone'], $result['id']);
+		}
+		if ($Request->data['avatar']) {
+			$User->set('avatar', $Request->data['avatar'], $result['id']);
+		}
 		if ($confirm) {
 			$body = $L->need_confirmation_mail_body(
-				strstr($_POST['email'], '@', true),
+				$User->username($result['id']),
 				get_core_ml_text('name'),
 				$Config->core_url()."/profile/registration_confirmation/$result[reg_key]",
 				$L->time($Config->core['registration_confirmation_time'], 'd')
 			);
-		} else {
-			$body = $L->success_mail_body(
-				strstr($_POST['email'], '@', true),
+		} elseif ($result['password']) {
+			$body = $L->success_mail_with_password_body(
+				$User->username($result['id']),
 				get_core_ml_text('name'),
 				$Config->core_url().'/profile/settings',
 				$User->get('login', $result['id']),
 				$result['password']
 			);
+		} else {
+			$body = $L->success_mail(
+				$User->username($result['id']),
+				get_core_ml_text('name'),
+				$Config->core_url().'/profile/settings',
+				$User->get('login', $result['id'])
+			);
 		}
 		if (Mail::instance()->send_to(
-			$_POST['email'],
+			$email,
 			$L->{$confirm ? 'need_confirmation_mail' : 'success_mail'}(get_core_ml_text('name')),
 			$body
 		)

@@ -237,6 +237,8 @@ trait Data {
 		}
 		if ($item === 'language') {
 			$value = $value ? Language::instance()->get('clanguage', $value) : '';
+		} elseif ($item === 'timezone') {
+			$value = in_array($value, get_timezones_list(), true) ? $value : '';
 		} elseif ($item == 'avatar') {
 			if (
 				strpos($value, 'http://') !== 0 &&
