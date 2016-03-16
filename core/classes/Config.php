@@ -238,7 +238,7 @@ class Config {
 	 * @return string
 	 */
 	function base_url () {
-		if (Route::instance()->mirror_index === -1) {
+		if (Request::instance()->mirror_index === -1) {
 			return '';
 		}
 		$base_url = $this->core_url();

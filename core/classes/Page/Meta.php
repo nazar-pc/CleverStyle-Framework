@@ -10,10 +10,9 @@ use
 	cs\Config,
 	cs\Language,
 	cs\Page,
-	cs\Route,
+	cs\Request,
 	cs\Singleton,
 	h;
-use cs\Request;
 
 /**
  * Meta class for generation of various meta tags
@@ -154,7 +153,7 @@ class Meta {
 				'url',
 				Request::instance()->home_page
 					? $Config->base_url()
-					: ($Page->canonical_url ?: $Config->base_url().'/'.Route::instance()->relative_address)
+					: ($Page->canonical_url ?: $Config->base_url().'/'.Request::instance()->path_normalized)
 			);
 		}
 		if (!@$og['site_name']) {

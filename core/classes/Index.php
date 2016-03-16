@@ -6,6 +6,8 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
+use
+	cs\Index\Router;
 
 /**
  * Provides next events:
@@ -26,25 +28,19 @@ namespace cs;
 class Index {
 	use
 		Singleton,
-		Index\Router;
+		Router;
 
-	/**
-	 * Name of current module
-	 *
-	 * @var string
-	 */
-	protected $module;
 	protected $request_method;
 	protected $working_directory = '';
 	protected $called_once       = false;
 	/**
-	 * Reference to Route::instance()->path
+	 * Reference to Request::instance()->route_path
 	 *
 	 * @var string[]
 	 */
 	protected $path = [];
 	/**
-	 * Reference to Route::instance()->ids
+	 * Reference to Request::instance()->route_ids
 	 *
 	 * @var int[]
 	 */
@@ -63,14 +59,12 @@ class Index {
 	function construct () {
 		$Config     = Config::instance();
 		$Request    = Request::instance();
-		$Route      = Route::instance();
-		$this->path = &$Route->path;
-		$this->ids  = &$Route->ids;
+		$this->path = &$Request->path;
+		$this->ids  = &$Request->ids;
 		if ($this->closed_site($Config)) {
 			return;
 		}
-		$this->module            = $Request->current_module;
-		$this->working_directory = MODULES."/$this->module";
+		$this->working_directory = MODULES."/$Request->current_module";
 		if ($Request->admin_path) {
 			$this->working_directory .= '/admin';
 		} elseif ($Request->api_path) {
@@ -109,10 +103,11 @@ class Index {
 		) {
 			return false;
 		}
+		$Request = Request::instance();
 		return
-			!Request::instance()->api_path ||
-			$this->module != 'System' ||
-			Route::instance()->route !== ['user', 'sign_in'];
+			!$Request->api_path ||
+			$Request->current_module != 'System' ||
+			$Request->route !== ['user', 'sign_in'];
 	}
 	/**
 	 * Check whether user allowed to access to specified label
@@ -122,8 +117,8 @@ class Index {
 	 * @return bool
 	 */
 	protected function check_permission ($label) {
-		$permission_group = $this->module;
 		$Request          = Request::instance();
+		$permission_group = $Request->current_module;
 		if ($Request->admin_path) {
 			$permission_group = "admin/$permission_group";
 		} elseif ($Request->api_path) {
@@ -158,7 +153,7 @@ class Index {
 				$Page->title($L->system_admin_administration);
 			}
 			$Page->title(
-				$L->{$Request->home_page ? 'system_home' : $this->module}
+				$L->{$Request->home_page ? 'system_home' : $Request->current_module}
 			);
 		}
 	}

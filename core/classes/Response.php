@@ -134,14 +134,12 @@ class Response {
 		$Request = Request::instance();
 		$Config  = Config::instance();
 		$prefix  = '';
-		$secure  = $Request->secure;
 		$domain  = explode(':', $Request->host)[0];
 		if ($Config) {
-			$Route          = Route::instance();
 			$prefix         = $Config->core['cookie_prefix'];
 			$cookie_domains = $Config->core['cookie_domain'];
 			/** @noinspection OffsetOperationsInspection */
-			$domain = isset($cookie_domains[$Route->mirror_index]) ? $cookie_domains[$Route->mirror_index] : $cookie_domains[0];
+			$domain = isset($cookie_domains[$Request->mirror_index]) ? $cookie_domains[$Request->mirror_index] : $cookie_domains[0];
 		}
 		if ($value === '') {
 			unset($Request->cookie[$name], $Request->cookie[$prefix.$name]);
@@ -159,7 +157,7 @@ class Response {
 		if ($domain) {
 			$header[] = "domain=$domain";
 		}
-		if ($secure) {
+		if ($Request->secure) {
 			$header[] = 'secure';
 		}
 		if ($httponly) {

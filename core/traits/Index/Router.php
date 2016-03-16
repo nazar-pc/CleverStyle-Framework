@@ -17,8 +17,8 @@ use
  * @property bool     $in_admin        Whether current page is administration and user is admin
  * @property string   $request_method
  * @property string   $working_directory
- * @property string[] $path            Reference to Route::instance()->path
- * @property string[] $ids             Reference to Route::instance()->ids
+ * @property string[] $path            Request::instance()->route_path
+ * @property string[] $ids             Request::instance()->route_ids
  * @property string[] $controller_path Path that will be used by controller to render page
  */
 trait Router {
@@ -176,7 +176,7 @@ trait Router {
 		} elseif ($Request->api_path) {
 			$suffix = '\\api';
 		}
-		$controller_class = "cs\\modules\\$this->module$suffix\\Controller";
+		$controller_class = "cs\\modules\\$Request->current_module$suffix\\Controller";
 		foreach ($this->controller_path as $index => $path) {
 			/**
 			 * Starting from index 2 we need to maintain underscore-separated string that includes all paths from index 1 and till current

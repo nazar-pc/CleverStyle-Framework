@@ -13,7 +13,6 @@ use
 	cs\Index,
 	cs\Language,
 	cs\Request,
-	cs\Route,
 	cs\User,
 	h;
 
@@ -431,7 +430,6 @@ trait Includes {
 	protected function add_system_configs () {
 		$Config         = Config::instance();
 		$Request        = Request::instance();
-		$Route          = Route::instance();
 		$User           = User::instance();
 		$current_module = $Request->current_module;
 		$this->config_internal(
@@ -447,9 +445,9 @@ trait Includes {
 				'password_min_length'   => (int)$Config->core['password_min_length'],
 				'password_min_strength' => (int)$Config->core['password_min_strength'],
 				'debug'                 => (int)DEBUG,
-				'route'                 => $Route->route,
-				'route_path'            => $Route->path,
-				'route_ids'             => $Route->ids
+				'route'                 => $Request->route,
+				'route_path'            => $Request->route_path,
+				'route_ids'             => $Request->route_ids
 			],
 			'cs',
 			true

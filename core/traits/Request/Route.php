@@ -29,31 +29,31 @@ trait Route {
 	 *
 	 * @var int
 	 */
-	public $mirror_index = -1;
+	public $mirror_index;
 	/**
 	 * Normalized processed representation of relative address, may differ from raw, should be used in most cases
 	 *
 	 * @var string
 	 */
-	public $path_normalized = '';
+	public $path_normalized;
 	/**
 	 * Contains parsed route of current page url in form of array without module name and prefixes <i>admin</i>/<i>api</i>
 	 *
 	 * @var array
 	 */
-	public $route = [];
+	public $route;
 	/**
 	 * Like $route property, but excludes numerical items
 	 *
 	 * @var string[]
 	 */
-	public $route_path = [];
+	public $route_path;
 	/**
 	 * Like $route property, but only includes numerical items (opposite to route_path property)
 	 *
 	 * @var int[]
 	 */
-	public $route_ids = [];
+	public $route_ids;
 	/**
 	 * Request to administration section
 	 *
@@ -84,11 +84,16 @@ trait Route {
 	 * @throws ExitException
 	 */
 	function init_route () {
-		$this->admin_path     = false;
-		$this->api_path       = false;
-		$this->current_module = '';
-		$this->home_page      = false;
-		$Config               = Config::instance();
+		$this->mirror_index    = -1;
+		$this->path_normalized = '';
+		$this->route           = [];
+		$this->route_path      = [];
+		$this->route_ids       = [];
+		$this->admin_path      = false;
+		$this->api_path        = false;
+		$this->current_module  = '';
+		$this->home_page       = false;
+		$Config                = Config::instance();
 		/**
 		 * Search for url matching in all mirrors
 		 */
