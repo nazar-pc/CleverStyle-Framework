@@ -69,6 +69,21 @@ class Response {
 		return $this;
 	}
 	/**
+	 * Initialize with typical default settings (headers `Content-Type` and `Vary`, protocol taken from `$_SERVER['SERVER_PROTOCOL']`)
+	 */
+	function init_with_typical_default_settings () {
+		$this->init(
+			'',
+			null,
+			[
+				'Content-Type' => 'text/html; charset=utf-8',
+				'Vary'         => 'Accept-Language,User-Agent,Cookie'
+			],
+			200,
+			$_SERVER['SERVER_PROTOCOL']
+		);
+	}
+	/**
 	 * Set raw HTTP header
 	 *
 	 * @param string $field        Field

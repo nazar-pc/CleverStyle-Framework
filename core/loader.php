@@ -20,23 +20,14 @@ foreach (glob(CUSTOM.'/*.php') ?: [] as $custom) {
 }
 unset($custom);
 Core::instance();
-Request::instance()->init_from_globals();
-Response::instance()->init(
-	'',
-	null,
-	[
-		'Content-Type' => 'text/html; charset=utf-8',
-		'Vary'         => 'Accept-Language,User-Agent,Cookie'
-	],
-	200,
-	$_SERVER['SERVER_PROTOCOL']
-);
 try {
 	try {
 		/**
 		 * System running
 		 */
 		try {
+			Request::instance()->init_from_globals();
+			Response::instance()->init_with_typical_default_settings();
 			Index::instance();
 		} catch (ExitException $e) {
 			if ($e->getCode()) {
