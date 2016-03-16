@@ -140,7 +140,7 @@ trait Route {
 	 *
 	 * @param string $path
 	 *
-	 * @return false|string[] Array contains next elements: `route`, `path_normalized`, `admin_path`, `api_path`, `current_module`, `home_page`
+	 * @return array Array contains next elements: `route`, `path_normalized`, `admin_path`, `api_path`, `current_module`, `home_page`
 	 */
 	function analyze_route_path ($path) {
 		$rc = trim($path, '/');
@@ -252,7 +252,7 @@ trait Route {
 	 */
 	protected function determine_page_module (&$rc, &$home_page, $admin_path, $api_path) {
 		$Config  = Config::instance();
-		$modules = $this->get_modules($Config, $admin_path);
+		$modules = $this->get_modules($Config, (bool)$admin_path);
 		if (@in_array($rc[0], array_values($modules))) {
 			return array_shift($rc);
 		}
