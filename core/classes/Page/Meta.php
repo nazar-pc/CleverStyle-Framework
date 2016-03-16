@@ -148,12 +148,13 @@ class Meta {
 		}
 		$Config = Config::instance();
 		if (!@$og['url']) {
+			$Request = Request::instance();
 			/** @noinspection NestedTernaryOperatorInspection */
 			$this->og(
 				'url',
-				Request::instance()->home_page
+				$Request->home_page
 					? $Config->base_url()
-					: ($Page->canonical_url ?: $Config->base_url().'/'.Request::instance()->path_normalized)
+					: ($Page->canonical_url ?: $Config->base_url().'/'.$Request->path_normalized)
 			);
 		}
 		if (!@$og['site_name']) {

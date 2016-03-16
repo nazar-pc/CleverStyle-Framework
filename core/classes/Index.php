@@ -59,8 +59,8 @@ class Index {
 	function construct () {
 		$Config     = Config::instance();
 		$Request    = Request::instance();
-		$this->path = &$Request->path;
-		$this->ids  = &$Request->ids;
+		$this->path = &$Request->route_path;
+		$this->ids  = &$Request->route_ids;
 		if ($this->closed_site($Config)) {
 			return;
 		}

@@ -17,9 +17,9 @@ Config::instance_stub(
 		'module'	=> False_class::instance()
 	]
 );
-Route::instance_stub(
+Request::instance_stub(
 	[
-		'relative_address' => 'System'
+		'path_normalized' => 'System'
 	]
 );
 $Page	= Page::instance_stub([
