@@ -7,10 +7,10 @@
  * @license    MIT License, see license.txt
  */
 namespace cs;
-	/**
-	 * This is custom loader that includes basic files and defines constants,
-	 * but do not call any class to leave that all for test cases, and unregisters shutdown function
-	 */
+/**
+ * This is custom loader that includes basic files and defines constants,
+ * but do not call any class to leave that all for test cases, and unregisters shutdown function
+ */
 /**
  * Time of start of execution, is used as current time
  */
@@ -53,18 +53,14 @@ include __DIR__.'/Singleton.php';
 
 function do_request () {
 	try {
-		try {
-			Request::instance()->init_from_globals();
-			Response::instance()->init_with_typical_default_settings();
-			Index::instance();
-			Index::instance(true)->__finish();
-			Page::instance()->__finish();
-			User::instance(true)->__finish();
-		} catch (ExitException $e) {
-			if ($e->getCode() >= 400) {
-				Page::instance()->error($e->getMessage() ?: null, $e->getJson(), $e->getCode());
-			}
-		}
+		Request::instance()->init_from_globals();
+		Response::instance()->init_with_typical_default_settings();
+		Index::instance()->__finish();
+		Page::instance()->__finish();
+		User::instance(true)->__finish();
 	} catch (ExitException $e) {
+		if ($e->getCode() >= 400) {
+			Page::instance()->error($e->getMessage() ?: null, $e->getJson());
+		}
 	}
 }

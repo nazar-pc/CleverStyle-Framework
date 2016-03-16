@@ -60,7 +60,6 @@ class Page {
 	 */
 	protected $canonical_url      = false;
 	protected $theme;
-	protected $error_showed       = false;
 	protected $finish_called_once = false;
 	/**
 	 * @param string $property
@@ -149,8 +148,6 @@ class Page {
 	}
 	/**
 	 * Loading of theme template
-	 *
-	 * @return bool
 	 */
 	protected function get_template () {
 		/**
@@ -162,28 +159,8 @@ class Page {
 		$theme_dir = THEMES."/$this->theme";
 		_include("$theme_dir/prepare.php", false, false);
 		ob_start();
-		$return = true;
-		/**
-		 * If website is closed and user is not an administrator - send `503 Service Unavailable` header and show closed site page
-		 */
-		/** @noinspection NotOptimalIfConditionsInspection */
-		if (
-			!Config::instance()->core['site_mode'] &&
-			!User::instance(true)->admin() &&
-			(Response::instance()->code == 503) &&
-			!_include("$theme_dir/closed.php", false, false) &&
-			!_include("$theme_dir/closed.html", false, false)
-		) {
-			echo
-				"<!doctype html>\n".
-				h::title(get_core_ml_text('closed_title')).
-				get_core_ml_text('closed_text');
-			$return = false;
-		} else {
-			_include("$theme_dir/index.php", false, false) || _include("$theme_dir/index.html");
-		}
+		_include("$theme_dir/index.php", false, false) || _include("$theme_dir/index.html");
 		$this->Html = ob_get_clean();
-		return $return;
 	}
 	/**
 	 * Processing of template, substituting of content, preparing for the output
@@ -195,9 +172,7 @@ class Page {
 		/**
 		 * Loading of template
 		 */
-		if (!$this->get_template()) {
-			return $this;
-		}
+		$this->get_template();
 		/**
 		 * Forming page title
 		 */
@@ -466,31 +441,24 @@ class Page {
 	 *
 	 * @param null|string|string[] $custom_text Custom error text instead of text like "404 Not Found" or array with two elements: [error, error_description]
 	 * @param bool                 $json        Force JSON return format
-	 * @param int                  $error_code  HTTP status code
-	 *
-	 * @throws ExitException
 	 */
-	function error ($custom_text = null, $json = false, $error_code = 500) {
-		if ($this->error_showed) {
-			return;
-		}
-		$this->error_showed = true;
-		$Request            = Request::instance();
-		$Response           = Response::instance();
+	function error ($custom_text = null, $json = false) {
+		$Request    = Request::instance();
+		$Response   = Response::instance();
+		$error_code = $Response->code;
 		/**
 		 * Hack for 403 after sign out in administration
 		 */
 		if ($error_code == 403 && !$Request->api_path && $Request->cookie('sign_out')) {
 			$Response->redirect('/');
 			$this->Content = '';
-			throw new ExitException;
+			return;
 		}
 		interface_off();
-		$Response->code    = $error_code;
 		$status_text       = status_code_string($error_code);
 		$error_description = $status_text;
 		if (is_array($custom_text)) {
-			list($error_code, $error_description) = $custom_text;
+			list($status_text, $error_description) = $custom_text;
 		} elseif ($custom_text) {
 			$error_description = $custom_text;
 		}
@@ -519,7 +487,6 @@ class Page {
 			$this->Content = ob_get_clean();
 		}
 		$this->__finish();
-		throw new ExitException;
 	}
 	/**
 	 * Provides next events:

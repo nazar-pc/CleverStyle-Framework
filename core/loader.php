@@ -21,33 +21,17 @@ foreach (glob(CUSTOM.'/*.php') ?: [] as $custom) {
 unset($custom);
 Core::instance();
 try {
-	try {
-		/**
-		 * System running
-		 */
-		try {
-			Request::instance()->init_from_globals();
-			Response::instance()->init_with_typical_default_settings();
-			Index::instance();
-		} catch (ExitException $e) {
-			if ($e->getCode()) {
-				throw $e;
-			}
-		}
-		try {
-			Index::instance(true)->__finish();
-			Page::instance()->__finish();
-			User::instance(true)->__finish();
-		} catch (ExitException $e) {
-			if ($e->getCode()) {
-				throw $e;
-			}
-		}
-	} catch (ExitException $e) {
-		if ($e->getCode() >= 400) {
-			Page::instance()->error($e->getMessage() ?: null, $e->getJson(), $e->getCode());
-		}
-	}
+	/**
+	 * System running
+	 */
+	Request::instance()->init_from_globals();
+	Response::instance()->init_with_typical_default_settings();
+	Index::instance()->__finish();
+	Page::instance()->__finish();
+	User::instance(true)->__finish();
 } catch (ExitException $e) {
+	if ($e->getCode() >= 400) {
+		Page::instance()->error($e->getMessage() ?: null, $e->getJson());
+	}
 }
 Response::instance()->standard_output();

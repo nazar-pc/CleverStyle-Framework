@@ -28,8 +28,14 @@ class ExitException extends Exception {
 		} else {
 			$this->message = $message;
 		}
+		/**
+		 * Make sure code is always the same in `cs\ExitException` and `cs\Response` instances
+		 */
+		$Response = Response::instance();
 		if ($this->code) {
-			Response::instance()->code = $this->code;
+			$Response->code = $this->code;
+		} else {
+			$this->code = $Response->code;
 		}
 	}
 	/**

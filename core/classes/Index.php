@@ -38,13 +38,13 @@ class Index {
 	 *
 	 * @var string[]
 	 */
-	protected $path = [];
+	protected $path;
 	/**
 	 * Reference to Request::instance()->route_ids
 	 *
 	 * @var int[]
 	 */
-	protected $ids = [];
+	protected $ids;
 	/**
 	 * Path that will be used by controller to render page
 	 *
@@ -61,8 +61,23 @@ class Index {
 		$Request    = Request::instance();
 		$this->path = &$Request->route_path;
 		$this->ids  = &$Request->route_ids;
-		if ($this->closed_site($Config)) {
-			return;
+		/**
+		 * If site is closed
+		 */
+		if (!$Config->core['site_mode']) {
+			if (!$this->allow_closed_site_request($Request)) {
+				throw new ExitException(
+					[
+						get_core_ml_text('closed_title'),
+						get_core_ml_text('closed_text')
+					],
+					503
+				);
+			}
+			/**
+			 * Warning about closed site for administrator
+			 */
+			Page::instance()->warning(get_core_ml_text('closed_title'));
 		}
 		$this->working_directory = MODULES."/$Request->current_module";
 		if ($Request->admin_path) {
@@ -84,30 +99,26 @@ class Index {
 			_include(PLUGINS."/$plugin/index.php", false, false);
 		}
 		_include("$this->working_directory/prepare.php", false, false);
-		$this->request_method = strtolower(Request::instance()->method);
+		$this->request_method = strtolower($Request->method);
 		if (!preg_match('/^[a-z_]+$/', $this->request_method)) {
 			throw new ExitException(400);
 		}
 	}
 	/**
-	 * Check if site is closed (taking user into account)
+	 * Check if visitor is allowed to make current request to closed site
 	 *
-	 * @param Config $Config
+	 * @param Request $Request
 	 *
-	 * @return bool Whether user is not admin and this is not request for sign in (we allow to sign in on disabled site)
+	 * @return bool
 	 */
-	protected function closed_site ($Config) {
-		if (
-			$Config->core['site_mode'] ||
-			User::instance()->admin()
-		) {
-			return false;
-		}
-		$Request = Request::instance();
+	protected function allow_closed_site_request ($Request) {
 		return
-			!$Request->api_path ||
-			$Request->current_module != 'System' ||
-			$Request->route !== ['user', 'sign_in'];
+			User::instance()->admin() ||
+			(
+				$Request->api_path &&
+				$Request->current_module == 'System' &&
+				$Request->route === ['user', 'sign_in']
+			);
 	}
 	/**
 	 * Check whether user allowed to access to specified label
@@ -313,20 +324,6 @@ class Index {
 			return;
 		}
 		$this->called_once = true;
-		$Config            = Config::instance();
-		/**
-		 * If site is closed
-		 */
-		if (!$Config->core['site_mode']) {
-			if ($this->closed_site($Config)) {
-				Response::instance()->code = 503;
-				return;
-			}
-			/**
-			 * Warning about closed site
-			 */
-			Page::instance()->warning(get_core_ml_text('closed_title'));
-		}
 		Event::instance()->fire('System/Index/load/before');
 		$this->render_page();
 		Event::instance()->fire('System/Index/load/after');
