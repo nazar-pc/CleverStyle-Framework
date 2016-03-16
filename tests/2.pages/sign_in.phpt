@@ -4,10 +4,9 @@ Sign in test
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-$Request         = Request::instance();
-$Request->path   = '/api/System/user/sign_in';
-$Request->uri    = '/api/System/user/sign_in';
-$Request->method = 'POST';
+$_SERVER['REQUEST_URI']    = '/api/System/user/sign_in';
+$_SERVER['REQUEST_METHOD'] = 'POST';
+Request::instance()->init_from_globals();
 Event::instance()->on(
 	'System/User/construct/after',
 	function () {
@@ -15,7 +14,6 @@ Event::instance()->on(
 		$_POST['password'] = hash('sha512', hash('sha512', 1111).Core::instance()->public_key);
 	}
 );
-Language::instance();
 Index::instance();
 shutdown_function(true);
 shutdown_function();

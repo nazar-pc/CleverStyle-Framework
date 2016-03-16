@@ -4,7 +4,8 @@ Language in -Locale header
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-Request::instance()->headers['x-facebook-locale'] = 'uk_UA';
+$_SERVER['HTTP_X_FACEBOOK_LOCALE'] = 'uk_UA';
+Request::instance()->init_server(iterator_to_array($_SERVER));
 Config::instance_stub(
 	[
 		'core' => [

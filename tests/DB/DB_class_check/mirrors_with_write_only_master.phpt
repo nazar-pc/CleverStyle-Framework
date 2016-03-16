@@ -9,7 +9,7 @@ $Config = Config::instance();
 $Config->core['db_balance'] = 1;
 var_dump(DB::instance()->db(2));
 ?>
---EXPECT--
+--EXPECTF--
 string(34) "Fake engine called with arguments:"
 array(6) {
   [0]=>
@@ -26,7 +26,7 @@ array(6) {
   string(11) "__prefix2__"
 }
 string(19) "Connection: succeed"
-object(cs\DB\Fake)#18 (9) {
+object(cs\DB\Fake)#%d (9) {
   ["connected":protected]=>
   bool(true)
   ["db_type":protected]=>

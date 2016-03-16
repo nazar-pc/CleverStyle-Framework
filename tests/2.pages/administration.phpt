@@ -4,23 +4,8 @@ Home page rendering
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-$Request       = Request::instance();
-$Request->path = '/admin';
-$Request->uri  = '/admin';
-// Simulate regular initialization
-try {
-	try {
-		Language::instance();
-		Index::instance();
-		shutdown_function(true);
-		shutdown_function();
-	} catch (ExitException $e) {
-		if ($e->getCode() >= 400) {
-			Page::instance()->error($e->getMessage() ?: null, $e->getJson(), $e->getCode());
-		}
-	}
-} catch (ExitException $e) {
-}
+$_SERVER['REQUEST_URI'] = '/admin';
+do_request();
 echo Response::instance()->body;
 ?>
 --EXPECT--

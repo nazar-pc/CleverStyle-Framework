@@ -52,14 +52,19 @@ ob_start();
 include __DIR__.'/Mock_object.php';
 include __DIR__.'/Singleton.php';
 
-Request::instance()->init_from_globals();
-Response::instance()->init(
-	'',
-	null,
-	[
-		'Content-Type' => 'text/html; charset=utf-8',
-		'Vary'         => 'Accept-Language,User-Agent,Cookie'
-	],
-	200,
-	$_SERVER['SERVER_PROTOCOL']
-);
+function do_request () {
+	try {
+		try {
+			Request::instance()->init_from_globals();
+			Response::instance()->init_with_typical_default_settings();
+			Index::instance();
+			shutdown_function(true);
+			shutdown_function();
+		} catch (ExitException $e) {
+			if ($e->getCode() >= 400) {
+				Page::instance()->error($e->getMessage() ?: null, $e->getJson(), $e->getCode());
+			}
+		}
+	} catch (ExitException $e) {
+	}
+}

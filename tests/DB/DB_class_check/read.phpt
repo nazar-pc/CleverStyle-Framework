@@ -7,7 +7,7 @@ include __DIR__.'/_bootstrap.php';
 
 var_dump(DB::instance()->db(0));
 ?>
---EXPECT--
+--EXPECTF--
 string(34) "Fake engine called with arguments:"
 array(6) {
   [0]=>
@@ -24,7 +24,7 @@ array(6) {
   string(10) "__prefix__"
 }
 string(19) "Connection: succeed"
-object(cs\DB\Fake)#16 (9) {
+object(cs\DB\Fake)#%d (9) {
   ["connected":protected]=>
   bool(true)
   ["db_type":protected]=>

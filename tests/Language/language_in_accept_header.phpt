@@ -5,7 +5,8 @@ Language in Accept-Language header
 namespace cs;
 
 include __DIR__.'/../custom_loader.php';
-Request::instance()->language = 'uk,uk-ua;q=0.5';
+$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'uk,uk-ua;q=0.5';
+Request::instance()->init_server(iterator_to_array($_SERVER));
 Config::instance_stub(
 	[
 		'core' => [

@@ -4,9 +4,8 @@ Language in url
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-$Request       = Request::instance();
-$Request->path = '/uk';
-$Request->uri  = '/uk';
+$_SERVER['REQUEST_URI'] = '/uk';
+Request::instance()->init_server(iterator_to_array($_SERVER));
 Config::instance_stub(
 	[
 		'core' => [

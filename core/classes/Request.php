@@ -10,8 +10,8 @@ use
 	cs\Request\Cookie,
 	cs\Request\Data,
 	cs\Request\Files,
-	cs\Request\Platform,
 	cs\Request\Query,
+	cs\Request\Route as Request_route,
 	cs\Request\Server;
 
 class Request {
@@ -20,8 +20,8 @@ class Request {
 		Cookie,
 		Data,
 		Files,
-		Platform,
 		Query,
+		Request_route,
 		Server;
 
 	/**
@@ -35,6 +35,8 @@ class Request {
 	 * @param array                $files       Typically `$_FILES`; might be like native PHP array `$_FILES` or normalized; each file item MUST contain keys
 	 *                                          `name`,
 	 *                                          `type`, `size`, `error` and at least one of `tmp_name` or `stream`
+	 *
+	 * @throws ExitException
 	 */
 	function init ($server, $query, $data, $data_stream, $cookie, $files) {
 		$this->init_server($server);
@@ -42,11 +44,13 @@ class Request {
 		$this->init_data($data, $data_stream);
 		$this->init_cookie($cookie);
 		$this->init_files($files);
-		$this->init_platform();
+		$this->init_route();
 	}
 	/**
 	 * Initialize request object from superglobals `$_SERVER`, `$_GET`, `$_POST`, `$_COOKIE` and `$_FILES` (including parsing `php://input` in case of custom
 	 * request methods)
+	 *
+	 * @throws ExitException
 	 */
 	function init_from_globals () {
 		// Hack: we override out `$_SERVER`, so conversion from iterator to an array is needed
@@ -56,7 +60,7 @@ class Request {
 		$this->init_cookie($_COOKIE);
 		// TODO: parse input stream for handling files when using request methods other than POST (complete multipart messages support needed actually)
 		$this->init_files($_FILES);
-		$this->init_platform();
+		$this->init_route();
 	}
 	/**
 	 * Parse data from input stream if necessary (JSON, custom request methods)

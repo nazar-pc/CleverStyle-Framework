@@ -4,11 +4,7 @@ Home page rendering
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-// Simulate regular initialization
-Language::instance();
-Index::instance();
-shutdown_function(true);
-shutdown_function();
+do_request();
 echo Response::instance()->body;
 ?>
 --EXPECTF--
