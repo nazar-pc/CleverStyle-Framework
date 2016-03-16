@@ -95,20 +95,10 @@ function modified_classes ($updated_modified_classes = null) {
 /**
  * Correct termination
  *
- * @param bool|null $enable	Allows to disable shutdown function execution since there is no good way to un-register it
+ * @deprecated
+ * @todo       Remove in 4.x
  */
-function shutdown_function ($enable = null) {
-	static $enable_internal = true;
-	if ($enable !== null) {
-		$enable_internal = $enable;
-		return;
-	}
-	if (!$enable_internal) {
-		return;
-	}
-	if (!class_exists('\\cs\\Core', false)) {
-		return;
-	}
+function shutdown_function () {
 	Index::instance(true)->__finish();
 	Page::instance()->__finish();
 	User::instance(true)->__finish();

@@ -35,7 +35,9 @@ try {
 			}
 		}
 		try {
-			shutdown_function();
+			Index::instance(true)->__finish();
+			Page::instance()->__finish();
+			User::instance(true)->__finish();
 		} catch (ExitException $e) {
 			if ($e->getCode()) {
 				throw $e;
