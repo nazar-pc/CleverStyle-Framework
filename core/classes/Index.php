@@ -22,63 +22,26 @@ use
  *  System/Index/load/before
  *
  *  System/Index/load/after
- *
- * @property string[] $controller_path Path that will be used by controller to render page
  */
 class Index {
 	use
 		Singleton,
 		Router;
 
-	protected $request_method;
-	protected $working_directory = '';
-	protected $called_once       = false;
+	protected $working_directory;
 	/**
-	 * Reference to Request::instance()->route_path
+	 * Executes plugins processing, blocks and module page generation
 	 *
-	 * @var string[]
-	 */
-	protected $path;
-	/**
-	 * Reference to Request::instance()->route_ids
-	 *
-	 * @var int[]
-	 */
-	protected $ids;
-	/**
-	 * Path that will be used by controller to render page
-	 *
-	 * @var string[]
-	 */
-	protected $controller_path = ['index'];
-	/**
-	 * Detecting module folder including of admin/api request type, including prepare file, including of plugins
+	 * @todo make public
 	 *
 	 * @throws ExitException
 	 */
-	function construct () {
-		$Config     = Config::instance();
-		$Request    = Request::instance();
-		$this->path = &$Request->route_path;
-		$this->ids  = &$Request->route_ids;
-		/**
-		 * If site is closed
-		 */
-		if (!$Config->core['site_mode']) {
-			if (!$this->allow_closed_site_request($Request)) {
-				throw new ExitException(
-					[
-						get_core_ml_text('closed_title'),
-						get_core_ml_text('closed_text')
-					],
-					503
-				);
-			}
-			/**
-			 * Warning about closed site for administrator
-			 */
-			Page::instance()->warning(get_core_ml_text('closed_title'));
-		}
+	protected function process_request () {
+		$Config                  = Config::instance();
+		$Request                 = Request::instance();
+		$this->working_directory = '';
+		$this->controller_path   = ['index'];
+		$this->handle_closed_site(!$Config->core['site_mode'], $Request);
 		$this->working_directory = MODULES."/$Request->current_module";
 		if ($Request->admin_path) {
 			$this->working_directory .= '/admin';
@@ -99,10 +62,47 @@ class Index {
 			_include(PLUGINS."/$plugin/index.php", false, false);
 		}
 		_include("$this->working_directory/prepare.php", false, false);
-		$this->request_method = strtolower($Request->method);
-		if (!preg_match('/^[a-z_]+$/', $this->request_method)) {
+		if (!preg_match('/^[a-z_]+$/', strtolower($Request->method))) {
 			throw new ExitException(400);
 		}
+		Event::instance()->fire('System/Index/load/before');
+		/**
+		 * Title only for non-API calls
+		 */
+		$Request->api_path || $this->render_title();
+		$this->render_content();
+		/**
+		 * Blocks only for non-API calls
+		 */
+		$Request->api_path || $this->render_blocks();
+		Event::instance()->fire('System/Index/load/after');
+	}
+	/**
+	 * @param bool    $closed_site
+	 * @param Request $Request
+	 *
+	 * @throws ExitException
+	 */
+	protected function handle_closed_site ($closed_site, $Request) {
+		if (!$closed_site) {
+			return;
+		}
+		/**
+		 * If site is closed
+		 */
+		if (!$this->allow_closed_site_request($Request)) {
+			throw new ExitException(
+				[
+					get_core_ml_text('closed_title'),
+					get_core_ml_text('closed_text')
+				],
+				503
+			);
+		}
+		/**
+		 * Warning about closed site for administrator
+		 */
+		Page::instance()->warning(get_core_ml_text('closed_title'));
 	}
 	/**
 	 * Check if visitor is allowed to make current request to closed site
@@ -136,18 +136,6 @@ class Index {
 			$permission_group = "api/$permission_group";
 		}
 		return User::instance()->get_permission($permission_group, $label);
-	}
-	/**
-	 * Page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
-	 *
-	 * @throws ExitException
-	 */
-	protected function render_page () {
-		$this->render_title();
-		$this->render_content();
-		if (!Request::instance()->api_path) {
-			$this->render_blocks();
-		}
 	}
 	/**
 	 * Render page title
@@ -314,18 +302,11 @@ class Index {
 	/**
 	 * Executes plugins processing, blocks and module page generation
 	 *
+	 * @todo deprecate in favor of `::process_request()`
+	 *
 	 * @throws ExitException
 	 */
 	function __finish () {
-		/**
-		 * Protection from double calling
-		 */
-		if ($this->called_once) {
-			return;
-		}
-		$this->called_once = true;
-		Event::instance()->fire('System/Index/load/before');
-		$this->render_page();
-		Event::instance()->fire('System/Index/load/after');
+		$this->process_request();
 	}
 }
