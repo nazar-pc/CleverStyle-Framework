@@ -5,14 +5,13 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-namespace cs\Index;
+namespace cs\App;
 use
 	cs\ExitException,
 	cs\Request,
 	cs\Response;
 
 /**
- * @property string   $working_directory
  * @property string[] $controller_path Path that will be used by controller to render page
  */
 trait Router {
@@ -39,7 +38,7 @@ trait Router {
 		}
 	}
 	/**
-	 * Normalize route path and fill `cs\Index::$route_path` and `cs\Index::$route_ids` properties
+	 * Normalize `cs\Request::$route_path` and fill `cs\App::$controller_path`
 	 *
 	 * @param Request $Request
 	 *

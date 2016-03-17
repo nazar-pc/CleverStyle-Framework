@@ -21,14 +21,9 @@ foreach (glob(CUSTOM.'/*.php') ?: [] as $custom) {
 unset($custom);
 Core::instance();
 try {
-	/**
-	 * System running
-	 */
 	Request::instance()->init_from_globals();
 	Response::instance()->init_with_typical_default_settings();
-	Index::instance()->__finish();
-	Page::instance()->__finish();
-	User::instance(true)->__finish();
+	App::instance()->execute();
 } catch (ExitException $e) {
 	if ($e->getCode() >= 400) {
 		Page::instance()->error($e->getMessage() ?: null, $e->getJson());

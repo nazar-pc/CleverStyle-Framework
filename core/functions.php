@@ -10,15 +10,14 @@
  * otherwise system workability may be broken
  */
 use
+	cs\App,
 	cs\Cache,
 	cs\Config,
-	cs\Index,
 	cs\Language,
 	cs\Language\Prefix,
 	cs\Page,
 	cs\Response,
-	cs\Text,
-	cs\User;
+	cs\Text;
 /**
  * Auto Loading of classes
  */
@@ -99,9 +98,7 @@ function modified_classes ($updated_modified_classes = null) {
  * @todo       Remove in 4.x
  */
 function shutdown_function () {
-	Index::instance(true)->__finish();
-	Page::instance()->__finish();
-	User::instance(true)->__finish();
+	App::instance()->execute();
 }
 /**
  * Enable of errors processing

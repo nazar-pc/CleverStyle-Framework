@@ -7,10 +7,10 @@
  */
 namespace cs\Page;
 use
+	cs\App,
 	cs\Core,
 	cs\Config,
 	cs\Event,
-	cs\Index,
 	cs\Language,
 	cs\Request,
 	cs\User,
@@ -537,7 +537,7 @@ trait Includes {
 		/**
 		 * Current URL based on controller path (it better represents how page was rendered)
 		 */
-		$current_url = array_slice(Index::instance()->controller_path, 1);
+		$current_url = array_slice(App::instance()->controller_path, 1);
 		$current_url = ($Request->admin_path ? "admin$separator" : '')."$current_module$separator".implode($separator, $current_url);
 		/**
 		 * Narrow the dependencies to current module only

@@ -9,13 +9,12 @@
 namespace cs\modules\Http_server;
 use
 	cs\_SERVER,
+	cs\App,
 	cs\ExitException,
 	cs\Language,
-	cs\Index,
 	cs\Page,
 	cs\Request as System_request,
-	cs\Response as System_response,
-	cs\User;
+	cs\Response as System_response;
 
 class Request {
 	/**
@@ -49,7 +48,7 @@ class Request {
 				$this->execute_request();
 			} catch (ExitException $e) {
 				if ($e->getCode() >= 400) {
-					Page::instance()->error($e->getMessage() ?: null, $e->getJson(), $e->getCode());
+					Page::instance()->error($e->getMessage() ?: null, $e->getJson());
 				}
 			}
 		} catch (\Exception $e) {
@@ -129,7 +128,11 @@ class Request {
 		$_GET     = $SUPERGLOBALS['GET'];
 		$_POST    = $SUPERGLOBALS['POST'];
 		$_REQUEST = $SUPERGLOBALS['POST'] + $SUPERGLOBALS['GET'];
-		// TODO: Move this initialization separately
+	}
+	/**
+	 * @throws ExitException
+	 */
+	protected function execute_request () {
 		System_request::instance()->init_from_globals();
 		System_response::instance()->init(
 			'',
@@ -141,32 +144,12 @@ class Request {
 			200,
 			$_SERVER['SERVER_PROTOCOL']
 		);
-	}
-	/**
-	 * @throws ExitException
-	 */
-	protected function execute_request () {
-		try {
-			$L            = Language::instance(true);
-			$url_language = $L->url_language();
-			if ($url_language) {
-				$L->change($url_language);
-			}
-			Index::instance();
-		} catch (ExitException $e) {
-			if ($e->getCode()) {
-				throw $e;
-			}
+		$L            = Language::instance(true);
+		$url_language = $L->url_language();
+		if ($url_language) {
+			$L->change($url_language);
 		}
-		try {
-			Index::instance(true)->__finish();
-			Page::instance()->__finish();
-			User::instance(true)->__finish();
-		} catch (ExitException $e) {
-			if ($e->getCode()) {
-				throw $e;
-			}
-		}
+		App::instance()->execute();
 	}
 	/**
 	 * Various cleanups after processing of current request to free used memory

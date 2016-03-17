@@ -463,10 +463,6 @@ class Page {
 			$error_description = $custom_text;
 		}
 		if ($json || $Request->api_path) {
-			if ($json) {
-				$Response->header('content-type', 'application/json; charset=utf-8');
-				interface_off();
-			}
 			$this->json(
 				[
 					'error'             => $error_code,
@@ -486,9 +482,11 @@ class Page {
 			}
 			$this->Content = ob_get_clean();
 		}
-		$this->__finish();
+		$Response->body = $this->Content;
 	}
 	/**
+	 * @todo refactor this into something meaningful, should not be this way
+	 *
 	 * Provides next events:
 	 *  System/Page/display/before
 	 *

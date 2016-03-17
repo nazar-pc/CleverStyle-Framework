@@ -14,9 +14,7 @@ Event::instance()->on(
 		$_POST['password'] = hash('sha512', hash('sha512', 1111).Core::instance()->public_key);
 	}
 );
-Index::instance()->__finish();
-Page::instance()->__finish();
-User::instance(true)->__finish();
+App::instance()->execute();
 echo Response::instance()->body;
 ?>
 --EXPECT--
