@@ -20,8 +20,6 @@ if !window.WebComponents?.flags
 				'WebComponentsReady'
 				bubbles	: true
 			))
-		if document.cookie.indexOf('shadow_dom=1')
-			setTimeout(Polymer~updateStyles, 1000)
 	)
 # If there is native Shadow DOM support - lets store cookie so that we can skip loading Shadow DOM polyfill
 if document.cookie.indexOf('shadow_dom=1') == -1
