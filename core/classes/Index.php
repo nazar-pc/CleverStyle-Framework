@@ -9,6 +9,7 @@ namespace cs;
 
 /**
  * @deprecated Use `cs\App` instead
+ * @todo       Remove in 4.x
  */
 class Index {
 	use

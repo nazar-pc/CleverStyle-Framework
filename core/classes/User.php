@@ -265,9 +265,9 @@ class User {
 		return Session::instance()->bot();
 	}
 	/**
-	 * Saving changes of cache and users data
+	 * @deprecated Does nothing
+	 * @todo       Remove in 4.x
 	 */
 	function __finish () {
-		$this->save_cache_and_user_data();
 	}
 }

@@ -78,7 +78,6 @@ class App {
 		Event::instance()->fire('System/Index/load/after');
 		Event::instance()->fire('System/App/render/after');
 		Page::instance()->__finish();
-		User::instance(true)->__finish();
 	}
 	/**
 	 * @param bool    $closed_site
