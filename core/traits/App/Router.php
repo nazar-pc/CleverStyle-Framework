@@ -221,16 +221,17 @@ trait Router {
 	 * @throws ExitException
 	 */
 	protected function controller_router_handler_internal ($Request, $controller_class, $method_name, $required) {
+		$Response = Response::instance();
 		$included =
 			method_exists($controller_class, $method_name) &&
-			$controller_class::$method_name($Request->route_ids, $Request->route_path) !== false;
+			$controller_class::$method_name($Request, $Response) !== false;
 		if (!$Request->api_path) {
 			return;
 		}
 		$request_method = strtolower($Request->method);
 		$included       =
 			method_exists($controller_class, $method_name.'_'.$request_method) &&
-			$controller_class::{$method_name.'_'.$request_method}($Request->route_ids, $Request->route_path) !== false ||
+			$controller_class::{$method_name.'_'.$request_method}($Request, $Response) !== false ||
 			$included;
 		if ($included || !$required) {
 			return;

@@ -7,6 +7,7 @@
  */
 namespace cs;
 use
+	cs\Request\Compatibility,
 	cs\Request\Cookie,
 	cs\Request\Data,
 	cs\Request\Files,
@@ -15,9 +16,10 @@ use
 	cs\Request\Psr7,
 	cs\Request\Server;
 
-class Request {
+class Request implements \ArrayAccess, \Iterator {
 	use
 		Singleton,
+		Compatibility,
 		Cookie,
 		Data,
 		Files,
