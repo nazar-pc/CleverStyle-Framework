@@ -14,7 +14,8 @@ use
 	cs\Language,
 	cs\Page,
 	cs\Request as System_request,
-	cs\Response as System_response;
+	cs\Response as System_response,
+	cs\User;
 
 class Request {
 	/**
@@ -159,5 +160,6 @@ class Request {
 		 * Clean objects pool
 		 */
 		objects_pool([]);
+		User::instance()->disable_memory_cache();
 	}
 }

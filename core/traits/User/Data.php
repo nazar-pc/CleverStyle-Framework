@@ -473,6 +473,7 @@ trait Data {
 	 */
 	function disable_memory_cache () {
 		$this->memory_cache = false;
+		$this->data         = [];
 	}
 	/**
 	 * Returns array of users columns, available for getting of data
