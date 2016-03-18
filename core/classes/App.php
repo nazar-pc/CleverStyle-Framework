@@ -37,7 +37,7 @@ class App {
 	function execute () {
 		$Config  = Config::instance();
 		$Request = Request::instance();
-		if (!preg_match('/^[a-z_]+$/', strtolower($Request->method))) {
+		if (!preg_match('/^[0-9a-z_]+$/i', $Request->method)) {
 			throw new ExitException(400);
 		}
 		$this->working_directory = '';
