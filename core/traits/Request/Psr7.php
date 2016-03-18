@@ -7,8 +7,7 @@
  */
 namespace cs\Request;
 use
-	Exception,
-	cs\Config;
+	Exception;
 
 trait Psr7 {
 	/**
@@ -19,9 +18,6 @@ trait Psr7 {
 	 * @throws \cs\ExitException
 	 */
 	function from_psr7 ($request) {
-		/**
-		 * @var \cs\Request $this
-		 */
 		$this->from_psr7_server($request);
 		$this->from_psr7_query($request);
 		$this->from_psr7_data($request);
@@ -32,9 +28,6 @@ trait Psr7 {
 	 * @param \Psr\Http\Message\ServerRequestInterface $request
 	 */
 	protected function from_psr7_server ($request) {
-		/**
-		 * @var \cs\Request $this
-		 */
 		$uri          = $request->getUri();
 		$this->method = $request->getMethod();
 		$this->host   = $uri->getHost();
@@ -67,18 +60,12 @@ trait Psr7 {
 	 * @param \Psr\Http\Message\ServerRequestInterface $request
 	 */
 	protected function from_psr7_query ($request) {
-		/**
-		 * @var \cs\Request $this
-		 */
 		$this->query = $request->getQueryParams();
 	}
 	/**
 	 * @param \Psr\Http\Message\ServerRequestInterface $request
 	 */
 	protected function from_psr7_data ($request) {
-		/**
-		 * @var \cs\Request $this
-		 */
 		$data         = [];
 		$data_stream  = null;
 		$content_type = $this->header('content-type');
@@ -106,9 +93,6 @@ trait Psr7 {
 	 * @param \Psr\Http\Message\ServerRequestInterface $request
 	 */
 	protected function from_psr7_files ($request) {
-		/**
-		 * @var \cs\Request $this
-		 */
 		$this->init_files(
 			$this->from_psr7_files_internal(
 				$request->getUploadedFiles()

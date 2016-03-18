@@ -17,20 +17,20 @@ trait Files {
 	 * `name`, `type`, `size` and `error` keys are similar to native PHP fields in `$_FILES`; `tmp_name` might not be temporary file, but file descriptor
 	 * wrapper like `php://fd/1` and `stream` is resource like obtained with `fopen('/tmp/xyz')`
 	 *
-	 * @var array
+	 * @var array[]
 	 */
 	public $files;
 	/**
-	 * @param array $files Typically `$_FILES`; might be like native PHP array `$_FILES` or normalized; each file item MUST contain keys `name`, `type`, `size`,
-	 *                     `error` and at least one of `tmp_name` or `stream`
+	 * @param array[] $files Typically `$_FILES`; might be like native PHP array `$_FILES` or normalized; each file item MUST contain keys `name`, `type`,
+	 *                       `size`, `error` and at least one of `tmp_name` or `stream`
 	 */
 	function init_files ($files = []) {
 		$this->files = $this->init_files_internal($files);
 	}
 	/**
-	 * @param array $files
+	 * @param array[] $files
 	 *
-	 * @return array
+	 * @return array[]
 	 */
 	protected function init_files_internal ($files) {
 		if (!isset($files['name'])) {

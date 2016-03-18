@@ -34,7 +34,7 @@ class Request {
 	 * @param array                $data        Typically `$_POST`
 	 * @param null|resource|string $data_stream String, like `php://input` or resource, like `fopen('php://input', 'br')`
 	 * @param string[]             $cookie      Typically `$_COOKIE`
-	 * @param array                $files       Typically `$_FILES`; might be like native PHP array `$_FILES` or normalized; each file item MUST contain keys
+	 * @param array[]              $files       Typically `$_FILES`; might be like native PHP array `$_FILES` or normalized; each file item MUST contain keys
 	 *                                          `name`, `type`, `size`, `error` and at least one of `tmp_name` or `stream`
 	 *
 	 * @throws ExitException
