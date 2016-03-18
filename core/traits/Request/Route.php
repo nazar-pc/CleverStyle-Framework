@@ -18,10 +18,9 @@ use
  *  System/Request/routing_replace
  *  ['rc'    => &$rc] //Reference to string with current route, this string can be changed
  *
- * @property string $schema
+ * @property string $scheme
  * @property string $host
  * @property string $path
- * @property string $referer
  */
 trait Route {
 	/**
@@ -228,10 +227,11 @@ trait Route {
 	 * @return bool
 	 */
 	protected function is_referer_local ($Config) {
-		if (!$this->referer) {
+		$referer = $this->header('referer');
+		if (!$referer) {
 			return false;
 		}
-		list($referer_protocol, $referer_host) = explode('://', $this->referer);
+		list($referer_protocol, $referer_host) = explode('://', $referer);
 		$referer_host = explode('/', $referer_host)[0];
 		foreach ($Config->core['url'] as $address) {
 			list($protocol, $urls) = explode('://', $address, 2);

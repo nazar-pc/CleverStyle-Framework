@@ -134,14 +134,4 @@ trait Psr7 {
 			'error'  => $files->getError()
 		];
 	}
-	/**
-	 * @todo Implementation needed
-	 *
-	 * @param \Psr\Http\Message\ServerRequestInterface $request
-	 *
-	 * @return \Psr\Http\Message\ServerRequestInterface
-	 */
-	protected function to_psr7 ($request) {
-		return $request;
-	}
 }

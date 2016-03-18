@@ -6,10 +6,13 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
+use
+	cs\Response\Psr7;
 
 class Response {
 	use
-		Singleton;
+		Singleton,
+		Psr7;
 	/**
 	 * Protocol, for instance: `HTTP/1.0`, `HTTP/1.1` (default), HTTP/2.0
 	 *
