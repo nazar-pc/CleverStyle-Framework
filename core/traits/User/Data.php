@@ -99,7 +99,7 @@ trait Data {
 			);
 			if (!$data) {
 				return false;
-			} elseif ($this->memory_cache) {
+			} elseif ($this->memory_cache || $user = User::GUEST_ID) {
 				$this->data[$user] = $data;
 			}
 		}
