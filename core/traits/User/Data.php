@@ -83,94 +83,42 @@ trait Data {
 			return false;
 		}
 		/** @noinspection NestedTernaryOperatorInspection */
-		$data = isset($this->data[$user]) ? $this->data[$user] : ($this->cache->$user ?: ['id' => $user]);
+		if (isset($this->data[$user])) {
+			$data = $this->data[$user];
+		} else {
+			$data = $this->cache->get(
+				$user,
+				function () use ($user) {
+					return $this->db()->qf(
+						"SELECT *
+						FROM `[prefix]users`
+						WHERE `id` = $user
+						LIMIT 1"
+					) ?: false;
+				}
+			);
+			if (!$data) {
+				return false;
+			} elseif ($this->memory_cache) {
+				$this->data[$user] = $data;
+			}
+		}
 		/**
 		 * If get an array of values
 		 */
 		if (is_array($item)) {
-			$result = $new_items = [];
+			$result = [];
 			/**
 			 * Trying to get value from the local cache, or make up an array of missing values
 			 */
 			foreach ($item as $i) {
 				if (in_array($i, $this->users_columns)) {
-					if (isset($data[$i])) {
-						$result[$i] = $data[$i];
-					} else {
-						$new_items[] = $i;
-					}
+					$result[$i] = $data[$i];
 				}
 			}
-			if (!$new_items) {
-				return $result;
-			}
-			/**
-			 * If there are missing values - get them from the database
-			 */
-			$new_items = '`'.implode('`, `', $new_items).'`';
-			$res       = $this->db()->qf(
-				"SELECT $new_items
-				FROM `[prefix]users`
-				WHERE `id` = '$user'
-				LIMIT 1"
-			);
-			unset($new_items);
-			if (is_array($res)) {
-				$data               = array_merge($res, $data ?: []);
-				$this->cache->$user = $data;
-				if ($this->memory_cache) {
-					$this->data[$user] = $data;
-				}
-				$result = array_merge($result, $res);
-				/**
-				 * Sorting the resulting array in the same manner as the input array
-				 */
-				$res = [];
-				foreach ($item as $i) {
-					$res[$i] = &$result[$i];
-				}
-				return $res;
-			} else {
-				return false;
-			}
+			return $result;
 		}
-		/**
-		 * If get one value
-		 */
-		return $this->get_internal_one_item($item, $user, $data);
-	}
-	/**
-	 * @param string  $item
-	 * @param int     $user
-	 * @param mixed[] $data
-	 *
-	 * @return false|int|string
-	 */
-	protected function get_internal_one_item ($item, $user, &$data) {
-		if (!in_array($item, $this->users_columns)) {
-			return false;
-		}
-		/**
-		 * If data in local cache - return them
-		 */
-		if (isset($data[$item])) {
-			return $data[$item];
-		}
-		$data_from_db = $this->db()->qfs(
-			"SELECT `$item`
-			FROM `[prefix]users`
-			WHERE `id` = '$user'
-			LIMIT 1"
-		);
-		if ($data_from_db !== false) {
-			$data[$item]        = $data_from_db;
-			$this->cache->$user = $data;
-			if ($this->memory_cache) {
-				$this->data[$user] = $data;
-			}
-			return $data_from_db;
-		}
-		return false;
+		return in_array($item, $this->users_columns) ? $data[$item] : false;
 	}
 	/**
 	 * Set data item of specified user
@@ -542,23 +490,18 @@ trait Data {
 			$update = [];
 			foreach ($data_set as $item => $value) {
 				if ($item != 'id' && in_array($item, $this->users_columns)) {
-					$value = xap($value, false);
-					if (isset($this->data[$user])) {
-						$this->data[$user][$item] = $value;
-					}
+					$value    = xap($value, false);
 					$update[] = "`$item` = ".$this->db_prime()->s($value);
 				}
 			}
-			if (isset($this->data[$user])) {
-				$this->cache->$user = $this->data[$user];
-			}
-			if (!$update) {
+			if ($update) {
 				$update = implode(', ', $update);
 				$this->db_prime()->q(
 					"UPDATE `[prefix]users`
 					SET $update
 					WHERE `id` = '$user'"
 				);
+				unset($this->data[$user], $this->cache->$user);
 			}
 		}
 		$this->data_set = [];
