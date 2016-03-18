@@ -40,7 +40,7 @@ trait Data {
 	 *
 	 * @param string|string[] $name
 	 *
-	 * @return false|mixed|mixed[] Data if exists or `false` otherwise
+	 * @return false|mixed|mixed[] Data if exists or `false` otherwise (in case if `$name` is an array even one missing key will cause the whole thing to fail)
 	 */
 	function data ($name) {
 		if (is_array($name)) {

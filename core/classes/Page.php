@@ -67,7 +67,7 @@ class Page {
 	 * @return false|null|string
 	 */
 	function __get ($property) {
-		// For internal use by \cs\Meta class
+		// Hack: for internal use by \cs\Meta class
 		if ($property === 'canonical_url') {
 			return $this->canonical_url;
 		}

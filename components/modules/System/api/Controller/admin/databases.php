@@ -203,7 +203,6 @@ trait databases {
 		) {
 			throw new ExitException(400);
 		}
-		errors_off();
 		$engine_class = "\\cs\\DB\\$_POST[type]";
 		/**
 		 * @var \cs\DB\_Abstract $connection
@@ -215,7 +214,6 @@ trait databases {
 			$_POST['host'],
 			$_POST['charset']
 		);
-		errors_on();
 		if (!$connection->connected()) {
 			throw new ExitException(500);
 		}

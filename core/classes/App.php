@@ -302,9 +302,8 @@ class App {
 	 * @return false|string[]
 	 */
 	function __get ($property) {
-		switch ($property) {
-			case 'controller_path';
-				return $this->controller_path;
+		if ($property == 'controller_path') {
+			return $this->controller_path;
 		}
 		return false;
 	}

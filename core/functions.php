@@ -95,31 +95,39 @@ function modified_classes ($updated_modified_classes = null) {
  * Correct termination
  *
  * @deprecated
- * @todo       Remove in 4.x
+ * @todo Remove in 4.x
  */
 function shutdown_function () {
 	App::instance()->execute();
 }
 /**
  * Enable of errors processing
+ * @todo Remove in 4.x
  */
 function errors_on () {
 	error_reporting(defined('DEBUG') && DEBUG ? E_ALL : E_ERROR | E_WARNING | E_PARSE);
 }
 /**
  * Disabling of errors processing
+ * @todo Remove in 4.x
  */
 function errors_off () {
 	error_reporting(0);
 }
 /**
  * Enabling of page interface
+ *
+ * @deprecated Use `cs\Page::$interface` property instead
+ * @todo       Remove in 4.x
  */
 function interface_on () {
 	Page::instance()->interface	= true;
 }
 /**
  * Disabling of page interface
+ *
+ * @deprecated Use `cs\Page::$interface` property instead
+ * @todo       Remove in 4.x
  */
 function interface_off () {
 	Page::instance()->interface	= false;
@@ -752,6 +760,9 @@ function functionality ($functionality) {
 
 /**
  * Returns system version
+ *
+ * @deprecated
+ * @todo Remove in 4.x
  *
  * @return string
  */
