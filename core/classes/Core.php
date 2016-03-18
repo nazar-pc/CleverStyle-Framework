@@ -6,7 +6,8 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-use            h;
+use
+	h;
 
 /**
  * Core class.
@@ -25,6 +26,8 @@ class Core {
 	protected $config = [];
 	/**
 	 * Loading of base system configuration, creating of missing directories
+	 *
+	 * @throws ExitException
 	 */
 	protected function construct () {
 		$this->config = $this->load_config();
@@ -33,6 +36,7 @@ class Core {
 		defined('DOMAIN') || define('DOMAIN', $this->config['domain']);
 		date_default_timezone_set($this->config['timezone']);
 		if (!is_dir(PUBLIC_STORAGE)) {
+			/** @noinspection MkdirRaceConditionInspection */
 			@mkdir(PUBLIC_STORAGE, 0775, true);
 			file_put_contents(
 				PUBLIC_STORAGE.'/.htaccess',
@@ -45,9 +49,11 @@ class Core {
 			);
 		}
 		if (!is_dir(CACHE)) {
+			/** @noinspection MkdirRaceConditionInspection */
 			@mkdir(CACHE, 0770);
 		}
 		if (!is_dir(PUBLIC_CACHE)) {
+			/** @noinspection MkdirRaceConditionInspection */
 			@mkdir(PUBLIC_CACHE, 0770);
 			file_put_contents(
 				PUBLIC_CACHE.'/.htaccess',
@@ -68,9 +74,11 @@ AddEncoding gzip .html
 			);
 		}
 		if (!is_dir(LOGS)) {
+			/** @noinspection MkdirRaceConditionInspection */
 			@mkdir(LOGS, 0770);
 		}
 		if (!is_dir(TEMP)) {
+			/** @noinspection MkdirRaceConditionInspection */
 			@mkdir(TEMP, 0775);
 			file_put_contents(
 				TEMP.'/.htaccess',
