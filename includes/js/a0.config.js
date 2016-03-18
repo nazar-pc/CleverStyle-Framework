@@ -9,7 +9,8 @@
   var url_lang, new_url;
   window.WebComponents = window.WebComponents || {};
   window.Polymer = {
-    dom: 'shadow'
+    dom: 'shadow',
+    lazyRegister: true
   };
   Array.prototype.forEach.call(document.head.querySelectorAll('.cs-config'), function(config){
     var target, data, destination;

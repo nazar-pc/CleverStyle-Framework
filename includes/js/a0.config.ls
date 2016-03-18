@@ -5,7 +5,9 @@
  * @license   MIT License, see license.txt
  */
 window.WebComponents	= window.WebComponents || {}
-window.Polymer			= dom : 'shadow'
+window.Polymer			=
+	dom				: 'shadow'
+	lazyRegister	: true
 ###
  # Load configuration from special script elements
 ###
