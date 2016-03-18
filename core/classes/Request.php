@@ -12,6 +12,7 @@ use
 	cs\Request\Files,
 	cs\Request\Query,
 	cs\Request\Route as Request_route,
+	cs\Request\Psr7,
 	cs\Request\Server;
 
 class Request {
@@ -21,6 +22,7 @@ class Request {
 		Data,
 		Files,
 		Query,
+		Psr7,
 		Request_route,
 		Server;
 

@@ -25,22 +25,37 @@ trait Files {
 	 *                     `error` and at least one of `tmp_name` or `stream`
 	 */
 	function init_files ($files = []) {
-		foreach ($files as $field => $file) {
-			if (is_array($file['name'])) {
-				foreach (array_keys($file['name']) as $index) {
-					$this->files[$field][] = $this->normalize_file(
-						[
-							'name'     => $file['name'][$index],
-							'type'     => $file['type'][$index],
-							'size'     => $file['size'][$index],
-							'tmp_name' => $file['tmp_name'][$index],
-							'error'    => $file['error'][$index]
-						]
-					);
-				}
-			} else {
-				$this->files[$field] = $this->normalize_file($file);
+		$this->files = $this->init_files_internal($files);
+	}
+	/**
+	 * @param array $files
+	 *
+	 * @return array
+	 */
+	protected function init_files_internal ($files) {
+		if (!isset($files['name'])) {
+			foreach ($files as $field => &$file) {
+				$file = $this->init_files_internal($file);
 			}
+			return $files;
+		}
+		if (is_array($files['name'])) {
+			$result = [];
+			foreach (array_keys($files['name']) as $index) {
+				$result[] = $this->normalize_file(
+					[
+						'name'     => $files['name'][$index],
+						'type'     => $files['type'][$index],
+						'size'     => $files['size'][$index],
+						'tmp_name' => @$files['tmp_name'][$index] ?: null,
+						'stream'   => @$files['stream'][$index] ?: null,
+						'error'    => $files['error'][$index]
+					]
+				);
+			}
+			return $result;
+		} else {
+			return $this->normalize_file($files);
 		}
 	}
 	/**
