@@ -9,29 +9,11 @@ namespace cs\Request;
 
 trait Server {
 	/**
-	 * Language accepted by client, `''` by default
+	 * Uppercase method, GET by default
 	 *
 	 * @var string
 	 */
-	public $language;
-	/**
-	 * Version accepted by client, will match `/^[0-9\.]+$/`, useful for API, `1` by default
-	 *
-	 * @var string
-	 */
-	public $version;
-	/**
-	 * Content type, `''` by default
-	 *
-	 * @var string
-	 */
-	public $content_type;
-	/**
-	 * Do not track
-	 *
-	 * @var bool
-	 */
-	public $dnt;
+	public $method;
 	/**
 	 * The best guessed host
 	 *
@@ -39,59 +21,11 @@ trait Server {
 	 */
 	public $host;
 	/**
-	 * The best guessed IP of client (based on all known headers), `$this->remote_addr` by default
-	 *
-	 * @var string
-	 */
-	public $ip;
-	/**
 	 * Schema `http` or `https`
 	 *
 	 * @var string
 	 */
-	public $schema;
-	/**
-	 * Protocol, for instance: `HTTP/1.0`, `HTTP/1.1` (default), HTTP/2.0
-	 *
-	 * @var string
-	 */
-	public $protocol;
-	/**
-	 * Query string
-	 *
-	 * @var string
-	 */
-	public $query_string;
-	/**
-	 * HTTP referer, `''` by default
-	 *
-	 * @var string
-	 */
-	public $referer;
-	/**
-	 * Where request came from, not necessary real IP of client, `127.0.0.1` by default
-	 *
-	 * @var string
-	 */
-	public $remote_addr;
-	/**
-	 * URI
-	 *
-	 * @var string
-	 */
-	public $uri;
-	/**
-	 * Path
-	 *
-	 * @var string
-	 */
-	public $path;
-	/**
-	 * Uppercase method, GET by default
-	 *
-	 * @var string
-	 */
-	public $method;
+	public $scheme;
 	/**
 	 * Is requested with HTTPS
 	 *
@@ -99,16 +33,46 @@ trait Server {
 	 */
 	public $secure;
 	/**
-	 * User agent
+	 * Protocol, for instance: `HTTP/1.0`, `HTTP/1.1` (default), HTTP/2.0
 	 *
 	 * @var string
 	 */
-	public $user_agent;
+	public $protocol;
+	/**
+	 * Path
+	 *
+	 * @var string
+	 */
+	public $path;
+	/**
+	 * URI, basically `$path?$query_string` (without `?` is query string is empty), `/` by default
+	 *
+	 * @var string
+	 */
+	public $uri;
+	/**
+	 * Query string
+	 *
+	 * @var string
+	 */
+	public $query_string;
 	/**
 	 * Headers are normalized to lowercase keys with hyphen as separator, for instance: `connection`, `referer`, `content-type`, `accept-language`
 	 *
 	 * @var string[]
 	 */
+	/**
+	 * Where request came from, not necessary real IP of client, `127.0.0.1` by default
+	 *
+	 * @var string
+	 */
+	public $remote_addr;
+	/**
+	 * The best guessed IP of client (based on all known headers), `$this->remote_addr` by default
+	 *
+	 * @var string
+	 */
+	public $ip;
 	public $headers;
 	/**
 	 * @param string[] $server Typically `$_SERVER`
@@ -119,17 +83,11 @@ trait Server {
 		 * Add some defaults to avoid isset() hell afterwards
 		 */
 		$server += [
-			'HTTP_ACCEPT_LANGUAGE' => '',
-			'HTTP_ACCEPT_VERSION'  => '1',
-			'CONTENT_TYPE'         => '',
-			'HTTP_DNT'             => '0',
-			'QUERY_STRING'         => '',
-			'HTTP_REFERER'         => '',
-			'REMOTE_ADDR'          => '127.0.0.1',
-			'REQUEST_URI'          => '',
-			'REQUEST_METHOD'       => 'GET',
-			'HTTP_USER_AGENT'      => '',
-			'SERVER_PROTOCOL'      => 'HTTP/1.1'
+			'QUERY_STRING'    => '',
+			'REMOTE_ADDR'     => '127.0.0.1',
+			'REQUEST_URI'     => '/',
+			'REQUEST_METHOD'  => 'GET',
+			'SERVER_PROTOCOL' => 'HTTP/1.1'
 		];
 		$this->fill_server_properties($server);
 	}
@@ -137,22 +95,16 @@ trait Server {
 	 * @param string[] $server
 	 */
 	protected function fill_server_properties ($server) {
-		$this->language     = $server['HTTP_ACCEPT_LANGUAGE'];
-		$this->version      = preg_match('/^[0-9\.]+$/', $server['HTTP_ACCEPT_VERSION']) ? $server['HTTP_ACCEPT_VERSION'] : '1';
-		$this->content_type = $server['CONTENT_TYPE'];
-		$this->dnt          = $server['HTTP_DNT'] == 1;
-		$this->secure       = $this->secure($server);
-		$this->schema       = $this->secure ? 'https' : 'http';
-		$this->protocol     = $server['SERVER_PROTOCOL'];
-		$this->host         = $this->host($server);
-		$this->ip           = $this->ip($_SERVER);
-		$this->query_string = $server['QUERY_STRING'];
-		$this->referer      = filter_var($server['HTTP_REFERER'], FILTER_VALIDATE_URL) ? $server['HTTP_REFERER'] : '';
-		$this->remote_addr  = $server['REMOTE_ADDR'];
-		$this->uri          = null_byte_filter(urldecode($server['REQUEST_URI']));
-		$this->path         = explode('?', $this->uri, 2)[0];
 		$this->method       = strtoupper($server['REQUEST_METHOD']);
-		$this->user_agent   = $server['HTTP_USER_AGENT'];
+		$this->host         = $this->host($server);
+		$this->scheme       = $this->secure ? 'https' : 'http';
+		$this->secure       = $this->secure($server);
+		$this->protocol     = $server['SERVER_PROTOCOL'];
+		$this->query_string = $server['QUERY_STRING'];
+		$this->uri          = null_byte_filter(urldecode($server['REQUEST_URI'])) ?: '/';
+		$this->path         = explode('?', $this->uri, 2)[0];
+		$this->remote_addr  = $server['REMOTE_ADDR'];
+		$this->ip           = $this->ip($_SERVER);
 	}
 	/**
 	 * @param string[] $server
@@ -194,7 +146,7 @@ trait Server {
 				}
 			}
 		}
-		return isset($server['REMOTE_ADDR']) ? '127.0.0.1' : '';
+		return $this->remote_addr;
 	}
 	/**
 	 * The best guessed host
@@ -204,7 +156,7 @@ trait Server {
 	 * @return string
 	 */
 	protected function host ($server) {
-		$host          = isset($server['SERVER_NAME']) ? $server['SERVER_NAME'] : '';
+		$host          = @$server['SERVER_NAME'] ?: '';
 		$port          = '';
 		$expected_port = $this->secure ? 443 : 80;
 		if (!$host && isset($server['HTTP_X_FORWARDED_HOST'])) {
@@ -248,9 +200,9 @@ trait Server {
 	 *
 	 * @param string $name
 	 *
-	 * @return false|string Header content if exists or `false` otherwise
+	 * @return string Header content if exists or `false` otherwise
 	 */
 	function header ($name) {
-		return isset($this->headers[$name]) ? $this->headers[$name] : false;
+		return isset($this->headers[$name]) ? $this->headers[$name] : '';
 	}
 }

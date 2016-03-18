@@ -395,7 +395,7 @@ trait Includes {
 	 * Add JS polyfills for IE/Edge
 	 */
 	protected function ie_edge () {
-		if (preg_match('/Trident|Edge/', Request::instance()->user_agent)) {
+		if (preg_match('/Trident|Edge/', Request::instance()->header('user-agent'))) {
 			$this->js_internal(
 				get_files_list(DIR."/includes/js/microsoft_sh*t", "/.*\\.js$/i", 'f', "includes/js/microsoft_sh*t", true),
 				'file',

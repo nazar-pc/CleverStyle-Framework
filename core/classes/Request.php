@@ -72,11 +72,12 @@ class Request {
 		/**
 		 * Support for JSON requests and/or request methods different than POST
 		 */
-		if (preg_match('#^application/([^+\s]+\+)?json#', $this->content_type)) {
+		$content_type = $this->header('content-type');
+		if (preg_match('#^application/([^+\s]+\+)?json#', $content_type)) {
 			return _json_decode(@file_get_contents('php://input')) ?: [];
 		} elseif (
 			$this->method !== 'POST' &&
-			strpos($this->content_type, 'application/x-www-form-urlencoded') === 0
+			strpos($content_type, 'application/x-www-form-urlencoded') === 0
 		) {
 			@parse_str(file_get_contents('php://input'), $result);
 			return $result;

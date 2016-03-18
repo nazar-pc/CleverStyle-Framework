@@ -98,10 +98,10 @@ trait Route {
 		 * Search for url matching in all mirrors
 		 */
 		foreach ($Config->core['url'] as $i => $address) {
-			list($schema, $urls) = explode('://', $address, 2);
+			list($scheme, $urls) = explode('://', $address, 2);
 			if (
 				$this->mirror_index === -1 &&
-				$schema == $this->schema
+				$scheme == $this->scheme
 			) {
 				foreach (explode(';', $urls) as $url) {
 					if (mb_strpos("$this->host/$this->path", "$url/") === 0) {
@@ -111,7 +111,7 @@ trait Route {
 				}
 			}
 		}
-		unset($address, $i, $urls, $url, $schema);
+		unset($address, $i, $urls, $url, $scheme);
 		/**
 		 * If match was not found - mirror is not allowed!
 		 */

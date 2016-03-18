@@ -144,7 +144,7 @@ class Language implements JsonSerializable {
 			explode(
 				',',
 				strtolower(
-					strtr(Request::instance()->language, '-', '_')
+					strtr(Request::instance()->header('accept-language'), '-', '_')
 				)
 			)
 		);

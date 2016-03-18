@@ -1,13 +1,13 @@
 {
 	"package"     : "Old_IE",
 	"category"    : "plugins",
-	"version"     : "1.3.0+build-4",
+	"version"     : "1.4.0+build-5",
 	"description" : "Plugin to bring frontend polyfills and hacks for IE10 support",
 	"author"      : "Nazar Mokrynskyi",
 	"website"     : "cleverstyle.org/cms",
 	"license"     : "MIT License",
 	"require"     : [
-		"System>=3.183",
+		"System>=3.196",
 		"System<4.0"
 	]
 }

@@ -79,7 +79,7 @@ class Controller {
 			self::redirect();
 			return;
 		}
-		$referer = Request::instance()->referer;
+		$referer = Request::instance()->header('referer');
 		/**
 		 * If referer is internal website address, but not HybridAuth module - save referer to cookie
 		 */

@@ -321,13 +321,13 @@ class OAuth2 {
 		) {
 			return false;
 		}
-		$Request             = Request::instance();
-		$user_agent          = $Request->user_agent;
-		$current_session     = $Session->get_id();
-		$Request->user_agent = "OAuth2-$client[name]-$client[id]";
+		$Request                        = Request::instance();
+		$user_agent                     = $Request->header('user-agent');
+		$current_session                = $Session->get_id();
+		$Request->headers['user-agent'] = "OAuth2-$client[name]-$client[id]";
 		$Session->add($Session->get_user(), false);
-		$new_session         = $Session->get_id();
-		$Request->user_agent = $user_agent;
+		$new_session                    = $Session->get_id();
+		$Request->headers['user-agent'] = $user_agent;
 		$Session->load($current_session);
 		unset($user_agent, $current_session);
 		/** @noinspection LoopWhichDoesNotLoopInspection */

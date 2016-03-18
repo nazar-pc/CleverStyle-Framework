@@ -14,7 +14,7 @@ Event::instance()->on(
 	'System/Page/display/before',
 	function () {
 		if (
-			strpos(Request::instance()->user_agent, 'MSIE 10') !== false &&
+			strpos(Request::instance()->header('user-agent'), 'MSIE 10') !== false &&
 			in_array('Old_IE', Config::instance()->components['plugins'])
 		) {
 			Page::instance()->Head .=

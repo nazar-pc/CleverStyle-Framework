@@ -255,7 +255,7 @@ class Config {
 	 */
 	function core_url () {
 		$Request = Request::instance();
-		return "$Request->schema://$Request->host";
+		return "$Request->scheme://$Request->host";
 	}
 	/**
 	 * Get object for getting db and storage configuration of module

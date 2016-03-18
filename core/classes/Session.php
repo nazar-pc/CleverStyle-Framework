@@ -119,7 +119,7 @@ class Session {
 		/**
 		 * For bots: login is user agent, email is IP
 		 */
-		$login    = $Request->user_agent;
+		$login    = $Request->header('user-agent');
 		$email    = $Request->ip;
 		$bot_hash = hash('sha224', $login.$email);
 		/**
@@ -363,7 +363,7 @@ class Session {
 		 */
 		if ($user_agent === null && $remote_addr === null && $ip === null) {
 			$Request     = Request::instance();
-			$user_agent  = $Request->user_agent;
+			$user_agent  = $Request->header('user-agent');
 			$remote_addr = $Request->remote_addr;
 			$ip          = $Request->ip;
 		}
@@ -540,7 +540,7 @@ class Session {
 			'user'        => $user,
 			'created'     => time(),
 			'expire'      => $expire,
-			'user_agent'  => $Request->user_agent,
+			'user_agent'  => $Request->header('user-agent'),
 			'remote_addr' => $remote_addr,
 			'ip'          => $ip,
 			'data'        => []

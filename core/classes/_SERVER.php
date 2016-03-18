@@ -40,24 +40,26 @@ class _SERVER implements ArrayAccess, Iterator {
 	function __get ($key) {
 		$Request = Request::instance();
 		switch ($key) {
-			case 'language':
-			case 'version':
-			case 'content_type':
-			case 'dnt':
 			case 'secure':
 			case 'host':
 			case 'ip':
 			case 'query_string':
-			case 'referer':
 			case 'remote_addr':
-			case 'user_agent':
 				return $Request->$key;
+			case 'content_type':
+			case 'dnt':
+			case 'referer':
+			case 'user_agent':
+				return $Request->header($key);
+			case 'language':
+			case 'version':
+				return $Request->header("accept-$key");
 			case 'request_method':
 				return $Request->method;
 			case 'request_uri':
 				return $this->_SERVER['REQUEST_URI'];
 			case 'protocol':
-				return $Request->schema;
+				return $Request->scheme;
 			default:
 				return false;
 		}

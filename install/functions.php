@@ -132,7 +132,7 @@ function install_process ($fs, $argv = null) {
 		$url = $_POST['site_url'];
 	} else {
 		$Request->init_from_globals();
-		$url = "$Request->schema://$Request->host$Request->path";
+		$url = "$Request->scheme://$Request->host$Request->path";
 		$url = implode('/', array_slice(explode('/', $url), 0, -2));    //Remove 2 last items
 	}
 	preg_match('#//([^/]+)#', $url, $domain);
