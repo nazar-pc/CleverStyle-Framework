@@ -27,7 +27,7 @@ class Response {
 	 *
 	 * Values might be strings in case of single value or array of strings in case of multiple values with the same field name
 	 *
-	 * @var string[]|string[][]
+	 * @var string[][]
 	 */
 	public $headers;
 	/**
