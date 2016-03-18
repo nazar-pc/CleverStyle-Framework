@@ -6,8 +6,6 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\Request;
-use
-	cs\Config;
 
 /**
  * Trait is here only to provide compatibility when request object is passed as first argument into controller
