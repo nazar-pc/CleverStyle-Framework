@@ -36,10 +36,11 @@
           var target;
           this$._tinymce_editor = editor;
           this$._init_started = false;
-          editor.load();
           if (this$.value !== undefined && this$.value !== editor.getContent()) {
             editor.setContent(this$.value);
             editor.save();
+          } else {
+            editor.load();
           }
           target = editor.targetElm;
           target._original_focus = target.focus;

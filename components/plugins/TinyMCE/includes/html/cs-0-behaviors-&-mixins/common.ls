@@ -30,12 +30,13 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 				init_instance_callback	: (editor) !~>
 					@_tinymce_editor	= editor
 					@_init_started		= false
-					# In case if something was changed during initialization
-					editor.load()
 					# There is a chance that `value` property of editor element was changed, in this case we need to re-initialize it as well
 					if @value != undefined && @value != editor.getContent()
 						editor.setContent(@value)
 						editor.save()
+					else
+						# In case if something was changed during initialization
+						editor.load()
 					# Forward focus from plain textarea to editor
 					target					= editor.targetElm
 					target._original_focus	= target.focus
