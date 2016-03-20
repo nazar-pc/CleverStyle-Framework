@@ -184,7 +184,7 @@ class Response implements \ArrayAccess, \Iterator {
 		if (is_resource($this->body_stream)) {
 			$position = ftell($this->body_stream);
 			rewind($this->body_stream);
-			stream_copy_to_stream($this->body_stream, fopen('php:://output', 'w'));
+			stream_copy_to_stream($this->body_stream, fopen('php:://output', 'bw'));
 			fseek($this->body_stream, $position);
 		} else {
 			echo $this->body;
