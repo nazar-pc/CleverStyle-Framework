@@ -67,7 +67,12 @@ trait Data_and_files {
 		} else {
 			$this->data_stream = $data_stream;
 		}
-		$this->parse_data_stream();
+		/**
+		 * If we don't appear to have any data or files detected - probably, we need to parse request ourselves
+		 */
+		if (!$this->data && !$this->files && is_resource($this->data_stream)) {
+			$this->parse_data_stream();
+		}
 		// Hack: for compatibility we'll override $_POST since it might be filled during parsing
 		$_POST = $this->data;
 	}
@@ -152,11 +157,6 @@ trait Data_and_files {
 	 * @throws ExitException
 	 */
 	protected function parse_data_stream () {
-		if ($this->data || $this->files || !is_resource($this->data_stream)) {
-			return;
-		}
-		$this->data   = [];
-		$this->files  = [];
 		$content_type = $this->header('content-type');
 		/**
 		 * application/json
