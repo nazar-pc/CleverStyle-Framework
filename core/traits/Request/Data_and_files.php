@@ -7,6 +7,7 @@
  */
 namespace cs\Request;
 use
+	UnexpectedValueException,
 	cs\ExitException;
 
 trait Data_and_files {
@@ -151,7 +152,7 @@ trait Data_and_files {
 	 * @throws ExitException
 	 */
 	protected function parse_data_stream () {
-		if ($this->data || $this->files) {
+		if ($this->data || $this->files || !is_resource($this->data_stream)) {
 			return;
 		}
 		$this->data   = [];
@@ -175,10 +176,15 @@ trait Data_and_files {
 		 * multipart/form-data
 		 */
 		if (preg_match('#multipart/form-data;.*boundary="?([^;"]{1,70})(?:"|;|$)#Ui', $content_type, $matches)) {
-			$parts = $this->parse_multipart_into_parts($this->data_stream, trim($matches[1])) ?: [];
-			list($this->data, $files) = $this->parse_multipart_analyze_parts($this->data_stream, $parts);
-			$this->files = $this->normalize_files($files);
+			try {
+				$parts = $this->parse_multipart_into_parts($this->data_stream, trim($matches[1])) ?: [];
+				list($this->data, $files) = $this->parse_multipart_analyze_parts($this->data_stream, $parts);
+				$this->files = $this->normalize_files($files);
+			} catch (UnexpectedValueException $e) {
+				// Do nothing, if parsing failed then we'll just leave `::$data` and `::$files` empty
+			}
 		}
+		rewind($this->data_stream);
 	}
 	/**
 	 * Parse content stream
@@ -188,6 +194,7 @@ trait Data_and_files {
 	 *
 	 * @return array[]|false
 	 *
+	 * @throws UnexpectedValueException
 	 * @throws ExitException
 	 */
 	protected function parse_multipart_into_parts ($stream, $boundary) {
@@ -195,17 +202,12 @@ trait Data_and_files {
 		$crlf     = "\r\n";
 		$position = 0;
 		$body     = '';
-		$result   = $this->parse_multipart_find($stream, $body, "--$boundary$crlf");
-		if ($result === false) {
-			return false;
-		}
-		list($offset, $body) = $result;
+		list($offset, $body) = $this->parse_multipart_find($stream, $body, "--$boundary$crlf");
 		/**
 		 * strlen doesn't take into account trailing CRLF since we'll need it in loop below
 		 */
 		$position += $offset + strlen("--$boundary");
 		$body = substr($body, strlen("--$boundary"));
-		$body .= fread($stream, 1024);
 		/**
 		 * Each part always starts with CRLF
 		 */
@@ -232,11 +234,7 @@ trait Data_and_files {
 				/**
 				 * Find headers end in order to determine size
 				 */
-				$result = $this->parse_multipart_find($stream, $body, $crlf.$crlf);
-				if ($result === false) {
-					return false;
-				}
-				list($offset, $body) = $result;
+				list($offset, $body) = $this->parse_multipart_find($stream, $body, $crlf.$crlf);
 				$part['headers']['size'] = $offset;
 				$position += $offset + 4;
 				$body = substr($body, 4);
@@ -245,18 +243,13 @@ trait Data_and_files {
 			/**
 			 * Find body end in order to determine its size
 			 */
-			$result = $this->parse_multipart_find($stream, $body, "$crlf--$boundary");
-			if ($result === false) {
-				return false;
-			}
-			list($offset, $body) = $result;
+			list($offset, $body) = $this->parse_multipart_find($stream, $body, "$crlf--$boundary");
 			$part['body']['size'] = $offset;
 			$position += $offset + strlen("$crlf--$boundary");
 			$body = substr($body, strlen("$crlf--$boundary"));
-			if (!$part['headers']['size']) {
+			if ($part['headers']['size']) {
 				$parts[] = $part;
 			}
-			$body .= fread($stream, 1024);
 		}
 		/**
 		 * Last boundary after all parts ends with '--' and we don't care what rubbish happens after it
@@ -306,8 +299,7 @@ trait Data_and_files {
 					$file['type']     = '';
 					$file['tmp_name'] = '';
 					$file['error']    = UPLOAD_ERR_NO_FILE;
-				}
-				if ($file['size'] > $this->upload_max_file_size()) {
+				} elseif ($file['size'] > $this->upload_max_file_size()) {
 					$file['tmp_name'] = '';
 					$file['error']    = UPLOAD_ERR_INI_SIZE;
 				}
@@ -362,14 +354,16 @@ trait Data_and_files {
 	 * @param string   $next_data
 	 * @param string   $target
 	 *
-	 * @return array|false
+	 * @return array
+	 *
+	 * @throws UnexpectedValueException
 	 */
 	protected function parse_multipart_find ($stream, $next_data, $target) {
 		$offset    = 0;
 		$prev_data = '';
 		while (($found = strpos($prev_data.$next_data, $target)) === false) {
 			if (feof($stream)) {
-				return false;
+				throw new UnexpectedValueException;
 			}
 			if ($prev_data) {
 				$offset += strlen($prev_data);
@@ -378,7 +372,10 @@ trait Data_and_files {
 			$next_data = fread($stream, 1024);
 		}
 		$offset += $found;
-		$remainder = substr($prev_data.$next_data, $found);
+		/**
+		 * Read some more bytes so that we'll always have some remainder in place, since empty remainder might cause problems with `strpos()` call later
+		 */
+		$remainder = substr($prev_data.$next_data, $found).(fread($stream, 1024) ?: '');
 		return [$offset, $remainder];
 	}
 	/**
