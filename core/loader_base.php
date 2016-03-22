@@ -73,7 +73,11 @@ define('PUBLIC_CACHE', STORAGE.'/pcache');
 define('THEMES', DIR.'/themes');
 
 /**
- * Register request data stream and request file stream that are used by system when handling requests data and uploaded files
+ * Request data stream and request file stream wrappers that are used by system when handling requests data and uploaded files
  */
 stream_wrapper_register('request-data', cs\Request\Data_sub_stream::class);
 stream_wrapper_register('request-file', cs\Request\File_stream::class);
+/**
+ * Stream wrapper for PSR7 interface
+ */
+stream_wrapper_register('request-psr7-data', cs\Request\Psr7_data_stream::class);

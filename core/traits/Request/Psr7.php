@@ -6,8 +6,6 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\Request;
-use
-	Exception;
 
 trait Psr7 {
 	/**
@@ -62,75 +60,12 @@ trait Psr7 {
 		$this->query = $request->getQueryParams();
 	}
 	/**
-	 * @todo Implement custom stream wrapper for files and data in general in order to avoid data duplication
-	 *
 	 * @param \Psr\Http\Message\ServerRequestInterface $request
 	 *
 	 * @throws \cs\ExitException
 	 */
 	protected function from_psr7_data_and_files ($request) {
-		$data         = [];
-		$data_stream  = null;
-		$content_type = $this->header('content-type');
-		$body_stream  = $request->getBody();
-		if (preg_match('#^application/([^+\s]+\+)?json#', $content_type)) {
-			$data = _json_decode((string)$body_stream) ?: [];
-		} elseif (strpos($content_type, 'application/x-www-form-urlencoded') === 0) {
-			@parse_str((string)$body_stream, $data);
-		} else {
-			try {
-				$position = $body_stream->tell();
-				$body_stream->rewind();
-				$data_stream = fopen('php://temp', 'w+b');
-				while (!$body_stream->eof()) {
-					fwrite($data_stream, $body_stream->read(1024));
-				}
-				$body_stream->seek($position);
-			} catch (Exception $e) {
-				// Do nothing
-			}
-		}
-		$this->init_data_and_files(
-			$data,
-			$this->from_psr7_files_internal(
-				$request->getUploadedFiles()
-			),
-			$data_stream
-		);
-	}
-	/**
-	 * @param array|\Psr\Http\Message\UploadedFileInterface $files
-	 *
-	 * @return array|\Psr\Http\Message\UploadedFileInterface
-	 */
-	protected function from_psr7_files_internal ($files) {
-		if (is_array($files)) {
-			foreach ($files as $field => &$file) {
-				$file = $this->from_psr7_files_internal($file);
-				if (!$file) {
-					unset($files[$field]);
-				}
-			}
-			return $files;
-		}
-		try {
-			$source_file_stream = $files->getStream();
-			$position           = $source_file_stream->tell();
-			$source_file_stream->rewind();
-			$file_stream = fopen('php://temp', 'w+b');
-			while (!$source_file_stream->eof()) {
-				fwrite($file_stream, $source_file_stream->read(1024));
-			}
-			$source_file_stream->seek($position);
-		} catch (Exception $e) {
-			return [];
-		}
-		return [
-			'name'   => $files->getClientFilename(),
-			'type'   => $files->getClientMediaType(),
-			'size'   => $files->getSize(),
-			'stream' => $file_stream,
-			'error'  => $files->getError()
-		];
+		Psr7_data_stream::$stream = $request->getBody();
+		$this->init_data_and_files([], [], fopen('request-psr7-data://', 'r'));
 	}
 }

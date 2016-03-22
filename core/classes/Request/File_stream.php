@@ -48,7 +48,7 @@ class File_stream {
 		return fread($this->stream, $length);
 	}
 	/**
-	 * @return int
+	 * @return false|int
 	 */
 	function stream_tell () {
 		return ftell($this->stream);

@@ -62,7 +62,6 @@ trait Data_and_files {
 		if ($copy_stream && is_resource($data_stream)) {
 			$this->data_stream = fopen('php://temp', 'w+b');
 			stream_copy_to_stream($data_stream, $this->data_stream);
-			rewind($this->data_stream);
 			fclose($data_stream);
 		} else {
 			$this->data_stream = $data_stream;
@@ -144,7 +143,7 @@ trait Data_and_files {
 			$file['stream'] = fopen($file['tmp_name'], 'rb');
 		}
 		if (isset($file['stream']) && !$file['tmp_name']) {
-			$file['tmp_name'] = "request-file://".$file_path;
+			$file['tmp_name'] = "request-file://$file_path";
 		}
 		if ($file['tmp_name'] === null && $file['stream'] === null) {
 			$file['error'] = UPLOAD_ERR_NO_FILE;
@@ -158,6 +157,7 @@ trait Data_and_files {
 	 */
 	protected function parse_data_stream () {
 		$content_type = $this->header('content-type');
+		rewind($this->data_stream);
 		/**
 		 * application/json
 		 */
@@ -184,7 +184,6 @@ trait Data_and_files {
 				// Do nothing, if parsing failed then we'll just leave `::$data` and `::$files` empty
 			}
 		}
-		rewind($this->data_stream);
 	}
 	/**
 	 * Parse content stream
