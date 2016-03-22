@@ -7,8 +7,7 @@
  */
 namespace cs\Request;
 use
-	Exception,
-	cs\ExitException;
+	Exception;
 
 trait Psr7 {
 	/**
@@ -67,7 +66,7 @@ trait Psr7 {
 	 *
 	 * @param \Psr\Http\Message\ServerRequestInterface $request
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	protected function from_psr7_data_and_files ($request) {
 		$data         = [];
