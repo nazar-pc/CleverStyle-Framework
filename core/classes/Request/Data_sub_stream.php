@@ -115,24 +115,24 @@ class Data_sub_stream {
 	 * @param int $offset
 	 * @param int $whence
 	 *
-	 * @return bool
+	 * @return int
 	 */
 	function stream_seek ($offset, $whence = SEEK_SET) {
 		if ($whence == SEEK_SET && $offset >= 0 && $offset < $this->size) {
 			$this->position = $offset;
-			return true;
+			return 0;
 		}
 		$position = $this->position + $offset;
 		if ($whence == SEEK_CUR && $offset >= 0 && $position < $this->size) {
 			$this->position = $position;
-			return true;
+			return 0;
 		}
 		$position = $this->size + $offset;
 		if ($whence == SEEK_END && $offset <= 0 && $position >= 0) {
 			$this->position = $position;
-			return true;
+			return 0;
 		}
-		return false;
+		return -1;
 	}
 	/**
 	 * @return array

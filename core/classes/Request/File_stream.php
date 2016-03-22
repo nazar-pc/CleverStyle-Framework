@@ -63,7 +63,7 @@ class File_stream {
 	 * @param int $offset
 	 * @param int $whence
 	 *
-	 * @return bool
+	 * @return int
 	 */
 	function stream_seek ($offset, $whence = SEEK_SET) {
 		return fseek($this->stream, $offset, $whence);

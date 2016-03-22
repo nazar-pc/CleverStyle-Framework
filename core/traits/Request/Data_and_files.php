@@ -175,7 +175,8 @@ trait Data_and_files {
 		 * multipart/form-data
 		 */
 		if (preg_match('#multipart/form-data;.*boundary="?([^;"]{1,70})(?:"|;|$)#Ui', $content_type, $matches)) {
-			list($this->data, $files) = $this->parse_multipart($this->data_stream, trim($matches[1])) ?: [[], []];
+			$parts = $this->parse_multipart_into_parts($this->data_stream, trim($matches[1])) ?: [];
+			list($this->data, $files) = $this->parse_multipart_analyze_parts($this->data_stream, $parts);
 			$this->files = $this->normalize_files($files);
 		}
 	}
@@ -185,11 +186,11 @@ trait Data_and_files {
 	 * @param resource $stream
 	 * @param string   $boundary
 	 *
-	 * @return array[]|bool
+	 * @return array[]|false
 	 *
 	 * @throws ExitException
 	 */
-	protected function parse_multipart ($stream, $boundary) {
+	protected function parse_multipart_into_parts ($stream, $boundary) {
 		$parts    = [];
 		$crlf     = "\r\n";
 		$position = 0;
@@ -251,8 +252,10 @@ trait Data_and_files {
 			list($offset, $body) = $result;
 			$part['body']['size'] = $offset;
 			$position += $offset + strlen("$crlf--$boundary");
-			$body    = substr($body, strlen("$crlf--$boundary"));
-			$parts[] = $part;
+			$body = substr($body, strlen("$crlf--$boundary"));
+			if (!$part['headers']['size']) {
+				$parts[] = $part;
+			}
 			$body .= fread($stream, 1024);
 		}
 		/**
@@ -268,12 +271,18 @@ trait Data_and_files {
 		if ($position + strlen($body) > $post_max_size) {
 			throw new ExitException(413);
 		}
+		return $parts;
+	}
+	/**
+	 * @param resource $stream
+	 * @param array[]  $parts
+	 *
+	 * @return array[]
+	 */
+	protected function parse_multipart_analyze_parts ($stream, $parts) {
 		$data  = [];
 		$files = [];
 		foreach ($parts as $part) {
-			if (!$part['headers']['size']) {
-				continue;
-			}
 			fseek($stream, $part['headers']['offset']);
 			$headers = $this->parse_multipart_headers(
 				fread($stream, $part['headers']['size'])
@@ -331,7 +340,7 @@ trait Data_and_files {
 			case 'k';
 				$post_max_size = (int)$post_max_size * 1024;
 		}
-		return $post_max_size ?: PHP_INT_MAX;
+		return (int)$post_max_size ?: PHP_INT_MAX;
 	}
 	/**
 	 * @return int
@@ -346,14 +355,14 @@ trait Data_and_files {
 			case 'k';
 				$upload_max_file_size = (int)$upload_max_file_size * 1024;
 		}
-		return $upload_max_file_size ?: PHP_INT_MAX;
+		return (int)$upload_max_file_size ?: PHP_INT_MAX;
 	}
 	/**
 	 * @param resource $stream
 	 * @param string   $next_data
 	 * @param string   $target
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	protected function parse_multipart_find ($stream, $next_data, $target) {
 		$offset    = 0;
