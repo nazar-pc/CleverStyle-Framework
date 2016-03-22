@@ -77,7 +77,7 @@ class App {
 		$Request->api_path || $this->render_blocks();
 		Event::instance()->fire('System/Index/load/after');
 		Event::instance()->fire('System/App/render/after');
-		Page::instance()->__finish();
+		Page::instance()->render();
 	}
 	/**
 	 * @param bool    $closed_site

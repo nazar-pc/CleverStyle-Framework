@@ -16,6 +16,11 @@ class Page {
 		Singleton,
 		Includes;
 	public $Content;
+	/**
+	 * If `false` - only page content will be shown, without the rest of interface (useful for AJAX request, though for API it is set to `false` automatically)
+	 *
+	 * @var bool
+	 */
 	public $interface   = true;
 	public $pre_Html    = '';
 	public $Html        = '';
@@ -98,6 +103,8 @@ class Page {
 	/**
 	 * Initialization: setting of title and theme according to system configuration
 	 *
+	 * @todo Probably, make public and add resetting here in order to avoid complete object recreation
+	 *
 	 * @return Page
 	 */
 	protected function init () {
@@ -142,8 +149,8 @@ class Page {
 	 */
 	function json ($add) {
 		Response::instance()->header('content-type', 'application/json; charset=utf-8');
-		interface_off();
-		$this->Content = _json_encode($add);
+		$this->interface = false;
+		$this->Content   = _json_encode($add);
 		return $this;
 	}
 	/**
@@ -454,7 +461,6 @@ class Page {
 			$this->Content = '';
 			return;
 		}
-		interface_off();
 		$status_text       = status_code_string($error_code);
 		$error_description = $status_text;
 		if (is_array($custom_text)) {
@@ -485,16 +491,20 @@ class Page {
 		$Response->body = $this->Content;
 	}
 	/**
-	 * @todo refactor this into something meaningful, should not be this way
-	 *
+	 * @deprecated Use `cs\Page::render()` instead
+	 */
+	function __finish () {
+		$this->render();
+	}
+	/**
 	 * Provides next events:
-	 *  System/Page/display/before
+	 *  System/Page/render/before
 	 *
-	 *  System/Page/display/after
+	 *  System/Page/render/after
 	 *
 	 * Page generation
 	 */
-	function __finish () {
+	function render () {
 		/**
 		 * Protection from double calling
 		 */
@@ -518,6 +528,7 @@ class Page {
 			$Response->body = $this->process_replacing($this->Content ?: ($api_path ? 'null' : ''));
 		} else {
 			Event::instance()->fire('System/Page/display/before');
+			Event::instance()->fire('System/Page/render/before');
 			/**
 			 * Processing of template, substituting of content, preparing for the output
 			 */
@@ -527,6 +538,7 @@ class Page {
 			 */
 			$this->Html = $this->process_replacing($this->Html);
 			Event::instance()->fire('System/Page/display/after');
+			Event::instance()->fire('System/Page/render/after');
 			$Response->body = rtrim($this->Html);
 		}
 	}
