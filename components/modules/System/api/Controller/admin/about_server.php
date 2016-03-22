@@ -21,15 +21,16 @@ trait about_server {
 	static function admin_about_server_get () {
 		$Core = Core::instance();
 		$L    = new Prefix('system_filesize_');
-		$hhvm = defined('HHVM_VERSION');
 		Page::instance()->json(
 			[
 				'operating_system' => php_uname('s').' '.php_uname('r').' '.php_uname('v'),
 				'server_type'      => static::admin_about_server_get_server_api(),
-				'available_ram'    => $hhvm ? '' : str_replace(
-					['K', 'M', 'G'],
-					[" $L->KiB", " $L->MiB", " $L->GiB"],
-					ini_get('memory_limit')
+				'available_ram'    => format_filesize(
+					str_replace(
+						['K', 'M', 'G'],
+						[" $L->KiB", " $L->MiB", " $L->GiB"],
+						ini_get('memory_limit')
+					)
 				),
 				'php_extensions'   => [
 					'openssl'   => extension_loaded('openssl'),
@@ -57,19 +58,19 @@ trait about_server {
 						str_replace(
 							['K', 'M', 'G'],
 							[" $L->KiB", " $L->MiB", " $L->GiB"],
-							ini_get('upload_max_filesize')
+							ini_get('upload_max_filesize') ?: ini_get('hhvm.server.upload.upload_max_file_size')
 						)
 					),
 					'post_max_size'          => format_filesize(
 						str_replace(
 							['K', 'M', 'G'],
 							[" $L->KiB", " $L->MiB", " $L->GiB"],
-							ini_get('post_max_size')
+							ini_get('post_max_size') ?: ini_get('hhvm.server.max_post_size')
 						)
 					),
-					'max_execution_time'     => $hhvm ? '' : format_time(ini_get('max_execution_time')),
-					'max_input_time'         => $hhvm ? '' : format_time(ini_get('max_input_time')),
-					'default_socket_timeout' => $hhvm ? '' : format_time(ini_get('default_socket_timeout')),
+					'max_execution_time'     => format_time(ini_get('max_execution_time')),
+					'max_input_time'         => format_time(ini_get('max_input_time') ?: ini_get('hhvm.http.default_timeout')),
+					'default_socket_timeout' => format_time(ini_get('default_socket_timeout')),
 					'allow_url_fopen'        => (bool)ini_get('allow_url_fopen'),
 					'display_errors'         => (bool)ini_get('display_errors'),
 				]
