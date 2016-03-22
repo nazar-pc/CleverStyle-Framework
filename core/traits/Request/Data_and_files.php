@@ -1,0 +1,424 @@
+<?php
+/**
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+namespace cs\Request;
+use
+	cs\ExitException;
+
+trait Data_and_files {
+	/**
+	 * Data array, similar to `$_POST`
+	 *
+	 * @var array
+	 */
+	public $data;
+	/**
+	 * Normalized files array
+	 *
+	 * Each file item can be either single file or array of files (in contrast with native PHP arrays where each field like `name` become an array) with keys
+	 * `name`, `type`, `size`, `tmp_name`, `stream` and `error`
+	 *
+	 * `name`, `type`, `size` and `error` keys are similar to native PHP fields in `$_FILES`; `tmp_name` might not be temporary file, but file descriptor
+	 * wrapper like `request-file:///file` instead and `stream` is resource like obtained with `fopen('/tmp/xyz', 'rb')`
+	 *
+	 * @var array[]
+	 */
+	public $files;
+	/**
+	 * Data stream resource, similar to `fopen('php://input', 'rb')`
+	 *
+	 * Make sure you're controlling position in stream where you read something, if code in some other place might seek on this stream
+	 *
+	 * Stream is read-only
+	 *
+	 * @var null|resource
+	 */
+	public $data_stream;
+	/**
+	 * `$this->init_server()` assumed to be called already
+	 *
+	 * @param array                $data        Typically `$_POST`
+	 * @param array[]              $files       Typically `$_FILES`; might be like native PHP array `$_FILES` or normalized; each file item MUST contain keys
+	 *                                          `name`, `type`, `size`, `error` and at least one of `tmp_name` or `stream`
+	 * @param null|resource|string $data_stream String, like `php://input` or resource, like `fopen('php://input', 'rb')` with request body, will be parsed for
+	 *                                          data and files if necessary
+	 * @param bool                 $copy_stream Sometimes data stream can only being read once (like most of times with `php://input`), so it is necessary to
+	 *                                          copy it and store its contents for longer period of time
+	 *
+	 * @throws ExitException
+	 */
+	function init_data_and_files ($data = [], $files = [], $data_stream = null, $copy_stream = true) {
+		if (is_resource($this->data_stream)) {
+			fclose($this->data_stream);
+		}
+		$this->data  = $data;
+		$this->files = $this->normalize_files($files);
+		$data_stream = is_string($data_stream) ? fopen($data_stream, 'rb') : $data_stream;
+		if ($copy_stream && is_resource($data_stream)) {
+			$this->data_stream = fopen('php://temp', 'w+b');
+			stream_copy_to_stream($data_stream, $this->data_stream);
+			rewind($this->data_stream);
+			fclose($data_stream);
+		} else {
+			$this->data_stream = $data_stream;
+		}
+		$this->parse_data_stream();
+		// Hack: for compatibility we'll override $_POST since it might be filled during parsing
+		$_POST = $this->data;
+	}
+	/**
+	 * Get data item by name
+	 *
+	 * @param string|string[] $name
+	 *
+	 * @return false|mixed|mixed[] Data if exists or `false` otherwise (in case if `$name` is an array even one missing key will cause the whole thing to fail)
+	 */
+	function data ($name) {
+		if (is_array($name)) {
+			foreach ($name as &$n) {
+				if (!isset($this->data[$n])) {
+					return false;
+				}
+				$n = $this->data[$n];
+			}
+			return $name;
+		}
+		/** @noinspection OffsetOperationsInspection */
+		return isset($this->data[$name]) ? $this->data[$name] : false;
+	}
+	/**
+	 * @param array[] $files
+	 * @param string  $file_path
+	 *
+	 * @return array[]
+	 */
+	protected function normalize_files ($files, $file_path = '') {
+		if (!isset($files['name'])) {
+			foreach ($files as $field => &$file) {
+				$file = $this->normalize_files($file, "$file_path/$field");
+			}
+			return $files;
+		}
+		if (is_array($files['name'])) {
+			$result = [];
+			foreach (array_keys($files['name']) as $index) {
+				$result[] = $this->normalize_file(
+					[
+						'name'     => $files['name'][$index],
+						'type'     => $files['type'][$index],
+						'size'     => $files['size'][$index],
+						'tmp_name' => @$files['tmp_name'][$index] ?: null,
+						'stream'   => @$files['stream'][$index] ?: null,
+						'error'    => $files['error'][$index]
+					],
+					$file_path
+				);
+			}
+			return $result;
+		} else {
+			return $this->normalize_file($files, $file_path);
+		}
+	}
+	/**
+	 * @param array  $file
+	 * @param string $file_path
+	 *
+	 * @return array
+	 */
+	protected function normalize_file ($file, $file_path) {
+		$file += [
+			'tmp_name' => null,
+			'stream'   => null
+		];
+		if (isset($file['tmp_name']) && $file['stream'] === null) {
+			$file['stream'] = fopen($file['tmp_name'], 'rb');
+		}
+		if (isset($file['stream']) && !$file['tmp_name']) {
+			$file['tmp_name'] = "request-file://".$file_path;
+		}
+		if ($file['tmp_name'] === null && $file['stream'] === null) {
+			$file['error'] = UPLOAD_ERR_NO_FILE;
+		}
+		return $file;
+	}
+	/**
+	 * Parsing request body for following Content-Type: `application/json`, `application/x-www-form-urlencoded` and `multipart/form-data`
+	 *
+	 * @throws ExitException
+	 */
+	protected function parse_data_stream () {
+		if ($this->data || $this->files) {
+			return;
+		}
+		$this->data   = [];
+		$this->files  = [];
+		$content_type = $this->header('content-type');
+		/**
+		 * application/json
+		 */
+		if (preg_match('#^application/([^+\s]+\+)?json#', $content_type)) {
+			$this->data = _json_decode(stream_get_contents($this->data_stream)) ?: [];
+			return;
+		}
+		/**
+		 * application/x-www-form-urlencoded
+		 */
+		if (strpos($content_type, 'application/x-www-form-urlencoded') === 0) {
+			@parse_str(stream_get_contents($this->data_stream), $this->data);
+			return;
+		}
+		/**
+		 * multipart/form-data
+		 */
+		if (preg_match('#multipart/form-data;.*boundary="?([^;"]{1,70})(?:"|;|$)#Ui', $content_type, $matches)) {
+			list($this->data, $files) = $this->parse_multipart($this->data_stream, trim($matches[1])) ?: [[], []];
+			$this->files = $this->normalize_files($files);
+		}
+	}
+	/**
+	 * Parse content stream
+	 *
+	 * @param resource $stream
+	 * @param string   $boundary
+	 *
+	 * @return array[]|bool
+	 *
+	 * @throws ExitException
+	 */
+	protected function parse_multipart ($stream, $boundary) {
+		$parts    = [];
+		$crlf     = "\r\n";
+		$position = 0;
+		$body     = '';
+		$result   = $this->parse_multipart_find($stream, $body, "--$boundary$crlf");
+		if ($result === false) {
+			return false;
+		}
+		list($offset, $body) = $result;
+		/**
+		 * strlen doesn't take into account trailing CRLF since we'll need it in loop below
+		 */
+		$position += $offset + strlen("--$boundary");
+		$body = substr($body, strlen("--$boundary"));
+		$body .= fread($stream, 1024);
+		/**
+		 * Each part always starts with CRLF
+		 */
+		while (strpos($body, $crlf) === 0) {
+			$position += 2;
+			$body = substr($body, 2);
+			$part = [
+				'headers' => [
+					'offset' => $position,
+					'size'   => 0
+				],
+				'body'    => [
+					'offset' => 0,
+					'size'   => 0
+				]
+			];
+			if (strpos($body, $crlf) === 0) {
+				/**
+				 * No headers
+				 */
+				$position += 2;
+				$body = substr($body, 2);
+			} else {
+				/**
+				 * Find headers end in order to determine size
+				 */
+				$result = $this->parse_multipart_find($stream, $body, $crlf.$crlf);
+				if ($result === false) {
+					return false;
+				}
+				list($offset, $body) = $result;
+				$part['headers']['size'] = $offset;
+				$position += $offset + 4;
+				$body = substr($body, 4);
+			}
+			$part['body']['offset'] = $position;
+			/**
+			 * Find body end in order to determine its size
+			 */
+			$result = $this->parse_multipart_find($stream, $body, "$crlf--$boundary");
+			if ($result === false) {
+				return false;
+			}
+			list($offset, $body) = $result;
+			$part['body']['size'] = $offset;
+			$position += $offset + strlen("$crlf--$boundary");
+			$body    = substr($body, strlen("$crlf--$boundary"));
+			$parts[] = $part;
+			$body .= fread($stream, 1024);
+		}
+		/**
+		 * Last boundary after all parts ends with '--' and we don't care what rubbish happens after it
+		 */
+		$post_max_size = $this->post_max_size();
+		if (0 !== strpos($body, '--')) {
+			return false;
+		}
+		/**
+		 * Check whether body size is bigger than allowed limit
+		 */
+		if ($position + strlen($body) > $post_max_size) {
+			throw new ExitException(413);
+		}
+		$data  = [];
+		$files = [];
+		foreach ($parts as $part) {
+			if (!$part['headers']['size']) {
+				continue;
+			}
+			fseek($stream, $part['headers']['offset']);
+			$headers = $this->parse_multipart_headers(
+				fread($stream, $part['headers']['size'])
+			);
+			if (
+				!isset($headers['content-disposition'][0], $headers['content-disposition']['name']) ||
+				$headers['content-disposition'][0] != 'form-data'
+			) {
+				continue;
+			}
+			$name = $headers['content-disposition']['name'];
+			if (isset($headers['content-disposition']['filename'])) {
+				$file = [
+					'name'     => $headers['content-disposition']['filename'],
+					'type'     => @$headers['content-type'] ?: 'application/octet-stream',
+					'size'     => $part['body']['size'],
+					'tmp_name' => 'request-data://'.$part['body']['offset'].':'.$part['body']['size'],
+					'error'    => UPLOAD_ERR_OK
+				];
+				if ($headers['content-disposition']['filename'] === '') {
+					$file['type']     = '';
+					$file['tmp_name'] = '';
+					$file['error']    = UPLOAD_ERR_NO_FILE;
+				}
+				if ($file['size'] > $this->upload_max_file_size()) {
+					$file['tmp_name'] = '';
+					$file['error']    = UPLOAD_ERR_INI_SIZE;
+				}
+				$this->parse_multipart_set_target($files, $name, $file);
+			} else {
+				if ($part['body']['size'] == 0) {
+					$this->parse_multipart_set_target($data, $name, '');
+				} else {
+					fseek($stream, $part['body']['offset']);
+					$this->parse_multipart_set_target(
+						$data,
+						$name,
+						fread($stream, $part['body']['size'])
+					);
+				}
+			}
+		}
+		return [$data, $files];
+	}
+	/**
+	 * @return int
+	 */
+	protected function post_max_size () {
+		$post_max_size = ini_get('post_max_size') ?: ini_get('hhvm.server.max_post_size');
+		switch (strtolower(substr($post_max_size, -1))) {
+			case 'g';
+				$post_max_size = (int)$post_max_size * 1024;
+			case 'm';
+				$post_max_size = (int)$post_max_size * 1024;
+			case 'k';
+				$post_max_size = (int)$post_max_size * 1024;
+		}
+		return $post_max_size ?: PHP_INT_MAX;
+	}
+	/**
+	 * @return int
+	 */
+	protected function upload_max_file_size () {
+		$upload_max_file_size = ini_get('upload_max_filesize') ?: ini_get('hhvm.server.upload.upload_max_file_size');
+		switch (strtolower(substr($upload_max_file_size, -1))) {
+			case 'g';
+				$upload_max_file_size = (int)$upload_max_file_size * 1024;
+			case 'm';
+				$upload_max_file_size = (int)$upload_max_file_size * 1024;
+			case 'k';
+				$upload_max_file_size = (int)$upload_max_file_size * 1024;
+		}
+		return $upload_max_file_size ?: PHP_INT_MAX;
+	}
+	/**
+	 * @param resource $stream
+	 * @param string   $next_data
+	 * @param string   $target
+	 *
+	 * @return array|bool
+	 */
+	protected function parse_multipart_find ($stream, $next_data, $target) {
+		$offset    = 0;
+		$prev_data = '';
+		while (($found = strpos($prev_data.$next_data, $target)) === false) {
+			if (feof($stream)) {
+				return false;
+			}
+			if ($prev_data) {
+				$offset += strlen($prev_data);
+			}
+			$prev_data = $next_data;
+			$next_data = fread($stream, 1024);
+		}
+		$offset += $found;
+		$remainder = substr($prev_data.$next_data, $found);
+		return [$offset, $remainder];
+	}
+	/**
+	 * @param string $content
+	 *
+	 * @return array
+	 */
+	protected function parse_multipart_headers ($content) {
+		$headers = [];
+		foreach (explode("\r\n", $content) as $header) {
+			list($name, $value) = explode(':', $header, 2);
+			if (!preg_match_all('/(.+)(?:="*?(.*)"?)?(?:;\s|$)/U', $value, $matches)) {
+				continue;
+			}
+			$name           = strtolower($name);
+			$headers[$name] = [];
+			foreach (array_keys($matches[1]) as $index) {
+				if (isset($headers[$name][0]) || strlen($matches[2][$index])) {
+					$headers[$name][trim($matches[1][$index])] = urldecode(trim($matches[2][$index]));
+				} else {
+					$headers[$name][] = trim($matches[1][$index]);
+				}
+			}
+			if (count($headers[$name]) == 1) {
+				$headers[$name] = $headers[$name][0];
+			}
+		}
+		return $headers;
+	}
+	/**
+	 * @param array        $source
+	 * @param string       $name
+	 * @param array|string $value
+	 */
+	protected function parse_multipart_set_target (&$source, $name, $value) {
+		preg_match_all('/(?:^|\[)([^\[\]]*)\]?/', $name, $matches);
+		if ($matches[1][0] === '') {
+			return;
+		}
+		foreach ($matches[1] as $component) {
+			if (!isset($source[$component])) {
+				$source[$component] = [];
+			}
+			if (!strlen($component)) {
+				$source = &$source[$component][];
+			} else {
+				$source = &$source[$component];
+			}
+		}
+		$source = $value;
+	}
+}

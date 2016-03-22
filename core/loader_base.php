@@ -71,3 +71,9 @@ define('PUBLIC_CACHE', STORAGE.'/pcache');
  * Themes dir
  */
 define('THEMES', DIR.'/themes');
+
+/**
+ * Register request data stream and request file stream that are used by system when handling requests data and uploaded files
+ */
+stream_wrapper_register('request-data', cs\Request\Data_sub_stream::class);
+stream_wrapper_register('request-file', cs\Request\File_stream::class);

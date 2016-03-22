@@ -7,7 +7,8 @@
  */
 namespace cs\Request;
 use
-	Exception;
+	Exception,
+	cs\ExitException;
 
 trait Psr7 {
 	/**
@@ -20,8 +21,7 @@ trait Psr7 {
 	function from_psr7 ($request) {
 		$this->from_psr7_server($request);
 		$this->from_psr7_query($request);
-		$this->from_psr7_data($request);
-		$this->from_psr7_files($request);
+		$this->from_psr7_data_and_files($request);
 		$this->init_route();
 	}
 	/**
@@ -63,9 +63,13 @@ trait Psr7 {
 		$this->query = $request->getQueryParams();
 	}
 	/**
+	 * @todo Implement custom stream wrapper for files and data in general in order to avoid data duplication
+	 *
 	 * @param \Psr\Http\Message\ServerRequestInterface $request
+	 *
+	 * @throws ExitException
 	 */
-	protected function from_psr7_data ($request) {
+	protected function from_psr7_data_and_files ($request) {
 		$data         = [];
 		$data_stream  = null;
 		$content_type = $this->header('content-type');
@@ -78,7 +82,7 @@ trait Psr7 {
 			try {
 				$position = $body_stream->tell();
 				$body_stream->rewind();
-				$data_stream = fopen('php://temp', 'br+');
+				$data_stream = fopen('php://temp', 'w+b');
 				while (!$body_stream->eof()) {
 					fwrite($data_stream, $body_stream->read(1024));
 				}
@@ -87,16 +91,12 @@ trait Psr7 {
 				// Do nothing
 			}
 		}
-		$this->init_data($data, $data_stream);
-	}
-	/**
-	 * @param \Psr\Http\Message\ServerRequestInterface $request
-	 */
-	protected function from_psr7_files ($request) {
-		$this->init_files(
+		$this->init_data_and_files(
+			$data,
 			$this->from_psr7_files_internal(
 				$request->getUploadedFiles()
-			)
+			),
+			$data_stream
 		);
 	}
 	/**
@@ -118,7 +118,7 @@ trait Psr7 {
 			$source_file_stream = $files->getStream();
 			$position           = $source_file_stream->tell();
 			$source_file_stream->rewind();
-			$file_stream = fopen('php://temp', 'br+');
+			$file_stream = fopen('php://temp', 'w+b');
 			while (!$source_file_stream->eof()) {
 				fwrite($file_stream, $source_file_stream->read(1024));
 			}

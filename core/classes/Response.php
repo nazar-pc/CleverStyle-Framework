@@ -53,7 +53,7 @@ class Response implements \ArrayAccess, \Iterator {
 	 * Initialize response object with specified data
 	 *
 	 * @param string               $body
-	 * @param null|resource|string $body_stream String, like `php://temp` or resource, like `fopen('php://temp', 'ba+')`, if present, `$body` is ignored
+	 * @param null|resource|string $body_stream String, like `php://temp` or resource, like `fopen('php://temp', 'a+b')`, if present, `$body` is ignored
 	 * @param string[]|string[][]  $headers     Headers are normalized to lowercase keys with hyphen as separator, for instance: `connection`, `referer`,
 	 *                                          `content-type`, `accept-language`; Values might be strings in case of single value or array of strings in case
 	 *                                          of multiple values with the same field name
@@ -70,7 +70,7 @@ class Response implements \ArrayAccess, \Iterator {
 		if ($this->body_stream) {
 			fclose($this->body_stream);
 		}
-		$this->data_stream = is_string($body_stream) ? fopen($body_stream, 'ba+') : $body_stream;
+		$this->data_stream = is_string($body_stream) ? fopen($body_stream, 'a+b') : $body_stream;
 		return $this;
 	}
 	/**
@@ -184,7 +184,7 @@ class Response implements \ArrayAccess, \Iterator {
 		if (is_resource($this->body_stream)) {
 			$position = ftell($this->body_stream);
 			rewind($this->body_stream);
-			stream_copy_to_stream($this->body_stream, fopen('php:://output', 'bw'));
+			stream_copy_to_stream($this->body_stream, fopen('php:://output', 'wb'));
 			fseek($this->body_stream, $position);
 		} else {
 			echo $this->body;
