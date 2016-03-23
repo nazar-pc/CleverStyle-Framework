@@ -70,8 +70,6 @@ trait Data {
 	/**
 	 * Get data item of specified user
 	 *
-	 * @todo Refactor this to select all or nothing; this selection of only necessary stuff is tricky and should be simplified
-	 *
 	 * @param string|string[] $item
 	 * @param false|int       $user If not specified - current user assumed
 	 *
@@ -82,7 +80,6 @@ trait Data {
 		if (!$user) {
 			return false;
 		}
-		/** @noinspection NestedTernaryOperatorInspection */
 		if (isset($this->data[$user])) {
 			$data = $this->data[$user];
 		} else {
