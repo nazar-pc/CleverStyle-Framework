@@ -191,7 +191,7 @@ class Language implements JsonSerializable {
 				$aliases      = [];
 				$aliases_list = _strtolower(get_files_list(LANGUAGES.'/aliases'));
 				foreach ($aliases_list as $alias) {
-					$aliases[$alias] = file_get_contents(LANGUAGES."/aliases/$alias");
+					$aliases[$alias] = trim(file_get_contents(LANGUAGES."/aliases/$alias"));
 				}
 				return $aliases;
 			}
