@@ -8,6 +8,7 @@
  */
 use
 	cs\modules\Http_server\Request;
+
 /**
  * Time of start of execution, is used as current time
  */
@@ -31,12 +32,16 @@ $loop   = React\EventLoop\Factory::create();
 $socket = new React\Socket\Server($loop);
 $http   = new React\Http\Server($socket);
 
-$http->on('request', function (\React\Http\Request $request, \React\Http\Response $response) {
-	$request->on(
-		'data',
-		new Request($request, $response)
-	);
-});
+$http->on(
+	'request',
+	function (\React\Http\Request $request, \React\Http\Response $response) {
+		$request_started = microtime(true);
+		$request->on(
+			'data',
+			new Request($request, $response, $request_started)
+		);
+	}
+);
 if (!isset($port)) {
 	echo 'Http server for CleverStyle CMS
 Usage: php components/modules/Http_server/run_server.php -p <port> [-a]

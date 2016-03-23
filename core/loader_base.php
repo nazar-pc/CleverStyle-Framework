@@ -81,3 +81,5 @@ stream_wrapper_register('request-file', cs\Request\File_stream::class);
  * Stream wrapper for PSR7 interface
  */
 stream_wrapper_register('request-psr7-data', cs\Request\Psr7_data_stream::class);
+// Hack: HHVM doesn't have ENT_DISALLOWED constant unfortunately, remove when https://github.com/facebook/hhvm/issues/4938 resolved
+defined('ENT_DISALLOWED') || define('ENT_DISALLOWED', 128);

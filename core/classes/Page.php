@@ -15,57 +15,87 @@ class Page {
 	use
 		Singleton,
 		Includes;
+	const INIT_STATE_METHOD = 'init';
+	/**
+	 * Complete page contents
+	 *
+	 * @var string
+	 */
 	public $Content;
 	/**
 	 * If `false` - only page content will be shown, without the rest of interface (useful for AJAX request, though for API it is set to `false` automatically)
 	 *
 	 * @var bool
 	 */
-	public $interface   = true;
-	public $pre_Html    = '';
-	public $Html        = '';
-	public $Description = '';
+	public $interface;
+	/**
+	 * @var string
+	 */
+	public $pre_Html;
+	/**
+	 * @var string
+	 */
+	public $Html;
+	/**
+	 * @var string
+	 */
+	public $Description;
 	/**
 	 * @var string|string[]
 	 */
-	public $Title     = [];
-	public $Head      = '';
-	public $pre_Body  = '';
-	public $Left      = '';
-	public $Top       = '';
-	public $Right     = '';
-	public $Bottom    = '';
-	public $post_Body = '';
-	public $post_Html = '';
+	public $Title;
+	/**
+	 * @var string
+	 */
+	public $Head;
+	/**
+	 * @var string
+	 */
+	public $pre_Body;
+	/**
+	 * @var string
+	 */
+	public $Left;
+	/**
+	 * @var string
+	 */
+	public $Top;
+	/**
+	 * @var string
+	 */
+	public $Right;
+	/**
+	 * @var string
+	 */
+	public $Bottom;
+	/**
+	 * @var string
+	 */
+	public $post_Body;
+	/**
+	 * @var string
+	 */
+	public $post_Html;
 	/**
 	 * Number of tabs by default for indentation the substitution of values into template
 	 *
 	 * @var array
 	 */
-	public $level = [
-		'Head'      => 0,
-		'pre_Body'  => 1,
-		'Left'      => 3,
-		'Top'       => 3,
-		'Content'   => 4,
-		'Bottom'    => 3,
-		'Right'     => 3,
-		'post_Body' => 1
-	];
+	public $level;
 	/**
 	 * @var array[]
 	 */
-	protected $link = [];
+	protected $link;
 	/**
 	 * @var string[]
 	 */
-	protected $search_replace = [];
+	protected $search_replace;
 	/**
 	 * @var false|string
 	 */
-	protected $canonical_url      = false;
+	protected $canonical_url;
 	protected $theme;
-	protected $finish_called_once = false;
+	protected $finish_called_once;
 	/**
 	 * @param string $property
 	 *
@@ -78,7 +108,37 @@ class Page {
 		}
 		return false;
 	}
-	protected function construct () {
+	protected function init () {
+		$this->Content            = '';
+		$this->interface          = true;
+		$this->pre_Html           = '';
+		$this->Html               = '';
+		$this->Description        = '';
+		$this->Title              = [];
+		$this->Head               = '';
+		$this->pre_Body           = '';
+		$this->Left               = '';
+		$this->Top                = '';
+		$this->Right              = '';
+		$this->Bottom             = '';
+		$this->post_Body          = '';
+		$this->post_Html          = '';
+		$this->level              = [
+			'Head'      => 0,
+			'pre_Body'  => 1,
+			'Left'      => 3,
+			'Top'       => 3,
+			'Content'   => 4,
+			'Bottom'    => 3,
+			'Right'     => 3,
+			'post_Body' => 1
+		];
+		$this->link               = [];
+		$this->search_replace     = [];
+		$this->canonical_url      = false;
+		$this->theme              = null;
+		$this->finish_called_once = false;
+		$this->init_includes();
 		$Config = Config::instance(true);
 		/**
 		 * We need Config for initialization
@@ -87,16 +147,16 @@ class Page {
 			Event::instance()->once(
 				'System/Config/init/after',
 				function () {
-					$this->init();
+					$this->init_config();
 				}
 			);
 		} else {
-			$this->init();
+			$this->init_config();
 		}
 		Event::instance()->on(
 			'System/Config/changed',
 			function () {
-				$this->init();
+				$this->init_config();
 			}
 		);
 	}
@@ -107,7 +167,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	protected function init () {
+	protected function init_config () {
 		$Config         = Config::instance();
 		$this->Title[0] = htmlentities(get_core_ml_text('name'), ENT_COMPAT, 'utf-8');
 		$this->set_theme($Config->core['theme']);

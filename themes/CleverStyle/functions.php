@@ -13,6 +13,7 @@ use
 	cs\Event,
 	cs\Language,
 	cs\Page,
+	cs\Request,
 	cs\User,
 	h;
 
@@ -90,7 +91,7 @@ function get_footer () {
 					'<!--peak memory usage-->'
 				],
 				[
-					round(microtime(true) - MICROTIME, 5),
+					round(microtime(true) - Request::instance()->started, 5),
 					round(memory_get_usage() / 1024 / 1024, 5),
 					round(memory_get_peak_usage() / 1024 / 1024, 5)
 				],

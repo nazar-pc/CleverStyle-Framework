@@ -7,14 +7,16 @@
  */
 namespace cs\Singleton;
 use
-	cs\False_class;
+	cs\False_class,
+	cs\Request;
 
 /**
  * Singleton trait
  *
- * Provides Singleton pattern implementation
+ * Provides Singleton-like implementation with some advanced capabilities
  */
 trait Base {
+	private $__request_id;
 	final protected function __construct () {
 	}
 	protected function construct () {
@@ -33,17 +35,18 @@ trait Base {
 	/**
 	 * Get instance of class
 	 *
-	 * @param object $instance
+	 * @param static $instance
 	 * @param bool   $check If true - checks, if instance was already created, if not - instance of cs\False_class will be returned
 	 *
 	 * @return False_class|static
 	 */
 	protected static function instance_prototype (&$instance, $check = false) {
-		if ($check) {
-			return $instance ?: False_class::instance();
-		}
+		static::instance_prototype_state_init($instance);
 		if ($instance) {
 			return $instance;
+		}
+		if ($check) {
+			return False_class::instance();
 		}
 		$class = get_called_class();
 		if (strpos($class, 'cs') !== 0) {
@@ -88,6 +91,7 @@ trait Base {
 			) {
 				clean_classes_cache();
 				$instance = new $class;
+				static::instance_prototype_state_init($instance);
 				$instance->construct();
 				return $instance;
 			}
@@ -95,8 +99,20 @@ trait Base {
 			require_once CUSTOM."/classes/$alias[path].php";
 		}
 		$instance = new $modified_classes[$class]['final_class'];
+		static::instance_prototype_state_init($instance);
 		$instance->construct();
 		return $instance;
+	}
+	/**
+	 * @param static $instance
+	 */
+	protected static function instance_prototype_state_init (&$instance) {
+		if ($instance && $instance->__request_id !== Request::$request_id) {
+			$instance->__request_id = Request::$request_id;
+			if (defined('static::INIT_STATE_METHOD')) {
+				$instance->{constant('static::INIT_STATE_METHOD')}();
+			}
+		}
 	}
 	final protected function __clone () {
 	}

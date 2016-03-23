@@ -25,7 +25,18 @@ class Request implements \ArrayAccess, \Iterator {
 		Psr7,
 		Request_route,
 		Server;
-
+	/**
+	 * Global request id, used by system
+	 *
+	 * @var int
+	 */
+	public static $request_id = 0;
+	/**
+	 * Unix timestamp where request processing started
+	 *
+	 * @var float
+	 */
+	public $started;
 	/**
 	 * Initialize request object with specified data
 	 *
@@ -36,15 +47,18 @@ class Request implements \ArrayAccess, \Iterator {
 	 * @param string[]             $cookie      Typically `$_COOKIE`
 	 * @param array[]              $files       Typically `$_FILES`; might be like native PHP array `$_FILES` or normalized; each file item MUST contain keys
 	 *                                          `name`, `type`, `size`, `error` and at least one of `tmp_name` or `stream`
+	 * @param float                $request_started
 	 *
 	 * @throws ExitException
 	 */
-	function init ($server, $query, $data, $data_stream, $cookie, $files) {
+	function init ($server, $query, $data, $data_stream, $cookie, $files, $request_started) {
+		++static::$request_id;
 		$this->init_server($server);
 		$this->init_query($query);
 		$this->init_data_and_files($data, $files, $data_stream);
 		$this->init_cookie($cookie);
 		$this->init_route();
+		$this->started = $request_started;
 	}
 	/**
 	 * Initialize request object from superglobals `$_SERVER`, `$_GET`, `$_POST`, `$_COOKIE` and `$_FILES` (including parsing `php://input` in case of custom
@@ -53,11 +67,13 @@ class Request implements \ArrayAccess, \Iterator {
 	 * @throws ExitException
 	 */
 	function init_from_globals () {
+		++static::$request_id;
 		// Hack: we override `$_SERVER` with iterator object, so conversion from iterator to an array is needed
 		$this->init_server(iterator_to_array($_SERVER));
 		$this->init_query($_GET);
 		$this->init_data_and_files($_POST, $_FILES, 'php://input');
 		$this->init_cookie($_COOKIE);
 		$this->init_route();
+		$this->started = MICROTIME;
 	}
 }

@@ -12,15 +12,21 @@ namespace cs;
  * Provides events subscribing and dispatching
  */
 class Event {
-	use Singleton;
+	use
+		Singleton;
+	const INIT_STATE_METHOD = 'init';
 	/**
 	 * @var callable[][]
 	 */
-	protected $callbacks = [];
+	protected $callbacks;
 	/**
 	 * @var bool
 	 */
-	protected $initialized = false;
+	protected $initialized;
+	protected function init () {
+		$this->callbacks   = [];
+		$this->initialized = false;
+	}
 	/**
 	 * Add event handler
 	 *

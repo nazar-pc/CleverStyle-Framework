@@ -18,8 +18,20 @@ use
 class Menu {
 	use
 		Singleton;
-	public $section_items = [];
-	public $items         = [];
+	const INIT_STATE_METHOD = 'init';
+	/**
+	 * @var array
+	 */
+	public $section_items;
+	/**
+	 * @var array
+	 */
+	public $items;
+
+	protected function init () {
+		$this->section_items = [];
+		$this->items         = [];
+	}
 	/**
 	 * Get menu in HTML format
 	 *

@@ -17,10 +17,7 @@ use
 require DIR.'/core/loader_base.php';             //Inclusion of loader base
 @ini_set('error_log', LOGS.'/Http_server.log');
 require __DIR__.'/functions.php';                //Inclusion of functions needed for http server
-\cs\Singleton\clean_classes_cache();
-require __DIR__.'/Request.php';                  //Inclusion of Request class, used for http server requests processing
-require __DIR__.'/Singleton.php';                //Inclusion of `Singleton` trait, specific for http server
-require __DIR__.'/User.php';                     //Inclusion of `cs\custom\User` class, which is used instead original `cs\User` for http server
+require DIR.'/core/functions_global.php';
 /**
  * Including of custom files
  */

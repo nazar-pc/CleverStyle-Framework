@@ -39,6 +39,7 @@ class Session {
 	use
 		CRUD,
 		Singleton;
+	const INIT_STATE_METHOD          = 'init';
 	const INITIAL_SESSION_EXPIRATION = 300;
 	/**
 	 * Id of current session
@@ -51,11 +52,23 @@ class Session {
 	 *
 	 * @var int
 	 */
-	protected $user_id  = User::GUEST_ID;
-	protected $is_admin = false;
-	protected $is_user  = false;
-	protected $is_bot   = false;
-	protected $is_guest = false;
+	protected $user_id;
+	/**
+	 * @var bool
+	 */
+	protected $is_admin;
+	/**
+	 * @var bool
+	 */
+	protected $is_user;
+	/**
+	 * @var bool
+	 */
+	protected $is_bot;
+	/**
+	 * @var bool
+	 */
+	protected $is_guest;
 	/**
 	 * @var Cache_prefix
 	 */
@@ -75,11 +88,6 @@ class Session {
 		'data'        => 'json'
 	];
 	protected $table      = '[prefix]sessions';
-	protected function construct () {
-		$this->cache       = new Cache_prefix('sessions');
-		$this->users_cache = new Cache_prefix('users');
-		$this->initialize();
-	}
 	/**
 	 * Returns database index
 	 *
@@ -93,7 +101,13 @@ class Session {
 	 *
 	 * Bots detection is also done here
 	 */
-	protected function initialize () {
+	protected function init () {
+		if (!$this->cache) {
+			$this->cache       = new Cache_prefix('sessions');
+			$this->users_cache = new Cache_prefix('users');
+		}
+		$this->user_id    = User::GUEST_ID;
+		$this->session_id = null;
 		Event::instance()->fire('System/Session/init/before');
 		$Request = Request::instance();
 		/**

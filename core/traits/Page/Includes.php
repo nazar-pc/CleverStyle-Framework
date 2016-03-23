@@ -45,19 +45,54 @@ use
  * @property string $theme
  */
 trait Includes {
-	protected $core_html   = [0 => [], 1 => []];
-	protected $core_js     = [0 => [], 1 => []];
-	protected $core_css    = [0 => [], 1 => []];
-	protected $core_config = '';
-	protected $html        = [0 => [], 1 => []];
-	protected $js          = [0 => [], 1 => []];
-	protected $css         = [0 => [], 1 => []];
-	protected $config      = '';
+	/**
+	 * @var array[]
+	 */
+	protected $core_html;
+	/**
+	 * @var array[]
+	 */
+	protected $core_js;
+	/**
+	 * @var array[]
+	 */
+	protected $core_css;
+	/**
+	 * @var string
+	 */
+	protected $core_config;
+	/**
+	 * @var array[]
+	 */
+	protected $html;
+	/**
+	 * @var array[]
+	 */
+	protected $js;
+	/**
+	 * @var array[]
+	 */
+	protected $css;
+	/**
+	 * @var string
+	 */
+	protected $config;
 	/**
 	 * Base name is used as prefix when creating CSS/JS/HTML cache files in order to avoid collisions when having several themes and languages
 	 * @var string
 	 */
 	protected $pcache_basename;
+	protected function init_includes () {
+		$this->core_html       = [0 => [], 1 => []];
+		$this->core_js         = [0 => [], 1 => []];
+		$this->core_css        = [0 => [], 1 => []];
+		$this->core_config     = '';
+		$this->html            = [0 => [], 1 => []];
+		$this->js              = [0 => [], 1 => []];
+		$this->css             = [0 => [], 1 => []];
+		$this->config          = '';
+		$this->pcache_basename = '';
+	}
 	/**
 	 * Including of Web Components
 	 *

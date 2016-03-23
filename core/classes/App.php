@@ -27,8 +27,15 @@ class App {
 	use
 		Singleton,
 		Router;
-
+	const INIT_STATE_METHOD = 'init';
+	/**
+	 * @var string
+	 */
 	protected $working_directory;
+	protected function init () {
+		$this->working_directory = '';
+		$this->controller_path   = ['index'];
+	}
 	/**
 	 * Executes plugins processing, blocks and module page generation
 	 *
@@ -40,8 +47,6 @@ class App {
 		if (!preg_match('/^[0-9a-z_]+$/i', $Request->method)) {
 			throw new ExitException(400);
 		}
-		$this->working_directory = '';
-		$this->controller_path   = ['index'];
 		$this->handle_closed_site(!$Config->core['site_mode'], $Request);
 		$this->working_directory = MODULES."/$Request->current_module";
 		if ($Request->admin_path) {

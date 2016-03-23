@@ -27,12 +27,18 @@ class Request {
 	 */
 	protected $response;
 	/**
+	 * @var float
+	 */
+	protected $request_started;
+	/**
 	 * @param \React\Http\Request  $request
 	 * @param \React\Http\Response $response
+	 * @param float                $request_started
 	 */
-	function __construct ($request, $response) {
-		$this->request  = $request;
-		$this->response = $response;
+	function __construct ($request, $response, $request_started) {
+		$this->request         = $request;
+		$this->response        = $response;
+		$this->request_started = $request_started;
 	}
 	/**
 	 * @param string $data
@@ -67,8 +73,8 @@ class Request {
 		} else {
 			$this->response->end($Response->body);
 		}
-		$this->cleanup();
 		$request->close();
+		User::instance()->disable_memory_cache();
 	}
 	/**
 	 * @param \React\HTTP\Request $request
@@ -134,32 +140,15 @@ class Request {
 	 * @throws ExitException
 	 */
 	protected function execute_request () {
-		System_request::instance()->init_from_globals();
-		System_response::instance()->init(
-			'',
-			null,
-			[
-				'Content-Type' => 'text/html; charset=utf-8',
-				'Vary'         => 'Accept-Language,User-Agent,Cookie'
-			],
-			200,
-			$_SERVER['SERVER_PROTOCOL']
-		);
+		$Request = System_request::instance();
+		$Request->init_from_globals();
+		$Request->started = $this->request_started;
+		System_response::instance()->init_with_typical_default_settings();
 		$L            = Language::instance(true);
 		$url_language = $L->url_language();
 		if ($url_language) {
 			$L->change($url_language);
 		}
 		App::instance()->execute();
-	}
-	/**
-	 * Various cleanups after processing of current request to free used memory
-	 */
-	function cleanup () {
-		/**
-		 * Clean objects pool
-		 */
-		objects_pool([]);
-		User::instance()->disable_memory_cache();
 	}
 }
