@@ -13,21 +13,20 @@ use
 	cs\Group,
 	cs\Page,
 	cs\Permission,
-	cs\Response,
 	cs\User;
 
 trait permissions {
 	/**
 	 * Get array of permissions data or data of specific permission if id specified
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions___get ($route_ids) {
+	static function admin_permissions___get ($Request) {
 		$Permission = Permission::instance();
-		if (isset($route_ids[0])) {
-			$result = $Permission->get($route_ids[0]);
+		if (isset($Request->route_ids[0])) {
+			$result = $Permission->get($Request->route_ids[0]);
 			if (!$result) {
 				throw new ExitException(404);
 			}
@@ -39,14 +38,16 @@ trait permissions {
 	/**
 	 * Add new permission
 	 *
+	 * @param \cs\Response $Response
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions___post () {
+	static function admin_permissions___post ($Response, $Response) {
 		if (!isset($_POST['group'], $_POST['label'])) {
 			throw new ExitException(400);
 		}
 		if (Permission::instance()->add($_POST['group'], $_POST['label'])) {
-			Response::instance()->code = 201;
+			$Response->code = 201;
 		} else {
 			throw new ExitException(500);
 		}
@@ -54,30 +55,30 @@ trait permissions {
 	/**
 	 * Update permission's data
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions___put ($route_ids) {
-		if (!isset($route_ids[0], $_POST['group'], $_POST['label'])) {
+	static function admin_permissions___put ($Request) {
+		if (!isset($Request->route_ids[0], $_POST['group'], $_POST['label'])) {
 			throw new ExitException(400);
 		}
-		if (!Permission::instance()->set($route_ids[0], $_POST['group'], $_POST['label'])) {
+		if (!Permission::instance()->set($Request->route_ids[0], $_POST['group'], $_POST['label'])) {
 			throw new ExitException(500);
 		}
 	}
 	/**
 	 * Delete permission
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions___delete ($route_ids) {
-		if (!isset($route_ids[0])) {
+	static function admin_permissions___delete ($Request) {
+		if (!isset($Request->route_ids[0])) {
 			throw new ExitException(400);
 		}
-		if (!Permission::instance()->del($route_ids[0])) {
+		if (!Permission::instance()->del($Request->route_ids[0])) {
 			throw new ExitException(500);
 		}
 	}

@@ -18,15 +18,15 @@ trait groups {
 	/**
 	 * Get array of groups data or data of specific group if id specified or data of several specified groups if specified in ids query parameter
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_groups___get ($route_ids) {
+	static function admin_groups___get ($Request) {
 		$Group = Group::instance();
 		$Page  = Page::instance();
-		if (isset($route_ids[0])) {
-			$result = $Group->get($route_ids[0]);
+		if (isset($Request->route_ids[0])) {
+			$result = $Group->get($Request->route_ids[0]);
 		} elseif (isset($_GET['ids'])) {
 			$result = $Group->get(
 				explode(',', $_GET['ids'])
@@ -59,60 +59,60 @@ trait groups {
 	/**
 	 * Update group's data
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_groups___put ($route_ids) {
-		if (!isset($route_ids[0], $_POST['title'], $_POST['description'])) {
+	static function admin_groups___put ($Request) {
+		if (!isset($Request->route_ids[0], $_POST['title'], $_POST['description'])) {
 			throw new ExitException(400);
 		}
-		if (!Group::instance()->set($route_ids[0], $_POST['title'], $_POST['description'])) {
+		if (!Group::instance()->set($Request->route_ids[0], $_POST['title'], $_POST['description'])) {
 			throw new ExitException(500);
 		}
 	}
 	/**
 	 * Delete group
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_groups___delete ($route_ids) {
-		if (!isset($route_ids[0])) {
+	static function admin_groups___delete ($Request) {
+		if (!isset($Request->route_ids[0])) {
 			throw new ExitException(400);
 		}
-		if (!Group::instance()->del($route_ids[0])) {
+		if (!Group::instance()->del($Request->route_ids[0])) {
 			throw new ExitException(500);
 		}
 	}
 	/**
 	 * Get group's permissions
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_groups_permissions_get ($route_ids) {
-		if (!isset($route_ids[0])) {
+	static function admin_groups_permissions_get ($Request) {
+		if (!isset($Request->route_ids[0])) {
 			throw new ExitException(400);
 		}
 		Page::instance()->json(
-			Group::instance()->get_permissions($route_ids[0]) ?: []
+			Group::instance()->get_permissions($Request->route_ids[0]) ?: []
 		);
 	}
 	/**
 	 * Update group's permissions
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_groups_permissions_put ($route_ids) {
-		if (!isset($route_ids[0], $_POST['permissions'])) {
+	static function admin_groups_permissions_put ($Request) {
+		if (!isset($Request->route_ids[0], $_POST['permissions'])) {
 			throw new ExitException(400);
 		}
-		if (!Group::instance()->set_permissions($_POST['permissions'], $route_ids[0])) {
+		if (!Group::instance()->set_permissions($_POST['permissions'], $Request->route_ids[0])) {
 			throw new ExitException(500);
 		}
 	}

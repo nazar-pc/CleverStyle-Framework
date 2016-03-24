@@ -12,9 +12,12 @@ use
 	cs\Page;
 
 class Controller {
-	static function index ($route_ids, $route_path) {
+	/**
+	 * @param \cs\Request $Request
+	 */
+	static function index ($Request) {
 		$Page = Page::instance();
-		switch (@$route_path[2]) {
+		switch (@$Request->route_path[2]) {
 			case 'phpinfo':
 				$Page->interface = false;
 				$Page->Content   = ob_wrapper(

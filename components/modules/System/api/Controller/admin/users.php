@@ -22,17 +22,17 @@ trait users {
 	 *
 	 * Data will be pre-processed with `reg_date_formatted` and `reg_ip_formatted` keys added
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users___get ($route_ids) {
+	static function admin_users___get ($Request) {
 		$User    = User::instance();
 		$Page    = Page::instance();
 		$columns = static::admin_users___search_options_get()['columns'];
-		if (isset($route_ids[0])) {
+		if (isset($Request->route_ids[0])) {
 			$result = static::admin_users___get_post_process(
-				$User->get($columns, $route_ids[0])
+				$User->get($columns, $Request->route_ids[0])
 			);
 		} elseif (isset($_GET['ids'])) {
 			$ids    = _int(explode(',', $_GET['ids']));
@@ -61,16 +61,16 @@ trait users {
 	/**
 	 * Update user's data
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users___patch ($route_ids) {
-		if (!isset($route_ids[0], $_POST['user'])) {
+	static function admin_users___patch ($Request) {
+		if (!isset($Request->route_ids[0], $_POST['user'])) {
 			throw new ExitException(400);
 		}
 		$User    = User::instance();
-		$user_id = (int)$route_ids[0];
+		$user_id = (int)$Request->route_ids[0];
 		$is_bot  = in_array(User::BOT_GROUP_ID, $User->get_groups($user_id));
 		if ($is_bot && !@$_POST['user']['login'] && !@$_POST['user']['email']) {
 			throw new ExitException(400);

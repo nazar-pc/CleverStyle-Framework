@@ -20,12 +20,12 @@ use
 
 trait plugins {
 	/**
-	 * @param int[]    $route_ids
-	 * @param string[] $route_path
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_plugins_get ($route_ids, $route_path) {
+	static function admin_plugins_get ($Request) {
+		$route_path = $Request->route_path;
 		if (isset($route_path[3])) {
 			switch ($route_path[3]) {
 				/**
@@ -166,12 +166,12 @@ trait plugins {
 	 *  admin/System/components/plugins/enable/after
 	 *  ['name' => plugin_name]
 	 *
-	 * @param int[]    $route_ids
-	 * @param string[] $route_path
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_plugins_enable ($route_ids, $route_path) {
+	static function admin_plugins_enable ($Request) {
+		$route_path = $Request->route_path;
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
@@ -221,12 +221,12 @@ trait plugins {
 	 *  admin/System/components/plugins/disable/after
 	 *  ['name' => plugin_name]
 	 *
-	 * @param int[]    $route_ids
-	 * @param string[] $route_path
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_plugins_disable ($route_ids, $route_path) {
+	static function admin_plugins_disable ($Request) {
+		$route_path = $Request->route_path;
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
@@ -291,12 +291,12 @@ trait plugins {
 	 *  admin/System/components/plugins/update/after
 	 *  ['name' => plugin_name]
 	 *
-	 * @param int[]    $route_ids
-	 * @param string[] $route_path
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_plugins_update ($route_ids, $route_path) {
+	static function admin_plugins_update ($Request) {
+		$route_path = $Request->route_path;
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
@@ -322,7 +322,7 @@ trait plugins {
 		$active        = in_array($plugin, $Config->components['plugins']);
 		// If plugin is currently enabled - disable it temporary
 		if ($active) {
-			static::admin_plugins_disable($route_ids, $route_path);
+			static::admin_plugins_disable($Request);
 		}
 		if (
 			$new_meta['package'] !== $plugin ||
@@ -355,18 +355,18 @@ trait plugins {
 		);
 		// If plugin was enabled before update - enable it back
 		if ($active) {
-			static::admin_plugins_enable($route_ids, $route_path);
+			static::admin_plugins_enable($Request);
 		}
 	}
 	/**
 	 * Delete plugin completely
 	 *
-	 * @param int[]    $route_ids
-	 * @param string[] $route_path
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_plugins_delete ($route_ids, $route_path) {
+	static function admin_plugins_delete ($Request) {
+		$route_path = $Request->route_path;
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}

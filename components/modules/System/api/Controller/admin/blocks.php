@@ -14,22 +14,23 @@ use
 	cs\Page,
 	cs\Permission,
 	cs\Text;
+
 trait blocks {
 	/**
 	 * Get array of blocks data or data of specific block if id specified
 	 *
 	 * If block id specified - extended form of data will be returned
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_blocks_get ($route_ids) {
+	static function admin_blocks_get ($Request) {
 		$Config = Config::instance();
 		$Page   = Page::instance();
 		$Text   = Text::instance();
 		$db_id  = $Config->module('System')->db('texts');
-		if (!isset($route_ids[0])) {
+		if (!isset($Request->route_ids[0])) {
 			$blocks = $Config->components['blocks'];
 			foreach ($blocks as &$block) {
 				$block['title']   = $Text->process($db_id, $block['title'], true);
@@ -39,7 +40,7 @@ trait blocks {
 			$Page->json(array_values($blocks) ?: []);
 			return;
 		}
-		$block = static::get_block_by_index($route_ids[0]);
+		$block = static::get_block_by_index($Request->route_ids[0]);
 		if (!$block) {
 			throw new ExitException(404);
 		}
@@ -69,25 +70,25 @@ trait blocks {
 	/**
 	 * Update block's data
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_blocks_put ($route_ids) {
-		if (!$route_ids[0]) {
+	static function admin_blocks_put ($Request) {
+		if (!$Request->route_ids[0]) {
 			throw new ExitException(400);
 		}
-		static::save_block_data($_POST, $route_ids[0]);
+		static::save_block_data($_POST, $Request->route_ids[0]);
 	}
 	/**
 	 * Delete block
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_blocks_delete ($route_ids) {
-		if (!$route_ids[0]) {
+	static function admin_blocks_delete ($Request) {
+		if (!$Request->route_ids[0]) {
 			throw new ExitException(400);
 		}
 		$Config     = Config::instance();
@@ -95,13 +96,13 @@ trait blocks {
 		$Permission = Permission::instance();
 		$Text       = Text::instance();
 		foreach ($Config->components['blocks'] as $i => &$block) {
-			if ($block['index'] == $route_ids[0]) {
+			if ($block['index'] == $Request->route_ids[0]) {
 				unset($Config->components['blocks'][$i]);
 				break;
 			}
 		}
 		/** @noinspection PhpUndefinedVariableInspection */
-		if ($block['index'] != $route_ids[0]) {
+		if ($block['index'] != $Request->route_ids[0]) {
 			throw new ExitException(404);
 		}
 		$block_permission = $Permission->get(null, 'Block', $block['index']);

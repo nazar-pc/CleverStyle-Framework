@@ -14,6 +14,7 @@ use
 	cs\ExitException,
 	cs\Language,
 	cs\Page;
+
 trait storages {
 	/**
 	 * Get array of storages
@@ -36,13 +37,13 @@ trait storages {
 	/**
 	 * Update storage settings
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_storages_patch ($route_ids) {
+	static function admin_storages_patch ($Request) {
 		if (
-			!isset($route_ids[0], $_POST['url'], $_POST['host'], $_POST['connection'], $_POST['user'], $_POST['password']) ||
+			!isset($Request->route_ids[0], $_POST['url'], $_POST['host'], $_POST['connection'], $_POST['user'], $_POST['password']) ||
 			!strlen($_POST['host']) ||
 			!in_array($_POST['connection'], static::admin_storages_get_engines())
 		) {
@@ -50,7 +51,7 @@ trait storages {
 		}
 		$Config        = Config::instance();
 		$storages      = &$Config->storage;
-		$storage_index = $route_ids[0];
+		$storage_index = $Request->route_ids[0];
 		if (!isset($storages[$storage_index])) {
 			throw new ExitException(404);
 		}
@@ -95,17 +96,17 @@ trait storages {
 	/**
 	 * Delete storage
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_storages_delete ($route_ids) {
-		if (!isset($route_ids[0])) {
+	static function admin_storages_delete ($Request) {
+		if (!isset($Request->route_ids[0])) {
 			throw new ExitException(400);
 		}
 		$Config        = Config::instance();
 		$storages      = &$Config->storage;
-		$storage_index = $route_ids[0];
+		$storage_index = $Request->route_ids[0];
 		if (!isset($storages[$storage_index])) {
 			throw new ExitException(404);
 		}

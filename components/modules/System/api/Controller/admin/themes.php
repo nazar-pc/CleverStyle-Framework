@@ -16,14 +16,15 @@ use
 	cs\Page,
 	cs\Session,
 	cs\modules\System\Packages_manipulation;
+
 trait themes {
 	/**
-	 * @param int[]    $route_ids
-	 * @param string[] $route_path
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_themes_get ($route_ids, $route_path) {
+	static function admin_themes_get ($Request) {
+		$route_path = $Request->route_path;
 		if (isset($route_path[3]) && $route_path[3] == 'update_dependencies') {
 			/**
 			 * Get dependencies for theme during update
@@ -122,12 +123,12 @@ trait themes {
 		}
 	}
 	/**
-	 * @param int[]    $route_ids
-	 * @param string[] $route_path
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_themes_put ($route_ids, $route_path) {
+	static function admin_themes_put ($Request) {
+		$route_path = $Request->route_path;
 		if (isset($route_path[2]) && $route_path[2] == 'current') {
 			if (!isset($_POST['theme'])) {
 				throw new ExitException(400);
@@ -214,12 +215,12 @@ trait themes {
 	 *  admin/System/components/themes/update/after
 	 *  ['name' => theme_name]
 	 *
-	 * @param int[]    $route_ids
-	 * @param string[] $route_path
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_themes_update ($route_ids, $route_path) {
+	static function admin_themes_update ($Request) {
+		$route_path = $Request->route_path;
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
@@ -271,13 +272,15 @@ trait themes {
 	/**
 	 * Delete theme completely
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_themes_delete ($route_ids, $route_path) {
-		if (!isset($route_path[2])) {
+	static function admin_themes_delete ($Request) {
+		if (!isset($Request->route_path[2])) {
 			throw new ExitException(400);
 		}
-		$theme  = $route_path[2];
+		$theme  = $Request->route_path[2];
 		$Config = Config::instance();
 		$themes = get_files_list(THEMES, false, 'd');
 		if (

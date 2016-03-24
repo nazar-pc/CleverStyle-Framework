@@ -12,34 +12,35 @@ use
 	cs\ExitException,
 	cs\Page,
 	cs\User;
+
 trait permissions {
 	/**
 	 * Get user's permissions
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users_permissions_get ($route_ids) {
-		if (!isset($route_ids[0])) {
+	static function admin_users_permissions_get ($Request) {
+		if (!isset($Request->route_ids[0])) {
 			throw new ExitException(400);
 		}
 		Page::instance()->json(
-			User::instance()->get_permissions($route_ids[0]) ?: []
+			User::instance()->get_permissions($Request->route_ids[0]) ?: []
 		);
 	}
 	/**
 	 * Update user's permissions
 	 *
-	 * @param int[] $route_ids
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users_permissions_put ($route_ids) {
-		if (!isset($route_ids[0], $_POST['permissions'])) {
+	static function admin_users_permissions_put ($Request) {
+		if (!isset($Request->route_ids[0], $_POST['permissions'])) {
 			throw new ExitException(400);
 		}
-		if (!User::instance()->set_permissions($_POST['permissions'], $route_ids[0])) {
+		if (!User::instance()->set_permissions($_POST['permissions'], $Request->route_ids[0])) {
 			throw new ExitException(500);
 		}
 	}
