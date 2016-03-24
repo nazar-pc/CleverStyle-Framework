@@ -46,9 +46,14 @@ use
  *  ]
  */
 class Controller {
-	static function index () {
-		$Request = Request::instance();
-		$route   = $Request->route;
+	/**
+	 * @param Request  $Request
+	 * @param Response $Response
+	 *
+	 * @throws ExitException
+	 */
+	static function index ($Request, $Response) {
+		$route = $Request->route;
 		/**
 		 * This should be present in any case, if not - exit from here
 		 */
@@ -87,7 +92,7 @@ class Controller {
 			strpos($referer, $Config->base_url()) === 0 &&
 			strpos($referer, $Config->base_url().'/HybridAuth') === false
 		) {
-			Response::instance()->cookie('HybridAuth_referer', $referer, 0, true);
+			$Response->cookie('HybridAuth_referer', $referer, 0, true);
 		}
 		require_once __DIR__.'/Hybrid/Auth.php';
 		require_once __DIR__.'/Hybrid/Endpoint.php';
@@ -118,7 +123,7 @@ class Controller {
 		/**
 		 * If user specified email
 		 */
-		self::email_was_specified($provider, $Social_integration, $User, $Page, $L, $Config);
+		self::email_was_specified($provider, $Social_integration, $User, $Page, $L, $Config, $Response);
 	}
 	/**
 	 * Redirect to referer or home page
@@ -341,7 +346,7 @@ class Controller {
 	 * @param Page   $Page
 	 * @param Prefix $L
 	 */
-	protected function email_form ($Page, $L) {
+	protected static function email_form ($Page, $L) {
 		$Page->content(
 			h::{'form[is=cs-form]'}(
 				h::{'p.cs-text-center'}(
@@ -363,10 +368,11 @@ class Controller {
 	 * @param Page               $Page
 	 * @param Prefix             $L
 	 * @param Config             $Config
+	 * @param Response           $Response
 	 *
 	 * @throws ExitException
 	 */
-	protected static function email_was_specified ($provider, $Social_integration, $User, $Page, $L, $Config) {
+	protected static function email_was_specified ($provider, $Social_integration, $User, $Page, $L, $Config, $Response) {
 		$profile = self::authenticate_hybridauth($provider);
 		/**
 		 * Try to register user
@@ -395,7 +401,7 @@ class Controller {
 				$L->time($Config->core['registration_confirmation_time'], 'd')
 			);
 			if (self::send_registration_mail($_POST['email'], $title, $body)) {
-				Response::instance()->cookie('HybridAuth_referer', '');
+				$Response->cookie('HybridAuth_referer', '');
 				$Page->content(
 					h::p(
 						$L->merge_confirmation($L->$provider)
@@ -424,7 +430,7 @@ class Controller {
 		);
 		if (self::send_registration_mail($_POST['email'], $title, $body)) {
 			self::update_data($provider);
-			Response::instance()->cookie('HybridAuth_referer', '');
+			$Response->cookie('HybridAuth_referer', '');
 			$Page->content($L->registration_confirmation);
 		}
 	}

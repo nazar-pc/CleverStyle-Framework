@@ -14,17 +14,17 @@ use
 	cs\Language\Prefix,
 	cs\Mail,
 	cs\Page,
-	cs\Request,
-	cs\Response,
 	cs\User;
 
 class Controller {
-	static function profile_registration_confirmation () {
-		$L        = new Prefix('system_profile_registration_');
-		$Page     = Page::instance();
-		$Request  = Request::instance();
-		$Response = Response::instance();
-		$User     = User::instance();
+	/**
+	 * @param \cs\Request  $Request
+	 * @param \cs\Response $Response
+	 */
+	static function profile_registration_confirmation ($Request, $Response) {
+		$L    = new Prefix('system_profile_registration_');
+		$Page = Page::instance();
+		$User = User::instance();
 		if ($Request->cookie('reg_confirm')) {
 			$Response->cookie('reg_confirm', '');
 			$Page->title($L->success_title);
@@ -75,12 +75,14 @@ class Controller {
 			$Page->warning($L->mail_sending_error);
 		}
 	}
-	static function profile_restore_password_confirmation () {
-		$L        = new Prefix('system_profile_restore_password_');
-		$Page     = Page::instance();
-		$Request  = Request::instance();
-		$Response = Response::instance();
-		$User     = User::instance();
+	/**
+	 * @param \cs\Request  $Request
+	 * @param \cs\Response $Response
+	 */
+	static function profile_restore_password_confirmation ($Request, $Response) {
+		$L    = new Prefix('system_profile_restore_password_');
+		$Page = Page::instance();
+		$User = User::instance();
 		if ($Request->cookie('restore_password_confirm')) {
 			$Response->cookie('restore_password_confirm', '');
 			$Page->title($L->success_title);
