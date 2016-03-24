@@ -1,7 +1,7 @@
 {
 	"package"      : "Uploader",
 	"category"     : "modules",
-	"version"      : "1.3.1+build-7",
+	"version"      : "1.4.0+build-8",
 	"description"  : "Uploader provides files uploading functionality to other modules",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/cms",
@@ -17,7 +17,7 @@
 	],
 	"provide"      : "file_upload",
 	"require"      : [
-		"System>=3.145",
+		"System>=3.206",
 		"System<4.0"
 	],
 	"multilingual" : [
