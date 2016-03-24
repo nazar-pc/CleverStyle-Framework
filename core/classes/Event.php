@@ -10,6 +10,8 @@ namespace cs;
  * Event class
  *
  * Provides events subscribing and dispatching
+ *
+ * @method static $this instance($check = false)
  */
 class Event {
 	use

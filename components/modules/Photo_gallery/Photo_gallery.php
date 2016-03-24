@@ -20,6 +20,9 @@ use
 	cs\plugins\SimpleImage\SimpleImage,
 	Exception;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Photo_gallery {
 	use
 		Accessor,

@@ -10,12 +10,12 @@ namespace cs\modules\Polls;
 use
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route,
+	cs\Request,
 	h;
 
 $Page    = Page::instance();
 $L       = new Prefix('polls_');
-$poll    = Polls::instance()->get(Route::instance()->ids[0]);
+$poll    = Polls::instance()->get(Request::instance()->route_ids[0]);
 $Options = Options::instance();
 $Page
 	->title($L->editing_of_poll($poll['title']))

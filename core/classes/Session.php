@@ -5,7 +5,14 @@
  * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
+namespace cs;
+use
+	cs\Language\Prefix as Language_prefix,
+	cs\Cache\Prefix as Cache_prefix;
+
 /**
+ * Class responsible for current user session
+ *
  * Provides next events:
  *
  *  System/Session/init/before
@@ -26,14 +33,8 @@
  *
  *  System/Session/del_all
  *  ['id' => $user_id]
- */
-namespace cs;
-use
-	cs\Language\Prefix as Language_prefix,
-	cs\Cache\Prefix as Cache_prefix;
-
-/**
- * Class responsible for current user session
+ *
+ * @method static $this instance($check = false)
  */
 class Session {
 	use

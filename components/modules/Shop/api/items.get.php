@@ -11,10 +11,10 @@ use
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
 $L           = new Prefix('shop_');
-$Route       = Route::instance();
+$Request     = Request::instance();
 $Page        = Page::instance();
 $Categories  = Categories::instance();
 $Items       = Items::instance();
@@ -31,8 +31,8 @@ if (isset($_GET['ids'])) {
 		}
 		$Page->json($items);
 	}
-} elseif (isset($Route->ids[0])) {
-	$item = $Items->get_for_user($Route->ids[0]);
+} elseif (isset($Request->route_ids[0])) {
+	$item = $Items->get_for_user($Request->route_ids[0]);
 	if (!$item) {
 		throw new ExitException(404);
 	} else {

@@ -14,8 +14,9 @@ use
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route,
+	cs\Request,
 	cs\User;
+
 /**
  * Provides next events:
  *  api/Comments/delete
@@ -33,8 +34,8 @@ if (!$Config->module('Comments')->enabled()) {
 if (!User::instance()->user()) {
 	throw new ExitException(403);
 }
-$Route = Route::instance();
-if (!isset($Route->route[0], $_POST['module'])) {
+$Request = Request::instance();
+if (!isset($Request->route[0], $_POST['module'])) {
 	throw new ExitException(400);
 }
 $Comments      = false;
@@ -44,7 +45,7 @@ Event::instance()->fire(
 	[
 		'Comments'      => &$Comments,
 		'delete_parent' => &$delete_parent,
-		'id'            => $Route->route[0],
+		'id'            => $Request->route[0],
 		'module'        => $_POST['module']
 	]
 );
@@ -56,7 +57,7 @@ if (!is_object($Comments)) {
 /**
  * @var Comments $Comments
  */
-if ($result = $Comments->del($Route->route[0])) {
+if ($result = $Comments->del($Request->route[0])) {
 	$Page->json($delete_parent ? h::{'icon.cs-comments-comment-delete.cs-cursor-pointer'}('trash') : '');
 } else {
 	throw new ExitException($L->comment_deleting_server_error, 500);

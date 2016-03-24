@@ -11,9 +11,9 @@ use
 	h,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
-$gallery = Photo_gallery::instance()->get_gallery(Route::instance()->route[1]);
+$gallery = Photo_gallery::instance()->get_gallery(Request::instance()->route[1]);
 $L       = new Prefix('photo_gallery_');
 Page::instance()
 	->title($L->deletion_of_gallery($gallery['title']))

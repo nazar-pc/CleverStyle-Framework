@@ -14,7 +14,7 @@ use
 	cs\Language\Prefix,
 	cs\Page\Meta,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
 if (!Event::instance()->fire('Blogs/section')) {
 	return;
@@ -24,13 +24,13 @@ $L        = new Prefix('blogs_');
 $Meta     = Meta::instance();
 $Page     = Page::instance();
 $Posts    = Posts::instance();
-$Route    = Route::instance();
+$Request  = Request::instance();
 $Sections = Sections::instance();
 /**
  * At first - determine part of url and get sections list based on that path
  */
 $sections = $Sections->get_by_path(
-	array_slice($Route->path, 1)
+	array_slice($Request->route_path, 1)
 );
 if (!$sections) {
 	throw new ExitException(400);
@@ -59,7 +59,7 @@ $Meta->blog();
  * Determine current page
  */
 $page = max(
-	isset($Route->ids[0]) ? array_slice($Route->ids, -1)[0] : 1,
+	isset($Request->route_ids[0]) ? array_slice($Request->route_ids, -1)[0] : 1,
 	1
 );
 /**

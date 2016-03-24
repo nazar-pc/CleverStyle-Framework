@@ -12,7 +12,8 @@ use
 	cs\Config,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
+
 $Config     = Config::instance();
 $L          = new Prefix('shop_');
 $Page       = Page::instance();
@@ -21,7 +22,7 @@ $Attributes = Attributes::instance();
 $Items      = Items::instance();
 $item       = explode(
 	':',
-	array_slice(Route::instance()->path, -1)[0]
+	array_slice(Request::instance()->route_path, -1)[0]
 );
 $item       = $Items->get_for_user(array_pop($item));
 $Page->title($item['title']);

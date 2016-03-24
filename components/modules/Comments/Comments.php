@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-namespace	cs\modules\Comments;
+namespace cs\modules\Comments;
 use
 	cs\DB\Accessor,
 	h,
@@ -18,6 +18,9 @@ use
 	cs\User,
 	cs\Singleton;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Comments {
 	use
 		Accessor,

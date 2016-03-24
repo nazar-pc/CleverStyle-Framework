@@ -7,6 +7,9 @@
  */
 namespace cs;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class DB {
 	use
 		Singleton;

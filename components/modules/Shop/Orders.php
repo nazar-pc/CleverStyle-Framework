@@ -55,6 +55,8 @@ use
  *   'items'    => &$items,   // Array of array elements [id => item_id, units => units, price => total_price]
  *   'shipping' => &$shipping // Array in form [type => shipping_type_id, price => shipping_type_price]
  *  ]</code>
+ *
+ * @method static $this instance($check = false)
  */
 class Orders {
 	use CRUD_helpers {

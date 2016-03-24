@@ -9,12 +9,13 @@
 namespace cs;
 use
 	cs\Language\Prefix;
+
 Event::instance()->on(
 	'admin/System/Menu',
 	function () {
 		$L     = new Prefix('composer_');
 		$Menu  = Menu::instance();
-		$route = Route::instance()->path;
+		$route = Request::instance()->route_path;
 		$Menu->add_item(
 			'Composer',
 			$L->general,

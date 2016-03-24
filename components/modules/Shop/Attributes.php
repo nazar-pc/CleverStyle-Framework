@@ -15,6 +15,9 @@ use
 	cs\Language\Prefix as Language_prefix,
 	cs\Singleton;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Attributes {
 	use
 		Singleton,

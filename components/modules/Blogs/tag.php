@@ -14,28 +14,28 @@ use
 	cs\Language\Prefix,
 	cs\Page\Meta,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
 if (!Event::instance()->fire('Blogs/tag')) {
 	return;
 }
-$Config = Config::instance();
-$L      = new Prefix('blogs_');
-$Meta   = Meta::instance();
-$Page   = Page::instance();
-$Posts  = Posts::instance();
-$Tags   = Tags::instance();
-$Route  = Route::instance();
+$Config  = Config::instance();
+$L       = new Prefix('blogs_');
+$Meta    = Meta::instance();
+$Page    = Page::instance();
+$Posts   = Posts::instance();
+$Tags    = Tags::instance();
+$Request = Request::instance();
 /**
  * If no tag specified
  */
-if (!isset($Route->route[1])) {
+if (!isset($Request->route[1])) {
 	throw new ExitException(404);
 }
 /**
  * Find tag
  */
-$tag = $Tags->get_by_text($Route->route[1]);
+$tag = $Tags->get_by_text($Request->route[1]);
 if (!$tag) {
 	throw new ExitException(404);
 }
@@ -60,7 +60,7 @@ $Meta->blog();
  * Determine current page
  */
 $page = max(
-	isset($Route->route[2]) ? $Route->route[2] : 1,
+	isset($Request->route[2]) ? $Request->route[2] : 1,
 	1
 );
 /**
@@ -78,7 +78,7 @@ $posts_count    = $Posts->get_for_tag_count($tag['id'], $L->clang);
 /**
  * Base url (without page number)
  */
-$base_url = $Config->base_url().'/'.path($L->Blogs).'/'.path($L->tag).'/'.$Route->route[1];
+$base_url = $Config->base_url().'/'.path($L->Blogs).'/'.path($L->tag).'/'.$Request->route[1];
 /**
  * Render posts page
  */

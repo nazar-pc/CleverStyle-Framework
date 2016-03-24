@@ -12,24 +12,24 @@ use
 	cs\Event,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route,
+	cs\Request,
 	cs\User;
 
 if (!Event::instance()->fire('Blogs/drafts')) {
 	return;
 }
-$Config = Config::instance();
-$L      = new Prefix('blogs_');
-$Page   = Page::instance();
-$Posts  = Posts::instance();
-$Route  = Route::instance();
-$User   = User::instance();
+$Config  = Config::instance();
+$L       = new Prefix('blogs_');
+$Page    = Page::instance();
+$Posts   = Posts::instance();
+$Request = Request::instance();
+$User    = User::instance();
 $Page->title($L->drafts);
 /**
  * Determine current page
  */
 $page = max(
-	isset($Route->ids[0]) ? array_slice($Route->ids, -1)[0] : 1,
+	isset($Request->route_ids[0]) ? array_slice($Request->route_ids, -1)[0] : 1,
 	1
 );
 /**

@@ -11,10 +11,10 @@ use
 	h,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
 $L     = new Prefix('static_pages_');
-$id    = (int)Route::instance()->route[1];
+$id    = (int)Request::instance()->route[1];
 $title = Pages::instance()->get($id)['title'];
 Page::instance()
 	->title($L->deletion_of_page($title))

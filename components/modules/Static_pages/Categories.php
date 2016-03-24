@@ -13,6 +13,9 @@ use
 	cs\Cache\Prefix,
 	cs\Config;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Categories {
 	use
 		CRUD,

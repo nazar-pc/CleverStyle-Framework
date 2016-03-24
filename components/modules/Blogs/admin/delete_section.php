@@ -11,9 +11,9 @@ use
 	h,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
-$section = Sections::instance()->get(Route::instance()->route[1]);
+$section = Sections::instance()->get(Request::instance()->route[1]);
 $L       = new Prefix('blogs_');
 $Page    = Page::instance();
 $Page->title($L->deletion_of_posts_section($section['title']));

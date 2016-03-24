@@ -12,6 +12,8 @@ use
 
 /**
  * Class for permissions manipulating
+ *
+ * @method static $this instance($check = false)
  */
 class Permission {
 	use

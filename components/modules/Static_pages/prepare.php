@@ -15,7 +15,6 @@ use
 	cs\Page\Meta,
 	cs\Page,
 	cs\Request,
-	cs\Route,
 	cs\User;
 
 $Config     = Config::instance();
@@ -26,11 +25,10 @@ $Categories = Categories::instance();
 if ($Request->home_page) {
 	$page = $Pages->get($Pages->get_structure()['pages']['index']);
 } else {
-	$Route = Route::instance();
-	if (!isset($Route->route[0])) {
+	if (!isset($Request->route[0])) {
 		throw new ExitException(404);
 	}
-	$page = $Pages->get($Route->route[0]);
+	$page = $Pages->get($Request->route[0]);
 }
 $Page = Page::instance();
 $User = User::instance();
@@ -138,6 +136,6 @@ if ($page['interface']) {
 		);
 	}
 } else {
-	interface_off();
-	$Page->Content = $page['content'];
+	$Page->interface = false;
+	$Page->Content   = $page['content'];
 }

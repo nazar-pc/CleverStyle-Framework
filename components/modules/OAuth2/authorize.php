@@ -35,7 +35,7 @@ if (!function_exists(__NAMESPACE__.'\\error_redirect')) {
 			),
 			302
 		);
-		interface_off();
+		Page::instance()->interface = false;
 	}
 }
 $OAuth2 = OAuth2::instance();
@@ -271,7 +271,6 @@ switch ($_GET['response_type']) {
 		$Response
 			->header('cache-control', 'no-store')
 			->header('pragma', 'no-cache');
-		interface_off();
 		if ($User->user()) {
 			$e = new ExitException(
 				[

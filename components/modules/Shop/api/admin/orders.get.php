@@ -11,19 +11,19 @@ use
 	cs\ExitException,
 	cs\Language,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
-$Route  = Route::instance();
-$Page   = Page::instance();
-$Orders = Orders::instance();
+$Request = Request::instance();
+$Page    = Page::instance();
+$Orders  = Orders::instance();
 /**
  * Get order items, not order itself
  */
-if (isset($Route->ids[0], $Route->path[2])) {
-	switch ($Route->path[2]) {
+if (isset($Request->route_ids[0], $Request->route_path[2])) {
+	switch ($Request->route_path[2]) {
 		case 'items':
 			$Page->json(
-				$Orders->get_items($Route->ids[0])
+				$Orders->get_items($Request->route_ids[0])
 			);
 			break;
 		case 'statuses':
@@ -42,13 +42,13 @@ if (isset($Route->ids[0], $Route->path[2])) {
 						}
 						return $status;
 					},
-					$Orders->get_statuses($Route->ids[0])
+					$Orders->get_statuses($Request->route_ids[0])
 				)
 			);
 			break;
 	}
-} elseif (isset($Route->ids[0])) {
-	$order = $Orders->get($Route->ids[0]);
+} elseif (isset($Request->route_ids[0])) {
+	$order = $Orders->get($Request->route_ids[0]);
 	if (!$order) {
 		throw new ExitException(404);
 	} else {

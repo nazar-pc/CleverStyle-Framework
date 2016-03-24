@@ -10,11 +10,11 @@ namespace cs\modules\Shop;
 use
 	cs\ExitException,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
-$Page  = Page::instance();
-$Route = Route::instance();
-$Items = Items::instance();
+$Page    = Page::instance();
+$Request = Request::instance();
+$Items   = Items::instance();
 if (isset($_GET['ids'])) {
 	$items = $Items->get(explode(',', $_GET['ids']));
 	if (!$items) {
@@ -22,8 +22,8 @@ if (isset($_GET['ids'])) {
 	} else {
 		$Page->json($items);
 	}
-} elseif (isset($Route->ids[0])) {
-	$item = $Items->get($Route->ids[0]);
+} elseif (isset($Request->route_ids[0])) {
+	$item = $Items->get($Request->route_ids[0]);
 	if (!$item) {
 		throw new ExitException(404);
 	} else {

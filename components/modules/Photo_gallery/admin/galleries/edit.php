@@ -12,10 +12,10 @@ use
 	cs\Config,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
 $Config  = Config::instance();
-$gallery = Photo_gallery::instance()->get_gallery(Route::instance()->route[2]);
+$gallery = Photo_gallery::instance()->get_gallery(Request::instance()->route[2]);
 $L       = new Prefix('photo_gallery_');
 Page::instance()
 	->title($L->editing_of_gallery($gallery['title']))

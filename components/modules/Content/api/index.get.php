@@ -10,13 +10,13 @@ namespace cs\modules\Content;
 use
 	cs\ExitException,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
-$Route = Route::instance();
-if (!isset($Route->route[0])) {
+$Request = Request::instance();
+if (!isset($Request->route[0])) {
 	throw new ExitException(400);
 }
-$content = Content::instance()->get($Route->route[0]);
+$content = Content::instance()->get($Request->route[0]);
 if (!$content) {
 	throw new ExitException(404);
 }

@@ -10,9 +10,9 @@ namespace cs\modules\Shop;
 use
 	cs\ExitException,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
-$Route      = Route::instance();
+$Request    = Request::instance();
 $Page       = Page::instance();
 $Categories = Categories::instance();
 if (isset($_GET['ids'])) {
@@ -22,8 +22,8 @@ if (isset($_GET['ids'])) {
 	} else {
 		$Page->json($categories);
 	}
-} elseif (isset($Route->ids[0])) {
-	$category = $Categories->get_for_user($Route->ids[0]);
+} elseif (isset($Request->route_ids[0])) {
+	$category = $Categories->get_for_user($Request->route_ids[0]);
 	if (!$category) {
 		throw new ExitException(404);
 	} else {

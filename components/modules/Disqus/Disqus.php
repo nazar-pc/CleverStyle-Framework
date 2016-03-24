@@ -14,6 +14,9 @@ use
 	cs\Request,
 	cs\Singleton;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Disqus {
 	use	Singleton;
 

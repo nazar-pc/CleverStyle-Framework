@@ -43,6 +43,8 @@ use
  *  [
  *   'id' => $id
  *  ]</code>
+ *
+ * @method static $this instance($check = false)
  */
 class Categories {
 	use

@@ -75,8 +75,8 @@ if (count($galleries) > 1) {
 		)
 	);
 } elseif (count($galleries) == 1) {
-	interface_off();
-	$path = array_keys($galleries)[0];
+	$Page->interface = false;
+	$path            = array_keys($galleries)[0];
 	Response::instance()->redirect($Config->base_url()."/$module/$path", 307);
 } else {
 	$Page->content(

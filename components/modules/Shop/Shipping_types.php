@@ -22,6 +22,8 @@ use
  *   'data' => &$data,
  *   'user' => $user
  *  ]</code>
+ *
+ * @method static $this instance($check = false)
  */
 class Shipping_types {
 	use

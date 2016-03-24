@@ -10,20 +10,20 @@ namespace cs\modules\Shop;
 use
 	cs\ExitException,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
 $Page           = Page::instance();
-$Route          = Route::instance();
+$Request        = Request::instance();
 $Shipping_types = Shipping_types::instance();
 if (isset($_GET['ids'])) {
-	$shipping_types = $Shipping_types->get_for_user(explode(',', $Route->ids[0]));
+	$shipping_types = $Shipping_types->get_for_user(explode(',', $Request->route_ids[0]));
 	if (!$shipping_types) {
 		throw new ExitException(404);
 	} else {
 		$Page->json($shipping_types);
 	}
-} elseif (isset($Route->ids[0])) {
-	$shipping_type = $Shipping_types->get_for_user($Route->ids[0]);
+} elseif (isset($Request->route_ids[0])) {
+	$shipping_type = $Shipping_types->get_for_user($Request->route_ids[0]);
 	if (!$shipping_type) {
 		throw new ExitException(404);
 	} else {

@@ -61,14 +61,15 @@ Event::instance()
 			if (!$Config->core['multilingual']) {
 				return;
 			}
-			$relative_address = Route::instance()->relative_address;
+			$Request          = Request::instance();
+			$relative_address = $Request->path_normalized;
 			$Page             = Page::instance();
 			$core_url         = $Config->core_url();
 			$base_url         = $Config->base_url();
 			$Page->Head .= h::link(
 				[
 					'hreflang' => 'x-default',
-					'href'     => Request::instance()->home_page ? $core_url : "$core_url/$relative_address",
+					'href'     => $Request->home_page ? $core_url : "$core_url/$relative_address",
 					'rel'      => 'alternate'
 				]
 			);

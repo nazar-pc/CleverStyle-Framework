@@ -12,15 +12,15 @@ use
 	cs\Config,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
-$Config = Config::instance();
-$L      = new Prefix('blogs_');
-$Page   = Page::instance();
-$Route  = Route::instance();
-$page   = isset($Route->route[1]) ? (int)$Route->route[1] : 1;
-$page   = $page > 0 ? $page : 1;
-$total  = Posts::instance()->get_total_count();
+$Config  = Config::instance();
+$L       = new Prefix('blogs_');
+$Page    = Page::instance();
+$Request = Request::instance();
+$page    = isset($Request->route[1]) ? (int)$Request->route[1] : 1;
+$page    = $page > 0 ? $page : 1;
+$total   = Posts::instance()->get_total_count();
 $Page->title($L->browse_posts);
 $Page->content(
 	h::{'table.cs-table[center][list]'}(

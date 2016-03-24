@@ -16,7 +16,6 @@ use
 	cs\Page,
 	cs\Request,
 	cs\Response,
-	cs\Route,
 	cs\User;
 
 class Controller {
@@ -25,7 +24,6 @@ class Controller {
 		$Page     = Page::instance();
 		$Request  = Request::instance();
 		$Response = Response::instance();
-		$Route    = Route::instance();
 		$User     = User::instance();
 		if ($Request->cookie('reg_confirm')) {
 			$Response->cookie('reg_confirm', '');
@@ -36,12 +34,12 @@ class Controller {
 			$Page->title($L->you_are_already_registered_title);
 			$Page->warning($L->you_are_already_registered);
 			return;
-		} elseif (!isset($Route->route[2])) {
+		} elseif (!isset($Request->route[2])) {
 			$Page->title($L->invalid_confirmation_code);
 			$Page->warning($L->invalid_confirmation_code);
 			return;
 		}
-		$result = $User->registration_confirmation($Route->route[2]);
+		$result = $User->registration_confirmation($Request->route[2]);
 		if ($result === false) {
 			$Page->title($L->invalid_confirmation_code);
 			$Page->warning($L->invalid_confirmation_code);
@@ -82,7 +80,6 @@ class Controller {
 		$Page     = Page::instance();
 		$Request  = Request::instance();
 		$Response = Response::instance();
-		$Route    = Route::instance();
 		$User     = User::instance();
 		if ($Request->cookie('restore_password_confirm')) {
 			$Response->cookie('restore_password_confirm', '');
@@ -93,12 +90,12 @@ class Controller {
 			$Page->title($L->you_are_already_registered_title);
 			$Page->warning($L->you_are_already_registered);
 			return;
-		} elseif (!isset($Route->route[2])) {
+		} elseif (!isset($Request->route[2])) {
 			$Page->title($L->invalid_confirmation_code);
 			$Page->warning($L->invalid_confirmation_code);
 			return;
 		}
-		$result = $User->restore_password_confirmation($Route->route[2]);
+		$result = $User->restore_password_confirmation($Request->route[2]);
 		if ($result === false) {
 			$Page->title($L->invalid_confirmation_code);
 			$Page->warning($L->invalid_confirmation_code);
@@ -124,8 +121,9 @@ class Controller {
 		}
 	}
 	static function robots_txt () {
-		interface_off();
-		$text = file_get_contents(__DIR__.'/robots.txt');
+		$Page            = Page::instance();
+		$Page->interface = false;
+		$text            = file_get_contents(__DIR__.'/robots.txt');
 		Event::instance()->fire(
 			'System/robots.txt',
 			[
@@ -135,6 +133,6 @@ class Controller {
 		$core_url                  = Config::instance()->core_url();
 		$core_url_without_protocol = explode('//', $core_url, 2)[1];
 		$host                      = explode('/', $core_url_without_protocol, 2)[0];
-		Page::instance()->Content  = "{$text}Host: $host";
+		$Page->Content             = "{$text}Host: $host";
 	}
 }

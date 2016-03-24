@@ -7,13 +7,15 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\modules\Polls;
-
 use
 	cs\Cache\Prefix,
 	cs\Config,
 	cs\CRUD,
 	cs\Singleton;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Options {
 	use
 		Common_actions,

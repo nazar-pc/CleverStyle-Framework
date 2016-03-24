@@ -10,6 +10,9 @@ use
 	h,
 	PHPMailer;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Mail extends PHPMailer {
 	use Singleton;
 	/**

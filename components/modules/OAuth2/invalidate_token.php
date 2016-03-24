@@ -9,6 +9,7 @@
 namespace cs\modules\OAuth2;
 use
 	cs\ExitException,
+	cs\Page,
 	cs\Response;
 
 Response::instance()
@@ -37,4 +38,4 @@ if (!$OAuth2->del_token($_POST['access_token'])) {
 	$e->setJson();
 	throw $e;
 }
-interface_off();
+Page::instance()->interface = false;

@@ -10,18 +10,19 @@ namespace cs\modules\Photo_gallery;
 use
 	cs\ExitException,
 	cs\Page,
-	cs\Route,
+	cs\Request,
 	cs\User;
-$Route = Route::instance();
-$User  = User::instance();
+
+$Request = Request::instance();
+$User    = User::instance();
 if (!$User->user()) {
 	throw new ExitException(403);
 }
-if (!isset($Route->route[1])) {
+if (!isset($Request->route[1])) {
 	throw new ExitException(400);
 }
 $Photo_gallery = Photo_gallery::instance();
-$image         = $Photo_gallery->get($Route->route[1]);
+$image         = $Photo_gallery->get($Request->route[1]);
 if (!$image) {
 	throw new ExitException(404);
 }

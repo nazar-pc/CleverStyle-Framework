@@ -9,11 +9,11 @@
 namespace cs\modules\Shop;
 use
 	cs\ExitException,
-	cs\Route;
+	cs\Request;
 
-$Route = Route::instance();
+$Request = Request::instance();
 if (!isset(
-	$Route->ids[0],
+	$Request->route_ids[0],
 	$_POST['price'],
 	$_POST['phone_needed'],
 	$_POST['address_needed'],
@@ -24,7 +24,7 @@ if (!isset(
 	throw new ExitException(400);
 }
 $result = Shipping_types::instance()->set(
-	$Route->ids[0],
+	$Request->route_ids[0],
 	$_POST['price'],
 	$_POST['phone_needed'],
 	$_POST['address_needed'],

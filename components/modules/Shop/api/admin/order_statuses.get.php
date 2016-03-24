@@ -10,19 +10,19 @@ namespace cs\modules\Shop;
 use
 	cs\ExitException,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
-$Route          = Route::instance();
+$Request        = Request::instance();
 $Page           = Page::instance();
 $Order_statuses = Order_statuses::instance();
-if (isset($Route->ids[0])) {
-	$order_status = $Order_statuses->get($Route->ids[0]);
+if (isset($Request->route_ids[0])) {
+	$order_status = $Order_statuses->get($Request->route_ids[0]);
 	if (!$order_status) {
 		throw new ExitException(404);
 	} else {
 		$Page->json($order_status);
 	}
-} elseif (isset($Route->path[2]) && $Route->path[2] == 'types') {
+} elseif (isset($Request->route_path[2]) && $Request->route_path[2] == 'types') {
 	$Page->json(
 		$Order_statuses->get_type_to_name_array()
 	);

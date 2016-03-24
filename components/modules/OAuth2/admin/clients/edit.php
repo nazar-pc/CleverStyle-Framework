@@ -12,10 +12,10 @@ use
 	h,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
 $L      = new Prefix('oauth2_');
-$client = OAuth2::instance()->get_client(Route::instance()->route[2]);
+$client = OAuth2::instance()->get_client(Request::instance()->route[2]);
 Page::instance()
 	->title($L->editing_of_client($client['name']))
 	->content(

@@ -7,13 +7,15 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\modules\Polls;
-
 use
 	cs\Config,
 	cs\User,
 	cs\CRUD,
 	cs\Singleton;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Answers {
 	use
 		CRUD,

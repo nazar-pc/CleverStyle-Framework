@@ -9,12 +9,12 @@
 namespace cs\modules\Shop;
 use
 	cs\ExitException,
-	cs\Route;
+	cs\Request;
 
-$Route = Route::instance();
-if (!isset($Route->ids[0])) {
+$Request = Request::instance();
+if (!isset($Request->route_ids[0])) {
 	throw new ExitException(400);
 }
-if (!Attributes::instance()->del($Route->ids[0])) {
+if (!Attributes::instance()->del($Request->route_ids[0])) {
 	throw new ExitException(500);
 }

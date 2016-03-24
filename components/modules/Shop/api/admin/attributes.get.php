@@ -10,9 +10,9 @@ namespace cs\modules\Shop;
 use
 	cs\ExitException,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
-$Route      = Route::instance();
+$Request    = Request::instance();
 $Page       = Page::instance();
 $Attributes = Attributes::instance();
 if (isset($_GET['ids'])) {
@@ -22,14 +22,14 @@ if (isset($_GET['ids'])) {
 	} else {
 		$Page->json($attributes);
 	}
-} elseif (isset($Route->ids[0])) {
-	$attribute = $Attributes->get($Route->ids[0]);
+} elseif (isset($Request->route_ids[0])) {
+	$attribute = $Attributes->get($Request->route_ids[0]);
 	if (!$attribute) {
 		throw new ExitException(404);
 	} else {
 		$Page->json($attribute);
 	}
-} elseif (isset($Route->path[2]) && $Route->path[2] == 'types') {
+} elseif (isset($Request->route_path[2]) && $Request->route_path[2] == 'types') {
 	$Page->json(
 		$Attributes->get_type_to_name_array()
 	);

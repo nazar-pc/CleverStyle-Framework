@@ -18,6 +18,8 @@ use
  *   'cregion'          => cregion
  *   'clanguage_en'     => clanguage_en
  *  ]
+ * 
+ * @method static $this instance($check = false)
  */
 class Language implements JsonSerializable {
 	use Singleton;

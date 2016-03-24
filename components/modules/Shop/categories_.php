@@ -13,11 +13,12 @@ use
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
+
 $Config          = Config::instance();
 $L               = new Prefix('shop_');
 $Page            = Page::instance();
-$Route           = Route::instance();
+$Request         = Request::instance();
 $Categories      = Categories::instance();
 $all_categories  = $Categories->get_for_user($Categories->get_all());
 $all_categories  = array_combine(array_column($all_categories, 'id'), $all_categories);
@@ -27,8 +28,8 @@ foreach ($all_categories as $category) {
 }
 unset($category);
 $current_category = 0;
-if ($Route->path) {
-	$current_category = array_slice($Route->path, -1)[0];
+if ($Request->route_path) {
+	$current_category = array_slice($Request->route_path, -1)[0];
 	$current_category = explode(':', $current_category);
 	$current_category = (int)array_pop($current_category);
 }

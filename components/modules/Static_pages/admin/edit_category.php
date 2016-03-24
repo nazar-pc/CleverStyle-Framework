@@ -11,10 +11,10 @@ use
 	h,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
 $L    = new Prefix('static_pages_');
-$id   = (int)Route::instance()->route[1];
+$id   = (int)Request::instance()->route[1];
 $data = Categories::instance()->get($id);
 Page::instance()
 	->title($L->editing_of_page_category($data['title']))

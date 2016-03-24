@@ -11,7 +11,7 @@ use
 	h,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
 $Page = Page::instance();
 $Page->css('components/modules/Static_pages/includes/css/style.css');
@@ -111,7 +111,7 @@ function get_pages_rows () {
 	$L          = new Prefix('static_pages_');
 	$Pages      = Pages::instance();
 	$Categories = Categories::instance();
-	$categories = array_slice(Route::instance()->route, 2);
+	$categories = array_slice(Request::instance()->route, 2);
 	$structure  = $Pages->get_structure();
 	$path       = [];
 	if (!empty($categories)) {

@@ -18,12 +18,9 @@ use
 Response::instance()
 	->header('cache-control', 'no-store')
 	->header('pragma', 'no-cache');
-interface_off();
 /**
  * Errors processing
  */
-$Config = Config::instance();
-$Page   = Page::instance();
 if (!isset($_POST['grant_type'])) {
 	$e = new ExitException(
 		[
@@ -103,48 +100,37 @@ if (!$client['domain']) {
 	$e->setJson();
 	throw $e;
 }
-if ($_POST['grant_type'] == 'authorization_code') {
-	if (!isset($_POST['redirect_uri'])) {
-		$e = new ExitException(
-			[
-				'invalid_request',
-				'redirect_uri parameter required'
-			],
-			400
-		);
-		$e->setJson();
-		throw $e;
-	} elseif (
-		urldecode($_POST['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
-		!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_POST['redirect_uri']))
-	) {
-		$e = new ExitException(
-			[
-				'invalid_request',
-				'Invalid redirect_uri parameter'
-			],
-			400
-		);
-		$e->setJson();
-		throw $e;
-	}
-}
-if (!in_array($_POST['grant_type'], ['authorization_code', 'refresh_token', 'guest_token'])) {
-	$e = new ExitException(
-		[
-			'unsupported_grant_type',
-			'Specified grant type is not supported, only "authorization_code" or "refresh_token" types available'
-		],
-		400
-	);
-	$e->setJson();
-	throw $e;
-}
+$Config = Config::instance();
+$Page   = Page::instance();
 /**
  * Tokens operations processing
  */
 switch ($_POST['grant_type']) {
 	case 'authorization_code':
+		if (!isset($_POST['redirect_uri'])) {
+			$e = new ExitException(
+				[
+					'invalid_request',
+					'redirect_uri parameter required'
+				],
+				400
+			);
+			$e->setJson();
+			throw $e;
+		} elseif (
+			urldecode($_POST['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
+			!preg_match("#^[^/]+://$client[domain]#", urldecode($_POST['redirect_uri']))
+		) {
+			$e = new ExitException(
+				[
+					'invalid_request',
+					'Invalid redirect_uri parameter'
+				],
+				400
+			);
+			$e->setJson();
+			throw $e;
+		}
 		if (!isset($_POST['code'])) {
 			$e = new ExitException(
 				[
@@ -243,11 +229,7 @@ switch ($_POST['grant_type']) {
 			throw $e;
 		}
 		$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], '');
-		if ($token_data) {
-			unset($token_data['refresh_token']);
-			$Page->json($token_data);
-			return;
-		} else {
+		if (!$token_data) {
 			$e = new ExitException(
 				[
 					'server_error',
@@ -258,4 +240,16 @@ switch ($_POST['grant_type']) {
 			$e->setJson();
 			throw $e;
 		}
+		unset($token_data['refresh_token']);
+		$Page->json($token_data);
+	default:
+		$e = new ExitException(
+			[
+				'unsupported_grant_type',
+				'Specified grant type is not supported, only "authorization_code" or "refresh_token" types available'
+			],
+			400
+		);
+		$e->setJson();
+		throw $e;
 }

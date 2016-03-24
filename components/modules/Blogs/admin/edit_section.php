@@ -12,9 +12,9 @@ use
 	cs\Config,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
-$section = Sections::instance()->get(Route::instance()->route[1]);
+$section = Sections::instance()->get(Request::instance()->route[1]);
 $Config  = Config::instance();
 $L       = new Prefix('blogs_');
 $Page    = Page::instance();

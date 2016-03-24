@@ -9,11 +9,11 @@
 namespace cs\modules\Shop;
 use
 	cs\ExitException,
-	cs\Route;
+	cs\Request;
 
-$Route = Route::instance();
+$Request = Request::instance();
 if (!isset(
-	$Route->ids[0],
+	$Request->route_ids[0],
 	$_POST['parent'],
 	$_POST['title'],
 	$_POST['description'],
@@ -27,7 +27,7 @@ if (!isset(
 	throw new ExitException(400);
 }
 $result = Categories::instance()->set(
-	$Route->ids[0],
+	$Request->route_ids[0],
 	$_POST['parent'],
 	$_POST['title'],
 	$_POST['description'],

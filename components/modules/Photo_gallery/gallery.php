@@ -13,7 +13,7 @@ use
 	cs\Language\Prefix,
 	cs\Page\Meta,
 	cs\Page,
-	cs\Route,
+	cs\Request,
 	cs\User;
 
 $Config        = Config::instance();
@@ -21,7 +21,7 @@ $L             = new Prefix('photo_gallery_');
 $Page          = Page::instance();
 $User          = User::instance();
 $Photo_gallery = Photo_gallery::instance();
-$gallery       = $Photo_gallery->get_gallery(Route::instance()->route[1]);
+$gallery       = $Photo_gallery->get_gallery(Request::instance()->route[1]);
 if ($User->user()) {
 	$Page->content(
 		h::{'p.cs-text-left a.cs-photo-gallery-add-images[is=cs-link-button][icon=plus]'}(

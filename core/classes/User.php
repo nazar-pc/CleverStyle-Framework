@@ -5,7 +5,18 @@
  * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
+namespace cs;
+use
+	cs\Cache\Prefix,
+	cs\DB\Accessor,
+	cs\User\Data as User_data,
+	cs\User\Group as User_group,
+	cs\User\Management as User_management,
+	cs\User\Permission as User_permission;
+
 /**
+ * Class for users manipulating
+ *
  * Provides next events:
  *  System/User/construct/before
  *
@@ -37,18 +48,6 @@
  *    'id'       => <i>user_id</i>,
  *    'contacts' => <i>&$contacts</i> //Array of user id
  *  ]
- */
-namespace cs;
-use
-	cs\Cache\Prefix,
-	cs\DB\Accessor,
-	cs\User\Data as User_data,
-	cs\User\Group as User_group,
-	cs\User\Management as User_management,
-	cs\User\Permission as User_permission;
-
-/**
- * Class for users manipulating
  *
  * @property int    $id
  * @property string $login
@@ -65,6 +64,8 @@ use
  * @property int    $status        '-1' - not activated (for example after registration), 0 - inactive, 1 - active
  * @property int    $block_until   unix timestamp
  * @property string $avatar
+ *
+ * @method static $this instance($check = false)
  */
 class User {
 	use

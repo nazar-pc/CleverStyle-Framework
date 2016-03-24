@@ -11,13 +11,13 @@ use
 	h,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route,
+	cs\Request,
 	cs\User;
 
 $L             = new Prefix('photo_gallery_');
 $User          = User::instance();
 $Photo_gallery = Photo_gallery::instance();
-$images        = $Photo_gallery->get(explode(',', Route::instance()->route[1])) ?: [];
+$images        = $Photo_gallery->get(explode(',', Request::instance()->route[1])) ?: [];
 Page::instance()
 	->title($L->images_editing)
 	->content(

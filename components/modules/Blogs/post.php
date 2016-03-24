@@ -14,8 +14,8 @@ use
 	cs\ExitException,
 	cs\Page\Meta,
 	cs\Page,
+	cs\Request,
 	cs\Response,
-	cs\Route,
 	cs\User;
 
 if (!Event::instance()->fire('Blogs/post')) {
@@ -36,7 +36,7 @@ Event::instance()->fire(
  * @var \cs\modules\Comments\Comments $Comments
  */
 $Posts   = Posts::instance();
-$rc      = Route::instance()->route;
+$rc      = Request::instance()->route;
 $post_id = (int)mb_substr($rc[1], mb_strrpos($rc[1], ':') + 1);
 if (!$post_id) {
 	throw new ExitException(404);

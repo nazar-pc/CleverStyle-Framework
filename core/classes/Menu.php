@@ -14,6 +14,8 @@ use
  *
  * Provides next events:<br>
  *  admin/System/Menu
+ *
+ * @method static $this instance($check = false)
  */
 class Menu {
 	use

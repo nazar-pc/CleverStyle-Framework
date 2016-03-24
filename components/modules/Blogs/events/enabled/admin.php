@@ -15,7 +15,7 @@ Event::instance()->on(
 	function () {
 		$L     = new Prefix('blogs_');
 		$Menu  = Menu::instance();
-		$route = Route::instance()->path;
+		$route = Request::instance()->route_path;
 		$Menu->add_item(
 			'Blogs',
 			$L->browse_sections,

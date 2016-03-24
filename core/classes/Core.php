@@ -12,6 +12,8 @@ use
 /**
  * Core class.
  * Provides loading of base system configuration
+ *
+ * @method static $this instance($check = false)
  */
 class Core {
 	use Singleton;

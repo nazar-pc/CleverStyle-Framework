@@ -17,6 +17,9 @@ use
 	cs\CRUD,
 	cs\Singleton;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Content {
 	use
 		Singleton,

@@ -14,6 +14,9 @@ use
 	cs\DB\Accessor,
 	cs\Singleton;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Social_integration {
 	use
 		Accessor,

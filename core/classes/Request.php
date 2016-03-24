@@ -15,6 +15,9 @@ use
 	cs\Request\Psr7,
 	cs\Request\Server;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Request implements \ArrayAccess, \Iterator {
 	use
 		Singleton,

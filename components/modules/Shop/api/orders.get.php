@@ -10,15 +10,15 @@ namespace cs\modules\Shop;
 use
 	cs\ExitException,
 	cs\Page,
-	cs\Route,
+	cs\Request,
 	cs\Session;
 
 $Page    = Page::instance();
-$Route   = Route::instance();
+$Request = Request::instance();
 $Session = Session::instance();
 $Orders  = Orders::instance();
-if (isset($Route->ids[0], $Route->path[1])) {
-	$order = $Orders->get($Route->ids[0]);
+if (isset($Request->route_ids[0], $Request->route_path[1])) {
+	$order = $Orders->get($Request->route_ids[0]);
 	if (!$order) {
 		throw new ExitException(404);
 	} elseif (
@@ -27,23 +27,23 @@ if (isset($Route->ids[0], $Route->path[1])) {
 	) {
 		throw new ExitException(403);
 	}
-	switch ($Route->path[1]) {
+	switch ($Request->route_path[1]) {
 		/**
 		 * Get order items, not order itself
 		 */
 		case 'items':
 			$Page->json(
-				$Orders->get_items($Route->ids[0])
+				$Orders->get_items($Request->route_ids[0])
 			);
 			break;
 		case 'statuses':
 			$Page->json(
-				$Orders->get_statuses($Route->ids[0])
+				$Orders->get_statuses($Request->route_ids[0])
 			);
 			break;
 	}
-} elseif (isset($Route->ids[0])) {
-	$order = $Orders->get($Route->ids[0]);
+} elseif (isset($Request->route_ids[0])) {
+	$order = $Orders->get($Request->route_ids[0]);
 	if (!$order) {
 		throw new ExitException(404);
 	} elseif (

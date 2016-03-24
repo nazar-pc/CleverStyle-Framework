@@ -20,7 +20,6 @@ use
 	cs\Page,
 	cs\Request,
 	cs\Response,
-	cs\Route,
 	cs\Session,
 	cs\User;
 
@@ -48,7 +47,8 @@ use
  */
 class Controller {
 	static function index () {
-		$route = Route::instance()->route;
+		$Request = Request::instance();
+		$route   = $Request->route;
 		/**
 		 * This should be present in any case, if not - exit from here
 		 */
@@ -79,7 +79,7 @@ class Controller {
 			self::redirect();
 			return;
 		}
-		$referer = Request::instance()->header('referer');
+		$referer = $Request->header('referer');
 		/**
 		 * If referer is internal website address, but not HybridAuth module - save referer to cookie
 		 */
@@ -135,7 +135,7 @@ class Controller {
 			$Response->header('refresh', "5; url=$redirect_to");
 		} else {
 			$Response->redirect($redirect_to, 301);
-			interface_off();
+			Page::instance()->interface = false;
 			throw new ExitException;
 		}
 	}

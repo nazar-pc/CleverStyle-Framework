@@ -11,10 +11,10 @@ use
 	h,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
-$L     = new Prefix('static_pages_');
-$Route = Route::instance();
+$L       = new Prefix('static_pages_');
+$Request = Request::instance();
 Page::instance()
 	->title($L->addition_of_page_category)
 	->content(
@@ -24,7 +24,7 @@ Page::instance()
 			h::{'select[is=cs-select][name=parent][size=5]'}(
 				get_categories_list(),
 				[
-					'selected' => isset($Route->route[1]) ? (int)$Route->route[1] : 0
+					'selected' => isset($Request->route[1]) ? (int)$Request->route[1] : 0
 				]
 			).
 			h::label($L->category_title).

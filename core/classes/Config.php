@@ -14,6 +14,8 @@ namespace cs;
  *  System/Config/init/after
  *
  *  System/Config/changed
+ *
+ * @method static $this instance($check = false)
  */
 class Config {
 	use

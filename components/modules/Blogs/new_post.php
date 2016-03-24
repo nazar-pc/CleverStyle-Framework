@@ -14,8 +14,8 @@ use
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Request,
 	cs\Response,
-	cs\Route,
 	cs\User;
 
 if (!Event::instance()->fire('Blogs/new_post')) {
@@ -26,7 +26,7 @@ $Config      = Config::instance();
 $module_data = $Config->module('Blogs');
 $L           = new Prefix('blogs_');
 $Page        = Page::instance();
-$Route       = Route::instance();
+$Request     = Request::instance();
 $User        = User::instance();
 $Page->title($L->new_post);
 if (!$User->admin() && $module_data->new_posts_only_from_admins) {
@@ -68,7 +68,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 				$Posts = Posts::instance();
 				$id    = $Posts->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft);
 				if ($id) {
-					interface_off();
+					$Page->interface = false;
 					Response::instance()->redirect($Config->base_url()."/$module/".$Posts->get($id)['path'].":$id");
 					return;
 				} else {
@@ -91,7 +91,7 @@ if (count($sections['in']) > 1) {
 			[
 				'name'     => 'sections[]',
 				'disabled' => $disabled,
-				'selected' => isset($_POST['sections']) ? $_POST['sections'] : (isset($Route->route[1]) ? $Route->route[1] : []),
+				'selected' => isset($_POST['sections']) ? $_POST['sections'] : (isset($Request->route[1]) ? $Request->route[1] : []),
 				$max_sections < 1 ? 'multiple' : false
 			]
 		).

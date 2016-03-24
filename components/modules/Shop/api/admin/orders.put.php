@@ -9,15 +9,15 @@
 namespace cs\modules\Shop;
 use
 	cs\ExitException,
-	cs\Route;
+	cs\Request;
 
-$Route = Route::instance();
-if (!isset($Route->ids[0])) {
+$Request = Request::instance();
+if (!isset($Request->route_ids[0])) {
 	throw new ExitException(400);
 }
 $Orders   = Orders::instance();
-$order_id = $Route->ids[0];
-if (isset($Route->path[2]) && $Route->path[2] == 'items') {
+$order_id = $Request->route_ids[0];
+if (isset($Request->route_path[2]) && $Request->route_path[2] == 'items') {
 	if (!isset($_POST['items']) || empty($_POST['items'])) {
 		throw new ExitException(400);
 	}

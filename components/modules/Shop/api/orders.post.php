@@ -11,8 +11,8 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Page,
+	cs\Request,
 	cs\Response,
-	cs\Route,
 	cs\Session;
 
 if (
@@ -72,5 +72,5 @@ foreach ($recalculated['items'] as $item) {
 }
 Response::instance()->code = 201;
 Page::instance()->json(
-	$Config->core_url().'/'.Route::instance()->relative_address."/$id"
+	$Config->core_url().'/'.Request::instance()->path_normalized."/$id"
 );

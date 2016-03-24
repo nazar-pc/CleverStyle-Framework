@@ -26,6 +26,9 @@ use
 	Exception,
 	SplObjectStorage;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Server implements MessageComponentInterface {
 	use
 		Singleton;

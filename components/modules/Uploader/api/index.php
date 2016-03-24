@@ -7,11 +7,12 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-use Karwana\Mime\Mime;
+use
+	Karwana\Mime\Mime;
+
 $L    = new Language\Prefix('uploader_');
 $Page = Page::instance();
 $User = User::instance();
-interface_off();
 /**
  * File should be specified
  */

@@ -13,7 +13,7 @@ use
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route,
+	cs\Request,
 	cs\User;
 
 /**
@@ -32,8 +32,8 @@ if (!$Config->module('Comments')->enabled()) {
 if (!User::instance()->user()) {
 	throw new ExitException(403);
 }
-$Route = Route::instance();
-if (!isset($Route->route[0], $_POST['text'], $_POST['module'])) {
+$Request = Request::instance();
+if (!isset($Request->route[0], $_POST['text'], $_POST['module'])) {
 	throw new ExitException(400);
 }
 $L    = new Prefix('comments_');
@@ -46,7 +46,7 @@ Event::instance()->fire(
 	'api/Comments/edit',
 	[
 		'Comments' => &$Comments,
-		'id'       => $Route->route[0],
+		'id'       => $Request->route[0],
 		'module'   => $_POST['module']
 	]
 );
@@ -56,7 +56,7 @@ if (!is_object($Comments)) {
 /**
  * @var Comments $Comments
  */
-$result = $Comments->set($Route->route[0], $_POST['text']);
+$result = $Comments->set($Request->route[0], $_POST['text']);
 if ($result) {
 	$Page->json($result['text']);
 } else {

@@ -12,6 +12,9 @@ use
 	cs\DB\Accessor,
 	cs\Singleton;
 
+/**
+ * @method static $this instance($check = false)
+ */
 class Pool {
 	use
 		Accessor,

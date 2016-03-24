@@ -11,7 +11,7 @@ use
 	cs\ExitException,
 	cs\Language,
 	cs\Page,
-	cs\Route,
+	cs\Request,
 	cs\User;
 
 $Page = Page::instance();
@@ -20,11 +20,11 @@ $Page->title(
 	Language::instance()->blockchain_payment_bitcoin
 );
 $Transactions = Transactions::instance();
-$Route        = Route::instance();
-if (!isset($Route->ids[0])) {
+$Request      = Request::instance();
+if (!isset($Request->route_ids[0])) {
 	throw new ExitException(400);
 }
-$transaction = $Transactions->get($Route->ids[0]);
+$transaction = $Transactions->get($Request->route_ids[0]);
 if (!$transaction) {
 	throw new ExitException(404);
 }

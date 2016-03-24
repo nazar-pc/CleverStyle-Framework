@@ -14,8 +14,8 @@ use
 	cs\ExitException,
 	cs\Language,
 	cs\Page,
+	cs\Request,
 	cs\Response,
-	cs\Route,
 	cs\User;
 
 $Page = Page::instance();
@@ -25,7 +25,7 @@ $Page->title(
 );
 $Transactions = Transactions::instance();
 if (isset($_GET['secret'])) {
-	interface_off();
+	$Page->interface = false;
 	if ($_GET['test']) {
 		return;
 	}
@@ -67,11 +67,11 @@ if (isset($_GET['secret'])) {
 		$Page->content('More confirmations needed');
 	}
 } else {
-	$Route = Route::instance();
-	if (!isset($Route->ids[0])) {
+	$Request = Request::instance();
+	if (!isset($Request->route_ids[0])) {
 		throw new ExitException(400);
 	}
-	$transaction = $Transactions->get($Route->ids[0]);
+	$transaction = $Transactions->get($Request->route_ids[0]);
 	if (!$transaction) {
 		throw new ExitException(404);
 	}
@@ -88,7 +88,7 @@ if (isset($_GET['secret'])) {
 				'callback' => &$callback
 			]
 		);
-		interface_off();
+		$Page->interface = false;
 		Response::instance()->redirect($callback);
 		return;
 	}

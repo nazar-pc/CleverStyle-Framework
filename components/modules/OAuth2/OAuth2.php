@@ -16,7 +16,11 @@ use
 	cs\DB\Accessor,
 	cs\Singleton;
 
-//TODO: use CRUD trait
+/**
+ * @todo Use CRUD trait
+ *
+ * @method static $this instance($check = false)
+ */
 class OAuth2 {
 	use
 		Accessor,

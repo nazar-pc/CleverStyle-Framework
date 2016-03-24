@@ -52,7 +52,7 @@ $title[]  = $L->latest_posts;
 $title    = implode($Config->core['title_delimiter'], $title);
 $base_url = $Config->base_url();
 Response::instance()->header('content-type', 'application/atom+xml');
-interface_off();
+$Page->interface = false;
 
 function get_favicon_path ($theme) {
 	$theme_favicon = "$theme/img/favicon";

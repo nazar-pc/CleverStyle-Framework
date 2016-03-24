@@ -13,17 +13,17 @@ use
 	cs\Language\Prefix,
 	cs\Page\Meta,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
 if (!Event::instance()->fire('Blogs/latest_posts')) {
 	return;
 }
-$Config = Config::instance();
-$L      = new Prefix('blogs_');
-$Meta   = Meta::instance();
-$Page   = Page::instance();
-$Posts  = Posts::instance();
-$Route  = Route::instance();
+$Config  = Config::instance();
+$L       = new Prefix('blogs_');
+$Meta    = Meta::instance();
+$Page    = Page::instance();
+$Posts   = Posts::instance();
+$Request = Request::instance();
 /**
  * Page title
  */
@@ -40,7 +40,7 @@ $Meta->blog();
  * Determine current page
  */
 $page = max(
-	isset($Route->ids[0]) ? array_slice($Route->ids, -1)[0] : 1,
+	isset($Request->route_ids[0]) ? array_slice($Request->route_ids, -1)[0] : 1,
 	1
 );
 /**

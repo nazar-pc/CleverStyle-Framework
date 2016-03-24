@@ -10,14 +10,16 @@ namespace cs\modules\WebSockets;
 use
 	cs\Config,
 	cs\ExitException,
-	cs\Route;
+	cs\Page,
+	cs\Request;
+
 if (PHP_SAPI == 'cli') {
 	Server::instance()->run(isset($_GET['address']) ? $_GET['address'] : null);
 } else {
-	interface_off();
-	$Config      = Config::instance();
-	$module_data = $Config->module('WebSockets');
-	$rc          = Route::instance()->route;
+	Page::instance()->interface = false;
+	$Config                     = Config::instance();
+	$module_data                = $Config->module('WebSockets');
+	$rc                         = Request::instance()->route;
 	if ($module_data->security_key !== @$rc[0]) {
 		throw new ExitException(400);
 	}

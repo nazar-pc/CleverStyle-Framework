@@ -10,10 +10,11 @@ namespace cs\modules\Deferred_tasks;
 use
 	cs\ExitException,
 	cs\Config,
-	cs\Route;
+	cs\Request;
+
 $Config      = Config::instance();
 $module_data = $Config->module('Deferred_tasks');
-$rc          = Route::instance()->route;
+$rc          = Request::instance()->route;
 if ($module_data->security_key !== $rc[0]) {
 	throw new ExitException(400);
 }

@@ -14,8 +14,8 @@ use
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Request,
 	cs\Response,
-	cs\Route,
 	cs\User;
 
 if (!Event::instance()->fire('Blogs/edit_post')) {
@@ -27,14 +27,14 @@ $Config      = Config::instance();
 $module_data = $Config->module('Blogs');
 $L           = new Prefix('blogs_');
 $Page        = Page::instance();
-$Route       = Route::instance();
+$Request     = Request::instance();
 $User        = User::instance();
 if ($module_data->new_posts_only_from_admins && !$User->admin()) {
 	throw new ExitException(403);
 }
 if (
-	!isset($Route->route[1]) ||
-	!($post = $Posts->get($Route->route[1]))
+	!isset($Request->route[1]) ||
+	!($post = $Posts->get($Request->route[1]))
 ) {
 	throw new ExitException(404);
 }
@@ -77,7 +77,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 			}
 			if ($save) {
 				if ($Posts->set($post['id'], $_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft)) {
-					interface_off();
+					$Page->interface = false;
 					Response::instance()->redirect($Config->base_url()."/$module/$post[path]:$post[id]");
 					return;
 				} else {
@@ -87,7 +87,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 			break;
 		case 'delete':
 			if ($Posts->del($post['id'])) {
-				interface_off();
+				$Page->interface = false;
 				Response::instance()->redirect($Config->base_url()."/$module");
 				return;
 			} else {

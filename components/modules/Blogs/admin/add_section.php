@@ -12,12 +12,12 @@ use
 	cs\Config,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Route;
+	cs\Request;
 
-$Config = Config::instance();
-$L      = new Prefix('blogs_');
-$Page   = Page::instance();
-$Route  = Route::instance();
+$Config  = Config::instance();
+$L       = new Prefix('blogs_');
+$Page    = Page::instance();
+$Request = Request::instance();
 $Page->title($L->addition_of_posts_section);
 $Page->content(
 	h::{'form[is=cs-form][action=admin/Blogs/browse_sections]'}(
@@ -28,7 +28,7 @@ $Page->content(
 		h::{'select[is=cs-select][name=parent][size=5]'}(
 			get_sections_select_section(),
 			[
-				'selected' => isset($Route->route[1]) ? (int)$Route->route[1] : 0
+				'selected' => isset($Request->route[1]) ? (int)$Request->route[1] : 0
 			]
 		).
 		h::label($L->section_title).

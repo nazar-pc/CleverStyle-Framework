@@ -13,21 +13,21 @@ use
 
 class Controller {
 	static function index ($route_ids, $route_path) {
+		$Page = Page::instance();
 		switch (@$route_path[2]) {
 			case 'phpinfo':
-				interface_off();
-				Page::instance()->Content = ob_wrapper(
+				$Page->interface = false;
+				$Page->Content   = ob_wrapper(
 					function () {
 						phpinfo();
 					}
 				);
 				return;
 			case 'readme.html':
-				interface_off();
-				Page::instance()->Content = file_get_contents(DIR.'/readme.html');
+				$Page->interface = false;
+				$Page->Content   = file_get_contents(DIR.'/readme.html');
 				return;
 		}
-		$Page = Page::instance();
 		$Page->title('%1$s');
 		$Page->title('%2$s');
 	}

@@ -9,17 +9,17 @@
 namespace cs\modules\Content;
 use
 	cs\ExitException,
-	cs\User,
-	cs\Route;
+	cs\Request,
+	cs\User;
 
 if (!User::instance()->admin()) {
 	throw new ExitException(403);
 }
-$Route = Route::instance();
-if (!isset($Route->route[0])) {
+$Request = Request::instance();
+if (!isset($Request->route[0])) {
 	throw new ExitException(400);
 }
-$result = Content::instance()->del($Route->route[0]);
+$result = Content::instance()->del($Request->route[0]);
 if (!$result) {
 	throw new ExitException(500);
 }

@@ -22,6 +22,8 @@ use
  *  System/App/render/before
  *
  *  System/App/render/after
+ *
+ * @method static $this instance($check = false)
  */
 class App {
 	use

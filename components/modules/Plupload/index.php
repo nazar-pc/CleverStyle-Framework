@@ -7,10 +7,11 @@
  * @license   GNU GPL v2, see license.txt
  */
 namespace cs;
-use Karwana\Mime\Mime;
+use
+	Karwana\Mime\Mime;
+
 $Page = Page::instance();
 $User = User::instance();
-interface_off();
 /**
  * Only registered users allowed
  */

@@ -11,8 +11,8 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Page,
-	cs\Response,
-	cs\Route;
+	cs\Request,
+	cs\Response;
 
 if (!isset(
 	$_POST['title'],
@@ -36,5 +36,5 @@ if (!$id) {
 }
 Response::instance()->code = 201;
 Page::instance()->json(
-	Config::instance()->core_url().'/'.Route::instance()->relative_address."/$id"
+	Config::instance()->core_url().'/'.Request::instance()->path_normalized."/$id"
 );

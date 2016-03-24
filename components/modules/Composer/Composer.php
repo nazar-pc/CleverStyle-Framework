@@ -38,6 +38,8 @@ use
  *   'composer_lock' => $composer_lock  //`composer.lock` structure that was generated during dependencies installation
  *   'composer_root' => $composer_root  //Path to directory where dependencies were installed, and where `composer.json` and `composer.lock` are located
  *  ]
+ *
+ * @method static $this instance($check = false)
  */
 class Composer {
 	use

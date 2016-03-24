@@ -11,15 +11,16 @@ namespace cs\modules\System\api\Controller;
 use
 	cs\ExitException,
 	cs\Page,
-	cs\Route,
+	cs\Request,
 	cs\User;
+
 trait profiles {
 	static function profiles_get () {
 		$User = User::instance();
 		if ($User->guest()) {
 			throw new ExitException(403);
 		}
-		$fields = [
+		$fields  = [
 			'id',
 			'login',
 			'username',
@@ -27,10 +28,10 @@ trait profiles {
 			'timezone',
 			'avatar'
 		];
-		$Page   = Page::instance();
-		$Route  = Route::instance();
-		if (isset($Route->route[1])) {
-			$id     = _int(explode(',', $Route->route[1]));
+		$Page    = Page::instance();
+		$Request = Request::instance();
+		if (isset($Request->route[1])) {
+			$id     = _int(explode(',', $Request->route[1]));
 			$single = count($id) == 1;
 			if (
 				!$User->admin() &&

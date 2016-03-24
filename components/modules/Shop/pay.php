@@ -12,18 +12,19 @@ use
 	cs\Event,
 	cs\ExitException,
 	cs\Language\Prefix,
+	cs\Page,
+	cs\Request,
 	cs\Response,
-	cs\Route,
 	cs\User;
 
 $Config = Config::instance();
 $L      = new Prefix('shop_');
 $Orders = Orders::instance();
-$order  = $Orders->get(@Route::instance()->ids[0]);
+$order  = $Orders->get(@Request::instance()->route_ids[0]);
 if (!$order || $order['user'] != User::instance()->id) {
 	throw new ExitException(404);
 }
-interface_off();
+Page::instance()->interface = false;
 if ($order['paid'] || $order['payment_method'] == Orders::PAYMENT_METHOD_CASH) {
 	Response::instance()->redirect($Config->base_url().'/'.path($L->shop).'/'.path($L->orders));
 	return;
