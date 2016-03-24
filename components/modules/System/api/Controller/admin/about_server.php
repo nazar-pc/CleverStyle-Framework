@@ -25,7 +25,7 @@ trait about_server {
 			[
 				'operating_system' => php_uname('s').' '.php_uname('r').' '.php_uname('v'),
 				'server_type'      => static::admin_about_server_get_server_api(),
-				'available_ram'    => format_filesize(
+				'available_ram'    => ini_get('memory_limit') < 0 ? false : format_filesize(
 					str_replace(
 						['K', 'M', 'G'],
 						[" $L->KiB", " $L->MiB", " $L->GiB"],
