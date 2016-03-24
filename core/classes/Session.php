@@ -107,8 +107,12 @@ class Session {
 			$this->cache       = new Cache_prefix('sessions');
 			$this->users_cache = new Cache_prefix('users');
 		}
-		$this->user_id    = User::GUEST_ID;
 		$this->session_id = null;
+		$this->user_id    = User::GUEST_ID;
+		$this->is_guest   = false;
+		$this->is_bot     = false;
+		$this->is_user    = false;
+		$this->is_admin   = false;
 		Event::instance()->fire('System/Session/init/before');
 		$Request = Request::instance();
 		/**
@@ -148,14 +152,8 @@ class Session {
 			$this->user_id = $bot_id;
 			return;
 		}
-		/**
-		 * Try to find bot among known bots
-		 */
 		foreach ($this->all_bots() as $bot) {
 			if ($this->is_this_bot($bot, $login, $email)) {
-				/**
-				 * If bot found - save it in cache
-				 */
 				$this->user_id    = $bot['id'];
 				$Cache->$bot_hash = $bot['id'];
 				return;
@@ -220,10 +218,6 @@ class Session {
 	 * Updates information about who is user accessed by methods ::guest() ::bot() ::user() admin()
 	 */
 	protected function update_user_is () {
-		$this->is_guest = false;
-		$this->is_bot   = false;
-		$this->is_user  = false;
-		$this->is_admin = false;
 		if ($this->user_id == User::GUEST_ID) {
 			$this->is_guest = true;
 			return;
@@ -302,9 +296,7 @@ class Session {
 	 */
 	function get ($session_id) {
 		$session_data = $this->get_internal($session_id);
-		if ($session_data) {
-			unset($session_data['data']);
-		}
+		unset($session_data['data']);
 		return $session_data;
 	}
 	/**
