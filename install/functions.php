@@ -131,9 +131,9 @@ function install_process ($fs, $argv = null) {
 	if (isset($_POST['site_url'])) {
 		$url = $_POST['site_url'];
 	} else {
-		$Request->init_from_globals();
+		$Request->init_server($_SERVER);
 		$url = "$Request->scheme://$Request->host$Request->path";
-		$url = implode('/', array_slice(explode('/', $url), 0, -2));    //Remove 2 last items
+		$url = implode('/', array_slice(explode('/', $url), 0, -2)); //Remove 2 last items
 	}
 	preg_match('#//([^/]+)#', $url, $domain);
 	$domain = explode(':', $domain[1])[0];
