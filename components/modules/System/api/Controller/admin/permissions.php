@@ -38,11 +38,16 @@ trait permissions {
 	/**
 	 * Add new permission
 	 *
+	 * @param \cs\Request  $Request
 	 * @param \cs\Response $Response
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions___post ($Response, $Response) {
+	static function admin_permissions___post (
+		/** @noinspection PhpUnusedParameterInspection */
+		$Request,
+		$Response
+	) {
 		if (!isset($_POST['group'], $_POST['label'])) {
 			throw new ExitException(400);
 		}
