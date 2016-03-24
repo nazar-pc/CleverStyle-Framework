@@ -23,7 +23,7 @@ $L = Language::instance();
 echo $L->system_home."\n";
 echo $L->system_admin_users_permissions_for_user('Lil Wayne')."\n";
 echo $L->time(20, 's')."\n";
-$L->change('Українська');
+$L->change('Ukrainian');
 echo $L->to_locale('1 January, 2000')."\n";
 ?>
 --EXPECT--
