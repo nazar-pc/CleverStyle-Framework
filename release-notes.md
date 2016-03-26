@@ -1513,3 +1513,139 @@ Possible partial compatibility breaking (very unlikely, but still possible):
 * Site rules configuration removed from system
 
 Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
+
+# 3.212.0+build-1965: Sub-1ms performance achieved, PSR-7 compatibility, request/response abstractions
+
+First of all, there is important psychological achievement: when using Http server under HHVM simple page generation is made in 0.81 ms or 0.00081 seconds - really impressive performance!
+
+Secondly, this version brings a lot of backend improvements beause of introduction of `cs\Request` and `cs\Response` system classes that encapsulate all functionality necessary to handle these 2 important aspects of request processing.
+Unification also allowed to make integration with PSR-7, so now it is possible to initialize system from PSR-7 compatible request object and put response into PSR-7 compatible response object, which greatly improves interoperability with third-party tools.
+The last piece of this puzzle - bunch of existing functions and even classes to make request processing clear and consistent (backward compatibility still kept with the rest of 3.x versions).
+
+There are many other smaller improvements below, so give it a try!
+
+This is the last major version in 3.x series, see you soon in 4.x world:)
+
+Security fixes:
+* None
+
+New components:
+* None
+
+New features:
+* `cs\Config` doesn't initialize `cs\Language` and `cs\Page` directly, instead - they grab configuration by themselves and if t is not available yet - just subscribe to event and wait when configuration is ready
+* New backend events:
+  * `System/Config/changed`
+  * `System/Request/routing_replace` (replaces `System/Route/routing_replace`)
+  * `System/App/construct` (replaces `System/Index/block_render`)
+  * `System/App/render/before` (replaces `System/Index/construct`)
+  * `System/App/render/after` (replaces `System/Index/load/before`)
+  * `System/App/block_render` (replaces `System/Index/load/after`)
+  * `System/Page/render/before` (replaced with `System/Page/display/before`)
+  * `System/Page/render/after` (replaced with `System/Page/display/after`)* 2 rejected Polymer patches reworked to be standalone and do not need to be injected into Polymer core anymore
+* `cs\Request` class added to provide unified source of all needed request information
+* `cs\Response` class added to provide unified target for all needed response data (not used everywhere yet)
+* Correct class autoloader for installer package instead of manual files inclusion
+* It is now possible to specify during registration API call not just email, but also following fields:
+  * username
+  * password
+  * language
+  * timezone
+  * avatar
+* `cs\App` class added (replaces `cs\Index`)
+* Added `cs\Request::init_from_psr7()` method to initialize request from PSR-7-compatible object
+* Added `cs\Response::output_to_psr7()` method to put response data into PSR-7-compatible response object
+* Controller's methods now accept `cs\Request` and `cs\Response` instances as arguments instead of `cs\Request::$route_ids` and `cs\Request::$route_path` as it was before; however, basic compatibility kept by implementing `\ArrayAccess` and  `\Iterator`
+* System will now support requests with following Content-Type regardless of system configuration:
+  * `application/json`
+  * `application/x-www-form-urlencoded`
+  * `multipart/form-data`
+
+  This means that files uploading will now work for any request method and all data in body will be parsed even if `php.ini` contains `enable_post_data_reading = Off` (files are only available through `cs\Request` object).
+  2 stream wrappers added to make implementation memory efficient and do not duplicate any request data twice (we have single data stream and files are extracted from there on-fly only when needed and only those parts that are needed).
+* New method `cs\Page::render()` as replacement for now deprecated `::__finish()`
+* System now knows which classes store state that changes between requests and which doesn't, this provides simpler system integration with external tools
+
+Updates:
+* New Polymer version without additional patches (sic!), only Shady DOM removed (which is not used anyway), lazy loading is used in Polymer by default
+* New upstream Composer 1.0.0-beta1
+* New upstream version of RequireJS
+* New upstream version of TinyMCE
+* New upstream version of Promise polyfill
+
+Fixes and small improvements:
+* Http server: Async mode removed from Http module, since in order to benefit from this mode many things should be rewritten significantly and it doesn't seem to practically feasible to do so in most cases, thus such over complication doesn't make practical sense
+* Reply with descriptive message if upload failed
+* Fix for message during system upgrade
+* Small fixes for `cs\Mail` class
+* Drop `password_hash` index and change its size to be 255 in order to be ready for possible future algorithm changes (also column comment removed)
+* Http server: Simplifications in Http server module because of recent changes in system core
+* Normalized user deletion - always integer user id, less complexity
+* Small fix, missing necessary re-initialization after configuration change
+* Composer: Added automatic scrolling of modal's content when Composer finishes all operations like during regular progress
+* Composer: Added firing `admin/Composer/updated` event even during forced Composer updating
+* Composer assets: Composer assets dependencies update
+* More translations refactoring
+* WebSockets: Ratchet/Pawl dependency upgraded to new upstream version
+* Remover method for input stream parsing in `cs\Core` class since this functionality is now covered by `cs\Request` class
+* Redundant old`cs\Config::$core`'s key `allow_change_language` removed
+* Http server: Http server module now reuses system functions for working with global state
+* `cs\ExitException` thrown with some status code will set status code on `cs\Response`
+* WebSockets: Fix for getting prefixed session cookie in WebSockets module
+* Refactoring in order to unify and simplify errors processing
+* Simplifications in `cs\User`, now all data are persisted immediately
+* Ignore `User::$memory_cache` for guest user
+* Provide cleanup of memory cache in `cs\User` object when calling `::disable_memory_cache()`
+* Http server: Disable memory cache on `cs\User` object in Http server module
+* Removed fix for `WebComponentsReady` event in Chrome since it doesn't actually work:(
+* TinyMCE: Fix for content set incorrectly in empty inline editor
+* Extract more details about server under HHVM using HHVM's custom ini settings
+* Http sever: Much simpler and straightforward Http server integration, no classes overriding, thanks to latest changes in system core
+* Http server: Page generation time is now shown correctly under Http server (not number of database queries yet)
+* Tiny fix for loading language aliases
+* Migrating from using deprecated Classes/functions
+* Migrating from deprecated arguments in controllers
+* Small refactoring, fix for bots detection
+* Use new controller arguments in places where request/response object were created manually
+* Http server: Fix for manual autoloader inclusion which is not necessary anymore
+* Do not show memory limit under Http server, since in this case `ini_get()` returns -1
+* Various small fixes and tweaks
+
+Deprecations:
+* `cs\_SERVER` is now just a wrapper around `cs\Request`, it will be around until 4.x, but marked as deprecated
+* Deprecated functions:
+  * `_setcookie()`
+  * `_getcookie()`
+  * `_header()`
+  * `admin_path()`
+  * `api_path()`
+  * `current_module()`
+  * `home_page()`
+  * `shutdown_function()` (simplified and is not used anywhere anymore)
+  * `errors_on()`
+  * `errors_off()`
+  * `interface_on()`
+  * `interface_off()`
+  * `system_version()`
+* `cs\Route` class deprecated, `cs\Request` absorbed and unified all its data
+* Deprecated events:
+  * `System/Route/routing_replace` (replaced with `System/Request/routing_replace`)
+  * `System/Index/block_render` (replaced with `System/App/construct`)
+  * `System/Index/construct` (replaced with `System/App/render/before`)
+  * `System/Index/load/before` (replaced with `System/App/render/after`)
+  * `System/Index/load/after` (replaced with `System/App/block_render`)
+  * `System/Page/display/before` (replaced with `System/Page/render/before`)
+  * `System/Page/display/after` (replaced with `System/Page/render/after`)
+* `cs\Index` class deprecated, use `cs\App` instead
+* `cs\User::__finish()` method deprecated and does nothing
+* `cs\Page::__finish()` method deprecated, use `::render()` instead
+* OAuth2: Non-standard guest tokens deprecated in OAuth2 module
+* Bots deprecated and will be removed in 4.x
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* Public methods used internally become protected:
+  * `cs\Language::init()`
+  * `cs\Page::init()`
+* Partially breaking change: translation files renamed to latin names
+
+Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
