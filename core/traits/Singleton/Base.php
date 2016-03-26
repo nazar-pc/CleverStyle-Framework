@@ -107,8 +107,8 @@ trait Base {
 	 * @param static $instance
 	 */
 	protected static function instance_prototype_state_init (&$instance) {
-		if ($instance && $instance->__request_id !== Request::$request_id) {
-			$instance->__request_id = Request::$request_id;
+		if ($instance && $instance->__request_id !== Request::$id) {
+			$instance->__request_id = Request::$id;
 			if (defined('static::INIT_STATE_METHOD')) {
 				$instance->{constant('static::INIT_STATE_METHOD')}();
 			}

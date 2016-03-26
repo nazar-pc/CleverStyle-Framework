@@ -36,19 +36,19 @@ trait Route {
 	 */
 	public $path_normalized;
 	/**
-	 * Contains parsed route of current page url in form of array without module name and prefixes <i>admin</i>/<i>api</i>
+	 * Contains parsed route of current page url in form of array without module name and prefixes `admin|api`
 	 *
 	 * @var array
 	 */
 	public $route;
 	/**
-	 * Like $route property, but excludes numerical items
+	 * Like `$route` property, but excludes numerical items
 	 *
 	 * @var string[]
 	 */
 	public $route_path;
 	/**
-	 * Like $route property, but only includes numerical items (opposite to route_path property)
+	 * Like `$route` property, but only includes numerical items (opposite to route_path property)
 	 *
 	 * @var int[]
 	 */
@@ -139,8 +139,8 @@ trait Route {
 	/**
 	 * Process raw relative route.
 	 *
-	 * As result returns current route in system in form of array, corrected page address, detects MODULE, that responsible for processing this url,
-	 * whether this is API call, admin page, or home page
+	 * As result returns current route in system in form of array, normalized path, detects module path points to, whether this is API call, administration
+	 * page, or home page whether this is API call, admin page, or home page
 	 *
 	 * @param string $path
 	 *

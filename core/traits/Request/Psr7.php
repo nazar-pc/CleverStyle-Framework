@@ -15,7 +15,7 @@ trait Psr7 {
 	 *
 	 * @throws \cs\ExitException
 	 */
-	function from_psr7 ($request) {
+	function init_from_psr7 ($request) {
 		$this->from_psr7_server($request);
 		$this->from_psr7_query($request);
 		$this->from_psr7_data_and_files($request);

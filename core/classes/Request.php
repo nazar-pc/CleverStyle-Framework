@@ -33,9 +33,9 @@ class Request implements \ArrayAccess, \Iterator {
 	 *
 	 * @var int
 	 */
-	public static $request_id = 0;
+	public static $id = 0;
 	/**
-	 * Unix timestamp where request processing started
+	 * Unix timestamp when request processing started
 	 *
 	 * @var float
 	 */
@@ -43,19 +43,19 @@ class Request implements \ArrayAccess, \Iterator {
 	/**
 	 * Initialize request object with specified data
 	 *
-	 * @param string[]             $server      Typically `$_SERVER`
-	 * @param array                $query       Typically `$_GET`
-	 * @param array                $data        Typically `$_POST`
-	 * @param null|resource|string $data_stream String, like `php://input` or resource, like `fopen('php://input', 'rb')`
-	 * @param string[]             $cookie      Typically `$_COOKIE`
-	 * @param array[]              $files       Typically `$_FILES`; might be like native PHP array `$_FILES` or normalized; each file item MUST contain keys
-	 *                                          `name`, `type`, `size`, `error` and at least one of `tmp_name` or `stream`
-	 * @param float                $request_started
+	 * @param string[]             $server          Typically `$_SERVER`
+	 * @param array                $query           Typically `$_GET`
+	 * @param array                $data            Typically `$_POST`
+	 * @param array[]              $files           Typically `$_FILES`; might be like native PHP array `$_FILES` or normalized; each file item MUST contain
+	 *                                              keys `name`, `type`, `size`, `error` and at least one of `tmp_name` or `stream`
+	 * @param null|resource|string $data_stream     String, like `php://input` or resource, like `fopen('php://input', 'rb')`
+	 * @param string[]             $cookie          Typically `$_COOKIE`
+	 * @param float                $request_started Unix timestamp when request processing started
 	 *
 	 * @throws ExitException
 	 */
-	function init ($server, $query, $data, $data_stream, $cookie, $files, $request_started) {
-		++static::$request_id;
+	function init ($server, $query, $data, $files, $data_stream, $cookie, $request_started) {
+		++static::$id;
 		$this->init_server($server);
 		$this->init_query($query);
 		$this->init_data_and_files($data, $files, $data_stream);
@@ -64,19 +64,12 @@ class Request implements \ArrayAccess, \Iterator {
 		$this->started = $request_started;
 	}
 	/**
-	 * Initialize request object from superglobals `$_SERVER`, `$_GET`, `$_POST`, `$_COOKIE` and `$_FILES` (including parsing `php://input` in case of custom
-	 * request methods)
+	 * Initialize request object from superglobals `$_SERVER`, `$_GET`, `$_POST`, `$_COOKIE` and `$_FILES` (including parsing `php://input` when necessary)
 	 *
 	 * @throws ExitException
 	 */
 	function init_from_globals () {
-		++static::$request_id;
 		// Hack: we override `$_SERVER` with iterator object, so conversion from iterator to an array is needed
-		$this->init_server(iterator_to_array($_SERVER));
-		$this->init_query($_GET);
-		$this->init_data_and_files($_POST, $_FILES, 'php://input');
-		$this->init_cookie($_COOKIE);
-		$this->init_route();
-		$this->started = MICROTIME;
+		$this->init(iterator_to_array($_SERVER), $_GET, $_POST, $_FILES, 'php://input', $_COOKIE, MICROTIME);
 	}
 }

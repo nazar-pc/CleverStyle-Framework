@@ -57,11 +57,6 @@ trait Server {
 	 */
 	public $query_string;
 	/**
-	 * Headers are normalized to lowercase keys with hyphen as separator, for instance: `connection`, `referer`, `content-type`, `accept-language`
-	 *
-	 * @var string[]
-	 */
-	/**
 	 * Where request came from, not necessary real IP of client, `127.0.0.1` by default
 	 *
 	 * @var string
@@ -73,6 +68,11 @@ trait Server {
 	 * @var string
 	 */
 	public $ip;
+	/**
+	 * Headers are normalized to lowercase keys with hyphen as separator, for instance: `connection`, `referer`, `content-type`, `accept-language`
+	 *
+	 * @var string[]
+	 */
 	public $headers;
 	/**
 	 * @param string[] $server Typically `$_SERVER`

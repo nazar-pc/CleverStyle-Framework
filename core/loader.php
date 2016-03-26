@@ -29,4 +29,4 @@ try {
 		Page::instance()->error($e->getMessage() ?: null, $e->getJson());
 	}
 }
-Response::instance()->standard_output();
+Response::instance()->output_default();

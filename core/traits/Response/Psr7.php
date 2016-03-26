@@ -11,13 +11,13 @@ use
 
 trait Psr7 {
 	/**
-	 * Initialize request from PSR-7 request object
+	 * Provides output to PSR-7 response object
 	 *
 	 * @param \Psr\Http\Message\ResponseInterface $response
 	 *
 	 * @return \Psr\Http\Message\ResponseInterface
 	 */
-	function to_psr7 ($response) {
+	function output_to_psr7 ($response) {
 		$this->to_psr7_body($response);
 		$response = $this->to_psr7_headers($response);
 		/** @noinspection ExceptionsAnnotatingAndHandlingInspection */

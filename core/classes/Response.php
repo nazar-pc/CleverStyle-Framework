@@ -36,7 +36,7 @@ class Response implements \ArrayAccess, \Iterator {
 	 */
 	public $headers;
 	/**
-	 * String body (is used instead of `$this->body_stream` in most cases)
+	 * String body (is used instead of `$this->body_stream` in most cases, ignored if `$this->body_stream` is present)
 	 *
 	 * @var string
 	 */
@@ -74,10 +74,12 @@ class Response implements \ArrayAccess, \Iterator {
 		return $this;
 	}
 	/**
-	 * Initialize with typical default settings (headers `Content-Type` and `Vary`, protocol taken from `$_SERVER['SERVER_PROTOCOL']`)
+	 * Initialize with typical default settings (headers `Content-Type` and `Vary`, protocol taken from `cs\Request::$protocol`)
+	 *
+	 * @return Response
 	 */
 	function init_with_typical_default_settings () {
-		$this->init(
+		return $this->init(
 			'',
 			null,
 			[
@@ -85,7 +87,7 @@ class Response implements \ArrayAccess, \Iterator {
 				'Vary'         => 'Accept-Language,User-Agent,Cookie'
 			],
 			200,
-			$_SERVER['SERVER_PROTOCOL']
+			Request::instance()->protocol
 		);
 	}
 	/**
@@ -123,7 +125,7 @@ class Response implements \ArrayAccess, \Iterator {
 		return $this;
 	}
 	/**
-	 * Function for setting cookies, taking into account cookies prefix. Parameters like in system `setcookie()` function, but $path, $domain and $secure
+	 * Function for setting cookies, taking into account cookies prefix. Parameters like in system `setcookie()` function, but `$path`, `$domain` and `$secure`
 	 * are skipped, they are detected automatically
 	 *
 	 * This function have side effect of setting cookie on `cs\Request` object
@@ -171,9 +173,9 @@ class Response implements \ArrayAccess, \Iterator {
 		return $this;
 	}
 	/**
-	 * Provides standard output for all the response data
+	 * Provides default output for all the response data using `header()`, `http_response_code()` and `echo` or `php://output`
 	 */
-	function standard_output () {
+	function output_default () {
 		foreach ($this->headers as $header => $value) {
 			foreach ($value as $v) {
 				header("$header: $v", false);
