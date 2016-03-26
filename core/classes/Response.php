@@ -121,7 +121,8 @@ class Response implements \ArrayAccess, \Iterator {
 	 */
 	function redirect ($location, $code = 302) {
 		$this->header('location', $location);
-		$this->code = $code;
+		$this->code                 = $code;
+		Page::instance()->interface = false;
 		return $this;
 	}
 	/**
@@ -182,6 +183,9 @@ class Response implements \ArrayAccess, \Iterator {
 			}
 		}
 		http_response_code($this->code);
+		if ($this->code >= 300 && $this->code < 400) {
+			return;
+		}
 		if (is_resource($this->body_stream)) {
 			$position = ftell($this->body_stream);
 			stream_copy_to_stream($this->body_stream, fopen('php:://output', 'wb'));

@@ -63,7 +63,9 @@ class Request {
 		}
 		$Response = System_response::instance();
 		$this->response->writeHead($Response->code, $Response->headers);
-		if (is_resource($Response->body_stream)) {
+		if ($Response->code >= 300 && $Response->code < 400) {
+			$this->response->end();
+		} elseif (is_resource($Response->body_stream)) {
 			$position = ftell($Response->body_stream);
 			rewind($Response->body_stream);
 			while (!feof($Response->body_stream)) {
