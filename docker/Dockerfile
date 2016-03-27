@@ -7,7 +7,9 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 
 	apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db && \
 	add-apt-repository 'deb http://ams2.mirrors.digitalocean.com/mariadb/repo/10.1/ubuntu trusty main' && \
-	add-apt-repository ppa:ondrej/php5-5.6 && \
+	# Hack, otherwise add-apt-repository crashes
+	export LANG=C.UTF-8 && \
+	add-apt-repository -y ppa:ondrej/php5-5.6 && \
 
 # Update packages list, upgrade installed packages
 
