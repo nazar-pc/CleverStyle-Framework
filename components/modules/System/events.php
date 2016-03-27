@@ -41,6 +41,8 @@ Event::instance()
 			$Request = Request::instance();
 			/**
 			 * Security check
+			 *
+			 * @todo cs\Request should be used here
 			 */
 			if (
 				$Request->header('x-requested-with') !== 'XMLHttpRequest' &&
