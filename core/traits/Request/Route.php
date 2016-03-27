@@ -301,29 +301,29 @@ trait Route {
 	 *
 	 * @param int $index
 	 *
-	 * @return false|int|string
+	 * @return int|null|string
 	 */
 	function route ($index) {
-		return isset($this->route[$index]) ? $this->route[$index] : false;
+		return isset($this->route[$index]) ? $this->route[$index] : null;
 	}
 	/**
 	 * Get route path part by index
 	 *
 	 * @param int $index
 	 *
-	 * @return false|string
+	 * @return null|string
 	 */
 	function route_path ($index) {
-		return isset($this->route_path[$index]) ? $this->route_path[$index] : false;
+		return isset($this->route_path[$index]) ? $this->route_path[$index] : null;
 	}
 	/**
 	 * Get route ids part by index
 	 *
 	 * @param int $index
 	 *
-	 * @return false|string
+	 * @return int|null
 	 */
 	function route_ids ($index) {
-		return isset($this->route_ids[$index]) ? $this->route_ids[$index] : false;
+		return isset($this->route_ids[$index]) ? $this->route_ids[$index] : null;
 	}
 }

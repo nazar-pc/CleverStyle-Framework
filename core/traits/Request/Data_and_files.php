@@ -80,7 +80,7 @@ trait Data_and_files {
 	 *
 	 * @param string[]|string[][] $name
 	 *
-	 * @return false|mixed|mixed[] Data items (or associative array of data items) if exists or `false` otherwise (in case if `$name` is an array even one
+	 * @return mixed|mixed[]|null Data items (or associative array of data items) if exists or `false` otherwise (in case if `$name` is an array even one
 	 *                             missing key will cause the whole thing to fail)
 	 */
 	function data (...$name) {
@@ -93,15 +93,15 @@ trait Data_and_files {
 		if (is_array($name)) {
 			$result = [];
 			foreach ($name as &$n) {
-				if (!isset($this->data[$n])) {
-					return false;
+				if (!array_key_exists($n, $this->data)) {
+					return null;
 				}
 				$result[$n] = $this->data[$n];
 			}
 			return $result;
 		}
 		/** @noinspection OffsetOperationsInspection */
-		return isset($this->data[$name]) ? $this->data[$name] : false;
+		return isset($this->data[$name]) ? $this->data[$name] : null;
 	}
 	/**
 	 * @param array[] $files

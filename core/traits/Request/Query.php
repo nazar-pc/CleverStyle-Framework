@@ -25,7 +25,7 @@ trait Query {
 	 *
 	 * @param string[]|string[][] $name
 	 *
-	 * @return false|mixed|mixed[] Query parameter (or associative array of Query parameters) if exists or `false` otherwise (in case if `$name` is an array
+	 * @return mixed|mixed[]|null Query parameter (or associative array of Query parameters) if exists or `false` otherwise (in case if `$name` is an array
 	 *                             even one missing key will cause the whole thing to fail)
 	 */
 	function query (...$name) {
@@ -38,14 +38,14 @@ trait Query {
 		if (is_array($name)) {
 			$result = [];
 			foreach ($name as &$n) {
-				if (!isset($this->query[$n])) {
-					return false;
+				if (!array_key_exists($n, $this->query)) {
+					return null;
 				}
 				$result[$n] = $this->query[$n];
 			}
 			return $result;
 		}
 		/** @noinspection OffsetOperationsInspection */
-		return isset($this->query[$name]) ? $this->query[$name] : false;
+		return isset($this->query[$name]) ? $this->query[$name] : null;
 	}
 }
