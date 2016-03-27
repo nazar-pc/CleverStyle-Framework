@@ -14,7 +14,7 @@
  *  Optional Apache2 modules:
  *  * expires
  * * or Nginx
- * * PHP 5.5+
+ * * PHP 5.6+
  *  PHP libraries MUST be present:
  *  * cURL
  *  Optional PHP libraries:
@@ -23,8 +23,8 @@
  * * MySQL 5.6+
  * * or MariaDB 10.0.5+
  */
-if (version_compare(PHP_VERSION, '5.5', '<')) {
-	echo 'CleverStyle CMS require PHP 5.5 or higher';
+if (version_compare(PHP_VERSION, '5.6', '<')) {
+	echo 'CleverStyle CMS require PHP 5.6 or higher';
 	return;
 }
 /**

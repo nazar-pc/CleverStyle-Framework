@@ -6,8 +6,8 @@
  * @copyright      Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license        MIT License, see license.txt
  */
-if (version_compare(PHP_VERSION, '5.5', '<')) {
-	echo 'CleverStyle CMS require PHP 5.5 or higher';
+if (version_compare(PHP_VERSION, '5.6', '<')) {
+	echo 'CleverStyle CMS require PHP 5.6 or higher';
 	return;
 }
 $cli = PHP_SAPI == 'cli';
