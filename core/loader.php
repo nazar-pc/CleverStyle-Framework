@@ -6,12 +6,7 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-require __DIR__.'/loader_base.php';      //Inclusion of loader base
-require __DIR__.'/functions_global.php'; //Inclusion of functions that work with global state
-/**
- * Wrapper around default `$_SERVER` superglobal
- */
-$_SERVER = new _SERVER($_SERVER);
+require __DIR__.'/loader_base.php';
 /**
  * Including of custom files
  */

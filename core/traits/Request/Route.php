@@ -153,12 +153,6 @@ trait Route {
 			$rc = isset($rc[1]) ? $rc[1] : '';
 		}
 		Event::instance()->fire(
-			'System/Route/routing_replace',
-			[
-				'rc' => &$rc
-			]
-		);
-		Event::instance()->fire(
 			'System/Request/routing_replace',
 			[
 				'rc' => &$rc

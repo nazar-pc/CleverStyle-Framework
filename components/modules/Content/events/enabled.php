@@ -15,7 +15,7 @@ use
 	cs\Page;
 
 Event::instance()->on(
-	'System/Page/display/after',
+	'System/Page/render/after',
 	function () {
 		$module_data = Config::instance()->module('Content');
 		if ($module_data->simple_insert && $module_data->enabled()) {

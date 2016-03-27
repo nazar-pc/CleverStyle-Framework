@@ -66,11 +66,24 @@ if (!$client['domain']) {
 	throw $e;
 }
 if (!$client['active']) {
-	/**
-	 * guest_token should return JSON data while all other works with redirects
-	 */
-	if ($_GET['response_type'] != 'guest_token') {
-		if (!isset($_GET['redirect_uri'])) {
+	if (!isset($_GET['redirect_uri'])) {
+		$e = new ExitException(
+			[
+				'invalid_request',
+				'Inactive client_id, redirect_uri parameter required'
+			],
+			400
+		);
+		$e->setJson();
+		throw $e;
+	} else {
+		if (
+			urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
+			!preg_match("#^[^/]+://$client[domain]#", urldecode($_GET['redirect_uri']))
+		) {
+			error_redirect('access_denied', 'Inactive client id');
+			return;
+		} else {
 			$e = new ExitException(
 				[
 					'invalid_request',
@@ -80,134 +93,63 @@ if (!$client['active']) {
 			);
 			$e->setJson();
 			throw $e;
-		} else {
-			if (
-				urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
-				!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))
-			) {
-				error_redirect('access_denied', 'Inactive client id');
-				return;
-			} else {
-				$e = new ExitException(
-					[
-						'invalid_request',
-						'Inactive client_id, redirect_uri parameter required'
-					],
-					400
-				);
-				$e->setJson();
-				throw $e;
-			}
 		}
-	} else {
-		$e = new ExitException(
-			[
-				'invalid_request',
-				'Inactive client_id'
-			],
-			400
-		);
-		$e->setJson();
-		throw $e;
 	}
 }
-/**
- * guest_token should return JSON data while all other works with redirects
- */
-if ($_GET['response_type'] != 'guest_token') {
-	if (!isset($_GET['redirect_uri'])) {
-		$e = new ExitException(
-			[
-				'invalid_request',
-				'redirect_uri parameter required'
-			],
-			400
-		);
-		$e->setJson();
-		throw $e;
-	} elseif (
-		urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
-		!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))
-	) {
-		$e = new ExitException(
-			[
-				'invalid_request',
-				'redirect_uri parameter invalid'
-			],
-			400
-		);
-		$e->setJson();
-		throw $e;
-	}
-	$redirect_uri = urldecode($_GET['redirect_uri']);
-	if (!isset($_GET['response_type'])) {
-		error_redirect('invalid_request', 'response_type parameter required');
-		return;
-	}
-	if (!in_array($_GET['response_type'], ['code', 'token', 'guest_token'])) {
-		error_redirect('unsupported_response_type', 'Specified response_type is not supported, only "token" or "code" or "guest_token" types available');
-		return;
-	}
-} else {
-	if (!isset($_GET['response_type'])) {
-		$e = new ExitException(
-			[
-				'invalid_request',
-				'response_type parameter required'
-			],
-			400
-		);
-		$e->setJson();
-		throw $e;
-	}
-	if (!in_array($_GET['response_type'], ['code', 'token', 'guest_token'])) {
-		$e = new ExitException(
-			[
-				'unsupported_response_type',
-				'Specified response_type is not supported, only "token" or "code" or "guest_token" types available'
-			],
-			400
-		);
-		$e->setJson();
-		throw $e;
-	}
+if (!isset($_GET['redirect_uri'])) {
+	throw new ExitException(
+		[
+			'invalid_request',
+			'redirect_uri parameter required'
+		],
+		400
+	);
+} elseif (
+	urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
+	!preg_match("#^[^/]+://$client[domain]#", urldecode($_GET['redirect_uri']))
+) {
+	throw new ExitException(
+		[
+			'invalid_request',
+			'redirect_uri parameter invalid'
+		],
+		400
+	);
+}
+$redirect_uri = urldecode($_GET['redirect_uri']);
+if (!isset($_GET['response_type'])) {
+	error_redirect('invalid_request', 'response_type parameter required');
+	return;
 }
 $User = User::instance();
 if (!$User->user()) {
-	if ($_GET['response_type'] != 'guest_token') {
-		if (Event::instance()->fire('OAuth2/custom_sign_in_page')) {
-			$Page->Content = '';
-			$Page->warning($L->you_are_not_logged_in);
-		}
-		return;
-	} elseif (!$Config->module('OAuth2')->guest_tokens) {
-		error_redirect('access_denied', 'Guest tokens disabled');
-		return;
+	if (Event::instance()->fire('OAuth2/custom_sign_in_page')) {
+		$Page->Content = '';
+		$Page->warning($L->you_are_not_logged_in);
 	}
+	return;
 }
 $Response = Response::instance();
 /**
  * Authorization processing
  */
 if (isset($_POST['mode'])) {
-	switch ($_POST['mode']) {
-		case 'allow':
-			$OAuth2->add_access($client['id']);
-			break;
-		default:
-			$Response->redirect(
-				http_build_url(
-					urldecode($redirect_uri),
-					[
-						'error'             => 'access_denied',
-						'error_description' => 'User denied access',
-						'state'             => isset($_GET['state']) ? $_GET['state'] : false
-					]
-				),
-				302
-			);
-			$Page->Content = '';
-			return;
+	if ($_POST['mode'] == 'allow') {
+		$OAuth2->add_access($client['id']);
+	} else {
+		$Response->redirect(
+			http_build_url(
+				urldecode($redirect_uri),
+				[
+					'error'             => 'access_denied',
+					'error_description' => 'User denied access',
+					'state'             => isset($_GET['state']) ? $_GET['state'] : false
+				]
+			),
+			302
+		);
+		$Page->Content = '';
+		return;
 	}
 }
 if (!$OAuth2->get_access($client['id'])) {
@@ -267,47 +209,6 @@ switch ($_GET['response_type']) {
 			error_redirect('server_error', "Server can't get token data, try later");
 			return;
 		}
-	case 'guest_token':
-		$Response
-			->header('cache-control', 'no-store')
-			->header('pragma', 'no-cache');
-		if ($User->user()) {
-			$e = new ExitException(
-				[
-					'access_denied',
-					'Only guests, not users allowed to access this response_type'
-				],
-				403
-			);
-			$e->setJson();
-			throw $e;
-		}
-		$code = $OAuth2->add_code($client['id'], 'token', urldecode($_GET['redirect_uri']));
-		if (!$code) {
-			$e = new ExitException(
-				[
-					'server_error',
-					"Server can't generate code, try later"
-				],
-				500
-			);
-			$e->setJson();
-			throw $e;
-		}
-		$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], urldecode($_GET['redirect_uri']));
-		if ($token_data) {
-			unset($token_data['refresh_token']);
-			$Page->json($token_data);
-			return;
-		} else {
-			$e = new ExitException(
-				[
-					'server_error',
-					"Server can't get token data, try later"
-				],
-				500
-			);
-			$e->setJson();
-			throw $e;
-		}
+	default:
+		error_redirect('unsupported_response_type', 'Specified response_type is not supported, only "token" or "code" types available');
 }

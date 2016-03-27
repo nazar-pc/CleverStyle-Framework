@@ -1,14 +1,14 @@
 {
 	"package"     : "SimpleImage",
 	"category"    : "plugins",
-	"version"     : "2.5.3-cs34",
+	"version"     : "2.5.3-cs35",
 	"description" : "A PHP class that simplifies working with images. Integration into CleverStyle CMS.",
 	"author"      : "Cory LaViska",
 	"website"     : "www.abeautifulsite.net",
 	"license"     : "MIT License",
 	"provide"     : "simpleimage",
 	"require"     : [
-		"System>=3.183",
-		"System<4.0"
+		"System>=3.212",
+		"System<5.0"
 	]
 }

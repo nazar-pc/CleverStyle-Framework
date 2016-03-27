@@ -28,10 +28,6 @@ class OAuth2 {
 	/**
 	 * @var bool
 	 */
-	protected $guest_tokens;
-	/**
-	 * @var bool
-	 */
 	protected $automatic_prolongation;
 	/**
 	 * @var int
@@ -44,7 +40,6 @@ class OAuth2 {
 	function construct () {
 		$this->cache                  = new Prefix('OAuth2');
 		$module_data                  = Config::instance()->module('OAuth2');
-		$this->guest_tokens           = $module_data->guest_tokens;
 		$this->automatic_prolongation = $module_data->automatic_prolongation;
 		$this->expiration             = $module_data->expiration;
 	}
@@ -248,7 +243,7 @@ class OAuth2 {
 	function get_access ($client, $user = false) {
 		$user = (int)$user ?: User::instance()->id;
 		if ($user == User::GUEST_ID) {
-			return $this->guest_tokens;
+			return false;
 		}
 		$clients = $this->cache->get(
 			"grant_access/$user",
@@ -318,9 +313,7 @@ class OAuth2 {
 		$client  = $this->get_client($client);
 		if (
 			!$client ||
-			(
-				!$this->guest_tokens && !$Session->user()
-			) ||
+			!$Session->user() ||
 			!$this->get_access($client['id'])
 		) {
 			return false;

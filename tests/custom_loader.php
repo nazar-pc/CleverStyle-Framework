@@ -22,7 +22,6 @@ if (!defined('MICROTIME')) {
 chdir(DIR);
 
 require_once DIR.'/core/loader_base.php';      //Inclusion of loader base
-require_once DIR.'/core/functions_global.php'; //Inclusion of functions that work with global state
 require_once __DIR__.'/Mock_object.php';
 require_once __DIR__.'/Singleton.php';
 require_once __DIR__.'/functions.php';
@@ -36,10 +35,6 @@ $_SERVER = [
 	'QUERY_STRING'         => '',
 	'REQUEST_URI'          => '/'
 ];
-/**
- * Wrapper around default `$_SERVER` superglobal
- */
-$_SERVER = new _SERVER($_SERVER);
 if (!defined('DEBUG')) {
 	define('DEBUG', false);
 }

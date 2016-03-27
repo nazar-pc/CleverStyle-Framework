@@ -8,7 +8,6 @@
  */
 namespace cs\modules\Http_server;
 use
-	cs\_SERVER,
 	cs\App,
 	cs\ExitException,
 	cs\Language,
@@ -132,7 +131,7 @@ class Request {
 	 */
 	protected function fill_superglobals ($SUPERGLOBALS) {
 		// Hack: Filling $_SERVER is primarily needed for HybridAuth (many hard dependencies on `$_SERVER`)
-		$_SERVER  = new _SERVER($SUPERGLOBALS['SERVER']);
+		$_SERVER  = $SUPERGLOBALS['SERVER'];
 		$_COOKIE  = $SUPERGLOBALS['COOKIE'];
 		$_GET     = $SUPERGLOBALS['GET'];
 		$_POST    = $SUPERGLOBALS['POST'];

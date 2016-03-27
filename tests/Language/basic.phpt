@@ -18,7 +18,7 @@ Config::instance_stub(
 		]
 	]
 );
-Request::instance()->init_server(iterator_to_array($_SERVER));
+Request::instance()->init_server($_SERVER);
 $L = Language::instance();
 echo $L->system_home."\n";
 echo $L->system_admin_users_permissions_for_user('Lil Wayne')."\n";

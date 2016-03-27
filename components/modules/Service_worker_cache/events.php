@@ -8,7 +8,7 @@
  */
 namespace cs;
 Event::instance()->on(
-	'System/Page/display/before',
+	'System/Page/render/before',
 	function () {
 		if (Config::instance()->module('Service_worker_cache')->enabled()) {
 			$version = file_get_json(__DIR__.'/meta.json')['version'];

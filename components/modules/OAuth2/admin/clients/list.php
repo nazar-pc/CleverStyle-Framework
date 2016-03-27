@@ -68,17 +68,6 @@ Page::instance()
 		).
 		h::{'table.cs-table[right-left] tr| td'}(
 			[
-				h::info('oauth2_allow_guest_tokens'),
-				h::radio(
-					[
-						'name'    => 'general[guest_tokens]',
-						'checked' => $module_data->guest_tokens,
-						'value'   => [0, 1],
-						'in'      => [$L->no, $L->yes]
-					]
-				)
-			],
-			[
 				h::info('oauth2_automatic_prolongation'),
 				h::radio(
 					[

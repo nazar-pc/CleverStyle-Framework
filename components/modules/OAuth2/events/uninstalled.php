@@ -14,10 +14,8 @@ Event::instance()->on(
 			return;
 		}
 		Config::instance()->module('OAuth2')->set([
-			'guest_tokens'				=> 0,
 			'expiration'				=> 3600,
 			'automatic_prolongation'	=> 1
 		]);
-		return;
 	}
 );

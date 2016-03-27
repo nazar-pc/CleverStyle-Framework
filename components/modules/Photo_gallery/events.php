@@ -16,7 +16,7 @@ use
 
 Event::instance()
 	->on(
-		'System/Route/routing_replace',
+		'System/Request/routing_replace',
 		function ($data) {
 			$rc = explode('/', $data['rc']);
 			$L  = Language::instance();
@@ -42,7 +42,7 @@ Event::instance()
 		}
 	)
 	->on(
-		'System/Index/construct',
+		'System/App/construct',
 		function () {
 			if (Config::instance()->module('Photo_gallery')->installed()) {
 				require __DIR__.'/events/installed.php';

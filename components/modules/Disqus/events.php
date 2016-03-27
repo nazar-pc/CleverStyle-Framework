@@ -8,7 +8,7 @@
  */
 namespace cs;
 Event::instance()->on(
-	'System/Index/construct',
+	'System/App/construct',
 	function () {
 		if (Config::instance()->module('Disqus')->enabled()) {
 			require __DIR__.'/events/enabled.php';

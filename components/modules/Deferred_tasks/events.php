@@ -8,7 +8,7 @@
  */
 namespace cs;
 Event::instance()->on(
-	'System/Index/construct',
+	'System/App/construct',
 	function () {
 		if (Config::instance()->module('Deferred_tasks')->uninstalled()) {
 			require __DIR__.'/events/uninstalled.php';

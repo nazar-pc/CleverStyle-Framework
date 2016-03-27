@@ -14,10 +14,8 @@ namespace cs\modules\Http_server;
 use
 	cs\Core;
 
-require DIR.'/core/loader_base.php';             //Inclusion of loader base
+require DIR.'/core/loader_base.php';
 @ini_set('error_log', LOGS.'/Http_server.log');
-require __DIR__.'/functions.php';                //Inclusion of functions needed for http server
-require DIR.'/core/functions_global.php';
 /**
  * Including of custom files
  */

@@ -5,7 +5,7 @@ Language in url
 namespace cs;
 include __DIR__.'/../custom_loader.php';
 $_SERVER['REQUEST_URI'] = '/uk';
-Request::instance()->init_server(iterator_to_array($_SERVER));
+Request::instance()->init_server($_SERVER);
 Config::instance_stub(
 	[
 		'core' => [

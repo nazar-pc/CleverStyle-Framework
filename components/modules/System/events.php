@@ -95,7 +95,7 @@ Event::instance()
 		}
 	)
 	->on(
-		'System/Index/construct',
+		'System/App/construct',
 		function () {
 			if (Request::instance()->current_module == 'System') {
 				require __DIR__.'/events/admin.php';

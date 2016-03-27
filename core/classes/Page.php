@@ -554,12 +554,6 @@ class Page {
 		$Response->body = $this->Content;
 	}
 	/**
-	 * @deprecated Use `cs\Page::render()` instead
-	 */
-	function __finish () {
-		$this->render();
-	}
-	/**
 	 * Provides next events:
 	 *  System/Page/render/before
 	 *
@@ -590,7 +584,6 @@ class Page {
 			/** @noinspection NestedTernaryOperatorInspection */
 			$Response->body = $this->process_replacing($this->Content ?: ($api_path ? 'null' : ''));
 		} else {
-			Event::instance()->fire('System/Page/display/before');
 			Event::instance()->fire('System/Page/render/before');
 			/**
 			 * Processing of template, substituting of content, preparing for the output
@@ -600,7 +593,6 @@ class Page {
 			 * Processing of replacing in content
 			 */
 			$this->Html = $this->process_replacing($this->Html);
-			Event::instance()->fire('System/Page/display/after');
 			Event::instance()->fire('System/Page/render/after');
 			$Response->body = rtrim($this->Html);
 		}

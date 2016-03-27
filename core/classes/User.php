@@ -265,10 +265,4 @@ class User {
 	function bot () {
 		return Session::instance()->bot();
 	}
-	/**
-	 * @deprecated Does nothing
-	 * @todo       Remove in 4.x
-	 */
-	function __finish () {
-	}
 }

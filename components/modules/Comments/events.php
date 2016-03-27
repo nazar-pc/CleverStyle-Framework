@@ -8,7 +8,7 @@
  */
 namespace cs;
 Event::instance()->on(
-	'System/Index/construct',
+	'System/App/construct',
 	function () {
 		$module_data = Config::instance()->module('Comments');
 		switch (true) {

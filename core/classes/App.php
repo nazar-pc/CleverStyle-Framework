@@ -62,7 +62,6 @@ class App {
 		if (!$this->check_permission('index')) {
 			throw new ExitException(403);
 		}
-		Event::instance()->fire('System/Index/construct');
 		Event::instance()->fire('System/App/construct');
 		/**
 		 * Plugins processing
@@ -71,7 +70,6 @@ class App {
 			_include(PLUGINS."/$plugin/index.php", false, false);
 		}
 		_include("$this->working_directory/prepare.php", false, false);
-		Event::instance()->fire('System/Index/load/before');
 		Event::instance()->fire('System/App/render/before');
 		/**
 		 * Title only for non-API calls
@@ -82,7 +80,6 @@ class App {
 		 * Blocks only for non-API calls
 		 */
 		$Request->api_path || $this->render_blocks();
-		Event::instance()->fire('System/Index/load/after');
 		Event::instance()->fire('System/App/render/after');
 		Page::instance()->render();
 	}

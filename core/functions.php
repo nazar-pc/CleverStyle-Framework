@@ -92,47 +92,6 @@ function modified_classes ($updated_modified_classes = null) {
 }
 
 /**
- * Correct termination
- *
- * @deprecated
- * @todo Remove in 4.x
- */
-function shutdown_function () {
-	App::instance()->execute();
-}
-/**
- * Enable of errors processing
- * @todo Remove in 4.x
- */
-function errors_on () {
-	error_reporting(defined('DEBUG') && DEBUG ? E_ALL : E_ERROR | E_WARNING | E_PARSE);
-}
-/**
- * Disabling of errors processing
- * @todo Remove in 4.x
- */
-function errors_off () {
-	error_reporting(0);
-}
-/**
- * Enabling of page interface
- *
- * @deprecated Use `cs\Page::$interface` property instead
- * @todo       Remove in 4.x
- */
-function interface_on () {
-	Page::instance()->interface	= true;
-}
-/**
- * Disabling of page interface
- *
- * @deprecated Use `cs\Page::$interface` property instead
- * @todo       Remove in 4.x
- */
-function interface_off () {
-	Page::instance()->interface	= false;
-}
-/**
  * Easy getting of translations
  *
  * @param string $item
@@ -149,6 +108,7 @@ function __ ($item, $arguments = null, $_ = null) {
 		return $L->$item;
 	}
 }
+
 /**
  * Get file url by it's destination in file system
  *
@@ -344,21 +304,6 @@ function set_core_ml_text ($item, $value) {
 		return false;
 	}
 	return Text::instance()->set($Config->module('System')->db('texts'), 'System/Config/core', $item, $value);
-}
-
-/**
- * Sends header with string representation of http status code, for example "404 Not Found" for corresponding server protocol
- *
- * @deprecated Use `cs\Response::$code` instead
- * @todo       Remove in 4.x
- *
- * @param int $code Status code
- *
- * @return null|string String representation of status code code
- */
-function status_code ($code) {
-	Response::instance()->code = $code;
-	return status_code_string($code);
 }
 
 /**
@@ -756,16 +701,4 @@ function functionality ($functionality) {
 		}
 	);
 	return in_array($functionality, $all);
-}
-
-/**
- * Returns system version
- *
- * @deprecated
- * @todo Remove in 4.x
- *
- * @return string
- */
-function system_version () {
-	return file_get_json(MODULES.'/System/meta.json')['version'];
 }

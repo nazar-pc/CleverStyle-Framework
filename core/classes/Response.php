@@ -7,13 +7,11 @@
  */
 namespace cs;
 use
-	cs\Response\Compatibility,
 	cs\Response\Psr7;
 
-class Response implements \ArrayAccess, \Iterator {
+class Response {
 	use
 		Singleton,
-		Compatibility,
 		Psr7;
 	/**
 	 * Protocol, for instance: `HTTP/1.0`, `HTTP/1.1` (default), HTTP/2.0

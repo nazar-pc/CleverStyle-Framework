@@ -11,7 +11,7 @@ use
 	h;
 
 Event::instance()->on(
-	'System/Page/display/before',
+	'System/Page/render/before',
 	function () {
 		if (
 			strpos(Request::instance()->header('user-agent'), 'MSIE 10') !== false &&

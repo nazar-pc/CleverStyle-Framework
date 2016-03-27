@@ -18,7 +18,7 @@ use
 
 Event::instance()
 	->on(
-		'System/Page/display/before',
+		'System/Page/render/before',
 		function () {
 			$Config        = Config::instance();
 			$L             = new Prefix('hybridauth_');

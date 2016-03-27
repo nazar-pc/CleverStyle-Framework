@@ -75,29 +75,11 @@ Event::instance()
 			}
 			if ($token_data['type'] == 'token') {
 				// TODO: add some mark if this is client-side only token, so that it can be accounted by components
-				// Also ADMIN access should be blocked for client-side only tokens
+				// Also admin access should be blocked for client-side only tokens
 			}
 			$Request->headers['user-agent'] = "OAuth2-$client[name]-$client[id]";
 			$_POST['session']               = $token_data['session'];
 			$_REQUEST['session']            = $token_data['session'];
 			Response::instance()->cookie('session', $token_data['session'], 0, true);
-			if (!Config::instance()->module('OAuth2')->guest_tokens) {
-				Event::instance()->on(
-					'System/User/construct/after',
-					function () {
-						if (!User::instance()->user()) {
-							$e = new ExitException(
-								[
-									'access_denied',
-									'Guest tokens disabled'
-								],
-								403
-							);
-							$e->setJson();
-							throw $e;
-						}
-					}
-				);
-			}
 		}
 	);

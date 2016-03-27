@@ -12,7 +12,7 @@ use
 	cs\Event;
 Event::instance()
 	->on(
-		'System/Route/routing_replace',
+		'System/Request/routing_replace',
 		function ($data) {
 			if (
 				substr($data['rc'], 0, 5) != 'admin' &&
@@ -46,7 +46,7 @@ Event::instance()
 		}
 	)
 	->on(
-		'System/Index/construct',
+		'System/App/construct',
 		function () {
 			if (Config::instance()->module('Static_pages')->installed()) {
 				require __DIR__.'/events/installed.php';

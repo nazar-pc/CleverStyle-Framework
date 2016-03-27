@@ -10,7 +10,7 @@ namespace cs;
 
 Event::instance()
 	->on(
-		'System/Route/routing_replace',
+		'System/Request/routing_replace',
 		function ($data) {
 			if (Config::instance()->module('OAuth2')->enabled() && substr($data['rc'], 0, 5) != 'admin') {
 				$rc = explode('/', $data['rc'], 2);
@@ -36,7 +36,7 @@ Event::instance()
 		}
 	)
 	->on(
-		'System/Index/construct',
+		'System/App/construct',
 		function () {
 			$module_data = Config::instance()->module('OAuth2');
 			switch (true) {

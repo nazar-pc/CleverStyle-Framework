@@ -17,7 +17,7 @@ Event::instance()->on(
 	}
 );
 Event::instance()->on(
-	'System/Index/construct',
+	'System/App/construct',
 	function () {
 		if (Config::instance()->module('HybridAuth')->uninstalled()) {
 			require __DIR__.'/events/uninstalled.php';

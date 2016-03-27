@@ -6,7 +6,7 @@ namespace cs;
 
 include __DIR__.'/../custom_loader.php';
 $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'uk,uk-ua;q=0.5';
-Request::instance()->init_server(iterator_to_array($_SERVER));
+Request::instance()->init_server($_SERVER);
 Config::instance_stub(
 	[
 		'core' => [

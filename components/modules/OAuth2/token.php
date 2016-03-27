@@ -193,55 +193,6 @@ switch ($_POST['grant_type']) {
 		}
 		$Page->json($token_data);
 		return;
-	case 'guest_token':
-		if (User::instance()->user()) {
-			$e = new ExitException(
-				[
-					'access_denied',
-					'Only guests, not user allowed to access this grant_type'
-				],
-				403
-			);
-			$e->setJson();
-			throw $e;
-		}
-		if (!$Config->module('OAuth2')->guest_tokens) {
-			$e = new ExitException(
-				[
-					'access_denied',
-					'Guest tokens disabled'
-				],
-				403
-			);
-			$e->setJson();
-			throw $e;
-		}
-		$code = $OAuth2->add_code($client['id'], 'code', '');
-		if (!$code) {
-			$e = new ExitException(
-				[
-					'server_error',
-					"Server can't generate code, try later"
-				],
-				500
-			);
-			$e->setJson();
-			throw $e;
-		}
-		$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], '');
-		if (!$token_data) {
-			$e = new ExitException(
-				[
-					'server_error',
-					"Server can't get token data, try later"
-				],
-				500
-			);
-			$e->setJson();
-			throw $e;
-		}
-		unset($token_data['refresh_token']);
-		$Page->json($token_data);
 	default:
 		$e = new ExitException(
 			[
