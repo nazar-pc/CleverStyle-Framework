@@ -82,7 +82,10 @@ trait Data_and_files {
 	 *
 	 * @return false|mixed|mixed[] Data if exists or `false` otherwise (in case if `$name` is an array even one missing key will cause the whole thing to fail)
 	 */
-	function data ($name) {
+	function data (...$name) {
+		if (count($name) === 1) {
+			$name = $name[0];
+		}
 		if (is_array($name)) {
 			foreach ($name as &$n) {
 				if (!isset($this->data[$n])) {

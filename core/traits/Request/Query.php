@@ -27,7 +27,10 @@ trait Query {
 	 *
 	 * @return false|mixed|mixed[] Query parameter content if exists or `false` otherwise
 	 */
-	function query ($name) {
+	function query (...$name) {
+		if (count($name) === 1) {
+			$name = $name[0];
+		}
 		if (is_array($name)) {
 			foreach ($name as &$n) {
 				if (!isset($this->query[$n])) {
