@@ -10,13 +10,11 @@
  * otherwise system workability may be broken
  */
 use
-	cs\App,
 	cs\Cache,
 	cs\Config,
 	cs\Language,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Response,
 	cs\Text;
 /**
  * Auto Loading of classes

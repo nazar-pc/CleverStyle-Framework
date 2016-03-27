@@ -9,12 +9,10 @@
 namespace cs\modules\OAuth2;
 
 use
-	cs\Config,
 	cs\Event,
 	cs\ExitException,
 	cs\Request,
-	cs\Response,
-	cs\User;
+	cs\Response;
 
 Event::instance()
 	->on(

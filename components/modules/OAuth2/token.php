@@ -12,8 +12,7 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Page,
-	cs\Response,
-	cs\User;
+	cs\Response;
 
 Response::instance()
 	->header('cache-control', 'no-store')
