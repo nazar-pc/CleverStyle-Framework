@@ -19,7 +19,7 @@ if ($cli) {
 } else {
 	define('DIR', __DIR__);
 }
-mb_internal_encoding('utf-8');
+
 define('ROOT', getcwd());    //Path to site root
 $fs = json_decode(file_get_contents(DIR.'/fs.json'), true);
 /**

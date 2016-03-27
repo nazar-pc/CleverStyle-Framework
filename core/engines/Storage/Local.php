@@ -17,142 +17,109 @@ class Local extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false, $apply = null, $limit = null) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+	function get_files_list (
+		$dir,
+		$mask = false,
+		$mode = 'f',
+		$prefix_path = false,
+		$subfolders = false,
+		$sort = false,
+		$exclusion = false,
+		$system_files = false,
+		$apply = null,
+		$limit = null
+	) {
+		return get_files_list($this->absolute_path($dir), $mask, $mode, $prefix_path, $subfolders, $sort, $exclusion, $system_files, $apply, $limit);
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function file ($filename, $flags = null) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return file($this->absolute_path($filename), $flags);
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function file_get_contents ($filename, $flags = null) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return file_get_contents($this->absolute_path($filename), $flags);
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function file_put_contents ($filename, $data, $flags = null) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return file_put_contents($this->absolute_path($filename), $data, $flags);
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function copy ($source, $dest) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$arguments[1] = $this->absolute_path($arguments[1]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return copy($this->absolute_path($source), $this->absolute_path($dest));
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function unlink ($filename) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return unlink($this->absolute_path($filename));
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function file_exists ($filename) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return file_exists($this->absolute_path($filename));
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function move_uploaded_file ($filename, $destination) {
-		$arguments    = func_get_args();
-		$arguments[1] = $this->absolute_path($arguments[1]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return copy($filename, $this->absolute_path($destination));
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function rename ($oldname, $newname) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$arguments[1] = $this->absolute_path($arguments[1]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return rename($this->absolute_path($oldname), $this->absolute_path($newname));
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function mkdir ($pathname, $mode = 0777, $recursive = false) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		/** @noinspection MkdirRaceConditionInspection */
+		return mkdir($this->absolute_path($pathname), $mode, $recursive);
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function rmdir ($dirname) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return rmdir($this->absolute_path($dirname));
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function is_file ($filename) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return is_file($this->absolute_path($filename));
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function is_dir ($filename) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return is_dir($this->absolute_path($filename));
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function url_by_source ($source) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return url_by_source($this->absolute_path($source));
 	}
 	/**
 	 * @inheritdoc
 	 */
 	function source_by_url ($url) {
-		$arguments    = func_get_args();
-		$arguments[0] = $this->absolute_path($arguments[0]);
-		$return       = call_user_func_array(__FUNCTION__, $arguments);
-		return $return;
+		return $this->relative_path(source_by_url($url));
 	}
 	protected function absolute_path ($path) {
-		// If not absolute path -
 		return preg_match('#^(([a-z]+:)?//|/)#i', $path) ? $path : PUBLIC_STORAGE.'/'.ltrim($path);
+	}
+	protected function relative_path ($path) {
+		return strpos($path, PUBLIC_STORAGE.'/') === 0 ? $path : substr($path, strlen(PUBLIC_STORAGE.'/'));
 	}
 }

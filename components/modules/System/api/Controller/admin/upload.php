@@ -56,7 +56,7 @@ trait upload {
 				unlink($file);
 			}
 		);
-		if (!move_uploaded_file($file['tmp_name'], $tmp_location)) {
+		if (!copy($file['tmp_name'], $tmp_location)) {
 			throw new ExitException(500);
 		}
 		$tmp_dir = "phar://$tmp_location";

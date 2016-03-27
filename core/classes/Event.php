@@ -80,9 +80,9 @@ class Event {
 		if (!$event || !is_callable($callback)) {
 			return $this;
 		}
-		$wrapped_callback = function () use (&$wrapped_callback, $event, $callback) {
+		$wrapped_callback = function (...$arguments) use (&$wrapped_callback, $event, $callback) {
 			$this->off($event, $wrapped_callback);
-			call_user_func_array($callback, func_get_args());
+			$callback(...$arguments);
 		};
 		return $this->on($event, $wrapped_callback);
 	}
@@ -91,13 +91,12 @@ class Event {
 	 *
 	 * After event name it is possible to specify as many arguments as needed
 	 *
-	 * @param string $event For example `admin/System/components/plugins/disable`
-	 * @param mixed  $param1
-	 * @param mixed  $_
+	 * @param string  $event For example `admin/System/components/plugins/disable`
+	 * @param mixed[] $arguments
 	 *
 	 * @return bool
 	 */
-	function fire ($event, $param1 = null, $_ = null) {
+	function fire ($event, ...$arguments) {
 		if (!$this->initialized) {
 			$this->initialize();
 		}
@@ -107,9 +106,8 @@ class Event {
 		) {
 			return true;
 		}
-		$arguments = array_slice(func_get_args(), 1);
 		foreach ($this->callbacks[$event] as $callback) {
-			if (call_user_func_array($callback, $arguments) === false) {
+			if ($callback(...$arguments) === false) {
 				return false;
 			}
 		}

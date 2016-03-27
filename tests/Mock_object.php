@@ -51,7 +51,7 @@ class Mock_object {
 		}
 		$method = $this->methods[$method];
 		if (is_callable($method)) {
-			return call_user_func_array($method, $arguments);
+			return $method(...$arguments);
 		}
 		return $method;
 	}

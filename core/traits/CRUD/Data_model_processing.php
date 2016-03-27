@@ -236,14 +236,13 @@ trait Data_model_processing {
 					return !is_array($data) && preg_match('/^(http[s]?:)?\/\/.+$/Uims', $data);
 				}
 			),
-			$data ? call_user_func_array(
-				'array_merge',
-				array_map(
-					function ($data) {
-						return is_array($data) ? $this->find_urls($data) : [];
-					},
-					array_values($data)
-				)
+			$data ? array_merge(
+				... array_map(
+						function ($data) {
+							return is_array($data) ? $this->find_urls($data) : [];
+						},
+						array_values($data)
+					)
 			) : []
 		);
 	}

@@ -89,12 +89,12 @@ abstract class _Abstract {
 	 * @param string|string[] $query  SQL query string or array, may be a format string in accordance with the first parameter of sprintf() function
 	 * @param string|string[] $params May be array of arguments for formatting of <b>$query</b><br>
 	 *                                or string - in this case it will be first argument for formatting of <b>$query</b>
-	 * @param string          $_      if <b>$params</s> is string - this parameter will be second argument for formatting of <b>$query</b>.
+	 * @param string[]        $param  if <b>$params</b> is string - this parameter will be second argument for formatting of <b>$query</b>.
 	 *                                If you need more arguments - add them after this one, function will accept them.
 	 *
 	 * @return false|object|resource
 	 */
-	function q ($query, $params = [], $_ = null) {
+	function q ($query, $params = [], ...$param) {
 		$normalized = $this->prepare_and_normalize_arguments($query, func_get_args());
 		if (!$normalized) {
 			return false;
@@ -184,17 +184,17 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param string|string[] $query          SQL query string, may be a format string in accordance with the first parameter of sprintf() function
-	 * @param string|string[] $params         May be array of arguments for formatting of <b>$query</b><br>
-	 *                                        or string - in this case it will be first argument for formatting of <b>$query</b>
-	 * @param string          $param          if <b>$params</s> is string - this parameter will be second argument for formatting of <b>$query</b>.
-	 *                                        If you need more arguments - add them after this one, function will accept them.
+	 * @param string|string[] $query  SQL query string, may be a format string in accordance with the first parameter of sprintf() function
+	 * @param string|string[] $params May be array of arguments for formatting of <b>$query</b><br>
+	 *                                or string - in this case it will be first argument for formatting of <b>$query</b>
+	 * @param string[]        $param  if <b>$params</b> is string - this parameter will be second argument for formatting of <b>$query</b>.
+	 *                                If you need more arguments - add them after this one, function will accept them.
 	 *
 	 * @return false|object|resource
 	 */
-	function aq ($query, $params = [], $param = null) {
+	function aq ($query, $params = [], ...$param) {
 		$this->async = true;
-		$result      = call_user_func_array([$this, 'q'], func_get_args());
+		$result      = $this->q($query, $params, ...$param);
 		$this->async = false;
 		return $result;
 	}
@@ -408,13 +408,7 @@ abstract class _Abstract {
 			$query = $query[0].'VALUES'.$query[1].$query[2];
 			return (bool)$this->q(
 				$query,
-				call_user_func_array(
-					'array_merge',
-					array_map(
-						'array_values',
-						_array($params)
-					)
-				)
+				array_merge(...array_map('array_values', _array($params)))
 			);
 		} else {
 			$result = true;

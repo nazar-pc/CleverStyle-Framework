@@ -31,7 +31,7 @@ class SQLite extends _Abstract {
 		} catch (\Exception $e) {
 		}
 	}
-	function q ($query, $params = [], $_ = null) {
+	function q ($query, $params = [], $param = null) {
 		// Hack to convert small subset of MySQL queries into SQLite-compatible syntax
 		$query = str_replace('INSERT IGNORE', 'INSERT OR IGNORE', $query);
 		return call_user_func_array([__NAMESPACE__.'\\_Abstract', 'q'], [$query] + func_get_args());

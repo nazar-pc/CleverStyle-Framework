@@ -32,8 +32,8 @@ class Application extends Composer_application {
 	 */
 	function getComposer ($required = true, $disablePlugins = false) {
 		$Composer = parent::getComposer($required, $disablePlugins);
-		if ($this->composer_callback) {
-			call_user_func($this->composer_callback, $Composer);
+		if ($callback = $this->composer_callback) {
+			$callback($Composer);
 		}
 		return $Composer;
 	}

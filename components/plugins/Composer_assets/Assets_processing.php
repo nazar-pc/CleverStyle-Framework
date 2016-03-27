@@ -57,7 +57,7 @@ class Assets_processing {
 				$files[] = self::extract_files($meta, $package_name);
 			}
 		}
-		return array_unique(call_user_func_array('array_merge', $files));
+		return array_unique(array_merge(...$files));
 	}
 	/**
 	 * @param array  $meta

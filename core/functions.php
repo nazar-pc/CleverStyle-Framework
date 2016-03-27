@@ -16,43 +16,48 @@ use
 	cs\Language\Prefix,
 	cs\Page,
 	cs\Text;
+
 /**
  * Auto Loading of classes
  */
-spl_autoload_register(function ($class) {
-	static $cache;
-	if (!isset($cache)) {
-		$cache = file_exists(CACHE.'/classes/autoload') ? file_get_json(CACHE.'/classes/autoload') : [];
-	}
-	if (isset($cache[$class])) {
-		return require_once $cache[$class];
-	}
-	$prepared_class_name = ltrim($class, '\\');
-	if (strpos($prepared_class_name, 'cs\\') === 0) {
-		$prepared_class_name = substr($prepared_class_name, 3);
-	}
-	$prepared_class_name = explode('\\', $prepared_class_name);
-	$namespace           = count($prepared_class_name) > 1 ? implode('/', array_slice($prepared_class_name, 0, -1)) : '';
-	$class_name          = array_pop($prepared_class_name);
-	/**
-	 * Try to load classes from different places. If not found in one place - try in another.
-	 */
-	if (
-		_require_once($file = DIR."/core/classes/$namespace/$class_name.php", false) ||    //Core classes
-		_require_once($file = DIR."/core/thirdparty/$namespace/$class_name.php", false) || //Third party classes
-		_require_once($file = DIR."/core/traits/$namespace/$class_name.php", false) ||     //Core traits
-		_require_once($file = ENGINES."/$namespace/$class_name.php", false) ||             //Core engines
-		_require_once($file = MODULES."/../$namespace/$class_name.php", false) ||          //Classes in modules
-		_require_once($file = PLUGINS."/../$namespace/$class_name.php", false)             //Classes in plugins
-	) {
-		$cache[$class] = realpath($file);
-		/** @noinspection MkdirRaceConditionInspection */
-		@mkdir(CACHE.'/classes', 0770, true);
-		file_put_json(CACHE.'/classes/autoload', $cache);
-		return true;
-	}
-	return false;
-}, true, true);
+spl_autoload_register(
+	function ($class) {
+		static $cache;
+		if (!isset($cache)) {
+			$cache = file_exists(CACHE.'/classes/autoload') ? file_get_json(CACHE.'/classes/autoload') : [];
+		}
+		if (isset($cache[$class])) {
+			return require_once $cache[$class];
+		}
+		$prepared_class_name = ltrim($class, '\\');
+		if (strpos($prepared_class_name, 'cs\\') === 0) {
+			$prepared_class_name = substr($prepared_class_name, 3);
+		}
+		$prepared_class_name = explode('\\', $prepared_class_name);
+		$namespace           = count($prepared_class_name) > 1 ? implode('/', array_slice($prepared_class_name, 0, -1)) : '';
+		$class_name          = array_pop($prepared_class_name);
+		/**
+		 * Try to load classes from different places. If not found in one place - try in another.
+		 */
+		if (
+			_require_once($file = DIR."/core/classes/$namespace/$class_name.php", false) ||    //Core classes
+			_require_once($file = DIR."/core/thirdparty/$namespace/$class_name.php", false) || //Third party classes
+			_require_once($file = DIR."/core/traits/$namespace/$class_name.php", false) ||     //Core traits
+			_require_once($file = ENGINES."/$namespace/$class_name.php", false) ||             //Core engines
+			_require_once($file = MODULES."/../$namespace/$class_name.php", false) ||          //Classes in modules
+			_require_once($file = PLUGINS."/../$namespace/$class_name.php", false)             //Classes in plugins
+		) {
+			$cache[$class] = realpath($file);
+			/** @noinspection MkdirRaceConditionInspection */
+			@mkdir(CACHE.'/classes', 0770, true);
+			file_put_json(CACHE.'/classes/autoload', $cache);
+			return true;
+		}
+		return false;
+	},
+	true,
+	true
+);
 /**
  * Clean cache of classes autoload and customization
  */
@@ -110,12 +115,12 @@ function __ ($item, $arguments = null, $_ = null) {
 /**
  * Get file url by it's destination in file system
  *
- * @param string		$source
+ * @param string $source
  *
  * @return false|string
  */
 function url_by_source ($source) {
-	$Config	= Config::instance(true);
+	$Config = Config::instance(true);
 	if (!$Config) {
 		return false;
 	}
@@ -125,15 +130,16 @@ function url_by_source ($source) {
 	}
 	return false;
 }
+
 /**
  * Get file destination in file system by it's url
  *
- * @param string		$url
+ * @param string $url
  *
  * @return false|string
  */
 function source_by_url ($url) {
-	$Config	= Config::instance(true);
+	$Config = Config::instance(true);
 	if (!$Config) {
 		return false;
 	}
@@ -142,13 +148,14 @@ function source_by_url ($url) {
 	}
 	return false;
 }
+
 /**
  * Public cache cleaning
  *
  * @return bool
  */
 function clean_pcache () {
-	$ok = true;
+	$ok   = true;
 	$list = get_files_list(PUBLIC_CACHE, false, 'fd', true, true, 'name|desc');
 	foreach ($list as $item) {
 		if (is_writable($item)) {
@@ -157,13 +164,13 @@ function clean_pcache () {
 			$ok = false;
 		}
 	}
-	unset($list, $item);
 	return $ok;
 }
+
 /**
  * Formatting of time in seconds to human-readable form
  *
- * @param int		$time	Time in seconds
+ * @param int $time Time in seconds
  *
  * @return string
  */
@@ -171,8 +178,8 @@ function format_time ($time) {
 	if (!is_numeric($time)) {
 		return $time;
 	}
-	$L		= Language::instance();
-	$res	= [];
+	$L   = Language::instance();
+	$res = [];
 	if ($time >= 31536000) {
 		$time_x = round($time / 31536000);
 		$time -= $time_x * 31536000;
@@ -183,12 +190,12 @@ function format_time ($time) {
 		$time -= $time_x * 2592000;
 		$res[] = $L->time($time_x, 'M');
 	}
-	if($time >= 86400) {
+	if ($time >= 86400) {
 		$time_x = round($time / 86400);
 		$time -= $time_x * 86400;
 		$res[] = $L->time($time_x, 'd');
 	}
-	if($time >= 3600) {
+	if ($time >= 3600) {
 		$time_x = round($time / 3600);
 		$time -= $time_x * 3600;
 		$res[] = $L->time($time_x, 'h');
@@ -203,11 +210,12 @@ function format_time ($time) {
 	}
 	return implode(' ', $res);
 }
+
 /**
  * Formatting of data size in bytes to human-readable form
  *
- * @param int		$size
- * @param bool|int	$round
+ * @param int      $size
+ * @param bool|int $round
  *
  * @return float|string
  */
@@ -234,6 +242,7 @@ function format_filesize ($size, $round = false) {
 	}
 	return $round ? round($size, $round).$unit : $size.$unit;
 }
+
 /**
  * Get list of timezones
  *
@@ -245,16 +254,17 @@ function get_timezones_list () {
 		!($Cache = Cache::instance(true)) ||
 		($timezones = $Cache->timezones) === false
 	) {
-		$tzs = timezone_identifiers_list();
+		$tzs        = timezone_identifiers_list();
 		$timezones_ = $timezones = [];
 		foreach ($tzs as $tz) {
-			$offset		= (new DateTimeZone($tz))->getOffset(new DateTime);
-			$offset_	=	($offset < 0 ? '-' : '+').
-							str_pad(floor(abs($offset / 3600)), 2, 0, STR_PAD_LEFT).':'.
-							str_pad(abs(($offset % 3600) / 60), 2, 0, STR_PAD_LEFT);
-			$timezones_[(39600 + $offset).$tz] = [
-				'key'	=> strtr($tz, '_', ' ')." ($offset_)",
-				'value'	=> $tz
+			$offset           = (new DateTimeZone($tz))->getOffset(new DateTime);
+			$offset_          = ($offset < 0 ? '-' : '+').
+								str_pad(floor(abs($offset / 3600)), 2, 0, STR_PAD_LEFT).':'.
+								str_pad(abs(($offset % 3600) / 60), 2, 0, STR_PAD_LEFT);
+			$key              = (39600 + $offset).$tz;
+			$timezones_[$key] = [
+				'key'   => strtr($tz, '_', ' ')." ($offset_)",
+				'value' => $tz
 			];
 		}
 		unset($tzs, $tz, $offset);
@@ -273,6 +283,7 @@ function get_timezones_list () {
 	}
 	return $timezones;
 }
+
 /**
  * Get multilingual value from $Config->core array
  *
@@ -281,7 +292,7 @@ function get_timezones_list () {
  * @return false|string
  */
 function get_core_ml_text ($item) {
-	$Config	= Config::instance(true);
+	$Config = Config::instance(true);
 	if (!$Config) {
 		return false;
 	}
@@ -500,152 +511,152 @@ function pages ($page, $total, $url, $head_links = false) {
 /**
  * Pages navigation based on buttons (for search forms, etc.)
  *
- * @param int					$page		Current page
- * @param int					$total		Total pages number
- * @param bool|callable|string	$url		Adds <i>formaction</i> parameter to every button<br>
- * 											if <b>false</b> - only form parameter <i>page</i> will we added<br>
- * 											if string - it will be formatted with sprintf with one parameter - page number<br>
- * 											if callable - one parameter will be given, callable should return url string
+ * @param int                  $page  Current page
+ * @param int                  $total Total pages number
+ * @param bool|callable|string $url   Adds <i>formaction</i> parameter to every button<br>
+ *                                    if <b>false</b> - only form parameter <i>page</i> will we added<br>
+ *                                    if string - it will be formatted with sprintf with one parameter - page number<br>
+ *                                    if callable - one parameter will be given, callable should return url string
  *
- * @return false|string						<b>false</b> if single page, otherwise string, set of navigation buttons
+ * @return false|string                        <b>false</b> if single page, otherwise string, set of navigation buttons
  */
 function pages_buttons ($page, $total, $url = false) {
 	if ($total == 1) {
 		return false;
 	}
-	$output	= [];
+	$output = [];
 	if (!is_callable($url)) {
-		$original_url	= $url;
-		$url			= function ($page) use ($original_url) {
+		$original_url = $url;
+		$url          = function ($page) use ($original_url) {
 			return sprintf($original_url, $page);
 		};
 	}
 	if ($total <= 11) {
 		for ($i = 1; $i <= $total; ++$i) {
-			$output[]	= [
+			$output[] = [
 				$i,
 				[
-					'is'			=> 'cs-button',
-					'formaction'	=> $i == $page || $url === false ? false : $url($i),
-					'value'			=> $i,
-					'type'			=> $i == $page ? 'button' : 'submit',
-					'primary'		=> $i == $page
+					'is'         => 'cs-button',
+					'formaction' => $i == $page || $url === false ? false : $url($i),
+					'value'      => $i,
+					'type'       => $i == $page ? 'button' : 'submit',
+					'primary'    => $i == $page
 				]
 			];
 		}
 	} else {
 		if ($page <= 6) {
 			for ($i = 1; $i <= 7; ++$i) {
-				$output[]	= [
+				$output[] = [
 					$i,
 					[
-						'is'			=> 'cs-button',
-						'formaction'	=> $i == $page || $url === false ? false : $url($i),
-						'value'			=> $i == $page ? false : $i,
-						'type'			=> $i == $page ? 'button' : 'submit',
-						'primary'		=> $i == $page
+						'is'         => 'cs-button',
+						'formaction' => $i == $page || $url === false ? false : $url($i),
+						'value'      => $i == $page ? false : $i,
+						'type'       => $i == $page ? 'button' : 'submit',
+						'primary'    => $i == $page
 					]
 				];
 			}
-			$output[]	= [
+			$output[] = [
 				'...',
 				[
-					'is'			=> 'cs-button',
-					'type'			=> 'button',
+					'is'   => 'cs-button',
+					'type' => 'button',
 					'disabled'
 				]
 			];
 			for ($i = $total - 2; $i <= $total; ++$i) {
-				$output[]	= [
+				$output[] = [
 					$i,
 					[
-						'is'			=> 'cs-button',
-						'formaction'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'value'			=> $i,
-						'type'			=> 'submit'
+						'is'         => 'cs-button',
+						'formaction' => is_callable($url) ? $url($i) : sprintf($url, $i),
+						'value'      => $i,
+						'type'       => 'submit'
 					]
 				];
 			}
 		} elseif ($page >= $total - 5) {
 			for ($i = 1; $i <= 3; ++$i) {
-				$output[]	= [
+				$output[] = [
 					$i,
 					[
-						'is'			=> 'cs-button',
-						'formaction'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'value'			=> $i,
-						'type'			=> 'submit'
+						'is'         => 'cs-button',
+						'formaction' => is_callable($url) ? $url($i) : sprintf($url, $i),
+						'value'      => $i,
+						'type'       => 'submit'
 					]
 				];
 			}
-			$output[]	= [
+			$output[] = [
 				'...',
 				[
-					'is'			=> 'cs-button',
-					'type'			=> 'button',
+					'is'   => 'cs-button',
+					'type' => 'button',
 					'disabled'
 				]
 			];
 			for ($i = $total - 6; $i <= $total; ++$i) {
-				$output[]	= [
+				$output[] = [
 					$i,
 					[
-						'is'			=> 'cs-button',
-						'formaction'	=> $i == $page || $url === false ? false : $url($i),
-						'value'			=> $i == $page ? false : $i,
-						'type'			=> $i == $page ? 'button' : 'submit',
-						'primary'		=> $i == $page
+						'is'         => 'cs-button',
+						'formaction' => $i == $page || $url === false ? false : $url($i),
+						'value'      => $i == $page ? false : $i,
+						'type'       => $i == $page ? 'button' : 'submit',
+						'primary'    => $i == $page
 					]
 				];
 			}
 		} else {
 			for ($i = 1; $i <= 2; ++$i) {
-				$output[]	= [
+				$output[] = [
 					$i,
 					[
-						'is'			=> 'cs-button',
-						'formaction'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'value'			=> $i,
-						'type'			=> 'submit'
+						'is'         => 'cs-button',
+						'formaction' => is_callable($url) ? $url($i) : sprintf($url, $i),
+						'value'      => $i,
+						'type'       => 'submit'
 					]
 				];
 			}
-			$output[]	= [
+			$output[] = [
 				'...',
 				[
-					'is'			=> 'cs-button',
-					'type'			=> 'button',
+					'is'   => 'cs-button',
+					'type' => 'button',
 					'disabled'
 				]
 			];
 			for ($i = $page - 2; $i <= $page + 2; ++$i) {
-				$output[]	= [
+				$output[] = [
 					$i,
 					[
-						'is'			=> 'cs-button',
-						'formaction'	=> $i == $page || $url === false ? false : $url($i),
-						'value'			=> $i == $page ? false : $i,
-						'type'			=> $i == $page ? 'button' : 'submit',
-						'primary'		=> $i == $page
+						'is'         => 'cs-button',
+						'formaction' => $i == $page || $url === false ? false : $url($i),
+						'value'      => $i == $page ? false : $i,
+						'type'       => $i == $page ? 'button' : 'submit',
+						'primary'    => $i == $page
 					]
 				];
 			}
-			$output[]	= [
+			$output[] = [
 				'...',
 				[
-					'is'			=> 'cs-button',
-					'type'			=> 'button',
+					'is'   => 'cs-button',
+					'type' => 'button',
 					'disabled'
 				]
 			];
 			for ($i = $total - 1; $i <= $total; ++$i) {
-				$output[]	= [
+				$output[] = [
 					$i,
 					[
-						'is'			=> 'cs-button',
-						'formaction'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'value'			=> $i,
-						'type'			=> 'submit'
+						'is'         => 'cs-button',
+						'formaction' => is_callable($url) ? $url($i) : sprintf($url, $i),
+						'value'      => $i,
+						'type'       => 'submit'
 					]
 				];
 			}
@@ -695,7 +706,7 @@ function functionality ($functionality) {
 					$functionality[] = (array)$meta['provide'];
 				}
 			}
-			return call_user_func_array('array_merge', $functionality);
+			return array_merge(...$functionality);
 		}
 	);
 	return in_array($functionality, $all);

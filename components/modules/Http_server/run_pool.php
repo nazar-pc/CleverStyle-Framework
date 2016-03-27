@@ -43,7 +43,7 @@ $ports = [];
 foreach (explode(',', $port) as $p) {
 	if (strpos($p, '-') !== false) {
 		/** @noinspection SlowArrayOperationsInLoopInspection */
-		$ports = array_merge($ports, call_user_func_array('range', explode('-', $p)));
+		$ports = array_merge($ports, range(...explode('-', $p)));
 	} else {
 		$ports[] = $p;
 	}

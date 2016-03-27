@@ -49,7 +49,7 @@ class Packages_manipulation {
 			return false;
 		}
 		$tmp_name = TEMP.'/'.md5(random_bytes(1000)).'.phar';
-		return move_uploaded_file($_FILES[$file_name]['tmp_name'], $tmp_name) ? $tmp_name : false;
+		return copy($_FILES[$file_name]['tmp_name'], $tmp_name) ? $tmp_name : false;
 	}
 	/**
 	 * Generic extraction of files from phar distributive for CleverStyle CMS (components installation)

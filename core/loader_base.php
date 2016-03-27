@@ -11,7 +11,6 @@ require DIR.'/core/functions.php';                //Inclusion of general system 
 
 error_reporting(E_ALL);
 
-mb_internal_encoding('utf-8');
 /**
  * Defining of basic constants with paths to system directories
  */

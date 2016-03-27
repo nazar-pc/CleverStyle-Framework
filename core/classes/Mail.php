@@ -22,7 +22,7 @@ class Mail extends PHPMailer {
 		$Config = Config::instance();
 		if ($Config->core['smtp']) {
 			$this->isSMTP();
-			$this->Host       = $Config->core['smtp_host'];
+			$this->Host = $Config->core['smtp_host'];
 			/** @noinspection NestedTernaryOperatorInspection */
 			$this->Port       = $Config->core['smtp_port'] ?: ($Config->core['smtp_secure'] ? 465 : 25);
 			$this->SMTPSecure = $Config->core['smtp_secure'];
@@ -54,19 +54,21 @@ class Mail extends PHPMailer {
 	 *                                                <b>string</b> - custom signature
 	 *
 	 * @return bool
+	 *
+	 * @throws \phpmailerException
 	 */
 	function send_to ($email, $subject, $body, $body_text = null, $attachments = null, $reply_to = null, $signature = true) {
 		if (!$email || !$subject || !$body) {
 			return false;
 		}
 		foreach ($this->normalize_email($email) as $e) {
-			call_user_func_array([$this, 'addAddress'], $e);
+			$this->addAddress(...$e);
 		}
 		foreach ($this->normalize_email($reply_to) as $r) {
-			call_user_func_array([$this, 'AddReplyTo'], $r);
+			$this->addReplyTo(...$r);
 		}
 		foreach ($this->normalize_attachment($attachments) as $a) {
-			call_user_func_array([$this, 'AddAttachment'], $a);
+			$this->addAttachment(...$a);
 		}
 		$this->Subject = $subject;
 		$signature     = $this->make_signature($signature);
