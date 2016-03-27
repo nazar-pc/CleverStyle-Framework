@@ -25,7 +25,7 @@ use
 
 /**
  * Class for groups manipulating
- * 
+ *
  * @method static $this instance($check = false)
  */
 class Group {
@@ -163,7 +163,7 @@ class Group {
 			return (bool)array_product($id);
 		}
 		$id = (int)$id;
-		if (in_array($id, [User::ADMIN_GROUP_ID, User::USER_GROUP_ID, User::BOT_GROUP_ID])) {
+		if (in_array($id, [User::ADMIN_GROUP_ID, User::USER_GROUP_ID])) {
 			return false;
 		}
 		Event::instance()->fire(

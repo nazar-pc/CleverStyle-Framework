@@ -8,8 +8,7 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var BOT_GROUP_ID, L;
-  BOT_GROUP_ID = 3;
+  var L;
   L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-users-groups-form',
@@ -31,9 +30,6 @@
         other_groups = [];
         for (group in groups) {
           group = groups[group];
-          if (group.id == BOT_GROUP_ID) {
-            continue;
-          }
           if (user_groups_ids.indexOf(group.id) !== -1) {
             user_groups.push(group);
           } else {

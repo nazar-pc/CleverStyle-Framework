@@ -13,7 +13,7 @@ CREATE TABLE "[prefix]groups" (
   "description" TEXT NOT NULL
 );
 
-INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('Administrators', 'Administrators'), ('Users', 'Users'), ('Bots', 'Bots');
+INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('Administrators', 'Administrators'), ('Users', 'Users');
 
 CREATE TABLE "[prefix]groups_permissions" (
   "id" smallint(5) NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE "[prefix]groups_permissions" (
   "value" tinyint(1) NOT NULL
 );
 
-INSERT INTO `[prefix]groups_permissions` (`id`, `permission`, `value`) VALUES (1, 2, 1), (2, 2, 0), (3, 2, 0);
+INSERT INTO `[prefix]groups_permissions` (`id`, `permission`, `value`) VALUES (1, 2, 1), (2, 2, 0);
 
 CREATE TABLE "[prefix]keys" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,

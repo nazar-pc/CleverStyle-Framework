@@ -41,8 +41,7 @@ trait groups {
 		if (
 			!isset($Request->route_ids[0], $_POST['groups']) ||
 			$Request->route_ids[0] == User::ROOT_ID ||
-			array_diff($_POST['groups'], Group::instance()->get_all()) ||
-			in_array(User::BOT_GROUP_ID, $_POST['groups'])
+			array_diff($_POST['groups'], Group::instance()->get_all())
 		) {
 			throw new ExitException(400);
 		}

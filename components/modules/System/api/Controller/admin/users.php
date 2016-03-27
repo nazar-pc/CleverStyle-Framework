@@ -69,19 +69,12 @@ trait users {
 		if (!isset($Request->route_ids[0], $_POST['user'])) {
 			throw new ExitException(400);
 		}
-		$User    = User::instance();
-		$user_id = (int)$Request->route_ids[0];
-		$is_bot  = in_array(User::BOT_GROUP_ID, $User->get_groups($user_id));
-		if ($is_bot && !@$_POST['user']['login'] && !@$_POST['user']['email']) {
-			throw new ExitException(400);
-		}
-		$columns_allowed_to_edit = $is_bot
-			? ['login', 'username', 'email', 'status']
-			: ['login', 'username', 'email', 'language', 'timezone', 'status', 'block_until', 'avatar'];
-		$user_data               = array_filter(
+		$User      = User::instance();
+		$user_id   = (int)$Request->route_ids[0];
+		$user_data = array_filter(
 			$_POST['user'],
-			function ($item) use ($columns_allowed_to_edit) {
-				return in_array($item, $columns_allowed_to_edit, true);
+			function ($item) {
+				return in_array($item, ['login', 'username', 'email', 'language', 'timezone', 'status', 'block_until', 'avatar'], true);
 			},
 			ARRAY_FILTER_USE_KEY
 		);
@@ -89,7 +82,7 @@ trait users {
 			$d = xap($d, false);
 		}
 		unset($d);
-		if (!$user_data && ($is_bot || !isset($_POST['user']['password']))) {
+		if (!$user_data && !isset($_POST['user']['password'])) {
 			throw new ExitException(400);
 		}
 		$L = new Prefix('system_admin_users_');
@@ -110,12 +103,12 @@ trait users {
 		if (!$User->set($user_data, null, $user_id)) {
 			throw new ExitException(500);
 		}
-		if (!$is_bot && isset($_POST['user']['password']) && !$User->set_password($_POST['user']['password'], $user_id)) {
+		if (isset($_POST['user']['password']) && !$User->set_password($_POST['user']['password'], $user_id)) {
 			throw new ExitException(500);
 		}
 	}
 	/**
-	 * Add new user or bot (different parameters required depending on `type` parameter)
+	 * Add new user
 	 *
 	 * @throws ExitException
 	 */
@@ -124,7 +117,7 @@ trait users {
 			throw new ExitException(400);
 		}
 		$User = User::instance();
-		if ($_POST['type'] === 'user' && isset($_POST['email'])) {
+		if (isset($_POST['email'])) {
 			$result = $User->registration($_POST['email'], false, false);
 			if (!$result) {
 				throw new ExitException(500);
@@ -140,12 +133,6 @@ trait users {
 					'password' => $result['password']
 				]
 			);
-		} elseif ($_POST['type'] === 'bot' && isset($_POST['name'], $_POST['user_agent'], $_POST['ip'])) {
-			if ($User->add_bot($_POST['name'], $_POST['user_agent'], $_POST['ip'])) {
-				Response::instance()->code = 201;
-			} else {
-				throw new ExitException(500);
-			}
 		} else {
 			throw new ExitException(400);
 		}
@@ -283,7 +270,6 @@ trait users {
 				$User->get($columns, $user) +
 				[
 					'is_user'  => in_array(User::USER_GROUP_ID, $groups),
-					'is_bot'   => in_array(User::BOT_GROUP_ID, $groups),
 					'is_admin' => in_array(User::ADMIN_GROUP_ID, $groups),
 					'username' => $User->username($user)
 				];

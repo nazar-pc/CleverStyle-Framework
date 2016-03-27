@@ -43,15 +43,9 @@ trait Management {
 	/**
 	 * @var bool
 	 */
-	protected $is_bot;
-	/**
-	 * @var bool
-	 */
 	protected $is_guest;
 	/**
 	 * Use cookie as source of session id, load session
-	 *
-	 * Bots detection is also done here
 	 */
 	protected function init_session () {
 		$Request = Request::instance();
@@ -60,105 +54,14 @@ trait Management {
 		 */
 		if ($Request->cookie('session')) {
 			$this->user_id = $this->load();
-		} elseif (!$Request->api_path) {
-			/**
-			 * Try to detect bot, not necessary for API request
-			 */
-			$this->bots_detection();
 		}
 		$this->update_user_is();
 	}
 	/**
-	 * Try to determine whether visitor is a known bot, bots have no sessions
-	 */
-	protected function bots_detection () {
-		$Cache   = $this->users_cache;
-		$Request = Request::instance();
-		/**
-		 * For bots: login is user agent, email is IP
-		 */
-		$login    = $Request->header('user-agent');
-		$email    = $Request->ip;
-		$bot_hash = hash('sha224', $login.$email);
-		/**
-		 * If bot is cached
-		 */
-		$bot_id = $Cache->$bot_hash;
-		/**
-		 * If bot found in cache - exit from here
-		 */
-		if ($bot_id) {
-			$this->user_id = $bot_id;
-			return;
-		}
-		foreach ($this->all_bots() as $bot) {
-			if ($this->is_this_bot($bot, $login, $email)) {
-				$this->user_id    = $bot['id'];
-				$Cache->$bot_hash = $bot['id'];
-				return;
-			}
-		}
-	}
-	/**
-	 * Get list of all bots
-	 *
-	 * @return array
-	 */
-	protected function all_bots () {
-		return $this->users_cache->get(
-			'bots',
-			function () {
-				return $this->db()->qfa(
-					[
-						"SELECT
-							`u`.`id`,
-							`u`.`login`,
-							`u`.`email`
-						FROM `[prefix]users` AS `u`
-							INNER JOIN `[prefix]users_groups` AS `g`
-						ON `u`.`id` = `g`.`id`
-						WHERE
-							`g`.`group`		= '%s' AND
-							`u`.`status`	= '%s'",
-						User::BOT_GROUP_ID,
-						User::STATUS_ACTIVE
-					]
-				) ?: [];
-			}
-		) ?: [];
-	}
-	/**
-	 * Check whether user agent and IP (login and email for bots) corresponds to passed bot data
-	 *
-	 * @param array  $bot
-	 * @param string $login
-	 * @param string $email
-	 *
-	 * @return bool
-	 */
-	protected function is_this_bot ($bot, $login, $email) {
-		return
-			(
-				$bot['login'] &&
-				(
-					strpos($login, $bot['login']) !== false ||
-					_preg_match($bot['login'], $login)
-				)
-			) ||
-			(
-				$bot['email'] &&
-				(
-					$email === $bot['email'] ||
-					_preg_match($bot['email'], $email)
-				)
-			);
-	}
-	/**
-	 * Updates information about who is user accessed by methods ::guest() ::bot() ::user() admin()
+	 * Updates information about who is user accessed by methods ::guest() ::user() admin()
 	 */
 	protected function update_user_is () {
 		$this->is_guest = $this->user_id == User::GUEST_ID;
-		$this->is_bot   = false;
 		$this->is_user  = false;
 		$this->is_admin = false;
 		if ($this->is_guest) {
@@ -173,9 +76,6 @@ trait Management {
 			$this->is_user  = true;
 		} elseif (in_array(User::USER_GROUP_ID, $groups)) {
 			$this->is_user = true;
-		} elseif (in_array(User::BOT_GROUP_ID, $groups)) {
-			$this->is_guest = true;
-			$this->is_bot   = true;
 		}
 	}
 	/**
@@ -203,22 +103,11 @@ trait Management {
 		return $this->is_guest;
 	}
 	/**
-	 * Is bot
-	 *
-	 * @return bool
-	 */
-	function bot () {
-		return $this->is_bot;
-	}
-	/**
 	 * Returns id of current session
 	 *
 	 * @return false|string
 	 */
 	function get_id () {
-		if ($this->user_id == User::GUEST_ID && $this->bot()) {
-			return false;
-		}
 		return $this->session_id ?: false;
 	}
 	/**
@@ -334,9 +223,6 @@ trait Management {
 	 * @return int User id
 	 */
 	function load ($session_id = null) {
-		if ($this->user_id == User::GUEST_ID && $this->bot()) {
-			return User::GUEST_ID;
-		}
 		$session_data = $this->get_internal($session_id);
 		if (!$session_data || !$this->is_session_owner_internal($session_data)) {
 			$this->add(User::GUEST_ID);

@@ -33,12 +33,8 @@ if (!$User->admin() && $module_data->new_posts_only_from_admins) {
 	throw new ExitException(403);
 }
 if (!$User->user()) {
-	if ($User->bot()) {
-		throw new ExitException(403);
-	} else {
-		$Page->warning($L->for_registered_users_only);
-		return;
-	}
+	$Page->warning($L->for_registered_users_only);
+	return;
 }
 $module = path($L->Blogs);
 if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags'], $_POST['mode'])) {

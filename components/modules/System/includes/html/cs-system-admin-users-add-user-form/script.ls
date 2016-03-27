@@ -20,7 +20,6 @@ Polymer(
 			type	: 'post'
 			data	:
 				email	: @email
-				type	: 'user'
 			success	: (result) !->
 				cs.ui.alert("""
 					<p class="cs-block-success cs-text-success">#{L.user_was_added(result.login, result.password)}</p>

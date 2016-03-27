@@ -217,8 +217,7 @@ trait Data {
 			$value = mb_strtolower($value);
 			if (
 				$item === 'email' &&
-				!filter_var($value, FILTER_VALIDATE_EMAIL) &&
-				!in_array(User::BOT_GROUP_ID, $this->get_groups($user))
+				!filter_var($value, FILTER_VALIDATE_EMAIL)
 			) {
 				return false;
 			}

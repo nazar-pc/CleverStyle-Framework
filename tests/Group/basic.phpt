@@ -22,13 +22,11 @@ var_dump('delete group', $Group->del($id), $Group->get($id));
 ?>
 --EXPECT--
 string(10) "all groups"
-array(3) {
+array(2) {
   [0]=>
   string(1) "1"
   [1]=>
   string(1) "2"
-  [2]=>
-  string(1) "3"
 }
 string(7) "group 1"
 array(3) {
@@ -61,10 +59,10 @@ array(2) {
   }
 }
 string(15) "new group added"
-int(4)
+int(3)
 array(3) {
   ["id"]=>
-  string(1) "4"
+  string(1) "3"
   ["title"]=>
   string(7) "Group 1"
   ["description"]=>
@@ -74,7 +72,7 @@ string(18) "group modification"
 bool(true)
 array(3) {
   ["id"]=>
-  string(1) "4"
+  string(1) "3"
   ["title"]=>
   string(7) "Group 1"
   ["description"]=>
@@ -104,10 +102,10 @@ bool(true)
 array(0) {
 }
 string(19) "another group added"
-int(5)
+int(4)
 array(3) {
   ["id"]=>
-  string(1) "5"
+  string(1) "4"
   ["title"]=>
   string(4) "test"
   ["description"]=>

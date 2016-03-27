@@ -40,9 +40,6 @@ use
  *  System/User/del/after
  *  ['id' => <i>user_id</i>]
  *
- *  System/User/add_bot
- *  ['id' => <i>bot_id</i>]
- *
  *  System/User/get_contacts
  *  [
  *    'id'       => <i>user_id</i>,
@@ -91,10 +88,6 @@ class User {
 	 * Id of system group for users
 	 */
 	const USER_GROUP_ID = 2;
-	/**
-	 * Id of system group for bots
-	 */
-	const BOT_GROUP_ID = 3;
 	/**
 	 * Status of active user
 	 */
@@ -254,15 +247,5 @@ class User {
 	 */
 	function guest () {
 		return Session::instance()->guest();
-	}
-	/**
-	 * Is bot
-	 *
-	 * Proxy to \cs\Session::instance()->bot() for convenience
-	 *
-	 * @return bool
-	 */
-	function bot () {
-		return Session::instance()->bot();
 	}
 }

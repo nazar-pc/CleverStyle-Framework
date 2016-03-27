@@ -47,7 +47,7 @@ dom-module#cs-system-admin-users-list
 							template(is="dom-if" if="[[!user.is_guest]]")
 								a(is="cs-link-button" icon="pencil" on-tap="edit_user" tooltip="[[L.edit_user_information]]")
 								= ' '
-							template(is="dom-if" if="[[!or(user.is_guest, user.is_bot)]]")
+							template(is="dom-if" if="[[!user.is_guest]]")
 								button(is="cs-button" icon="group" on-tap="edit_groups" tooltip="[[L.edit_user_groups]]")
 								= ' '
 							button(is="cs-button" icon="key" on-tap="edit_permissions" tooltip="[[L.edit_user_permissions]]")
@@ -60,6 +60,4 @@ dom-module#cs-system-admin-users-list
 		+pagination
 		p.cs-text-left
 			button(is="cs-button" on-tap="add_user" type="button") [[L.add_user]]
-			= ' '
-			button(is="cs-button" on-tap="add_bot" type="button") [[L.add_bot]]
 	script(src="script.js")

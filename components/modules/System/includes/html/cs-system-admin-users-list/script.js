@@ -129,9 +129,7 @@
               var type;
               type = user.is_root || user.is_admin
                 ? 'admin'
-                : user.is_user
-                  ? 'user'
-                  : user.is_bot ? 'bot' : 'guest';
+                : user.is_user ? 'user' : 'guest';
               user.type = L[type];
               return user.type_info = L[type + '_info'];
             })();
@@ -188,21 +186,13 @@
     add_user: function(){
       $(cs.ui.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>")).on('hide.uk.modal', bind$(this, 'search'));
     },
-    add_bot: function(){
-      $(cs.ui.simple_modal("<h3>" + L.adding_a_bot + "</h3>\n<cs-system-admin-users-add-bot-form/>")).on('hide.uk.modal', bind$(this, 'search'));
-    },
     edit_user: function(e){
       var $sender, index, user, title;
       $sender = $(e.currentTarget);
       index = $sender.closest('[data-user-index]').data('user-index');
       user = this.users[index];
-      if (user.is_bot) {
-        title = L.editing_of_bot_information(user.username || user.login);
-        $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-bot-form user_id=\"" + user.id + "\"/>")).on('hide.uk.modal', bind$(this, 'search'));
-      } else {
-        title = L.editing_of_user_information(user.username || user.login);
-        $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>")).on('hide.uk.modal', bind$(this, 'search'));
-      }
+      title = L.editing_of_user_information(user.username || user.login);
+      $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>")).on('hide.uk.modal', bind$(this, 'search'));
     },
     edit_groups: function(e){
       var $sender, index, user, title;
@@ -213,12 +203,11 @@
       cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-groups-form user=\"" + user.id + "\" for=\"user\"/>");
     },
     edit_permissions: function(e){
-      var $sender, index, user, title_key, title;
+      var $sender, index, user, title;
       $sender = $(e.currentTarget);
       index = $sender.closest('[data-user-index]').data('user-index');
       user = this.users[index];
-      title_key = user.is_bot ? 'permissions_for_bot' : 'permissions_for_user';
-      title = L[title_key](user.username || user.login);
+      title = L.permissions_for_user(user.username || user.login);
       cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for user=\"" + user.id + "\" for=\"user\"/>");
     }
   });

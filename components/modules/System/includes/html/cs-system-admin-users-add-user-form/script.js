@@ -21,8 +21,7 @@
         url: 'api/System/admin/users',
         type: 'post',
         data: {
-          email: this.email,
-          type: 'user'
+          email: this.email
         },
         success: function(result){
           cs.ui.alert("<p class=\"cs-block-success cs-text-success\">" + L.user_was_added(result.login, result.password) + "</p>");

@@ -6,8 +6,7 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-BOT_GROUP_ID	= 3
-L				= cs.Language
+L	= cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-users-groups-form'
 	behaviors	: [
@@ -27,8 +26,6 @@ Polymer(
 			user_groups		= []
 			other_groups	= []
 			for group, group of groups
-				if group.id ~= BOT_GROUP_ID
-					continue
 				if user_groups_ids.indexOf(group.id) != -1
 					user_groups.push(group)
 				else

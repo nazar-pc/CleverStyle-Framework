@@ -115,8 +115,6 @@ Polymer(
 								'admin'
 							else if user.is_user
 								'user'
-							else if user.is_bot
-								'bot'
 							else
 								'guest'
 						user.type		= L[type]
@@ -149,31 +147,17 @@ Polymer(
 			<h3>#{L.adding_a_user}</h3>
 			<cs-system-admin-users-add-user-form/>
 		""")).on('hide.uk.modal', @~search)
-	add_bot : !->
-		$(cs.ui.simple_modal("""
-			<h3>#{L.adding_a_bot}</h3>
-			<cs-system-admin-users-add-bot-form/>
-		""")).on('hide.uk.modal', @~search)
 	edit_user : (e) !->
 		$sender	= $(e.currentTarget)
 		index	= $sender.closest('[data-user-index]').data('user-index')
 		user	= @users[index]
-		if user.is_bot
-			title	= L.editing_of_bot_information(
-				user.username || user.login
-			)
-			$(cs.ui.simple_modal("""
-				<h2>#{title}</h2>
-				<cs-system-admin-users-edit-bot-form user_id="#{user.id}"/>
-			""")).on('hide.uk.modal', @~search)
-		else
-			title		= L.editing_of_user_information(
-				user.username || user.login
-			)
-			$(cs.ui.simple_modal("""
-				<h2>#{title}</h2>
-				<cs-system-admin-users-edit-user-form user_id="#{user.id}"/>
-			""")).on('hide.uk.modal', @~search)
+		title	= L.editing_of_user_information(
+			user.username || user.login
+		)
+		$(cs.ui.simple_modal("""
+			<h2>#{title}</h2>
+			<cs-system-admin-users-edit-user-form user_id="#{user.id}"/>
+		""")).on('hide.uk.modal', @~search)
 	edit_groups : (e) !->
 		$sender		= $(e.currentTarget)
 		index		= $sender.closest('[data-user-index]').data('user-index')
@@ -187,8 +171,7 @@ Polymer(
 		$sender		= $(e.currentTarget)
 		index		= $sender.closest('[data-user-index]').data('user-index')
 		user		= @users[index]
-		title_key	= if user.is_bot then 'permissions_for_bot' else 'permissions_for_user'
-		title		= L[title_key](
+		title		= L.permissions_for_user(
 			user.username || user.login
 		)
 		cs.ui.simple_modal("""

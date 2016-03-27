@@ -8,13 +8,13 @@ CREATE TABLE IF NOT EXISTS `[prefix]config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='Settings';
 
 CREATE TABLE IF NOT EXISTS `[prefix]groups` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT COMMENT 'WARNING: Never delete first 3 groups!',
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT COMMENT 'WARNING: Never delete first 2 groups!',
   `title` varchar(1024) NOT NULL,
   `description` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('Administrators', 'Administrators'), ('Users', 'Users'), ('Bots', 'Bots');
+INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('Administrators', 'Administrators'), ('Users', 'Users');
 
 CREATE TABLE IF NOT EXISTS `[prefix]groups_permissions` (
   `id` smallint(5) unsigned NOT NULL COMMENT 'Group id',
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]groups_permissions` (
   KEY `permission` (`permission`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-INSERT INTO `[prefix]groups_permissions` (`id`, `permission`, `value`) VALUES (1, 2, 1), (2, 2, 0), (3, 2, 0);
+INSERT INTO `[prefix]groups_permissions` (`id`, `permission`, `value`) VALUES (1, 2, 1), (2, 2, 0);
 
 CREATE TABLE IF NOT EXISTS `[prefix]keys` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
