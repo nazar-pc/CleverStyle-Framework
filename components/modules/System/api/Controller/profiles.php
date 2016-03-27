@@ -11,16 +11,20 @@ namespace cs\modules\System\api\Controller;
 use
 	cs\ExitException,
 	cs\Page,
-	cs\Request,
 	cs\User;
 
 trait profiles {
-	static function profiles_get () {
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @throws ExitException
+	 */
+	static function profiles_get ($Request) {
 		$User = User::instance();
 		if ($User->guest()) {
 			throw new ExitException(403);
 		}
-		$fields  = [
+		$fields = [
 			'id',
 			'login',
 			'username',
@@ -28,33 +32,22 @@ trait profiles {
 			'timezone',
 			'avatar'
 		];
-		$Page    = Page::instance();
-		$Request = Request::instance();
-		if (isset($Request->route[1])) {
-			$id     = _int(explode(',', $Request->route[1]));
-			$single = count($id) == 1;
-			if (
-				!$User->admin() &&
-				!(
-				$id = array_intersect($id, $User->get_contacts())
-				)
-			) {
-				throw new ExitException('User is not in your contacts', 403);
-			}
-			if ($single) {
-				$Page->json($User->get($fields, $id[0]));
-			} else {
-				$Page->json(
-					array_map(
-						function ($id) use ($fields, $User) {
-							return $User->get($fields, $id);
-						},
-						$id
-					)
-				);
-			}
-		} else {
+		if (!$Request->route(1)) {
 			throw new ExitException('Specified ids are expected', 400);
 		}
+		$ids    = _int(explode(',', $Request->route[1]));
+		$single = count($ids) == 1;
+		$ids    = array_intersect($ids, $User->get_contacts());
+		if (!$ids) {
+			throw new ExitException('User is not in your contacts', 403);
+		}
+		Page::instance()->json(
+			$single ? $User->get($fields, $ids[0]) : array_map(
+				function ($id) use ($fields, $User) {
+					return $User->get($fields, $id);
+				},
+				$ids
+			)
+		);
 	}
 }

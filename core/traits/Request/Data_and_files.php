@@ -78,22 +78,27 @@ trait Data_and_files {
 	/**
 	 * Get data item by name
 	 *
-	 * @param string|string[] $name
+	 * @param string[]|string[][] $name
 	 *
-	 * @return false|mixed|mixed[] Data if exists or `false` otherwise (in case if `$name` is an array even one missing key will cause the whole thing to fail)
+	 * @return false|mixed|mixed[] Data items (or associative array of data items) if exists or `false` otherwise (in case if `$name` is an array even one
+	 *                             missing key will cause the whole thing to fail)
 	 */
 	function data (...$name) {
 		if (count($name) === 1) {
 			$name = $name[0];
 		}
+		/**
+		 * @var string|string[] $name
+		 */
 		if (is_array($name)) {
+			$result = [];
 			foreach ($name as &$n) {
 				if (!isset($this->data[$n])) {
 					return false;
 				}
-				$n = $this->data[$n];
+				$result[$n] = $this->data[$n];
 			}
-			return $name;
+			return $result;
 		}
 		/** @noinspection OffsetOperationsInspection */
 		return isset($this->data[$name]) ? $this->data[$name] : false;

@@ -14,6 +14,7 @@ use
 	cs\Language,
 	cs\Page,
 	cs\User;
+
 trait profile {
 	static function profile___get () {
 		$User = User::instance();
@@ -32,10 +33,16 @@ trait profile {
 			$User->get($fields, $User->id)
 		);
 	}
-	static function profile___patch () {
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @throws ExitException
+	 */
+	static function profile___patch ($Request) {
+		$user_data = $Request->data('login', 'username', 'language', 'timezone', 'avatar');
 		if (
-			!isset($_POST['login'], $_POST['username'], $_POST['language'], $_POST['timezone'], $_POST['avatar']) ||
-			!$_POST['login']
+			!$user_data ||
+			!$user_data['login']
 		) {
 			throw new ExitException(400);
 		}
@@ -44,22 +51,15 @@ trait profile {
 		if ($User->guest()) {
 			throw new ExitException(403);
 		}
-		$user_data = [
-			'login'    => $_POST['login'],
-			'username' => $_POST['username'],
-			'language' => $_POST['language'],
-			'timezone' => $_POST['timezone'],
-			'avatar'   => $_POST['avatar']
-		];
 		$user_data = xap($user_data, false);
 		if (
 			(
-				!in_array($user_data['timezone'], get_timezones_list()) &&
-				$user_data['timezone'] !== ''
+				$user_data['language'] &&
+				!in_array($user_data['language'], $Config->core['active_languages'])
 			) ||
 			(
-				!in_array($user_data['language'], $Config->core['active_languages']) &&
-				$user_data['language'] !== ''
+				$user_data['timezone'] &&
+				!in_array($user_data['timezone'], get_timezones_list())
 			)
 		) {
 			throw new ExitException(400);

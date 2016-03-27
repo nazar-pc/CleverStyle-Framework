@@ -296,4 +296,34 @@ trait Route {
 		}
 		return array_flip($modules);
 	}
+	/**
+	 * Get route part by index
+	 *
+	 * @param int $index
+	 *
+	 * @return false|int|string
+	 */
+	function route ($index) {
+		return isset($this->route[$index]) ? $this->route[$index] : false;
+	}
+	/**
+	 * Get route path part by index
+	 *
+	 * @param int $index
+	 *
+	 * @return false|string
+	 */
+	function route_path ($index) {
+		return isset($this->route_path[$index]) ? $this->route_path[$index] : false;
+	}
+	/**
+	 * Get route ids part by index
+	 *
+	 * @param int $index
+	 *
+	 * @return false|string
+	 */
+	function route_ids ($index) {
+		return isset($this->route_ids[$index]) ? $this->route_ids[$index] : false;
+	}
 }

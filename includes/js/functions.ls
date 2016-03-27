@@ -61,8 +61,6 @@ cs.sign_out = !->
 	$.ajax(
 		url		: 'api/System/user/sign_out'
 		cache	: false
-		data	:
-			sign_out: true
 		type	: 'post'
 		success	: !->
 			location.reload()
@@ -145,16 +143,10 @@ cs.change_password = (current_password, new_password, success, error) !->
 			new_password		: new_password
 		type	: 'post'
 		success	: (result) !->
-			if result == 'OK'
-				if success
-					success()
-				else
-					cs.ui.alert(L.password_changed_successfully)
+			if success
+				success()
 			else
-				if error
-					error()
-				else
-					cs.ui.alert(result)
+				cs.ui.alert(L.password_changed_successfully)
 		error	: error || $.ajaxSettings.error
 	)
 /**
