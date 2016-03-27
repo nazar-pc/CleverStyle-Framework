@@ -1537,10 +1537,10 @@ New features:
 * New backend events:
   * `System/Config/changed`
   * `System/Request/routing_replace` (replaces `System/Route/routing_replace`)
-  * `System/App/construct` (replaces `System/Index/block_render`)
-  * `System/App/render/before` (replaces `System/Index/construct`)
-  * `System/App/render/after` (replaces `System/Index/load/before`)
-  * `System/App/block_render` (replaces `System/Index/load/after`)
+  * `System/App/construct` (replaces `System/Index/construct`)
+  * `System/App/render/before` (replaces `System/Index/load/before`)
+  * `System/App/render/after` (replaces `System/Index/load/after`)
+  * `System/App/block_render` (replaces `System/Index/block_render`)
   * `System/Page/render/before` (replaced with `System/Page/display/before`)
   * `System/Page/render/after` (replaced with `System/Page/display/after`)* 2 rejected Polymer patches reworked to be standalone and do not need to be injected into Polymer core anymore
 * `cs\Request` class added to provide unified source of all needed request information
@@ -1630,10 +1630,10 @@ Deprecations:
 * `cs\Route` class deprecated, `cs\Request` absorbed and unified all its data
 * Deprecated events:
   * `System/Route/routing_replace` (replaced with `System/Request/routing_replace`)
-  * `System/Index/block_render` (replaced with `System/App/construct`)
-  * `System/Index/construct` (replaced with `System/App/render/before`)
-  * `System/Index/load/before` (replaced with `System/App/render/after`)
-  * `System/Index/load/after` (replaced with `System/App/block_render`)
+  * `System/Index/block_render` (replaced with `System/App/block_render`)
+  * `System/Index/construct` (replaced with `System/App/construct`)
+  * `System/Index/load/before` (replaced with `System/App/render/before`)
+  * `System/Index/load/after` (replaced with `System/App/render/after`)
   * `System/Page/display/before` (replaced with `System/Page/render/before`)
   * `System/Page/display/after` (replaced with `System/Page/render/after`)
 * `cs\Index` class deprecated, use `cs\App` instead
