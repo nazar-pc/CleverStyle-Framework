@@ -7,10 +7,11 @@
  * @license   GNU Lesser General Public License 2.1, see license.txt
  */
 (function(){
-  var uploader_callback, uploader, base_config, x$;
+  var uploader_callback, button, uploader, base_config, x$;
   tinymce.baseURL = '/components/plugins/TinyMCE/includes/js';
   uploader_callback = undefined;
-  uploader = cs.file_upload && cs.file_upload(null, function(files){
+  button = document.createElement('button');
+  uploader = typeof cs.file_upload == 'function' ? cs.file_upload(button, function(files){
     tinymce.uploader_dialog.close();
     if (files.length) {
       uploader_callback(files[0]);
@@ -24,12 +25,12 @@
     if (!tinymce.uploader_dialog) {
       progress = document.createElement('progress', 'cs-progress');
       tinymce.uploader_dialog = cs.ui.modal(progress);
-      tinymce.uploader_dsialog.progress = progress;
+      tinymce.uploader_dialog.progress = progress;
       tinymce.uploader_dialog.style.zIndex = 100000;
       tinymce.uploader_dialog.open();
     }
     tinymce.uploader_dialog.progress.value = file.percent || 1;
-  });
+  }) : void 8;
   base_config = {
     doctype: '<!doctype html>',
     theme: cs.tinymce && cs.tinymce.theme !== undefined ? cs.tinymce.theme : 'modern',
@@ -46,7 +47,7 @@
     table_style_by_css: true,
     file_picker_callback: uploader && function(callback){
       uploader_callback = callback;
-      uploader.browse();
+      button.click();
     },
     setup: function(editor){
       editor.on('change', function(){

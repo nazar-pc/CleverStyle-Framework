@@ -23,9 +23,10 @@
 			<dd>If specified - it will be possible to drop file on specified element to start file uploading; if not specified - <code>button</code> assumed</dd>
 		</dl>
 		<p>Example (TinyMCE plugin):</p>
-		<pre>var uploader_callback;
+		<pre>var button, uploader_callback;
+button = document.createElement('button');
 var uploader = cs.file_upload ? cs.file_upload(
-	null,
+	button,
 	function (files) {
 		tinymce.uploader_dialog.close();
 		if (files.length) {
@@ -35,7 +36,7 @@ var uploader = cs.file_upload ? cs.file_upload(
 	},
 	function (error) {
 		tinymce.uploader_dialog.close();
-		alert(error);
+		cs.ui.notify(error, 'error');
 	},
 	function (file) {
 		if (!tinymce.uploader_dialog) {
