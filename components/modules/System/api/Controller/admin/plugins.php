@@ -25,31 +25,30 @@ trait plugins {
 	 * @throws ExitException
 	 */
 	static function admin_plugins_get ($Request) {
-		$route_path = $Request->route_path;
-		if (isset($route_path[3])) {
+		if ($Request->route_path(3)) {
+			$route_path = $Request->route_path;
 			switch ($route_path[3]) {
 				/**
 				 * Get dependent packages for plugin
 				 */
 				case 'dependent_packages':
 					static::get_dependent_packages_for_plugin($route_path[2]);
-					break;
+					return;
 				/**
 				 * Get dependencies for plugin
 				 */
 				case 'dependencies':
 					static::get_dependencies_for_plugin($route_path[2]);
-					break;
+					return;
 				/**
 				 * Get dependencies for plugin during update
 				 */
 				case 'update_dependencies':
 					static::get_update_dependencies_for_plugin($route_path[2]);
-					break;
+					return;
 				default:
 					throw new ExitException(400);
 			}
-			return;
 		}
 		/**
 		 * Get array of plugins in extended form
@@ -171,12 +170,8 @@ trait plugins {
 	 * @throws ExitException
 	 */
 	static function admin_plugins_enable ($Request) {
-		$route_path = $Request->route_path;
-		if (!isset($route_path[2])) {
-			throw new ExitException(400);
-		}
 		$Config  = Config::instance();
-		$plugin  = $route_path[2];
+		$plugin  = $Request->route_path(2);
 		$plugins = get_files_list(PLUGINS, false, 'd');
 		if (!in_array($plugin, $plugins, true) || in_array($plugin, $Config->components['plugins'])) {
 			throw new ExitException(400);
@@ -226,12 +221,8 @@ trait plugins {
 	 * @throws ExitException
 	 */
 	static function admin_plugins_disable ($Request) {
-		$route_path = $Request->route_path;
-		if (!isset($route_path[2])) {
-			throw new ExitException(400);
-		}
 		$Config       = Config::instance();
-		$plugin       = $route_path[2];
+		$plugin       = $Request->route_path(2);
 		$plugin_index = array_search($plugin, $Config->components['plugins'], true);
 		if ($plugin_index === false) {
 			throw new ExitException(400);
@@ -296,13 +287,9 @@ trait plugins {
 	 * @throws ExitException
 	 */
 	static function admin_plugins_update ($Request) {
-		$route_path = $Request->route_path;
-		if (!isset($route_path[2])) {
-			throw new ExitException(400);
-		}
 		$Config  = Config::instance();
 		$L       = new Prefix('system_admin_modules_');
-		$plugin  = $route_path[2];
+		$plugin  = $Request->route_path(2);
 		$plugins = get_files_list(PLUGINS, false, 'd');
 		if (!in_array($plugin, $plugins, true)) {
 			throw new ExitException(404);
@@ -366,13 +353,9 @@ trait plugins {
 	 * @throws ExitException
 	 */
 	static function admin_plugins_delete ($Request) {
-		$route_path = $Request->route_path;
-		if (!isset($route_path[2])) {
-			throw new ExitException(400);
-		}
-		$plugin  = $route_path[2];
-		$plugins = get_files_list(PLUGINS, false, 'd');
 		$Config  = Config::instance();
+		$plugin  = $Request->route_path(2);
+		$plugins = get_files_list(PLUGINS, false, 'd');
 		if (
 			!in_array($plugin, $plugins, true) ||
 			in_array($plugin, $Config->components['plugins'])

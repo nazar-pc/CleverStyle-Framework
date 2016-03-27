@@ -24,13 +24,12 @@ trait themes {
 	 * @throws ExitException
 	 */
 	static function admin_themes_get ($Request) {
-		$route_path = $Request->route_path;
-		if (isset($route_path[3]) && $route_path[3] == 'update_dependencies') {
+		if ($Request->route_path(3) == 'update_dependencies') {
 			/**
 			 * Get dependencies for theme during update
 			 */
-			static::get_update_dependencies_for_theme($route_path[2]);
-		} elseif (isset($route_path[2]) && $route_path[2] == 'current') {
+			static::get_update_dependencies_for_theme($Request->route_path[2]);
+		} elseif ($Request->route_path(2) == 'current') {
 			/**
 			 * Get current theme
 			 */
@@ -128,8 +127,7 @@ trait themes {
 	 * @throws ExitException
 	 */
 	static function admin_themes_put ($Request) {
-		$route_path = $Request->route_path;
-		if (isset($route_path[2]) && $route_path[2] == 'current') {
+		if ($Request->route_path(2) == 'current') {
 			if (!isset($_POST['theme'])) {
 				throw new ExitException(400);
 			}
@@ -220,12 +218,8 @@ trait themes {
 	 * @throws ExitException
 	 */
 	static function admin_themes_update ($Request) {
-		$route_path = $Request->route_path;
-		if (!isset($route_path[2])) {
-			throw new ExitException(400);
-		}
 		$L      = Language::instance();
-		$theme  = $route_path[2];
+		$theme  = $Request->route_path(2);
 		$themes = get_files_list(THEMES, false, 'd');
 		if (!in_array($theme, $themes, true)) {
 			throw new ExitException(404);
@@ -277,11 +271,8 @@ trait themes {
 	 * @throws ExitException
 	 */
 	static function admin_themes_delete ($Request) {
-		if (!isset($Request->route_path[2])) {
-			throw new ExitException(400);
-		}
-		$theme  = $Request->route_path[2];
 		$Config = Config::instance();
+		$theme  = $Request->route_path(2);
 		$themes = get_files_list(THEMES, false, 'd');
 		if (
 			$theme == Config::SYSTEM_THEME ||

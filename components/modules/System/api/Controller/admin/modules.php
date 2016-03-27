@@ -26,8 +26,8 @@ trait modules {
 	 * @throws ExitException
 	 */
 	static function admin_modules_get ($Request) {
-		$route_path = $Request->route_path;
-		if (isset($route_path[3])) {
+		if ($Request->route_path(3)) {
+			$route_path = $Request->route_path;
 			switch ($route_path[3]) {
 				/**
 				 * Get dependent packages for module
@@ -62,7 +62,7 @@ trait modules {
 				default:
 					throw new ExitException(400);
 			}
-		} elseif (isset($route_path[2]) && $route_path[2] == 'default') {
+		} elseif ($Request->route_path(2) == 'default') {
 			/**
 			 * Get current default module
 			 */
@@ -224,8 +224,8 @@ trait modules {
 	 * @throws ExitException
 	 */
 	static function admin_modules_put ($Request) {
-		$route_path = $Request->route_path;
-		if (isset($route_path[3])) {
+		if ($Request->route_path(3)) {
+			$route_path = $Request->route_path;
 			switch ($route_path[3]) {
 				/**
 				 * Set mapping of named module's databases to indexes of system databases
@@ -242,14 +242,11 @@ trait modules {
 				default:
 					throw new ExitException(400);
 			}
-		} elseif (isset($route_path[2]) && $route_path[2] == 'default') {
-			if (!isset($_POST['module'])) {
-				throw new ExitException(400);
-			}
+		} elseif ($Request->route_path(2) == 'default') {
 			/**
 			 * Set current default module
 			 */
-			static::set_default_module($_POST['module']);
+			static::set_default_module($Request->data('module'));
 		} else {
 			throw new ExitException(400);
 		}
@@ -319,12 +316,8 @@ trait modules {
 	 * @throws ExitException
 	 */
 	static function admin_modules_enable ($Request) {
-		$route_path = $Request->route_path;
-		if (!isset($route_path[2])) {
-			throw new ExitException(400);
-		}
-		$module = $route_path[2];
 		$Config = Config::instance();
+		$module = $Request->route_path(2);
 		if (!$Config->module($module)->disabled()) {
 			throw new ExitException(400);
 		}
@@ -361,12 +354,8 @@ trait modules {
 	 * @throws ExitException
 	 */
 	static function admin_modules_disable ($Request) {
-		$route_path = $Request->route_path;
-		if (!isset($route_path[2])) {
-			throw new ExitException(400);
-		}
-		$module = $route_path[2];
 		$Config = Config::instance();
+		$module = $Request->route_path(2);
 		if (
 			$module == Config::SYSTEM_MODULE ||
 			$Config->core['default_module'] == $module ||
@@ -397,20 +386,15 @@ trait modules {
 	 * @throws ExitException
 	 */
 	static function admin_modules_install ($Request) {
-		$route_path = $Request->route_path;
-		if (!isset($route_path[2])) {
-			throw new ExitException(400);
-		}
-		$module  = $route_path[2];
-		$Config  = Config::instance();
-		$modules = &$Config->components['modules'];
+		$Config = Config::instance();
+		$module = $Request->route_path(2);
 		if (!$Config->module($module)->uninstalled()) {
 			throw new ExitException(400);
 		}
 		if (!Event::instance()->fire('admin/System/components/modules/install/before', ['name' => $module])) {
 			throw new ExitException(500);
 		}
-		$module_data = &$modules[$module];
+		$module_data = &$Config->components['modules'][$module];
 		if (isset($_POST['db'])) {
 			$module_data['db'] = $_POST['db'];
 			Packages_manipulation::execute_sql_from_directory(MODULES."/$module/meta/install_db", $module_data['db']);
@@ -438,12 +422,8 @@ trait modules {
 	 * @throws ExitException
 	 */
 	static function admin_modules_uninstall ($Request) {
-		$route_path = $Request->route_path;
-		if (!isset($route_path[2])) {
-			throw new ExitException(400);
-		}
-		$module  = $route_path[2];
 		$Config  = Config::instance();
+		$module  = $Request->route_path(2);
 		$modules = &$Config->components['modules'];
 		/**
 		 * Do not allow to uninstall enabled module, it should be explicitly disabled first
@@ -516,11 +496,7 @@ trait modules {
 	 * @throws ExitException
 	 */
 	static function admin_modules_update ($Request) {
-		$route_path = $Request->route_path;
-		if (!isset($route_path[2])) {
-			throw new ExitException(400);
-		}
-		$module = $route_path[2];
+		$module = $Request->route_path(2);
 		if (!Config::instance()->module($module)) {
 			throw new ExitException(404);
 		}
@@ -644,12 +620,8 @@ trait modules {
 	 * @throws ExitException
 	 */
 	static function admin_modules_delete ($Request) {
-		$route_path = $Request->route_path;
-		if (!isset($route_path[2])) {
-			throw new ExitException(400);
-		}
-		$module = $route_path[2];
 		$Config = Config::instance();
+		$module = $Request->route_path(2);
 		if (
 			$module == Config::SYSTEM_MODULE ||
 			!$Config->module($module)->uninstalled()
