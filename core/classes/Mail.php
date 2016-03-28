@@ -8,7 +8,8 @@
 namespace cs;
 use
 	h,
-	PHPMailer;
+	PHPMailer,
+	phpmailerException;
 
 /**
  * @method static $this instance($check = false)
@@ -68,7 +69,7 @@ class Mail extends PHPMailer {
 		foreach ($this->normalize_attachment($attachments) as $a) {
 			try {
 				$this->addAttachment(...$a);
-			} catch (\phpmailerException $e) {
+			} catch (phpmailerException $e) {
 				trigger_error($e->getMessage(), E_USER_WARNING);
 			}
 		}
@@ -80,7 +81,7 @@ class Mail extends PHPMailer {
 		}
 		try {
 			$result = $this->send();
-		} catch (\phpmailerException $e) {
+		} catch (phpmailerException $e) {
 			trigger_error($e->getMessage(), E_USER_WARNING);
 			$result = false;
 		}

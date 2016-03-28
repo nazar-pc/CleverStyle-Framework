@@ -101,7 +101,7 @@ trait Data_and_files {
 			return $result;
 		}
 		/** @noinspection OffsetOperationsInspection */
-		return isset($this->data[$name]) ? $this->data[$name] : null;
+		return array_key_exists($name, $this->data) ? $this->data[$name] : null;
 	}
 	/**
 	 * @param array[] $files
