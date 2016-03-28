@@ -51,7 +51,6 @@ trait user_ {
 	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
-	 * @throws \phpmailerException
 	 */
 	static function user_registration ($Request) {
 		$Config = Config::instance();
@@ -134,7 +133,6 @@ trait user_ {
 	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
-	 * @throws \phpmailerException
 	 */
 	static function user_restore_password ($Request) {
 		$Config = Config::instance();

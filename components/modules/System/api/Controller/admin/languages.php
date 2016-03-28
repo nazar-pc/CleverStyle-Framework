@@ -46,38 +46,45 @@ trait languages {
 	/**
 	 * Apply language settings
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_languages_apply_settings () {
-		static::admin_languages_settings_common();
+	static function admin_languages_apply_settings ($Request) {
+		static::admin_languages_settings_common($Request);
 		if (!Config::instance()->apply()) {
 			throw new ExitException(500);
 		}
 	}
 	/**
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	protected static function admin_languages_settings_common () {
+	protected static function admin_languages_settings_common ($Request) {
+		$data = $Request->data('language', 'active_languages', 'multilingual');
 		if (
-			!isset($_POST['language'], $_POST['active_languages'], $_POST['multilingual']) ||
-			!is_array($_POST['active_languages']) ||
-			!in_array($_POST['language'], $_POST['active_languages'], true) ||
-			array_diff($_POST['active_languages'], static::get_languages_array())
+			!$data ||
+			!is_array($data['active_languages']) ||
+			!in_array($data['language'], $data['active_languages'], true) ||
+			array_diff($data['active_languages'], static::get_languages_array())
 		) {
 			throw new ExitException(400);
 		}
 		$Config                           = Config::instance();
-		$Config->core['language']         = $_POST['language'];
-		$Config->core['active_languages'] = $_POST['active_languages'];
-		$Config->core['multilingual']     = (int)(bool)$_POST['multilingual'];
+		$Config->core['language']         = $data['language'];
+		$Config->core['active_languages'] = $data['active_languages'];
+		$Config->core['multilingual']     = (int)(bool)$data['multilingual'];
 	}
 	/**
 	 * Save language settings
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_languages_save_settings () {
-		static::admin_languages_settings_common();
+	static function admin_languages_save_settings ($Request) {
+		static::admin_languages_settings_common($Request);
 		if (!Config::instance()->save()) {
 			throw new ExitException(500);
 		}

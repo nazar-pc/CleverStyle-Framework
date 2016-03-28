@@ -54,8 +54,6 @@ class Mail extends PHPMailer {
 	 *                                                <b>string</b> - custom signature
 	 *
 	 * @return bool
-	 *
-	 * @throws \phpmailerException
 	 */
 	function send_to ($email, $subject, $body, $body_text = null, $attachments = null, $reply_to = null, $signature = true) {
 		if (!$email || !$subject || !$body) {
@@ -68,7 +66,11 @@ class Mail extends PHPMailer {
 			$this->addReplyTo(...$r);
 		}
 		foreach ($this->normalize_attachment($attachments) as $a) {
-			$this->addAttachment(...$a);
+			try {
+				$this->addAttachment(...$a);
+			} catch (\phpmailerException $e) {
+				trigger_error($e->getMessage(), E_USER_WARNING);
+			}
 		}
 		$this->Subject = $subject;
 		$signature     = $this->make_signature($signature);
@@ -76,7 +78,12 @@ class Mail extends PHPMailer {
 		if ($body_text) {
 			$this->AltBody = $body_text.strip_tags($signature);
 		}
-		$result = $this->send();
+		try {
+			$result = $this->send();
+		} catch (\phpmailerException $e) {
+			trigger_error($e->getMessage(), E_USER_WARNING);
+			$result = false;
+		}
 		$this->clearAddresses();
 		$this->clearAttachments();
 		$this->clearReplyTos();
