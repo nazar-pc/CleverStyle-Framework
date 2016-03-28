@@ -54,36 +54,28 @@ trait databases {
 	 * @throws ExitException
 	 */
 	static function admin_databases_patch ($Request) {
-		$route_ids = $Request->route_ids;
-		if (
-			!isset($route_ids[0], $_POST['host'], $_POST['type'], $_POST['prefix'], $_POST['name'], $_POST['user'], $_POST['password'], $_POST['charset']) ||
-			!in_array($_POST['type'], static::admin_databases_get_engines())
-		) {
+		$data = $Request->data('host', 'type', 'prefix', 'name', 'user', 'password', 'charset');
+		if (!$data || !in_array($data['type'], static::admin_databases_get_engines())) {
 			throw new ExitException(400);
 		}
 		$Config         = Config::instance();
+		$database_index = $Request->route_ids(0);
 		$databases      = &$Config->db;
-		$database_index = $route_ids[0];
 		if (!isset($databases[$database_index])) {
 			throw new ExitException(404);
 		}
-		$database = &$databases[$database_index];
+		$database     = &$databases[$database_index];
+		$mirror_index = $Request->route_ids(1);
 		// Maybe, we are changing database mirror
-		if (isset($route_ids[1])) {
-			if (!isset($database['mirrors'][$route_ids[1]])) {
+		if ($mirror_index !== null) {
+			if (!isset($database['mirrors'][$mirror_index])) {
 				throw new ExitException(404);
 			}
-			$database = &$database['mirrors'][$route_ids[1]];
+			$database = &$database['mirrors'][$mirror_index];
 		} elseif ($database_index == 0) {
 			throw new ExitException(400);
 		}
-		$database['host']     = $_POST['host'];
-		$database['type']     = $_POST['type'];
-		$database['prefix']   = $_POST['prefix'];
-		$database['name']     = $_POST['name'];
-		$database['user']     = $_POST['user'];
-		$database['password'] = $_POST['password'];
-		$database['charset']  = $_POST['charset'];
+		$database = $data + $database;
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
@@ -96,32 +88,21 @@ trait databases {
 	 * @throws ExitException
 	 */
 	static function admin_databases_post ($Request) {
-		$route_ids = $Request->route_ids;
-		if (
-			!isset($_POST['mirror'], $_POST['host'], $_POST['type'], $_POST['prefix'], $_POST['name'], $_POST['user'], $_POST['password'], $_POST['charset']) ||
-			!in_array($_POST['type'], static::admin_databases_get_engines())
-		) {
+		$data = $Request->data('mirror', 'host', 'type', 'prefix', 'name', 'user', 'password', 'charset');
+		if (!$data || !in_array($data['type'], static::admin_databases_get_engines())) {
 			throw new ExitException(400);
 		}
-		$Config    = Config::instance();
-		$databases = &$Config->db;
+		$Config         = Config::instance();
+		$database_index = $Request->route_ids(0);
+		$databases      = &$Config->db;
 		// Maybe, we are adding database mirror
-		if (isset($route_ids[0])) {
-			if (!isset($databases[$route_ids[0]])) {
+		if ($database_index !== null) {
+			if (!isset($databases[$Request->route_ids[0]])) {
 				throw new ExitException(404);
 			}
-			$databases = &$databases[$route_ids[0]]['mirrors'];
+			$databases = &$databases[$Request->route_ids[0]]['mirrors'];
 		}
-		$databases[] = [
-			'mirror'   => $_POST['mirror'],
-			'host'     => $_POST['host'],
-			'type'     => $_POST['type'],
-			'prefix'   => $_POST['prefix'],
-			'name'     => $_POST['name'],
-			'user'     => $_POST['user'],
-			'password' => $_POST['password'],
-			'charset'  => $_POST['charset']
-		];
+		$databases[] = $data;
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
@@ -196,27 +177,21 @@ trait databases {
 	/**
 	 * Test database connection
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_databases_test () {
+	static function admin_databases_test ($Request) {
+		$data    = $Request->data('type', 'name', 'user', 'password', 'host', 'charset');
 		$engines = static::admin_databases_get_engines();
-		if (
-			!isset($_POST['type'], $_POST['name'], $_POST['user'], $_POST['password'], $_POST['host'], $_POST['charset']) ||
-			!in_array($_POST['type'], $engines, true)
-		) {
+		if (!$data || !in_array($data['type'], $engines, true)) {
 			throw new ExitException(400);
 		}
-		$engine_class = "\\cs\\DB\\$_POST[type]";
+		$engine_class = "\\cs\\DB\\$data[type]";
 		/**
 		 * @var \cs\DB\_Abstract $connection
 		 */
-		$connection = new $engine_class(
-			$_POST['name'],
-			$_POST['user'],
-			$_POST['password'],
-			$_POST['host'],
-			$_POST['charset']
-		);
+		$connection = new $engine_class($data['name'], $data['user'], $data['password'], $data['host'], $data['charset']);
 		if (!$connection->connected()) {
 			throw new ExitException(500);
 		}
@@ -239,36 +214,39 @@ trait databases {
 	/**
 	 * Apply database settings
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_databases_apply_settings () {
-		static::admin_databases_settings_common();
+	static function admin_databases_apply_settings ($Request) {
+		static::admin_databases_settings_common($Request);
 		if (!Config::instance()->apply()) {
 			throw new ExitException(500);
 		}
 	}
 	/**
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	protected static function admin_databases_settings_common () {
-		if (!isset(
-			$_POST['db_balance'],
-			$_POST['db_mirror_mode']
-		)
-		) {
+	protected static function admin_databases_settings_common ($Request) {
+		$data = $Request->data('db_balance', 'db_mirror_mode');
+		if (!$data) {
 			throw new ExitException(400);
 		}
 		$Config                         = Config::instance();
-		$Config->core['db_balance']     = (int)(bool)$_POST['db_balance'];
-		$Config->core['db_mirror_mode'] = (int)(bool)$_POST['db_mirror_mode'];
+		$Config->core['db_balance']     = (int)(bool)$data['db_balance'];
+		$Config->core['db_mirror_mode'] = (int)(bool)$data['db_mirror_mode'];
 	}
 	/**
 	 * Save database settings
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_databases_save_settings () {
-		static::admin_databases_settings_common();
+	static function admin_databases_save_settings ($Request) {
+		static::admin_databases_settings_common($Request);
 		if (!Config::instance()->save()) {
 			throw new ExitException(500);
 		}
