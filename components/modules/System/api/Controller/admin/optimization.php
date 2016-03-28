@@ -38,13 +38,16 @@ trait optimization {
 	/**
 	 * Clean cache
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_optimization_clean_cache () {
+	static function admin_optimization_clean_cache ($Request) {
 		$Cache = Cache::instance();
 		time_limit_pause();
-		if (@$_POST['path_prefix']) {
-			$result = $Cache->del($_POST['path_prefix']);
+		$path_prefix = $Request->data('path_prefix');
+		if ($path_prefix) {
+			$result = $Cache->del($path_prefix);
 		} else {
 			$result = $Cache->clean();
 			clean_classes_cache();
@@ -69,10 +72,12 @@ trait optimization {
 	/**
 	 * Apply optimization settings
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_optimization_apply_settings () {
-		static::admin_optimization_settings_common();
+	static function admin_optimization_apply_settings ($Request) {
+		static::admin_optimization_settings_common($Request);
 		$Config = Config::instance();
 		if (!$Config->apply()) {
 			throw new ExitException(500);
@@ -82,33 +87,31 @@ trait optimization {
 		}
 	}
 	/**
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	protected static function admin_optimization_settings_common () {
-		if (!isset(
-			$_POST['cache_compress_js_css'],
-			$_POST['vulcanization'],
-			$_POST['put_js_after_body'],
-			$_POST['inserts_limit'],
-			$_POST['update_ratio']
-		)
-		) {
+	protected static function admin_optimization_settings_common ($Request) {
+		$data = $Request->data('cache_compress_js_css', 'vulcanization', 'put_js_after_body', 'inserts_limit', 'update_ratio');
+		if (!$data) {
 			throw new ExitException(400);
 		}
 		$Config                                = Config::instance();
-		$Config->core['cache_compress_js_css'] = (int)(bool)$_POST['cache_compress_js_css'];
-		$Config->core['vulcanization']         = (int)(bool)$_POST['vulcanization'];
-		$Config->core['put_js_after_body']     = (int)(bool)$_POST['put_js_after_body'];
-		$Config->core['inserts_limit']         = (int)$_POST['inserts_limit'];
-		$Config->core['update_ratio']          = (int)$_POST['update_ratio'];
+		$Config->core['cache_compress_js_css'] = (int)(bool)$data['cache_compress_js_css'];
+		$Config->core['vulcanization']         = (int)(bool)$data['vulcanization'];
+		$Config->core['put_js_after_body']     = (int)(bool)$data['put_js_after_body'];
+		$Config->core['inserts_limit']         = (int)$data['inserts_limit'];
+		$Config->core['update_ratio']          = (int)$data['update_ratio'];
 	}
 	/**
 	 * Save optimization settings
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_optimization_save_settings () {
-		static::admin_optimization_settings_common();
+	static function admin_optimization_save_settings ($Request) {
+		static::admin_optimization_settings_common($Request);
 		$Config = Config::instance();
 		if (!$Config->save()) {
 			throw new ExitException(500);

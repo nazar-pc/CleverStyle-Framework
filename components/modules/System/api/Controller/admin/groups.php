@@ -25,16 +25,14 @@ trait groups {
 	static function admin_groups___get ($Request) {
 		$Group = Group::instance();
 		$Page  = Page::instance();
-		if (isset($Request->route_ids[0])) {
-			$result = $Group->get($Request->route_ids[0]);
-		} elseif (isset($_GET['ids'])) {
-			$result = $Group->get(
-				explode(',', $_GET['ids'])
-			);
+		$id    = $Request->route_ids(0);
+		$ids   = $Request->query('ids');
+		if ($id) {
+			$result = $Group->get($id);
+		} elseif ($ids) {
+			$result = $Group->get(explode(',', $ids));
 		} else {
-			$result = $Group->get(
-				$Group->get_all()
-			);
+			$result = $Group->get($Group->get_all());
 		}
 		if (!$result) {
 			throw new ExitException(404);
@@ -44,13 +42,16 @@ trait groups {
 	/**
 	 * Add new group
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_groups___post () {
-		if (!isset($_POST['title'], $_POST['description'])) {
+	static function admin_groups___post ($Request) {
+		$data = $Request->data('title', 'description');
+		if (!$data) {
 			throw new ExitException(400);
 		}
-		if (Group::instance()->add($_POST['title'], $_POST['description'])) {
+		if (Group::instance()->add(...array_values($data))) {
 			Response::instance()->code = 201;
 		} else {
 			throw new ExitException(500);
@@ -64,10 +65,12 @@ trait groups {
 	 * @throws ExitException
 	 */
 	static function admin_groups___put ($Request) {
-		if (!isset($Request->route_ids[0], $_POST['title'], $_POST['description'])) {
+		$id   = $Request->route_ids(0);
+		$data = $Request->data('title', 'description');
+		if (!$id || !$data) {
 			throw new ExitException(400);
 		}
-		if (!Group::instance()->set($Request->route_ids[0], $_POST['title'], $_POST['description'])) {
+		if (!Group::instance()->set($id, ...array_values($data))) {
 			throw new ExitException(500);
 		}
 	}
@@ -79,10 +82,11 @@ trait groups {
 	 * @throws ExitException
 	 */
 	static function admin_groups___delete ($Request) {
-		if (!isset($Request->route_ids[0])) {
+		$id = $Request->route_ids(0);
+		if (!$id) {
 			throw new ExitException(400);
 		}
-		if (!Group::instance()->del($Request->route_ids[0])) {
+		if (!Group::instance()->del($id)) {
 			throw new ExitException(500);
 		}
 	}
@@ -94,11 +98,12 @@ trait groups {
 	 * @throws ExitException
 	 */
 	static function admin_groups_permissions_get ($Request) {
-		if (!isset($Request->route_ids[0])) {
+		$id = $Request->route_ids(0);
+		if (!$id) {
 			throw new ExitException(400);
 		}
 		Page::instance()->json(
-			Group::instance()->get_permissions($Request->route_ids[0]) ?: []
+			Group::instance()->get_permissions($id) ?: []
 		);
 	}
 	/**
@@ -109,10 +114,12 @@ trait groups {
 	 * @throws ExitException
 	 */
 	static function admin_groups_permissions_put ($Request) {
-		if (!isset($Request->route_ids[0], $_POST['permissions'])) {
+		$id          = $Request->route_ids(0);
+		$permissions = $Request->data('permissions');
+		if (!$id || !$permissions) {
 			throw new ExitException(400);
 		}
-		if (!Group::instance()->set_permissions($_POST['permissions'], $Request->route_ids[0])) {
+		if (!Group::instance()->set_permissions($permissions, $id)) {
 			throw new ExitException(500);
 		}
 	}

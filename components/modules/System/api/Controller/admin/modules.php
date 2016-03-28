@@ -225,19 +225,19 @@ trait modules {
 	 */
 	static function admin_modules_put ($Request) {
 		if ($Request->route_path(3)) {
-			$route_path = $Request->route_path;
-			switch ($route_path[3]) {
+			$module = $Request->route_path[2];
+			switch ($Request->route_path[3]) {
 				/**
 				 * Set mapping of named module's databases to indexes of system databases
 				 */
 				case 'db':
-					static::set_module_databases($route_path[2]);
+					static::set_module_databases($Request, $module);
 					break;
 				/**
 				 * Set mapping of named module's storages to indexes of system storages
 				 */
 				case 'storage':
-					static::set_module_storages($route_path[2]);
+					static::set_module_storages($Request, $module);
 					break;
 				default:
 					throw new ExitException(400);
@@ -252,29 +252,33 @@ trait modules {
 		}
 	}
 	/**
-	 * @param string $module
+	 * @param \cs\Request $Request
+	 * @param string      $module
 	 *
 	 * @throws ExitException
 	 */
-	protected static function set_module_databases ($module) {
-		$Config = Config::instance();
-		if (!isset($Config->components['modules'][$module]['db'], $_POST['db'])) {
+	protected static function set_module_databases ($Request, $module) {
+		$Config          = Config::instance();
+		$database_config = $Request->data('db');
+		if (!$database_config || !isset($Config->components['modules'][$module]['db'])) {
 			throw new ExitException(404);
 		}
-		$Config->components['modules'][$module]['db'] = _int($_POST['db']);
+		$Config->components['modules'][$module]['db'] = _int($database_config);
 		static::admin_modules_save();
 	}
 	/**
-	 * @param string $module
+	 * @param \cs\Request $Request
+	 * @param string      $module
 	 *
 	 * @throws ExitException
 	 */
-	protected static function set_module_storages ($module) {
-		$Config = Config::instance();
-		if (!isset($Config->components['modules'][$module]['storage'], $_POST['storage'])) {
+	protected static function set_module_storages ($Request, $module) {
+		$Config         = Config::instance();
+		$storage_config = $Request->data('storage');
+		if (!$storage_config || !isset($Config->components['modules'][$module]['storage'])) {
 			throw new ExitException(404);
 		}
-		$Config->components['modules'][$module]['storage'] = _int($_POST['storage']);
+		$Config->components['modules'][$module]['storage'] = _int($storage_config);
 		static::admin_modules_save();
 	}
 	/**
@@ -394,13 +398,15 @@ trait modules {
 		if (!Event::instance()->fire('admin/System/components/modules/install/before', ['name' => $module])) {
 			throw new ExitException(500);
 		}
-		$module_data = &$Config->components['modules'][$module];
-		if (isset($_POST['db'])) {
-			$module_data['db'] = $_POST['db'];
+		$module_data     = &$Config->components['modules'][$module];
+		$database_config = $Request->data('db');
+		if ($database_config) {
+			$module_data['db'] = _int($database_config);
 			Packages_manipulation::execute_sql_from_directory(MODULES."/$module/meta/install_db", $module_data['db']);
 		}
-		if (isset($_POST['storage'])) {
-			$module_data['storage'] = $_POST['storage'];
+		$storage_config = $Request->data('storage');
+		if ($storage_config) {
+			$module_data['storage'] = _int($storage_config);
 		}
 		$module_data['active'] = Config\Module_Properties::DISABLED;
 		static::admin_modules_save();
@@ -622,10 +628,7 @@ trait modules {
 	static function admin_modules_delete ($Request) {
 		$Config = Config::instance();
 		$module = $Request->route_path(2);
-		if (
-			$module == Config::SYSTEM_MODULE ||
-			!$Config->module($module)->uninstalled()
-		) {
+		if (!$Config->module($module)->uninstalled()) {
 			throw new ExitException(400);
 		}
 		if (!rmdir_recursive(MODULES."/$module")) {
