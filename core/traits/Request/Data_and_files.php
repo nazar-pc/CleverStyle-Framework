@@ -340,31 +340,31 @@ trait Data_and_files {
 	 * @return int
 	 */
 	protected function post_max_size () {
-		$post_max_size = ini_get('post_max_size') ?: ini_get('hhvm.server.max_post_size');
-		switch (strtolower(substr($post_max_size, -1))) {
-			case 'g';
-				$post_max_size = (int)$post_max_size * 1024;
-			case 'm';
-				$post_max_size = (int)$post_max_size * 1024;
-			case 'k';
-				$post_max_size = (int)$post_max_size * 1024;
-		}
-		return (int)$post_max_size ?: PHP_INT_MAX;
+		$size = ini_get('post_max_size') ?: ini_get('hhvm.server.max_post_size');
+		return $this->convert_size_to_bytes($size);
 	}
 	/**
 	 * @return int
 	 */
 	protected function upload_max_file_size () {
-		$upload_max_file_size = ini_get('upload_max_filesize') ?: ini_get('hhvm.server.upload.upload_max_file_size');
-		switch (strtolower(substr($upload_max_file_size, -1))) {
+		$size = ini_get('upload_max_filesize') ?: ini_get('hhvm.server.upload.upload_max_file_size');
+		return $this->convert_size_to_bytes($size);
+	}
+	/**
+	 * @param int|string $size
+	 *
+	 * @return int
+	 */
+	protected function convert_size_to_bytes ($size) {
+		switch (strtolower(substr($size, -1))) {
 			case 'g';
-				$upload_max_file_size = (int)$upload_max_file_size * 1024;
+				$size = (int)$size * 1024;
 			case 'm';
-				$upload_max_file_size = (int)$upload_max_file_size * 1024;
+				$size = (int)$size * 1024;
 			case 'k';
-				$upload_max_file_size = (int)$upload_max_file_size * 1024;
+				$size = (int)$size * 1024;
 		}
-		return (int)$upload_max_file_size ?: PHP_INT_MAX;
+		return (int)$size ?: PHP_INT_MAX;
 	}
 	/**
 	 * @param resource $stream
@@ -433,12 +433,12 @@ trait Data_and_files {
 			return;
 		}
 		foreach ($matches[1] as $component) {
-			if (!isset($source[$component])) {
-				$source[$component] = [];
-			}
 			if (!strlen($component)) {
-				$source = &$source[$component][];
+				$source = &$source[];
 			} else {
+				if (!isset($source[$component])) {
+					$source[$component] = [];
+				}
 				$source = &$source[$component];
 			}
 		}
