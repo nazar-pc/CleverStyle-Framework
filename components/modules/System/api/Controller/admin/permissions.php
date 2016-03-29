@@ -43,15 +43,12 @@ trait permissions {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions___post (
-		/** @noinspection PhpUnusedParameterInspection */
-		$Request,
-		$Response
-	) {
-		if (!isset($_POST['group'], $_POST['label'])) {
+	static function admin_permissions___post ($Request, $Response) {
+		$data = $Request->data('group', 'label');
+		if (!$data) {
 			throw new ExitException(400);
 		}
-		if (Permission::instance()->add($_POST['group'], $_POST['label'])) {
+		if (Permission::instance()->add(...array_values($data))) {
 			$Response->code = 201;
 		} else {
 			throw new ExitException(500);
@@ -65,10 +62,12 @@ trait permissions {
 	 * @throws ExitException
 	 */
 	static function admin_permissions___put ($Request) {
-		if (!isset($Request->route_ids[0], $_POST['group'], $_POST['label'])) {
+		$id   = $Request->route_ids(0);
+		$data = $Request->data('group', 'label');
+		if (!$id || !$data) {
 			throw new ExitException(400);
 		}
-		if (!Permission::instance()->set($Request->route_ids[0], $_POST['group'], $_POST['label'])) {
+		if (!Permission::instance()->set($id, ...array_values($data))) {
 			throw new ExitException(500);
 		}
 	}
@@ -90,15 +89,18 @@ trait permissions {
 	/**
 	 * Get permissions for specific item
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions_for_item_get () {
-		if (!isset($_GET['group'], $_GET['label'])) {
+	static function admin_permissions_for_item_get ($Request) {
+		$data = $Request->data('group', 'label');
+		if (!$data) {
 			throw new ExitException(400);
 		}
 		$User       = User::instance();
 		$Permission = Permission::instance();
-		$permission = $Permission->get(null, $_GET['group'], $_GET['label']);
+		$permission = $Permission->get(null, ...array_values($data));
 		$data       = [
 			'groups' => [],
 			'users'  => []
@@ -145,33 +147,32 @@ trait permissions {
 	/**
 	 * Get permissions for specific item
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions_for_item_post () {
-		if (!isset($_POST['group'], $_POST['label'])) {
+	static function admin_permissions_for_item_post ($Request) {
+		$data = $Request->data('group', 'label');
+		if (!$data) {
 			throw new ExitException(400);
 		}
 		$Group      = Group::instance();
 		$Permission = Permission::instance();
 		$User       = User::instance();
-		$permission = $Permission->get(null, $_POST['group'], $_POST['label']);
+		$permission = $Permission->get(null, ...array_values($data));
 		// We'll create permission if needed
 		$permission = $permission
 			? $permission[0]['id']
-			: $Permission->add($_POST['group'], $_POST['label']);
+			: $Permission->add(...array_values($data));
 		if (!$permission) {
 			throw new ExitException(500);
 		}
 		$result = true;
-		if (isset($_POST['groups'])) {
-			foreach ($_POST['groups'] as $group => $value) {
-				$result = $result && $Group->set_permissions([$permission => $value], $group);
-			}
+		foreach ($Request->data('groups') ?: [] as $group => $value) {
+			$result = $result && $Group->set_permissions([$permission => $value], $group);
 		}
-		if (isset($_POST['users'])) {
-			foreach ($_POST['users'] as $user => $value) {
-				$result = $result && $User->set_permissions([$permission => $value], $user);
-			}
+		foreach ($Request->data('users') ?: [] as $user => $value) {
+			$result = $result && $User->set_permissions([$permission => $value], $user);
 		}
 		if (!$result) {
 			throw new ExitException(500);

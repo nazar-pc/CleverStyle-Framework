@@ -35,46 +35,44 @@ trait system {
 	/**
 	 * Apply system settings
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_system_apply_settings () {
-		static::admin_system_settings_common();
+	static function admin_system_apply_settings ($Request) {
+		static::admin_system_settings_common($Request);
 		if (!Config::instance()->apply()) {
 			throw new ExitException(500);
 		}
 	}
 	/**
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	protected static function admin_system_settings_common () {
-		if (!isset(
-			$_POST['site_mode'],
-			$_POST['closed_title'],
-			$_POST['closed_text'],
-			$_POST['title_delimiter'],
-			$_POST['title_reverse'],
-			$_POST['show_tooltips'],
-			$_POST['simple_admin_mode']
-		)
-		) {
+	protected static function admin_system_settings_common ($Request) {
+		$data = $Request->data('site_mode', 'closed_title', 'closed_text', 'title_delimiter', 'title_reverse', 'show_tooltips', 'simple_admin_mode');
+		if (!$data) {
 			throw new ExitException(400);
 		}
 		$Config                            = Config::instance();
-		$Config->core['site_mode']         = (int)(bool)$_POST['site_mode'];
-		$Config->core['closed_title']      = set_core_ml_text('closed_title', xap($_POST['closed_title']));
-		$Config->core['closed_text']       = set_core_ml_text('closed_text', xap($_POST['closed_text'], true));
-		$Config->core['title_delimiter']   = xap($_POST['title_delimiter']);
-		$Config->core['title_reverse']     = (int)(bool)$_POST['title_reverse'];
-		$Config->core['show_tooltips']     = (int)(bool)$_POST['show_tooltips'];
-		$Config->core['simple_admin_mode'] = (int)(bool)$_POST['simple_admin_mode'];
+		$Config->core['site_mode']         = (int)(bool)$data['site_mode'];
+		$Config->core['closed_title']      = set_core_ml_text('closed_title', xap($data['closed_title']));
+		$Config->core['closed_text']       = set_core_ml_text('closed_text', xap($data['closed_text'], true));
+		$Config->core['title_delimiter']   = xap($data['title_delimiter']);
+		$Config->core['title_reverse']     = (int)(bool)$data['title_reverse'];
+		$Config->core['show_tooltips']     = (int)(bool)$data['show_tooltips'];
+		$Config->core['simple_admin_mode'] = (int)(bool)$data['simple_admin_mode'];
 	}
 	/**
 	 * Save system settings
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_system_save_settings () {
-		static::admin_system_settings_common();
+	static function admin_system_save_settings ($Request) {
+		static::admin_system_settings_common($Request);
 		if (!Config::instance()->save()) {
 			throw new ExitException(500);
 		}

@@ -42,28 +42,23 @@ trait storages {
 	 * @throws ExitException
 	 */
 	static function admin_storages_patch ($Request) {
+		$storage_index = $Request->route_ids(0);
+		$data          = $Request->data('url', 'host', 'connection', 'user', 'password');
 		if (
-			!isset($Request->route_ids[0], $_POST['url'], $_POST['host'], $_POST['connection'], $_POST['user'], $_POST['password']) ||
-			!strlen($_POST['host']) ||
-			!in_array($_POST['connection'], static::admin_storages_get_engines())
+			!$storage_index ||
+			!$data ||
+			!strlen($data['host']) ||
+			!in_array($data['connection'], static::admin_storages_get_engines())
 		) {
 			throw new ExitException(400);
 		}
-		$Config        = Config::instance();
-		$storages      = &$Config->storage;
-		$storage_index = $Request->route_ids[0];
+		$Config   = Config::instance();
+		$storages = &$Config->storage;
 		if (!isset($storages[$storage_index])) {
 			throw new ExitException(404);
 		}
-		if ($storage_index == 0) {
-			throw new ExitException(400);
-		}
-		$storage               = &$storages[$storage_index];
-		$storage['url']        = $_POST['url'];
-		$storage['host']       = $_POST['host'];
-		$storage['connection'] = $_POST['connection'];
-		$storage['user']       = $_POST['user'];
-		$storage['password']   = $_POST['password'];
+		$storage = &$storages[$storage_index];
+		$storage = $data + $storage;
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
@@ -71,24 +66,21 @@ trait storages {
 	/**
 	 * Create storage
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_storages_post () {
+	static function admin_storages_post ($Request) {
+		$data = $Request->data('url', 'host', 'connection', 'user', 'password');
 		if (
-			!isset($_POST['url'], $_POST['host'], $_POST['connection'], $_POST['user'], $_POST['password']) ||
-			!strlen($_POST['host']) ||
-			!in_array($_POST['connection'], static::admin_storages_get_engines())
+			!$data ||
+			!strlen($data['host']) ||
+			!in_array($data['connection'], static::admin_storages_get_engines())
 		) {
 			throw new ExitException(400);
 		}
 		$Config            = Config::instance();
-		$Config->storage[] = [
-			'url'        => $_POST['url'],
-			'host'       => $_POST['host'],
-			'connection' => $_POST['connection'],
-			'user'       => $_POST['user'],
-			'password'   => $_POST['password']
-		];
+		$Config->storage[] = $data;
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
@@ -101,21 +93,17 @@ trait storages {
 	 * @throws ExitException
 	 */
 	static function admin_storages_delete ($Request) {
-		if (!isset($Request->route_ids[0])) {
+		$storage_index = $Request->route_ids(0);
+		if (!$storage_index) {
 			throw new ExitException(400);
 		}
-		$Config        = Config::instance();
-		$storages      = &$Config->storage;
-		$storage_index = $Request->route_ids[0];
+		$Config   = Config::instance();
+		$storages = &$Config->storage;
 		if (!isset($storages[$storage_index])) {
 			throw new ExitException(404);
 		}
-		if ($storage_index == 0) {
-			throw new ExitException(400);
-		} else {
-			static::admin_storages_delete_check_usages($storage_index);
-			unset($storages[$storage_index]);
-		}
+		static::admin_storages_delete_check_usages($storage_index);
+		unset($storages[$storage_index]);
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
@@ -156,26 +144,21 @@ trait storages {
 	/**
 	 * Test storage connection
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_storages_test () {
+	static function admin_storages_test ($Request) {
+		$data    = $Request->data('url', 'host', 'connection', 'user', 'password');
 		$engines = static::admin_storages_get_engines();
-		if (
-			!isset($_POST['connection'], $_POST['url'], $_POST['host'], $_POST['user'], $_POST['password']) ||
-			!in_array($_POST['connection'], $engines, true)
-		) {
+		if (!$data || !in_array($data['connection'], $engines, true)) {
 			throw new ExitException(400);
 		}
-		$connection_class = "\\cs\\Storage\\$_POST[connection]";
+		$connection_class = "\\cs\\Storage\\$data[connection]";
 		/**
 		 * @var \cs\Storage\_Abstract $connection
 		 */
-		$connection = new $connection_class(
-			$_POST['url'],
-			$_POST['host'],
-			$_POST['user'],
-			$_POST['password']
-		);
+		$connection = new $connection_class($data['url'], $data['host'], $data['user'], $data['password']);
 		if (!$connection->connected()) {
 			throw new ExitException(500);
 		}
