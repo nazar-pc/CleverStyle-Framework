@@ -44,14 +44,9 @@ Event::instance()
 			 *
 			 * @todo cs\Request should be used here
 			 */
-			if (
-				$Request->header('x-requested-with') !== 'XMLHttpRequest' &&
-				(
-					!isset($_POST['session']) || $_POST['session'] != $Session->get_id()
-				)
-			) {
-				foreach (array_keys((array)$_POST) as $key) {
-					unset($_POST[$key], $_REQUEST[$key]);
+			if ($Request->header('x-requested-with') !== 'XMLHttpRequest' && !$Request->data('session') != $Session->get_id()) {
+				foreach (array_keys($Request->data) as $key) {
+					unset($Request->data[$key]);
 				}
 			}
 		}

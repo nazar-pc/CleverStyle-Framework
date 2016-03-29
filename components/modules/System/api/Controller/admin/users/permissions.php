@@ -37,10 +37,12 @@ trait permissions {
 	 * @throws ExitException
 	 */
 	static function admin_users_permissions_put ($Request) {
-		if (!isset($Request->route_ids[0], $_POST['permissions'])) {
+		$user_id     = $Request->route_ids(0);
+		$permissions = $Request->data('permissions');
+		if (!$user_id || !$permissions) {
 			throw new ExitException(400);
 		}
-		if (!User::instance()->set_permissions($_POST['permissions'], $Request->route_ids[0])) {
+		if (!User::instance()->set_permissions($permissions, $user_id)) {
 			throw new ExitException(500);
 		}
 	}

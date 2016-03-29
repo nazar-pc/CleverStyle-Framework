@@ -13,24 +13,26 @@ use
 	cs\Core,
 	cs\DB,
 	cs\Language\Prefix,
-	cs\Page;
+	cs\Page,
+	cs\Request;
 
 /**
  * Utility functions, necessary during packages manipulation (installation/uninstallation, enabling/disabling)
  */
 class Packages_manipulation {
 	/**
-	 * @param string $file_name File key in `$_FILES` superglobal
+	 * @param string $file_name File key in `cs\Request::$files`
 	 *
 	 * @return false|string Path to file location if succeed or `false` on failure
 	 */
 	static function move_uploaded_file_to_tmp ($file_name) {
-		if (!isset($_FILES[$file_name]) || !$_FILES[$file_name]['tmp_name']) {
+		$file = Request::instance()->files($file_name);
+		if (!$file) {
 			return false;
 		}
 		$L    = new Prefix('system_admin_');
 		$Page = Page::instance();
-		switch ($_FILES[$file_name]['error']) {
+		switch ($file['error']) {
 			case UPLOAD_ERR_INI_SIZE:
 			case UPLOAD_ERR_FORM_SIZE:
 				$Page->warning($L->file_too_large);
@@ -41,15 +43,12 @@ class Packages_manipulation {
 			case UPLOAD_ERR_CANT_WRITE:
 				$Page->warning($L->cant_write_file_to_disk);
 				return false;
-			case UPLOAD_ERR_PARTIAL:
-			case UPLOAD_ERR_NO_FILE:
-				return false;
 		}
-		if ($_FILES[$file_name]['error'] != UPLOAD_ERR_OK) {
+		if ($file['error'] != UPLOAD_ERR_OK) {
 			return false;
 		}
 		$tmp_name = TEMP.'/'.md5(random_bytes(1000)).'.phar';
-		return copy($_FILES[$file_name]['tmp_name'], $tmp_name) ? $tmp_name : false;
+		return copy($file['tmp_name'], $tmp_name) ? $tmp_name : false;
 	}
 	/**
 	 * Generic extraction of files from phar distributive for CleverStyle CMS (components installation)

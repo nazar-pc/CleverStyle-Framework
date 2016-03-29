@@ -283,14 +283,15 @@ trait Includes {
 		$this->add_system_configs();
 		// TODO: I hope some day we'll get rid of this sh*t :(
 		$this->ie_edge();
+		$Request = Request::instance();
 		/**
 		 * If CSS and JavaScript compression enabled
 		 */
-		if ($Config->core['cache_compress_js_css'] && !(Request::instance()->admin_path && isset($_GET['debug']))) {
-			$this->webcomponents_polyfill(true);
+		if ($Config->core['cache_compress_js_css'] && !($Request->admin_path && isset($Request->query['debug']))) {
+			$this->webcomponents_polyfill($Request, true);
 			$includes = $this->get_includes_for_page_with_compression();
 		} else {
-			$this->webcomponents_polyfill(false);
+			$this->webcomponents_polyfill($Request, false);
 			/**
 			 * Language translation is added explicitly only when compression is disabled, otherwise it will be in compressed JS file
 			 */
@@ -443,10 +444,11 @@ trait Includes {
 	 *
 	 * TODO: Probably, some effective User Agent-based check might be used here
 	 *
-	 * @param bool $with_compression
+	 * @param Request $Request
+	 * @param bool    $with_compression
 	 */
-	protected function webcomponents_polyfill ($with_compression) {
-		if (!isset($_COOKIE['shadow_dom']) || $_COOKIE['shadow_dom'] != 1) {
+	protected function webcomponents_polyfill ($Request, $with_compression) {
+		if ($Request->cookie('shadow_dom') != 1) {
 			$file = 'includes/js/WebComponents-polyfill/webcomponents-custom.min.js';
 			if ($with_compression) {
 				$compressed_file = PUBLIC_CACHE.'/webcomponents.js';

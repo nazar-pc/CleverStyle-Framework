@@ -30,20 +30,23 @@ trait users {
 		$User    = User::instance();
 		$Page    = Page::instance();
 		$columns = static::admin_users___search_options_get()['columns'];
-		if (isset($Request->route_ids[0])) {
+		$id      = $Request->route_ids(0);
+		$ids     = $Request->query('ids');
+		$search  = $Request->query('search');
+		if ($id) {
 			$result = static::admin_users___get_post_process(
-				$User->get($columns, $Request->route_ids[0])
+				$User->get($columns, $id)
 			);
-		} elseif (isset($_GET['ids'])) {
-			$ids    = _int(explode(',', $_GET['ids']));
+		} elseif ($ids) {
+			$ids    = _int(explode(',', $ids));
 			$result = [];
 			foreach ($ids as $id) {
 				$result[] = static::admin_users___get_post_process(
 					$User->get($columns, $id)
 				);
 			}
-		} elseif (isset($_GET['search'])) {
-			$result = _int($User->search_users($_GET['search']));
+		} elseif ($search) {
+			$result = _int($User->search_users($search));
 		} else {
 			throw new ExitException(400);
 		}
@@ -66,13 +69,14 @@ trait users {
 	 * @throws ExitException
 	 */
 	static function admin_users___patch ($Request) {
-		if (!isset($Request->route_ids[0], $_POST['user'])) {
+		$user_id = (int)$Request->route_ids(0);
+		$user    = $Request->data('user');
+		if (!$user_id || !$user) {
 			throw new ExitException(400);
 		}
 		$User      = User::instance();
-		$user_id   = (int)$Request->route_ids[0];
 		$user_data = array_filter(
-			$_POST['user'],
+			$user,
 			function ($item) {
 				return in_array($item, ['login', 'username', 'email', 'language', 'timezone', 'status', 'block_until', 'avatar'], true);
 			},
@@ -82,7 +86,7 @@ trait users {
 			$d = xap($d, false);
 		}
 		unset($d);
-		if (!$user_data && !isset($_POST['user']['password'])) {
+		if (!$user_data && !isset($user['password'])) {
 			throw new ExitException(400);
 		}
 		$L = new Prefix('system_admin_users_');
@@ -103,54 +107,56 @@ trait users {
 		if (!$User->set($user_data, null, $user_id)) {
 			throw new ExitException(500);
 		}
-		if (isset($_POST['user']['password']) && !$User->set_password($_POST['user']['password'], $user_id)) {
+		if (isset($user['password']) && !$User->set_password($user['password'], $user_id)) {
 			throw new ExitException(500);
 		}
 	}
 	/**
 	 * Add new user
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_users___post () {
-		if (!isset($_POST['type'])) {
+	static function admin_users___post ($Request) {
+		$User  = User::instance();
+		$email = $Request->data('email');
+		if (!$email) {
 			throw new ExitException(400);
 		}
-		$User = User::instance();
-		if (isset($_POST['email'])) {
-			$result = $User->registration($_POST['email'], false, false);
-			if (!$result) {
-				throw new ExitException(500);
-			}
-			if ($result === 'exists') {
-				$L = new Prefix('system_admin_users_');
-				throw new ExitException($L->user_already_exists, 400);
-			}
-			Response::instance()->code = 201;
-			Page::instance()->json(
-				[
-					'login'    => $User->get('login', $result['id']),
-					'password' => $result['password']
-				]
-			);
-		} else {
-			throw new ExitException(400);
+		$result = $User->registration($email, false, false);
+		if (!$result) {
+			throw new ExitException(500);
 		}
+		if ($result === 'exists') {
+			$L = new Prefix('system_admin_users_');
+			throw new ExitException($L->user_already_exists, 400);
+		}
+		Response::instance()->code = 201;
+		Page::instance()->json(
+			[
+				'login'    => $User->get('login', $result['id']),
+				'password' => $result['password']
+			]
+		);
 	}
 	/**
 	 * Advanced search for users (users data will be returned similar to GET method)
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_users___search () {
-		if (!isset($_POST['mode'], $_POST['column'], $_POST['text'], $_POST['page'], $_POST['limit'])) {
+	static function admin_users___search ($Request) {
+		$options = $Request->data('mode', 'column', 'text', 'page', 'limit');
+		if (!$options) {
 			throw new ExitException(400);
 		}
-		$mode           = $_POST['mode'];
-		$column         = $_POST['column'];
-		$text           = $_POST['text'];
-		$page           = (int)$_POST['page'];
-		$limit          = (int)$_POST['limit'];
+		$mode           = $options['mode'];
+		$column         = $options['column'];
+		$text           = $options['text'];
+		$page           = (int)$options['page'];
+		$limit          = (int)$options['limit'];
 		$search_options = static::admin_users___search_options_get();
 		if (
 			!in_array($mode, $search_options['modes']) ||

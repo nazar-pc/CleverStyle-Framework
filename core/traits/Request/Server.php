@@ -104,7 +104,7 @@ trait Server {
 		$this->uri          = null_byte_filter(urldecode($server['REQUEST_URI'])) ?: '/';
 		$this->path         = explode('?', $this->uri, 2)[0];
 		$this->remote_addr  = $server['REMOTE_ADDR'];
-		$this->ip           = $this->ip($_SERVER);
+		$this->ip           = $this->ip($server);
 	}
 	/**
 	 * @param string[] $server
@@ -200,7 +200,7 @@ trait Server {
 	 *
 	 * @param string $name
 	 *
-	 * @return string Header content if exists or `false` otherwise
+	 * @return string Header content if exists or empty string otherwise
 	 */
 	function header ($name) {
 		return isset($this->headers[$name]) ? $this->headers[$name] : '';

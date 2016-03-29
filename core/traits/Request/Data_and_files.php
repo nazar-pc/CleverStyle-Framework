@@ -80,7 +80,7 @@ trait Data_and_files {
 	 *
 	 * @param string[]|string[][] $name
 	 *
-	 * @return mixed|mixed[]|null Data items (or associative array of data items) if exists or `false` otherwise (in case if `$name` is an array even one
+	 * @return mixed|mixed[]|null Data items (or associative array of data items) if exists or `null` otherwise (in case if `$name` is an array even one
 	 *                             missing key will cause the whole thing to fail)
 	 */
 	function data (...$name) {
@@ -102,6 +102,16 @@ trait Data_and_files {
 		}
 		/** @noinspection OffsetOperationsInspection */
 		return array_key_exists($name, $this->data) ? $this->data[$name] : null;
+	}
+	/**
+	 * Get file item by name
+	 *
+	 * @param string $name
+	 *
+	 * @return array|null File item if exists or `null` otherwise
+	 */
+	function files ($name) {
+		return array_key_exists($name, $this->files) ? $this->files[$name] : null;
 	}
 	/**
 	 * @param array[] $files

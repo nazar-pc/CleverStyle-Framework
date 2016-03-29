@@ -25,7 +25,7 @@ trait Query {
 	 *
 	 * @param string[]|string[][] $name
 	 *
-	 * @return mixed|mixed[]|null Query parameter (or associative array of Query parameters) if exists or `false` otherwise (in case if `$name` is an array
+	 * @return mixed|mixed[]|null Query parameter (or associative array of Query parameters) if exists or `null` otherwise (in case if `$name` is an array
 	 *                             even one missing key will cause the whole thing to fail)
 	 */
 	function query (...$name) {

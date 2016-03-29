@@ -128,13 +128,14 @@ trait themes {
 	 */
 	static function admin_themes_put ($Request) {
 		if ($Request->route_path(2) == 'current') {
-			if (!isset($_POST['theme'])) {
+			$theme = $Request->data('theme');
+			if (!$theme) {
 				throw new ExitException(400);
 			}
 			/**
 			 * Set current theme
 			 */
-			static::set_current_theme($_POST['theme']);
+			static::set_current_theme($theme);
 		} else {
 			throw new ExitException(400);
 		}

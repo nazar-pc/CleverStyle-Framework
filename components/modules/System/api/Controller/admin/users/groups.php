@@ -38,14 +38,17 @@ trait groups {
 	 * @throws ExitException
 	 */
 	static function admin_users_groups_put ($Request) {
+		$user_id = $Request->route_ids(0);
+		$groups  = $Request->data('groups');
 		if (
-			!isset($Request->route_ids[0], $_POST['groups']) ||
-			$Request->route_ids[0] == User::ROOT_ID ||
-			array_diff($_POST['groups'], Group::instance()->get_all())
+			!$user_id ||
+			!$groups ||
+			$user_id == User::ROOT_ID ||
+			array_diff($groups, Group::instance()->get_all())
 		) {
 			throw new ExitException(400);
 		}
-		if (!User::instance()->set_groups($_POST['groups'], $Request->route_ids[0])) {
+		if (!User::instance()->set_groups($groups, $user_id)) {
 			throw new ExitException(500);
 		}
 	}

@@ -12,6 +12,7 @@ use
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Request,
 	cs\Session;
 
 trait upload {
@@ -19,11 +20,11 @@ trait upload {
 	 * @throws ExitException
 	 */
 	static function admin_upload_post () {
-		if (!isset($_FILES['file']['tmp_name'])) {
+		$file = Request::instance()->files('file');
+		if (!$file) {
 			throw new ExitException(400);
 		}
 		$L    = new Prefix('system_admin_');
-		$file = $_FILES['file'];
 		switch ($file['error']) {
 			case UPLOAD_ERR_INI_SIZE:
 			case UPLOAD_ERR_FORM_SIZE:
@@ -32,12 +33,12 @@ trait upload {
 				throw new ExitException($L->temporary_folder_is_missing, 400);
 			case UPLOAD_ERR_CANT_WRITE:
 				throw new ExitException($L->cant_write_file_to_disk, 500);
-			case UPLOAD_ERR_PARTIAL:
-			case UPLOAD_ERR_NO_FILE:
-				throw new ExitException(400);
+		}
+		if ($file['error'] != UPLOAD_ERR_OK) {
+			throw new ExitException(400);
 		}
 		$target_directory = TEMP.'/System/admin';
-		if (!is_dir($target_directory) && !mkdir($target_directory, 0770, true)) {
+		if (!@mkdir($target_directory, 0770, true) && !is_dir($target_directory)) {
 			throw new ExitException(500);
 		}
 		$tmp_filename = Session::instance()->get_id().'.phar';
