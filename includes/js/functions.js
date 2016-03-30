@@ -61,7 +61,6 @@
     require(['jssha'], function(jssha){
       $.ajax({
         url: 'api/System/profile',
-        cache: false,
         data: {
           login: cs.hash(jssha, 'sha224', login),
           password: cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', password) + cs.public_key)
@@ -79,7 +78,6 @@
   cs.sign_out = function(){
     $.ajax({
       url: 'api/System/profile',
-      cache: false,
       type: 'sign_out',
       success: function(){
         location.reload();
@@ -99,17 +97,15 @@
     email = String(email).toLowerCase();
     $.ajax({
       url: 'api/System/profile',
-      cache: false,
       data: {
         email: email
       },
       type: 'registration',
-      success: function(result){
-        if (result === 'registration_confirmation') {
-          cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>');
-        } else if (result === 'registration_success') {
-          cs.ui.simple_modal('<div>' + L.registration_success + '</div>');
-        }
+      success_201: function(){
+        cs.ui.simple_modal('<div>' + L.registration_success + '</div>');
+      },
+      success_202: function(){
+        cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>');
       }
     });
   };
@@ -127,7 +123,6 @@
     require(['jssha'], function(jssha){
       $.ajax({
         url: 'api/System/profile',
-        cache: false,
         data: {
           email: cs.hash(jssha, 'sha224', email)
         },
@@ -171,7 +166,6 @@
       new_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + cs.public_key);
       $.ajax({
         url: 'api/System/profile',
-        cache: false,
         data: {
           current_password: current_password,
           new_password: new_password

@@ -114,11 +114,12 @@ trait profile {
 		}
 	}
 	/**
-	 * @param \cs\Request $Request
+	 * @param \cs\Request  $Request
+	 * @param \cs\Response $Response
 	 *
 	 * @throws ExitException
 	 */
-	static function profile___registration ($Request) {
+	static function profile___registration ($Request, $Response) {
 		$Config = Config::instance();
 		$L      = new Prefix('system_profile_registration_');
 		$User   = User::instance();
@@ -192,8 +193,7 @@ trait profile {
 			$User->registration_cancel();
 			throw new ExitException($L->mail_sending_error, 500);
 		}
-		// TODO: better implement using 2 status codes: 202 if confirmation needed and 201 otherwise
-		Page::instance()->json($confirm ? 'registration_confirmation' : 'registration_success');
+		$Response->code = $confirm ? 202 : 201;
 	}
 	/**
 	 * @param \cs\Request $Request

@@ -46,7 +46,6 @@ cs.sign_in = (login, password) !->
 	jssha <-! require(['jssha'], _)
 	$.ajax(
 		url		: 'api/System/profile'
-		cache	: false
 		data	:
 			login		: cs.hash(jssha, 'sha224', login)
 			password	: cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', password) + cs.public_key)
@@ -60,7 +59,6 @@ cs.sign_in = (login, password) !->
 cs.sign_out = !->
 	$.ajax(
 		url		: 'api/System/profile'
-		cache	: false
 		type	: 'sign_out'
 		success	: !->
 			location.reload()
@@ -76,16 +74,14 @@ cs.registration = (email) !->
 		return
 	email	= String(email).toLowerCase()
 	$.ajax(
-		url		: 'api/System/profile'
-		cache	: false
-		data	:
+		url			: 'api/System/profile'
+		data		:
 			email: email
-		type	: 'registration'
-		success	: (result) !->
-			if result == 'registration_confirmation'
-				cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>')
-			else if result == 'registration_success'
-				cs.ui.simple_modal('<div>' + L.registration_success + '</div>')
+		type		: 'registration'
+		success_201	: !->
+			cs.ui.simple_modal('<div>' + L.registration_success + '</div>')
+		success_202	: !->
+			cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>')
 	)
 /**
  * Password restoring
@@ -100,7 +96,6 @@ cs.restore_password = (email) !->
 	jssha <-! require(['jssha'], _)
 	$.ajax(
 		url		: 'api/System/profile'
-		cache	: false,
 		data	:
 			email: cs.hash(jssha, 'sha224', email)
 		type	: 'restore_password'
@@ -137,7 +132,6 @@ cs.change_password = (current_password, new_password, success, error) !->
 	new_password		= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + cs.public_key)
 	$.ajax(
 		url		: 'api/System/profile'
-		cache	: false
 		data	:
 			current_password	: current_password
 			new_password		: new_password

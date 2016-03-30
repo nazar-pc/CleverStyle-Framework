@@ -7,16 +7,19 @@
 $.ajaxSetup(
 	contents	:
 		script	: false
+	success		: (result, status, xhr) !->
+		if @['success_' + xhr.status]
+			@['success_' + xhr.status].apply(@, arguments)
 	error		: (xhr) !->
 		if @['error_' + xhr.status]
 			@['error_' + xhr.status].apply(@, arguments)
-			return
-		cs.ui.notify(
-			if xhr.responseText
-				JSON.parse(xhr.responseText).error_description
-			else
-				cs.Language.system_profile_server_connection_error
-			'warning'
-			5
-		)
+		else
+			cs.ui.notify(
+				if xhr.responseText
+					JSON.parse(xhr.responseText).error_description
+				else
+					cs.Language.system_profile_server_connection_error
+				'warning'
+				5
+			)
 )
