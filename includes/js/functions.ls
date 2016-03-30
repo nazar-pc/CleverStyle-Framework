@@ -45,12 +45,12 @@ cs.sign_in = (login, password) !->
 	password	= String(password)
 	jssha <-! require(['jssha'], _)
 	$.ajax(
-		url		: 'api/System/user/sign_in'
+		url		: 'api/System/profile'
 		cache	: false
 		data	:
 			login		: cs.hash(jssha, 'sha224', login)
 			password	: cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', password) + cs.public_key)
-		type	: 'post'
+		type	: 'sign_in'
 		success	: !->
 			location.reload()
 	)
@@ -59,9 +59,9 @@ cs.sign_in = (login, password) !->
  */
 cs.sign_out = !->
 	$.ajax(
-		url		: 'api/System/user/sign_out'
+		url		: 'api/System/profile'
 		cache	: false
-		type	: 'post'
+		type	: 'sign_out'
 		success	: !->
 			location.reload()
 	)
@@ -76,11 +76,11 @@ cs.registration = (email) !->
 		return
 	email	= String(email).toLowerCase()
 	$.ajax(
-		url		: 'api/System/user/registration'
+		url		: 'api/System/profile'
 		cache	: false
 		data	:
 			email: email
-		type	: 'post'
+		type	: 'registration'
 		success	: (result) !->
 			if result == 'registration_confirmation'
 				cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>')
@@ -99,11 +99,11 @@ cs.restore_password = (email) !->
 	email	= String(email).toLowerCase()
 	jssha <-! require(['jssha'], _)
 	$.ajax(
-		url		: 'api/System/user/restore_password'
+		url		: 'api/System/profile'
 		cache	: false,
 		data	:
 			email: cs.hash(jssha, 'sha224', email)
-		type	: 'post'
+		type	: 'restore_password'
 		success	: (result) !->
 			if result == 'OK'
 				cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>')
@@ -136,12 +136,12 @@ cs.change_password = (current_password, new_password, success, error) !->
 	current_password	= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + cs.public_key)
 	new_password		= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + cs.public_key)
 	$.ajax(
-		url		: 'api/System/user/change_password'
+		url		: 'api/System/profile'
 		cache	: false
 		data	:
 			current_password	: current_password
 			new_password		: new_password
-		type	: 'post'
+		type	: 'change_password'
 		success	: (result) !->
 			if success
 				success()

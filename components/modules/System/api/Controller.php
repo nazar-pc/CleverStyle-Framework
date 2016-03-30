@@ -12,8 +12,7 @@ use
 	cs\modules\System\api\Controller\admin,
 	cs\modules\System\api\Controller\general,
 	cs\modules\System\api\Controller\profile,
-	cs\modules\System\api\Controller\profiles,
-	cs\modules\System\api\Controller\user_;
+	cs\modules\System\api\Controller\profiles;
 
 class Controller {
 	use
@@ -39,7 +38,6 @@ class Controller {
 		admin\users\permissions,
 		general,
 		profile,
-		profiles,
-		user_;
+		profiles;
 	static function blank () { }
 }

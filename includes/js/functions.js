@@ -60,13 +60,13 @@
     password = String(password);
     require(['jssha'], function(jssha){
       $.ajax({
-        url: 'api/System/user/sign_in',
+        url: 'api/System/profile',
         cache: false,
         data: {
           login: cs.hash(jssha, 'sha224', login),
           password: cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', password) + cs.public_key)
         },
-        type: 'post',
+        type: 'sign_in',
         success: function(){
           location.reload();
         }
@@ -78,9 +78,9 @@
    */
   cs.sign_out = function(){
     $.ajax({
-      url: 'api/System/user/sign_out',
+      url: 'api/System/profile',
       cache: false,
-      type: 'post',
+      type: 'sign_out',
       success: function(){
         location.reload();
       }
@@ -98,12 +98,12 @@
     }
     email = String(email).toLowerCase();
     $.ajax({
-      url: 'api/System/user/registration',
+      url: 'api/System/profile',
       cache: false,
       data: {
         email: email
       },
-      type: 'post',
+      type: 'registration',
       success: function(result){
         if (result === 'registration_confirmation') {
           cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>');
@@ -126,12 +126,12 @@
     email = String(email).toLowerCase();
     require(['jssha'], function(jssha){
       $.ajax({
-        url: 'api/System/user/restore_password',
+        url: 'api/System/profile',
         cache: false,
         data: {
           email: cs.hash(jssha, 'sha224', email)
         },
-        type: 'post',
+        type: 'restore_password',
         success: function(result){
           if (result === 'OK') {
             cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>');
@@ -170,13 +170,13 @@
       current_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + cs.public_key);
       new_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + cs.public_key);
       $.ajax({
-        url: 'api/System/user/change_password',
+        url: 'api/System/profile',
         cache: false,
         data: {
           current_password: current_password,
           new_password: new_password
         },
-        type: 'post',
+        type: 'change_password',
         success: function(result){
           if (success) {
             success();
