@@ -84,10 +84,10 @@ trait Management {
 	 *                             <b>]</b>
 	 */
 	function registration ($email, $confirmation = true, $auto_sign_in = true) {
-		$email = mb_strtolower($email);
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return false;
 		}
+		$email = mb_strtolower($email);
 		$this->delete_unconfirmed_users();
 		if (!Event::instance()->fire(
 			'System/User/registration/before',

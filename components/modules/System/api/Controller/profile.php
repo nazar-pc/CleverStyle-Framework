@@ -129,40 +129,21 @@ trait profile {
 		if (!$Config->core['allow_user_registration']) {
 			throw new ExitException($L->prohibited, 403);
 		}
-		$email = $Request->data('email');
-		if (!$email) {
-			throw new ExitException($L->please_type_your_email, 400);
-		}
-		$email  = mb_strtolower($email);
-		$result = $User->registration($email);
-		if ($result === false) {
-			throw new ExitException($L->please_type_correct_email, 400);
-		}
-		if ($result == 'error') {
-			throw new ExitException($L->server_error, 500);
-		}
-		if ($result == 'exists') {
-			throw new ExitException($L->error_exists, 400);
-		}
+		$email   = $Request->data('email');
+		$email   = mb_strtolower($email);
+		$result  = static::try_to_register($User, $L, $email);
 		$confirm = $result['reg_key'] !== true;
-		if ($Request->data('username')) {
-			$User->set('username', $Request->data['username'], $result['id']);
-		}
-		// Actually `sha512(sha512(password) + public_key)` instead of plain password
-		if ($Request->data('password')) {
-			$User->set_password($Request->data['password'], $result['id'], true);
-		}
-		if ($Request->data('language')) {
-			$User->set('language', $Request->data['language'], $result['id']);
-		}
-		if ($Request->data('timezone')) {
-			$User->set('timezone', $Request->data['timezone'], $result['id']);
-		}
-		if ($Request->data('avatar')) {
-			$User->set('avatar', $Request->data['avatar'], $result['id']);
-		}
+		static::fill_optional_profile_data($Request, $User, $result['id']);
+		$title = $L->success_mail(get_core_ml_text('name'));
+		$body  = $L->success_mail(
+			$User->username($result['id']),
+			get_core_ml_text('name'),
+			$Config->core_url().'/profile/settings',
+			$User->get('login', $result['id'])
+		);
 		if ($confirm) {
-			$body = $L->need_confirmation_mail_body(
+			$title = $L->need_confirmation_mail(get_core_ml_text('name'));
+			$body  = $L->need_confirmation_mail_body(
 				$User->username($result['id']),
 				get_core_ml_text('name'),
 				$Config->core_url()."/profile/registration_confirmation/$result[reg_key]",
@@ -176,24 +157,57 @@ trait profile {
 				$User->get('login', $result['id']),
 				$result['password']
 			);
-		} else {
-			$body = $L->success_mail(
-				$User->username($result['id']),
-				get_core_ml_text('name'),
-				$Config->core_url().'/profile/settings',
-				$User->get('login', $result['id'])
-			);
 		}
-		if (!Mail::instance()->send_to(
-			$email,
-			$L->{$confirm ? 'need_confirmation_mail' : 'success_mail'}(get_core_ml_text('name')),
-			$body
-		)
-		) {
+		if (!Mail::instance()->send_to($email, $title, $body)) {
 			$User->registration_cancel();
 			throw new ExitException($L->mail_sending_error, 500);
 		}
 		$Response->code = $confirm ? 202 : 201;
+	}
+	/**
+	 * @param User   $User
+	 * @param Prefix $L
+	 * @param string $email
+	 *
+	 * @return array
+	 *
+	 * @throws ExitException
+	 */
+	protected static function try_to_register ($User, $L, $email) {
+		$result = $User->registration($email);
+		if ($result === false) {
+			throw new ExitException($L->please_type_correct_email, 400);
+		}
+		if ($result == 'error') {
+			throw new ExitException($L->server_error, 500);
+		}
+		if ($result == 'exists') {
+			throw new ExitException($L->error_exists, 400);
+		}
+		return $result;
+	}
+	/**
+	 * @param \cs\Request $Request
+	 * @param User        $User
+	 * @param int         $user_id
+	 */
+	protected static function fill_optional_profile_data ($Request, $User, $user_id) {
+		if ($Request->data('username')) {
+			$User->set('username', $Request->data['username'], $user_id);
+		}
+		// Actually `sha512(sha512(password) + public_key)` instead of plain password
+		if ($Request->data('password')) {
+			$User->set_password($Request->data['password'], $user_id, true);
+		}
+		if ($Request->data('language')) {
+			$User->set('language', $Request->data['language'], $user_id);
+		}
+		if ($Request->data('timezone')) {
+			$User->set('timezone', $Request->data['timezone'], $user_id);
+		}
+		if ($Request->data('avatar')) {
+			$User->set('avatar', $Request->data['avatar'], $user_id);
+		}
 	}
 	/**
 	 * @param \cs\Request $Request
