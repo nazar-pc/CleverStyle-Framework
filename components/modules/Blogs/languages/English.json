@@ -16,7 +16,7 @@
 		"post_use_pagebreak"                       : "Use &lt;!-- pagebreak --&gt to separate preface and rest of text, in order to show preface in the list of posts, instead of automatic truncating of content. Very long preface will be truncated automatically.",
 		"post_pags"                                : "Tags",
 		"preview"                                  : "Preview",
-		"blogs_nav_page"                           : "Page %s",
+		"page_number"                              : "Page %s",
 		"for_registered_users_only"                : "For registered users only",
 		"post_adding_error"                        : "An error occurred during post adding",
 		"publish"                                  : "Publish",

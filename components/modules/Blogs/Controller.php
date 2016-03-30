@@ -14,22 +14,22 @@ use
 	cs\Language\Prefix,
 	cs\Page\Meta,
 	cs\Page,
-	cs\Request,
-	cs\Response,
 	cs\User,
 	h;
 
 class Controller {
-	static function latest_posts () {
+	/**
+	 * @param \cs\Request $Request
+	 */
+	static function latest_posts ($Request) {
 		if (!Event::instance()->fire('Blogs/latest_posts')) {
 			return;
 		}
-		$Config  = Config::instance();
-		$L       = new Prefix('blogs_');
-		$Meta    = Meta::instance();
-		$Page    = Page::instance();
-		$Posts   = Posts::instance();
-		$Request = Request::instance();
+		$Config = Config::instance();
+		$L      = new Prefix('blogs_');
+		$Meta   = Meta::instance();
+		$Page   = Page::instance();
+		$Posts  = Posts::instance();
 		/**
 		 * Page title
 		 */
@@ -45,16 +45,7 @@ class Controller {
 		/**
 		 * Determine current page
 		 */
-		$page = max(
-			isset($Request->route_ids[0]) ? array_slice($Request->route_ids, -1)[0] : 1,
-			1
-		);
-		/**
-		 * If this is not first page - show that in page title
-		 */
-		if ($page > 1) {
-			$Page->title($L->blogs_nav_page($page));
-		}
+		$page = static::get_page_and_set_title($Request, $Page, $L);
 		/**
 		 * Get posts for current page in JSON-LD structure format
 		 */
@@ -74,7 +65,32 @@ class Controller {
 			$base_url
 		);
 	}
-	static function section () {
+	/**
+	 * @param \cs\Request $Request
+	 * @param Page        $Page
+	 * @param Prefix      $L
+	 *
+	 * @return int
+	 */
+	protected static function get_page_and_set_title ($Request, $Page, $L) {
+		$page = max(
+			isset($Request->route_ids[0]) ? array_slice($Request->route_ids, -1)[0] : 1,
+			1
+		);
+		/**
+		 * If this is not first page - show that in page title
+		 */
+		if ($page > 1) {
+			$Page->title($L->page_number($page));
+		}
+		return $page;
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @throws ExitException
+	 */
+	static function section ($Request) {
 		if (!Event::instance()->fire('Blogs/section')) {
 			return;
 		}
@@ -83,7 +99,6 @@ class Controller {
 		$Meta     = Meta::instance();
 		$Page     = Page::instance();
 		$Posts    = Posts::instance();
-		$Request  = Request::instance();
 		$Sections = Sections::instance();
 		/**
 		 * At first - determine part of url and get sections list based on that path
@@ -117,16 +132,7 @@ class Controller {
 		/**
 		 * Determine current page
 		 */
-		$page = max(
-			isset($Request->route_ids[0]) ? array_slice($Request->route_ids, -1)[0] : 1,
-			1
-		);
-		/**
-		 * If this is not first page - show that in page title
-		 */
-		if ($page > 1) {
-			$Page->title($L->blogs_nav_page($page));
-		}
+		$page = static::get_page_and_set_title($Request, $Page, $L);
 		/**
 		 * Get posts for current page in JSON-LD structure format
 		 */
@@ -146,7 +152,13 @@ class Controller {
 			$base_url
 		);
 	}
-	static function post () {
+	/**
+	 * @param \cs\Request  $Request
+	 * @param \cs\Response $Response
+	 *
+	 * @throws ExitException
+	 */
+	static function post ($Request, $Response) {
 		if (!Event::instance()->fire('Blogs/post')) {
 			return;
 		}
@@ -165,7 +177,7 @@ class Controller {
 		 * @var \cs\modules\Comments\Comments $Comments
 		 */
 		$Posts   = Posts::instance();
-		$rc      = Request::instance()->route;
+		$rc      = $Request->route;
 		$post_id = (int)mb_substr($rc[1], mb_strrpos($rc[1], ':') + 1);
 		if (!$post_id) {
 			throw new ExitException(404);
@@ -180,7 +192,7 @@ class Controller {
 			throw new ExitException(404);
 		}
 		if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
-			Response::instance()->redirect($post['url'], 303);
+			$Response->redirect($post['url'], 303);
 			return;
 		}
 		$Page->title($post['title']);
@@ -212,17 +224,21 @@ class Controller {
 			($comments_enabled ? $Comments->block($post['id']) : '')
 		);
 	}
-	static function tag () {
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @throws ExitException
+	 */
+	static function tag ($Request) {
 		if (!Event::instance()->fire('Blogs/tag')) {
 			return;
 		}
-		$Config  = Config::instance();
-		$L       = new Prefix('blogs_');
-		$Meta    = Meta::instance();
-		$Page    = Page::instance();
-		$Posts   = Posts::instance();
-		$Tags    = Tags::instance();
-		$Request = Request::instance();
+		$Config = Config::instance();
+		$L      = new Prefix('blogs_');
+		$Meta   = Meta::instance();
+		$Page   = Page::instance();
+		$Posts  = Posts::instance();
+		$Tags   = Tags::instance();
 		/**
 		 * If no tag specified
 		 */
@@ -255,10 +271,7 @@ class Controller {
 		/**
 		 * Determine current page
 		 */
-		$page = max(
-			isset($Request->route[2]) ? $Request->route[2] : 1,
-			1
-		);
+		$page = max($Request->route(2) ?: 1, 1);
 		/**
 		 * If this is not first page - show that in page title
 		 */
@@ -285,7 +298,13 @@ class Controller {
 			$base_url
 		);
 	}
-	static function new_post () {
+	/**
+	 * @param \cs\Request  $Request
+	 * @param \cs\Response $Response
+	 *
+	 * @throws ExitException
+	 */
+	static function new_post ($Request, $Response) {
 		if (!Event::instance()->fire('Blogs/new_post')) {
 			return;
 		}
@@ -294,7 +313,6 @@ class Controller {
 		$module_data = $Config->module('Blogs');
 		$L           = new Prefix('blogs_');
 		$Page        = Page::instance();
-		$Request     = Request::instance();
 		$User        = User::instance();
 		$Page->title($L->new_post);
 		if (!$User->admin() && $module_data->new_posts_only_from_admins) {
@@ -333,7 +351,7 @@ class Controller {
 						$id    = $Posts->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft);
 						if ($id) {
 							$Page->interface = false;
-							Response::instance()->redirect($Config->base_url()."/$module/".$Posts->get($id)['path'].":$id");
+							$Response->redirect($Config->base_url()."/$module/".$Posts->get($id)['path'].":$id");
 							return;
 						} else {
 							$Page->warning($L->post_adding_error);
@@ -422,7 +440,13 @@ class Controller {
 			)
 		);
 	}
-	static function edit_post () {
+	/**
+	 * @param \cs\Request  $Request
+	 * @param \cs\Response $Response
+	 *
+	 * @throws ExitException
+	 */
+	static function edit_post ($Request, $Response) {
 		if (!Event::instance()->fire('Blogs/edit_post')) {
 			return;
 		}
@@ -432,7 +456,6 @@ class Controller {
 		$module_data = $Config->module('Blogs');
 		$L           = new Prefix('blogs_');
 		$Page        = Page::instance();
-		$Request     = Request::instance();
 		$User        = User::instance();
 		if ($module_data->new_posts_only_from_admins && !$User->admin()) {
 			throw new ExitException(403);
@@ -492,7 +515,7 @@ class Controller {
 						)
 						) {
 							$Page->interface = false;
-							Response::instance()->redirect($Config->base_url()."/$module/$post[path]:$post[id]");
+							$Response->redirect($Config->base_url()."/$module/$post[path]:$post[id]");
 							return;
 						} else {
 							$Page->warning($L->post_saving_error);
@@ -502,7 +525,7 @@ class Controller {
 				case 'delete':
 					if ($Posts->del($post['id'])) {
 						$Page->interface = false;
-						Response::instance()->redirect($Config->base_url()."/$module");
+						$Response->redirect($Config->base_url()."/$module");
 						return;
 					} else {
 						$Page->warning($L->post_deleting_error);
@@ -597,30 +620,23 @@ class Controller {
 			)
 		);
 	}
-	static function drafts () {
+	/**
+	 * @param \cs\Request $Request
+	 */
+	static function drafts ($Request) {
 		if (!Event::instance()->fire('Blogs/drafts')) {
 			return;
 		}
-		$Config  = Config::instance();
-		$L       = new Prefix('blogs_');
-		$Page    = Page::instance();
-		$Posts   = Posts::instance();
-		$Request = Request::instance();
-		$User    = User::instance();
+		$Config = Config::instance();
+		$L      = new Prefix('blogs_');
+		$Page   = Page::instance();
+		$Posts  = Posts::instance();
+		$User   = User::instance();
 		$Page->title($L->drafts);
 		/**
 		 * Determine current page
 		 */
-		$page = max(
-			isset($Request->route_ids[0]) ? array_slice($Request->route_ids, -1)[0] : 1,
-			1
-		);
-		/**
-		 * If this is not first page - show that in page title
-		 */
-		if ($page > 1) {
-			$Page->title($L->blogs_nav_page($page));
-		}
+		$page = static::get_page_and_set_title($Request, $Page, $L);
 		/**
 		 * Get posts for current page in JSON-LD structure format
 		 */
@@ -641,7 +657,13 @@ class Controller {
 			$base_url
 		);
 	}
-	static function atom_xml () {
+	/**
+	 * @param \cs\Request  $Request
+	 * @param \cs\Response $Response
+	 *
+	 * @throws ExitException
+	 */
+	static function atom_xml ($Request, $Response) {
 		$Config   = Config::instance();
 		$L        = new Prefix('blogs_');
 		$Page     = Page::instance();
@@ -676,10 +698,10 @@ class Controller {
 		$title[]  = $L->latest_posts;
 		$title    = implode($Config->core['title_delimiter'], $title);
 		$base_url = $Config->base_url();
-		Response::instance()->header('content-type', 'application/atom+xml');
+		$Response->header('content-type', 'application/atom+xml');
 		$Page->interface = false;
 
-		$url = $Config->core_url().Request::instance()->uri;
+		$url = $Config->core_url().$Request->uri;
 		$Page->content(
 			"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n".
 			h::feed(
@@ -751,6 +773,11 @@ class Controller {
 			)
 		);
 	}
+	/**
+	 * @param string $theme
+	 *
+	 * @return string
+	 */
 	protected static function get_favicon_path ($theme) {
 		$theme_favicon = "$theme/img/favicon";
 		if (file_exists(THEMES."/$theme_favicon.png")) {
