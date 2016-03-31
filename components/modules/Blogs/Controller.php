@@ -323,47 +323,21 @@ class Controller {
 			return;
 		}
 		$module = path($L->Blogs);
-		if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags'], $_POST['mode'])) {
-			$draft = false;
-			switch ($_POST['mode']) {
-				case 'draft':
-					$draft = true;
-				case 'publish':
-					$save = true;
-					if (empty($_POST['title'])) {
-						$Page->warning($L->post_title_empty);
-						$save = false;
-					}
-					if (empty($_POST['sections']) && $_POST['sections'] !== '0') {
-						$Page->warning($L->no_post_sections_specified);
-						$save = false;
-					}
-					if (empty($_POST['content'])) {
-						$Page->warning($L->post_content_empty);
-						$save = false;
-					}
-					if (empty($_POST['tags'])) {
-						$Page->warning($L->no_post_tags_specified);
-						$save = false;
-					}
-					if ($save) {
-						$Posts = Posts::instance();
-						$id    = $Posts->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft);
-						if ($id) {
-							$Page->interface = false;
-							$Response->redirect($Config->base_url()."/$module/".$Posts->get($id)['path'].":$id");
-							return;
-						} else {
-							$Page->warning($L->post_adding_error);
-						}
-					}
-					break;
+		$data   = static::check_request_data($Request, $Page, $L);
+		if ($data) {
+			$Posts = Posts::instance();
+			$id    = $Posts->add($data['title'], null, $data['content'], $data['sections'], _trim(explode(',', $data['tags'])), $data['mode'] == 'draft');
+			if ($id) {
+				$Response->redirect($Config->base_url()."/$module/".$Posts->get($id)['path'].":$id");
+				return;
+			} else {
+				$Page->warning($L->post_adding_error);
 			}
 		}
 		$disabled     = [];
 		$max_sections = $module_data->max_sections;
 		$content      = uniqid('post_content', true);
-		$Page->replace($content, isset($_POST['content']) ? $_POST['content'] : '');
+		$Page->replace($content, $Request->data('content') ?: '');
 		$sections = get_sections_select_post($disabled);
 		if (count($sections['in']) > 1) {
 			$sections = [
@@ -373,7 +347,7 @@ class Controller {
 					[
 						'name'     => 'sections[]',
 						'disabled' => $disabled,
-						'selected' => isset($_POST['sections']) ? $_POST['sections'] : (isset($Request->route[1]) ? $Request->route[1] : []),
+						'selected' => $Request->data('sections') ?: (isset($Request->route[1]) ? $Request->route[1] : []),
 						$max_sections < 1 ? 'multiple' : false
 					]
 				).
@@ -392,18 +366,17 @@ class Controller {
 					[
 						$L->post_title,
 						h::{'h1.cs-blogs-new-post-title[contenteditable=true]'}(
-							isset($_POST['title']) ? $_POST['title'] : '<br>'
+							$Request->data('title') ?: '<br>'
 						)
 					],
 					$sections,
 					[
 						$L->post_content,
-						(
-						functionality('inline_editor') ? h::{'cs-editor-inline div.cs-blogs-new-post-content'}(
-							$content
-						) : h::{'cs-editor textarea.cs-blogs-new-post-content[is=cs-textarea][autosize][name=content][required]'}(
-							isset($_POST['content']) ? $_POST['content'] : ''
-						)
+						(functionality('inline_editor')
+							? h::{'cs-editor-inline div.cs-blogs-new-post-content'}($content)
+							: h::{'cs-editor textarea.cs-blogs-new-post-content[is=cs-textarea][autosize][name=content][required]'}(
+								$Request->data('content') ?: ''
+							)
 						).
 						h::br().
 						$L->post_use_pagebreak
@@ -412,7 +385,7 @@ class Controller {
 						$L->post_tags,
 						h::{'input.cs-blogs-new-post-tags[is=cs-input-text][name=tags][required]'}(
 							[
-								'value'       => isset($_POST['tags']) ? $_POST['tags'] : false,
+								'value'       => $Request->data('tags') ?: false,
 								'placeholder' => 'CleverStyle, CMS, Open Source'
 							]
 						)
@@ -439,6 +412,35 @@ class Controller {
 				)
 			)
 		);
+	}
+	/**
+	 * @param \cs\Request $Request
+	 * @param Page        $Page
+	 * @param Prefix      $L
+	 *
+	 * @return array|false
+	 */
+	protected static function check_request_data ($Request, $Page, $L) {
+		$data = $Request->data('title', 'sections', 'content', 'tags', 'mode');
+		if ($data && in_array($data['mode'], ['draft', 'publish'])) {
+			if (empty($data['title'])) {
+				$Page->warning($L->post_title_empty);
+				return false;
+			}
+			if (empty($data['sections']) && $data['sections'] !== '0') {
+				$Page->warning($L->no_post_sections_specified);
+				return false;
+			}
+			if (empty($data['content'])) {
+				$Page->warning($L->post_content_empty);
+				return false;
+			}
+			if (empty($data['tags'])) {
+				$Page->warning($L->no_post_tags_specified);
+				return false;
+			}
+		}
+		return $data;
 	}
 	/**
 	 * @param \cs\Request  $Request
@@ -480,63 +482,35 @@ class Controller {
 			$L->editing_of_post($post['title'])
 		);
 		$module = path($L->Blogs);
-		if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags'], $_POST['mode'])) {
-			$draft = false;
-			switch ($_POST['mode']) {
-				case 'draft':
-					$draft = true;
-				case 'save':
-					$save = true;
-					if (empty($_POST['title'])) {
-						$Page->warning($L->post_title_empty);
-						$save = false;
-					}
-					if (empty($_POST['sections']) && $_POST['sections'] !== '0') {
-						$Page->warning($L->no_post_sections_specified);
-						$save = false;
-					}
-					if (empty($_POST['content'])) {
-						$Page->warning($L->post_content_empty);
-						$save = false;
-					}
-					if (empty($_POST['tags'])) {
-						$Page->warning($L->no_post_tags_specified);
-						$save = false;
-					}
-					if ($save) {
-						if ($Posts->set(
-							$post['id'],
-							$_POST['title'],
-							null,
-							$_POST['content'],
-							$_POST['sections'],
-							_trim(explode(',', $_POST['tags'])),
-							$draft
-						)
-						) {
-							$Page->interface = false;
-							$Response->redirect($Config->base_url()."/$module/$post[path]:$post[id]");
-							return;
-						} else {
-							$Page->warning($L->post_saving_error);
-						}
-					}
-					break;
-				case 'delete':
-					if ($Posts->del($post['id'])) {
-						$Page->interface = false;
-						$Response->redirect($Config->base_url()."/$module");
-						return;
-					} else {
-						$Page->warning($L->post_deleting_error);
-					}
-					break;
+		$data   = static::check_request_data($Request, $Page, $L);
+		if ($data) {
+			$result = $Posts->set(
+				$post['id'],
+				$data['title'],
+				null,
+				$data['content'],
+				$data['sections'],
+				_trim(explode(',', $data['tags'])),
+				$data['mode'] == 'draft'
+			);
+			if ($result) {
+				$Response->redirect($Config->base_url()."/$module/$post[path]:$post[id]");
+				return;
+			} else {
+				$Page->warning($L->post_saving_error);
+			}
+		} elseif ($Request->data('mode') == 'delete') {
+			if ($Posts->del($post['id'])) {
+				$Response->redirect($Config->base_url()."/$module");
+				return;
+			} else {
+				$Page->warning($L->post_deleting_error);
 			}
 		}
 		$disabled     = [];
 		$max_sections = $module_data->max_sections;
 		$content      = uniqid('post_content', true);
-		$Page->replace($content, isset($_POST['content']) ? $_POST['content'] : $post['content']);
+		$Page->replace($content, $Request->data('content') ?: $post['content']);
 		$sections = get_sections_select_post($disabled);
 		if (count($sections['in']) > 1) {
 			$sections = [
@@ -546,7 +520,7 @@ class Controller {
 					[
 						'name'     => 'sections[]',
 						'disabled' => $disabled,
-						'selected' => isset($_POST['sections']) ? $_POST['sections'] : $post['sections'],
+						'selected' => $Request->data('sections') ?: $post['sections'],
 						$max_sections < 1 ? 'multiple' : false
 					]
 				).
@@ -565,7 +539,7 @@ class Controller {
 					[
 						$L->post_title,
 						h::{'h1.cs-blogs-new-post-title[contenteditable=true]'}(
-							isset($_POST['title']) ? $_POST['title'] : $post['title']
+							$Request->data('title') ?: $post['title']
 						)
 					],
 					$sections,
@@ -575,7 +549,7 @@ class Controller {
 						functionality('inline_editor') ? h::{'cs-editor-inline div.cs-blogs-new-post-content'}(
 							$content
 						) : h::{'cs-editor textarea.cs-blogs-new-post-content[is=cs-textarea][autosize][name=content][required]'}(
-							isset($_POST['content']) ? $_POST['content'] : $post['content']
+							$Request->data('content') ?: $post['content']
 						)
 						).
 						h::br().
@@ -585,10 +559,7 @@ class Controller {
 						$L->post_tags,
 						h::{'input.cs-blogs-new-post-tags[is=cs-input-text][name=tags][required]'}(
 							[
-								'value'       => htmlspecialchars_decode(
-									isset($_POST['tags']) ? $_POST['tags'] : implode(', ', $post['tags']),
-									ENT_QUOTES | ENT_HTML5 | ENT_DISALLOWED | ENT_SUBSTITUTE
-								),
+								'value'       => $Request->data('tags') ?: implode(', ', $post['tags']),
 								'placeholder' => 'CleverStyle, CMS, Open Source'
 							]
 						)
@@ -676,16 +647,18 @@ class Controller {
 		$Sections = Sections::instance();
 		$Tags     = Tags::instance();
 		$number   = $Config->module('Blogs')->posts_per_page;
-		if (isset($_GET['section'])) {
-			$section = $Sections->get($_GET['section']);
+		$section  = $Request->query('section');
+		$tag      = $Request->query('tag');
+		if ($section) {
+			$section = $Sections->get($section);
 			if (!$section) {
 				throw new ExitException(404);
 			}
 			$title[] = $L->section;
 			$title[] = $section['title'];
 			$posts   = $Posts->get_for_section($section['id'], 1, $number);
-		} elseif (isset($_GET['tag'])) {
-			$tag = $Tags->get($_GET['tag']);
+		} elseif ($tag) {
+			$tag = $Tags->get($tag);
 			if (!$tag) {
 				throw new ExitException(404);
 			}
