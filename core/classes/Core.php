@@ -121,6 +121,7 @@ AddEncoding gzip .html
 Config file not found, is system installed properly?
 How to install CleverStyle CMS: https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation
 CONFIG_NOT_FOUND;
+				// Can't proceed without config
 				exit(500);
 			} else {
 				echo /** @lang HTML */
@@ -130,6 +131,7 @@ CONFIG_NOT_FOUND;
 <a href="https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation">How to install CleverStyle CMS</a>
 CONFIG_NOT_FOUND;
 				http_response_code(500);
+				// Can't proceed without config
 				exit;
 			}
 		}
