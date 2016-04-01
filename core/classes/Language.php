@@ -18,8 +18,17 @@ use
  *   'cregion'          => cregion
  *   'clanguage_en'     => clanguage_en
  *  ]
- * 
+ *
  * @method static $this instance($check = false)
+ *
+ * @property string $clanguage_en
+ * @property string $clang
+ * @property string $cregion
+ * @property string $content_language
+ * @property string $_datetime_long
+ * @property string $_datetime
+ * @property string $_date
+ * @property string $_time
  */
 class Language implements JsonSerializable {
 	use Singleton;
@@ -129,6 +138,9 @@ class Language implements JsonSerializable {
 		$clang   = explode('?', $url, 2)[0];
 		$clang   = explode('/', trim($clang, '/'), 2)[0];
 		if (isset($aliases[$clang])) {
+			if (count($this->localized_url) > 100) {
+				$this->localized_url = [];
+			}
 			return $this->localized_url[$url] = $aliases[$clang];
 		}
 		return false;

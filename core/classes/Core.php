@@ -6,14 +6,32 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-use
-	h;
 
 /**
  * Core class.
  * Provides loading of base system configuration
  *
  * @method static $this instance($check = false)
+ *
+ * @property string $domain
+ * @property string $timezone
+ * @property string $db_host
+ * @property string $db_type
+ * @property string $db_name
+ * @property string $db_user
+ * @property string $db_password
+ * @property string $db_prefix
+ * @property string $db_charset
+ * @property string $storage_type
+ * @property string $storage_url
+ * @property string $storage_host
+ * @property string $storage_user
+ * @property string $storage_password
+ * @property string $language
+ * @property string $cache_engine
+ * @property string $memcache_host
+ * @property string $memcache_port
+ * @property string $public_key
  */
 class Core {
 	use Singleton;
@@ -98,16 +116,22 @@ AddEncoding gzip .html
 	 */
 	protected function load_config () {
 		if (!file_exists(DIR.'/config/main.json')) {
-			throw new ExitException(
-				h::p('Config file not found, is system installed properly?').
-				h::a(
-					'How to install CleverStyle CMS',
-					[
-						'href' => 'https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation'
-					]
-				),
-				500
-			);
+			if (PHP_SAPI == 'cli') {
+				echo <<<CONFIG_NOT_FOUND
+Config file not found, is system installed properly?
+How to install CleverStyle CMS: https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation
+CONFIG_NOT_FOUND;
+				exit(500);
+			} else {
+				echo /** @lang HTML */
+				<<<CONFIG_NOT_FOUND
+<!doctype html>
+<p>Config file not found, is system installed properly?</p>
+<a href="https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation">How to install CleverStyle CMS</a>
+CONFIG_NOT_FOUND;
+				http_response_code(500);
+				exit;
+			}
 		}
 		return file_get_json_nocomments(DIR.'/config/main.json');
 	}
