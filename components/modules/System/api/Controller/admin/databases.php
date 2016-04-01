@@ -12,8 +12,7 @@ use
 	cs\Config,
 	cs\Core,
 	cs\ExitException,
-	cs\Language,
-	cs\Page;
+	cs\Language;
 
 trait databases {
 	/**
