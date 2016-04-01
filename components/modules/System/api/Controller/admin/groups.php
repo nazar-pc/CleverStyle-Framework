@@ -11,7 +11,6 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\ExitException,
 	cs\Group,
-	cs\Page,
 	cs\Response;
 
 trait groups {
@@ -20,11 +19,12 @@ trait groups {
 	 *
 	 * @param \cs\Request $Request
 	 *
+	 * @return array|array[]
+	 *
 	 * @throws ExitException
 	 */
 	static function admin_groups___get ($Request) {
 		$Group = Group::instance();
-		$Page  = Page::instance();
 		$id    = $Request->route_ids(0);
 		$ids   = $Request->query('ids');
 		if ($id) {
@@ -37,7 +37,7 @@ trait groups {
 		if (!$result) {
 			throw new ExitException(404);
 		}
-		$Page->json($result);
+		return $result;
 	}
 	/**
 	 * Add new group
@@ -95,6 +95,8 @@ trait groups {
 	 *
 	 * @param \cs\Request $Request
 	 *
+	 * @return array
+	 *
 	 * @throws ExitException
 	 */
 	static function admin_groups_permissions_get ($Request) {
@@ -102,9 +104,7 @@ trait groups {
 		if (!$id) {
 			throw new ExitException(400);
 		}
-		Page::instance()->json(
-			Group::instance()->get_permissions($id) ?: []
-		);
+		return Group::instance()->get_permissions($id) ?: [];
 	}
 	/**
 	 * Update group's permissions

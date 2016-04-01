@@ -14,13 +14,14 @@ use
 	cs\Event,
 	cs\ExitException,
 	cs\Language\Prefix,
-	cs\Page,
 	cs\Session,
 	cs\modules\System\Packages_manipulation;
 
 trait plugins {
 	/**
 	 * @param \cs\Request $Request
+	 *
+	 * @return mixed
 	 *
 	 * @throws ExitException
 	 */
@@ -32,20 +33,17 @@ trait plugins {
 				 * Get dependent packages for plugin
 				 */
 				case 'dependent_packages':
-					static::get_dependent_packages_for_plugin($route_path[2]);
-					return;
+					return static::get_dependent_packages_for_plugin($route_path[2]);
 				/**
 				 * Get dependencies for plugin
 				 */
 				case 'dependencies':
-					static::get_dependencies_for_plugin($route_path[2]);
-					return;
+					return static::get_dependencies_for_plugin($route_path[2]);
 				/**
 				 * Get dependencies for plugin during update
 				 */
 				case 'update_dependencies':
-					static::get_update_dependencies_for_plugin($route_path[2]);
-					return;
+					return static::get_update_dependencies_for_plugin($route_path[2]);
 				default:
 					throw new ExitException(400);
 			}
@@ -53,10 +51,12 @@ trait plugins {
 		/**
 		 * Get array of plugins in extended form
 		 */
-		static::get_plugins_list();
+		return static::get_plugins_list();
 	}
 	/**
 	 * @param string $plugin
+	 *
+	 * @return string[][]
 	 *
 	 * @throws ExitException
 	 */
@@ -65,12 +65,12 @@ trait plugins {
 			throw new ExitException(404);
 		}
 		$meta_file = PLUGINS."/$plugin/meta.json";
-		Page::instance()->json(
-			file_exists($meta_file) ? Packages_manipulation::get_dependent_packages(file_get_json($meta_file)) : []
-		);
+		return file_exists($meta_file) ? Packages_manipulation::get_dependent_packages(file_get_json($meta_file)) : [];
 	}
 	/**
 	 * @param string $plugin
+	 *
+	 * @return array
 	 *
 	 * @throws ExitException
 	 */
@@ -80,12 +80,12 @@ trait plugins {
 			throw new ExitException(404);
 		}
 		$meta_file = PLUGINS."/$plugin/meta.json";
-		Page::instance()->json(
-			file_exists($meta_file) ? Packages_manipulation::get_dependencies(file_get_json($meta_file)) : []
-		);
+		return file_exists($meta_file) ? Packages_manipulation::get_dependencies(file_get_json($meta_file)) : [];
 	}
 	/**
 	 * @param string $plugin
+	 *
+	 * @return array
 	 *
 	 * @throws ExitException
 	 */
@@ -110,9 +110,7 @@ trait plugins {
 		) {
 			throw new ExitException((new Prefix('system_admin_modules_'))->this_is_not_plugin_installer_file, 400);
 		}
-		Page::instance()->json(
-			Packages_manipulation::get_dependencies($new_meta)
-		);
+		return Packages_manipulation::get_dependencies($new_meta);
 	}
 	protected static function get_plugins_list () {
 		$Config       = Config::instance();
@@ -136,8 +134,7 @@ trait plugins {
 			}
 			$plugins_list[] = $plugin;
 		}
-		unset($plugin_name, $plugin);
-		Page::instance()->json($plugins_list);
+		return $plugins_list;
 	}
 	/**
 	 * @param array  $plugin

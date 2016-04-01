@@ -11,12 +11,13 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\ExitException,
 	cs\Language\Prefix,
-	cs\Page,
 	cs\Request,
 	cs\Session;
 
 trait upload {
 	/**
+	 * @return array
+	 *
 	 * @throws ExitException
 	 */
 	static function admin_upload_post () {
@@ -24,7 +25,7 @@ trait upload {
 		if (!$file) {
 			throw new ExitException(400);
 		}
-		$L    = new Prefix('system_admin_');
+		$L = new Prefix('system_admin_');
 		switch ($file['error']) {
 			case UPLOAD_ERR_INI_SIZE:
 			case UPLOAD_ERR_FORM_SIZE:
@@ -70,6 +71,6 @@ trait upload {
 			unlink($tmp_location);
 			throw new ExitException(400);
 		}
-		Page::instance()->json($meta);
+		return $meta;
 	}
 }

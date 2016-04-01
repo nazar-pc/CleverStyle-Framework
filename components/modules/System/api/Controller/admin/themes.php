@@ -13,13 +13,14 @@ use
 	cs\Event,
 	cs\ExitException,
 	cs\Language,
-	cs\Page,
 	cs\Session,
 	cs\modules\System\Packages_manipulation;
 
 trait themes {
 	/**
 	 * @param \cs\Request $Request
+	 *
+	 * @return mixed
 	 *
 	 * @throws ExitException
 	 */
@@ -28,21 +29,23 @@ trait themes {
 			/**
 			 * Get dependencies for theme during update
 			 */
-			static::get_update_dependencies_for_theme($Request->route_path[2]);
+			return static::get_update_dependencies_for_theme($Request->route_path[2]);
 		} elseif ($Request->route_path(2) == 'current') {
 			/**
 			 * Get current theme
 			 */
-			static::get_current_theme();
+			return static::get_current_theme();
 		} else {
 			/**
 			 * Get array of themes in extended form
 			 */
-			static::get_themes_list();
+			return static::get_themes_list();
 		}
 	}
 	/**
 	 * @param string $theme
+	 *
+	 * @return array
 	 *
 	 * @throws ExitException
 	 */
@@ -74,13 +77,17 @@ trait themes {
 				'to'   => $new_meta['version']
 			];
 		}
-		Page::instance()->json($dependencies);
+		return $dependencies;
 	}
+	/**
+	 * @return string
+	 */
 	protected static function get_current_theme () {
-		Page::instance()->json(
-			Config::instance()->core['theme']
-		);
+		return Config::instance()->core['theme'];
 	}
+	/**
+	 * @return array
+	 */
 	protected static function get_themes_list () {
 		$themes = get_files_list(THEMES, false, 'd');
 		asort($themes);
@@ -102,8 +109,7 @@ trait themes {
 			}
 			$themes_list[] = $theme;
 		}
-		unset($theme_name, $theme);
-		Page::instance()->json($themes_list);
+		return $themes_list;
 	}
 	/**
 	 * @param array  $theme

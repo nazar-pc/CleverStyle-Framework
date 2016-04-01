@@ -12,8 +12,7 @@ use
 	cs\Config,
 	cs\Core,
 	cs\ExitException,
-	cs\Language,
-	cs\Page;
+	cs\Language;
 
 trait storages {
 	/**
@@ -32,7 +31,7 @@ trait storages {
 		foreach ($storages as $i => &$storage) {
 			$storage['index'] = $i;
 		}
-		Page::instance()->json(array_values($storages));
+		return array_values($storages);
 	}
 	/**
 	 * Update storage settings
@@ -131,9 +130,7 @@ trait storages {
 	 * Get array of available storage engines
 	 */
 	static function admin_storages_engines () {
-		Page::instance()->json(
-			static::admin_storages_get_engines()
-		);
+		return static::admin_storages_get_engines();
 	}
 	/**
 	 * @return string[]

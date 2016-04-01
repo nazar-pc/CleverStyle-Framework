@@ -11,7 +11,6 @@ namespace cs\modules\System\api\Controller\admin\users;
 use
 	cs\ExitException,
 	cs\Group,
-	cs\Page,
 	cs\User;
 
 trait groups {
@@ -20,15 +19,15 @@ trait groups {
 	 *
 	 * @param \cs\Request $Request
 	 *
+	 * @return array
+	 *
 	 * @throws ExitException
 	 */
 	static function admin_users_groups_get ($Request) {
 		if (!isset($Request->route_ids[0])) {
 			throw new ExitException(400);
 		}
-		Page::instance()->json(
-			User::instance()->get_groups($Request->route_ids[0]) ?: []
-		);
+		return User::instance()->get_groups($Request->route_ids[0]) ?: [];
 	}
 	/**
 	 * Get user's groups

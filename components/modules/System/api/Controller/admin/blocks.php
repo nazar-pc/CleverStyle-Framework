@@ -11,7 +11,6 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Config,
 	cs\ExitException,
-	cs\Page,
 	cs\Permission,
 	cs\Text;
 
@@ -23,11 +22,12 @@ trait blocks {
 	 *
 	 * @param \cs\Request $Request
 	 *
+	 * @return array
+	 *
 	 * @throws ExitException
 	 */
 	static function admin_blocks_get ($Request) {
 		$Config = Config::instance();
-		$Page   = Page::instance();
 		$Text   = Text::instance();
 		$db_id  = $Config->module('System')->db('texts');
 		$index  = $Request->route_ids(0);
@@ -37,27 +37,24 @@ trait blocks {
 				$block['title']   = $Text->process($db_id, $block['title'], true);
 				$block['content'] = $block['content'] ? $Text->process($db_id, $block['content'], true) : '';
 			}
-			$Page->json(array_values($blocks) ?: []);
-			return;
+			return array_values($blocks) ?: [];
 		}
 		$block = static::get_block_by_index($index);
 		if (!$block) {
 			throw new ExitException(404);
 		}
-		$Page->json(
-			[
-				'title'    => $Text->process($db_id, $block['title'], true),
-				'type'     => $block['type'],
-				'active'   => (int)$block['active'],
-				'template' => $block['template'],
-				'start'    => date('Y-m-d\TH:i', $block['start'] ?: TIME),
-				'expire'   => [
-					'date'  => date('Y-m-d\TH:i', $block['expire'] ?: TIME),
-					'state' => (int)($block['expire'] != 0)
-				],
-				'content'  => $Text->process($db_id, $block['content'], true)
-			]
-		);
+		return [
+			'title'    => $Text->process($db_id, $block['title'], true),
+			'type'     => $block['type'],
+			'active'   => (int)$block['active'],
+			'template' => $block['template'],
+			'start'    => date('Y-m-d\TH:i', $block['start'] ?: TIME),
+			'expire'   => [
+				'date'  => date('Y-m-d\TH:i', $block['expire'] ?: TIME),
+				'state' => (int)($block['expire'] != 0)
+			],
+			'content'  => $Text->process($db_id, $block['content'], true)
+		];
 	}
 	/**
 	 * Add new block
@@ -118,17 +115,13 @@ trait blocks {
 	 * Get array of available block templates
 	 */
 	static function admin_blocks_templates () {
-		Page::instance()->json(
-			_mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
-		);
+		return _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6);
 	}
 	/**
 	 * Get array of available block types
 	 */
 	static function admin_blocks_types () {
-		Page::instance()->json(
-			array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4))
-		);
+		return array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4));
 	}
 	/**
 	 * Update blocks order

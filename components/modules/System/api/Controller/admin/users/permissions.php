@@ -10,7 +10,6 @@
 namespace cs\modules\System\api\Controller\admin\users;
 use
 	cs\ExitException,
-	cs\Page,
 	cs\User;
 
 trait permissions {
@@ -19,15 +18,15 @@ trait permissions {
 	 *
 	 * @param \cs\Request $Request
 	 *
+	 * @return array
+	 *
 	 * @throws ExitException
 	 */
 	static function admin_users_permissions_get ($Request) {
 		if (!isset($Request->route_ids[0])) {
 			throw new ExitException(400);
 		}
-		Page::instance()->json(
-			User::instance()->get_permissions($Request->route_ids[0]) ?: []
-		);
+		return User::instance()->get_permissions($Request->route_ids[0]) ?: [];
 	}
 	/**
 	 * Update user's permissions

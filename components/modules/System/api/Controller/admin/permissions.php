@@ -11,7 +11,6 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\ExitException,
 	cs\Group,
-	cs\Page,
 	cs\Permission,
 	cs\User;
 
@@ -20,6 +19,8 @@ trait permissions {
 	 * Get array of permissions data or data of specific permission if id specified
 	 *
 	 * @param \cs\Request $Request
+	 *
+	 * @return array
 	 *
 	 * @throws ExitException
 	 */
@@ -33,7 +34,7 @@ trait permissions {
 		} else {
 			$result = $Permission->get_all();
 		}
-		Page::instance()->json($result);
+		return $result;
 	}
 	/**
 	 * Add new permission
@@ -91,6 +92,8 @@ trait permissions {
 	 *
 	 * @param \cs\Request $Request
 	 *
+	 * @return array
+	 *
 	 * @throws ExitException
 	 */
 	static function admin_permissions_for_item_get ($Request) {
@@ -137,12 +140,10 @@ trait permissions {
 				'id'
 			);
 		}
-		Page::instance()->json(
-			[
-				'groups' => (object)$data['groups'],
-				'users'  => (object)$data['users']
-			]
-		);
+		return [
+			'groups' => (object)$data['groups'],
+			'users'  => (object)$data['users']
+		];
 	}
 	/**
 	 * Get permissions for specific item

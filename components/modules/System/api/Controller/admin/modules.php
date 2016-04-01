@@ -14,7 +14,6 @@ use
 	cs\Event,
 	cs\ExitException,
 	cs\Language\Prefix,
-	cs\Page,
 	cs\Permission,
 	cs\Session,
 	cs\modules\System\Packages_manipulation;
@@ -22,6 +21,8 @@ use
 trait modules {
 	/**
 	 * @param \cs\Request $Request
+	 *
+	 * @return mixed
 	 *
 	 * @throws ExitException
 	 */
@@ -33,32 +34,27 @@ trait modules {
 				 * Get dependent packages for module
 				 */
 				case 'dependent_packages':
-					static::get_dependent_packages_for_module($route_path[2]);
-					break;
+					return static::get_dependent_packages_for_module($route_path[2]);
 				/**
 				 * Get dependencies for module (packages, databases, storages)
 				 */
 				case 'dependencies':
-					static::get_dependencies_for_module($route_path[2]);
-					break;
+					return static::get_dependencies_for_module($route_path[2]);
 				/**
 				 * Get dependencies for module during update
 				 */
 				case 'update_dependencies':
-					static::get_update_dependencies_for_module($route_path[2]);
-					break;
+					return static::get_update_dependencies_for_module($route_path[2]);
 				/**
 				 * Get mapping of named module's databases to indexes of system databases
 				 */
 				case 'db':
-					static::get_module_databases($route_path[2]);
-					break;
+					return static::get_module_databases($route_path[2]);
 				/**
 				 * Get mapping of named module's storages to indexes of system storages
 				 */
 				case 'storage':
-					static::get_module_storages($route_path[2]);
-					break;
+					return static::get_module_storages($route_path[2]);
 				default:
 					throw new ExitException(400);
 			}
@@ -66,16 +62,18 @@ trait modules {
 			/**
 			 * Get current default module
 			 */
-			static::get_default_module();
+			return static::get_default_module();
 		} else {
 			/**
 			 * Get array of modules in extended form
 			 */
-			static::get_modules_list();
+			return static::get_modules_list();
 		}
 	}
 	/**
 	 * @param string $module
+	 *
+	 * @return string[][]
 	 *
 	 * @throws ExitException
 	 */
@@ -84,12 +82,12 @@ trait modules {
 			throw new ExitException(404);
 		}
 		$meta_file = MODULES."/$module/meta.json";
-		Page::instance()->json(
-			file_exists($meta_file) ? Packages_manipulation::get_dependent_packages(file_get_json($meta_file)) : []
-		);
+		return file_exists($meta_file) ? Packages_manipulation::get_dependent_packages(file_get_json($meta_file)) : [];
 	}
 	/**
 	 * @param string $module
+	 *
+	 * @return array
 	 *
 	 * @throws ExitException
 	 */
@@ -98,12 +96,12 @@ trait modules {
 			throw new ExitException(404);
 		}
 		$meta_file = MODULES."/$module/meta.json";
-		Page::instance()->json(
-			file_exists($meta_file) ? Packages_manipulation::get_dependencies(file_get_json($meta_file)) : []
-		);
+		return file_exists($meta_file) ? Packages_manipulation::get_dependencies(file_get_json($meta_file)) : [];
 	}
 	/**
 	 * @param string $module
+	 *
+	 * @return array
 	 *
 	 * @throws ExitException
 	 */
@@ -123,9 +121,7 @@ trait modules {
 		if (!static::is_same_module($new_meta, $module)) {
 			throw new ExitException((new Prefix('system_admin_modules_'))->this_is_not_module_installer_file, 400);
 		}
-		Page::instance()->json(
-			Packages_manipulation::get_dependencies($new_meta)
-		);
+		return Packages_manipulation::get_dependencies($new_meta);
 	}
 	/**
 	 * @param array  $meta
@@ -139,6 +135,8 @@ trait modules {
 	/**
 	 * @param string $module
 	 *
+	 * @return array
+	 *
 	 * @throws ExitException
 	 */
 	protected static function get_module_databases ($module) {
@@ -146,12 +144,12 @@ trait modules {
 		if (!isset($Config->components['modules'][$module]['db'])) {
 			throw new ExitException(404);
 		}
-		Page::instance()->json(
-			$Config->components['modules'][$module]['db']
-		);
+		return $Config->components['modules'][$module]['db'];
 	}
 	/**
 	 * @param string $module
+	 *
+	 * @return array
 	 *
 	 * @throws ExitException
 	 */
@@ -160,9 +158,7 @@ trait modules {
 		if (!isset($Config->components['modules'][$module]['storage'])) {
 			throw new ExitException(404);
 		}
-		Page::instance()->json(
-			$Config->components['modules'][$module]['storage']
-		);
+		return $Config->components['modules'][$module]['storage'];
 	}
 	protected static function get_modules_list () {
 		$Config       = Config::instance();
@@ -191,8 +187,7 @@ trait modules {
 			}
 			$modules_list[] = $module;
 		}
-		unset($module_name, $module_data, $module);
-		Page::instance()->json($modules_list);
+		return $modules_list;
 	}
 	/**
 	 * @param array  $module
@@ -213,10 +208,11 @@ trait modules {
 			$module[$dir ?: $feature] = [];
 		}
 	}
+	/**
+	 * @return string
+	 */
 	protected static function get_default_module () {
-		Page::instance()->json(
-			Config::instance()->core['default_module']
-		);
+		return Config::instance()->core['default_module'];
 	}
 	/**
 	 * @param \cs\Request $Request

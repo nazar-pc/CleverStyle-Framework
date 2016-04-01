@@ -10,8 +10,7 @@
 namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Config,
-	cs\ExitException,
-	cs\Page;
+	cs\ExitException;
 
 trait system {
 	/**
@@ -19,18 +18,16 @@ trait system {
 	 */
 	static function admin_system_get_settings () {
 		$Config = Config::instance();
-		Page::instance()->json(
-			[
-				'site_mode'         => $Config->core['site_mode'],
-				'closed_title'      => get_core_ml_text('closed_title'),
-				'closed_text'       => get_core_ml_text('closed_text'),
-				'title_delimiter'   => $Config->core['title_delimiter'],
-				'title_reverse'     => $Config->core['title_reverse'],
-				'show_tooltips'     => $Config->core['show_tooltips'],
-				'simple_admin_mode' => $Config->core['simple_admin_mode'],
-				'applied'           => $Config->cancel_available()
-			]
-		);
+		return [
+			'site_mode'         => $Config->core['site_mode'],
+			'closed_title'      => get_core_ml_text('closed_title'),
+			'closed_text'       => get_core_ml_text('closed_text'),
+			'title_delimiter'   => $Config->core['title_delimiter'],
+			'title_reverse'     => $Config->core['title_reverse'],
+			'show_tooltips'     => $Config->core['show_tooltips'],
+			'simple_admin_mode' => $Config->core['simple_admin_mode'],
+			'applied'           => $Config->cancel_available()
+		];
 	}
 	/**
 	 * Apply system settings

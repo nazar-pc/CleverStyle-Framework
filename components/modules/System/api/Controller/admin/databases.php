@@ -44,7 +44,7 @@ trait databases {
 			$db['mirrors'] = array_values($db['mirrors']);
 		}
 		unset($i, $db);
-		Page::instance()->json(array_values($databases));
+		return array_values($databases);
 	}
 	/**
 	 * Update database or database mirror settings
@@ -164,9 +164,7 @@ trait databases {
 	 * Get array of available database engines
 	 */
 	static function admin_databases_engines () {
-		Page::instance()->json(
-			static::admin_databases_get_engines()
-		);
+		return static::admin_databases_get_engines();
 	}
 	/**
 	 * @return string[]
@@ -201,15 +199,13 @@ trait databases {
 	 */
 	static function admin_databases_get_settings () {
 		$Config = Config::instance();
-		Page::instance()->json(
-			[
-				'db_balance'        => $Config->core['db_balance'],
-				'db_mirror_mode'    => $Config->core['db_mirror_mode'],
-				'show_tooltips'     => $Config->core['show_tooltips'],
-				'simple_admin_mode' => $Config->core['simple_admin_mode'],
-				'applied'           => $Config->cancel_available()
-			]
-		);
+		return [
+			'db_balance'        => $Config->core['db_balance'],
+			'db_mirror_mode'    => $Config->core['db_mirror_mode'],
+			'show_tooltips'     => $Config->core['show_tooltips'],
+			'simple_admin_mode' => $Config->core['simple_admin_mode'],
+			'applied'           => $Config->cancel_available()
+		];
 	}
 	/**
 	 * Apply database settings

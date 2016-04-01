@@ -10,8 +10,7 @@
 namespace cs\modules\System\api\Controller\admin\users;
 use
 	cs\Config,
-	cs\ExitException,
-	cs\Page;
+	cs\ExitException;
 
 trait general {
 	/**
@@ -19,23 +18,21 @@ trait general {
 	 */
 	static function admin_users_general_get_settings () {
 		$Config = Config::instance();
-		Page::instance()->json(
-			[
-				'session_expire'                    => $Config->core['session_expire'],
-				'sign_in_attempts_block_count'      => $Config->core['sign_in_attempts_block_count'],
-				'sign_in_attempts_block_time'       => $Config->core['sign_in_attempts_block_time'],
-				'remember_user_ip'                  => $Config->core['remember_user_ip'],
-				'password_min_length'               => $Config->core['password_min_length'],
-				'password_min_strength'             => $Config->core['password_min_strength'],
-				'allow_user_registration'           => $Config->core['allow_user_registration'],
-				'require_registration_confirmation' => $Config->core['require_registration_confirmation'],
-				'registration_confirmation_time'    => $Config->core['registration_confirmation_time'],
-				'auto_sign_in_after_registration'   => $Config->core['auto_sign_in_after_registration'],
-				'show_tooltips'                     => $Config->core['show_tooltips'],
-				'simple_admin_mode'                 => $Config->core['simple_admin_mode'],
-				'applied'                           => $Config->cancel_available()
-			]
-		);
+		return [
+			'session_expire'                    => $Config->core['session_expire'],
+			'sign_in_attempts_block_count'      => $Config->core['sign_in_attempts_block_count'],
+			'sign_in_attempts_block_time'       => $Config->core['sign_in_attempts_block_time'],
+			'remember_user_ip'                  => $Config->core['remember_user_ip'],
+			'password_min_length'               => $Config->core['password_min_length'],
+			'password_min_strength'             => $Config->core['password_min_strength'],
+			'allow_user_registration'           => $Config->core['allow_user_registration'],
+			'require_registration_confirmation' => $Config->core['require_registration_confirmation'],
+			'registration_confirmation_time'    => $Config->core['registration_confirmation_time'],
+			'auto_sign_in_after_registration'   => $Config->core['auto_sign_in_after_registration'],
+			'show_tooltips'                     => $Config->core['show_tooltips'],
+			'simple_admin_mode'                 => $Config->core['simple_admin_mode'],
+			'applied'                           => $Config->cancel_available()
+		];
 	}
 	/**
 	 * Apply general users settings

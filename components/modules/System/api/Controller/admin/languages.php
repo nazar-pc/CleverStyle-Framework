@@ -10,8 +10,7 @@
 namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Config,
-	cs\ExitException,
-	cs\Page;
+	cs\ExitException;
 
 trait languages {
 	/**
@@ -19,16 +18,14 @@ trait languages {
 	 */
 	static function admin_languages_get_settings () {
 		$Config = Config::instance();
-		Page::instance()->json(
-			[
-				'language'         => $Config->core['language'],
-				'active_languages' => $Config->core['active_languages'],
-				'languages'        => static::get_languages_array(),
-				'multilingual'     => $Config->core['multilingual'],
-				'applied'          => $Config->cancel_available(),
-				'show_tooltips'    => $Config->core['show_tooltips']
-			]
-		);
+		return [
+			'language'         => $Config->core['language'],
+			'active_languages' => $Config->core['active_languages'],
+			'languages'        => static::get_languages_array(),
+			'multilingual'     => $Config->core['multilingual'],
+			'applied'          => $Config->cancel_available(),
+			'show_tooltips'    => $Config->core['show_tooltips']
+		];
 	}
 	/**
 	 * @return string[]

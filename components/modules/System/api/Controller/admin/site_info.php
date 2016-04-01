@@ -10,8 +10,7 @@
 namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Config,
-	cs\ExitException,
-	cs\Page;
+	cs\ExitException;
 
 trait site_info {
 	/**
@@ -19,19 +18,17 @@ trait site_info {
 	 */
 	static function admin_site_info_get_settings () {
 		$Config = Config::instance();
-		Page::instance()->json(
-			[
-				'site_name'         => get_core_ml_text('name'),
-				'url'               => implode("\n", $Config->core['url']),
-				'cookie_domain'     => implode("\n", $Config->core['cookie_domain']),
-				'cookie_prefix'     => $Config->core['cookie_prefix'],
-				'timezone'          => $Config->core['timezone'],
-				'admin_email'       => $Config->core['admin_email'],
-				'show_tooltips'     => $Config->core['show_tooltips'],
-				'simple_admin_mode' => $Config->core['simple_admin_mode'],
-				'applied'           => $Config->cancel_available()
-			]
-		);
+		return [
+			'site_name'         => get_core_ml_text('name'),
+			'url'               => implode("\n", $Config->core['url']),
+			'cookie_domain'     => implode("\n", $Config->core['cookie_domain']),
+			'cookie_prefix'     => $Config->core['cookie_prefix'],
+			'timezone'          => $Config->core['timezone'],
+			'admin_email'       => $Config->core['admin_email'],
+			'show_tooltips'     => $Config->core['show_tooltips'],
+			'simple_admin_mode' => $Config->core['simple_admin_mode'],
+			'applied'           => $Config->cancel_available()
+		];
 	}
 	/**
 	 * Apply site info settings

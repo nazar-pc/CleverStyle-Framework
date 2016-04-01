@@ -14,7 +14,6 @@ use
 	cs\Language,
 	cs\Language\Prefix,
 	cs\Mail,
-	cs\Page,
 	cs\Session,
 	cs\User;
 
@@ -32,9 +31,7 @@ trait profile {
 			'timezone',
 			'avatar'
 		];
-		Page::instance()->json(
-			$User->get($fields, $User->id)
-		);
+		return $User->get($fields, $User->id);
 	}
 	/**
 	 * @param \cs\Request $Request
@@ -320,6 +317,6 @@ trait profile {
 	}
 	static function profile_contacts_get () {
 		$User = User::instance();
-		Page::instance()->json($User->get_contacts());
+		return $User->get_contacts();
 	}
 }

@@ -9,17 +9,13 @@
  */
 namespace cs\modules\System\api\Controller;
 use
-	cs\Config,
-	cs\Page;
+	cs\Config;
+
 trait general {
 	static function languages_get () {
-		Page::instance()->json(
-			Config::instance()->core['active_languages']
-		);
+		return Config::instance()->core['active_languages'];
 	}
 	static function timezones_get () {
-		Page::instance()->json(
-			get_timezones_list()
-		);
+		return get_timezones_list();
 	}
 }

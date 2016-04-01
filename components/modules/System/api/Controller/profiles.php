@@ -10,12 +10,13 @@
 namespace cs\modules\System\api\Controller;
 use
 	cs\ExitException,
-	cs\Page,
 	cs\User;
 
 trait profiles {
 	/**
 	 * @param \cs\Request $Request
+	 *
+	 * @return array
 	 *
 	 * @throws ExitException
 	 */
@@ -41,13 +42,11 @@ trait profiles {
 		if (!$ids) {
 			throw new ExitException('User is not in your contacts', 403);
 		}
-		Page::instance()->json(
-			$single ? $User->get($fields, $ids[0]) : array_map(
-				function ($id) use ($fields, $User) {
-					return $User->get($fields, $id);
-				},
-				$ids
-			)
+		return $single ? $User->get($fields, $ids[0]) : array_map(
+			function ($id) use ($fields, $User) {
+				return $User->get($fields, $id);
+			},
+			$ids
 		);
 	}
 }

@@ -12,8 +12,7 @@ use
 	cs\Cache,
 	cs\Config,
 	cs\Event,
-	cs\ExitException,
-	cs\Page;
+	cs\ExitException;
 
 trait optimization {
 	/**
@@ -21,19 +20,17 @@ trait optimization {
 	 */
 	static function admin_optimization_get_settings () {
 		$Config = Config::instance();
-		Page::instance()->json(
-			[
-				'cache_compress_js_css' => $Config->core['cache_compress_js_css'],
-				'vulcanization'         => $Config->core['vulcanization'],
-				'put_js_after_body'     => $Config->core['put_js_after_body'],
-				'inserts_limit'         => $Config->core['inserts_limit'],
-				'update_ratio'          => $Config->core['update_ratio'],
-				'cache_state'           => Cache::instance()->cache_state(),
-				'show_tooltips'         => $Config->core['show_tooltips'],
-				'simple_admin_mode'     => $Config->core['simple_admin_mode'],
-				'applied'               => $Config->cancel_available()
-			]
-		);
+		return [
+			'cache_compress_js_css' => $Config->core['cache_compress_js_css'],
+			'vulcanization'         => $Config->core['vulcanization'],
+			'put_js_after_body'     => $Config->core['put_js_after_body'],
+			'inserts_limit'         => $Config->core['inserts_limit'],
+			'update_ratio'          => $Config->core['update_ratio'],
+			'cache_state'           => Cache::instance()->cache_state(),
+			'show_tooltips'         => $Config->core['show_tooltips'],
+			'simple_admin_mode'     => $Config->core['simple_admin_mode'],
+			'applied'               => $Config->cancel_available()
+		];
 	}
 	/**
 	 * Clean cache

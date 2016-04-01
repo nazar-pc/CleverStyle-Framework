@@ -10,8 +10,7 @@
 namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Config,
-	cs\ExitException,
-	cs\Page;
+	cs\ExitException;
 
 trait security {
 	/**
@@ -19,15 +18,13 @@ trait security {
 	 */
 	static function admin_security_get_settings () {
 		$Config = Config::instance();
-		Page::instance()->json(
-			[
-				'key_expire'        => $Config->core['key_expire'],
-				'gravatar_support'  => $Config->core['gravatar_support'],
-				'show_tooltips'     => $Config->core['show_tooltips'],
-				'simple_admin_mode' => $Config->core['simple_admin_mode'],
-				'applied'           => $Config->cancel_available()
-			]
-		);
+		return [
+			'key_expire'        => $Config->core['key_expire'],
+			'gravatar_support'  => $Config->core['gravatar_support'],
+			'show_tooltips'     => $Config->core['show_tooltips'],
+			'simple_admin_mode' => $Config->core['simple_admin_mode'],
+			'applied'           => $Config->cancel_available()
+		];
 	}
 	/**
 	 * Apply security settings

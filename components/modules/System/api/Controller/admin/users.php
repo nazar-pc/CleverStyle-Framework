@@ -11,7 +11,6 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\ExitException,
 	cs\Language\Prefix,
-	cs\Page,
 	cs\Response,
 	cs\User;
 
@@ -24,12 +23,13 @@ trait users {
 	 *
 	 * @param \cs\Request $Request
 	 *
+	 * @return array
+	 *
 	 * @throws ExitException
 	 */
 	static function admin_users___get ($Request) {
 		$User    = User::instance();
-		$Page    = Page::instance();
-		$columns = static::admin_users___search_options_get()['columns'];
+		$columns = static::admin_users___search_options()['columns'];
 		$id      = $Request->route_ids(0);
 		$ids     = $Request->query('ids');
 		$search  = $Request->query('search');
@@ -53,7 +53,7 @@ trait users {
 		if (!$result) {
 			throw new ExitException(404);
 		}
-		$Page->json($result);
+		return $result;
 	}
 	protected static function admin_users___get_post_process ($data) {
 		$L                          = new Prefix('system_admin_users_');
@@ -116,6 +116,8 @@ trait users {
 	 *
 	 * @param \cs\Request $Request
 	 *
+	 * @return array
+	 *
 	 * @throws ExitException
 	 */
 	static function admin_users___post ($Request) {
@@ -133,17 +135,17 @@ trait users {
 			throw new ExitException($L->user_already_exists, 400);
 		}
 		Response::instance()->code = 201;
-		Page::instance()->json(
-			[
-				'login'    => $User->get('login', $result['id']),
-				'password' => $result['password']
-			]
-		);
+		return [
+			'login'    => $User->get('login', $result['id']),
+			'password' => $result['password']
+		];
 	}
 	/**
 	 * Advanced search for users (users data will be returned similar to GET method)
 	 *
 	 * @param \cs\Request $Request
+	 *
+	 * @return array
 	 *
 	 * @throws ExitException
 	 */
@@ -157,7 +159,7 @@ trait users {
 		$text           = $options['text'];
 		$page           = (int)$options['page'];
 		$limit          = (int)$options['limit'];
-		$search_options = static::admin_users___search_options_get();
+		$search_options = static::admin_users___search_options();
 		if (
 			!in_array($mode, $search_options['modes']) ||
 			(
@@ -191,12 +193,10 @@ trait users {
 				$limit
 			]
 		);
-		Page::instance()->json(
-			[
-				'count' => $count,
-				'users' => static::admin_users___search_get($ids, $search_options['columns'])
-			]
-		);
+		return [
+			'count' => $count,
+			'users' => static::admin_users___search_get($ids, $search_options['columns'])
+		];
 	}
 	/**
 	 * @param string           $mode
@@ -285,16 +285,10 @@ trait users {
 	}
 	/**
 	 * Get available search options
-	 */
-	static function admin_users___search_options () {
-		Page::instance()->json(
-			static::admin_users___search_options_get()
-		);
-	}
-	/*
+	 *
 	 * @return string[][]
 	 */
-	protected static function admin_users___search_options_get () {
+	static function admin_users___search_options () {
 		return [
 			'modes'   => [
 				'=',

@@ -11,8 +11,7 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Config,
 	cs\ExitException,
-	cs\Mail as System_mail,
-	cs\Page;
+	cs\Mail as System_mail;
 
 trait mail {
 	/**
@@ -20,23 +19,21 @@ trait mail {
 	 */
 	static function admin_mail_get_settings () {
 		$Config = Config::instance();
-		Page::instance()->json(
-			[
-				'smtp'              => $Config->core['smtp'],
-				'smtp_host'         => $Config->core['smtp_host'],
-				'smtp_port'         => $Config->core['smtp_port'],
-				'smtp_secure'       => $Config->core['smtp_secure'],
-				'smtp_auth'         => $Config->core['smtp_auth'],
-				'smtp_user'         => $Config->core['smtp_user'],
-				'smtp_password'     => $Config->core['smtp_password'],
-				'mail_from'         => $Config->core['mail_from'],
-				'mail_from_name'    => get_core_ml_text('mail_from_name'),
-				'mail_signature'    => get_core_ml_text('mail_signature'),
-				'show_tooltips'     => $Config->core['show_tooltips'],
-				'simple_admin_mode' => $Config->core['simple_admin_mode'],
-				'applied'           => $Config->cancel_available()
-			]
-		);
+		return [
+			'smtp'              => $Config->core['smtp'],
+			'smtp_host'         => $Config->core['smtp_host'],
+			'smtp_port'         => $Config->core['smtp_port'],
+			'smtp_secure'       => $Config->core['smtp_secure'],
+			'smtp_auth'         => $Config->core['smtp_auth'],
+			'smtp_user'         => $Config->core['smtp_user'],
+			'smtp_password'     => $Config->core['smtp_password'],
+			'mail_from'         => $Config->core['mail_from'],
+			'mail_from_name'    => get_core_ml_text('mail_from_name'),
+			'mail_signature'    => get_core_ml_text('mail_signature'),
+			'show_tooltips'     => $Config->core['show_tooltips'],
+			'simple_admin_mode' => $Config->core['simple_admin_mode'],
+			'applied'           => $Config->cancel_available()
+		];
 	}
 	/**
 	 * Send test email to check if setup is correct
