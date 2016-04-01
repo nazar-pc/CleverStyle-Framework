@@ -8,6 +8,7 @@
 namespace cs\App;
 use
 	cs\ExitException,
+	cs\Page,
 	cs\Request,
 	cs\Response;
 
@@ -222,18 +223,13 @@ trait Router {
 	 */
 	protected function controller_router_handler_internal ($Request, $controller_class, $method_name, $required) {
 		$Response = Response::instance();
-		$included =
-			method_exists($controller_class, $method_name) &&
-			$controller_class::$method_name($Request, $Response) !== false;
+		$found    = $this->controller_router_handler_internal_execute($controller_class, $method_name, $Request, $Response);
 		if (!$Request->api_path) {
 			return;
 		}
 		$request_method = strtolower($Request->method);
-		$included       =
-			method_exists($controller_class, $method_name.'_'.$request_method) &&
-			$controller_class::{$method_name.'_'.$request_method}($Request, $Response) !== false ||
-			$included;
-		if ($included || !$required) {
+		$found          = $this->controller_router_handler_internal_execute($controller_class, $method_name.'_'.$request_method, $Request, $Response) || $found;
+		if ($found || !$required) {
 			return;
 		}
 		$methods = array_filter(
@@ -244,5 +240,23 @@ trait Router {
 		);
 		$methods = _strtoupper(_substr($methods, strlen($method_name) + 1));
 		$this->handler_not_found($methods, $request_method);
+	}
+	/**
+	 * @param string   $controller_class
+	 * @param string   $method_name
+	 * @param Request  $Request
+	 * @param Response $Response
+	 *
+	 * @return bool
+	 */
+	protected function controller_router_handler_internal_execute ($controller_class, $method_name, $Request, $Response) {
+		if (!method_exists($controller_class, $method_name)) {
+			return false;
+		}
+		$result = $controller_class::$method_name($Request, $Response);
+		if ($result !== null) {
+			Page::instance()->{$Request->api_path ? 'json' : 'content'}($result);
+		}
+		return true;
 	}
 }
