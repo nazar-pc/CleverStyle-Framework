@@ -30,7 +30,7 @@
           var timeout, height_in_px, font_size;
           clearTimeout(timeout);
           timeout = setTimeout(function(){
-            this$.removeEventListener(callback);
+            this$.removeEventListener('dom-change', callback);
             if (this$.selected !== undefined) {
               this$._selected_changed(this$.selected);
             }

@@ -27,7 +27,7 @@ Polymer.cs.behaviors.cs-select = [
 		callback	= !~>
 			clearTimeout(timeout)
 			timeout	= setTimeout (!~>
-				@removeEventListener(callback)
+				@removeEventListener('dom-change', callback)
 				if @selected != undefined
 					@_selected_changed(@selected)
 			), 100
