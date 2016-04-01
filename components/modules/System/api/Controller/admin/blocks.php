@@ -223,6 +223,7 @@ trait blocks {
 				return $block;
 			}
 		}
-		return false;
+		$false = false;
+		return $false;
 	}
 }
