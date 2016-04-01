@@ -48,15 +48,6 @@
     file_picker_callback: uploader && function(callback){
       uploader_callback = callback;
       button.click();
-    },
-    setup: function(editor){
-      editor.on('change', function(){
-        var event;
-        editor.save();
-        event = document.createEvent('Event');
-        event.initEvent('change', false, true);
-        editor.getElement().dispatchEvent(event);
-      });
     }
   };
   x$ = tinymce;

@@ -10,6 +10,7 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 		tap	: '_style_fix'
 	properties	:
 		value	:
+			notify		: true
 			observer	: '_value_changed'
 			type		: String
 	attached : !->
@@ -43,6 +44,13 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 					target.focus			= editor~focus
 					editor.on('remove', !->
 						target.focus = target._original_focus
+					)
+					editor.on('change', !~>
+						editor.save()
+						@value	= editor.getContent()
+						event	= document.createEvent('Event')
+						event.initEvent('change', false, true)
+						editor.getElement().dispatchEvent(event)
 					)
 			} <<<< @editor_config
 		)

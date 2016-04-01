@@ -14,6 +14,7 @@
     },
     properties: {
       value: {
+        notify: true,
         observer: '_value_changed',
         type: String
       }
@@ -47,6 +48,14 @@
           target.focus = bind$(editor, 'focus');
           editor.on('remove', function(){
             target.focus = target._original_focus;
+          });
+          editor.on('change', function(){
+            var event;
+            editor.save();
+            this$.value = editor.getContent();
+            event = document.createEvent('Event');
+            event.initEvent('change', false, true);
+            editor.getElement().dispatchEvent(event);
           });
         }
       }, this.editor_config));

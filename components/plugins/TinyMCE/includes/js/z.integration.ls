@@ -44,13 +44,6 @@ base_config =
 	file_picker_callback	: uploader && (callback) !->
 		uploader_callback := callback
 		button.click()
-	setup					: (editor) !->
-		editor.on('change', !->
-			editor.save()
-			event = document.createEvent('Event')
-			event.initEvent('change', false, true)
-			editor.getElement().dispatchEvent(event)
-		)
 tinymce
 	..editor_config_full = {
 		toolbar1 : 'styleselect fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bold italic underline strikethrough superscript subscript | forecolor backcolor | fullscreen',
