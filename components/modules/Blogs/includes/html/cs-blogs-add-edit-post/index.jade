@@ -1,0 +1,44 @@
+dom-module#cs-blogs-add-edit-post
+	link(rel="import" href="style.css" type="css")
+	template
+		style(include="advanced-styles")
+		h2.cs-text-center(hidden="[[add]]") [[__('editing_of_post', original_title)]]
+		h2.cs-text-center(hidden="[[!add]]") [[L.new_post]]
+		#preview
+		table.cs-table
+			tr
+				td [[L.post_title]]
+				td
+					h1#title(contenteditable=true)
+						br
+			tr(hidden="[[!sections.length]]")
+				td [[L.post_section]]
+				td
+					select(is="cs-select" selected="{{post.sections}}" multiple="[[settings.multiple_sections]]" size="7")
+						template(is="dom-repeat" items="[[sections]]" as="section")
+							option(value="[[section.id]]" disabled="[[section.disabled]]") [[section.title]]
+					p(hidden="[[!settings.multiple_sections]]") [[__('select_sections_num', settings.max_sections)]]
+			tr
+				td [[L.post_content]]
+				td
+					template(is="dom-if" if="[[settings.inline_editor]]")
+						cs-editor-inline(value="{{post.content}}")
+							div [[post.content]]
+					template(is="dom-if" if="[[!settings.inline_editor]]")
+						cs-editor(value="{{post.content}}")
+							textarea(is="cs-textarea" autosize name="content" required value="{{post.content}}") [[post.content]]
+					p#use_pagebreak
+			tr
+				td [[L.post_tags]]
+				td
+					input(is="cs-input-text" name="tags" required value="{{local_tags}}" placeholder="CleverStyle, CMS, Open Source")
+		button(is="cs-button" on-tap="_preview") [[L.preview]]
+		= ' '
+		button(is="cs-button" on-tap="_publish") [[L.publish]]
+		= ' '
+		button(is="cs-button" on-tap="_to_drafts") [[L.to_drafts]]
+		= ' '
+		button(is="cs-button" on-tap="_delete" hidden="[[!delete_button]]") [[L.delete]]
+		= ' '
+		button(is="cs-button" on-tap="_cancel") [[L.cancel]]
+	script(src="script.js")

@@ -19,6 +19,8 @@ use
 
 /**
  * @method static $this instance($check = false)
+ *
+ * @todo Use CRUD trait
  */
 class Sections {
 	use
@@ -178,6 +180,28 @@ class Sections {
 					$data['full_path'] = implode('/', array_reverse($data['full_path']));
 				}
 				return $data;
+			}
+		);
+	}
+	/**
+	 * @return array[]|false
+	 */
+	function get_all () {
+		$L = Language::instance();
+		return $this->cache->get(
+			"sections/all/$L->clang",
+			function () {
+				$sections = $this->db()->qfa(
+					"SELECT *
+					FROM `[prefix]blogs_sections`"
+				) ?: [];
+				foreach ($sections as &$section) {
+					$section['id']     = (int)$section['id'];
+					$section['parent'] = (int)$section['parent'];
+					$section['title']  = $this->ml_process($section['title']);
+					$section['path']   = $this->ml_process($section['path']);
+				}
+				return $sections;
 			}
 		);
 	}

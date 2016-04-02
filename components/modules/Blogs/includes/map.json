@@ -3,7 +3,6 @@
 		"admin.css"
 	],
 	"Blogs"       : [
-		"general.*",
 		"cs-blogs-*"
 	]
 }

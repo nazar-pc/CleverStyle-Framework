@@ -9,16 +9,16 @@ dom-module#cs-blogs-post
 			template(is="dom-if" if="[[jsonld.articleSection.length]]")
 				p
 					cs-icon(icon="bookmark")
-					= ' '
 					template(is="dom-repeat" items="[[jsonld.articleSection]]" as="section")
+						[[_separator(index)]]
 						a(href="[[sections_path(index)]]") [[section]]
 		#content
 		footer
 			template(is="dom-if" if="[[jsonld.tags.length]]")
 				p
 					cs-icon(icon="tags")
-					= ' '
 					template(is="dom-repeat" items="[[jsonld.tags]]" as="tag")
+						[[_separator(index)]]
 						a(href="[[tags_path(index)]]" rel="tag") [[tag]]
 			hr
 			p

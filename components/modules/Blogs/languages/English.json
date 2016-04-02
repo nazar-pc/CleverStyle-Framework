@@ -68,6 +68,7 @@
 		"delete"                                   : "Delete",
 		"edit"                                     : "Edit",
 		"yes"                                      : "Yes",
-		"no"                                       : "No"
+		"no"                                       : "No",
+		"sure_want_to_exit"                        : "Are you sure want to exit this page? All changes will be lost!"
 	}
 }

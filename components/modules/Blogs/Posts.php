@@ -20,6 +20,8 @@ use
 
 /**
  * @method static $this instance($check = false)
+ *
+ * @todo: Use joined CRUD tables
  */
 class Posts {
 	use

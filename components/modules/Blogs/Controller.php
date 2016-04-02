@@ -298,13 +298,7 @@ class Controller {
 			$base_url
 		);
 	}
-	/**
-	 * @param \cs\Request  $Request
-	 * @param \cs\Response $Response
-	 *
-	 * @throws ExitException
-	 */
-	static function new_post ($Request, $Response) {
+	static function new_post () {
 		if (!Event::instance()->fire('Blogs/new_post')) {
 			return;
 		}
@@ -322,133 +316,16 @@ class Controller {
 			$Page->warning($L->for_registered_users_only);
 			return;
 		}
-		$module = path($L->Blogs);
-		$data   = static::check_request_data($Request, $Page, $L);
-		if ($data) {
-			$Posts = Posts::instance();
-			$id    = $Posts->add($data['title'], null, $data['content'], $data['sections'], _trim(explode(',', $data['tags'])), $data['mode'] == 'draft');
-			if ($id) {
-				$Response->redirect($Config->base_url()."/$module/".$Posts->get($id)['path'].":$id");
-				return;
-			} else {
-				$Page->warning($L->post_adding_error);
-			}
-		}
-		$disabled     = [];
-		$max_sections = $module_data->max_sections;
-		$content      = uniqid('post_content', true);
-		$Page->replace($content, $Request->data('content') ?: '');
-		$sections = get_sections_select_post($disabled);
-		if (count($sections['in']) > 1) {
-			$sections = [
-				$L->post_section,
-				h::{'select.cs-blogs-new-post-sections[is=cs-select][size=7][required]'}(
-					$sections,
-					[
-						'name'     => 'sections[]',
-						'disabled' => $disabled,
-						'selected' => $Request->data('sections') ?: (isset($Request->route[1]) ? $Request->route[1] : []),
-						$max_sections < 1 ? 'multiple' : false
-					]
-				).
-				($max_sections > 1 ? h::br().$L->select_sections_num($max_sections) : '')
-			];
-		} else {
-			$sections = false;
-		}
 		$Page->content(
-			h::form(
-				h::{'h2.cs-text-center'}(
-					$L->new_post
-				).
-				h::{'div.cs-blogs-post-preview-content'}().
-				h::{'table.cs-table.cs-blogs-post-form[right-left] tr| td'}(
-					[
-						$L->post_title,
-						h::{'h1.cs-blogs-new-post-title[contenteditable=true]'}(
-							$Request->data('title') ?: '<br>'
-						)
-					],
-					$sections,
-					[
-						$L->post_content,
-						(functionality('inline_editor')
-							? h::{'cs-editor-inline div.cs-blogs-new-post-content'}($content)
-							: h::{'cs-editor textarea.cs-blogs-new-post-content[is=cs-textarea][autosize][name=content][required]'}(
-								$Request->data('content') ?: ''
-							)
-						).
-						h::br().
-						$L->post_use_pagebreak
-					],
-					[
-						$L->post_tags,
-						h::{'input.cs-blogs-new-post-tags[is=cs-input-text][name=tags][required]'}(
-							[
-								'value'       => $Request->data('tags') ?: false,
-								'placeholder' => 'CleverStyle, CMS, Open Source'
-							]
-						)
-					]
-				).
-				(
-				!$sections ? h::{'input[type=hidden][name=sections[]][value=0]'}() : ''
-				).
-				h::{'button.cs-blogs-post-preview[is=cs-button]'}(
-					$L->preview
-				).
-				h::{'button[is=cs-button][type=submit][name=mode][value=publish]'}(
-					$L->publish
-				).
-				h::{'button[is=cs-button][type=submit][name=mode][value=draft]'}(
-					$L->to_drafts
-				).
-				h::{'button[is=cs-button]'}(
-					$L->cancel,
-					[
-						'type'    => 'button',
-						'onclick' => 'history.go(-1);'
-					]
-				)
-			)
+			h::cs_blogs_add_edit_post()
 		);
 	}
 	/**
 	 * @param \cs\Request $Request
-	 * @param Page        $Page
-	 * @param Prefix      $L
-	 *
-	 * @return array|false
-	 */
-	protected static function check_request_data ($Request, $Page, $L) {
-		$data = $Request->data('title', 'sections', 'content', 'tags', 'mode');
-		if ($data && in_array($data['mode'], ['draft', 'publish'])) {
-			if (empty($data['title'])) {
-				$Page->warning($L->post_title_empty);
-				return false;
-			}
-			if (empty($data['sections']) && $data['sections'] !== '0') {
-				$Page->warning($L->no_post_sections_specified);
-				return false;
-			}
-			if (empty($data['content'])) {
-				$Page->warning($L->post_content_empty);
-				return false;
-			}
-			if (empty($data['tags'])) {
-				$Page->warning($L->no_post_tags_specified);
-				return false;
-			}
-		}
-		return $data;
-	}
-	/**
-	 * @param \cs\Request  $Request
-	 * @param \cs\Response $Response
 	 *
 	 * @throws ExitException
 	 */
-	static function edit_post ($Request, $Response) {
+	static function edit_post ($Request) {
 		if (!Event::instance()->fire('Blogs/edit_post')) {
 			return;
 		}
@@ -462,10 +339,12 @@ class Controller {
 		if ($module_data->new_posts_only_from_admins && !$User->admin()) {
 			throw new ExitException(403);
 		}
-		if (
-			!isset($Request->route[1]) ||
-			!($post = $Posts->get($Request->route[1]))
-		) {
+		$id = $Request->route(1);
+		if (!$id) {
+			throw new ExitException(400);
+		}
+		$post = $Posts->get($id);
+		if (!$post) {
 			throw new ExitException(404);
 		}
 		if (
@@ -481,113 +360,11 @@ class Controller {
 		$Page->title(
 			$L->editing_of_post($post['title'])
 		);
-		$module = path($L->Blogs);
-		$data   = static::check_request_data($Request, $Page, $L);
-		if ($data) {
-			$result = $Posts->set(
-				$post['id'],
-				$data['title'],
-				null,
-				$data['content'],
-				$data['sections'],
-				_trim(explode(',', $data['tags'])),
-				$data['mode'] == 'draft'
-			);
-			if ($result) {
-				$Response->redirect($Config->base_url()."/$module/$post[path]:$post[id]");
-				return;
-			} else {
-				$Page->warning($L->post_saving_error);
-			}
-		} elseif ($Request->data('mode') == 'delete') {
-			if ($Posts->del($post['id'])) {
-				$Response->redirect($Config->base_url()."/$module");
-				return;
-			} else {
-				$Page->warning($L->post_deleting_error);
-			}
-		}
-		$disabled     = [];
-		$max_sections = $module_data->max_sections;
-		$content      = uniqid('post_content', true);
-		$Page->replace($content, $Request->data('content') ?: $post['content']);
-		$sections = get_sections_select_post($disabled);
-		if (count($sections['in']) > 1) {
-			$sections = [
-				$L->post_section,
-				h::{'select.cs-blogs-new-post-sections[is=cs-select][size=7][required]'}(
-					get_sections_select_post($disabled),
-					[
-						'name'     => 'sections[]',
-						'disabled' => $disabled,
-						'selected' => $Request->data('sections') ?: $post['sections'],
-						$max_sections < 1 ? 'multiple' : false
-					]
-				).
-				($max_sections > 1 ? h::br().$L->select_sections_num($max_sections) : '')
-			];
-		} else {
-			$sections = false;
-		}
 		$Page->content(
-			h::form(
-				h::{'h2.cs-text-center'}(
-					$L->editing_of_post($post['title'])
-				).
-				h::{'div.cs-blogs-post-preview-content'}().
-				h::{'table.cs-table.cs-blogs-post-form[right-left] tr| td'}(
-					[
-						$L->post_title,
-						h::{'h1.cs-blogs-new-post-title[contenteditable=true]'}(
-							$Request->data('title') ?: $post['title']
-						)
-					],
-					$sections,
-					[
-						$L->post_content,
-						(
-						functionality('inline_editor') ? h::{'cs-editor-inline div.cs-blogs-new-post-content'}(
-							$content
-						) : h::{'cs-editor textarea.cs-blogs-new-post-content[is=cs-textarea][autosize][name=content][required]'}(
-							$Request->data('content') ?: $post['content']
-						)
-						).
-						h::br().
-						$L->post_use_pagebreak
-					],
-					[
-						$L->post_tags,
-						h::{'input.cs-blogs-new-post-tags[is=cs-input-text][name=tags][required]'}(
-							[
-								'value'       => $Request->data('tags') ?: implode(', ', $post['tags']),
-								'placeholder' => 'CleverStyle, CMS, Open Source'
-							]
-						)
-					]
-				).
-				(!$sections ? h::{'input[type=hidden][name=sections[]][value=0]'}() : '').
-				h::{'button.cs-blogs-post-preview[is=cs-button]'}(
-					$L->preview,
-					[
-						'data-id' => $post['id']
-					]
-				).
-				h::{'button[is=cs-button][type=submit][name=mode][value=save]'}(
-					$L->publish
-				).
-				h::{'button[is=cs-button][type=submit][name=mode][value=draft]'}(
-					$L->to_drafts
-				).
-				h::{'button[is=cs-button][type=submit][name=mode][value=delete]'}(
-					$L->delete
-				).
-				h::{'button[is=cs-button]'}(
-					$L->cancel,
-					[
-						'type'    => 'button',
-						'onclick' => 'history.go(-1);'
-					]
-				)
+			h::cs_blogs_add_edit_post(
+				[
+					'id' => $post['id']
+				]
 			)
 		);
 	}
