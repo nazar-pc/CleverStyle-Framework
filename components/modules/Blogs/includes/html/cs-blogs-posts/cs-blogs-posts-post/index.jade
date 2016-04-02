@@ -9,7 +9,7 @@ dom-module#cs-blogs-posts-post
 					p
 						cs-icon(icon="bookmark")
 						template(is="dom-repeat" items="[[post.articleSection]]" as="section")
-							[[_separator(index)]]
+							[[if(index, '\, ', ' ')]]
 							a(href="[[sections_path(index)]]") [[section]]
 			#short_content
 			footer

@@ -20,13 +20,6 @@
     },
     sections_path: function(index){
       return this.post.sections_paths[index];
-    },
-    _separator: function(index){
-      if (index) {
-        return ', ';
-      } else {
-        return ' ';
-      }
     }
   });
 }).call(this);

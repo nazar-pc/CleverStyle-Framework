@@ -22,6 +22,4 @@ Polymer(
 		@jsonld.sections_paths[index]
 	tags_path : (index) ->
 		@jsonld.tags_paths[index]
-	_separator : (index) ->
-		if index then ', ' else ' '
 )

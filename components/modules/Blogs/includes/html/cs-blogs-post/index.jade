@@ -10,7 +10,7 @@ dom-module#cs-blogs-post
 				p
 					cs-icon(icon="bookmark")
 					template(is="dom-repeat" items="[[jsonld.articleSection]]" as="section")
-						[[_separator(index)]]
+						[[if(index, '\, ', ' ')]]
 						a(href="[[sections_path(index)]]") [[section]]
 		#content
 		footer
@@ -18,7 +18,7 @@ dom-module#cs-blogs-post
 				p
 					cs-icon(icon="tags")
 					template(is="dom-repeat" items="[[jsonld.tags]]" as="tag")
-						[[_separator(index)]]
+						[[if(index, '\, ', ' ')]]
 						a(href="[[tags_path(index)]]" rel="tag") [[tag]]
 			hr
 			p

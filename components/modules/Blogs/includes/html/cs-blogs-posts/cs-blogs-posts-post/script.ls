@@ -18,6 +18,4 @@ Polymer(
 		@$.short_content.innerHTML	= @post.short_content
 	sections_path : (index) ->
 		@post.sections_paths[index]
-	_separator : (index) ->
-		if index then ', ' else ' '
 )

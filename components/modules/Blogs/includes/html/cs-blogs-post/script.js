@@ -25,13 +25,6 @@
     },
     tags_path: function(index){
       return this.jsonld.tags_paths[index];
-    },
-    _separator: function(index){
-      if (index) {
-        return ', ';
-      } else {
-        return ' ';
-      }
     }
   });
 }).call(this);
