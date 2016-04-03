@@ -179,37 +179,23 @@ class Controller {
 		}
 		return $data;
 	}
-	static function posts_preview () {
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @throws ExitException
+	 */
+	static function posts_preview ($Request) {
 		$Config = Config::instance();
 		$User   = User::instance();
 		if (!$User->user()) {
 			throw new ExitException(403);
 		}
-		$L    = new Prefix('blogs_');
-		$Page = Page::instance();
-		if (empty($_POST['title'])) {
-			$Page->warning($L->post_title_empty);
-			$Page->json($Page->Top);
-			return;
-		}
-		if (empty($_POST['sections']) && $_POST['sections'] !== '0') {
-			$Page->warning($L->no_post_sections_specified);
-			$Page->json($Page->Top);
-			return;
-		}
-		if (empty($_POST['content'])) {
-			$Page->warning($L->post_content_empty);
-			$Page->json($Page->Top);
-			return;
-		}
-		if (empty($_POST['tags'])) {
-			$Page->warning($L->no_post_tags_specified);
-			$Page->json($Page->Top);
-			return;
-		}
+		$L           = new Prefix('blogs_');
+		$Page        = Page::instance();
+		$data        = $Request->data('title', 'sections', 'content', 'tags');
 		$Posts       = Posts::instance();
 		$Sections    = Sections::instance();
-		$post        = isset($_POST['id']) ? $Posts->get($_POST['id']) : [
+		$post        = isset($Request->data['id']) ? $Posts->get($Request->data['id']) : [
 			'date'           => TIME,
 			'user'           => $User->id,
 			'comments_count' => 0
@@ -219,8 +205,8 @@ class Controller {
 		$Page->json(
 			h::{'section.cs-blogs-post article'}(
 				h::header(
-					h::h1(xap($_POST['title'])).
-					((array)$_POST['sections'] != [0] ? h::p(
+					h::h1(xap($data['title'])).
+					((array)$data['sections'] != [0] ? h::p(
 						h::icon('bookmark').
 						implode(
 							', ',
@@ -234,12 +220,12 @@ class Controller {
 										]
 									);
 								},
-								(array)$_POST['sections']
+								(array)$data['sections']
 							)
 						)
 					) : '')
 				).
-				xap($_POST['content'], true, $module_data->allow_iframes_without_content)."\n".
+				xap($data['content'], true, $module_data->allow_iframes_without_content)."\n".
 				h::footer(
 					h::p(
 						h::icon('tags').
@@ -256,7 +242,7 @@ class Controller {
 										]
 									);
 								},
-								_trim($_POST['tags'])
+								_trim($data['tags'])
 							)
 						)
 					).
