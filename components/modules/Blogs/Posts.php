@@ -145,6 +145,14 @@ class Posts {
 		if (!$post) {
 			return false;
 		}
+		return $this->post_to_jsonld($post);
+	}
+	/**
+	 * @param array|array[] $post
+	 *
+	 * @return array
+	 */
+	function post_to_jsonld ($post) {
 		$base_structure = [
 			'@context' =>
 				[
@@ -162,16 +170,16 @@ class Posts {
 				$base_structure +
 				[
 					'@graph' => array_map(
-						[$this, 'get_as_json_ld_single_post'],
+						[$this, 'post_to_jsonld_single_post'],
 						$post
 					)
 				];
 		}
 		return
 			$base_structure +
-			$this->get_as_json_ld_single_post($post);
+			$this->post_to_jsonld_single_post($post);
 	}
-	protected function get_as_json_ld_single_post ($post) {
+	protected function post_to_jsonld_single_post ($post) {
 		if (preg_match_all('/<img[^>]src=["\'](.*)["\']/Uims', $post['content'], $images)) {
 			$images = $images[1];
 		}

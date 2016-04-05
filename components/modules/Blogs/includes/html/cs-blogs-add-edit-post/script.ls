@@ -84,11 +84,16 @@ Polymer(
 	_preview : !->
 		@_prepare()
 		$.ajax(
-			url		: 'api/Blogs/posts'
-			data	: @post
-			type	: 'preview'
+			url			: 'api/Blogs/posts'
+			data		: @post
+			type		: 'preview'
+			dataType	: 'text'
 			success	: (result) !~>
-				@$.preview.innerHTML	= result
+				@$.preview.innerHTML	= """
+				<article is="cs-blogs-post">
+					<script type="application/ld+json">#result</script>
+				</article>
+				"""
 				$('html, body')
 					.stop()
 					.animate(

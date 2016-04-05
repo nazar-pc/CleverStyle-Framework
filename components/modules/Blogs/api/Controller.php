@@ -8,11 +8,9 @@
  */
 namespace cs\modules\Blogs\api;
 use
-	h,
 	cs\Config,
 	cs\ExitException,
 	cs\Language\Prefix,
-	cs\Page,
 	cs\User,
 	cs\modules\Blogs\Posts,
 	cs\modules\Blogs\Sections;
@@ -182,87 +180,18 @@ class Controller {
 	/**
 	 * @param \cs\Request $Request
 	 *
+	 * @return array
+	 *
 	 * @throws ExitException
 	 */
 	static function posts_preview ($Request) {
-		$Config = Config::instance();
-		$User   = User::instance();
+		$User = User::instance();
 		if (!$User->user()) {
 			throw new ExitException(403);
 		}
-		$L           = new Prefix('blogs_');
-		$Page        = Page::instance();
-		$data        = $Request->data('title', 'sections', 'content', 'tags');
-		$Posts       = Posts::instance();
-		$Sections    = Sections::instance();
-		$post        = isset($Request->data['id']) ? $Posts->get($Request->data['id']) : [
-			'date'           => TIME,
-			'user'           => $User->id,
-			'comments_count' => 0
-		];
-		$module      = path($L->Blogs);
-		$module_data = $Config->module('Blogs');
-		$Page->json(
-			h::{'section.cs-blogs-post article'}(
-				h::header(
-					h::h1(xap($data['title'])).
-					((array)$data['sections'] != [0] ? h::p(
-						h::icon('bookmark').
-						implode(
-							', ',
-							array_map(
-								function ($section) use ($Sections, $L, $module) {
-									$section = $Sections->get($section);
-									return h::a(
-										$section['title'],
-										[
-											'href' => "$module/".path($L->section)."/$section[full_path]"
-										]
-									);
-								},
-								(array)$data['sections']
-							)
-						)
-					) : '')
-				).
-				xap($data['content'], true, $module_data->allow_iframes_without_content)."\n".
-				h::footer(
-					h::p(
-						h::icon('tags').
-						implode(
-							', ',
-							array_map(
-								function ($tag) use ($L, $module) {
-									$tag = xap($tag);
-									return h::a(
-										$tag,
-										[
-											'href' => "$module/".path($L->tag)."/$tag",
-											'rel'  => 'tag'
-										]
-									);
-								},
-								_trim($data['tags'])
-							)
-						)
-					).
-					h::hr().
-					h::p(
-						h::time(
-							$L->to_locale(date($L->_datetime_long, $post['date'])),
-							[
-								'datetime' => date('c', $post['date'])
-							]
-						).
-						h::icon('user').$User->username($post['user']).
-						(
-						$module_data->enable_comments ? h::icon('comments').$post['comments_count'] : ''
-						)
-					)
-				)
-			).
-			h::br(2)
-		);
+		$data  = $Request->data('title', 'sections', 'content', 'tags');
+		$Posts = Posts::instance();
+		return $Posts->post_to_jsonld($data);
 	}
 	static function sections_get () {
 		return Sections::instance()->get_all() ?: [];
