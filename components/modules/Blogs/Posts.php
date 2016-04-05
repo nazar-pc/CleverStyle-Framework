@@ -20,21 +20,32 @@ use
 
 /**
  * @method static $this instance($check = false)
- *
- * @todo: Use joined CRUD tables
  */
 class Posts {
 	use
 		CRUD,
 		Singleton;
 	protected $data_model                  = [
-		'id'      => 'int:0',
-		'user'    => 'int:0',
-		'date'    => 'int:0',
-		'title'   => 'ml:text',
-		'path'    => 'ml:text',
-		'content' => 'ml:html',
-		'draft'   => 'int:0..1'
+		'id'       => 'int:0',
+		'user'     => 'int:0',
+		'date'     => 'int:0',
+		'title'    => 'ml:text',
+		'path'     => 'ml:text',
+		'content'  => 'ml:html',
+		'draft'    => 'int:0..1',
+		'sections' => [
+			'data_model' => [
+				'id'      => 'int:0',
+				'section' => 'int:0'
+			]
+		],
+		'tags'     => [
+			'data_model'     => [
+				'id'  => 'int:0',
+				'tag' => 'int:0'
+			],
+			'language_field' => 'lang'
+		]
 	];
 	protected $table                       = '[prefix]blogs_posts';
 	protected $data_model_ml_group         = 'Blogs/posts';
@@ -82,37 +93,7 @@ class Posts {
 				$data = $this->read($id);
 				if ($data) {
 					$data['short_content'] = truncate(explode('<!-- pagebreak -->', $data['content'])[0]);
-					$data['sections']      = $this->db()->qfas(
-						"SELECT `section`
-						FROM `$this->table_sections`
-						WHERE `id` = $id"
-					);
-					$data['tags']          = $this->db()->qfas(
-						"SELECT DISTINCT `tag`
-						FROM `$this->table_tags`
-						WHERE
-							`id`	= $id AND
-							`lang`	= '$L->clang'"
-					);
-					if (!$data['tags']) {
-						$l            = $this->db()->qfs(
-							"SELECT `lang`
-							FROM `$this->table_tags`
-							WHERE `id` = $id
-							LIMIT 1"
-						);
-						$data['tags'] = $this->db()->qfas(
-							"SELECT DISTINCT `tag`
-							FROM `$this->table_tags`
-							WHERE
-								`id`	= $id AND
-								`lang`	= '$l'"
-						);
-					}
-					$data['tags'] = array_column(
-						Tags::instance()->get($data['tags']),
-						'text'
-					);
+					$data['tags']          = $this->read_tags_processing($data['tags']);
 				}
 				return $data;
 			}
@@ -132,6 +113,16 @@ class Posts {
 				? $Comments->count($data['id'])
 				: 0;
 		return $data;
+	}
+	/**
+	 * Transform tags ids back into array of strings
+	 *
+	 * @param int[] $tags
+	 *
+	 * @return string[]
+	 */
+	protected function read_tags_processing ($tags) {
+		return array_column(Tags::instance()->get($tags) ?: [], 'text');
 	}
 	/**
 	 * Get data of specified post
@@ -388,13 +379,25 @@ class Posts {
 				$title,
 				path($path ?: $title),
 				$content,
-				(int)(bool)$draft
+				(int)(bool)$draft,
+				$sections,
+				$this->prepare_tags($tags)
 			]
 		);
 		if ($id) {
-			$this->final_updates_and_cache_cleanups($id, $sections, $tags);
+			$this->cache_cleanups($id);
 		}
 		return $id;
+	}
+	/**
+	 * Transform array of string tags into array of their ids
+	 *
+	 * @param string[] $tags
+	 *
+	 * @return int[]
+	 */
+	protected function prepare_tags ($tags) {
+		return Tags::instance()->add($tags) ?: [];
 	}
 	/**
 	 * @param string   $content
@@ -415,88 +418,14 @@ class Posts {
 			$sections && count($sections) <= Config::instance()->module('Blogs')->max_sections;
 	}
 	/**
-	 * @param int      $id
-	 * @param int[]    $sections
-	 * @param string[] $tags
+	 * @param int $id
 	 */
-	protected function final_updates_and_cache_cleanups ($id, $sections, $tags) {
-		$this->update_sections($id, $sections);
-		$this->update_tags($id, $tags);
+	protected function cache_cleanups ($id) {
 		$Cache = $this->cache;
 		unset(
 			$Cache->{"posts/$id"},
 			$Cache->sections,
 			$Cache->total_count
-		);
-	}
-	/**
-	 * Remove existing sections and set as specified
-	 *
-	 * @param int   $id
-	 * @param int[] $sections Empty array to just remove all existing sections
-	 */
-	protected function update_sections ($id, $sections = []) {
-		$this->db_prime()->q(
-			"DELETE FROM `$this->table_sections`
-			WHERE `id` = %d",
-			$id
-		);
-		if (!$sections) {
-			return;
-		}
-		$id = (int)$id;
-		$this->db_prime()->insert(
-			"INSERT INTO `$this->table_sections`
-				(
-					`id`,
-					`section`
-				) VALUES (
-					$id,
-					%d
-				)",
-			array_unique($sections),
-			true
-		);
-	}
-	/**
-	 * Remove existing tags and set as specified
-	 *
-	 * @param int      $id
-	 * @param string[] $tags Empty array to just remove all existing tags
-	 */
-	protected function update_tags ($id, $tags = []) {
-		if (!$tags) {
-			$this->db_prime()->q(
-				"DELETE FROM `$this->table_tags`
-				WHERE
-					`id` = %d",
-				$id
-			);
-			return;
-		}
-		$L = Language::instance();
-		$this->db_prime()->q(
-			"DELETE FROM `$this->table_tags`
-			WHERE
-				`id`	= %d AND
-				`lang`	= '%s'",
-			$id,
-			$L->clang
-		);
-		$id = (int)$id;
-		$this->db_prime()->insert(
-			"INSERT INTO `$this->table_tags`
-				(
-					`id`,
-					`tag`,
-					`lang`
-				) VALUES (
-					$id,
-					%d,
-					'$L->clang'
-				)",
-			Tags::instance()->add($tags),
-			true
 		);
 	}
 	/**
@@ -525,12 +454,12 @@ class Posts {
 				$title,
 				path($path ?: $title),
 				$content,
-				(int)(bool)$draft
+				(int)(bool)$draft,
+				$sections,
+				$this->prepare_tags($tags)
 			]
 		);
-		if ($result) {
-			$this->final_updates_and_cache_cleanups($id, $sections, $tags);
-		}
+		$this->cache_cleanups($id);
 		return $result;
 	}
 	/**
@@ -557,7 +486,7 @@ class Posts {
 			if ($Comments) {
 				$Comments->del_all($id);
 			}
-			$this->final_updates_and_cache_cleanups($id, [], []);
+			$this->cache_cleanups($id);
 		}
 		return $result;
 	}
