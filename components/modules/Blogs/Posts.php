@@ -275,7 +275,7 @@ class Posts {
 			WHERE
 				`s`.`section`	= $section AND
 				`p`.`draft`		= 0"
-		) ?: [];
+		) ?: 0;
 	}
 	/**
 	 * Get posts for tag
