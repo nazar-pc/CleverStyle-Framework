@@ -50,15 +50,7 @@ class App {
 			throw new ExitException(400);
 		}
 		$this->handle_closed_site(!$Config->core['site_mode'], $Request);
-		$this->working_directory = MODULES."/$Request->current_module";
-		if ($Request->admin_path) {
-			$this->working_directory .= '/admin';
-		} elseif ($Request->api_path) {
-			$this->working_directory .= '/api';
-		}
-		if (!is_dir($this->working_directory)) {
-			throw new ExitException(404);
-		}
+		$this->working_directory = $this->get_working_directory($Request);
 		if (!$this->check_permission('index')) {
 			throw new ExitException(403);
 		}
@@ -82,6 +74,25 @@ class App {
 		$Request->api_path || $this->render_blocks();
 		Event::instance()->fire('System/App/render/after');
 		Page::instance()->render();
+	}
+	/**
+	 * @param Request $Request
+	 *
+	 * @return string
+	 *
+	 * @throws ExitException
+	 */
+	protected function get_working_directory ($Request) {
+		$working_directory = MODULES."/$Request->current_module";
+		if ($Request->admin_path) {
+			$working_directory .= '/admin';
+		} elseif ($Request->api_path) {
+			$working_directory .= '/api';
+		}
+		if (!is_dir($working_directory)) {
+			throw new ExitException(404);
+		}
+		return $working_directory;
 	}
 	/**
 	 * @param bool    $closed_site
