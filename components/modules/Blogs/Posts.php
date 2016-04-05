@@ -259,6 +259,25 @@ class Posts {
 		) ?: [];
 	}
 	/**
+	 * Get number of posts for section
+	 *
+	 * @param int $section
+	 *
+	 * @return int
+	 */
+	function get_for_section_count ($section) {
+		$section = (int)$section;
+		return $this->db()->qfs(
+			"SELECT COUNT(`s`.`id`)
+			FROM `$this->table_sections` AS `s`
+				LEFT JOIN `$this->table` AS `p`
+			ON `s`.`id` = `p`.`id`
+			WHERE
+				`s`.`section`	= $section AND
+				`p`.`draft`		= 0"
+		) ?: [];
+	}
+	/**
 	 * Get posts for tag
 	 *
 	 * @param int    $tag

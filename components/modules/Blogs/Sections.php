@@ -14,19 +14,25 @@ use
 	cs\Language\Prefix as Language_prefix,
 	cs\Text,
 	cs\User,
-	cs\DB\Accessor,
+	cs\CRUD,
 	cs\Singleton;
 
 /**
  * @method static $this instance($check = false)
- *
- * @todo Use CRUD trait
  */
 class Sections {
 	use
-		Accessor,
+		CRUD,
 		Singleton;
 
+	protected $data_model          = [
+		'id'     => 'int:0',
+		'parent' => 'int:0',
+		'title'  => 'ml:text',
+		'path'   => 'ml:text'
+	];
+	protected $table               = '[prefix]blogs_sections';
+	protected $data_model_ml_group = 'Blogs/sections';
 	/**
 	 * @var Cache_prefix
 	 */
@@ -97,18 +103,7 @@ class Sections {
 		} else {
 			$L                  = new Language_prefix('blogs_');
 			$structure['title'] = $L->root_section;
-			$structure['posts'] = $this->db()->qfs(
-				[
-					"SELECT COUNT(`s`.`id`)
-					FROM `[prefix]blogs_posts_sections` AS `s`
-						LEFT JOIN `[prefix]blogs_posts` AS `p`
-					ON `s`.`id` = `p`.`id`
-					WHERE
-						`s`.`section`	= '%s' AND
-						`p`.`draft`		= 0",
-					$structure['id']
-				]
-			);
+			$structure['posts'] = Posts::instance()->get_for_section_count($structure['id']);
 		}
 		$sections              = $this->db()->qfa(
 			[
@@ -145,31 +140,9 @@ class Sections {
 		return $this->cache->get(
 			"sections/$id/$L->clang",
 			function () use ($id) {
-				$data = $this->db()->qf(
-					[
-						"SELECT
-							`id`,
-							`title`,
-							`path`,
-							`parent`,
-							(
-								SELECT COUNT(`s`.`id`)
-								FROM `[prefix]blogs_posts_sections` AS `s`
-									LEFT JOIN `[prefix]blogs_posts` AS `p`
-								ON `s`.`id` = `p`.`id`
-								WHERE
-									`s`.`section`	= '%1\$s' AND
-									`p`.`draft`		= 0
-							) AS `posts`
-						FROM `[prefix]blogs_sections`
-						WHERE `id` = '%1\$s'
-						LIMIT 1",
-						$id
-					]
-				);
+				$data = $this->read($id);
 				if ($data) {
-					$data['title']     = $this->ml_process($data['title']);
-					$data['path']      = $this->ml_process($data['path']);
+					$data['posts']     = Posts::instance()->get_for_section_count($id);
 					$data['full_path'] = [$data['path']];
 					$parent            = $data['parent'];
 					while ($parent != 0) {
@@ -238,38 +211,20 @@ class Sections {
 	 * @return false|int Id of created section on success of <b>false</> on failure
 	 */
 	function add ($parent, $title, $path) {
-		$parent = (int)$parent;
-		$posts  = $this->db_prime()->qfa(
-			"SELECT `id`
-			FROM `[prefix]blogs_posts_sections`
-			WHERE `section` = $parent"
-		) ?: [];
-		if ($this->db_prime()->q(
-			"INSERT INTO `[prefix]blogs_sections`
-				(`parent`)
-			VALUES
-				($parent)"
-		)
-		) {
-			$Cache = $this->cache;
-			$id    = $this->db_prime()->id();
+		$id = $this->create([$parent, $title, $path]);
+		if ($id) {
 			$this->db_prime()->q(
 				"UPDATE `[prefix]blogs_posts_sections`
-					SET `section` = $id
-					WHERE `section` = $parent"
+				SET `section` = $id
+				WHERE `section` = '%d'",
+				$parent
 			);
-			foreach ($posts as $post) {
-				unset($Cache->{"posts/$post[id]"});
-			}
-			unset($posts, $post);
-			$this->set($id, $parent, $title, $path);
 			unset(
-				$Cache->{'sections/list'},
-				$Cache->{'sections/structure'}
+				$this->cache->posts,
+				$this->cache->sections
 			);
-			return $id;
 		}
-		return false;
+		return $id;
 	}
 	/**
 	 * Set data of specified section
@@ -282,28 +237,11 @@ class Sections {
 	 * @return bool
 	 */
 	function set ($id, $parent, $title, $path) {
-		$parent = (int)$parent;
-		$path   = path($path ?: $title);
-		$title  = xap(trim($title));
-		$id     = (int)$id;
-		if ($this->db_prime()->q(
-			"UPDATE `[prefix]blogs_sections`
-			SET
-				`parent`	= '%s',
-				`title`		= '%s',
-				`path`		= '%s'
-			WHERE `id` = '%s'
-			LIMIT 1",
-			$parent,
-			$this->ml_set('Blogs/sections/title', $id, $title),
-			$this->ml_set('Blogs/sections/path', $id, $path),
-			$id
-		)
-		) {
+		$result = $this->update([$id, $parent, $title, $path]);
+		if ($result) {
 			unset($this->cache->sections);
-			return true;
 		}
-		return false;
+		return $result;
 	}
 	/**
 	 * Delete specified section
@@ -313,62 +251,39 @@ class Sections {
 	 * @return bool
 	 */
 	function del ($id) {
-		$id                = (int)$id;
-		$parent_section    = $this->db_prime()->qfs(
-			[
-				"SELECT `parent`
-				FROM `[prefix]blogs_sections`
-				WHERE `id` = '%s'
-				LIMIT 1",
-				$id
-			]
-		);
+		$id      = (int)$id;
+		$section = $this->read($id);
+		if (!$section || !$this->delete($id)) {
+			return false;
+		}
 		$new_posts_section = $this->db_prime()->qfs(
 			[
 				"SELECT `id`
-				FROM `[prefix]blogs_sections`
-				WHERE
-					`parent` = '%s' AND
-					`id` != '%s'
+				FROM `$this->table`
+				WHERE `parent` = '%s'
 				LIMIT 1",
-				$parent_section,
-				$id
+				$section['parent']
 			]
-		);
-		if ($this->db_prime()->q(
+		) ?: $section['parent'];
+		$update            = $this->db_prime()->q(
 			[
 				"UPDATE `[prefix]blogs_sections`
-				SET `parent` = '%2\$s'
-				WHERE `parent` = '%1\$s'",
+				SET `parent` = '%2\$d'
+				WHERE `parent` = '%1\$d'",
 				"UPDATE IGNORE `[prefix]blogs_posts_sections`
-				SET `section` = '%3\$s'
-				WHERE `section` = '%1\$s'",
-				"DELETE FROM `[prefix]blogs_posts_sections`
-				WHERE `section` = '%1\$s'",
-				"DELETE FROM `[prefix]blogs_sections`
-				WHERE `id` = '%1\$s'
-				LIMIT 1"
+				SET `section` = '%3\$d'
+				WHERE `section` = '%1\$d'"
 			],
 			$id,
-			$parent_section,
-			$new_posts_section ?: $parent_section
-		)
-		) {
-			$this->ml_del('Blogs/sections/title', $id);
-			$this->ml_del('Blogs/sections/path', $id);
-			unset($this->cache->{'/'});
-			return true;
-		} else {
-			return false;
+			$section['parent'],
+			$new_posts_section
+		);
+		if ($update) {
+			$this->cache->del('/');
 		}
+		return $update;
 	}
 	private function ml_process ($text) {
 		return Text::instance()->process($this->cdb(), $text, true);
-	}
-	private function ml_set ($group, $label, $text) {
-		return Text::instance()->set($this->cdb(), $group, $label, $text);
-	}
-	private function ml_del ($group, $label) {
-		return Text::instance()->del($this->cdb(), $group, $label);
 	}
 }
