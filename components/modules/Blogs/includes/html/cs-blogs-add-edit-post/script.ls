@@ -82,7 +82,10 @@ Polymer(
 				String(it).trim()
 		)
 	_preview : !->
+		close_tab_handler_installed = @_close_tab_handler_installed
 		@_prepare()
+		if !close_tab_handler_installed && @_close_tab_handler_installed
+			@_remove_close_tab_handler()
 		$.ajax(
 			url			: 'api/Blogs/posts'
 			data		: @post

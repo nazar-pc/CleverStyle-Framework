@@ -101,8 +101,12 @@
       }));
     },
     _preview: function(){
-      var this$ = this;
+      var close_tab_handler_installed, this$ = this;
+      close_tab_handler_installed = this._close_tab_handler_installed;
       this._prepare();
+      if (!close_tab_handler_installed && this._close_tab_handler_installed) {
+        this._remove_close_tab_handler();
+      }
       $.ajax({
         url: 'api/Blogs/posts',
         data: this.post,
