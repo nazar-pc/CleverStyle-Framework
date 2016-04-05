@@ -56,17 +56,17 @@ class Items {
 	const DEFAULT_IMAGE = 'components/modules/Shop/includes/img/no-image.svg';
 
 	protected $data_model                  = [
-		'id'         => 'int',
-		'date'       => 'int',
-		'category'   => 'int',
+		'id'         => 'int:0',
+		'date'       => 'int:0',
+		'category'   => 'int:0',
 		'price'      => 'float',
-		'in_stock'   => 'int',
+		'in_stock'   => 'int:0',
 		'soon'       => 'int:0..1',
 		'listed'     => 'int:0..1',
 		'attributes' => [
 			'data_model' => [
-				'id'            => 'int',
-				'attribute'     => 'int',
+				'id'            => 'int:0',
+				'attribute'     => 'int:0',
 				'numeric_value' => 'float',
 				'string_value'  => 'text',
 				'text_value'    => 'html',
@@ -75,13 +75,13 @@ class Items {
 		],
 		'images'     => [
 			'data_model' => [
-				'id'    => 'int',
+				'id'    => 'int:0',
 				'image' => 'text'
 			]
 		],
 		'videos'     => [
 			'data_model' => [
-				'id'     => 'int',
+				'id'     => 'int:0',
 				'video'  => 'text',
 				'poster' => 'text',
 				'type'   => 'text'
@@ -89,8 +89,8 @@ class Items {
 		],
 		'tags'       => [
 			'data_model'     => [
-				'id'  => 'int',
-				'tag' => 'html'
+				'id'  => 'int:0',
+				'tag' => 'int:0'
 			],
 			'language_field' => 'lang'
 		]
