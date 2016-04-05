@@ -165,7 +165,6 @@ class Controller {
 
 		$Config   = Config::instance();
 		$Page     = Page::instance();
-		$User     = User::instance();
 		$Comments = null;
 		Event::instance()->fire(
 			'Comments/instance',
@@ -206,10 +205,7 @@ class Controller {
 			->article('tag', $post['tags']);
 		array_map([$Meta, 'image'], $post['image']);
 		$comments_enabled = $Config->module('Blogs')->enable_comments && $Comments;
-		$is_admin         =
-			$User->admin() &&
-			$User->get_permission('admin/Blogs', 'index') &&
-			$User->get_permission('admin/Blogs', 'edit_post');
+		$is_admin         = static::is_blogs_admin();
 		$Page->content(
 			h::{'article[is=cs-blogs-post]'}(
 				h::{'script[type=application/ld+json]'}(
@@ -217,12 +213,19 @@ class Controller {
 				),
 				[
 					'comments_enabled' => $comments_enabled,
-					'can_edit'         => $is_admin || $User->id == $post['user'],
+					'can_edit'         => $is_admin || User::instance()->id == $post['user'],
 					'can_delete'       => $is_admin
 				]
 			).
 			($comments_enabled ? $Comments->block($post['id']) : '')
 		);
+	}
+	protected static function is_blogs_admin () {
+		$User = User::instance();
+		return
+			$User->admin() &&
+			$User->get_permission('admin/Blogs', 'index') &&
+			$User->get_permission('admin/Blogs', 'edit_post');
 	}
 	/**
 	 * @param \cs\Request $Request
@@ -347,14 +350,7 @@ class Controller {
 		if (!$post) {
 			throw new ExitException(404);
 		}
-		if (
-			$post['user'] != $User->id &&
-			!(
-				$User->admin() &&
-				$User->get_permission('admin/Blogs', 'index') &&
-				$User->get_permission('admin/Blogs', 'edit_post')
-			)
-		) {
+		if ($post['user'] != $User->id && !static::is_blogs_admin()) {
 			throw new ExitException(403);
 		}
 		$Page->title(
