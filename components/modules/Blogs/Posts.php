@@ -89,7 +89,7 @@ class Posts {
 		$id       = (int)$id;
 		$data     = $this->cache->get(
 			"posts/$id/$L->clang",
-			function () use ($id, $L) {
+			function () use ($id) {
 				$data = $this->read($id);
 				if ($data) {
 					$data['short_content'] = truncate(explode('<!-- pagebreak -->', $data['content'])[0]);
