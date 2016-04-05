@@ -513,45 +513,61 @@ class Page {
 	 * @param bool                 $json        Force JSON return format
 	 */
 	function error ($custom_text = null, $json = false) {
-		$Request    = Request::instance();
-		$Response   = Response::instance();
-		$error_code = $Response->code;
+		$Request  = Request::instance();
+		$Response = Response::instance();
+		$code     = $Response->code;
 		/**
 		 * Hack for 403 after sign out in administration
 		 */
-		if ($error_code == 403 && !$Request->api_path && $Request->cookie('sign_out')) {
+		if ($code == 403 && !$Request->api_path && $Request->cookie('sign_out')) {
 			$Response->redirect('/');
-			$this->Content = '';
 			return;
 		}
-		$status_text       = status_code_string($error_code);
-		$error_description = $status_text;
-		if (is_array($custom_text)) {
-			list($status_text, $error_description) = $custom_text;
-		} elseif ($custom_text) {
-			$error_description = $custom_text;
-		}
+		list($title, $description) = $this->error_title_description($code, $custom_text);
 		if ($json || $Request->api_path) {
 			$this->json(
 				[
-					'error'             => $error_code,
-					'error_description' => $error_description
+					'error'             => $code,
+					'error_description' => $description
 				]
 			);
 		} else {
-			ob_start();
-			if (
-				!_include(THEMES."/$this->theme/error.html", false, false) &&
-				!_include(THEMES."/$this->theme/error.php", false, false)
-			) {
-				echo
-					"<!doctype html>\n".
-					h::title($status_text).
-					$error_description;
-			}
-			$this->Content = ob_get_clean();
+			$this->Content = $this->error_page($title, $description);
 		}
 		$Response->body = $this->Content;
+	}
+	/**
+	 * @param int                  $code
+	 * @param null|string|string[] $custom_text
+	 *
+	 * @return string[]
+	 */
+	protected function error_title_description ($code, $custom_text) {
+		$title       = status_code_string($code);
+		$description = $custom_text ?: $title;
+		if (is_array($custom_text)) {
+			list($title, $description) = $custom_text;
+		}
+		return [$title, $description];
+	}
+	/**
+	 * @param string $title
+	 * @param string $description
+	 *
+	 * @return string
+	 */
+	protected function error_page ($title, $description) {
+		ob_start();
+		if (
+			!_include(THEMES."/$this->theme/error.html", false, false) &&
+			!_include(THEMES."/$this->theme/error.php", false, false)
+		) {
+			echo
+				"<!doctype html>\n".
+				h::title($title).
+				$description;
+		}
+		return ob_get_clean();
 	}
 	/**
 	 * Provides next events:
