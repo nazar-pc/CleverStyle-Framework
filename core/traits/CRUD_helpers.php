@@ -21,13 +21,13 @@ trait CRUD_helpers {
 	 *                                   Or [attribute => [value1, value2, value3]];<br>
 	 *                                   Or [attribute => [from => a, to => b]];<br>
 	 *                                   Or [attribute => [...]] in case of joined tables, where ... is any of three constructions mentioned above;<br>
-	 *                                   if `total_count => 1` element is present - total number of found rows will be returned instead of rows themselves
+	 *                                   if `total_count => true` element is present - total number of found rows will be returned instead of rows themselves
 	 * @param int     $page
 	 * @param int     $count
 	 * @param string  $order_by
 	 * @param bool    $asc
 	 *
-	 * @return array|false|int
+	 * @return false|int|int[]|string[] Array of `id` or number of elements
 	 */
 	protected function search ($search_parameters = [], $page = 1, $count = 100, $order_by = 'id', $asc = false) {
 		if (!isset($this->data_model[$order_by])) {
@@ -62,7 +62,7 @@ trait CRUD_helpers {
 	 * @param string   $order_by
 	 * @param bool     $asc
 	 *
-	 * @return false|int|\int[]|string|\string[]
+	 * @return false|int|int[]|string[]
 	 */
 	private function search_do ($table_alias, $total_count, $where, $where_params, $joins, $join_params, $page, $count, $order_by, $asc) {
 		$first_column = array_keys($this->data_model)[0];
@@ -71,6 +71,7 @@ trait CRUD_helpers {
 			return $this->db()->qfs(
 				"SELECT COUNT(`$table_alias`.`$first_column`)
 				FROM `$this->table` AS `$table_alias`
+				$joins
 				$where",
 				array_merge($join_params, $where_params)
 			);
@@ -133,7 +134,6 @@ trait CRUD_helpers {
 		$data_model        = $this->data_model[$table];
 		$first_column      = array_keys($this->data_model)[0];
 		$first_column_join = array_keys($data_model['data_model'])[0];
-		$join_params[]     = $table;
 		if (is_scalar($details)) {
 			$details = [
 				array_keys($data_model['data_model'])[1] => $details
@@ -143,7 +143,7 @@ trait CRUD_helpers {
 		$joins .=
 			"INNER JOIN `{$this->table}_$table` AS `j$join_index`
 			ON
-				`$table_alias`.`$first_column`	= `j$join_index`.`$first_column_join`";
+				`$table_alias`.`$first_column` = `j$join_index`.`$first_column_join`";
 		foreach ($details as $field => $value) {
 			$where_tmp = [];
 			$this->search_conditions("j$join_index", $field, $value, $where_tmp, $join_params);
