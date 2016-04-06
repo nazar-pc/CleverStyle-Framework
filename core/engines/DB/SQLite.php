@@ -58,6 +58,9 @@ class SQLite extends _Abstract {
 		return $result;
 	}
 	/**
+	 * @deprecated
+	 * @todo remove after 4.x release
+	 *
 	 * @inheritdoc
 	 */
 	function n ($query_result) {

@@ -103,6 +103,9 @@ class MySQLi extends _Abstract {
 		return $return;
 	}
 	/**
+	 * @deprecated
+	 * @todo remove after 4.x release
+	 *
 	 * @inheritdoc
 	 */
 	function n ($query_result) {

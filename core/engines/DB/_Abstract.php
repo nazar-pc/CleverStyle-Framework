@@ -223,6 +223,9 @@ abstract class _Abstract {
 	 *
 	 * Getting number of selected rows
 	 *
+	 * @deprecated
+	 * @todo remove after 4.x release
+	 *
 	 * @abstract
 	 *
 	 * @param object|resource $query_result
@@ -250,6 +253,9 @@ abstract class _Abstract {
 	 *
 	 * Similar to ::f() method, with parameter <b>$array</b> = true
 	 *
+	 * @deprecated
+	 * @todo remove after 4.x release
+	 *
 	 * @param false|object|resource $query_result
 	 * @param bool                  $single_column If <b>true</b> function will return not array with one element, but directly its value
 	 * @param bool                  $indexed       If <b>false</b> - associative array will be returned
@@ -264,6 +270,9 @@ abstract class _Abstract {
 	 *
 	 * Similar to ::f() method, with parameter <b>$single_column</b> = true
 	 *
+	 * @deprecated
+	 * @todo remove after 4.x release
+	 *
 	 * @param false|object|resource $query_result
 	 * @param bool                  $array If <b>true</b> returns array of associative arrays of all fetched rows
 	 *
@@ -277,6 +286,9 @@ abstract class _Abstract {
 	 *
 	 * Combination of ::fa() and ::fs() methods
 	 *
+	 * @deprecated
+	 * @todo remove after 4.x release
+	 *
 	 * @param false|object|resource $query_result
 	 *
 	 * @return false|int[]|string[]
@@ -289,95 +301,84 @@ abstract class _Abstract {
 	 *
 	 * Combination of ::q() and ::f() methods
 	 *
-	 * @param array|string $query         SQL query string, or you can put all parameters, that ::q() function can accept in form of array
-	 * @param bool         $single_column If <b>true</b> function will return not array with one element, but directly its value
-	 * @param bool         $array         If <b>true</b> returns array of associative arrays of all fetched rows
-	 * @param bool         $indexed       If <b>false</b> - associative array will be returned
+	 * @param string[] $query SQL query string, or you can put all parameters, that ::q() function can accept in form of array
 	 *
-	 * @return array[]|false|int|int[]|string|string[]
+	 * @return array|false
 	 */
-	function qf ($query, $single_column = false, $array = false, $indexed = false) {
-		list($query, $params) = $this->q_prepare($query);
-		if (!$query) {
-			return false;
+	function qf (...$query) {
+		// TODO: simplify code below to just `return $this->f($this->q(...$query), true);`
+		$single_column = false;
+		$array         = false;
+		$indexed       = false;
+		if (count($query) > 1 && is_bool($query[1])) {
+			$single_column = $query[1];
+			if (isset($query[2])) {
+				$array = $query[2];
+			}
+			if (isset($query[3])) {
+				$indexed = $query[3];
+			}
+			$query = $query[0];
+		} elseif (count($query) == 1 && is_array($query[0])) {
+			$query = $query[0];
 		}
-		return $this->f($this->q($query, $params), $single_column, $array, $indexed);
+		return $this->f($this->q(...$query), $single_column, $array, $indexed);
 	}
 	/**
 	 * Query, Fetch, Array
 	 *
-	 * Combination of ::q() and ::fa() methods
+	 * Short for ::f(::q(), false, true, false)
 	 *
-	 * @param array|string $query         SQL query string, or you can put all parameters, that ::q() function can accept in form of array
-	 * @param bool         $single_column If <b>true</b> function will return not array with one element, but directly its value
-	 * @param bool         $indexed       If <b>false</b> - associative array will be returned
+	 * @param string[] $query SQL query string, or you can put all parameters, that ::q() function can accept in form of array
 	 *
 	 * @return array[]|false
 	 */
-	function qfa ($query, $single_column = false, $indexed = false) {
-		list($query, $params) = $this->q_prepare($query);
-		if (!$query) {
-			return false;
+	function qfa (...$query) {
+		// TODO: simplify code below to just `return $this->f($this->q(...$query), true);`
+		$single_column = false;
+		$indexed       = false;
+		if (count($query) > 1 && is_bool($query[1])) {
+			$single_column = $query[1];
+			if (isset($query[2])) {
+				$indexed = $query[2];
+			}
+			$query = $query[0];
+		} elseif (count($query) == 1 && is_array($query[0])) {
+			$query = $query[0];
 		}
-		return $this->fa($this->q($query, $params), $single_column, $indexed);
+		return $this->f($this->q(...$query), $single_column, true, $indexed);
 	}
 	/**
 	 * Query, Fetch, Single
 	 *
-	 * Combination of ::q() and ::fs() methods
+	 * Short for ::f(::q(), true, false, false)
 	 *
-	 * @param array|string $query SQL query string, or you can put all parameters, that ::q() function can accept in form of array
-	 * @param bool         $array If <b>true</b> returns array of associative arrays of all fetched rows
+	 * @param string[] $query SQL query string, or you can put all parameters, that ::q() function can accept in form of array
 	 *
-	 * @return false|int|int[]|string|string[]
+	 * @return false|int|string
 	 */
-	function qfs ($query, $array = false) {
-		list($query, $params) = $this->q_prepare($query);
-		if (!$query) {
-			return false;
+	function qfs (...$query) {
+		// TODO: simplify code below to just `return $this->f($this->q(...$query), true);`
+		$array = false;
+		if (count($query) == 2 && is_bool($query[1])) {
+			$array = $query[1];
+			$query = $query[0];
+		} elseif (count($query) == 1 && is_array($query[0])) {
+			$query = $query[0];
 		}
-		return $this->fs($this->q($query, $params), $array);
+		return $this->f($this->q(...$query), true, $array);
 	}
 	/**
 	 * Query, Fetch, Array, Single
 	 *
-	 * Combination of ::q() and ::fas() methods
+	 * Short for ::f(::q(), true, true, false)
 	 *
-	 * @param array|string $query SQL query string, or you can put all parameters, that ::q() function can accept in form of array
+	 * @param string[] $query SQL query string, or you can put all parameters, that ::q() function can accept in form of array
 	 *
 	 * @return false|int[]|string[]
 	 */
-	function qfas ($query) {
-		list($query, $params) = $this->q_prepare($query);
-		if (!$query) {
-			return false;
-		}
-		return $this->fas($this->q($query, $params));
-	}
-	/**
-	 * Query preparing for ::q*() methods
-	 *
-	 * @param array|string|string[] $query
-	 *
-	 * @return array|false [<b>$query</b>, <b>$params</b>]
-	 */
-	protected function q_prepare ($query) {
-		if (!$query) {
-			return false;
-		}
-		$params = [];
-		if (is_array($query)) {
-			if (count($query) == 2) {
-				$params = $query[1];
-			} elseif (count($query) > 2) {
-				$params = array_slice($query, 1);
-			}
-			$query = $query[0];
-		}
-		return [
-			$query,
-			$params
-		];
+	function qfas (...$query) {
+		return $this->f($this->q(...$query), true, true);
 	}
 	/**
 	 * Method for simplified inserting of several rows
