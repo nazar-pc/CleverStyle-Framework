@@ -50,33 +50,6 @@ class Sections {
 		return Config::instance()->module('Blogs')->db('posts');
 	}
 	/**
-	 * Get array of sections in form [<i>id</i> => <i>title</i>]
-	 *
-	 * @return array|false
-	 */
-	function get_list () {
-		$L = Language::instance();
-		return $this->cache->get(
-			"sections/list/$L->clang",
-			function () {
-				return $this->get_list_internal(
-					$this->get_structure()
-				);
-			}
-		);
-	}
-	private function get_list_internal ($structure) {
-		if (!empty($structure['sections'])) {
-			$list = [];
-			foreach ($structure['sections'] as $section) {
-				$list += $this->get_list_internal($section);
-			}
-			return $list;
-		} else {
-			return [$structure['id'] => $structure['title']];
-		}
-	}
-	/**
 	 * Get array of sections structure
 	 *
 	 * @return array|false
@@ -157,7 +130,7 @@ class Sections {
 		);
 	}
 	/**
-	 * @return array[]|false
+	 * @return array[]
 	 */
 	function get_all () {
 		$L = Language::instance();
@@ -176,7 +149,7 @@ class Sections {
 				}
 				return $sections;
 			}
-		);
+		) ?: [];
 	}
 	/**
 	 * Get sections ids for each section in full path

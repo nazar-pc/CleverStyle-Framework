@@ -194,6 +194,6 @@ class Controller {
 		return $Posts->post_to_jsonld($data);
 	}
 	static function sections_get () {
-		return Sections::instance()->get_all() ?: [];
+		return Sections::instance()->get_all();
 	}
 }

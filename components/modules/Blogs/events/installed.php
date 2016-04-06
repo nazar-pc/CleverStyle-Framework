@@ -12,6 +12,7 @@ use
 	cs\Config,
 	cs\DB,
 	cs\Event;
+
 Event::instance()->on(
 	'admin/System/components/modules/uninstall/before',
 	function ($data) {
@@ -21,14 +22,10 @@ Event::instance()->on(
 		time_limit_pause();
 		$Posts    = Posts::instance();
 		$Sections = Sections::instance();
-		$sections = array_keys($Sections->get_list());
-		if (!empty($sections)) {
-			foreach ($sections as $section) {
-				$Sections->del($section);
-			}
-			unset($section);
+		foreach (Sections::instance()->get_all() as $section) {
+			$Sections->del($section['id']);
 		}
-		unset($sections);
+		unset($section);
 		$posts = DB::instance()->{Config::instance()->module('Blogs')->db('posts')}->qfas(
 			"SELECT `id`
 			FROM `[prefix]blogs_posts`"

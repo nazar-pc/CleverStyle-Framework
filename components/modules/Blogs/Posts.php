@@ -430,7 +430,7 @@ class Posts {
 			return false;
 		}
 		$sections = array_intersect(
-			array_keys(Sections::instance()->get_list()),
+			array_column(Sections::instance()->get_all(), 'id'),
 			$sections
 		);
 		return
