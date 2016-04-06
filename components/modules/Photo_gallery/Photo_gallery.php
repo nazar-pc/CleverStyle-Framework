@@ -76,7 +76,7 @@ class Photo_gallery {
 		$L			= Language::instance();
 		$id			= (int)$id;
 		return $this->cache->get("images/$id/$L->clang", function () use ($id) {
-			$data = $this->db()->qf([
+			$data = $this->db()->qf(
 				"SELECT
 					`id`,
 					`gallery`,
@@ -90,7 +90,7 @@ class Photo_gallery {
 				WHERE `id` = '%s'
 				LIMIT 1",
 				$id
-			]);
+			);
 			if ($data) {
 				$data['title']			= $this->ml_process($data['title']);
 				$data['description']	= $this->ml_process($data['description']);
@@ -305,7 +305,7 @@ class Photo_gallery {
 		$L		= Language::instance();
 		$id		= (int)$id;
 		return $this->cache->get("galleries/$id/$L->clang", function () use ($id) {
-			if ($data = $this->db()->qf([
+			if ($data = $this->db()->qf(
 				"SELECT
 					`id`,
 					`title`,
@@ -322,7 +322,7 @@ class Photo_gallery {
 				WHERE `id` = '%1\$s'
 				LIMIT 1",
 				$id
-			])) {
+			)) {
 				$data['title']			= $this->ml_process($data['title']);
 				$data['path']			= $this->ml_process($data['path']);
 				$data['description']	= $this->ml_process($data['description']);
@@ -437,12 +437,12 @@ class Photo_gallery {
 			$Cache->{"galleries/$id"},
 			$Cache->{'galleries/list'}
 		);
-		$images	= $this->db()->qfas([
+		$images	= $this->db()->qfas(
 			"SELECT `id`
 			FROM `[prefix]photo_gallery_images`
 			WHERE `gallery` = '%s'",
 			$id
-		]);
+		);
 		if ($images) {
 			foreach ((array)$images as $image) {
 				$this->del($image);

@@ -51,7 +51,7 @@ trait Common_actions {
 			function () {
 				return $this->db()->qfas(
 					"SELECT `id`
-				FROM `$this->table`"
+					FROM `$this->table`"
 				) ?: [];
 			}
 		);

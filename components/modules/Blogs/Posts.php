@@ -291,20 +291,18 @@ class Posts {
 		$number = (int)$number;
 		$from   = ($page - 1) * $number;
 		return $this->db()->qfas(
-			[
-				"SELECT `t`.`id`
-				FROM `$this->table_tags` AS `t`
-					LEFT JOIN `$this->table` AS `p`
-				ON `t`.`id` = `p`.`id`
-				WHERE
-					`t`.`tag`	= '%s' AND
-					`p`.`draft`	= 0 AND
-					`t`.`lang`	= '%s'
-				ORDER BY `p`.`date` DESC
-				LIMIT $from, $number",
-				$tag,
-				$lang
-			]
+			"SELECT `t`.`id`
+			FROM `$this->table_tags` AS `t`
+				LEFT JOIN `$this->table` AS `p`
+			ON `t`.`id` = `p`.`id`
+			WHERE
+				`t`.`tag`	= '%s' AND
+				`p`.`draft`	= 0 AND
+				`t`.`lang`	= '%s'
+			ORDER BY `p`.`date` DESC
+			LIMIT $from, $number",
+			$tag,
+			$lang
 		) ?: [];
 	}
 	/**
@@ -317,18 +315,16 @@ class Posts {
 	 */
 	function get_for_tag_count ($tag, $lang) {
 		return $this->db()->qfs(
-			[
-				"SELECT COUNT(`t`.`id`)
-				FROM `$this->table_tags` AS `t`
-					LEFT JOIN `$this->table` AS `p`
-				ON `t`.`id` = `p`.`id`
-				WHERE
-					`t`.`tag`	= '%s' AND
-					`p`.`draft`	= 0 AND
-					`t`.`lang`	= '%s'",
-				$tag,
-				$lang
-			]
+			"SELECT COUNT(`t`.`id`)
+			FROM `$this->table_tags` AS `t`
+				LEFT JOIN `$this->table` AS `p`
+			ON `t`.`id` = `p`.`id`
+			WHERE
+				`t`.`tag`	= '%s' AND
+				`p`.`draft`	= 0 AND
+				`t`.`lang`	= '%s'",
+			$tag,
+			$lang
 		) ?: 0;
 	}
 	/**
@@ -344,16 +340,14 @@ class Posts {
 		$number = (int)$number;
 		$from   = ($page - 1) * $number;
 		return $this->db()->qfas(
-			[
-				"SELECT `id`
-				FROM `$this->table`
-				WHERE
-					`draft` = 1 AND
-					`user`	= '%s'
-				ORDER BY `date` DESC
-				LIMIT $from, $number",
-				$user
-			]
+			"SELECT `id`
+			FROM `$this->table`
+			WHERE
+				`draft` = 1 AND
+				`user`	= '%s'
+			ORDER BY `date` DESC
+			LIMIT $from, $number",
+			$user
 		) ?: [];
 	}
 	/**
@@ -365,14 +359,12 @@ class Posts {
 	 */
 	function get_drafts_count ($user) {
 		return $this->db()->qfs(
-			[
-				"SELECT COUNT(`id`)
-				FROM `$this->table`
-				WHERE
-					`draft` = 1 AND
-					`user`	= '%s'",
-				$user
-			]
+			"SELECT COUNT(`id`)
+			FROM `$this->table`
+			WHERE
+				`draft` = 1 AND
+				`user`	= '%s'",
+			$user
 		) ?: 0;
 	}
 	/**

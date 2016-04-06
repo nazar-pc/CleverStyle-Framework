@@ -66,16 +66,14 @@ class Answers {
 			return $poll;
 		}
 		return $this->db()->qfs(
-			[
-				"SELECT `option`
-				FROM `$this->table`
-				WHERE
-					`id`	= '%s' AND
-					`user`	= '%s'
-				LIMIT 1",
-				$poll,
-				User::instance()->id
-			]
+			"SELECT `option`
+			FROM `$this->table`
+			WHERE
+				`id`	= '%s' AND
+				`user`	= '%s'
+			LIMIT 1",
+			$poll,
+			User::instance()->id
 		);
 	}
 }

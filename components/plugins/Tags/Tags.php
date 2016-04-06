@@ -9,6 +9,7 @@
 namespace cs\plugins\Tags;
 use
 	cs\DB\Accessor;
+
 /**
  * Tags trait
  *
@@ -39,15 +40,13 @@ trait Tags {
 			$id,
 			function () use ($id) {
 				return $this->db()->qf(
-					[
-						"SELECT
-							`id`,
-							`text`
-						FROM `$this->table`
-						WHERE `id` = '%s'
-						LIMIT 1",
-						$id
-					]
+					"SELECT
+						`id`,
+						`text`
+					FROM `$this->table`
+					WHERE `id` = '%s'
+					LIMIT 1",
+					$id
 				);
 			}
 		);
@@ -67,13 +66,11 @@ trait Tags {
 			return array_map([$this, 'get_by_text'], $text);
 		}
 		return $this->db()->qfs(
-			[
-				"SELECT `id`
-				FROM  `$this->table`
-				WHERE `text` = '%s'
-				LIMIT 1",
-				trim(xap($text))
-			]
+			"SELECT `id`
+			FROM  `$this->table`
+			WHERE `text` = '%s'
+			LIMIT 1",
+			trim(xap($text))
 		);
 	}
 	/**

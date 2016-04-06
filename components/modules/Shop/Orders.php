@@ -159,16 +159,14 @@ class Orders {
 	 */
 	function get_statuses ($id) {
 		return $this->db()->qfa(
-			[
-				"SELECT
-					`id`,
-					`date`,
-					`status`,
-					`comment`
-				FROM `{$this->table}_history`
-				WHERE `id` = '%d'",
-				$id
-			]
+			"SELECT
+				`id`,
+				`date`,
+				`status`,
+				`comment`
+			FROM `{$this->table}_history`
+			WHERE `id` = '%d'",
+			$id
 		) ?: [];
 	}
 	/**
@@ -180,17 +178,15 @@ class Orders {
 	 */
 	function get_items ($id) {
 		return $this->db()->qfa(
-			[
-				"SELECT
-					`id`,
-					`item`,
-					`units`,
-					`price`,
-					`unit_price`
-				FROM `{$this->table}_items`
-				WHERE `id` = '%d'",
-				$id
-			]
+			"SELECT
+				`id`,
+				`item`,
+				`units`,
+				`price`,
+				`unit_price`
+			FROM `{$this->table}_items`
+			WHERE `id` = '%d'",
+			$id
 		) ?: [];
 	}
 	/**

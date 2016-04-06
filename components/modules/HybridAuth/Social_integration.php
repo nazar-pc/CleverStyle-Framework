@@ -64,16 +64,14 @@ class Social_integration {
 	 */
 	function find_integration ($provider, $identifier) {
 		return $this->db()->qfs(
-			[
-				"SELECT `id`
-				FROM `[prefix]users_social_integration`
-				WHERE
-					`provider`		= '%s' AND
-					`identifier`	= '%s'
-				LIMIT 1",
-				$provider,
-				$identifier
-			]
+			"SELECT `id`
+			FROM `[prefix]users_social_integration`
+			WHERE
+				`provider`		= '%s' AND
+				`identifier`	= '%s'
+			LIMIT 1",
+			$provider,
+			$identifier
 		);
 	}
 	/**
@@ -96,22 +94,20 @@ class Social_integration {
 			"HybridAuth/contacts/$user_id",
 			function () use ($user_id) {
 				return $this->db()->qfas(
-					[
-						"SELECT `i`.`id`
-						FROM `[prefix]users_social_integration` AS `i`
-						INNER JOIN `[prefix]users_social_integration_contacts` AS `c`
-						ON
-							`i`.`identifier`	= `c`.`identifier` AND
-							`i`.`provider`		= `c`.`provider`
-						INNER JOIN `[prefix]users` AS `u`
-						ON
-							`i`.`id`		= `u`.`id` AND
-							`u`.`status`	= '%s'
-						WHERE `c`.`id`	= '%s'
-						GROUP BY `i`.`id`",
-						User::STATUS_ACTIVE,
-						$user_id
-					]
+					"SELECT `i`.`id`
+					FROM `[prefix]users_social_integration` AS `i`
+					INNER JOIN `[prefix]users_social_integration_contacts` AS `c`
+					ON
+						`i`.`identifier`	= `c`.`identifier` AND
+						`i`.`provider`		= `c`.`provider`
+					INNER JOIN `[prefix]users` AS `u`
+					ON
+						`i`.`id`		= `u`.`id` AND
+						`u`.`status`	= '%s'
+					WHERE `c`.`id`	= '%s'
+					GROUP BY `i`.`id`",
+					User::STATUS_ACTIVE,
+					$user_id
 				) ?: [];
 			}
 		);

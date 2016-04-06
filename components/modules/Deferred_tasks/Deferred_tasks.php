@@ -185,14 +185,12 @@ class Deferred_tasks {
 	 */
 	protected function runned_workers () {
 		return $this->db()->qfs(
-			[
-				"SELECT COUNT(`id`)
-				FROM `$this->table`
-				WHERE
-					`started` > 0 AND
-					`started` + `expected` < %d",
-				time()
-			]
+			"SELECT COUNT(`id`)
+			FROM `$this->table`
+			WHERE
+				`started` > 0 AND
+				`started` + `expected` < %d",
+			time()
 		) ?: 0;
 	}
 	/**
@@ -202,22 +200,20 @@ class Deferred_tasks {
 	 */
 	protected function next_task () {
 		return $this->db()->qfs(
-			[
-				"SELECT `id`
-				FROM `$this->table`
-				WHERE
-					(
-						`started` = 0 OR
-						`started` + `expected` > %1\$d
-					) AND
-					`begin`	> %1\$d
-				ORDER BY
-					`priority` DESC,
-					`id` ASC,
-					`started` ASC
-				LIMIT 1",
-				time()
-			]
+			"SELECT `id`
+			FROM `$this->table`
+			WHERE
+				(
+					`started` = 0 OR
+					`started` + `expected` > %1\$d
+				) AND
+				`begin`	> %1\$d
+			ORDER BY
+				`priority` DESC,
+				`id` ASC,
+				`started` ASC
+			LIMIT 1",
+			time()
 		);
 	}
 }

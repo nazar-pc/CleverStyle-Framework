@@ -55,42 +55,36 @@ class Permission {
 		$condition = $condition == 'or' ? 'OR' : 'AND';
 		if ($group !== null && $label !== null) {
 			return $this->db()->qfa(
-				[
-					"SELECT
-						`id`,
-						`label`,
-						`group`
-					FROM `[prefix]permissions`
-					WHERE
-						`group` = '%s' $condition
-						`label` = '%s'",
-					$group,
-					$label
-				]
+				"SELECT
+					`id`,
+					`label`,
+					`group`
+				FROM `[prefix]permissions`
+				WHERE
+					`group` = '%s' $condition
+					`label` = '%s'",
+				$group,
+				$label
 			) ?: [];
 		} /** @noinspection NotOptimalIfConditionsInspection */ elseif ($group !== null) {
 			return $this->db()->qfa(
-				[
-					"SELECT
-						`id`,
-						`label`,
-						`group`
-					FROM `[prefix]permissions`
-					WHERE `group` = '%s'",
-					$group
-				]
+				"SELECT
+					`id`,
+					`label`,
+					`group`
+				FROM `[prefix]permissions`
+				WHERE `group` = '%s'",
+				$group
 			) ?: [];
 		} /** @noinspection NotOptimalIfConditionsInspection */ elseif ($label !== null) {
 			return $this->db()->qfa(
-				[
-					"SELECT
-						`id`,
-						`label`,
-						`group`
-					FROM `[prefix]permissions`
-					WHERE `label` = '%s'",
-					$label
-				]
+				"SELECT
+					`id`,
+					`label`,
+					`group`
+				FROM `[prefix]permissions`
+				WHERE `label` = '%s'",
+				$label
 			) ?: [];
 		} else {
 			$id = (int)$id;

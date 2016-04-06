@@ -73,11 +73,9 @@ class Polls {
 			'all',
 			function () {
 				return $this->db()->qfas(
-					[
-						"SELECT `id`
-						FROM `$this->table`
-						ORDER BY `id` DESC"
-					]
+					"SELECT `id`
+					FROM `$this->table`
+					ORDER BY `id` DESC"
 				);
 			}
 		);

@@ -69,7 +69,7 @@ class Comments {
 	 */
 	function get ($id) {
 		$id	= (int)$id;
-		return $this->db()->qf([
+		return $this->db()->qf(
 			"SELECT
 				`id`,
 				`parent`,
@@ -85,7 +85,7 @@ class Comments {
 			LIMIT 1",
 			$id,
 			$this->module
-		]);
+		);
 	}
 	/**
 	 * Add new comment
@@ -107,7 +107,7 @@ class Comments {
 		$parent	= (int)$parent;
 		if (
 			$parent != 0 &&
-			$this->db_prime()->qfs([
+			$this->db_prime()->qfs(
 				"SELECT `item`
 				FROM `[prefix]comments`
 				WHERE
@@ -116,7 +116,7 @@ class Comments {
 				LIMIT 1",
 				$parent,
 				$this->module
-			]) != $item
+			) != $item
 		) {
 			return false;
 		}
@@ -207,7 +207,7 @@ class Comments {
 	 */
 	function del ($id) {
 		$id				= (int)$id;
-		$comment		= $this->db_prime()->qf([
+		$comment		= $this->db_prime()->qf(
 			"SELECT `p`.`item`, COUNT(`c`.`id`) AS `count`
 			FROM `[prefix]comments` AS `p`
 			LEFT JOIN `[prefix]comments` AS `c`
@@ -218,7 +218,7 @@ class Comments {
 			LIMIT 1",
 			$id,
 			$this->module
-		]);
+		);
 		if (!$comment || $comment['count']) {
 			return false;
 		}
@@ -306,7 +306,7 @@ class Comments {
 		if (($comments = $Cache->{"$item/$L->clang"}) === false) {
 			$item		= (int)$item;
 			$parent		= (int)$parent;
-			$comments	= $this->db()->qfa([
+			$comments	= $this->db()->qfa(
 				"SELECT
 					`id`,
 					`parent`,
@@ -322,7 +322,7 @@ class Comments {
 				$parent,
 				$item,
 				$L->clang
-			]) ?: [];
+			) ?: [];
 			foreach ($comments as &$comment) {
 				$comment['comments'] = $this->tree_data($item, $comment['id']);
 			}

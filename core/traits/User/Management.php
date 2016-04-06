@@ -45,21 +45,17 @@ trait Management {
 	function search_users ($search_phrase) {
 		$search_phrase = trim($search_phrase, "%\n");
 		$found_users   = $this->db()->qfas(
-			[
-				"SELECT `id`
-				FROM `[prefix]users`
-				WHERE
-					(
-						`login`		LIKE '%s' OR
-						`username`	LIKE '%s' OR
-						`email`		LIKE '%s'
-					) AND
-					`status` != '%s'",
-				$search_phrase,
-				$search_phrase,
-				$search_phrase,
-				User::STATUS_NOT_ACTIVATED
-			]
+			"SELECT `id`
+			FROM `[prefix]users`
+			WHERE
+				(
+					`login`		LIKE '%1\$s' OR
+					`username`	LIKE '%1\$s' OR
+					`email`		LIKE '%1\$s'
+				) AND
+				`status` != '%2\$s'",
+			$search_phrase,
+			User::STATUS_NOT_ACTIVATED
 		);
 		if (!$found_users) {
 			return false;
@@ -112,13 +108,11 @@ trait Management {
 			$login_hash = $email_hash;
 		}
 		if ($this->db_prime()->qf(
-			[
-				"SELECT `id`
-				FROM `[prefix]users`
-				WHERE `email_hash` = '%s'
-				LIMIT 1",
-				$email_hash
-			]
+			"SELECT `id`
+			FROM `[prefix]users`
+			WHERE `email_hash` = '%s'
+			LIMIT 1",
+			$email_hash
 		)
 		) {
 			return 'exists';
@@ -214,19 +208,17 @@ trait Management {
 		}
 		$this->delete_unconfirmed_users();
 		$data = $this->db_prime()->qf(
-			[
-				"SELECT
-					`id`,
-					`login_hash`,
-					`email`
-				FROM `[prefix]users`
-				WHERE
-					`reg_key`	= '%s' AND
-					`status`	= '%s'
-				LIMIT 1",
-				$reg_key,
-				User::STATUS_NOT_ACTIVATED
-			]
+			"SELECT
+				`id`,
+				`login_hash`,
+				`email`
+			FROM `[prefix]users`
+			WHERE
+				`reg_key`	= '%s' AND
+				`status`	= '%s'
+			LIMIT 1",
+			$reg_key,
+			User::STATUS_NOT_ACTIVATED
 		);
 		if (!$data) {
 			return false;
@@ -275,14 +267,12 @@ trait Management {
 	protected function delete_unconfirmed_users () {
 		$reg_date = time() - Config::instance()->core['registration_confirmation_time'] * 86400;    //1 day = 86400 seconds
 		$ids      = $this->db_prime()->qfas(
-			[
-				"SELECT `id`
-				FROM `[prefix]users`
-				WHERE
-					`status`	= '%s' AND
-					`reg_date`	< $reg_date",
-				User::STATUS_NOT_ACTIVATED
-			]
+			"SELECT `id`
+			FROM `[prefix]users`
+			WHERE
+				`status`	= '%s' AND
+				`reg_date`	< $reg_date",
+			User::STATUS_NOT_ACTIVATED
 		);
 		if ($ids) {
 			$this->del_user($ids);
@@ -372,16 +362,14 @@ trait Management {
 			return false;
 		}
 		$id = $this->db_prime()->qfs(
-			[
-				"SELECT `id`
-				FROM `[prefix]users`
-				WHERE
-					`reg_key`	= '%s' AND
-					`status`	= '%s'
-				LIMIT 1",
-				$key,
-				User::STATUS_ACTIVE
-			]
+			"SELECT `id`
+			FROM `[prefix]users`
+			WHERE
+				`reg_key`	= '%s' AND
+				`status`	= '%s'
+			LIMIT 1",
+			$key,
+			User::STATUS_ACTIVE
 		);
 		if (!$id) {
 			return false;

@@ -164,13 +164,11 @@ trait CRUD {
 		$columns      = "`".implode("`,`", array_keys($columns))."`";
 		$first_column = array_keys($data_model)[0];
 		$data         = $this->db()->qf(
-			[
-				"SELECT $columns
-				FROM `$table`
-				WHERE `$first_column` = '%s'
-				LIMIT 1",
-				$id
-			]
+			"SELECT $columns
+			FROM `$table`
+			WHERE `$first_column` = '%s'
+			LIMIT 1",
+			$id
 		) ?: false;
 		if (!$data) {
 			return false;
@@ -214,14 +212,12 @@ trait CRUD {
 			: '';
 		$fields                   = '`'.implode('`,`', array_keys($model['data_model'])).'`';
 		$rows                     = $this->db_prime()->qfa(
-			[
-				"SELECT $fields
-				FROM `{$this->table}_$table`
-				WHERE
-						`$id_field`	= '%s'
-						$language_field_condition",
-				$id
-			]
+			"SELECT $fields
+			FROM `{$this->table}_$table`
+			WHERE
+					`$id_field`	= '%s'
+					$language_field_condition",
+			$id
 		) ?: [];
 		$language_field           = isset($model['language_field']) ? $model['language_field'] : null;
 		/**
@@ -229,13 +225,11 @@ trait CRUD {
 		 */
 		if (!$rows) {
 			$new_clang = $this->db_prime()->qfs(
-				[
-					"SELECT `$language_field`
-					FROM `{$this->table}_$table`
-					WHERE `$id_field`	= '%s'
-					LIMIT 1",
-					$id
-				]
+				"SELECT `$language_field`
+				FROM `{$this->table}_$table`
+				WHERE `$id_field`	= '%s'
+				LIMIT 1",
+				$id
 			);
 			if ($new_clang && $new_clang != $clang) {
 				return $this->read_joined_table($id, $table, $model, $force_clang);

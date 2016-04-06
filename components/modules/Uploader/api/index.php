@@ -101,18 +101,16 @@ if (!$cdb->q(
 }
 if ($cdb->id() % 100 === 0) {
 	$files_for_deletion = $cdb->qfa(
-		[
-			"SELECT `f`.`id`, `f`.`source`
-			FROM `[prefix]uploader_files` AS `f`
-			LEFT JOIN `[prefix]uploader_files_tags` AS `t`
-			ON `f`.`id` = `t`.`id`
-			WHERE
-				`f`.`uploaded`	< '%s' AND
-				`t`.`id` IS NULL
-			ORDER BY `f`.`id` ASC
-			LIMIT 100",
-			time() - $module_data->confirmation_time
-		]
+		"SELECT `f`.`id`, `f`.`source`
+		FROM `[prefix]uploader_files` AS `f`
+		LEFT JOIN `[prefix]uploader_files_tags` AS `t`
+		ON `f`.`id` = `t`.`id`
+		WHERE
+			`f`.`uploaded`	< '%s' AND
+			`t`.`id` IS NULL
+		ORDER BY `f`.`id` ASC
+		LIMIT 100",
+		time() - $module_data->confirmation_time
 	);
 	if ($files_for_deletion) {
 		$ids = implode(',', array_column($files_for_deletion, 'id'));

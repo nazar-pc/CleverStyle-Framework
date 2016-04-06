@@ -69,12 +69,10 @@ trait CRUD_helpers {
 		$where        = $where ? 'WHERE '.implode(' AND ', $where) : '';
 		if ($total_count) {
 			return $this->db()->qfs(
-				[
-					"SELECT COUNT(`$table_alias`.`$first_column`)
-					FROM `$this->table` AS `$table_alias`
-					$where",
-					array_merge($join_params, $where_params)
-				]
+				"SELECT COUNT(`$table_alias`.`$first_column`)
+				FROM `$this->table` AS `$table_alias`
+				$where",
+				array_merge($join_params, $where_params)
 			);
 		}
 		$where_params[] = ($page - 1) * $count;
@@ -82,15 +80,13 @@ trait CRUD_helpers {
 		$order_by       = $this->search_order_by($table_alias, $order_by, $joins, $join_index);
 		$asc            = $asc ? 'ASC' : 'DESC';
 		return $this->db()->qfas(
-			[
-				"SELECT `$table_alias`.`$first_column`
-				FROM `$this->table` AS `$table_alias`
-				$joins
-				$where
-				ORDER BY $order_by $asc
-				LIMIT %d, %d",
-				array_merge($join_params, $where_params)
-			]
+			"SELECT `$table_alias`.`$first_column`
+			FROM `$this->table` AS `$table_alias`
+			$joins
+			$where
+			ORDER BY $order_by $asc
+			LIMIT %d, %d",
+			array_merge($join_params, $where_params)
 		);
 	}
 	/**

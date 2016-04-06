@@ -260,13 +260,11 @@ trait Data {
 				);
 				$absent = array_column(
 					$this->db()->qfa(
-						[
-							"SELECT `item`, `value`
-							FROM `[prefix]users_data`
-							WHERE
-								`id`	= '$user' AND
-								`item`	IN($absent)"
-						]
+						"SELECT `item`, `value`
+						FROM `[prefix]users_data`
+						WHERE
+							`id`	= '$user' AND
+							`item`	IN($absent)"
 					),
 					'value',
 					'item'
@@ -290,14 +288,12 @@ trait Data {
 			}
 			$data[$item] = _json_decode(
 				$this->db()->qfs(
-					[
-						"SELECT `value`
-						FROM `[prefix]users_data`
-						WHERE
-							`id`	= '$user' AND
-							`item`	= '%s'",
-						$item
-					]
+					"SELECT `value`
+					FROM `[prefix]users_data`
+					WHERE
+						`id`	= '$user' AND
+						`item`	= '%s'",
+					$item
 				)
 			);
 			if ($data[$item] === null) {
@@ -403,16 +399,14 @@ trait Data {
 			$login_hash,
 			function () use ($login_hash) {
 				return $this->db()->qfs(
-					[
-						"SELECT `id`
-						FROM `[prefix]users`
-						WHERE
-							`login_hash`	= '%s' OR
-							`email_hash`	= '%s'
-						LIMIT 1",
-						$login_hash,
-						$login_hash
-					]
+					"SELECT `id`
+					FROM `[prefix]users`
+					WHERE
+						`login_hash`	= '%s' OR
+						`email_hash`	= '%s'
+					LIMIT 1",
+					$login_hash,
+					$login_hash
 				) ?: false;
 			}
 		);

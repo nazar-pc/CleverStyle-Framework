@@ -172,26 +172,22 @@ trait users {
 		$cdb   = User::instance()->db();
 		$where = static::admin_users___search_prepare_where($mode, $text, $column ?: $search_options['columns'], $cdb);
 		$count = $cdb->qfs(
-			[
-				"SELECT COUNT(`id`)
-				FROM `[prefix]users`
-				WHERE $where"
-			]
+			"SELECT COUNT(`id`)
+			FROM `[prefix]users`
+			WHERE $where"
 		);
 		if (!$count) {
 			throw new ExitException(404);
 		}
 		$where = str_replace('%', '%%', $where);
 		$ids   = $cdb->qfas(
-			[
-				"SELECT `id`
-				FROM `[prefix]users`
-				WHERE $where
-				ORDER BY `id`
-				LIMIT %d, %d",
-				($page - 1) * $limit,
-				$limit
-			]
+			"SELECT `id`
+			FROM `[prefix]users`
+			WHERE $where
+			ORDER BY `id`
+			LIMIT %d, %d",
+			($page - 1) * $limit,
+			$limit
 		);
 		return [
 			'count' => $count,

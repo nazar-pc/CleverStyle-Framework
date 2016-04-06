@@ -189,7 +189,13 @@ class Controller {
 		if (!$User->user()) {
 			throw new ExitException(403);
 		}
-		$data  = $Request->data('title', 'sections', 'content', 'tags');
+		$data = $Request->data('title', 'sections', 'content', 'tags');
+		$data += [
+			'id'   => 0,
+			'path' => path($Request->data('path') ?: $data['title']),
+			'user' => $User->id,
+			'date' => 0
+		];
 		$Posts = Posts::instance();
 		return $Posts->post_to_jsonld($data);
 	}

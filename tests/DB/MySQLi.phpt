@@ -18,7 +18,7 @@ $u = $db->f($result, true);
 var_dump('single row single column', $u);
 
 $result = $db->q('SELECT `id`, `login` from `[prefix]users`');
-var_dump('multiple rows', $db->n($result), $db->f($result, false, true));
+var_dump('multiple rows', $db->f($result, false, true));
 
 $result = $db->q('SELECT `id`, `login` from `[prefix]users`');
 $u = $db->f($result, true, true);
@@ -67,6 +67,7 @@ if ($result) {
 	var_dump('multiple insert id', $db->id(), $db->affected());
 }
 var_dump('->qf()', $db->qf("SELECT * FROM `test`"));
+var_dump('->qf(..., 2)', $db->qf("SELECT * FROM `test` WHERE `id` = '%d'", 2));
 var_dump('->qfs()', $db->qfs("SELECT * FROM `test`"));
 var_dump('->qfa()', $db->qfa("SELECT * FROM `test`"));
 var_dump('->qfas()', $db->qfas("SELECT * FROM `test`"));
@@ -88,7 +89,6 @@ array(2) {
 string(24) "single row single column"
 string(1) "2"
 string(13) "multiple rows"
-int(2)
 array(2) {
   [0]=>
   array(2) {
@@ -152,6 +152,17 @@ array(4) {
   string(13) "Description 1"
   ["value"]=>
   string(4) "10.5"
+}
+string(12) "->qf(..., 2)"
+array(4) {
+  ["id"]=>
+  string(1) "2"
+  ["title"]=>
+  string(7) "Title 2"
+  ["description"]=>
+  string(13) "Description 2"
+  ["value"]=>
+  string(4) "11.5"
 }
 string(7) "->qfs()"
 string(1) "1"

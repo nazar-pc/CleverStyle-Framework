@@ -21,6 +21,7 @@ use
 	cs\Event,
 	cs\Page,
 	cs\Storage;
+
 Event::instance()
 	->on(
 		'System/Page/render/before',
@@ -58,13 +59,11 @@ Event::instance()
 			}
 			$cdb = DB::instance()->db_prime($module_data->db('files'));
 			$id  = $cdb->qfs(
-				[
-					"SELECT `id`
-					FROM `[prefix]uploader_files`
-					WHERE `url` = '%s'
-					LIMIT 1",
-					$data['url']
-				]
+				"SELECT `id`
+				FROM `[prefix]uploader_files`
+				WHERE `url` = '%s'
+				LIMIT 1",
+				$data['url']
 			);
 			if (!$id) {
 				return false;

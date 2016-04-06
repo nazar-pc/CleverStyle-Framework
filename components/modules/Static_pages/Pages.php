@@ -165,12 +165,10 @@ class Pages {
 			);
 		}
 		$pages              = $this->db()->qfas(
-			[
-				"SELECT `id`
-				FROM `[prefix]static_pages`
-				WHERE `category` = '%s'",
-				$parent
-			]
+			"SELECT `id`
+			FROM `[prefix]static_pages`
+			WHERE `category` = '%s'",
+			$parent
 		) ?: [];
 		$structure['pages'] = [];
 		foreach ($pages as $id) {
@@ -178,14 +176,12 @@ class Pages {
 		}
 		unset($pages);
 		$categories              = $this->db()->qfa(
-			[
-				"SELECT
-					`id`,
-					`path`
-				FROM `[prefix]static_pages_categories`
-				WHERE `parent` = '%s'",
-				$parent
-			]
+			"SELECT
+				`id`,
+				`path`
+			FROM `[prefix]static_pages_categories`
+			WHERE `parent` = '%s'",
+			$parent
 		) ?: [];
 		$structure['categories'] = [];
 		foreach ($categories as $category) {

@@ -135,18 +135,16 @@ class User {
 		}
 		$time = time();
 		return $this->db()->qfs(
-			[
-				"SELECT COUNT(`expire`)
-				FROM `[prefix]sign_ins`
-				WHERE
-					`expire` > $time AND
-					(
-						`login_hash`	= '%s' OR
-						`ip`			= '%s'
-					)",
-				$login_hash,
-				ip2hex(Request::instance()->ip)
-			]
+			"SELECT COUNT(`expire`)
+			FROM `[prefix]sign_ins`
+			WHERE
+				`expire` > $time AND
+				(
+					`login_hash`	= '%s' OR
+					`ip`			= '%s'
+				)",
+			$login_hash,
+			ip2hex(Request::instance()->ip)
 		);
 	}
 	/**

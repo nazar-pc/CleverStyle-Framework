@@ -111,30 +111,26 @@ trait permissions {
 		if ($permission) {
 			$data['groups'] = array_column(
 				$User->db()->qfa(
-					[
-						"SELECT
-							`id`,
-							`value`
-						FROM `[prefix]groups_permissions`
-						WHERE
-							`permission`	= '%s'",
-						$permission[0]['id']
-					]
+					"SELECT
+						`id`,
+						`value`
+					FROM `[prefix]groups_permissions`
+					WHERE
+						`permission`	= '%s'",
+					$permission[0]['id']
 				) ?: [],
 				'value',
 				'id'
 			);
 			$data['users']  = array_column(
 				$User->db()->qfa(
-					[
-						"SELECT
-							`id`,
-							`value`
-						FROM `[prefix]users_permissions`
-						WHERE
-							`permission`	= '%s'",
-						$permission[0]['id']
-					]
+					"SELECT
+						`id`,
+						`value`
+					FROM `[prefix]users_permissions`
+					WHERE
+						`permission`	= '%s'",
+					$permission[0]['id']
 				) ?: [],
 				'value',
 				'id'

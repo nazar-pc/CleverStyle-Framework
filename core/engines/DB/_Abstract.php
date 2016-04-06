@@ -306,7 +306,7 @@ abstract class _Abstract {
 	 * @return array|false
 	 */
 	function qf (...$query) {
-		// TODO: simplify code below to just `return $this->f($this->q(...$query), true);`
+		// TODO: simplify code below
 		$single_column = false;
 		$array         = false;
 		$indexed       = false;
@@ -334,7 +334,7 @@ abstract class _Abstract {
 	 * @return array[]|false
 	 */
 	function qfa (...$query) {
-		// TODO: simplify code below to just `return $this->f($this->q(...$query), true);`
+		// TODO: simplify code below
 		$single_column = false;
 		$indexed       = false;
 		if (count($query) > 1 && is_bool($query[1])) {
@@ -358,7 +358,7 @@ abstract class _Abstract {
 	 * @return false|int|string
 	 */
 	function qfs (...$query) {
-		// TODO: simplify code below to just `return $this->f($this->q(...$query), true);`
+		// TODO: simplify code below
 		$array = false;
 		if (count($query) == 2 && is_bool($query[1])) {
 			$array = $query[1];
@@ -378,6 +378,10 @@ abstract class _Abstract {
 	 * @return false|int[]|string[]
 	 */
 	function qfas (...$query) {
+		// TODO: simplify code below
+		if (count($query) == 1 && is_array($query[0])) {
+			$query = $query[0];
+		}
 		return $this->f($this->q(...$query), true, true);
 	}
 	/**

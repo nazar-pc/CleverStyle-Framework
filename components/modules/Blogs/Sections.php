@@ -79,14 +79,12 @@ class Sections {
 			$structure['posts'] = Posts::instance()->get_for_section_count($structure['id']);
 		}
 		$sections              = $this->db()->qfa(
-			[
-				"SELECT
-					`id`,
-					`path`
-				FROM `[prefix]blogs_sections`
-				WHERE `parent` = '%s'",
-				$parent
-			]
+			"SELECT
+				`id`,
+				`path`
+			FROM `[prefix]blogs_sections`
+			WHERE `parent` = '%s'",
+			$parent
 		) ?: [];
 		$structure['sections'] = [];
 		foreach ($sections as $section) {
@@ -230,13 +228,11 @@ class Sections {
 			return false;
 		}
 		$new_posts_section = $this->db_prime()->qfs(
-			[
-				"SELECT `id`
-				FROM `$this->table`
-				WHERE `parent` = '%s'
-				LIMIT 1",
-				$section['parent']
-			]
+			"SELECT `id`
+			FROM `$this->table`
+			WHERE `parent` = '%s'
+			LIMIT 1",
+			$section['parent']
 		) ?: $section['parent'];
 		$update            = $this->db_prime()->q(
 			[

@@ -38,7 +38,7 @@ Event::instance()
 				"SELECT `source`
 				FROM `[prefix]uploader_files`"
 			);
-			while ($f = $cdb->fs($files)) {
+			while ($f = $cdb->f($files, true)) {
 				$storage->unlink($f);
 			}
 			if ($storage->is_dir('Uploader')) {

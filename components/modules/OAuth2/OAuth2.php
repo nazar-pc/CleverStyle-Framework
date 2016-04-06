@@ -122,13 +122,11 @@ class OAuth2 {
 			$id,
 			function () use ($id) {
 				return $this->db()->qf(
-					[
-						"SELECT *
-						FROM `[prefix]oauth2_clients`
-						WHERE `id`	= '%s'
-						LIMIT 1",
-						$id
-					]
+					"SELECT *
+					FROM `[prefix]oauth2_clients`
+					WHERE `id`	= '%s'
+					LIMIT 1",
+					$id
 				);
 			}
 		);
@@ -249,12 +247,10 @@ class OAuth2 {
 			"grant_access/$user",
 			function () use ($user) {
 				return $this->db()->qfas(
-					[
-						"SELECT `id`
-						FROM `[prefix]oauth2_clients_grant_access`
-						WHERE `user`	= '%s'",
-						$user
-					]
+					"SELECT `id`
+					FROM `[prefix]oauth2_clients_grant_access`
+					WHERE `user`	= '%s'",
+					$user
 				);
 			}
 		);
@@ -402,22 +398,20 @@ class OAuth2 {
 			return false;
 		}
 		$data = $this->db_prime()->qf(
-			[
-				"SELECT
-					`access_token`,
-					`refresh_token`,
-					`expire`,
-					`user`
-				FROM `[prefix]oauth2_clients_sessions`
-				WHERE
-					`id`			= '%s' AND
-					`code`			= '%s' AND
-					`redirect_uri`	= '%s'
-				LIMIT 1",
-				$client['id'],
-				$code,
-				md5($redirect_uri)
-			]
+			"SELECT
+				`access_token`,
+				`refresh_token`,
+				`expire`,
+				`user`
+			FROM `[prefix]oauth2_clients_sessions`
+			WHERE
+				`id`			= '%s' AND
+				`code`			= '%s' AND
+				`redirect_uri`	= '%s'
+			LIMIT 1",
+			$client['id'],
+			$code,
+			md5($redirect_uri)
 		);
 		if (!$data) {
 			return false;
@@ -458,8 +452,7 @@ class OAuth2 {
 			"tokens/$access_token",
 			function () use ($access_token) {
 				return $this->db()->qf(
-					[
-						"SELECT
+					"SELECT
 						`id` AS `client_id`,
 						`user`,
 						`session`,
@@ -469,8 +462,7 @@ class OAuth2 {
 					WHERE
 						`access_token`	= '%s'
 					LIMIT 1",
-						$access_token
-					]
+					$access_token
 				);
 			}
 		);
@@ -480,13 +472,11 @@ class OAuth2 {
 			}
 			if (!$this->get_access($data['client_id'], $data['user'])) {
 				$this->db_prime()->q(
-					[
-						"DELETE FROM `[prefix]oauth2_clients_sessions`
-						WHERE
-							`access_token`	= '%s'
-						LIMIT 1",
-						$access_token
-					]
+					"DELETE FROM `[prefix]oauth2_clients_sessions`
+					WHERE
+						`access_token`	= '%s'
+					LIMIT 1",
+					$access_token
 				);
 				unset($Cache->{"tokens/$access_token"});
 				$data = false;
@@ -521,14 +511,12 @@ class OAuth2 {
 			return false;
 		}
 		$session = $this->db_prime()->qfs(
-			[
-				"SELECT `session`
-				FROM `[prefix]oauth2_clients_sessions`
-				WHERE
-					`access_token`	= '%s'
-				LIMIT 1",
-				$access_token
-			]
+			"SELECT `session`
+			FROM `[prefix]oauth2_clients_sessions`
+			WHERE
+				`access_token`	= '%s'
+			LIMIT 1",
+			$access_token
 		);
 		if ($this->db_prime()->q(
 			"DELETE FROM `[prefix]oauth2_clients_sessions`
@@ -560,19 +548,17 @@ class OAuth2 {
 			return false;
 		}
 		$data = $this->db_prime()->qf(
-			[
-				"SELECT
-					`user`,
-					`access_token`,
-					`session`
-				FROM `[prefix]oauth2_clients_sessions`
-				WHERE
-					`id`			= '%s' AND
-					`refresh_token`	= '%s'
-				LIMIT 1",
-				$client['id'],
-				$refresh_token
-			]
+			"SELECT
+				`user`,
+				`access_token`,
+				`session`
+			FROM `[prefix]oauth2_clients_sessions`
+			WHERE
+				`id`			= '%s' AND
+				`refresh_token`	= '%s'
+			LIMIT 1",
+			$client['id'],
+			$refresh_token
 		);
 		if (!$data) {
 			return false;
