@@ -105,7 +105,6 @@ trait CRUD_helpers {
 			if (is_array_indexed($details)) {
 				$where_tmp = [];
 				foreach ($details as $d) {
-					/** @noinspection DisconnectedForeachInstructionInspection */
 					$where_tmp[]    = "`$table_alias`.`$key` = '%s'";
 					$where_params[] = $d;
 				}
@@ -123,12 +122,12 @@ trait CRUD_helpers {
 		}
 	}
 	/**
-	 * @param string $table_alias
-	 * @param string $table
-	 * @param array  $details
-	 * @param string $joins
-	 * @param array  $join_params
-	 * @param int    $join_index
+	 * @param string           $table_alias
+	 * @param string           $table
+	 * @param array|int|string $details
+	 * @param string           $joins
+	 * @param array            $join_params
+	 * @param int              $join_index
 	 */
 	private function search_conditions_join_table ($table_alias, $table, $details, &$joins, &$join_params, &$join_index) {
 		$data_model        = $this->data_model[$table];
@@ -139,18 +138,26 @@ trait CRUD_helpers {
 				array_keys($data_model['data_model'])[1] => $details
 			];
 		}
+		/**
+		 * @var array $details
+		 */
 		++$join_index;
 		$joins .=
 			"INNER JOIN `{$this->table}_$table` AS `j$join_index`
 			ON
 				`$table_alias`.`$first_column` = `j$join_index`.`$first_column_join`";
+		$language_field = isset($data_model['language_field']) ? $data_model['language_field'] : false;
 		foreach ($details as $field => $value) {
+			if ($language_field === $field) {
+				continue;
+			}
 			$where_tmp = [];
 			$this->search_conditions("j$join_index", $field, $value, $where_tmp, $join_params);
 			$joins .= " AND ".implode(" AND ", $where_tmp);
 		}
-		if (isset($data_model['language_field'])) {
-			$clang = Language::instance()->clang;
+		if ($language_field) {
+			/** @noinspection OffsetOperationsInspection */
+			$clang = isset($details[$language_field]) ? $details[$language_field] : Language::instance()->clang;
 			$joins .=
 				" AND
 				(
