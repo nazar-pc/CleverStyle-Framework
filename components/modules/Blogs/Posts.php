@@ -14,7 +14,7 @@ use
 	cs\Language,
 	cs\Language\Prefix as Language_prefix,
 	cs\User,
-	cs\CRUD,
+	cs\CRUD_helpers,
 	cs\Singleton,
 	cs\plugins\Json_ld\Json_ld;
 
@@ -23,7 +23,7 @@ use
  */
 class Posts {
 	use
-		CRUD,
+		CRUD_helpers,
 		Singleton;
 	protected $data_model                  = [
 		'id'       => 'int:0',
@@ -50,8 +50,6 @@ class Posts {
 	protected $table                       = '[prefix]blogs_posts';
 	protected $data_model_ml_group         = 'Blogs/posts';
 	protected $data_model_files_tag_prefix = 'Blogs/posts';
-	protected $table_sections              = '[prefix]blogs_posts_sections';
-	protected $table_tags                  = '[prefix]blogs_posts_tags';
 	/**
 	 * @var Cache_prefix
 	 */
@@ -238,25 +236,18 @@ class Posts {
 	 *
 	 * @param int $section
 	 * @param int $page
-	 * @param int $number
+	 * @param int $count
 	 *
 	 * @return int[]
 	 */
-	function get_for_section ($section, $page, $number) {
-		$section = (int)$section;
-		$number  = (int)$number;
-		$from    = ($page - 1) * $number;
-		return $this->db()->qfas(
-			"SELECT `s`.`id`
-			FROM `$this->table_sections` AS `s`
-				LEFT JOIN `$this->table` AS `p`
-			ON `s`.`id` = `p`.`id`
-			WHERE
-				`s`.`section`	= $section AND
-				`p`.`draft`		= 0
-			ORDER BY `p`.`date` DESC
-			LIMIT $from, $number"
-		) ?: [];
+	function get_for_section ($section, $page, $count) {
+		$search_parameters = [
+			'draft'    => 0,
+			'sections' => [
+				'section' => $section
+			]
+		];
+		return $this->search($search_parameters, $page, $count, 'date', false) ?: [];
 	}
 	/**
 	 * Get number of posts for section
@@ -266,16 +257,14 @@ class Posts {
 	 * @return int
 	 */
 	function get_for_section_count ($section) {
-		$section = (int)$section;
-		return $this->db()->qfs(
-			"SELECT COUNT(`s`.`id`)
-			FROM `$this->table_sections` AS `s`
-				LEFT JOIN `$this->table` AS `p`
-			ON `s`.`id` = `p`.`id`
-			WHERE
-				`s`.`section`	= $section AND
-				`p`.`draft`		= 0"
-		) ?: 0;
+		$search_parameters = [
+			'draft'       => 0,
+			'sections'    => [
+				'section' => $section
+			],
+			'total_count' => true
+		];
+		return $this->search($search_parameters) ?: 0;
 	}
 	/**
 	 * Get posts for tag
@@ -283,27 +272,19 @@ class Posts {
 	 * @param int    $tag
 	 * @param string $lang
 	 * @param int    $page
-	 * @param int    $number
+	 * @param int    $count
 	 *
 	 * @return int[]
 	 */
-	function get_for_tag ($tag, $lang, $page, $number) {
-		$number = (int)$number;
-		$from   = ($page - 1) * $number;
-		return $this->db()->qfas(
-			"SELECT `t`.`id`
-			FROM `$this->table_tags` AS `t`
-				LEFT JOIN `$this->table` AS `p`
-			ON `t`.`id` = `p`.`id`
-			WHERE
-				`t`.`tag`	= '%s' AND
-				`p`.`draft`	= 0 AND
-				`t`.`lang`	= '%s'
-			ORDER BY `p`.`date` DESC
-			LIMIT $from, $number",
-			$tag,
-			$lang
-		) ?: [];
+	function get_for_tag ($tag, $lang, $page, $count) {
+		$search_parameters = [
+			'draft' => 0,
+			'tags'  => [
+				'tag'  => $tag,
+				'lang' => $lang
+			]
+		];
+		return $this->search($search_parameters, $page, $count, 'date', false) ?: [];
 	}
 	/**
 	 * Get number of posts for tag
@@ -314,41 +295,31 @@ class Posts {
 	 * @return int
 	 */
 	function get_for_tag_count ($tag, $lang) {
-		return $this->db()->qfs(
-			"SELECT COUNT(`t`.`id`)
-			FROM `$this->table_tags` AS `t`
-				LEFT JOIN `$this->table` AS `p`
-			ON `t`.`id` = `p`.`id`
-			WHERE
-				`t`.`tag`	= '%s' AND
-				`p`.`draft`	= 0 AND
-				`t`.`lang`	= '%s'",
-			$tag,
-			$lang
-		) ?: 0;
+		$search_parameters = [
+			'draft'       => 0,
+			'tags'        => [
+				'tag'  => $tag,
+				'lang' => $lang
+			],
+			'total_count' => true
+		];
+		return $this->search($search_parameters) ?: 0;
 	}
 	/**
 	 * Get drafts
 	 *
 	 * @param int $user
 	 * @param int $page
-	 * @param int $number
+	 * @param int $count
 	 *
 	 * @return int[]
 	 */
-	function get_drafts ($user, $page, $number) {
-		$number = (int)$number;
-		$from   = ($page - 1) * $number;
-		return $this->db()->qfas(
-			"SELECT `id`
-			FROM `$this->table`
-			WHERE
-				`draft` = 1 AND
-				`user`	= '%s'
-			ORDER BY `date` DESC
-			LIMIT $from, $number",
-			$user
-		) ?: [];
+	function get_drafts ($user, $page, $count) {
+		$search_parameters = [
+			'user'  => $user,
+			'draft' => 1
+		];
+		return $this->search($search_parameters, $page, $count, 'date', false) ?: [];
 	}
 	/**
 	 * Get number of drafts
@@ -358,14 +329,12 @@ class Posts {
 	 * @return int
 	 */
 	function get_drafts_count ($user) {
-		return $this->db()->qfs(
-			"SELECT COUNT(`id`)
-			FROM `$this->table`
-			WHERE
-				`draft` = 1 AND
-				`user`	= '%s'",
-			$user
-		) ?: 0;
+		$search_parameters = [
+			'user'        => $user,
+			'draft'       => 1,
+			'total_count' => true
+		];
+		return $this->search($search_parameters) ?: 0;
 	}
 	/**
 	 * Add new post
@@ -510,11 +479,11 @@ class Posts {
 		return $this->cache->get(
 			'total_count',
 			function () {
-				return $this->db()->qfs(
-					"SELECT COUNT(`id`)
-					FROM `$this->table`
-					WHERE `draft` = 0"
-				);
+				$search_parameters = [
+					'draft'       => 0,
+					'total_count' => true
+				];
+				return $this->search($search_parameters) ?: 0;
 			}
 		);
 	}
