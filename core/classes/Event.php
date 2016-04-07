@@ -22,12 +22,11 @@ class Event {
 	 */
 	protected $callbacks;
 	/**
-	 * @var bool
+	 * @var callable[][]
 	 */
-	protected $initialized;
+	protected $callbacks_cache;
 	protected function init () {
-		$this->callbacks   = [];
-		$this->initialized = false;
+		$this->callbacks = [];
 	}
 	/**
 	 * Add event handler
@@ -97,9 +96,7 @@ class Event {
 	 * @return bool
 	 */
 	function fire ($event, ...$arguments) {
-		if (!$this->initialized) {
-			$this->initialize();
-		}
+		$this->ensure_events_registered();
 		if (
 			!$event ||
 			!isset($this->callbacks[$event])
@@ -114,13 +111,23 @@ class Event {
 		return true;
 	}
 	/**
+	 * Before firing events we need to ensure that events callbacks were registered
+	 */
+	protected function ensure_events_registered () {
+		if (!$this->callbacks_cache) {
+			$this->register_events();
+			$this->callbacks_cache = $this->callbacks;
+		} elseif (!$this->callbacks) {
+			$this->callbacks = $this->callbacks_cache;
+		}
+	}
+	/**
 	 * Initialize all events handlers
 	 */
-	protected function initialize () {
+	protected function register_events () {
 		foreach ($this->events_files_paths() as $path) {
 			include DIR."/$path";
 		}
-		$this->initialized = true;
 	}
 	/**
 	 * @return string[]
