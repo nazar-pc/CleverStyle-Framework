@@ -23,4 +23,5 @@ $_SERVER = [
 	'REQUEST_URI'    => "/cli/$path[1]",
 	'CLI'            => true
 ];
-require __DIR__.'/index.php';
+require_once __DIR__.'/core/thirdparty/cli/cli.php'; //Inclusion of php-cli-tools wrappers functions
+require_once __DIR__.'/index.php';

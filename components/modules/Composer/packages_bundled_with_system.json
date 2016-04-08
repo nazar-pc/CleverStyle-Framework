@@ -1,5 +1,6 @@
 {
-	"nazar-pc/bananahtml" : "*",
-	"nazar-pc/upf"        : "*",
-	"phpmailer/phpmailer" : "*"
+	"nazar-pc/bananahtml"  : "*",
+	"nazar-pc/upf"         : "*",
+	"phpmailer/phpmailer"  : "*",
+	"wp-cli/php-cli-tools" : "*"
 }
