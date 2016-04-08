@@ -216,20 +216,15 @@ class Posts {
 	 * Get latest posts
 	 *
 	 * @param int $page
-	 * @param int $number
+	 * @param int $count
 	 *
 	 * @return int[]
 	 */
-	function get_latest_posts ($page, $number) {
-		$number = (int)$number;
-		$from   = ($page - 1) * $number;
-		return $this->db()->qfas(
-			"SELECT `id`
-			FROM `$this->table`
-			WHERE `draft` = 0
-			ORDER BY `date` DESC
-			LIMIT $from, $number"
-		) ?: [];
+	function get_latest_posts ($page, $count) {
+		$search_parameters = [
+			'draft' => 0
+		];
+		return $this->search($search_parameters, $page, $count, 'date', false) ?: [];
 	}
 	/**
 	 * Get posts for section
@@ -359,7 +354,7 @@ class Posts {
 				$title,
 				path($path ?: $title),
 				$content,
-				(int)(bool)$draft,
+				$draft,
 				$sections,
 				$this->prepare_tags($tags)
 			]
@@ -434,7 +429,7 @@ class Posts {
 				$title,
 				path($path ?: $title),
 				$content,
-				(int)(bool)$draft,
+				$draft,
 				$sections,
 				$this->prepare_tags($tags)
 			]
