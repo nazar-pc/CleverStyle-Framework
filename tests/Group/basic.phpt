@@ -31,7 +31,7 @@ array(2) {
 string(7) "group 1"
 array(3) {
   ["id"]=>
-  string(1) "1"
+  int(1)
   ["title"]=>
   string(14) "Administrators"
   ["description"]=>
@@ -42,7 +42,7 @@ array(2) {
   [0]=>
   array(3) {
     ["id"]=>
-    string(1) "1"
+    int(1)
     ["title"]=>
     string(14) "Administrators"
     ["description"]=>
@@ -51,7 +51,7 @@ array(2) {
   [1]=>
   array(3) {
     ["id"]=>
-    string(1) "2"
+    int(2)
     ["title"]=>
     string(5) "Users"
     ["description"]=>
@@ -62,7 +62,7 @@ string(15) "new group added"
 int(3)
 array(3) {
   ["id"]=>
-  string(1) "3"
+  int(3)
   ["title"]=>
   string(7) "Group 1"
   ["description"]=>
@@ -72,7 +72,7 @@ string(18) "group modification"
 bool(true)
 array(3) {
   ["id"]=>
-  string(1) "3"
+  int(3)
   ["title"]=>
   string(7) "Group 1"
   ["description"]=>
@@ -105,7 +105,7 @@ string(19) "another group added"
 int(4)
 array(3) {
   ["id"]=>
-  string(1) "4"
+  int(4)
   ["title"]=>
   string(4) "test"
   ["description"]=>
