@@ -531,6 +531,8 @@ class Page {
 					'error_description' => $description
 				]
 			);
+		} elseif ($Request->cli_path) {
+			file_put_contents(STDERR, $title != $description ? "$title\n$description" : $description);
 		} else {
 			$this->Content = $this->error_page($title, $description);
 		}
@@ -590,15 +592,15 @@ class Page {
 			return;
 		}
 		/**
-		 * For AJAX and API requests only content without page template
+		 * For CLI, API and generally JSON responses only content without page template
 		 */
-		$api_path = Request::instance()->api_path;
-		if ($api_path || !$this->interface) {
+		$Request = Request::instance();
+		if ($Request->cli_path || $Request->api_path || !$this->interface) {
 			/**
 			 * Processing of replacing in content
 			 */
 			/** @noinspection NestedTernaryOperatorInspection */
-			$Response->body = $this->process_replacing($this->Content ?: ($api_path ? 'null' : ''));
+			$Response->body = $this->process_replacing($this->Content ?: ($Request->api_path ? 'null' : ''));
 		} else {
 			Event::instance()->fire('System/Page/render/before');
 			/**

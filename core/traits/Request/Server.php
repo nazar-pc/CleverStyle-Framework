@@ -75,6 +75,10 @@ trait Server {
 	 */
 	public $headers;
 	/**
+	 * @var bool
+	 */
+	protected $cli;
+	/**
 	 * @param string[] $server Typically `$_SERVER`
 	 */
 	function init_server ($server = []) {
@@ -95,6 +99,7 @@ trait Server {
 	 * @param string[] $server
 	 */
 	protected function fill_server_properties ($server) {
+		$this->cli          = @$server['CLI'] === true;
 		$this->method       = strtoupper($server['REQUEST_METHOD']);
 		$this->host         = $this->host($server);
 		$this->scheme       = $this->secure ? 'https' : 'http';

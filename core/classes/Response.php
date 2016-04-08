@@ -175,6 +175,26 @@ class Response {
 	 * Provides default output for all the response data using `header()`, `http_response_code()` and `echo` or `php://output`
 	 */
 	function output_default () {
+		if (Request::instance()->cli_path) {
+			$this->output_default_cli();
+		} else {
+			$this->output_default_web();
+		}
+	}
+	protected function output_default_cli () {
+		if ($this->code >= 400 && $this->code <= 510) {
+			echo $this->body;
+			exit($this->code % 256);
+		}
+		if (is_resource($this->body_stream)) {
+			$position = ftell($this->body_stream);
+			stream_copy_to_stream($this->body_stream, STDIN);
+			fseek($this->body_stream, $position);
+		} else {
+			echo $this->body;
+		}
+	}
+	protected function output_default_web () {
 		foreach ($this->headers as $header => $value) {
 			foreach ($value as $v) {
 				header("$header: $v", false);

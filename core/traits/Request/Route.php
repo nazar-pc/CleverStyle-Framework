@@ -60,6 +60,12 @@ trait Route {
 	 */
 	public $admin_path;
 	/**
+	 * Request to CLI interface
+	 *
+	 * @var bool
+	 */
+	public $cli_path;
+	/**
 	 * Request to api section
 	 *
 	 * @var bool
@@ -88,37 +94,25 @@ trait Route {
 		$this->route           = [];
 		$this->route_path      = [];
 		$this->route_ids       = [];
+		$this->cli_path        = false;
 		$this->admin_path      = false;
 		$this->api_path        = false;
 		$this->current_module  = '';
 		$this->home_page       = false;
-		$Config                = Config::instance();
-		/**
-		 * Search for url matching in all mirrors
-		 */
-		foreach ($Config->core['url'] as $i => $address) {
-			list($scheme, $urls) = explode('://', $address, 2);
-			if (
-				$this->mirror_index === -1 &&
-				$scheme == $this->scheme
-			) {
-				foreach (explode(';', $urls) as $url) {
-					if (mb_strpos("$this->host/$this->path", "$url/") === 0) {
-						$this->mirror_index = $i;
-						break 2;
-					}
-				}
+		if ($this->cli) {
+			$results = $this->analyze_route_path($this->path);
+		} else {
+			$Config             = Config::instance();
+			$this->mirror_index = $this->determine_current_mirror_index($Config);
+			/**
+			 * If match was not found - mirror is not allowed!
+			 */
+			if ($this->mirror_index === -1) {
+				throw new ExitException("Mirror $this->host not allowed", 400);
 			}
+			$results = $this->analyze_route_path($this->path);
+			$this->handle_redirect($Config, $results['path_normalized']);
 		}
-		unset($address, $i, $urls, $url, $scheme);
-		/**
-		 * If match was not found - mirror is not allowed!
-		 */
-		if ($this->mirror_index === -1) {
-			throw new ExitException("Mirror $this->host not allowed", 400);
-		}
-		$results = $this->analyze_route_path($this->path);
-		$this->handle_redirect($Config, $results['path_normalized']);
 		$this->route = $results['route'];
 		/**
 		 * Separate numeric and other parts of route
@@ -131,10 +125,32 @@ trait Route {
 			}
 		}
 		$this->path_normalized = $results['path_normalized'];
+		$this->cli_path        = $results['cli_path'];
 		$this->admin_path      = $results['admin_path'];
 		$this->api_path        = $results['api_path'];
 		$this->current_module  = $results['current_module'];
 		$this->home_page       = $results['home_page'];
+	}
+	/**
+	 * @param Config $Config
+	 *
+	 * @return int
+	 */
+	protected function determine_current_mirror_index ($Config) {
+		/**
+		 * Search for url matching in all mirrors
+		 */
+		foreach ($Config->core['url'] as $i => $address) {
+			list($scheme, $urls) = explode('://', $address, 2);
+			if ($scheme == $this->scheme) {
+				foreach (explode(';', $urls) as $url) {
+					if (mb_strpos("$this->host/$this->path", "$url/") === 0) {
+						return $i;
+					}
+				}
+			}
+		}
+		return -1;
 	}
 	/**
 	 * Process raw relative route.
@@ -144,7 +160,7 @@ trait Route {
 	 *
 	 * @param string $path
 	 *
-	 * @return array Array contains next elements: `route`, `path_normalized`, `admin_path`, `api_path`, `current_module`, `home_page`
+	 * @return array Array contains next elements: `route`, `path_normalized`, `cli_path`, `admin_path`, `api_path`, `current_module`, `home_page`
 	 */
 	function analyze_route_path ($path) {
 		$rc = trim($path, '/');
@@ -162,13 +178,17 @@ trait Route {
 		 * Obtaining page path in form of array
 		 */
 		$rc         = $rc ? explode('/', $rc) : [];
+		$cli_path   = '';
 		$admin_path = '';
 		$api_path   = '';
 		$home_page  = false;
 		/**
-		 * If url is admin or API page - set corresponding variables to corresponding path prefix
+		 * If url is cli, admin or API page - set corresponding variables to corresponding path prefix
 		 */
-		if (@mb_strtolower($rc[0]) == 'admin') {
+		if (@mb_strtolower($rc[0]) == 'cli') {
+			$cli_path = 'cli/';
+			array_shift($rc);
+		} elseif (@mb_strtolower($rc[0]) == 'admin') {
 			$admin_path = 'admin/';
 			array_shift($rc);
 		} elseif (@mb_strtolower($rc[0]) == 'api') {
@@ -178,13 +198,14 @@ trait Route {
 		/**
 		 * Module detection
 		 */
-		$current_module = $this->determine_page_module($rc, $home_page, $admin_path, $api_path);
+		$current_module = $this->determine_page_module($rc, $home_page, $cli_path, $admin_path, $api_path);
 		return [
 			'route'           => $rc,
 			'path_normalized' => trim(
-				$admin_path.$api_path.$current_module.'/'.implode('/', $rc),
+				$cli_path.$admin_path.$api_path.$current_module.'/'.implode('/', $rc),
 				'/'
 			),
+			'cli_path'        => (bool)$cli_path,
 			'admin_path'      => (bool)$admin_path,
 			'api_path'        => (bool)$api_path,
 			'current_module'  => $current_module,
@@ -244,12 +265,13 @@ trait Route {
 	 *
 	 * @param array  $rc
 	 * @param bool   $home_page
+	 * @param string $cli_path
 	 * @param string $admin_path
 	 * @param string $api_path
 	 *
 	 * @return mixed|string
 	 */
-	protected function determine_page_module (&$rc, &$home_page, $admin_path, $api_path) {
+	protected function determine_page_module (&$rc, &$home_page, $cli_path, $admin_path, $api_path) {
 		$Config  = Config::instance();
 		$modules = $this->get_modules($Config, (bool)$admin_path);
 		if (@in_array($rc[0], array_values($modules))) {
@@ -259,10 +281,10 @@ trait Route {
 			return $modules[array_shift($rc)];
 		}
 		$current_module =
-			$admin_path || $api_path || isset($rc[0])
+			$cli_path || $admin_path || $api_path || isset($rc[0])
 				? 'System'
 				: $Config->core['default_module'];
-		if (!$admin_path && !$api_path && !isset($rc[1])) {
+		if (!$cli_path && !$admin_path && !$api_path && !isset($rc[1])) {
 			$home_page = true;
 		}
 		return $current_module;

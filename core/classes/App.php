@@ -64,14 +64,14 @@ class App {
 		_include("$this->working_directory/prepare.php", false, false);
 		Event::instance()->fire('System/App/render/before');
 		/**
-		 * Title only for non-API calls
+		 * Title only for non-CLI and non-API calls
 		 */
-		$Request->api_path || $this->render_title();
+		$Request->cli_path || $Request->api_path || $this->render_title();
 		$this->render_content();
 		/**
-		 * Blocks only for non-API calls
+		 * Blocks only for non-CLI and non-API calls
 		 */
-		$Request->api_path || $this->render_blocks();
+		$Request->cli_path || $Request->api_path || $this->render_blocks();
 		Event::instance()->fire('System/App/render/after');
 		Page::instance()->render();
 	}
@@ -84,7 +84,9 @@ class App {
 	 */
 	protected function get_working_directory ($Request) {
 		$working_directory = MODULES."/$Request->current_module";
-		if ($Request->admin_path) {
+		if ($Request->cli_path) {
+			$working_directory .= '/cli';
+		} elseif ($Request->admin_path) {
 			$working_directory .= '/admin';
 		} elseif ($Request->api_path) {
 			$working_directory .= '/api';
@@ -145,7 +147,10 @@ class App {
 	 * @return bool
 	 */
 	protected function check_permission ($label) {
-		$Request          = Request::instance();
+		$Request = Request::instance();
+		if ($Request->cli_path) {
+			return true;
+		}
 		$permission_group = $Request->current_module;
 		if ($Request->admin_path) {
 			$permission_group = "admin/$permission_group";
@@ -163,7 +168,7 @@ class App {
 		/**
 		 * Add generic Home or Module name title
 		 */
-		if (!$Request->api_path) {
+		if (!$Request->cli_path && !$Request->api_path) {
 			$L = Language::instance();
 			if ($Request->admin_path) {
 				$Page->title($L->system_admin_administration);

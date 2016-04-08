@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+/**
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+$query = [];
+foreach (array_slice($argv, 2) as $q) {
+	$q            = explode('=', $q, 2) + [1 => 1];
+	$query[$q[0]] = $q[1];
+}
+unset($q);
+$path = explode(':', $argv[1]);
+if (!isset($path[1])) {
+	array_unshift($path, 'cli');
+}
+$path[0] = strtoupper($path[0]);
+$_SERVER = [
+	'REQUEST_METHOD' => $path[0],
+	'QUERY_STRING'   => http_build_query($query, null, null, PHP_QUERY_RFC3986),
+	'REQUEST_URI'    => "/cli/$path[1]",
+	'CLI'            => true
+];
+require __DIR__.'/index.php';

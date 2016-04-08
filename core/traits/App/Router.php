@@ -142,7 +142,7 @@ trait Router {
 	 */
 	protected function files_router_handler_internal ($Request, $dir, $basename, $required) {
 		$included = _include("$dir/$basename.php", false, false) !== false;
-		if (!$Request->api_path) {
+		if (!$Request->cli_path && !$Request->api_path) {
 			return;
 		}
 		$request_method = strtolower($Request->method);
@@ -182,7 +182,9 @@ trait Router {
 	 */
 	protected function controller_router ($Request) {
 		$suffix = '';
-		if ($Request->admin_path) {
+		if ($Request->cli_path) {
+			$suffix = '\\cli';
+		} elseif ($Request->admin_path) {
 			$suffix = '\\admin';
 		} elseif ($Request->api_path) {
 			$suffix = '\\api';
@@ -224,7 +226,7 @@ trait Router {
 	protected function controller_router_handler_internal ($Request, $controller_class, $method_name, $required) {
 		$Response = Response::instance();
 		$found    = $this->controller_router_handler_internal_execute($controller_class, $method_name, $Request, $Response);
-		if (!$Request->api_path) {
+		if (!$Request->cli_path && !$Request->api_path) {
 			return;
 		}
 		$request_method = strtolower($Request->method);
