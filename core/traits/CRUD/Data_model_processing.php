@@ -74,7 +74,7 @@ trait Data_model_processing {
 				$model              = explode(':', $model[1], 2);
 				$type               = $model[0];
 			}
-			$argument = self::crud_argument_preparation(
+			$argument = $this->crud_argument_preparation(
 				$type,
 				isset($model[1]) ? $model[1] : null,
 				$argument

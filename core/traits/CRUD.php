@@ -39,9 +39,9 @@ trait CRUD {
 	 * @return false|int|string Id of created item on success (or specified primary key), `false` otherwise
 	 */
 	private function create_internal ($table, $data_model, $arguments) {
-		$arguments = self::fix_arguments_order($data_model, $arguments);
+		$arguments = $this->fix_arguments_order($data_model, $arguments);
 		$insert_id = count($data_model) == count($arguments) ? $arguments[0] : false;
-		list($prepared_arguments, $joined_tables) = self::crud_arguments_preparation(
+		list($prepared_arguments, $joined_tables) = $this->crud_arguments_preparation(
 			$insert_id !== false ? $data_model : array_slice($data_model, 1),
 			$arguments,
 			$insert_id,
@@ -169,32 +169,45 @@ trait CRUD {
 			WHERE `$first_column` = '%s'
 			LIMIT 1",
 			$id
-		) ?: false;
+		);
 		if (!$data) {
 			return false;
 		}
 		foreach ($this->data_model as $field => $model) {
-			if (is_array($model) && isset($model['data_model'])) {
+			if (is_string($model)) {
+				/**
+				 * Handle multilingual fields automatically
+				 */
+				if (strpos($model, 'ml:') === 0) {
+					$data[$field] = Text::instance()->process($this->cdb(), $data[$field], true);
+				}
+				$data[$field] = $this->read_field_post_processing($data[$field], $model);
+			} elseif (is_array($model) && isset($model['data_model'])) {
 				$data[$field] = $this->read_joined_table($id, $field, $model);
-				continue;
-			}
-			if (!is_string($model)) {
-				continue;
-			}
-			/**
-			 * Handle multilingual fields automatically
-			 */
-			if (strpos($model, 'ml:') === 0) {
-				$data[$field] = Text::instance()->process($this->cdb(), $data[$field], true);
-			}
-			/**
-			 * Decode JSON fields
-			 */
-			if (in_array($model, ['json', 'ml:json'])) {
-				$data[$field] = _json_decode($data[$field]);
 			}
 		}
 		return $data;
+	}
+	/**
+	 * @param mixed  $value
+	 * @param string $model
+	 *
+	 * @return mixed
+	 */
+	private function read_field_post_processing ($value, $model) {
+		/**
+		 * Decode JSON fields
+		 */
+		if (in_array($model, ['json', 'ml:json'])) {
+			return _json_decode($value);
+		}
+		if (strpos($model, 'int') === 0) {
+			return (int)$value;
+		}
+		if (strpos($model, 'float') === 0) {
+			return (float)$value;
+		}
+		return $value;
 	}
 	/**
 	 * @param int|string  $id
@@ -245,9 +258,7 @@ trait CRUD {
 				$row[$id_field]
 			);
 			foreach ($row as $field => &$value) {
-				if ($model['data_model'][$field] == 'json') {
-					$value = _json_decode($value);
-				}
+				$value = $this->read_field_post_processing($value, $model);
 			}
 			if (isset($model['indexed']) && $model['indexed']) {
 				$row = array_values($row);
@@ -281,13 +292,13 @@ trait CRUD {
 	 * @return bool
 	 */
 	private function update_internal ($table, $data_model, $arguments, $files_update = true) {
-		$arguments          = self::fix_arguments_order($data_model, $arguments);
+		$arguments          = $this->fix_arguments_order($data_model, $arguments);
 		$prepared_arguments = $arguments;
 		$id                 = array_shift($prepared_arguments);
 		if ($files_update) {
 			$data_before = $this->read_internal($table, $data_model, $id);
 		}
-		list($prepared_arguments, $joined_tables) = self::crud_arguments_preparation(array_slice($data_model, 1), $prepared_arguments, $id);
+		list($prepared_arguments, $joined_tables) = $this->crud_arguments_preparation(array_slice($data_model, 1), $prepared_arguments, $id);
 		$columns              = implode(
 			',',
 			array_map(
