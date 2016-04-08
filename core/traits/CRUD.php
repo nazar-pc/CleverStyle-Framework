@@ -258,7 +258,7 @@ trait CRUD {
 				$row[$id_field]
 			);
 			foreach ($row as $field => &$value) {
-				$value = $this->read_field_post_processing($value, $model);
+				$value = $this->read_field_post_processing($value, $model['data_model'][$field]);
 			}
 			if (isset($model['indexed']) && $model['indexed']) {
 				$row = array_values($row);
