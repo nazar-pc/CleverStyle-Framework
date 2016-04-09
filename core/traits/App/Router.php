@@ -35,10 +35,6 @@ trait Router {
 	protected function execute_router () {
 		$Request = Request::instance();
 		$this->check_and_normalize_route($Request);
-		if ($Request->method == 'CLI') {
-			$this->print_cli_structure($Request->path);
-			return;
-		}
 		if (file_exists("$this->working_directory/Controller.php")) {
 			$this->controller_router($Request);
 		} else {
@@ -101,14 +97,15 @@ trait Router {
 					"\\cs\\modules\\$module_name\\cli\\Controller",
 					$basename ? $basename.'_'.$path : $path
 				);
-				if ($structure && $nested_structure) {
-					$this->print_cli_structure_internal($dir, $module_name, $basename ? $basename.'_'.$path : $path, $nested_structure, $result[$key]);
-				}
+				$new_dir      = $dir;
+				$new_basename = $basename ? $basename.'_'.$path : $path;
 			} else {
 				$result[$key] = $this->files_router_available_methods($dir, $path);
-				if ($structure && $nested_structure) {
-					$this->print_cli_structure_internal("$dir/$path", $module_name, $basename, $nested_structure, $result[$key]);
-				}
+				$new_dir      = "$dir/$path";
+				$new_basename = $basename;
+			}
+			if ($structure && $nested_structure) {
+				$this->print_cli_structure_internal($new_dir, $module_name, $new_basename, $nested_structure, $result[$key]);
 			}
 		}
 	}
@@ -282,7 +279,9 @@ trait Router {
 		if ($available_methods) {
 			if ($Request->cli_path) {
 				$this->print_cli_structure($Request->path);
-				throw new ExitException(501);
+				if ($request_method !== 'cli') {
+					throw new ExitException(501);
+				}
 			} else {
 				Response::instance()->header('Allow', implode(', ', $available_methods));
 				if ($request_method !== 'options') {
@@ -400,16 +399,16 @@ trait Router {
 	protected function controller_router_available_methods_to_flat_structure ($structure, $prefix = '') {
 		$flat_structure = [];
 		foreach ($structure as $path => $nested_structure) {
-			if (is_array($nested_structure)) {
-				$flat_structure[] = $prefix.$path;
-				/** @noinspection SlowArrayOperationsInLoopInspection */
-				$flat_structure = array_merge(
-					$flat_structure,
-					$this->controller_router_available_methods_to_flat_structure($nested_structure, $prefix.$path.'_')
-				);
-			} else {
-				$flat_structure[] = $prefix.$nested_structure;
+			if (!is_array($nested_structure)) {
+				$path             = $nested_structure;
+				$nested_structure = [];
 			}
+			$flat_structure[] = $prefix.$path;
+			/** @noinspection SlowArrayOperationsInLoopInspection */
+			$flat_structure = array_merge(
+				$flat_structure,
+				$this->controller_router_available_methods_to_flat_structure($nested_structure, $prefix.$path.'_')
+			);
 		}
 		return $flat_structure;
 	}
