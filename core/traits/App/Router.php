@@ -61,7 +61,7 @@ trait Router {
 			/**
 			 * If path not specified - take first from structure
 			 */
-			$this->check_and_normalize_route_internal($path, $structure, $Request->api_path);
+			$this->check_and_normalize_route_internal($path, $structure, $Request->cli_path || $Request->api_path);
 			$Request->route_path[$nesting_level] = $path;
 			/**
 			 * Fill paths array intended for controller's usage
@@ -76,20 +76,20 @@ trait Router {
 	/**
 	 * @param string $path
 	 * @param array  $structure
-	 * @param bool   $api_path
+	 * @param bool   $cli_or_api_path
 	 *
 	 * @throws ExitException
 	 */
-	protected function check_and_normalize_route_internal (&$path, $structure, $api_path) {
+	protected function check_and_normalize_route_internal (&$path, $structure, $cli_or_api_path) {
 		/**
 		 * If path not specified - take first from structure
 		 */
 		if (!$path) {
 			$path = isset($structure[0]) ? $structure[0] : array_keys($structure)[0];
 			/**
-			 * We need exact paths for API request (or `_` ending if available) and less strict mode for other cases that allows go deeper automatically
+			 * We need exact paths for CLI and API request (or `_` ending if available) and less strict mode for other cases that allows go deeper automatically
 			 */
-			if ($path !== '_' && $api_path) {
+			if ($path !== '_' && $cli_or_api_path) {
 				throw new ExitException(404);
 			}
 		} elseif (!isset($structure[$path]) && !in_array($path, $structure)) {
@@ -150,9 +150,22 @@ trait Router {
 		if ($included || !$required) {
 			return;
 		}
+		$this->handler_not_found(
+			$this->files_router_available_methods($dir, $basename),
+			$request_method
+		);
+	}
+	/**
+	 * @param string $dir
+	 * @param string $basename
+	 *
+	 * @return string[]
+	 */
+	protected function files_router_available_methods ($dir, $basename) {
 		$methods = get_files_list($dir, "/^$basename\\.[a-z]+\\.php$/");
 		$methods = _strtoupper(_substr($methods, strlen($basename) + 1, -4));
-		$this->handler_not_found($methods, $request_method);
+		natcasesort($methods);
+		return array_values($methods);
 	}
 	/**
 	 * If HTTP method handler not found we generate either `501 Not Implemented` if other methods are supported or `404 Not Found` if handlers for others
@@ -234,14 +247,63 @@ trait Router {
 		if ($found || !$required) {
 			return;
 		}
-		$methods = array_filter(
+		$this->handler_not_found(
+			$this->controller_router_available_methods($this->working_directory, $controller_class, $method_name),
+			$request_method
+		);
+	}
+	/**
+	 * @param string $working_directory
+	 * @param string $controller_class
+	 * @param string $method_name
+	 *
+	 * @return string[]
+	 */
+	protected function controller_router_available_methods ($working_directory, $controller_class, $method_name) {
+		$structure = file_exists("$working_directory/index.json") ? file_get_json("$working_directory/index.json") : ['index'];
+		$structure = $this->controller_router_available_methods_to_flat_structure($structure);
+		$methods   = array_filter(
 			get_class_methods($controller_class),
-			function ($method) use ($method_name) {
-				return preg_match("/^{$method_name}_[a-z]+$/", $method);
+			function ($found_method) use ($method_name, $structure) {
+				if (!preg_match("/^{$method_name}_[a-z_]+$/", $found_method)) {
+					return false;
+				}
+				foreach ($structure as $structure_method) {
+					if (strpos($found_method, $structure_method) === 0 && strpos($method_name, $structure_method) !== 0) {
+						return false;
+					}
+				}
+				return true;
 			}
 		);
+		if (method_exists($controller_class, $method_name)) {
+			$methods[] = $method_name;
+		}
 		$methods = _strtoupper(_substr($methods, strlen($method_name) + 1));
-		$this->handler_not_found($methods, $request_method);
+		natcasesort($methods);
+		return array_values($methods);
+	}
+	/**
+	 * @param array  $structure
+	 * @param string $prefix
+	 *
+	 * @return string[]
+	 */
+	protected function controller_router_available_methods_to_flat_structure ($structure, $prefix = '') {
+		$flat_structure = [];
+		foreach ($structure as $path => $nested_structure) {
+			if (is_array($nested_structure)) {
+				$flat_structure[] = $prefix.$path;
+				/** @noinspection SlowArrayOperationsInLoopInspection */
+				$flat_structure = array_merge(
+					$flat_structure,
+					$this->controller_router_available_methods_to_flat_structure($nested_structure, $prefix.$path.'_')
+				);
+			} else {
+				$flat_structure[] = $prefix.$nested_structure;
+			}
+		}
+		return $flat_structure;
 	}
 	/**
 	 * @param string   $controller_class

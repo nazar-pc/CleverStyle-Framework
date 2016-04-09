@@ -7,6 +7,7 @@
  */
 namespace cs;
 use
+	cli,
 	h,
 	cs\Page\Includes,
 	cs\Page\Meta;
@@ -532,7 +533,11 @@ class Page {
 				]
 			);
 		} elseif ($Request->cli_path) {
-			file_put_contents(STDERR, $title != $description ? "$title\n$description" : $description);
+			$content = $title != $description ? "$title\n$description" : $description;
+			cli\err(
+				"%r$content%n",
+				true
+			);
 		} else {
 			$this->Content = $this->error_page($title, $description);
 		}

@@ -14,7 +14,7 @@ foreach (array_slice($argv, 2) as $q) {
 unset($q);
 $path = explode(':', $argv[1]);
 if (!isset($path[1])) {
-	array_unshift($path, 'cli');
+	array_unshift($path, 'get');
 }
 $path[0] = strtoupper($path[0]);
 $_SERVER = [

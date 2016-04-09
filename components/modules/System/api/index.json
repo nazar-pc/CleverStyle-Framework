@@ -3,7 +3,6 @@
 		"about_server"   : [],
 		"blocks"         : [],
 		"databases"      : [],
-		"databases_test" : [],
 		"groups"         : [
 			"_",
 			"permissions"
