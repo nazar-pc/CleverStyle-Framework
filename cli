@@ -12,7 +12,7 @@ foreach (array_slice($argv, 2) as $q) {
 	$query[$q[0]] = $q[1];
 }
 unset($q);
-$path = explode(':', $argv[1]);
+$path = explode(':', @$argv[1]);
 if (!isset($path[1])) {
 	array_unshift($path, 'get');
 }
@@ -20,7 +20,7 @@ $path[0] = strtoupper($path[0]);
 $_SERVER = [
 	'REQUEST_METHOD' => $path[0],
 	'QUERY_STRING'   => http_build_query($query, null, null, PHP_QUERY_RFC3986),
-	'REQUEST_URI'    => "/cli/$path[1]",
+	'REQUEST_URI'    => '/cli/'.ltrim($path[1], '/'),
 	'CLI'            => true
 ];
 require_once __DIR__.'/core/thirdparty/cli/cli.php'; //Inclusion of php-cli-tools wrappers functions

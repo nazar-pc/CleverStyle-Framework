@@ -7,6 +7,9 @@
  */
 namespace cs\App;
 use
+	cli,
+	cs\Config,
+	cs\Config\Module_Properties,
 	cs\ExitException,
 	cs\Page,
 	cs\Request,
@@ -32,11 +35,108 @@ trait Router {
 	protected function execute_router () {
 		$Request = Request::instance();
 		$this->check_and_normalize_route($Request);
+		if ($Request->method == 'CLI') {
+			$this->print_cli_structure($Request->path);
+			return;
+		}
 		if (file_exists("$this->working_directory/Controller.php")) {
 			$this->controller_router($Request);
 		} else {
 			$this->files_router($Request);
 		}
+	}
+	protected function print_cli_structure ($path) {
+		$Config = Config::instance();
+		$result = [];
+		foreach ($Config->components['modules'] as $module_name => $data) {
+			if ($data['active'] == Module_Properties::ENABLED) {
+				$working_dir = MODULES."/$module_name/cli";
+				$structure   = file_exists("$working_dir/index.json") ? file_get_json("$working_dir/index.json") : [];
+				$this->print_cli_structure_internal(
+					$working_dir,
+					$module_name,
+					'',
+					$structure,
+					$result[$module_name]
+				);
+			}
+		}
+		$result = $this->print_cli_structure_normalize_result($result);
+		$Page   = Page::instance();
+		// Cut `/cli/` prefix
+		$path = substr($path, 5);
+		if ($path) {
+			$Page->content("%WPaths and methods for \"$path\":%n\n");
+			$result = array_filter(
+				$result,
+				function ($item) use ($path) {
+					return strpos($item[0], $path) === 0;
+				}
+			);
+		} else {
+			$Page->content("%WAll paths and methods:%n\n");
+		}
+		$Page->content(
+			implode("\n", (new cli\Table(['Path', 'Methods available'], $result))->getDisplayLines())."\n"
+		);
+	}
+	/**
+	 * @param string $dir
+	 * @param string $module_name
+	 * @param string $basename
+	 * @param array  $structure
+	 * @param array  $result
+	 */
+	protected function print_cli_structure_internal ($dir, $module_name, $basename, $structure, &$result) {
+		/** @noinspection NestedTernaryOperatorInspection */
+		foreach ($structure ?: (!$basename ? ['index'] : []) as $path => $nested_structure) {
+			if (!is_array($nested_structure)) {
+				$path             = $nested_structure;
+				$nested_structure = [];
+			}
+			$key = $path == '_' ? 0 : $path;
+			if (file_exists("$dir/Controller.php")) {
+				$result[$key] = $this->controller_router_available_methods(
+					$dir,
+					"\\cs\\modules\\$module_name\\cli\\Controller",
+					$basename ? $basename.'_'.$path : $path
+				);
+				if ($structure && $nested_structure) {
+					$this->print_cli_structure_internal($dir, $module_name, $basename ? $basename.'_'.$path : $path, $nested_structure, $result[$key]);
+				}
+			} else {
+				$result[$key] = $this->files_router_available_methods($dir, $path);
+				if ($structure && $nested_structure) {
+					$this->print_cli_structure_internal("$dir/$path", $module_name, $basename, $nested_structure, $result[$key]);
+				}
+			}
+		}
+	}
+	/**
+	 * @param array  $result
+	 * @param string $prefix
+	 *
+	 * @return string[]
+	 */
+	protected function print_cli_structure_normalize_result ($result, $prefix = '') {
+		$normalized = [];
+		foreach ($result as $key => $value) {
+			if (is_array_assoc($value)) {
+				if (!$prefix && isset($value['index'])) {
+					$value[0] = $value['index'];
+					unset($value['index']);
+				}
+				if (is_array(@$value[0]) && $value[0]) {
+					$normalized[] = [$prefix.$key, strtolower(implode(', ', $value[0]))];
+				}
+				unset($value[0]);
+				/** @noinspection SlowArrayOperationsInLoopInspection */
+				$normalized = array_merge($normalized, $this->print_cli_structure_normalize_result($value, $prefix.$key.'/'));
+			} elseif (is_array($value) && $value) {
+				$normalized[] = [$prefix.$key, strtolower(implode(', ', $value))];
+			}
+		}
+		return $normalized;
 	}
 	/**
 	 * Normalize `cs\Request::$route_path` and fill `cs\App::$controller_path`
@@ -152,7 +252,8 @@ trait Router {
 		}
 		$this->handler_not_found(
 			$this->files_router_available_methods($dir, $basename),
-			$request_method
+			$request_method,
+			$Request
 		);
 	}
 	/**
@@ -173,14 +274,20 @@ trait Router {
 	 *
 	 * @param string[] $available_methods
 	 * @param string   $request_method
+	 * @param Request  $Request
 	 *
 	 * @throws ExitException
 	 */
-	protected function handler_not_found ($available_methods, $request_method) {
+	protected function handler_not_found ($available_methods, $request_method, $Request) {
 		if ($available_methods) {
-			Response::instance()->header('Allow', implode(', ', $available_methods));
-			if ($request_method !== 'options') {
+			if ($Request->cli_path) {
+				$this->print_cli_structure($Request->path);
 				throw new ExitException(501);
+			} else {
+				Response::instance()->header('Allow', implode(', ', $available_methods));
+				if ($request_method !== 'options') {
+					throw new ExitException(501);
+				}
 			}
 		} else {
 			throw new ExitException(404);
@@ -249,7 +356,8 @@ trait Router {
 		}
 		$this->handler_not_found(
 			$this->controller_router_available_methods($this->working_directory, $controller_class, $method_name),
-			$request_method
+			$request_method,
+			$Request
 		);
 	}
 	/**

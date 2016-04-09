@@ -91,7 +91,7 @@ class App {
 		} elseif ($Request->api_path) {
 			$working_directory .= '/api';
 		}
-		if (!is_dir($working_directory)) {
+		if (!is_dir($working_directory) && (!$Request->cli_path || $Request->method != 'CLI')) {
 			throw new ExitException(404);
 		}
 		return $working_directory;
