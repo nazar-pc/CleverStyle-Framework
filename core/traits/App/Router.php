@@ -62,7 +62,7 @@ trait Router {
 		// Cut `/cli/` prefix
 		$path = substr($path, 5);
 		if ($path) {
-			$Page->content("%WPaths and methods for \"$path\":%n\n");
+			$Page->content("%yPaths and methods for \"$path\":%n\n");
 			$result = array_filter(
 				$result,
 				function ($item) use ($path) {
@@ -70,7 +70,7 @@ trait Router {
 				}
 			);
 		} else {
-			$Page->content("%WAll paths and methods:%n\n");
+			$Page->content("%yAll paths and methods:%n\n");
 		}
 		$Page->content(
 			implode("\n", (new Table(['Path', 'Methods available'], $result))->getDisplayLines())."\n"
