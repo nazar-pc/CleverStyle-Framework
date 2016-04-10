@@ -7,7 +7,7 @@
  */
 namespace cs\App;
 use
-	cli,
+	cli\Table,
 	cs\Config,
 	cs\Config\Module_Properties,
 	cs\ExitException,
@@ -73,7 +73,7 @@ trait Router {
 			$Page->content("%WAll paths and methods:%n\n");
 		}
 		$Page->content(
-			implode("\n", (new cli\Table(['Path', 'Methods available'], $result))->getDisplayLines())."\n"
+			implode("\n", (new Table(['Path', 'Methods available'], $result))->getDisplayLines())."\n"
 		);
 	}
 	/**

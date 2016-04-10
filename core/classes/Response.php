@@ -7,8 +7,9 @@
  */
 namespace cs;
 use
-	cli,
 	cs\Response\Psr7;
+use function
+	cli\out;
 
 class Response {
 	use
@@ -184,7 +185,7 @@ class Response {
 	}
 	protected function output_default_cli () {
 		if ($this->code >= 400 && $this->code <= 510) {
-			cli\out($this->body);
+			out($this->body);
 			exit($this->code % 256);
 		}
 		if (is_resource($this->body_stream)) {
@@ -192,7 +193,7 @@ class Response {
 			stream_copy_to_stream($this->body_stream, STDIN);
 			fseek($this->body_stream, $position);
 		} else {
-			cli\out($this->body);
+			out($this->body);
 		}
 	}
 	protected function output_default_web () {

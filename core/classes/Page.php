@@ -7,10 +7,11 @@
  */
 namespace cs;
 use
-	cli,
 	h,
 	cs\Page\Includes,
 	cs\Page\Meta;
+use function
+	cli\err;
 
 /**
  * @method static $this instance($check = false)
@@ -534,10 +535,7 @@ class Page {
 			);
 		} elseif ($Request->cli_path) {
 			$content = $title != $description ? "$title\n$description" : $description;
-			cli\err(
-				"%r$content%n",
-				true
-			);
+			err("%r$content%n");
 		} else {
 			$this->Content = $this->error_page($title, $description);
 		}
