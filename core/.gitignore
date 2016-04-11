@@ -1,4 +1,0 @@
-# Exclude composer.phar
-composer.phar
-# Exclude CSTeater examples
-vendor/nazar-pc/cstester/example
