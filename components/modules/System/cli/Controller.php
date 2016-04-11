@@ -35,6 +35,8 @@ class Controller {
     %g./cli cli:System%n
   Print all paths and method available in System module, admin sub-path:
     %g./cli cli:System/admin%n
+  Print help information (this message) for System module:
+    %g./cli help:System%n
 HELP;
 		line($help);
 	}

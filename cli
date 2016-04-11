@@ -12,7 +12,7 @@ foreach (array_slice($argv, 2) as $q) {
 	$query[$q[0]] = $q[1];
 }
 unset($q);
-$path = explode(':', @$argv[1]);
+$path = explode(':', @$argv[1] ?: 'help:System');
 if (!isset($path[1])) {
 	array_unshift($path, 'get');
 }
