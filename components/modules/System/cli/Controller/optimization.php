@@ -10,8 +10,6 @@
 namespace cs\modules\System\cli\Controller;
 use
 	cs\modules\System\api\Controller as Api_controller;
-use function
-	cli\line;
 
 trait optimization {
 	/**
