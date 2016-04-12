@@ -13,30 +13,6 @@ use
 
 trait optimization {
 	/**
-	 * Clean cache
-	 *
-	 * @param \cs\Request $Request
-	 *
-	 * @return string
-	 *
-	 * @throws \cs\ExitException
-	 */
-	static function optimization_clean_cache ($Request) {
-		Api_controller::admin_optimization_clean_cache($Request);
-		return "%gOK%n\n";
-	}
-	/**
-	 * Clean public cache (CSS/JS/HTML)
-	 *
-	 * @return string
-	 *
-	 * @throws \cs\ExitException
-	 */
-	static function optimization_clean_pcache () {
-		Api_controller::admin_optimization_clean_pcache();
-		return "%gOK%n\n";
-	}
-	/**
 	 * @return string
 	 */
 	static function optimization_help () {
@@ -59,5 +35,29 @@ trait optimization {
     %g./cli clean_pcache:System/optimization%n
 
 HELP;
+	}
+	/**
+	 * Clean cache
+	 *
+	 * @param \cs\Request $Request
+	 *
+	 * @return string
+	 *
+	 * @throws \cs\ExitException
+	 */
+	static function optimization_clean_cache ($Request) {
+		Api_controller::admin_optimization_clean_cache($Request);
+		return "%gOK%n\n";
+	}
+	/**
+	 * Clean public cache (CSS/JS/HTML)
+	 *
+	 * @return string
+	 *
+	 * @throws \cs\ExitException
+	 */
+	static function optimization_clean_pcache () {
+		Api_controller::admin_optimization_clean_pcache();
+		return "%gOK%n\n";
 	}
 }
