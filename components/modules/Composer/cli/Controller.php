@@ -43,7 +43,7 @@ HELP;
 		};
 		$Event    = Event::instance();
 		$Event->on('Composer/update_progress', $callback);
-		$Response->code = Composer::instance()->force_update();
+		$Response->code = Composer::instance()->force_update()['code'];
 		$Event->off('Composer/update_progress', $callback);
 	}
 	/**
