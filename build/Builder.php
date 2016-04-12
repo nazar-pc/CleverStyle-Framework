@@ -180,6 +180,7 @@ STUB
 			"$this->root/templates",
 			"$this->root/themes/CleverStyle",
 			"$this->root/bower.json",
+			"$this->root/cli",
 			"$this->root/composer.json",
 			"$this->root/composer.lock",
 			"$this->root/index.php",
