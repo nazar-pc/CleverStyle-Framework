@@ -26,7 +26,7 @@ class Controller {
   %gcli%n  Prints all cli paths and methods available for specified path
   %ghelp%n Displays help for module or path (should be provided by developer, otherwise will fallback to %gcli%n)
 
-%yExamples%n
+%yExamples:%n
   Print all paths and methods available in the whole system:
     %g./cli cli:%n
   Print all paths and method available in System module:

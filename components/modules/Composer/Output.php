@@ -8,8 +8,18 @@
  */
 namespace cs\modules\Composer;
 use
+	cs\Event,
+	Symfony\Component\Console\Formatter\OutputFormatterInterface,
 	Symfony\Component\Console\Output\Output as Symfony_output;
 
+/**
+ * Provides next events:
+ *  Composer/update_progress
+ *  [
+ *   'message' => $message,     //Current message targeted for output
+ *   'buffer'  => $this->buffer //Total output
+ *  ]
+ */
 class Output extends Symfony_output {
 	/**
 	 * @var string
@@ -19,21 +29,15 @@ class Output extends Symfony_output {
 	 * @var resource
 	 */
 	protected $stream;
-	/**
-	 * Set stream where content should be written to
-	 *
-	 * @param resource $stream Resource, for instance, form `fopen(.., 'w')` call
-	 */
-	function set_stream ($stream) {
-		$this->stream = $stream;
+	function __construct ($verbosity = self::VERBOSITY_NORMAL, $decorated = false, OutputFormatterInterface $formatter = null) {
+		$this->stream = fopen(STORAGE.'/Composer/last_execution.log', 'w');
+		parent::__construct($verbosity, $decorated, $formatter);
 	}
 	/**
 	 * @return string
 	 */
-	function fetch () {
-		$content      = $this->buffer;
-		$this->buffer = '';
-		return $content;
+	function get_buffer () {
+		return $this->buffer;
 	}
 	/**
 	 * @param string $message
@@ -45,5 +49,15 @@ class Output extends Symfony_output {
 		}
 		fwrite($this->stream, $message);
 		$this->buffer .= $message;
+		Event::instance()->fire(
+			'Composer/update_progress',
+			[
+				'message' => $message,
+				'buffer'  => $this->buffer
+			]
+		);
+	}
+	function __destruct () {
+		fclose($this->stream);
 	}
 }

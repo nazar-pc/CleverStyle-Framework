@@ -123,10 +123,9 @@ class Composer {
 					]
 				);
 				$output             = new Output;
-				$output->set_stream(fopen("$storage/last_execution.log", 'w'));
 				$Application->setAutoExit(false);
 				$status_code = $Application->run($input, $output);
-				$description = $output->fetch();
+				$description = $output->get_buffer();
 				if ($status_code == 0) {
 					rmdir_recursive("$storage/vendor");
 					@unlink("$storage/composer.json");
@@ -271,7 +270,7 @@ class Composer {
 		if (!$package['require'] && !isset($package['replace'])) {
 			return;
 		}
-		$composer['repositories'][] = [
+		$composer['repositories'][]         = [
 			'type'    => 'package',
 			'package' => $package
 		];

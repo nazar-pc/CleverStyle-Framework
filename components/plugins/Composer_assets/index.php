@@ -62,7 +62,21 @@ Event::instance()
 			 * @var \Composer\Composer $Composer
 			 */
 			$Composer = $data['Composer'];
-			(new FxpAssetPlugin)->activate($Composer, $Application->getIO());
+			/**
+			 * Fail silently instead of breaking everything
+			 */
+			if (class_exists('Fxp\\Composer\\AssetPlugin\\FxpAssetPlugin')) {
+				(new FxpAssetPlugin)->activate($Composer, $Application->getIO());
+			} else {
+				/**
+				 * @var \Composer\IO\IOInterface $io
+				 */
+				$io = $Application->getIO();
+				$io->writeError(
+					"<error>Fxp\\Composer\\AssetPlugin\\FxpAssetPlugin class not available, Composer assets plugin can't work, update Composer once again after finish</error>",
+					true
+				);
+			}
 		}
 	)
 	->on(

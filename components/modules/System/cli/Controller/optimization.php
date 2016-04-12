@@ -26,7 +26,7 @@ trait optimization {
 %yArguments:%n
   %gprefix_path%n If present, will clean only part of cache (%gclean_cache%n only)
 
-%yExamples%n
+%yExamples:%n
   Clean the whole system cache:
     %g./cli clean_cache:System/optimization%n
   Clean only languages cache:
