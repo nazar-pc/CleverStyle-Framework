@@ -10,15 +10,13 @@
 namespace cs\modules\System\cli;
 use
 	cs\modules\System\cli\Controller\optimization;
-use function
-	cli\line;
 
 class Controller {
 	use
 		optimization;
 	static function __help () {
 		$version = file_get_json(__DIR__.'/../meta.json')['version'];
-		$help    = <<<HELP
+		return <<<HELP
 %gCleverStyle CMS%n version %y$version%n, CLI interface%n
 
 %yUsage:%n
@@ -37,7 +35,7 @@ class Controller {
     %g./cli cli:System/admin%n
   Print help information (this message) for System module:
     %g./cli help:System%n
+
 HELP;
-		line($help);
 	}
 }
