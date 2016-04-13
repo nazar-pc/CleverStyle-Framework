@@ -61,7 +61,10 @@ class Request {
 			// Handle generic exceptions to avoid server from stopping
 		}
 		$Response = System_response::instance();
-		$this->response->writeHead($Response->code, $Response->headers);
+		/**
+		 * When error happens in \cs\Request initialization, there might be no headers yet since \cs\Response was not initialized
+		 */
+		$this->response->writeHead($Response->code, $Response->headers ?: []);
 		if ($Response->code >= 300 && $Response->code < 400) {
 			$this->response->end();
 		} elseif (is_resource($Response->body_stream)) {

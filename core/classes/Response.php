@@ -197,7 +197,7 @@ class Response {
 		}
 	}
 	protected function output_default_web () {
-		foreach ($this->headers as $header => $value) {
+		foreach ($this->headers ?: [] as $header => $value) {
 			foreach ($value as $v) {
 				header("$header: $v", false);
 			}
