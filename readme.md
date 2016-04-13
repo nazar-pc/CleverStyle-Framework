@@ -6,11 +6,80 @@
 [![Join the chat at https://gitter.im/nazar-pc/CleverStyle-CMS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nazar-pc/CleverStyle-CMS)
 # What is this?
 
-CleverStyle CMS is simple, scalable, and fast content management system.
+CleverStyle CMS is simple, scalable, and fast content management framework (CMF).
 
-System core contains only basic functionality, so, it looks more like CMF (content management framework) rather than CMS.
+System is free, Open Source and is distributed under MIT license, see [license.txt](https://github.com/nazar-pc/CleverStyle-CMS/blob/master/license.txt)
 
-But in parallel with core some components are developed:
+Installation builds of core and components can be found on [downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages).
+
+Author – Nazar Mokrynskyi <nazar@mokrynskyi.com>
+
+Copyright (c) 2011-2016, Nazar Mokrynskyi
+
+# Philosophy
+There are thousands of other CMS and CMF, that is true, but this one is different from most of them because of ideas that lies in development.
+
+### Small and simple
+Really simple.
+
+System provides only essential minimum of abstractions to make things working while leaving freedom for developer. This ensures that system itself is easy to understand, use and develop for.
+
+System core doesn't contain any useful end-user functionality, so despite historical name this is a framework, not typical CMS.
+
+### Standalone
+System contains everything necessary inside in order to ease setup and to be independent from external tools services.
+
+No external tools required for system installation and operating. Every essential dependency is bundled with system core to ensure that system works out of the box.
+
+This doesn't mean, however, that system ignores available ecosystem - Composer, Bower and NPM are all supported out of the box and will be seamlessly picked by system when their presence is detected.
+
+### Working
+Fresh system just works.
+
+Seriously, reasonable defaults allows you to use all system capabilities out of the box with freedom to change almost any aspect of the system when needed.
+
+### Performing
+Performance is critical.
+
+Providing superior performance of system core is a key for the best possible performance of end product.
+
+Out of the box CleverStyle CMS can render simple web page in just under 2ms. When installing standard Http server module, changing cache to APCu/Memcached and running it under HHVM you fall under 1ms for generating simple page or API response. All without additional system tweaks.
+
+### Convention over configuration
+Zero configuration whenever it is possible.
+
+System tries to make all trivial configuration whenever it is possible. This is is essential to make system simple to use, standalone, working out of the box and reaching top performance for free.
+
+Obviously, you always have access to internals if you need to.
+
+### Cleanliness
+System will track everything created in result of components operating (files, database tables, cache items, etc.).
+
+This means that you can install component, use it for some time and remove completely without any overhead. After removal system will be exactly in the same state as before installation.
+
+This results in constant and predictable performance, efficient storage usage (no forgotten files, cache items, configs and stuff like this) and full control over state of the system.
+
+# Key features
+
+* Components
+ * Modules - for displaying main page content
+ * Plugins - do not have dedicated pages and provide additional functionality
+ * Blocks - are placed on around the page for displaying additional information
+* Events - ability to capture, respond or even override behavior of different aspects of the system without changing system itself
+* Users, groups and permissions for granular access to functionality
+* Localization and internationalization (both interface and content)
+* CSS, JavaScript and HTML processing with intelligent, high-performance and completely automatic minification, compression and caching
+* Visual themes to personalize appearance
+* Multiple Databases and mirrors awareness
+* Multiple static content storages awareness
+* Caching everything that makes sense to put into cache
+* RESTful API and CLI interfaces
+* First-class WebComponents support (Polymer)
+* First-class AMD support (RequireJS)
+* First-class Composer, Bower and NPM support
+
+# Components
+Some components are developed in parallel with core in this repository
 
 #### Modules
 
@@ -51,95 +120,10 @@ But in parallel with core some components are developed:
  * **DarkEnergy** (Dark theme used on CleverStyle.org)
  * **Tenebris** (Another dark theme designed by Dmitry Kirsanov)
 
-System is free, Open Source and is distributed under MIT license, see [license.txt](https://github.com/nazar-pc/CleverStyle-CMS/blob/master/license.txt)
-
-Installation builds of core and components can be found on [downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages).
-
-Author – Nazar Mokrynskyi <nazar@mokrynskyi.com>
-
-Copyright (c) 2011-2016, Nazar Mokrynskyi
-
-# Why?
-There are thousands of other CMS and CMF, that is true, but this one is different from many because of ideas that lies in development.
-
-### Simple
-Really simple.
-
-There is no need to make it more complicated, add more abstractions that is necessary, or write code to support some architecture.
-
-Install only what you really need, write only code that you'll really use.
-
-### Standalone
-System contains everything necessary inside to ease setup and to be independent from outside uncontrolled services.
-
-No CDNs for JS and fonts in system core, no composer, bower or any other packages needed to be installed from command line.
-
-Just take SINGLE installation file, and open it from web browser or run from command line to install system.
-
-However, if you add some composer packages to your project - system will understand that and all your packages become available immediately in any place of system.
-
-### Working
-Fresh system just works.
-
-Reasonable defaults allows you to use all system capabilities out of the box.
-
-There is no need to configure cache, storages, anything else.
-
-You can start from default, and when you're ready - you can switch to another cache engine, storage engine, add another database, or redefine almost every aspect of System.
-
-You can do that at any time, keeping possibility of system upgrade.
-
-But prior to that moment you do not need to change anything - it will work just fine.
-
-### Customizable
-You can subscribe to some events in system and do some operations at the same time or change default flow of things as needed.
-
-You can redefine how it looks to any imaginable extent.
-
-You can write code in any style you like, there are recommendations how to do that, but actually you do not forced to create classes on any small stupid thing, or avoid classes when you want them to be.
-
-You can!
-
-### Small
-System core in extracted form have around 1.8 MiB (distributive file is up to 400 KiB), that is comparable to other projects that are called just "libraries".
-
-There are no huge list of external dependencies, there are no external dependencies at all.
-
-Nevertheless, system includes a set of thirdparty components inside to make system complete and in order to not reinvent a good wheel.
-
-### Clean
-System track all files, DB tables and other things created in result of components functioning.
-
-This means that if you installed some component, used it for a year, and then completely remove - system will be exactly in the same state as before installation.
-
-This results in constant and predictable performance (no degradation with time), efficient disk space usage (no forgotten files, cache items, configs and stuff like this) and full control over system state.
-
-# Main features
-
-* Components
- * Modules (for displaying main page content)
- * Plugins (are loaded on every page and provides additional functionality)
- * Blocks (are placed on around the page for displaying additional information)
-* Human readable addresses
-* Users groups and types
-* Users permissions control
-* Localization and internationalization (both interface and content)
-* CSS and JavaScript minification and autocompression
-* Site mirrors
- * Domain mirrors
- * Physical server mirrors for every domain name
-* Themes
-* Multiple Databases
- * Multiple Databases mirrors
-* Multiple files storages
-* System cache (FileSystem, APC, Memcached)
-* RESTful API
-* IPv6
-
 # Requirements:
 
 * Unix-like operating system
-* or Windows (is not tested, but should also work)
+* or Windows (not tested regularly, but should also work, do not use in production)
 * Apache2 with modules:
  * REQUIRED: rewrite, headers
  * OPTIONAL: expires
@@ -150,6 +134,7 @@ This results in constant and predictable performance (no degradation with time),
 * or HHVM 3.3.2+ LTS or HHVM 3.4.1+
 * MySQL 5.6+
 * or MariaDB 10.0.5+
+* or SQLite
 
 # How to try?
 
