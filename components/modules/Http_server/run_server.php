@@ -40,7 +40,7 @@ $http->on(
 );
 if (!isset($port)) {
 	echo 'Http server for CleverStyle CMS
-Usage: php components/modules/Http_server/run_server.php -p <port> [-a]
+Usage: php components/modules/Http_server/run_server.php -p <port>
   -p - Is used to specify on which port server should listen for incoming connections
 ';
 	return;
