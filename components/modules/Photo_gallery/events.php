@@ -12,7 +12,8 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Language;
+	cs\Language,
+	cs\Storage;
 
 Event::instance()
 	->on(
@@ -42,10 +43,20 @@ Event::instance()
 		}
 	)
 	->on(
-		'System/App/construct',
-		function () {
-			if (Config::instance()->module('Photo_gallery')->installed()) {
-				require __DIR__.'/events/installed.php';
+		'admin/System/components/modules/uninstall/before',
+		function ($data) {
+			if ($data['name'] != 'Photo_gallery') {
+				return;
+			}
+			$module_data   = Config::instance()->module('Photo_gallery');
+			$storage       = Storage::instance()->{$module_data->storage('files')};
+			$Photo_gallery = Photo_gallery::instance();
+			foreach ($Photo_gallery->get_galleries_list() ?: [] as $gallery) {
+				$Photo_gallery->del_gallery($gallery);
+			}
+			unset($gallery);
+			if ($storage->is_dir('Photo_gallery')) {
+				$storage->rmdir('Photo_gallery');
 			}
 		}
 	);

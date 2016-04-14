@@ -12,8 +12,10 @@ use
 	cs\Language\Prefix,
 	cs\Page;
 
-$Page = Page::instance();
 $L    = new Prefix('composer_');
+$Page = Page::instance();
+$Page->title($L->general);
+
 if (file_exists(DIR.'/storage/Composer/last_execution.log')) {
 	require_once __DIR__.'/../ansispan.php';
 	$Page->content(

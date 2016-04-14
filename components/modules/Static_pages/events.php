@@ -8,14 +8,16 @@
  */
 namespace cs\modules\Static_pages;
 use
+	cs\Cache,
 	cs\Config,
 	cs\Event;
+
 Event::instance()
 	->on(
 		'System/Request/routing_replace',
 		function ($data) {
 			if (
-				substr($data['rc'], 0, 5) != 'admin' &&
+				strpos($data['rc'], 'admin') !== 0 &&
 				!Config::instance()->module('Static_pages')->enabled()
 			) {
 				return;
@@ -46,10 +48,32 @@ Event::instance()
 		}
 	)
 	->on(
-		'System/App/construct',
-		function () {
-			if (Config::instance()->module('Static_pages')->installed()) {
-				require __DIR__.'/events/installed.php';
+		'admin/System/components/modules/uninstall/before',
+		function ($data) {
+			if ($data['name'] != 'Static_pages') {
+				return true;
 			}
+			time_limit_pause();
+			$Pages      = Pages::instance();
+			$Categories = Categories::instance();
+			$structure  = $Pages->get_structure();
+			while (!empty($structure['categories'])) {
+				foreach ($structure['categories'] as $category) {
+					$Categories->del($category['id']);
+				}
+				$structure = $Pages->get_structure();
+			}
+			unset($category);
+			if (!empty($structure['pages'])) {
+				foreach ($structure['pages'] as $page) {
+					$Pages->del($page);
+				}
+			}
+			unset(
+				$structure,
+				Cache::instance()->Static_pages
+			);
+			time_limit_pause(false);
+			return true;
 		}
 	);

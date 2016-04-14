@@ -7,11 +7,18 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
+
 Event::instance()->on(
-	'System/App/construct',
-	function () {
-		if (Config::instance()->module('Deferred_tasks')->uninstalled()) {
-			require __DIR__.'/events/uninstalled.php';
+	'admin/System/components/modules/install/after',
+	function ($data) {
+		if ($data['name'] != 'Deferred_tasks') {
+			return;
 		}
+		Config::instance()->module('Deferred_tasks')->set(
+			[
+				'security_key'          => hash('sha224', random_bytes(1000)),
+				'max_number_of_workers' => 5
+			]
+		);
 	}
 );

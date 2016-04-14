@@ -6,16 +6,31 @@
  * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-namespace cs;
-Event::instance()->on(
-	'System/App/construct',
-	function () {
-		$module_data = Config::instance()->module('Comments');
-		switch (true) {
-			case $module_data->enabled():
-				require __DIR__.'/events/enabled.php';
-			case $module_data->installed():
-				require __DIR__.'/events/installed.php';
+namespace cs\modules\Comments;
+use
+	cs\Cache,
+	cs\Config,
+	cs\Event;
+
+Event::instance()
+	->on(
+		'Comments/instance',
+		function ($data) {
+			if (!Config::instance()->module('Comments')->enabled()) {
+				return true;
+			}
+			$data['Comments'] = Comments::instance();
+			return false;
 		}
-	}
-);
+	)
+	->on(
+		'admin/System/components/modules/uninstall/before',
+		function ($data) {
+			if ($data['name'] != 'Comments') {
+				return;
+			}
+			time_limit_pause();
+			Cache::instance()->del('Comments');
+			time_limit_pause(false);
+		}
+	);

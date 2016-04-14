@@ -6,10 +6,17 @@
  * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-namespace cs;
+namespace cs\modules\Blogs;
 use
+	cs\Cache,
+	cs\Config,
+	cs\DB,
+	cs\Event,
+	cs\ExitException,
 	cs\Language\Prefix,
-	cs\Request;
+	cs\Menu,
+	cs\Request,
+	cs\User;
 
 Event::instance()
 	->on(
@@ -61,20 +68,164 @@ Event::instance()
 		}
 	)
 	->on(
-		'System/App/construct',
-		function () {
+		'api/Comments/add',
+		function ($data) {
+			$Comments = null;
+			Event::instance()->fire(
+				'Comments/instance',
+				[
+					'Comments' => &$Comments
+				]
+			);
 			$module_data = Config::instance()->module('Blogs');
-			switch (true) {
-				case $module_data->uninstalled():
-					require __DIR__.'/events/uninstalled.php';
-					break;
-				case $module_data->enabled():
-					require __DIR__.'/events/enabled.php';
-					if (Request::instance()->current_module == 'Blogs') {
-						require __DIR__.'/events/enabled/admin.php';
-					}
-				case $module_data->installed():
-					require __DIR__.'/events/installed.php';
+			/**
+			 * @var \cs\modules\Comments\Comments $Comments
+			 */
+			if (!(
+				$module_data->enabled() &&
+				$data['module'] == 'Blogs' &&
+				$module_data->enable_comments &&
+				User::instance()->user() &&
+				$Comments
+			)
+			) {
+				return true;
 			}
+			if (Posts::instance()->get($data['item'])) {
+				$Comments->set_module('Blogs');
+				$data['Comments'] = $Comments;
+			}
+			return false;
+		}
+	)
+	->on(
+		'api/Comments/edit',
+		function ($data) {
+			$Comments = null;
+			Event::instance()->fire(
+				'Comments/instance',
+				[
+					'Comments' => &$Comments
+				]
+			);
+			/**
+			 * @var \cs\modules\Comments\Comments $Comments
+			 */
+			$User        = User::instance();
+			$module_data = Config::instance()->module('Blogs');
+			if (!(
+				$module_data->enabled() &&
+				$data['module'] == 'Blogs' &&
+				$module_data->enable_comments &&
+				$User->user() &&
+				$Comments
+			)
+			) {
+				return true;
+			}
+			$Comments->set_module('Blogs');
+			$comment = $Comments->get($data['id']);
+			if ($comment && ($comment['user'] == $User->id || $User->admin())) {
+				$data['Comments'] = $Comments;
+			}
+			return false;
+		}
+	)
+	->on(
+		'api/Comments/delete',
+		function ($data) {
+			$Comments = null;
+			Event::instance()->fire(
+				'Comments/instance',
+				[
+					'Comments' => &$Comments
+				]
+			);
+			/**
+			 * @var \cs\modules\Comments\Comments $Comments
+			 */
+			$User        = User::instance();
+			$module_data = Config::instance()->module('Blogs');
+			if (!(
+				$module_data->enabled() &&
+				$data['module'] == 'Blogs' &&
+				$module_data->enable_comments &&
+				$User->user() &&
+				$Comments
+			)
+			) {
+				return true;
+			}
+			$Comments->set_module('Blogs');
+			$comment = $Comments->get($data['id']);
+			if ($comment && ($comment['user'] == $User->id || $User->admin())) {
+				$data['Comments'] = $Comments;
+				if (
+					$comment['parent'] &&
+					($comment = $Comments->get($comment['parent']))
+				) {
+					$data['delete_parent'] = true;
+				}
+			}
+			return false;
+		}
+	)
+	->on(
+		'admin/System/Menu',
+		function () {
+			$L       = new Prefix('blogs_');
+			$Menu    = Menu::instance();
+			$Request = Request::instance();
+			foreach (['browse_sections', 'browse_posts', 'general'] as $section) {
+				$Menu->add_item(
+					'Blogs',
+					$L->$section,
+					[
+						'href'    => "admin/Blogs/$section",
+						'primary' => $Request->route_path(0) == $section
+					]
+				);
+			}
+		}
+	)
+	->on(
+		'admin/System/components/modules/uninstall/before',
+		function ($data) {
+			if ($data['name'] != 'Blogs') {
+				return;
+			}
+			time_limit_pause();
+			$Posts    = Posts::instance();
+			$Sections = Sections::instance();
+			foreach (Sections::instance()->get_all() as $section) {
+				$Sections->del($section['id']);
+			}
+			unset($section);
+			$posts = DB::instance()->db(Config::instance()->module('Blogs')->db('posts'))->qfas(
+				"SELECT `id`
+				FROM `[prefix]blogs_posts`"
+			) ?: [];
+			foreach ($posts as $post) {
+				$Posts->del($post);
+			}
+			Cache::instance()->del('Blogs');
+			time_limit_pause(false);
+		}
+	)
+	->on(
+		'admin/System/components/modules/install/after',
+		function ($data) {
+			if ($data['name'] != 'Blogs') {
+				return;
+			}
+			Config::instance()->module('Blogs')->set(
+				[
+					'posts_per_page'                => 10,
+					'max_sections'                  => 3,
+					'enable_comments'               => 1,
+					'new_posts_only_from_admins'    => 1,
+					'allow_iframes_without_content' => 1
+				]
+			);
 		}
 	);

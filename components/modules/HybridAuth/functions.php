@@ -23,7 +23,7 @@ use
  * @return Hybrid_Auth
  */
 function get_hybridauth_instance ($provider = null, $base_url = null) {
-	require_once __DIR__.'/../../Hybrid/Auth.php';
+	require_once __DIR__.'/Hybrid/Auth.php';
 	$Config     = Config::instance();
 	$User       = User::instance();
 	$HybridAuth = new Hybrid_Auth(

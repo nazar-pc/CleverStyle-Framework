@@ -16,6 +16,7 @@ use
 $L           = new Prefix('composer_');
 $Page        = Page::instance();
 $module_data = Config::instance()->module('Composer');
+$Page->title($L->auth_json);
 
 if (isset($_POST['auth_json'])) {
 	$module_data->auth_json = $_POST['auth_json'];

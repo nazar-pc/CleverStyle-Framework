@@ -9,7 +9,8 @@
  */
 namespace cs;
 use
-	h;
+	h,
+	cs\Language\Prefix;
 
 /**
  * Multilingual functionality: redirects and necessary meta-tags
@@ -92,10 +93,32 @@ Event::instance()
 		}
 	)
 	->on(
-		'System/App/construct',
+		'admin/System/Menu',
 		function () {
-			if (Request::instance()->current_module == 'System') {
-				require __DIR__.'/events/admin.php';
+			$Config    = Config::instance();
+			$L         = new Prefix('system_admin_');
+			$Menu      = Menu::instance();
+			$Request   = Request::instance();
+			$structure = $Config->core['simple_admin_mode'] ? file_get_json(__DIR__.'/admin/index_simple.json') : file_get_json(__DIR__.'/admin/index.json');
+			foreach ($structure as $section => $items) {
+				$Menu->add_section_item(
+					'System',
+					$L->$section,
+					[
+						'href'    => "admin/System/$section",
+						'primary' => $Request->route_path(0) == $section
+					]
+				);
+				foreach ($items as $item) {
+					$Menu->add_item(
+						'System',
+						$L->$item,
+						[
+							'href'    => "admin/System/$section/$item",
+							'primary' => $Request->route_path(0) == $section && $Request->route_path(1) == $item
+						]
+					);
+				}
 			}
 		}
 	);
