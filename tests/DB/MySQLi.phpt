@@ -76,6 +76,33 @@ var_dump('columns list like titl%', $db->columns('test', 'titl%'));
 var_dump('tables list', $db->tables());
 var_dump('tables list like test', $db->tables('test'));
 var_dump('tables list like [prefix]users%', $db->tables('[prefix]users%'));
+$db->transaction(function ($db) {
+	/**
+	 * @var \cs\DB\MySQLi $db
+	 */
+	$db->q('DELETE FROM `test` WHERE `id` = 2');
+	return false;
+});
+var_dump('transaction for deletion: rollback #1', $db->qfs("SELECT `id` FROM `test` WHERE `id` = 2"));
+try {
+	$db->transaction(function ($db) {
+		/**
+		 * @var \cs\DB\MySQLi $db
+		 */
+		$db->q('DELETE FROM `test` WHERE `id` = 2');
+		throw new Exception;
+	});
+} catch (Exception $e) {
+	var_dump('thrown exception '.get_class($e));
+}
+var_dump('transaction for deletion: rollback #2', $db->qfs("SELECT `id` FROM `test` WHERE `id` = 2"));
+$db->transaction(function ($db) {
+	/**
+	 * @var \cs\DB\MySQLi $db
+	 */
+	$db->q('DELETE FROM `test` WHERE `id` = 2');
+});
+var_dump('transaction for deletion: commit', $db->qfs("SELECT `id` FROM `test` WHERE `id` = 2"));
 ?>
 --EXPECT--
 string(10) "single row"
@@ -277,3 +304,10 @@ array(4) {
   [3]=>
   string(21) "xyz_users_permissions"
 }
+string(37) "transaction for deletion: rollback #1"
+string(1) "2"
+string(26) "thrown exception Exception"
+string(37) "transaction for deletion: rollback #2"
+string(1) "2"
+string(32) "transaction for deletion: commit"
+NULL

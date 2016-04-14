@@ -6,6 +6,9 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\DB;
+use
+	Exception;
+
 abstract class _Abstract {
 	/**
 	 * Is connection established
@@ -68,6 +71,10 @@ abstract class _Abstract {
 	 * @var bool
 	 */
 	protected $async = false;
+	/**
+	 * @var bool
+	 */
+	protected $in_transaction = false;
 	/**
 	 * Connecting to the DB
 	 *
@@ -443,6 +450,46 @@ abstract class _Abstract {
 	 * @return int
 	 */
 	abstract function affected ();
+	/**
+	 * Execute transaction
+	 *
+	 * All queries done inside callback will be within single transaction, throwing any exception or returning boolean `false` from callback will cause
+	 * rollback. Nested transaction calls will be wrapped into single big outer transaction, so you might call it safely if needed.
+	 *
+	 * @param callable $callback This instance will be used as single argument
+	 *
+	 * @return bool
+	 *
+	 * @throws Exception Re-throws exception thrown inside callback
+	 */
+	function transaction ($callback) {
+		$start_transaction = !$this->in_transaction;
+		if ($start_transaction) {
+			$this->in_transaction = true;
+			if (!$this->q_internal('BEGIN')) {
+				return false;
+			}
+		}
+		try {
+			$result = $callback($this);
+		} catch (Exception $e) {
+			$this->transaction_rollback();
+			throw $e;
+		}
+		if ($result === false) {
+			$this->transaction_rollback();
+			return false;
+		} elseif ($start_transaction) {
+			$this->in_transaction = false;
+			return (bool)$this->q_internal('COMMIT');
+		}
+	}
+	protected function transaction_rollback () {
+		if ($this->in_transaction) {
+			$this->in_transaction = false;
+			$this->q_internal('ROLLBACK');
+		}
+	}
 	/**
 	 * Free result memory
 	 *
