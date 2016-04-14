@@ -483,6 +483,7 @@ abstract class _Abstract {
 			$this->in_transaction = false;
 			return (bool)$this->q_internal('COMMIT');
 		}
+		return true;
 	}
 	protected function transaction_rollback () {
 		if ($this->in_transaction) {
