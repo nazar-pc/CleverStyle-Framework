@@ -11,6 +11,9 @@ env:
   matrix:
     - DB=MySQLi
     - DB=SQLite
+matrix:
+  allow_failures:
+    - env: DB=SQLite
 before_script:
   - mysql -e 'CREATE DATABASE `cscms.travis`;'
 script:
