@@ -168,8 +168,6 @@ class Page {
 	/**
 	 * Initialization: setting of title and theme according to system configuration
 	 *
-	 * @todo Probably, make public and add resetting here in order to avoid complete object recreation
-	 *
 	 * @return Page
 	 */
 	protected function init_config () {
