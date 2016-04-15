@@ -102,6 +102,37 @@ try {
 	var_dump('thrown exception '.get_class($e));
 }
 var_dump('transaction for deletion: rollback #2', $db->qfs("SELECT `id` FROM `test` WHERE `id` = 2"));
+try {
+	$db->transaction(function ($db) {
+		/**
+		 * @var \cs\DB\MySQLi $db
+		 */
+		$db->q('DELETE FROM `test` WHERE `id` = 2');
+		$db->transaction(function () {
+			throw new Exception;
+		});
+	});
+} catch (Exception $e) {
+	var_dump('thrown exception '.get_class($e));
+}
+var_dump('transaction for deletion: rollback #3 (nested transaction)', $db->qfs("SELECT `id` FROM `test` WHERE `id` = 2"));
+try {
+	$db->transaction(function ($db) {
+		/**
+		 * @var \cs\DB\MySQLi $db
+		 */
+		$db->transaction(function ($db) {
+			/**
+			 * @var \cs\DB\MySQLi $db
+			 */
+			$db->q('DELETE FROM `test` WHERE `id` = 2');
+		});
+		throw new Exception;
+	});
+} catch (Exception $e) {
+	var_dump('thrown exception '.get_class($e));
+}
+var_dump('transaction for deletion: rollback #4 (nested transaction)', $db->qfs("SELECT `id` FROM `test` WHERE `id` = 2"));
 $db->transaction(function ($db) {
 	/**
 	 * @var \cs\DB\MySQLi $db
@@ -314,6 +345,12 @@ string(37) "transaction for deletion: rollback #1"
 string(1) "2"
 string(26) "thrown exception Exception"
 string(37) "transaction for deletion: rollback #2"
+string(1) "2"
+string(26) "thrown exception Exception"
+string(58) "transaction for deletion: rollback #3 (nested transaction)"
+string(1) "2"
+string(26) "thrown exception Exception"
+string(58) "transaction for deletion: rollback #4 (nested transaction)"
 string(1) "2"
 string(32) "transaction for deletion: commit"
 NULL
