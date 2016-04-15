@@ -1,20 +1,18 @@
 <?php
 /**
- * @package        Content
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2014-2016, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   Content
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\Content;
 
 use
 	cs\Cache\Prefix,
 	cs\Config,
-	cs\Event,
 	cs\Language,
-	cs\Text,
-	cs\CRUD,
+	cs\CRUD_helpers,
 	cs\Singleton;
 
 /**
@@ -22,29 +20,25 @@ use
  */
 class Content {
 	use
-		Singleton,
-		CRUD;
+		CRUD_helpers,
+		Singleton;
 
-	protected $data_model = [
+	protected $data_model                  = [
 		'key'     => 'text',
-		'title'   => 'text',
-		'content' => null, //Is set in constructor
+		'title'   => 'ml:text',
+		'content' => 'ml:',
 		'type'    => 'set:text,html'
 	];
-	protected $table      = '[prefix]content';
+	protected $table                       = '[prefix]content';
+	protected $data_model_ml_group         = 'Content';
+	protected $data_model_files_tag_prefix = 'Content';
 	/**
 	 * @var Prefix
 	 */
 	protected $cache;
 
 	protected function construct () {
-		/**
-		 * Disable filtering of content
-		 */
-		$this->data_model['content'] = function ($data) {
-			return $data;
-		};
-		$this->cache                 = new Prefix('Content');
+		$this->cache = new Prefix('Content');
 	}
 	/**
 	 * @inheritdoc
@@ -63,31 +57,18 @@ class Content {
 	 * @return bool
 	 */
 	function add ($key, $title, $content, $type) {
-		$key = str_replace(['/', '?', '#', '"', '<', '>'], '_', $key);
-		preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $content, $new_files);
-		$new_files = isset($new_files[1]) ? $new_files[1] : [];
-		$cache_key = md5($key).'/'.Language::instance()->clang;
-		if ($new_files) {
-			foreach ($new_files as $file) {
-				Event::instance()->fire(
-					'System/upload_files/add_tag',
-					[
-						'tag' => "Content/$cache_key",
-						'url' => $file
-					]
-				);
-			}
-			unset($file);
+		$key    = str_replace(['/', '?', '#', '"', '<', '>'], '_', $key);
+		$result = $this->create($key, $title, $content, $type);
+		if ($result) {
+			$this->clean_cache($key);
 		}
-		unset($new_files);
-		$title   = $this->ml_set('Content/title', $key, xap($title));
-		$content = $this->ml_set('Content/content', $key, $content);
-		return $this->create([
-			$key,
-			$title,
-			$content,
-			$type
-		]);
+		return (bool)$result;
+	}
+	/**
+	 * @param string $key
+	 */
+	protected function clean_cache ($key) {
+		$this->cache->del("$key/".Language::instance()->clang);
 	}
 	/**
 	 * Get content
@@ -103,16 +84,13 @@ class Content {
 			}
 			return $key;
 		}
-		$cache_key = md5($key).'/'.Language::instance()->clang;
-		return $this->cache->get($cache_key, function () use ($key) {
-			$data = $this->read($key);
-			if (!$data) {
-				return false;
+		$key = str_replace(['/', '?', '#', '"', '<', '>'], '_', $key);
+		return $this->cache->get(
+			"$key/".Language::instance()->clang,
+			function () use ($key) {
+				return $this->read($key);
 			}
-			$data['title']   = $this->ml_process($data['title']);
-			$data['content'] = $this->ml_process($data['content']);
-			return $data;
-		});
+		);
 	}
 	/**
 	 * Get keys of all content items
@@ -120,11 +98,7 @@ class Content {
 	 * @return int[]|false
 	 */
 	function get_all () {
-		return $this->db()->qfas(
-			"SELECT `key`
-			FROM `$this->table`
-			ORDER BY `key` ASC"
-		);
+		return $this->search([], 1, PHP_INT_MAX, 'key', true);
 	}
 	/**
 	 * Set content
@@ -137,48 +111,11 @@ class Content {
 	 * @return bool
 	 */
 	function set ($key, $title, $content, $type) {
-		$data = $this->get($key);
-		preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $data['content'], $old_files);
-		preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $content, $new_files);
-		$old_files = isset($old_files[1]) ? $old_files[1] : [];
-		$new_files = isset($new_files[1]) ? $new_files[1] : [];
-		$cache_key = md5($key).'/'.Language::instance()->clang;
-		if ($old_files || $new_files) {
-			foreach (array_diff($old_files, $new_files) as $file) {
-				Event::instance()->fire(
-					'System/upload_files/del_tag',
-					[
-						'tag' => "Content/$cache_key",
-						'url' => $file
-					]
-				);
-			}
-			unset($file);
-			foreach (array_diff($new_files, $old_files) as $file) {
-				Event::instance()->fire(
-					'System/upload_files/add_tag',
-					[
-						'tag' => "Content/$cache_key",
-						'url' => $file
-					]
-				);
-			}
-			unset($file);
-		}
-		unset($old_files, $new_files);
-		$title   = $this->ml_set('Content/title', $key, xap($title));
-		$content = $this->ml_set('Content/content', $key, $content);
-		$result  = $this->update([
-			$key,
-			$title,
-			$content,
-			$type
-		]);
+		$result = $this->update($key, $title, $content, $type);
 		if ($result) {
-			unset($this->cache->$cache_key);
-			return true;
+			$this->clean_cache($key);
 		}
-		return false;
+		return $result;
 	}
 	/**
 	 * Delete content
@@ -188,28 +125,10 @@ class Content {
 	 * @return bool
 	 */
 	function del ($key) {
-		if ($this->delete($key)) {
-			$this->ml_del('Content/title', $key);
-			$this->ml_del('Content/content', $key);
-			$cache_key = md5($key);
-			Event::instance()->fire(
-				'System/upload_files/del_tag',
-				[
-					'tag' => "Content/$cache_key%"
-				]
-			);
-			unset($this->cache->$cache_key);
-			return true;
+		$result = $this->delete($key);
+		if ($result) {
+			$this->clean_cache($key);
 		}
-		return false;
-	}
-	private function ml_process ($text) {
-		return Text::instance()->process($this->cdb(), $text, false);
-	}
-	private function ml_set ($group, $label, $text) {
-		return Text::instance()->set($this->cdb(), $group, $label, $text);
-	}
-	private function ml_del ($group, $label) {
-		return Text::instance()->del($this->cdb(), $group, $label);
+		return $result;
 	}
 }

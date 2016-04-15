@@ -10,7 +10,7 @@ namespace cs\modules\Polls;
 use
 	cs\Cache\Prefix,
 	cs\Config,
-	cs\CRUD,
+	cs\CRUD_helpers,
 	cs\Singleton;
 
 /**
@@ -19,7 +19,7 @@ use
 class Options {
 	use
 		Common_actions,
-		CRUD,
+		CRUD_helpers,
 		Singleton;
 
 	/**
@@ -50,7 +50,7 @@ class Options {
 	 * @return false|int
 	 */
 	function add ($poll, $title) {
-		$id = $this->create([$poll, $title, 0]);
+		$id = $this->create($poll, $title, 0);
 		if ($id) {
 			unset($this->cache->{"poll/$poll"});
 			return $id;
@@ -79,7 +79,7 @@ class Options {
 	function set ($id, $poll, $title) {
 		$id   = (int)$id;
 		$data = $this->get($id);
-		if ($this->update([$id, $poll, $title, $data['votes']])) {
+		if ($this->update($id, $poll, $title, $data['votes'])) {
 			unset($this->cache->$id);
 			return true;
 		}
@@ -109,24 +109,22 @@ class Options {
 	 * @return false|int
 	 */
 	function update_votes ($id) {
-		$id = (int)$id;
-		if ($this->db_prime()->q(
+		$id     = (int)$id;
+		$result = $this->db_prime()->q(
 			"UPDATE `$this->table`
 			SET `votes` = (
 				SELECT COUNT(`id`)
 				FROM `[prefix]polls_options_answers`
-				WHERE `option` = '%s'
+				WHERE `option` = '%1\$d'
 			)
-			WHERE `id` = '%s'
+			WHERE `id` = '%1\$d'
 			LIMIT 1",
-			$id,
 			$id
-		)
-		) {
+		);
+		if ($result) {
 			unset($this->cache->$id);
-			return true;
 		}
-		return false;
+		return $result;
 	}
 	/**
 	 * Get id of all options for specified poll
@@ -140,11 +138,7 @@ class Options {
 		return $this->cache->get(
 			"poll/$poll",
 			function () use ($poll) {
-				return $this->db()->qfas(
-					"SELECT `id`
-					FROM `$this->table`
-					WHERE `poll` = $poll"
-				);
+				return $this->search(['poll' => $poll], 1, PHP_INT_MAX, 'id', true);
 			}
 		);
 	}

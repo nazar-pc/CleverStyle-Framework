@@ -15,7 +15,7 @@
 	],
 	"provide"             : "shop",
 	"require"             : [
-		"System>=4.11",
+		"System>=4.23",
 		"System<5.0",
 		"Tags>=1.0",
 		"Tags<2.0",

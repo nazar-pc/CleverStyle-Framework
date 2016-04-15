@@ -10,7 +10,7 @@
 			<dt>$data</dt>
 			<dd>Any data needed for the task execution</dd>
 			<dt>$expected</dt>
-			<dd>Max time in seconds, during which task is expected to be finished</dd>
+			<dd>Max time in seconds > 1, during which task is expected to be finished (when not finished in time then considered to be failed and needed to be restarted)</dd>
 			<dt>$begin</dt>
 			<dd>Unix timestamp, task will not be executed until this time</dd>
 			<dt>$priority</dt>

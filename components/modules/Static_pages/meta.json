@@ -15,7 +15,7 @@
 	],
 	"provide"             : "static_pages",
 	"require"             : [
-		"System>=4.11",
+		"System>=4.23",
 		"System<5.0"
 	],
 	"optional"            : [

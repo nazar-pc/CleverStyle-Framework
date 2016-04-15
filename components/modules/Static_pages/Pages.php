@@ -77,15 +77,7 @@ class Pages {
 	 * @return false|int Id of created page on success of <b>false</> on failure
 	 */
 	function add ($category, $title, $path, $content, $interface) {
-		$id = $this->create(
-			[
-				$category,
-				$title,
-				path($path ?: $title),
-				$content,
-				$interface
-			]
-		);
+		$id = $this->create($category, $title, path($path ?: $title), $content, $interface);
 		if ($id) {
 			unset($this->cache->{'/'});
 		}
@@ -104,16 +96,7 @@ class Pages {
 	 * @return bool
 	 */
 	function set ($id, $category, $title, $path, $content, $interface) {
-		$result = $this->update(
-			[
-				$id,
-				$category,
-				$title,
-				path($path ?: $title),
-				$content,
-				$interface
-			]
-		);
+		$result = $this->update($id, $category, $title, path($path ?: $title), $content, $interface);
 		if ($result) {
 			$Cache = $this->cache;
 			unset(
@@ -166,7 +149,7 @@ class Pages {
 		}
 		$pages              = $this->db()->qfas(
 			"SELECT `id`
-			FROM `[prefix]static_pages`
+			FROM `$this->table`
 			WHERE `category` = '%s'",
 			$parent
 		) ?: [];
@@ -179,7 +162,7 @@ class Pages {
 			"SELECT
 				`id`,
 				`path`
-			FROM `[prefix]static_pages_categories`
+			FROM `{$this->table}_categories`
 			WHERE `parent` = '%s'",
 			$parent
 		) ?: [];

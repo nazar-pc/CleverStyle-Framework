@@ -8,15 +8,16 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\CRUD,
+	cs\CRUD_helpers,
 	cs\Language;
+
 /**
  * @property \cs\Cache\Prefix $cache
  * @property string           $table
  */
 trait Common_actions {
 	use
-		CRUD;
+		CRUD_helpers;
 	/**
 	 * Get item
 	 *
@@ -49,10 +50,7 @@ trait Common_actions {
 		return $this->cache->get(
 			'all',
 			function () {
-				return $this->db()->qfas(
-					"SELECT `id`
-					FROM `$this->table`"
-				) ?: [];
+				return $this->search([], 1, PHP_INT_MAX, 'id', true) ?: [];
 			}
 		);
 	}

@@ -1,7 +1,7 @@
 {
 	"package"             : "Content",
 	"category"            : "modules",
-	"version"             : "1.22.1+build-55",
+	"version"             : "1.23.0+build-56",
 	"description"         : "Simple content functionality. May be used by other components or stand-alone.",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/cms",
@@ -15,7 +15,7 @@
 	],
 	"provide"             : "content",
 	"require"             : [
-		"System>=3.212",
+		"System>=4.23",
 		"System<5.0"
 	],
 	"optional"            : [

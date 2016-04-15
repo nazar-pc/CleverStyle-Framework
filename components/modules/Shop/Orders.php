@@ -299,19 +299,17 @@ class Orders {
 	 */
 	function add ($user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $payment_method, $paid, $status, $comment) {
 		$id = $this->create(
-			[
-				$user,
-				time(),
-				$shipping_type,
-				$shipping_cost,
-				$shipping_username,
-				$shipping_phone,
-				$shipping_address,
-				$payment_method,
-				$paid == 1 ? time() : $paid,
-				$status,
-				$comment
-			]
+			$user,
+			time(),
+			$shipping_type,
+			$shipping_cost,
+			$shipping_username,
+			$shipping_phone,
+			$shipping_address,
+			$payment_method,
+			$paid == 1 ? time() : $paid,
+			$status,
+			$comment
 		);
 		if ($id) {
 			$this->db_prime()->q(
@@ -432,20 +430,18 @@ class Orders {
 	) {
 		$order  = $this->read($id);
 		$result = $this->update(
-			[
-				$id,
-				$user,
-				$order['date'],
-				$shipping_type,
-				$shipping_cost,
-				$shipping_username,
-				$shipping_phone,
-				$shipping_address,
-				$payment_method,
-				$paid == 1 ? ($order['paid'] ?: time()) : $paid,
-				$status,
-				$comment
-			]
+			$id,
+			$user,
+			$order['date'],
+			$shipping_type,
+			$shipping_cost,
+			$shipping_username,
+			$shipping_phone,
+			$shipping_address,
+			$payment_method,
+			$paid == 1 ? ($order['paid'] ?: time()) : $paid,
+			$status,
+			$comment
 		);
 		if ($result && $order['status'] != $status) {
 			$this->db_prime()->q(

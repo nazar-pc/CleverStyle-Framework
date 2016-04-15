@@ -13,7 +13,7 @@ use
 	cs\Event,
 	cs\Language,
 	cs\User,
-	cs\CRUD,
+	cs\CRUD_helpers,
 	cs\Singleton;
 
 /**
@@ -48,24 +48,31 @@ use
  */
 class Categories {
 	use
-		CRUD,
+		CRUD_helpers,
 		Singleton;
 
 	const VISIBLE   = 1;
 	const INVISIBLE = 0;
 
-	protected $data_model          = [
-		'id'                    => 'int',
-		'parent'                => 'int',
+	protected $data_model                  = [
+		'id'                    => 'int:1',
+		'parent'                => 'int:0',
 		'title'                 => 'ml:text',
 		'description'           => 'ml:html',
-		'title_attribute'       => 'int',
-		'description_attribute' => 'int',
+		'title_attribute'       => 'int:1',
+		'description_attribute' => 'int:1',
 		'image'                 => 'string',
-		'visible'               => 'int:0..1'
+		'visible'               => 'int:0..1',
+		'attributes'            => [
+			'data_model' => [
+				'id'        => 'int:1',
+				'attribute' => 'int:1'
+			]
+		]
 	];
-	protected $data_model_ml_group = 'Shop/categories';
-	protected $table               = '[prefix]shop_categories';
+	protected $table                       = '[prefix]shop_categories';
+	protected $data_model_ml_group         = 'Shop/categories';
+	protected $data_model_files_tag_prefix = 'Shop/categories';
 	/**
 	 * @var Prefix
 	 */
@@ -98,19 +105,22 @@ class Categories {
 		}
 		$L    = Language::instance();
 		$id   = (int)$id;
-		$data = $this->cache->get("$id/$L->clang", function () use ($id) {
-			$data               = $this->read($id);
-			$data['attributes'] = $this->db()->qfas(
-				"SELECT `attribute`
-				FROM `{$this->table}_attributes`
-				WHERE `id` = $id"
-			);
-			$data['attributes'] = $this->clean_nonexistent_attributes($data['attributes']);
-			return $data;
-		});
-		if (!Event::instance()->fire('Shop/Categories/get', [
-			'data' => &$data
-		])
+		$data = $this->cache->get(
+			"$id/$L->clang",
+			function () use ($id) {
+				$data = $this->read($id);
+				if ($data) {
+					$data['attributes'] = $this->clean_nonexistent_attributes($data['attributes']);
+				}
+				return $data;
+			}
+		);
+		if (!Event::instance()->fire(
+			'Shop/Categories/get',
+			[
+				'data' => &$data
+			]
+		)
 		) {
 			return false;
 		}
@@ -136,10 +146,13 @@ class Categories {
 		}
 		$user = (int)$user ?: User::instance()->id;
 		$data = $this->get($id);
-		if (!Event::instance()->fire('Shop/Categories/get_for_user', [
-			'data' => &$data,
-			'user' => $user
-		])
+		if (!Event::instance()->fire(
+			'Shop/Categories/get_for_user',
+			[
+				'data' => &$data,
+				'user' => $user
+			]
+		)
 		) {
 			return false;
 		}
@@ -151,12 +164,12 @@ class Categories {
 	 * @return int[] Array of categories ids
 	 */
 	function get_all () {
-		return $this->cache->get('all', function () {
-			return $this->db()->qfas(
-				"SELECT `id`
-				FROM `$this->table`"
-			) ?: [];
-		});
+		return $this->cache->get(
+			'all',
+			function () {
+				return $this->search([], 1, PHP_INT_MAX, 'id', true) ?: [];
+			}
+		);
 	}
 	/**
 	 * @param int[] $attributes
@@ -193,21 +206,25 @@ class Categories {
 	 * @return false|int Id of created category on success of <b>false</> on failure
 	 */
 	function add ($parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes) {
-		$id = $this->create([
+		$attributes = $this->clean_nonexistent_attributes($attributes);
+		$id         = $this->create(
 			$parent,
-			'',
-			'',
-			0,
-			0,
-			'',
-			static::INVISIBLE
-		]);
+			trim($title),
+			trim($description),
+			in_array($title_attribute, $attributes) ? $title_attribute : $attributes[0],
+			in_array($description_attribute, $attributes) || $description == 0 ? $description_attribute : $attributes[0],
+			$image,
+			$visible,
+			$attributes
+		);
 		if ($id) {
 			unset($this->cache->all);
-			Event::instance()->fire('Shop/Categories/add', [
-				'id' => $id
-			]);
-			$this->set($id, $parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes);
+			Event::instance()->fire(
+				'Shop/Categories/add',
+				[
+					'id' => $id
+				]
+			);
 		}
 		return $id;
 	}
@@ -227,13 +244,9 @@ class Categories {
 	 * @return bool
 	 */
 	function set ($id, $parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes) {
-		$id   = (int)$id;
-		$data = $this->read($id);
-		if (!$data) {
-			return false;
-		}
+		$id         = (int)$id;
 		$attributes = $this->clean_nonexistent_attributes($attributes);
-		$result     = $this->update([
+		$result     = $this->update(
 			$id,
 			$parent,
 			trim($title),
@@ -242,55 +255,21 @@ class Categories {
 			in_array($description_attribute, $attributes) || $description == 0 ? $description_attribute : $attributes[0],
 			$image,
 			$visible
-		]);
-		if (!$result) {
-			return false;
-		}
-		if ($data['image'] != $image) {
-			Event::instance()->fire(
-				'System/upload_files/del_tag',
-				[
-					'tag' => "Shop/categories/$id",
-					'url' => $data['image']
-				]
+		);
+		if ($result) {
+			$L = Language::instance();
+			unset(
+				$this->cache->{"$id/$L->clang"},
+				$this->cache->all
 			);
 			Event::instance()->fire(
-				'System/upload_files/add_tag',
+				'Shop/Categories/set',
 				[
-					'tag' => "Shop/categories/$id",
-					'url' => $image
+					'id' => $id
 				]
 			);
 		}
-		$cdb = $this->db_prime();
-		$cdb->q(
-			"DELETE FROM `{$this->table}_attributes`
-			WHERE `id` = $id"
-		);
-		if ($attributes) {
-			$cdb->insert(
-				"INSERT INTO `{$this->table}_attributes`
-					(
-						`id`,
-						`attribute`
-					)
-				VALUES
-					(
-						$id,
-						'%s'
-					)",
-				$attributes
-			) ?: [];
-		}
-		$L = Language::instance();
-		unset(
-			$this->cache->{"$id/$L->clang"},
-			$this->cache->all
-		);
-		Event::instance()->fire('Shop/Categories/set', [
-			'id' => $id
-		]);
-		return true;
+		return $result;
 	}
 	/**
 	 * Delete specified category
@@ -303,23 +282,16 @@ class Categories {
 		$id     = (int)$id;
 		$result = $this->delete($id);
 		if ($result) {
-			$this->db_prime()->q(
-				"DELETE FROM `{$this->table}_attributes`
-				WHERE `id` = $id"
-			);
-			Event::instance()->fire(
-				'System/upload_files/del_tag',
-				[
-					'tag' => "Shop/categories/$id"
-				]
-			);
 			unset(
 				$this->cache->$id,
 				$this->cache->all
 			);
-			Event::instance()->fire('Shop/Categories/del', [
-				'id' => $id
-			]);
+			Event::instance()->fire(
+				'Shop/Categories/del',
+				[
+					'id' => $id
+				]
+			);
 		}
 		return $result;
 	}

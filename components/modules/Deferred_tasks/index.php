@@ -22,5 +22,5 @@ $Deferred_tasks = Deferred_tasks::instance();
 if (isset($rc[1])) {
 	$Deferred_tasks->run_task($rc[1]);
 } else {
-	$Deferred_tasks->run_worker();
+	$Deferred_tasks->run_tasks();
 }

@@ -254,10 +254,7 @@ class Items {
 		return $this->cache->get(
 			'all',
 			function () {
-				return $this->db()->qfas(
-					"SELECT `id`
-					FROM `$this->table`"
-				) ?: [];
+				return $this->search([], 1, PHP_INT_MAX, 'id', true) ?: [];
 			}
 		);
 	}
@@ -396,18 +393,16 @@ class Items {
 	function add ($category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
 		$L  = Language::instance();
 		$id = $this->create(
-			[
-				time(),
-				$category,
-				$price,
-				$in_stock,
-				$soon && !$in_stock ? 1 : 0,
-				$listed,
-				$this->prepare_attributes($attributes, $category, $L->clang),
-				$this->prepare_images($images),
-				$this->prepare_videos($videos),
-				$this->prepare_tags($tags)
-			]
+			time(),
+			$category,
+			$price,
+			$in_stock,
+			$soon && !$in_stock ? 1 : 0,
+			$listed,
+			$this->prepare_attributes($attributes, $category, $L->clang),
+			$this->prepare_images($images),
+			$this->prepare_videos($videos),
+			$this->prepare_tags($tags)
 		);
 		if ($id) {
 			unset($this->cache->all);
@@ -551,19 +546,17 @@ class Items {
 		}
 		$L      = Language::instance();
 		$result = $this->update(
-			[
-				$id,
-				$data['date'],
-				$category,
-				$price,
-				$in_stock,
-				$soon && !$in_stock ? 1 : 0,
-				$listed,
-				$this->prepare_attributes($attributes, $category, $L->clang),
-				$this->prepare_images($images),
-				$this->prepare_videos($videos),
-				$this->prepare_tags($tags)
-			]
+			$id,
+			$data['date'],
+			$category,
+			$price,
+			$in_stock,
+			$soon && !$in_stock ? 1 : 0,
+			$listed,
+			$this->prepare_attributes($attributes, $category, $L->clang),
+			$this->prepare_images($images),
+			$this->prepare_videos($videos),
+			$this->prepare_tags($tags)
 		);
 		if ($result) {
 			/**

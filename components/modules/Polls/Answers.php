@@ -44,7 +44,7 @@ class Answers {
 		if ($User->guest()) {
 			return false;
 		}
-		$result = $this->create([$poll, $option, $User->id]);
+		$result = $this->create($poll, $option, $User->id);
 		if ($result) {
 			Options::instance()->update_votes($option);
 			return true;
@@ -55,13 +55,14 @@ class Answers {
 	 * Get answer
 	 *
 	 * @param int|int[] $poll
+	 * @param false|int $user
 	 *
 	 * @return int|int[]|false Option id
 	 */
-	function get ($poll) {
+	function get ($poll, $user = false) {
 		if (is_array($poll)) {
 			foreach ($poll as &$i) {
-				$i = $this->get($i);
+				$i = $this->get($i, $user);
 			}
 			return $poll;
 		}
@@ -69,11 +70,11 @@ class Answers {
 			"SELECT `option`
 			FROM `$this->table`
 			WHERE
-				`id`	= '%s' AND
-				`user`	= '%s'
+				`id`	= '%d' AND
+				`user`	= '%d'
 			LIMIT 1",
 			$poll,
-			User::instance()->id
+			$user ?: User::instance()->id
 		);
 	}
 }

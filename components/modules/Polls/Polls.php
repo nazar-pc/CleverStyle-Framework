@@ -10,7 +10,7 @@ namespace cs\modules\Polls;
 use
 	cs\Cache\Prefix,
 	cs\Config,
-	cs\CRUD,
+	cs\CRUD_helpers,
 	cs\Singleton;
 
 /**
@@ -19,7 +19,7 @@ use
 class Polls {
 	use
 		Common_actions,
-		CRUD,
+		CRUD_helpers,
 		Singleton;
 	/**
 	 * @var Prefix
@@ -33,7 +33,7 @@ class Polls {
 	protected $data_model_ml_group = 'Polls/polls';
 
 	protected function construct () {
-		$this->cache = new Prefix('polls');
+		$this->cache = new Prefix('Polls');
 	}
 	protected function cdb () {
 		return Config::instance()->module('Polls')->db('polls');
@@ -46,7 +46,7 @@ class Polls {
 	 * @return false|int
 	 */
 	function add ($title) {
-		$id = $this->create([$title]);
+		$id = $this->create($title);
 		if ($id) {
 			unset($this->cache->all);
 			return $id;
@@ -72,11 +72,7 @@ class Polls {
 		return $this->cache->get(
 			'all',
 			function () {
-				return $this->db()->qfas(
-					"SELECT `id`
-					FROM `$this->table`
-					ORDER BY `id` DESC"
-				);
+				return $this->search([], 1, PHP_INT_MAX, 'id', false);
 			}
 		);
 	}
@@ -90,7 +86,7 @@ class Polls {
 	 */
 	function set ($id, $title) {
 		$id     = (int)$id;
-		$result = $this->update([$id, $title]);
+		$result = $this->update($id, $title);
 		if ($result) {
 			unset(
 				$this->cache->$id,

@@ -14,7 +14,7 @@ use
 	cs\Language\Prefix as Language_prefix,
 	cs\Text,
 	cs\User,
-	cs\CRUD,
+	cs\CRUD_helpers,
 	cs\Singleton;
 
 /**
@@ -22,7 +22,7 @@ use
  */
 class Sections {
 	use
-		CRUD,
+		CRUD_helpers,
 		Singleton;
 
 	protected $data_model          = [
@@ -135,17 +135,9 @@ class Sections {
 		return $this->cache->get(
 			"sections/all/$L->clang",
 			function () {
-				$sections = $this->db()->qfa(
-					"SELECT *
-					FROM `[prefix]blogs_sections`"
-				) ?: [];
-				foreach ($sections as &$section) {
-					$section['id']     = (int)$section['id'];
-					$section['parent'] = (int)$section['parent'];
-					$section['title']  = $this->ml_process($section['title']);
-					$section['path']   = $this->ml_process($section['path']);
-				}
-				return $sections;
+				return $this->get(
+					$this->search([], 1, PHP_INT_MAX, 'id', true) ?: []
+				);
 			}
 		) ?: [];
 	}
@@ -182,7 +174,7 @@ class Sections {
 	 * @return false|int Id of created section on success of <b>false</> on failure
 	 */
 	function add ($parent, $title, $path) {
-		$id = $this->create([$parent, $title, $path]);
+		$id = $this->create($parent, $title, $path);
 		if ($id) {
 			$this->db_prime()->q(
 				"UPDATE `[prefix]blogs_posts_sections`
@@ -208,7 +200,7 @@ class Sections {
 	 * @return bool
 	 */
 	function set ($id, $parent, $title, $path) {
-		$result = $this->update([$id, $parent, $title, $path]);
+		$result = $this->update($id, $parent, $title, $path);
 		if ($result) {
 			unset($this->cache->sections);
 		}

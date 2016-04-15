@@ -17,7 +17,7 @@ use
  */
 class Transactions {
 	use CRUD_helpers {
-		search as crud_search;
+		search as public;
 	}
 	use
 		Singleton;
@@ -62,21 +62,6 @@ class Transactions {
 		return $this->read($id);
 	}
 	/**
-	 * Transactions search
-	 *
-	 * @param mixed[] $search_parameters Array in form [attribute => value];
-	 *                                   if `total_count => 1` element is present - total number of found rows will be returned instead of rows themselves
-	 * @param int     $page
-	 * @param int     $count
-	 * @param string  $order_by
-	 * @param bool    $asc
-	 *
-	 * @return array|false|int
-	 */
-	function search ($search_parameters = [], $page = 1, $count = 100, $order_by = 'id', $asc = false) {
-		return $this->crud_search($search_parameters, $page, $count, $order_by, $asc);
-	}
-	/**
 	 * Add new transaction
 	 *
 	 * @param float  $amount
@@ -91,13 +76,7 @@ class Transactions {
 	 */
 	function add ($amount, $currency, $user, $module, $purpose, $description) {
 		while ($secret = hash('sha512', random_bytes(1000))) {
-			if ($this->db_prime()->qf(
-				"SELECT `id`
-				FROM `$this->table`
-				WHERE `id` = '$secret'
-				LIMIT 1"
-			)
-			) {
+			if ($this->search(['secret' => $secret, 'total_count' => true])) {
 				break;
 			}
 		}
@@ -120,23 +99,21 @@ class Transactions {
 		}
 		$input_address = $blockchain_receive['input_address'];
 		return $this->create(
-			[
-				$amount,
-				$currency,
-				$user,
-				$module,
-				$purpose,
-				$description,
-				$amount_btc,
-				$destination_address,
-				$input_address,
-				time(),
-				0,
-				0,
-				$secret,
-				'',
-				''
-			]
+			$amount,
+			$currency,
+			$user,
+			$module,
+			$purpose,
+			$description,
+			$amount_btc,
+			$destination_address,
+			$input_address,
+			time(),
+			0,
+			0,
+			$secret,
+			'',
+			''
 		);
 	}
 	/**
@@ -160,21 +137,11 @@ class Transactions {
 	 * @return bool
 	 */
 	function set_as_paid ($id, $transaction_hash, $input_transaction_hash) {
-		return (bool)$this->db()->q(
-			"UPDATE `$this->table`
-			SET
-				`paid`						= '%d',
-				`transaction_hash`			= '%s',
-				`input_transaction_hash`	= '%s'
-			WHERE
-				`id`	= '%d' AND
-				`paid`	= '0'
-			LIMIT 1",
-			time(),
-			$transaction_hash,
-			$input_transaction_hash,
-			$id
-		);
+		$data                           = $this->get($id);
+		$data['paid']                   = time();
+		$data['transaction_hash']       = $transaction_hash;
+		$data['input_transaction_hash'] = $input_transaction_hash;
+		return $this->update($data);
 	}
 	/**
 	 * Set transaction as confirmed (each paid transaction should be confirmed in order to be completed)
@@ -184,16 +151,9 @@ class Transactions {
 	 * @return bool
 	 */
 	function set_as_confirmed ($id) {
-		return (bool)$this->db()->q(
-			"UPDATE `$this->table`
-			SET `confirmed` = '%d'
-			WHERE
-				`id`		= '%d' AND
-				`confirmed`	= '0'
-			LIMIT 1",
-			time(),
-			$id
-		);
+		$data              = $this->get($id);
+		$data['confirmed'] = time();
+		return $this->update($data);
 	}
 	/**
 	 * Delete specified order

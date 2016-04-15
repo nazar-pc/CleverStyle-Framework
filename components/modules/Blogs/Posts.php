@@ -348,16 +348,14 @@ class Posts {
 			return false;
 		}
 		$id = $this->create(
-			[
-				User::instance()->id,
-				$draft ? 0 : time(),
-				$title,
-				path($path ?: $title),
-				$content,
-				$draft,
-				$sections,
-				$this->prepare_tags($tags)
-			]
+			User::instance()->id,
+			$draft ? 0 : time(),
+			$title,
+			path($path ?: $title),
+			$content,
+			$draft,
+			$sections,
+			$this->prepare_tags($tags)
 		);
 		if ($id) {
 			$this->cache_cleanups($id);
@@ -389,8 +387,7 @@ class Posts {
 			array_column(Sections::instance()->get_all(), 'id'),
 			$sections
 		);
-		return
-			$sections && count($sections) <= Config::instance()->module('Blogs')->max_sections;
+		return $sections && count($sections) <= Config::instance()->module('Blogs')->max_sections;
 	}
 	/**
 	 * @param int $id
@@ -422,17 +419,15 @@ class Posts {
 		}
 		$old_data = $this->get($id);
 		$result   = $this->update(
-			[
-				$id,
-				$old_data['user'],
-				$old_data['draft'] == 1 && $old_data['date'] == 0 && !$draft ? time() : $old_data['date'],
-				$title,
-				path($path ?: $title),
-				$content,
-				$draft,
-				$sections,
-				$this->prepare_tags($tags)
-			]
+			$id,
+			$old_data['user'],
+			$old_data['draft'] == 1 && $old_data['date'] == 0 && !$draft ? time() : $old_data['date'],
+			$title,
+			path($path ?: $title),
+			$content,
+			$draft,
+			$sections,
+			$this->prepare_tags($tags)
 		);
 		$this->cache_cleanups($id);
 		return $result;
