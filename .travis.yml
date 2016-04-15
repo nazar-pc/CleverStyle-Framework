@@ -3,6 +3,12 @@ php:
   - 5.6
   - 7.0
 sudo: false
+addons:
+  apt:
+    sources:
+      - travis-ci/sqlite3
+    packages:
+      - sqlite3
 services:
   - memcached
 env:
@@ -11,9 +17,6 @@ env:
   matrix:
     - DB=MySQLi
     - DB=SQLite
-matrix:
-  allow_failures:
-    - env: DB=SQLite
 before_script:
   - mysql -e 'CREATE DATABASE `cscms.travis`;'
 script:
