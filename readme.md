@@ -134,7 +134,7 @@ Some components are developed in parallel with core in this repository
 * or HHVM 3.3.2+ LTS or HHVM 3.4.1+
 * MySQL 5.6+
 * or MariaDB 10.0.5+
-* or SQLite
+* or SQLite 3.6.4+
 
 # How to try?
 
