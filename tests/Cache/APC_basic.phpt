@@ -2,8 +2,8 @@
 Basic features using APCu cache engine
 --SKIPIF--
 <?php
-if (!function_exists('apc_fetch')) {
-	exit('skip APC extension is not installed');
+if (!function_exists('apcu_fetch')) {
+	exit('skip APCu extension is not installed');
 }
 ?>
 --INI--
@@ -13,7 +13,7 @@ apc.enable_cli	= 1
 namespace cs;
 include __DIR__.'/../custom_loader.php';
 Core::instance_stub([
-	'cache_engine'	=> 'APCu'
+	'cache_engine'	=> 'APC'
 ]);
 $Cache	= Cache::instance();
 if (!$Cache->cache_state()) {
