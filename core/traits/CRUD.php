@@ -202,10 +202,10 @@ trait CRUD {
 			return _json_decode($value);
 		}
 		if (strpos($model, 'int') === 0) {
-			return (int)$value;
+			return _int($value);
 		}
 		if (strpos($model, 'float') === 0) {
-			return (float)$value;
+			return _float($value);
 		}
 		return $value;
 	}

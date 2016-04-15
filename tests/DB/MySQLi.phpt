@@ -1,5 +1,11 @@
 --TEST--
 Basic database features
+--SKIPIF--
+<?php
+if (getenv('DB') && getenv('DB') != 'MySQLi') {
+	exit('skip only running for database MySQLi engine');
+}
+?>
 --FILE--
 <?php
 include __DIR__.'/../custom_loader.php';

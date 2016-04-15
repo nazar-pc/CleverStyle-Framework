@@ -5,6 +5,9 @@ Building distributive of system core with suffix
 if (getenv('SKIP_SLOW_TESTS')) {
 	exit('skip slow test');
 }
+if (getenv('DB') && getenv('DB') != 'MySQLi') {
+	exit('skip only running for database MySQLi engine');
+}
 ?>
 --INI--
 phar.readonly	= Off

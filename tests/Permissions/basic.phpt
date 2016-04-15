@@ -10,7 +10,6 @@ var_dump('permission 1', $Permission->get(1));
 var_dump('permissions by group api/System', $Permission->get(null, 'api/System'));
 var_dump('permissions by label index', $Permission->get(null, null, 'index'));
 var_dump('permissions by group api/System and label index', $Permission->get(null, 'api/System', 'index'));
-var_dump('permissions by group api/System or label index', $Permission->get(null, 'api/System', 'index', 'or'));
 $id = $Permission->add('test_permissions', 'first');
 var_dump('new permission added', $id, $Permission->get($id));
 var_dump('permission modification', $Permission->set($id, 'test_permissions', 'first_1'), $Permission->get($id));
@@ -33,22 +32,22 @@ array(2) {
 string(12) "permission 1"
 array(3) {
   ["id"]=>
-  string(1) "1"
-  ["label"]=>
-  string(5) "index"
+  int(1)
   ["group"]=>
   string(12) "admin/System"
+  ["label"]=>
+  string(5) "index"
 }
 string(31) "permissions by group api/System"
 array(1) {
   [0]=>
   array(3) {
     ["id"]=>
-    string(1) "2"
-    ["label"]=>
-    string(5) "index"
+    int(2)
     ["group"]=>
     string(10) "api/System"
+    ["label"]=>
+    string(5) "index"
   }
 }
 string(26) "permissions by label index"
@@ -56,20 +55,20 @@ array(2) {
   [0]=>
   array(3) {
     ["id"]=>
-    string(1) "1"
-    ["label"]=>
-    string(5) "index"
+    int(1)
     ["group"]=>
     string(12) "admin/System"
+    ["label"]=>
+    string(5) "index"
   }
   [1]=>
   array(3) {
     ["id"]=>
-    string(1) "2"
-    ["label"]=>
-    string(5) "index"
+    int(2)
     ["group"]=>
     string(10) "api/System"
+    ["label"]=>
+    string(5) "index"
   }
 }
 string(47) "permissions by group api/System and label index"
@@ -77,53 +76,32 @@ array(1) {
   [0]=>
   array(3) {
     ["id"]=>
-    string(1) "2"
-    ["label"]=>
-    string(5) "index"
+    int(2)
     ["group"]=>
     string(10) "api/System"
-  }
-}
-string(46) "permissions by group api/System or label index"
-array(2) {
-  [0]=>
-  array(3) {
-    ["id"]=>
-    string(1) "1"
     ["label"]=>
     string(5) "index"
-    ["group"]=>
-    string(12) "admin/System"
-  }
-  [1]=>
-  array(3) {
-    ["id"]=>
-    string(1) "2"
-    ["label"]=>
-    string(5) "index"
-    ["group"]=>
-    string(10) "api/System"
   }
 }
 string(20) "new permission added"
 int(3)
 array(3) {
   ["id"]=>
-  string(1) "3"
-  ["label"]=>
-  string(5) "first"
+  int(3)
   ["group"]=>
   string(16) "test_permissions"
+  ["label"]=>
+  string(5) "first"
 }
 string(23) "permission modification"
 bool(true)
 array(3) {
   ["id"]=>
-  string(1) "3"
-  ["label"]=>
-  string(7) "first_1"
+  int(3)
   ["group"]=>
   string(16) "test_permissions"
+  ["label"]=>
+  string(7) "first_1"
 }
 string(17) "delete permission"
 bool(true)

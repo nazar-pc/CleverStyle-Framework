@@ -1,5 +1,11 @@
 --TEST--
 Basic database features
+--SKIPIF--
+<?php
+if (getenv('DB') != 'SQLite') {
+	exit('skip only running for database SQLite engine');
+}
+?>
 --FILE--
 <?php
 include __DIR__.'/../custom_loader.php';

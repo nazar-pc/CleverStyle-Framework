@@ -80,7 +80,7 @@ trait CRUD_helpers {
 		$where_params[] = $count;
 		$order_by       = $this->search_order_by($table_alias, $order_by, $joins, $join_index);
 		$asc            = $asc ? 'ASC' : 'DESC';
-		return $this->db()->qfas(
+		$return         = $this->db()->qfas(
 			"SELECT `$table_alias`.`$first_column`
 			FROM `$this->table` AS `$table_alias`
 			$joins
@@ -89,6 +89,7 @@ trait CRUD_helpers {
 			LIMIT %d, %d",
 			array_merge($join_params, $where_params)
 		);
+		return $this->read_field_post_processing($return, array_values($this->data_model)[0]);
 	}
 	/**
 	 * @param string   $table_alias

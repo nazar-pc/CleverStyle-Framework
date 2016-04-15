@@ -1,13 +1,13 @@
 <?php
 /**
  * @package    CleverStyle CMS
- * @subpackage Builder
+ * @subpackage Uploader
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2011-2016, Nazar Mokrynskyi
+ * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-if (substr(PHP_VERSION, 0, 3) !== '5.6') {
-	echo "Distributive is uploaded only under PHP 5.6\n";
+if (substr(PHP_VERSION, 0, 3) !== '5.6' || getenv('DB') != 'MySQLi') {
+	echo "Distributive is uploaded only under PHP 5.6 with DB=MySQLi\n";
 	return;
 }
 define('DIR', __DIR__);

@@ -82,16 +82,13 @@ class Group {
 	/**
 	 * Get array of all groups
 	 *
-	 * @return array
+	 * @return int[]
 	 */
 	function get_all () {
 		return $this->cache->get(
 			'all',
 			function () {
-				return $this->db()->qfas(
-					"SELECT `id`
-					FROM `$this->table`"
-				);
+				return $this->search([], 1, PHP_INT_MAX, 'id', true);
 			}
 		);
 	}

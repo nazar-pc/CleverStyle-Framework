@@ -1,5 +1,11 @@
 --TEST--
 Installation of distributive using MySQLi database
+--SKIPIF--
+<?php
+if (getenv('DB') && getenv('DB') != 'MySQLi') {
+	exit('skip only running for database MySQLi engine');
+}
+?>
 --INI--
 phar.readonly	= Off
 --FILE--

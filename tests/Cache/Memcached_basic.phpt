@@ -2,8 +2,8 @@
 Basic features using Memcached cache engine
 --SKIPIF--
 <?php
-if (PHP_VERSION_ID >= 70000) {
-	exit('Skipped: Memcached is not working under PHP7 yet');
+if (!class_exists('Memcached')) {
+	exit('skip Memcached extension is not installed');
 }
 ?>
 --FILE--

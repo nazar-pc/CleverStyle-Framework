@@ -24,9 +24,9 @@ var_dump('delete group', $Group->del($id), $Group->get($id));
 string(10) "all groups"
 array(2) {
   [0]=>
-  string(1) "1"
+  int(1)
   [1]=>
-  string(1) "2"
+  int(2)
 }
 string(7) "group 1"
 array(3) {
