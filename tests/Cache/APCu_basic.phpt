@@ -2,8 +2,8 @@
 Basic features using APCu cache engine
 --SKIPIF--
 <?php
-if (!function_exists('apc_fetch')) {
-	exit('skip APC extension is not installed');
+if (!function_exists('apcu_fetch')) {
+	exit('skip APCu extension is not installed');
 }
 ?>
 --INI--

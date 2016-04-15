@@ -26,7 +26,10 @@ trait CRUD {
 	 *
 	 * @return false|int|string Id of created item on success, `false` otherwise
 	 */
-	protected function create ($arguments) {
+	protected function create (...$arguments) {
+		if (count($arguments) == 1 && !is_array(array_values($this->data_model)[1])) {
+			$arguments = $arguments[0];
+		}
 		return $this->create_internal($this->table, $this->data_model, $arguments);
 	}
 	/**
@@ -278,7 +281,10 @@ trait CRUD {
 	 *
 	 * @return bool
 	 */
-	protected function update ($arguments) {
+	protected function update (...$arguments) {
+		if (count($arguments) == 1) {
+			$arguments = $arguments[0];
+		}
 		return $this->update_internal($this->table, $this->data_model, $arguments);
 	}
 	/**

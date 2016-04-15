@@ -101,12 +101,7 @@ class Group {
 	 * @return false|int
 	 */
 	function add ($title, $description) {
-		$id = $this->create(
-			[
-				$title,
-				$description
-			]
-		);
+		$id = $this->create($title, $description);
 		if ($id) {
 			unset($this->cache->all);
 			Event::instance()->fire(
@@ -129,13 +124,7 @@ class Group {
 	 */
 	function set ($id, $title, $description) {
 		$id     = (int)$id;
-		$result = $this->update(
-			[
-				$id,
-				$title,
-				$description
-			]
-		);
+		$result = $this->update($id, $title, $description);
 		if ($result) {
 			$Cache = $this->cache;
 			unset(

@@ -83,7 +83,7 @@ class Permission {
 	 * @return false|int Group id or <b>false</b> on failure
 	 */
 	function add ($group, $label) {
-		$id = $this->create([$group, $label]);
+		$id = $this->create($group, $label);
 		if ($id) {
 			$this->del_all_cache();
 		}
@@ -99,7 +99,7 @@ class Permission {
 	 * @return bool
 	 */
 	function set ($id, $group, $label) {
-		$result = $this->update([$id, $group, $label]);
+		$result = $this->update($id, $group, $label);
 		if ($result) {
 			$this->del_all_cache();
 		}
