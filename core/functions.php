@@ -27,7 +27,7 @@ spl_autoload_register(
 			$cache = file_exists(CACHE.'/classes/autoload') ? file_get_json(CACHE.'/classes/autoload') : [];
 		}
 		if (isset($cache[$class])) {
-			return require_once $cache[$class];
+			return $cache[$class] ? require_once $cache[$class] : false;
 		}
 		$prepared_class_name = ltrim($class, '\\');
 		if (strpos($prepared_class_name, 'cs\\') === 0) {
@@ -48,12 +48,13 @@ spl_autoload_register(
 			_require_once($file = PLUGINS."/../$namespace/$class_name.php", false)             //Classes in plugins
 		) {
 			$cache[$class] = realpath($file);
-			/** @noinspection MkdirRaceConditionInspection */
-			@mkdir(CACHE.'/classes', 0770, true);
-			file_put_json(CACHE.'/classes/autoload', $cache);
-			return true;
+		} else {
+			$cache[$class] = false;
 		}
-		return false;
+		/** @noinspection MkdirRaceConditionInspection */
+		@mkdir(CACHE.'/classes', 0770, true);
+		file_put_json(CACHE.'/classes/autoload', $cache);
+		return (bool)$cache[$class];
 	},
 	true,
 	true
