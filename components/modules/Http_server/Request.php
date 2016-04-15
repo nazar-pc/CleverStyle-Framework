@@ -18,40 +18,20 @@ use
 
 class Request {
 	/**
-	 * @var \React\Http\Request
-	 */
-	protected $request;
-	/**
-	 * @var \React\Http\Response
-	 */
-	protected $response;
-	/**
-	 * @var float
-	 */
-	protected $request_started;
-	/**
 	 * @param \React\Http\Request  $request
 	 * @param \React\Http\Response $response
 	 * @param float                $request_started
-	 */
-	function __construct ($request, $response, $request_started) {
-		$this->request         = $request;
-		$this->response        = $response;
-		$this->request_started = $request_started;
-	}
-	/**
-	 * @param string $data
+	 * @param string               $data
 	 *
 	 * @throws ExitException
 	 */
-	function __invoke ($data) {
-		$request = $this->request;
-		$this->fill_superglobals(
-			$this->prepare_superglobals($request, $data)
+	static function process ($request, $response, $request_started, $data) {
+		static::fill_superglobals(
+			static::prepare_superglobals($request, $data)
 		);
 		try {
 			try {
-				$this->execute_request();
+				static::execute_request($request_started);
 			} catch (ExitException $e) {
 				if ($e->getCode() >= 400) {
 					Page::instance()->error($e->getMessage() ?: null, $e->getJson());
@@ -64,18 +44,18 @@ class Request {
 		/**
 		 * When error happens in \cs\Request initialization, there might be no headers yet since \cs\Response was not initialized
 		 */
-		$this->response->writeHead($Response->code, $Response->headers ?: []);
+		$response->writeHead($Response->code, $Response->headers ?: []);
 		if ($Response->code >= 300 && $Response->code < 400) {
-			$this->response->end();
+			$response->end();
 		} elseif (is_resource($Response->body_stream)) {
 			$position = ftell($Response->body_stream);
 			rewind($Response->body_stream);
 			while (!feof($Response->body_stream)) {
-				$this->response->write(fread($Response->body_stream, 1024));
+				$response->write(fread($Response->body_stream, 1024));
 			}
 			fseek($Response->body_stream, $position);
 		} else {
-			$this->response->end($Response->body);
+			$response->end($Response->body);
 		}
 		$request->close();
 		User::instance()->disable_memory_cache();
@@ -86,7 +66,7 @@ class Request {
 	 *
 	 * @return array
 	 */
-	protected function prepare_superglobals ($request, $data) {
+	protected static function prepare_superglobals ($request, $data) {
 		$SERVER = [
 			'SERVER_SOFTWARE' => 'ReactPHP'
 		];
@@ -132,7 +112,7 @@ class Request {
 	 *
 	 * @throws ExitException
 	 */
-	protected function fill_superglobals ($SUPERGLOBALS) {
+	protected static function fill_superglobals ($SUPERGLOBALS) {
 		// Hack: Filling $_SERVER is primarily needed for HybridAuth (many hard dependencies on `$_SERVER`)
 		$_SERVER  = $SUPERGLOBALS['SERVER'];
 		$_COOKIE  = $SUPERGLOBALS['COOKIE'];
@@ -141,12 +121,14 @@ class Request {
 		$_REQUEST = $SUPERGLOBALS['POST'] + $SUPERGLOBALS['GET'];
 	}
 	/**
+	 * @param float $request_started
+	 *
 	 * @throws ExitException
 	 */
-	protected function execute_request () {
+	protected static function execute_request ($request_started) {
 		$Request = System_request::instance();
 		$Request->init_from_globals();
-		$Request->started = $this->request_started;
+		$Request->started = $request_started;
 		System_response::instance()->init_with_typical_default_settings();
 		$L            = Language::instance(true);
 		$url_language = $L->url_language();

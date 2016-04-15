@@ -31,10 +31,11 @@ $http   = new React\Http\Server($socket);
 $http->on(
 	'request',
 	function (\React\Http\Request $request, \React\Http\Response $response) {
-		$request_started = microtime(true);
 		$request->on(
 			'data',
-			new Request($request, $response, $request_started)
+			function ($data) use ($request, $response) {
+				Request::process($request, $response, microtime(true), $data);
+			}
 		);
 	}
 );
