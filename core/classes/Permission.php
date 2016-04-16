@@ -6,8 +6,6 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-use
-	cs\Cache\Prefix;
 
 /**
  * Class for permissions manipulating
@@ -31,7 +29,7 @@ class Permission {
 	 */
 	protected $permissions_table = [];
 	/**
-	 * @var Prefix
+	 * @var Cache\Prefix
 	 */
 	protected $cache;
 	/**
@@ -43,7 +41,7 @@ class Permission {
 		return Config::instance()->module('System')->db('users');
 	}
 	protected function construct () {
-		$this->cache = new Prefix('permissions');
+		$this->cache = Cache::prefix('permissions');
 	}
 	/**
 	 * Get permission data<br>

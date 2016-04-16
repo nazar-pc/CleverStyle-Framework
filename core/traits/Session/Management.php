@@ -7,9 +7,9 @@
  */
 namespace cs\Session;
 use
-	cs\Language\Prefix as Language_prefix,
 	cs\Config,
 	cs\Event,
+	cs\Language,
 	cs\Page,
 	cs\Request,
 	cs\Response,
@@ -287,7 +287,7 @@ trait Management {
 		if (!$data) {
 			return false;
 		}
-		$L    = new Language_prefix('system_profile_sign_in_');
+		$L    = Language::prefix('system_profile_sign_in_');
 		$Page = Page::instance();
 		switch ($data['status']) {
 			case User::STATUS_INACTIVE:

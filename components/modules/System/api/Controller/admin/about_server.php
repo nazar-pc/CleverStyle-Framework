@@ -11,7 +11,7 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Core,
 	cs\DB,
-	cs\Language\Prefix;
+	cs\Language;
 
 trait about_server {
 	/**
@@ -19,7 +19,7 @@ trait about_server {
 	 */
 	static function admin_about_server_get () {
 		$Core = Core::instance();
-		$L    = new Prefix('system_filesize_');
+		$L    = Language::prefix('system_filesize_');
 		return [
 			'operating_system' => php_uname('s').' '.php_uname('r').' '.php_uname('v'),
 			'server_type'      => static::admin_about_server_get_server_api(),

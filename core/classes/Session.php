@@ -7,7 +7,6 @@
  */
 namespace cs;
 use
-	cs\Cache\Prefix as Cache_prefix,
 	cs\Session\Data,
 	cs\Session\Management;
 
@@ -46,11 +45,11 @@ class Session {
 	const INIT_STATE_METHOD          = 'init';
 	const INITIAL_SESSION_EXPIRATION = 300;
 	/**
-	 * @var Cache_prefix
+	 * @var Cache\Prefix
 	 */
 	protected $cache;
 	/**
-	 * @var Cache_prefix
+	 * @var Cache\Prefix
 	 */
 	protected $users_cache;
 	protected $data_model = [
@@ -74,8 +73,8 @@ class Session {
 	}
 	protected function init () {
 		if (!$this->cache) {
-			$this->cache       = new Cache_prefix('sessions');
-			$this->users_cache = new Cache_prefix('users');
+			$this->cache       = Cache::prefix('sessions');
+			$this->users_cache = Cache::prefix('users');
 		}
 		$this->session_id = null;
 		$this->user_id    = User::GUEST_ID;

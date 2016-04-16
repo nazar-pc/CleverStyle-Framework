@@ -12,7 +12,6 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Language,
-	cs\Language\Prefix,
 	cs\Mail,
 	cs\Session,
 	cs\User;
@@ -88,7 +87,7 @@ trait profile {
 	 * @throws ExitException
 	 */
 	static function profile___change_password ($Request) {
-		$L    = new Prefix('system_profile_');
+		$L    = Language::prefix('system_profile_');
 		$User = User::instance();
 		$data = $Request->data('current_password', 'new_password');
 		if (!$data) {
@@ -118,7 +117,7 @@ trait profile {
 	 */
 	static function profile___registration ($Request, $Response) {
 		$Config = Config::instance();
-		$L      = new Prefix('system_profile_registration_');
+		$L      = Language::prefix('system_profile_registration_');
 		$User   = User::instance();
 		if (!$User->guest()) {
 			throw new ExitException(403);
@@ -162,9 +161,9 @@ trait profile {
 		$Response->code = $confirm ? 202 : 201;
 	}
 	/**
-	 * @param User   $User
-	 * @param Prefix $L
-	 * @param string $email
+	 * @param User            $User
+	 * @param Language\Prefix $L
+	 * @param string          $email
 	 *
 	 * @return array
 	 *
@@ -213,7 +212,7 @@ trait profile {
 	 */
 	static function profile___restore_password ($Request) {
 		$Config = Config::instance();
-		$L      = new Prefix('system_profile_restore_password_');
+		$L      = Language::prefix('system_profile_restore_password_');
 		$User   = User::instance();
 		$email  = $Request->data('email');
 		if (!$User->guest()) {
@@ -250,7 +249,7 @@ trait profile {
 	 */
 	static function profile___sign_in ($Request) {
 		$Config = Config::instance();
-		$L      = new Prefix('system_profile_sign_in_');
+		$L      = Language::prefix('system_profile_sign_in_');
 		$User   = User::instance();
 		$data   = $Request->data('login', 'password');
 		if (!$data) {

@@ -10,7 +10,7 @@
 namespace cs\modules\System\api\Controller\admin;
 use
 	cs\ExitException,
-	cs\Language\Prefix,
+	cs\Language,
 	cs\Response,
 	cs\User;
 
@@ -56,7 +56,7 @@ trait users {
 		return $result;
 	}
 	protected static function admin_users___get_post_process ($data) {
-		$L                          = new Prefix('system_admin_users_');
+		$L                          = Language::prefix('system_admin_users_');
 		$data['reg_date_formatted'] = $data['reg_date'] ? date($L->_date, $data['reg_date']) : $L->undefined;
 		$data['reg_ip_formatted']   = hex2ip($data['reg_ip'], 10);
 		return $data;
@@ -89,7 +89,7 @@ trait users {
 		if (!$user_data && !isset($user['password'])) {
 			throw new ExitException(400);
 		}
-		$L = new Prefix('system_admin_users_');
+		$L = Language::prefix('system_admin_users_');
 		if (
 			isset($user_data['login']) &&
 			$user_data['login'] !== $User->get('login', $user_id) &&
@@ -131,7 +131,7 @@ trait users {
 			throw new ExitException(500);
 		}
 		if ($result === 'exists') {
-			$L = new Prefix('system_admin_users_');
+			$L = Language::prefix('system_admin_users_');
 			throw new ExitException($L->user_already_exists, 400);
 		}
 		Response::instance()->code = 201;

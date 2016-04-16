@@ -20,7 +20,6 @@
  */
 namespace cs;
 use
-	cs\Cache\Prefix,
 	cs\Permission\Any;
 
 /**
@@ -40,7 +39,7 @@ class Group {
 	];
 	protected $table      = '[prefix]groups';
 	/**
-	 * @var Prefix
+	 * @var Cache\Prefix
 	 */
 	protected $cache;
 	/**
@@ -52,7 +51,7 @@ class Group {
 		return Config::instance()->module('System')->db('users');
 	}
 	protected function construct () {
-		$this->cache = new Prefix('groups');
+		$this->cache = Cache::prefix('groups');
 	}
 	/**
 	 * Get group data

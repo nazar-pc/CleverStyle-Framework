@@ -7,7 +7,6 @@
  */
 namespace cs;
 use
-	cs\Cache\Prefix,
 	cs\DB\Accessor,
 	cs\User\Data as User_data,
 	cs\User\Group as User_group,
@@ -101,7 +100,7 @@ class User {
 	 */
 	const STATUS_NOT_ACTIVATED = -1;
 	/**
-	 * @var Prefix
+	 * @var Cache\Prefix
 	 */
 	protected $cache;
 	/**
@@ -113,7 +112,7 @@ class User {
 		return Config::instance()->module('System')->db('users');
 	}
 	protected function construct () {
-		$this->cache = new Prefix('users');
+		$this->cache = Cache::prefix('users');
 		Event::instance()->fire('System/User/construct/before');
 		$this->initialize_data();
 		/**

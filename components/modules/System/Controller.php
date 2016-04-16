@@ -11,7 +11,7 @@ namespace cs\modules\System;
 use
 	cs\Config,
 	cs\Event,
-	cs\Language\Prefix,
+	cs\Language,
 	cs\Mail,
 	cs\Page,
 	cs\User;
@@ -22,7 +22,7 @@ class Controller {
 	 * @param \cs\Response $Response
 	 */
 	static function profile_registration_confirmation ($Request, $Response) {
-		$L    = new Prefix('system_profile_registration_');
+		$L    = Language::prefix('system_profile_registration_');
 		$Page = Page::instance();
 		$User = User::instance();
 		if ($Request->cookie('reg_confirm')) {
@@ -80,7 +80,7 @@ class Controller {
 	 * @param \cs\Response $Response
 	 */
 	static function profile_restore_password_confirmation ($Request, $Response) {
-		$L    = new Prefix('system_profile_restore_password_');
+		$L    = Language::prefix('system_profile_restore_password_');
 		$Page = Page::instance();
 		$User = User::instance();
 		if ($Request->cookie('restore_password_confirm')) {

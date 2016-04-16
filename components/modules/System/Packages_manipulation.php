@@ -12,7 +12,7 @@ use
 	cs\Config,
 	cs\Core,
 	cs\DB,
-	cs\Language\Prefix,
+	cs\Language,
 	cs\Page,
 	cs\Request;
 
@@ -30,7 +30,7 @@ class Packages_manipulation {
 		if (!$file) {
 			return false;
 		}
-		$L    = new Prefix('system_admin_');
+		$L    = Language::prefix('system_admin_');
 		$Page = Page::instance();
 		switch ($file['error']) {
 			case UPLOAD_ERR_INI_SIZE:
@@ -59,6 +59,7 @@ class Packages_manipulation {
 	 * @return bool
 	 */
 	static function install_extract ($target_directory, $source_phar) {
+		/** @noinspection MkdirRaceConditionInspection */
 		if (!mkdir($target_directory, 0770)) {
 			return false;
 		}

@@ -13,7 +13,6 @@ use
 	cs\Cache,
 	cs\Config,
 	cs\Language,
-	cs\Language\Prefix,
 	cs\Page,
 	cs\Text;
 
@@ -223,7 +222,7 @@ function format_filesize ($size, $round = false) {
 	if (!is_numeric($size)) {
 		return $size;
 	}
-	$L    = new Prefix('system_filesize_');
+	$L    = Language::prefix('system_filesize_');
 	$unit = '';
 	if ($size >= 1099511627776) {
 		$size /= 1099511627776;

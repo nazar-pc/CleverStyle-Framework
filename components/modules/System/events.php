@@ -9,8 +9,7 @@
  */
 namespace cs;
 use
-	h,
-	cs\Language\Prefix;
+	h;
 
 /**
  * Multilingual functionality: redirects and necessary meta-tags
@@ -94,7 +93,7 @@ Event::instance()
 		'admin/System/Menu',
 		function () {
 			$Config    = Config::instance();
-			$L         = new Prefix('system_admin_');
+			$L         = Language::prefix('system_admin_');
 			$Menu      = Menu::instance();
 			$Request   = Request::instance();
 			$structure = $Config->core['simple_admin_mode'] ? file_get_json(__DIR__.'/admin/index_simple.json') : file_get_json(__DIR__.'/admin/index.json');
