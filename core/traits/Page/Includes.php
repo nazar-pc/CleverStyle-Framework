@@ -422,11 +422,10 @@ trait Includes {
 				}
 			}
 			$includes = array_merge_recursive($system_includes, $dependencies_includes, $includes);
-			$includes = $this->absolute_path_to_relative($includes);
 		} else {
 			$includes = $this->get_includes_list();
 		}
-		return $this->add_versions_hash($includes);
+		return $this->add_versions_hash($this->absolute_path_to_relative($includes));
 	}
 	/**
 	 * @param array  $dependencies
@@ -525,11 +524,9 @@ trait Includes {
 	/**
 	 * Getting of HTML, JS and CSS files list to be included
 	 *
-	 * @param bool $absolute If <i>true</i> - absolute paths to files will be returned
-	 *
 	 * @return string[][]
 	 */
-	protected function get_includes_list ($absolute = false) {
+	protected function get_includes_list () {
 		$includes = [];
 		/**
 		 * Get includes of system and theme
@@ -546,15 +543,11 @@ trait Includes {
 		foreach ($Config->components['plugins'] as $plugin_name) {
 			$this->get_includes_list_add_includes(PLUGINS."/$plugin_name/includes", $includes);
 		}
-		$includes = [
+		return [
 			'html' => array_merge(...$includes['html']),
 			'js'   => array_merge(...$includes['js']),
 			'css'  => array_merge(...$includes['css'])
 		];
-		if (!$absolute) {
-			$includes = $this->absolute_path_to_relative($includes);
-		}
-		return $includes;
 	}
 	/**
 	 * @param string     $base_dir
@@ -678,7 +671,7 @@ trait Includes {
 		/**
 		 * Get all includes
 		 */
-		$all_includes = $this->get_includes_list(true);
+		$all_includes = $this->get_includes_list();
 		$includes_map = [];
 		/**
 		 * Array [package => [list of packages it depends on]]
