@@ -231,8 +231,8 @@ trait CRUD {
 			"SELECT $fields
 			FROM `{$this->table}_$table`
 			WHERE
-					`$id_field`	= '%s'
-					$language_field_condition",
+				`$id_field`	= '%s'
+				$language_field_condition",
 			$id
 		) ?: [];
 		$language_field           = isset($model['language_field']) ? $model['language_field'] : null;
@@ -263,12 +263,10 @@ trait CRUD {
 			foreach ($row as $field => &$value) {
 				$value = $this->read_field_post_processing($value, $model['data_model'][$field]);
 			}
-			if (isset($model['indexed']) && $model['indexed']) {
-				$row = array_values($row);
-			} elseif (count($row) == 1) {
-				/**
-				 * If row is array that contains only one item - lets make resulting array flat
-				 */
+			/**
+			 * If row is array that contains only one item - lets make resulting array flat
+			 */
+			if (count($row) == 1) {
 				$row = array_pop($row);
 			}
 		}
@@ -301,8 +299,9 @@ trait CRUD {
 		$arguments          = $this->fix_arguments_order($data_model, $arguments);
 		$prepared_arguments = $arguments;
 		$id                 = array_shift($prepared_arguments);
-		if ($files_update) {
-			$data_before = $this->read_internal($table, $data_model, $id);
+		$data               = $this->read_internal($table, $data_model, $id);
+		if (!$data) {
+			return false;
 		}
 		list($prepared_arguments, $joined_tables) = $this->crud_arguments_preparation(array_slice($data_model, 1), $prepared_arguments, $id);
 		$columns              = implode(
@@ -328,8 +327,7 @@ trait CRUD {
 		}
 		if ($files_update) {
 			$this->update_joined_tables($id, $joined_tables);
-			/** @noinspection PhpUndefinedVariableInspection */
-			$this->find_update_files_tags($id, $data_before, $arguments);
+			$this->find_update_files_tags($id, $data, $arguments);
 		}
 		return true;
 	}
@@ -341,6 +339,9 @@ trait CRUD {
 	 * @return bool
 	 */
 	protected function delete ($id) {
+		if (!$this->read_internal($this->table, $this->data_model, $id)) {
+			return false;
+		}
 		return $this->delete_internal($this->table, $this->data_model, $id);
 	}
 	/**
@@ -370,7 +371,6 @@ trait CRUD {
 			 * If there are multilingual fields - handle multilingual deleting of fields automatically
 			 */
 			if ($multilingual) {
-				/** @noinspection ForeachOnArrayComponentsInspection */
 				foreach (array_keys($this->data_model) as $field) {
 					if (strpos($this->data_model[$field], 'ml:') === 0) {
 						Text::instance()->del($this->cdb(), "$this->data_model_ml_group/$field", $i);
