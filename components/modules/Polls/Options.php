@@ -106,11 +106,11 @@ class Options {
 	 *
 	 * @param $id
 	 *
-	 * @return false|int
+	 * @return bool
 	 */
 	function update_votes ($id) {
 		$id     = (int)$id;
-		$result = $this->db_prime()->q(
+		$result = (bool)$this->db_prime()->q(
 			"UPDATE `$this->table`
 			SET `votes` = (
 				SELECT COUNT(`id`)

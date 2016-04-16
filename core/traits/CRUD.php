@@ -192,10 +192,10 @@ trait CRUD {
 		return $data;
 	}
 	/**
-	 * @param mixed  $value
-	 * @param string $model
+	 * @param string|string[] $value
+	 * @param string          $model
 	 *
-	 * @return mixed
+	 * @return array|float|int|string
 	 */
 	private function read_field_post_processing ($value, $model) {
 		/**

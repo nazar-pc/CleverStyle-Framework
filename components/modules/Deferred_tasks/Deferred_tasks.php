@@ -79,7 +79,7 @@ class Deferred_tasks {
 	 *
 	 * @param int $id
 	 *
-	 * @return false|mixed
+	 * @return array|false
 	 */
 	protected function get ($id) {
 		return $this->read($id);
@@ -89,7 +89,7 @@ class Deferred_tasks {
 	 *
 	 * @param int $id
 	 *
-	 * @return false|mixed
+	 * @return bool
 	 */
 	function del ($id) {
 		return $this->delete($id);
