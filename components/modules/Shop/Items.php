@@ -254,7 +254,7 @@ class Items {
 		return $this->cache->get(
 			'all',
 			function () {
-				return $this->search([], 1, PHP_INT_MAX, 'id', true) ?: [];
+				return $this->crud_search([], 1, PHP_INT_MAX, 'id', true) ?: [];
 			}
 		);
 	}
@@ -269,7 +269,7 @@ class Items {
 	 * @param string  $order_by
 	 * @param bool    $asc
 	 *
-	 * @return array|false|string
+	 * @return array|false|int
 	 */
 	function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'id', $asc = false) {
 		if (!isset($this->data_model[$order_by])) {

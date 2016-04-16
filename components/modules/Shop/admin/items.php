@@ -49,7 +49,7 @@ $items       = $Items->get(
 		$count,
 		@$_GET['order_by'] ?: 'id',
 		@$_GET['asc']
-	)
+	) ?: []
 );
 $items_total = $Items->search(
 	[
@@ -59,7 +59,7 @@ $items_total = $Items->search(
 	$count,
 	@$_GET['order_by'] ?: 'id',
 	@$_GET['asc']
-);
+) ?: 0;
 Page::instance()
 	->title($L->items)
 	->content(

@@ -192,10 +192,10 @@ trait CRUD {
 		return $data;
 	}
 	/**
-	 * @param string|string[] $value
-	 * @param string          $model
+	 * @param false|string|string[] $value
+	 * @param string                $model
 	 *
-	 * @return array|float|int|string
+	 * @return array|false|float|int|string
 	 */
 	private function read_field_post_processing ($value, $model) {
 		/**
