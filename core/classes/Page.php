@@ -29,7 +29,7 @@ use function
  *  System/Page/requirejs
  *  [
  *    'paths'                 => &$paths,                // The same as `paths` in requirejs.config()
- *    'directories_to_browse' => &$directories_to_browse // Where to look for AMD modules (typically bower_components and node_modules directories)
+ *    'directories_to_browse' => &$directories_to_browse // Location of AMD modules (typically bower_components and node_modules directories, absolute paths)
  *  ]
  *
  * @method static $this instance($check = false)

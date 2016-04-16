@@ -294,32 +294,12 @@ trait Includes {
 		return $this;
 	}
 	/**
-	 * Since modules, plugins and storage directories can be (at least theoretically) moved from default location - let's do proper path conversion
-	 *
 	 * @param string|string[] $path
 	 *
 	 * @return string|string[]
 	 */
 	protected function absolute_path_to_relative ($path) {
-		if (is_array($path)) {
-			foreach ($path as &$p) {
-				$p = $this->absolute_path_to_relative($p);
-			}
-			return $path;
-		}
-		if (strpos($path, MODULES) === 0) {
-			return 'components/modules'.substr($path, strlen(MODULES));
-		}
-		if (strpos($path, PLUGINS) === 0) {
-			return 'components/plugins'.substr($path, strlen(PLUGINS));
-		}
-		if (strpos($path, STORAGE) === 0) {
-			return 'storage'.substr($path, strlen(STORAGE));
-		}
-		if (strpos($path, THEMES) === 0) {
-			return 'themes'.substr($path, strlen(THEMES));
-		}
-		return substr($path, strlen(DIR) + 1);
+		return strpos($path, DIR.'/') === 0 ? substr($path, strlen(DIR) + 1) : $path;
 	}
 	/**
 	 * Add JS polyfills for IE/Edge
@@ -554,45 +534,45 @@ trait Includes {
 		/**
 		 * Get includes of system and theme
 		 */
-		$this->get_includes_list_add_includes(DIR.'/includes', 'includes', $includes, $absolute);
-		$this->get_includes_list_add_includes(THEMES."/$this->theme", "themes/$this->theme", $includes, $absolute);
+		$this->get_includes_list_add_includes(DIR.'/includes', $includes);
+		$this->get_includes_list_add_includes(THEMES."/$this->theme", $includes);
 		$Config = Config::instance();
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
 			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
 				continue;
 			}
-			$this->get_includes_list_add_includes(MODULES."/$module_name/includes", "components/modules/$module_name/includes", $includes, $absolute);
+			$this->get_includes_list_add_includes(MODULES."/$module_name/includes", $includes);
 		}
 		foreach ($Config->components['plugins'] as $plugin_name) {
-			$this->get_includes_list_add_includes(PLUGINS."/$plugin_name/includes", "components/plugins/$plugin_name/includes", $includes, $absolute);
+			$this->get_includes_list_add_includes(PLUGINS."/$plugin_name/includes", $includes);
 		}
-		return [
+		$includes = [
 			'html' => array_merge(...$includes['html']),
 			'js'   => array_merge(...$includes['js']),
 			'css'  => array_merge(...$includes['css'])
 		];
+		if (!$absolute) {
+			$includes = $this->absolute_path_to_relative($includes);
+		}
+		return $includes;
 	}
 	/**
 	 * @param string     $base_dir
-	 * @param string     $base_public_path
 	 * @param string[][] $includes
-	 * @param bool       $absolute
 	 */
-	protected function get_includes_list_add_includes ($base_dir, $base_public_path, &$includes, $absolute) {
-		$includes['html'][] = $this->get_includes_list_add_includes_internal($base_dir, $base_public_path, 'html', $absolute);
-		$includes['js'][]   = $this->get_includes_list_add_includes_internal($base_dir, $base_public_path, 'js', $absolute);
-		$includes['css'][]  = $this->get_includes_list_add_includes_internal($base_dir, $base_public_path, 'css', $absolute);
+	protected function get_includes_list_add_includes ($base_dir, &$includes) {
+		$includes['html'][] = $this->get_includes_list_add_includes_internal($base_dir, 'html');
+		$includes['js'][]   = $this->get_includes_list_add_includes_internal($base_dir, 'js');
+		$includes['css'][]  = $this->get_includes_list_add_includes_internal($base_dir, 'css');
 	}
 	/**
 	 * @param string $base_dir
-	 * @param string $base_public_path
 	 * @param string $ext
-	 * @param bool   $absolute
 	 *
 	 * @return array
 	 */
-	protected function get_includes_list_add_includes_internal ($base_dir, $base_public_path, $ext, $absolute) {
-		return get_files_list("$base_dir/$ext", "/.*\\.$ext\$/i", 'f', $absolute ? true : "$base_public_path/$ext", true, 'name', '!include') ?: [];
+	protected function get_includes_list_add_includes_internal ($base_dir, $ext) {
+		return get_files_list("$base_dir/$ext", "/.*\\.$ext\$/i", 'f', true, true, 'name', '!include') ?: [];
 	}
 	/**
 	 * Rebuilding of HTML, JS and CSS cache
@@ -793,7 +773,6 @@ trait Includes {
 				$o                        = preg_split('/[=<>]/', $o, 2)[0];
 				$dependencies[$package][] = $o;
 			}
-			unset($o);
 		}
 		if (isset($meta['provide'])) {
 			foreach ((array)$meta['provide'] as $p) {
@@ -811,7 +790,6 @@ trait Includes {
 					$functionalities[$p] = $package;
 				}
 			}
-			unset($p);
 		}
 	}
 	/**
