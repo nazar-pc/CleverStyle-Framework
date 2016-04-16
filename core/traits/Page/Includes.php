@@ -660,9 +660,9 @@ trait Includes {
 	protected function get_includes_list ($absolute = false) {
 		$theme_dir  = THEMES."/$this->theme";
 		$theme_pdir = "themes/$this->theme";
-		$get_files  = function ($dir, $prefix_path) {
+		$get_files  = function ($dir, $prefix_path) use ($absolute) {
 			$extension = basename($dir);
-			$list      = get_files_list($dir, "/.*\\.$extension$/i", 'f', $prefix_path, true, 'name', '!include') ?: [];
+			$list      = get_files_list($dir, "/.*\\.$extension$/i", 'f', $absolute ? true : $prefix_path, true, 'name', '!include') ?: [];
 			sort($list);
 			return $list;
 		};
@@ -671,10 +671,8 @@ trait Includes {
 		 */
 		$includes = [];
 		foreach (['html', 'js', 'css'] as $type) {
-			$includes[$type] = array_merge(
-				$get_files(DIR."/includes/$type", $absolute ? true : "includes/$type"),
-				$get_files("$theme_dir/$type", $absolute ? true : "$theme_pdir/$type")
-			);
+			$includes[$type][] = $get_files(DIR."/includes/$type", "includes/$type");
+			$includes[$type][] = $get_files("$theme_dir/$type", "$theme_pdir/$type");
 		}
 		unset($theme_dir, $theme_pdir);
 		$Config = Config::instance();
@@ -683,23 +681,19 @@ trait Includes {
 				continue;
 			}
 			foreach (['html', 'js', 'css'] as $type) {
-				/** @noinspection SlowArrayOperationsInLoopInspection */
-				$includes[$type] = array_merge(
-					$includes[$type],
-					$get_files(MODULES."/$module_name/includes/$type", $absolute ? true : "components/modules/$module_name/includes/$type")
-				);
+				$includes[$type][] = $get_files(MODULES."/$module_name/includes/$type", "components/modules/$module_name/includes/$type");
 			}
 		}
 		foreach ($Config->components['plugins'] as $plugin_name) {
 			foreach (['html', 'js', 'css'] as $type) {
-				/** @noinspection SlowArrayOperationsInLoopInspection */
-				$includes[$type] = array_merge(
-					$includes[$type],
-					$get_files(PLUGINS."/$plugin_name/includes/$type", $absolute ? true : "components/plugins/$plugin_name/includes/$type")
-				);
+				$includes[$type][] = $get_files(PLUGINS."/$plugin_name/includes/$type", "components/plugins/$plugin_name/includes/$type");
 			}
 		}
-		return $includes;
+		return [
+			'html' => array_merge(...$includes['html']),
+			'js'   => array_merge(...$includes['js']),
+			'css'  => array_merge(...$includes['css'])
+		];
 	}
 	/**
 	 * Rebuilding of HTML, JS and CSS cache
