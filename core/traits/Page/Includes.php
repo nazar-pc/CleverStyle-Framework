@@ -700,7 +700,7 @@ trait Includes {
 	 * @return array
 	 */
 	protected function get_includes_list_add_includes_internal ($base_dir, $base_public_path, $ext, $absolute) {
-		return get_files_list("$base_dir/$ext", '/.*\\.$ext\$/i', 'f', $absolute ? true : "$base_public_path/$ext", true, 'name', '!include') ?: [];
+		return get_files_list("$base_dir/$ext", "/.*\\.$ext\$/i", 'f', $absolute ? true : "$base_public_path/$ext", true, 'name', '!include') ?: [];
 	}
 	/**
 	 * Rebuilding of HTML, JS and CSS cache
