@@ -658,32 +658,49 @@ trait Includes {
 	 * @return string[][]
 	 */
 	protected function get_includes_list ($absolute = false) {
-		$includes     = [];
-		$add_includes = function ($dir, $public_path) use (&$includes, $absolute) {
-			$includes['html'][] = get_files_list("$dir/html", "/.*\\.html$/i", 'f', $absolute ? true : "$public_path/html", true, 'name', '!include') ?: [];
-			$includes['js'][]   = get_files_list("$dir/js", "/.*\\.js$/i", 'f', $absolute ? true : "$public_path/js", true, 'name', '!include') ?: [];
-			$includes['css'][]  = get_files_list("$dir/css", '/.*\\.css$/i', 'f', $absolute ? true : "$public_path/css", true, 'name', '!include') ?: [];
-		};
+		$includes = [];
 		/**
 		 * Get includes of system and theme
 		 */
-		$add_includes(DIR.'/includes', 'includes');
-		$add_includes(THEMES."/$this->theme", "themes/$this->theme");
+		$this->get_includes_list_add_includes(DIR.'/includes', 'includes', $includes, $absolute);
+		$this->get_includes_list_add_includes(THEMES."/$this->theme", "themes/$this->theme", $includes, $absolute);
 		$Config = Config::instance();
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
 			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
 				continue;
 			}
-			$add_includes(MODULES."/$module_name/includes", "components/modules/$module_name/includes");
+			$this->get_includes_list_add_includes(MODULES."/$module_name/includes", "components/modules/$module_name/includes", $includes, $absolute);
 		}
 		foreach ($Config->components['plugins'] as $plugin_name) {
-			$add_includes(PLUGINS."/$plugin_name/includes", "components/plugins/$plugin_name/includes");
+			$this->get_includes_list_add_includes(PLUGINS."/$plugin_name/includes", "components/plugins/$plugin_name/includes", $includes, $absolute);
 		}
 		return [
 			'html' => array_merge(...$includes['html']),
 			'js'   => array_merge(...$includes['js']),
 			'css'  => array_merge(...$includes['css'])
 		];
+	}
+	/**
+	 * @param string     $base_dir
+	 * @param string     $base_public_path
+	 * @param string[][] $includes
+	 * @param bool       $absolute
+	 */
+	protected function get_includes_list_add_includes ($base_dir, $base_public_path, &$includes, $absolute) {
+		$includes['html'][] = $this->get_includes_list_add_includes_internal($base_dir, $base_public_path, 'html', $absolute);
+		$includes['js'][]   = $this->get_includes_list_add_includes_internal($base_dir, $base_public_path, 'js', $absolute);
+		$includes['css'][]  = $this->get_includes_list_add_includes_internal($base_dir, $base_public_path, 'css', $absolute);
+	}
+	/**
+	 * @param string $base_dir
+	 * @param string $base_public_path
+	 * @param string $ext
+	 * @param bool   $absolute
+	 *
+	 * @return array
+	 */
+	protected function get_includes_list_add_includes_internal ($base_dir, $base_public_path, $ext, $absolute) {
+		return get_files_list("$base_dir/$ext", '/.*\\.$ext\$/i', 'f', $absolute ? true : "$base_public_path/$ext", true, 'name', '!include') ?: [];
 	}
 	/**
 	 * Rebuilding of HTML, JS and CSS cache
