@@ -15,17 +15,8 @@ trait RequireJS {
 	 * @return string[]
 	 */
 	protected function get_requirejs_paths () {
-		$Config = Config::instance();
-		$paths  = [];
-		foreach ($Config->components['modules'] as $module_name => $module_data) {
-			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
-				continue;
-			}
-			$this->get_requirejs_paths_add_aliases(MODULES."/$module_name", $paths);
-		}
-		foreach ($Config->components['plugins'] as $plugin_name) {
-			$this->get_requirejs_paths_add_aliases(PLUGINS."/$plugin_name", $paths);
-		}
+		$Config                = Config::instance();
+		$paths                 = [];
 		$directories_to_browse = [
 			DIR.'/bower_components',
 			DIR.'/node_modules'
@@ -37,37 +28,48 @@ trait RequireJS {
 				'directories_to_browse' => &$directories_to_browse
 			]
 		);
+		foreach ($Config->components['modules'] as $module_name => $module_data) {
+			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
+				continue;
+			}
+			$paths += $this->get_requirejs_paths_add_aliases(MODULES."/$module_name");
+		}
+		foreach ($Config->components['plugins'] as $plugin_name) {
+			$paths += $this->get_requirejs_paths_add_aliases(PLUGINS."/$plugin_name");
+		}
 		foreach ($directories_to_browse as $dir) {
 			foreach (get_files_list($dir, false, 'd', true) as $d) {
-				$this->get_requirejs_paths_find_package($d, $paths);
+				$paths += $this->get_requirejs_paths_find_package($d);
 			}
 		}
-		return $paths;
+		return $this->absolute_path_to_relative($paths);
 	}
 	/**
-	 * @param string   $dir
-	 * @param string[] $paths
+	 * @param string $dir
+	 *
+	 * @return string[]
 	 */
-	protected function get_requirejs_paths_add_aliases ($dir, &$paths) {
+	protected function get_requirejs_paths_add_aliases ($dir) {
+		$paths = [];
 		if (is_dir("$dir/includes/js")) {
 			$name         = basename($dir);
-			$paths[$name] = $this->absolute_path_to_relative("$dir/includes/js");
+			$paths[$name] = "$dir/includes/js";
 			foreach ((array)@file_get_json("$dir/meta.json")['provide'] as $p) {
 				if (strpos($p, '/') !== false) {
 					$paths[$p] = $paths[$name];
 				}
 			}
 		}
+		return $paths;
 	}
 	/**
-	 * @param string   $dir
-	 * @param string[] $paths
+	 * @param string $dir
+	 *
+	 * @return string[]
 	 */
-	protected function get_requirejs_paths_find_package ($dir, &$paths) {
+	protected function get_requirejs_paths_find_package ($dir) {
 		$path = $this->get_requirejs_paths_find_package_bower($dir) ?: $this->get_requirejs_paths_find_package_npm($dir);
-		if ($path) {
-			$paths[basename($dir)] = $this->absolute_path_to_relative(substr($path, 0, -3));
-		}
+		return $path ? [basename($dir) => substr($path, 0, -3)] : [];
 	}
 	/**
 	 * @param string $dir

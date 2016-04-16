@@ -294,12 +294,12 @@ trait Includes {
 		return $this;
 	}
 	/**
-	 * @param string|string[] $path
+	 * @param string[] $path
 	 *
-	 * @return string|string[]
+	 * @return string[]
 	 */
 	protected function absolute_path_to_relative ($path) {
-		return strpos($path, DIR.'/') === 0 ? substr($path, strlen(DIR) + 1) : $path;
+		return _substr($path, strlen(DIR) + 1);
 	}
 	/**
 	 * Add JS polyfills for IE/Edge
