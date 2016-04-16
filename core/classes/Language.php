@@ -7,7 +7,8 @@
  */
 namespace cs;
 use
-	JsonSerializable;
+	JsonSerializable,
+	cs\Language\Prefix;
 
 /**
  * Provides next events:
@@ -118,6 +119,16 @@ class Language implements JsonSerializable {
 			$language = $Config->core['language'];
 		}
 		$this->change($language ?: '');
+	}
+	/**
+	 * Returns instance for simplified work with translations, when using common prefix
+	 *
+	 * @param string $prefix
+	 *
+	 * @return Prefix
+	 */
+	static function prefix ($prefix) {
+		return new Prefix($prefix);
 	}
 	/**
 	 * Does URL have language prefix

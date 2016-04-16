@@ -20,7 +20,7 @@ class BlackHole extends _Abstract {
 	 * @inheritdoc
 	 */
 	function set ($item, $data) {
-		return false;
+		return true;
 	}
 	/**
 	 * @inheritdoc

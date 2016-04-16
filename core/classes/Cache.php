@@ -6,6 +6,8 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
+use
+	cs\Cache\Prefix;
 
 /**
  * @method static $this instance($check = false)
@@ -14,9 +16,10 @@ class Cache {
 	use Singleton;
 	/**
 	 * Cache state
-	 * @var
+	 *
+	 * @var bool
 	 */
-	protected $state;
+	protected $state = true;
 	/**
 	 * Initialization state
 	 * @var bool
@@ -37,12 +40,21 @@ class Cache {
 	 * Initialization, creating cache engine instance
 	 */
 	protected function construct () {
-		$this->state = !DEBUG;
 		if (!$this->init && $this->state) {
 			$this->engine          = Core::instance()->cache_engine;
 			$engine_class          = "cs\\Cache\\$this->engine";
 			$this->engine_instance = new $engine_class();
 		}
+	}
+	/**
+	 * Returns instance for simplified work with cache, when using common prefix
+	 *
+	 * @param string $prefix
+	 *
+	 * @return Prefix
+	 */
+	static function prefix ($prefix) {
+		return new Prefix($prefix);
 	}
 	/**
 	 * Get item from cache

@@ -9,7 +9,7 @@ namespace cs\Language;
 use
 	cs\Language;
 /**
- * Class for simplified work with languages, when using common prefix
+ * Class for simplified work with translations, when using common prefix
  */
 class Prefix {
 	/**
