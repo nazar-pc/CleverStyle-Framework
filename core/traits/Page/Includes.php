@@ -655,39 +655,31 @@ trait Includes {
 	 *
 	 * @param bool $absolute If <i>true</i> - absolute paths to files will be returned
 	 *
-	 * @return array
+	 * @return string[][]
 	 */
 	protected function get_includes_list ($absolute = false) {
-		$theme_dir  = THEMES."/$this->theme";
-		$theme_pdir = "themes/$this->theme";
-		$get_files  = function ($dir, $prefix_path) use ($absolute) {
-			$extension = basename($dir);
-			$list      = get_files_list($dir, "/.*\\.$extension$/i", 'f', $absolute ? true : $prefix_path, true, 'name', '!include') ?: [];
-			sort($list);
-			return $list;
+		$includes     = [];
+		$add_includes = function ($dir, $public_path) use (&$includes, $absolute) {
+			foreach (['html', 'js', 'css'] as $extension) {
+				$list = get_files_list("$dir/$extension", "/.*\\.$extension$/i", 'f', $absolute ? true : "$public_path/$extension", true, 'name', '!include') ?: [];
+				sort($list);
+				$includes[$extension][] = $list;
+			}
 		};
 		/**
 		 * Get includes of system and theme
 		 */
-		$includes = [];
-		foreach (['html', 'js', 'css'] as $type) {
-			$includes[$type][] = $get_files(DIR."/includes/$type", "includes/$type");
-			$includes[$type][] = $get_files("$theme_dir/$type", "$theme_pdir/$type");
-		}
-		unset($theme_dir, $theme_pdir);
+		$add_includes(DIR.'/includes', 'includes');
+		$add_includes(THEMES."/$this->theme", "themes/$this->theme");
 		$Config = Config::instance();
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
 			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
 				continue;
 			}
-			foreach (['html', 'js', 'css'] as $type) {
-				$includes[$type][] = $get_files(MODULES."/$module_name/includes/$type", "components/modules/$module_name/includes/$type");
-			}
+			$add_includes(MODULES."/$module_name/includes", "components/modules/$module_name/includes");
 		}
 		foreach ($Config->components['plugins'] as $plugin_name) {
-			foreach (['html', 'js', 'css'] as $type) {
-				$includes[$type][] = $get_files(PLUGINS."/$plugin_name/includes/$type", "components/plugins/$plugin_name/includes/$type");
-			}
+			$add_includes(PLUGINS."/$plugin_name/includes", "components/plugins/$plugin_name/includes");
 		}
 		return [
 			'html' => array_merge(...$includes['html']),
