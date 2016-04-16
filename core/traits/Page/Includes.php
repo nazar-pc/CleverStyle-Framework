@@ -660,11 +660,9 @@ trait Includes {
 	protected function get_includes_list ($absolute = false) {
 		$includes     = [];
 		$add_includes = function ($dir, $public_path) use (&$includes, $absolute) {
-			foreach (['html', 'js', 'css'] as $extension) {
-				$list = get_files_list("$dir/$extension", "/.*\\.$extension$/i", 'f', $absolute ? true : "$public_path/$extension", true, 'name', '!include') ?: [];
-				sort($list);
-				$includes[$extension][] = $list;
-			}
+			$includes['html'][] = get_files_list("$dir/html", "/.*\\.html$/i", 'f', $absolute ? true : "$public_path/html", true, 'name', '!include') ?: [];
+			$includes['js'][]   = get_files_list("$dir/js", "/.*\\.js$/i", 'f', $absolute ? true : "$public_path/js", true, 'name', '!include') ?: [];
+			$includes['css'][]  = get_files_list("$dir/css", '/.*\\.css$/i', 'f', $absolute ? true : "$public_path/css", true, 'name', '!include') ?: [];
 		};
 		/**
 		 * Get includes of system and theme
