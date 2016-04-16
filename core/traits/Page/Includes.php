@@ -476,7 +476,7 @@ trait Includes {
 			);
 	}
 	protected function add_versions_hash ($includes) {
-		$content = array_map('file_get_contents', get_files_list(DIR.'/components', '/meta\.json/', 'f', true, true));
+		$content = array_map('file_get_contents', get_files_list(DIR.'/components', '/^meta\.json$/', 'f', true, true));
 		$content = implode('', $content);
 		$hash    = substr(md5($content), 0, 5);
 		foreach ($includes as &$files) {
