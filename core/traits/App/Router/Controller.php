@@ -119,20 +119,19 @@ trait Controller {
 	 * @return string[]
 	 */
 	protected function controller_router_available_methods_to_flat_structure ($structure, $prefix = '') {
-		$flat_structure = [];
+		/**
+		 * Hack: first key in order to avoid warning when `$flat_structure` is empty at `return`
+		 */
+		$flat_structure = [[]];
 		foreach ($structure as $path => $nested_structure) {
 			if (!is_array($nested_structure)) {
 				$path             = $nested_structure;
 				$nested_structure = [];
 			}
-			$flat_structure[] = $prefix.$path;
-			/** @noinspection SlowArrayOperationsInLoopInspection */
-			$flat_structure = array_merge(
-				$flat_structure,
-				$this->controller_router_available_methods_to_flat_structure($nested_structure, $prefix.$path.'_')
-			);
+			$flat_structure[] = [$prefix.$path];
+			$flat_structure[] = $this->controller_router_available_methods_to_flat_structure($nested_structure, $prefix.$path.'_');
 		}
-		return $flat_structure;
+		return array_merge(...$flat_structure);
 	}
 	/**
 	 * @param string      $controller_class
