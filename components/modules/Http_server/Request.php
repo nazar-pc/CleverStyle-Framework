@@ -22,8 +22,6 @@ class Request {
 	 * @param \React\Http\Response $response
 	 * @param float                $request_started
 	 * @param string               $data
-	 *
-	 * @throws ExitException
 	 */
 	static function process ($request, $response, $request_started, $data) {
 		static::fill_superglobals(
@@ -38,7 +36,7 @@ class Request {
 				}
 			}
 		} catch (\Exception $e) {
-			// Handle generic exceptions to avoid server from stopping
+			trigger_error($e->getMessage(), E_USER_WARNING);
 		}
 		$Response = System_response::instance();
 		/**
@@ -109,8 +107,6 @@ class Request {
 	}
 	/**
 	 * @param array $SUPERGLOBALS
-	 *
-	 * @throws ExitException
 	 */
 	protected static function fill_superglobals ($SUPERGLOBALS) {
 		// Hack: Filling $_SERVER is primarily needed for HybridAuth (many hard dependencies on `$_SERVER`)
