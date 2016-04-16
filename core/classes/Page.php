@@ -14,6 +14,24 @@ use function
 	cli\err;
 
 /**
+ * Provides next events:
+ *  System/Page/includes_dependencies_and_map
+ *  [
+ *    'dependencies' => &$dependencies,
+ *    'includes_map' => &$includes_map
+ *  ]
+ *
+ *  System/Page/rebuild_cache
+ *  [
+ *    'key' => &$key //Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
+ *  ]
+ *
+ *  System/Page/requirejs
+ *  [
+ *    'paths'                 => &$paths,                // The same as `paths` in requirejs.config()
+ *    'directories_to_browse' => &$directories_to_browse // Where to look for AMD modules (typically bower_components and node_modules directories)
+ *  ]
+ *
  * @method static $this instance($check = false)
  */
 class Page {

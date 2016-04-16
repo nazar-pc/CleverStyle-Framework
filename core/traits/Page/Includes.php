@@ -14,27 +14,10 @@ use
 	cs\Language,
 	cs\Request,
 	cs\User,
-	h;
+	h,
+	cs\Page\Includes\RequireJS;
 
 /**
- * Provides next events:
- *  System/Page/includes_dependencies_and_map
- *  [
- *    'dependencies' => &$dependencies,
- *    'includes_map' => &$includes_map
- *  ]
- *
- *  System/Page/rebuild_cache
- *  [
- *    'key' => &$key //Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
- *  ]
- *
- *  System/Page/requirejs
- *  [
- *    'paths'                 => &$paths,                // The same as `paths` in requirejs.config()
- *    'directories_to_browse' => &$directories_to_browse // Where to look for AMD modules (typically bower_components and node_modules directories)
- *  ]
- *
  * Includes management for `cs\Page` class
  *
  * @property string $Title
@@ -45,6 +28,8 @@ use
  * @property string $theme
  */
 trait Includes {
+	use
+		RequireJS;
 	/**
 	 * @var array[]
 	 */
@@ -309,100 +294,6 @@ trait Includes {
 		return $this;
 	}
 	/**
-	 * @return string[]
-	 */
-	protected function get_requirejs_paths () {
-		$Config = Config::instance();
-		$paths  = [];
-		foreach ($Config->components['modules'] as $module_name => $module_data) {
-			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
-				continue;
-			}
-			$this->get_requirejs_paths_add_aliases(MODULES."/$module_name", $paths);
-		}
-		foreach ($Config->components['plugins'] as $plugin_name) {
-			$this->get_requirejs_paths_add_aliases(PLUGINS."/$plugin_name", $paths);
-		}
-		$directories_to_browse = [
-			DIR.'/bower_components',
-			DIR.'/node_modules'
-		];
-		Event::instance()->fire(
-			'System/Page/requirejs',
-			[
-				'paths'                 => &$paths,
-				'directories_to_browse' => &$directories_to_browse
-			]
-		);
-		foreach ($directories_to_browse as $dir) {
-			foreach (get_files_list($dir, false, 'd', true) as $d) {
-				$this->get_requirejs_paths_find_package($d, $paths);
-			}
-		}
-		return $paths;
-	}
-	/**
-	 * @param string   $dir
-	 * @param string[] $paths
-	 */
-	protected function get_requirejs_paths_add_aliases ($dir, &$paths) {
-		if (is_dir("$dir/includes/js")) {
-			$name         = basename($dir);
-			$paths[$name] = $this->absolute_path_to_relative("$dir/includes/js");
-			foreach ((array)@file_get_json("$dir/meta.json")['provide'] as $p) {
-				if (strpos($p, '/') !== false) {
-					$paths[$p] = $paths[$name];
-				}
-			}
-		}
-	}
-	/**
-	 * @param string   $dir
-	 * @param string[] $paths
-	 */
-	protected function get_requirejs_paths_find_package ($dir, &$paths) {
-		$path = $this->get_requirejs_paths_find_package_bower($dir) ?: $this->get_requirejs_paths_find_package_npm($dir);
-		if ($path) {
-			$paths[basename($dir)] = $this->absolute_path_to_relative(substr($path, 0, -3));
-		}
-	}
-	/**
-	 * @param string $dir
-	 *
-	 * @return string
-	 */
-	protected function get_requirejs_paths_find_package_bower ($dir) {
-		$bower = @file_get_json("$dir/bower.json");
-		foreach (@(array)$bower['main'] as $main) {
-			if (preg_match('/\.js$/', $main)) {
-				$main = substr($main, 0, -3);
-				// There is a chance that minified file is present
-				$main = file_exists_with_extension("$dir/$main", ['min.js', 'js']);
-				if ($main) {
-					return $main;
-				}
-			}
-		}
-		return null;
-	}
-	/**
-	 * @param string $dir
-	 *
-	 * @return false|string
-	 */
-	protected function get_requirejs_paths_find_package_npm ($dir) {
-		$package = @file_get_json("$dir/package.json");
-		// If we have browser-specific declaration - use it
-		$main = @$package['browser'] ?: (@$package['jspm']['main'] ?: @$package['main']);
-		if (preg_match('/\.js$/', $main)) {
-			$main = substr($main, 0, -3);
-		}
-		if ($main) {
-			// There is a chance that minified file is present
-			return file_exists_with_extension("$dir/$main", ['min.js', 'js']) ?: file_exists_with_extension("$dir/dist/$main", ['min.js', 'js']);
-		}
-	}
-	/**
 	 * Since modules, plugins and storage directories can be (at least theoretically) moved from default location - let's do proper path conversion
 	 *
 	 * @param string|string[] $path
@@ -425,6 +316,9 @@ trait Includes {
 		if (strpos($path, STORAGE) === 0) {
 			return 'storage'.substr($path, strlen(STORAGE));
 		}
+		if (strpos($path, THEMES) === 0) {
+			return 'themes'.substr($path, strlen(THEMES));
+		}
 		return substr($path, strlen(DIR) + 1);
 	}
 	/**
@@ -441,8 +335,6 @@ trait Includes {
 	}
 	/**
 	 * Hack: Add WebComponents Polyfill for browsers without native Shadow DOM support
-	 *
-	 * TODO: Probably, some effective User Agent-based check might be used here
 	 *
 	 * @param Request $Request
 	 * @param bool    $with_compression
