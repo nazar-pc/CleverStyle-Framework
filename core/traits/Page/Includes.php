@@ -70,17 +70,17 @@ trait Includes {
 	 * Base name is used as prefix when creating CSS/JS/HTML cache files in order to avoid collisions when having several themes and languages
 	 * @var string
 	 */
-	protected $pcache_basename;
+	protected $pcache_basename_path;
 	protected function init_includes () {
-		$this->core_html       = ['path' => [], 'plain' => ''];
-		$this->core_js         = ['path' => [], 'plain' => ''];
-		$this->core_css        = ['path' => [], 'plain' => ''];
-		$this->core_config     = '';
-		$this->html            = ['path' => [], 'plain' => ''];
-		$this->js              = ['path' => [], 'plain' => ''];
-		$this->css             = ['path' => [], 'plain' => ''];
-		$this->config          = '';
-		$this->pcache_basename = '';
+		$this->core_html            = ['path' => [], 'plain' => ''];
+		$this->core_js              = ['path' => [], 'plain' => ''];
+		$this->core_css             = ['path' => [], 'plain' => ''];
+		$this->core_config          = '';
+		$this->html                 = ['path' => [], 'plain' => ''];
+		$this->js                   = ['path' => [], 'plain' => ''];
+		$this->css                  = ['path' => [], 'plain' => ''];
+		$this->config               = '';
+		$this->pcache_basename_path = '';
 	}
 	/**
 	 * Including of Web Components
@@ -222,7 +222,7 @@ trait Includes {
 		/**
 		 * Base name for cache files
 		 */
-		$this->pcache_basename = $this->theme.'_'.Language::instance()->clang;
+		$this->pcache_basename_path = PUBLIC_CACHE.'/'.$this->theme.'_'.Language::instance()->clang;
 		/**
 		 * Some JS configs required by system
 		 */
@@ -334,22 +334,23 @@ trait Includes {
 		/**
 		 * Rebuilding HTML, JS and CSS cache if necessary
 		 */
-		if (!file_exists(PUBLIC_CACHE."/$this->pcache_basename.json")) {
+		if (!file_exists("$this->pcache_basename_path.json")) {
 			list($dependencies, $includes_map) = $this->get_includes_dependencies_and_map($Config);
 			$compressed_includes_map = [];
 			foreach ($includes_map as $filename_prefix => $local_includes) {
 				// We replace `/` by `+` to make it suitable for filename
 				$filename_prefix                           = str_replace('/', '+', $filename_prefix);
 				$compressed_includes_map[$filename_prefix] = $this->cache_compressed_includes_files(
-					"$this->pcache_basename:$filename_prefix",
-					$local_includes
+					"$this->pcache_basename_path:$filename_prefix",
+					$local_includes,
+					$Config->core['vulcanization']
 				);
 			}
 			unset($includes_map, $filename_prefix, $local_includes);
-			file_put_json(PUBLIC_CACHE."/$this->pcache_basename.json", [$dependencies, $compressed_includes_map]);
+			file_put_json("$this->pcache_basename_path.json", [$dependencies, $compressed_includes_map]);
 			Event::instance()->fire('System/Page/rebuild_cache');
 		}
-		list($dependencies, $compressed_includes_map) = file_get_json(PUBLIC_CACHE."/$this->pcache_basename.json");
+		list($dependencies, $compressed_includes_map) = file_get_json("$this->pcache_basename_path.json");
 		return $this->get_normalized_includes($dependencies, $compressed_includes_map, '+');
 	}
 	/**
@@ -424,12 +425,16 @@ trait Includes {
 	 * @return string[][]
 	 */
 	protected function add_versions_hash ($includes) {
-		$content = array_map('file_get_contents', get_files_list(DIR.'/components', '/^meta\.json$/', 'f', true, true));
-		$content = implode('', $content);
-		$hash    = substr(md5($content), 0, 5);
+		$content     = array_reduce(
+			get_files_list(DIR.'/components', '/^meta\.json$/', 'f', true, true),
+			function ($content, $file) {
+				return $content.file_get_contents($file);
+			}
+		);
+		$content_md5 = substr(md5($content), 0, 5);
 		foreach ($includes as &$files) {
 			foreach ($files as &$file) {
-				$file .= "?$hash";
+				$file .= "?$content_md5";
 			}
 			unset($file);
 		}

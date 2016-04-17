@@ -92,6 +92,7 @@ class Assets_processing {
 HTACCESS
 			);
 		}
+		$vulcanization = Config::instance()->core['vulcanization'];
 		foreach ($files as $file) {
 			$file = "$package_dir/$file";
 			switch (file_extension($file)) {
@@ -99,33 +100,19 @@ HTACCESS
 					$content['js'][] = file_get_contents($file);
 					break;
 				case 'css':
-					$content['css'][] = Includes_processing::css(
-						file_get_contents($file),
-						$file
-					);
+					$content['css'][] = Includes_processing::css(file_get_contents($file), $file);
 					break;
 				case 'html':
-					$content['html'][] = Includes_processing::html(
-						file_get_contents($file),
-						$file,
-						$package_name,
-						$target_dir
-					);
+					$content['html'][] = Includes_processing::html(file_get_contents($file), $file, "$target_dir/$package_name", $vulcanization);
 					break;
 				case 'less':
 					try {
-						$content['css'][] = Includes_processing::css(
-							(new Less_Parser)->parseFile($file)->getCss(),
-							$file
-						);
+						$content['css'][] = Includes_processing::css((new Less_Parser)->parseFile($file)->getCss(), $file);
 					} catch (Exception $e) {
 					}
 					break;
 				case 'scss':
-					$content['css'][] = Includes_processing::css(
-						(new Scss_compiler)->compile(file_get_contents($file)),
-						$file
-					);
+					$content['css'][] = Includes_processing::css((new Scss_compiler)->compile(file_get_contents($file)), $file);
 					break;
 			}
 		}

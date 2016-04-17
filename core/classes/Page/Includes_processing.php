@@ -202,16 +202,16 @@ class Includes_processing {
 	 * Analyses file for scripts and styles, combines them into resulting files in order to optimize loading process
 	 * (files with combined scripts and styles will be created)
 	 *
-	 * @param string      $data          Content of processed file
-	 * @param string      $file          Path to file, that includes specified in previous parameter content
-	 * @param string      $base_filename Base filename for resulting combined files
-	 * @param bool|string $destination   Directory where to put combined files or <i>false</i> to make includes built-in (vulcanization)
+	 * @param string $data                  Content of processed file
+	 * @param string $file                  Path to file, that includes specified in previous parameter content
+	 * @param string $base_target_file_path Base filename for resulting combined files
+	 * @param bool   $vulcanization         Whether to put combined files separately or to make includes built-in (vulcanization)
 	 *
 	 * @return string    $data
 	 */
-	static function html ($data, $file, $base_filename, $destination) {
-		static::html_process_scripts($data, $file, $base_filename, $destination);
-		static::html_process_links_and_styles($data, $file, $base_filename, $destination);
+	static function html ($data, $file, $base_target_file_path, $vulcanization) {
+		static::html_process_scripts($data, $file, $base_target_file_path, $vulcanization);
+		static::html_process_links_and_styles($data, $file, $base_target_file_path, $vulcanization);
 		// Removing HTML comments (those that are mostly likely comments, to avoid problems)
 		$data = preg_replace_callback(
 			'/^\s*<!--([^>-].*[^-])?-->/Ums',
@@ -223,14 +223,14 @@ class Includes_processing {
 		return preg_replace("/\n+/", "\n", $data);
 	}
 	/**
-	 * @param string      $data          Content of processed file
-	 * @param string      $file          Path to file, that includes specified in previous parameter content
-	 * @param string      $base_filename Base filename for resulting combined files
-	 * @param bool|string $destination   Directory where to put combined files or <i>false</i> to make includes built-in (vulcanization)
+	 * @param string $data                  Content of processed file
+	 * @param string $file                  Path to file, that includes specified in previous parameter content
+	 * @param string $base_target_file_path Base filename for resulting combined files
+	 * @param bool   $vulcanization         Whether to put combined files separately or to make includes built-in (vulcanization)
 	 *
 	 * @return string
 	 */
-	protected static function html_process_scripts (&$data, $file, $base_filename, $destination) {
+	protected static function html_process_scripts (&$data, $file, $base_target_file_path, $vulcanization) {
 		if (!preg_match_all('/<script(.*)<\/script>/Uims', $data, $scripts)) {
 			return;
 		}
@@ -257,20 +257,21 @@ class Includes_processing {
 		/**
 		 * If there is destination - put contents into the file, and put link to it, otherwise put minified content back
 		 */
-		if ($destination) {
+		if (!$vulcanization) {
 			/**
 			 * md5 to distinguish modifications of the files
 			 */
 			$content_md5 = substr(md5($scripts_content), 0, 5);
 			file_put_contents(
-				"$destination/$base_filename.js",
+				"$base_target_file_path.js",
 				gzencode($scripts_content, 9),
 				LOCK_EX | FILE_BINARY
 			);
+			$base_target_file_name = basename($base_target_file_path);
 			// Replace first script with combined file
 			$data = str_replace(
 				$scripts_to_replace[0],
-				"<script src=\"$base_filename.js?$content_md5\"></script>",
+				"<script src=\"$base_target_file_name.js?$content_md5\"></script>",
 				$data
 			);
 		} else {
@@ -285,14 +286,14 @@ class Includes_processing {
 		$data = str_replace($scripts_to_replace, '', $data);
 	}
 	/**
-	 * @param string      $data          Content of processed file
-	 * @param string      $file          Path to file, that includes specified in previous parameter content
-	 * @param string      $base_filename Base filename for resulting combined files
-	 * @param bool|string $destination   Directory where to put combined files or <i>false</i> to make includes built-in (vulcanization)
+	 * @param string $data                  Content of processed file
+	 * @param string $file                  Path to file, that includes specified in previous parameter content
+	 * @param string $base_target_file_path Base filename for resulting combined files
+	 * @param bool   $vulcanization         Whether to put combined files separately or to make includes built-in (vulcanization)
 	 *
 	 * @return string
 	 */
-	protected static function html_process_links_and_styles (&$data, $file, $base_filename, $destination) {
+	protected static function html_process_links_and_styles (&$data, $file, $base_target_file_path, $vulcanization) {
 		// Drop Polymer inclusion, since it is already present
 		$data = str_replace('<link rel="import" href="../polymer/polymer.html">', '', $data);
 		if (!preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles)) {
@@ -345,8 +346,8 @@ class Includes_processing {
 				$imports_content .= static::html(
 					file_get_contents("$dir/$url"),
 					"$dir/$url",
-					"$base_filename-".basename($url, '.html'),
-					$destination
+					"$base_target_file_path-".basename($url, '.html'),
+					$vulcanization
 				);
 			}
 		}
@@ -356,20 +357,21 @@ class Includes_processing {
 		/**
 		 * If there is destination - put contents into the file, and put link to it, otherwise put minified content back
 		 */
-		if ($destination) {
+		if (!$vulcanization) {
 			/**
 			 * md5 to distinguish modifications of the files
 			 */
 			$content_md5 = substr(md5($styles_content), 0, 5);
 			file_put_contents(
-				"$destination/$base_filename.css",
+				"$base_target_file_path.css",
 				gzencode($styles_content, 9),
 				LOCK_EX | FILE_BINARY
 			);
+			$base_target_file_name = basename($base_target_file_path);
 			// Replace first link or style with combined file
 			$data = str_replace(
 				$links_and_styles_to_replace[0],
-				"<link rel=\"import\" type=\"css\" href=\"$base_filename.css?$content_md5\">",
+				"<link rel=\"import\" type=\"css\" href=\"$base_target_file_name.css?$content_md5\">",
 				$data
 			);
 		} else {
