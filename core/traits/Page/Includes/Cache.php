@@ -7,7 +7,6 @@
  */
 namespace cs\Page\Includes;
 use
-	cs\Config,
 	cs\Language,
 	cs\Page\Includes_processing;
 
