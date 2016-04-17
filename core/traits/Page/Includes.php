@@ -15,6 +15,8 @@ use
 	cs\Request,
 	cs\User,
 	h,
+	cs\Page\Includes\Cache,
+	cs\Page\Includes\Collecting,
 	cs\Page\Includes\RequireJS;
 
 /**
@@ -29,6 +31,8 @@ use
  */
 trait Includes {
 	use
+		Cache,
+		Collecting,
 		RequireJS;
 	/**
 	 * @var array
@@ -231,7 +235,7 @@ trait Includes {
 		 */
 		if ($Config->core['cache_compress_js_css'] && !($Request->admin_path && isset($Request->query['debug']))) {
 			$this->webcomponents_polyfill($Request, true);
-			$includes = $this->get_includes_for_page_with_compression();
+			$includes = $this->get_includes_for_page_with_compression($Config);
 		} else {
 			$this->webcomponents_polyfill($Request, false);
 			/**
@@ -322,19 +326,24 @@ trait Includes {
 		}
 	}
 	/**
+	 * @param Config $Config
+	 *
 	 * @return string[][]
 	 */
-	protected function get_includes_for_page_with_compression () {
+	protected function get_includes_for_page_with_compression ($Config) {
 		/**
 		 * Rebuilding HTML, JS and CSS cache if necessary
 		 */
 		if (!file_exists(PUBLIC_CACHE."/$this->pcache_basename.json")) {
-			list($dependencies, $includes_map) = $this->includes_dependencies_and_map();
+			list($dependencies, $includes_map) = $this->get_includes_dependencies_and_map($Config);
 			$compressed_includes_map = [];
 			foreach ($includes_map as $filename_prefix => $local_includes) {
 				// We replace `/` by `+` to make it suitable for filename
 				$filename_prefix                           = str_replace('/', '+', $filename_prefix);
-				$compressed_includes_map[$filename_prefix] = $this->create_cached_includes_files($filename_prefix, $local_includes);
+				$compressed_includes_map[$filename_prefix] = $this->cache_compressed_includes_files(
+					"$this->pcache_basename:$filename_prefix",
+					$local_includes
+				);
 			}
 			unset($includes_map, $filename_prefix, $local_includes);
 			file_put_json(PUBLIC_CACHE."/$this->pcache_basename.json", [$dependencies, $compressed_includes_map]);
@@ -371,7 +380,7 @@ trait Includes {
 		foreach ($includes_map as $path => $local_includes) {
 			if ($path == 'System') {
 				$system_includes = $local_includes;
-			} elseif ($this->get_includes_is_dependency($dependencies, $path, '/')) {
+			} elseif ($this->is_dependency($dependencies, $path, '/')) {
 				$dependencies_includes[] = $local_includes;
 			} elseif (mb_strpos($current_url, $path) === 0) {
 				$includes[] = $local_includes;
@@ -380,84 +389,13 @@ trait Includes {
 		return array_merge_recursive($system_includes, ...$dependencies_includes, ...$includes);
 	}
 	/**
-	 * Creates cached version of given HTML, JS and CSS files.
-	 * Resulting file name consists of `$filename_prefix` and `$this->pcache_basename`
-	 *
-	 * @param string $filename_prefix
-	 * @param array  $includes Array of paths to files, may have keys: `css` and/or `js` and/or `html`
-	 *
-	 * @return array
-	 */
-	protected function create_cached_includes_files ($filename_prefix, $includes) {
-		$local_includes = [];
-		foreach ($includes as $extension => $files) {
-			$content  = $this->create_cached_includes_files_process_files($extension, $filename_prefix, $files);
-			$filename = "$this->pcache_basename:$filename_prefix.$extension";
-			file_put_contents(PUBLIC_CACHE."/$filename", gzencode($content, 9), LOCK_EX | FILE_BINARY);
-			$local_includes[$extension] = "storage/pcache/$filename?".substr(md5($content), 0, 5);
-		}
-		return $local_includes;
-	}
-	protected function create_cached_includes_files_process_files ($extension, $filename_prefix, $files) {
-		$content = '';
-		switch ($extension) {
-			/**
-			 * Insert external elements into resulting css file.
-			 * It is needed, because those files will not be copied into new destination of resulting css file.
-			 */
-			case 'css':
-				$callback = function ($content, $file) {
-					return $content.Includes_processing::css(file_get_contents($file), $file);
-				};
-				break;
-			/**
-			 * Combine css and js files for Web Component into resulting files in order to optimize loading process
-			 */
-			case 'html':
-				/**
-				 * For CSP-compatible HTML files we need to know destination to put there additional JS/CSS files
-				 */
-				$destination = Config::instance()->core['vulcanization'] ? false : PUBLIC_CACHE;
-				$callback    = function ($content, $file) use ($filename_prefix, $destination) {
-					$base_filename = "$this->pcache_basename:$filename_prefix-".basename($file).'+'.substr(md5($file), 0, 5);
-					return $content.Includes_processing::html(file_get_contents($file), $file, $base_filename, $destination);
-				};
-				break;
-			case 'js':
-				$callback = function ($content, $file) {
-					return $content.Includes_processing::js(file_get_contents($file));
-				};
-				if ($filename_prefix == 'System') {
-					$content = 'window.cs={Language:'._json_encode(Language::instance()).'};';
-					$content .= 'window.requirejs={paths:'._json_encode($this->get_requirejs_paths()).'};';
-				}
-		}
-		/** @noinspection PhpUndefinedVariableInspection */
-		return array_reduce($files, $callback, $content);
-	}
-	/**
-	 * @param Config $Config
-	 *
-	 * @return string[][]
-	 */
-	protected function get_includes_for_page_without_compression ($Config) {
-		// To determine all dependencies and stuff we need `$Config` object to be already created
-		if ($Config) {
-			list($dependencies, $includes_map) = $this->includes_dependencies_and_map();
-			$includes = $this->get_normalized_includes($dependencies, $includes_map, '/');
-		} else {
-			$includes = $this->get_includes_list();
-		}
-		return $this->add_versions_hash($this->absolute_path_to_relative($includes));
-	}
-	/**
 	 * @param array  $dependencies
 	 * @param string $url
 	 * @param string $separator `+` or `/`
 	 *
 	 * @return bool
 	 */
-	protected function get_includes_is_dependency ($dependencies, $url, $separator) {
+	protected function is_dependency ($dependencies, $url, $separator) {
 		$url_exploded = explode($separator, $url);
 		/** @noinspection NestedTernaryOperatorInspection */
 		$url_module = $url_exploded[0] != 'admin' ? $url_exploded[0] : (@$url_exploded[1] ?: '');
@@ -468,6 +406,17 @@ trait Includes {
 			(
 				$Request->admin_path || $Request->admin_path == ($url_exploded[0] == 'admin')
 			);
+	}
+	/**
+	 * @param Config $Config
+	 *
+	 * @return string[][]
+	 */
+	protected function get_includes_for_page_without_compression ($Config) {
+		// To determine all dependencies and stuff we need `$Config` object to be already created
+		list($dependencies, $includes_map) = $this->get_includes_dependencies_and_map($Config);
+		$includes = $this->get_normalized_includes($dependencies, $includes_map, '/');
+		return $this->add_versions_hash($this->absolute_path_to_relative($includes));
 	}
 	/**
 	 * @param string[][] $includes
@@ -523,275 +472,5 @@ trait Includes {
 		} else {
 			$this->Head .= $scripts.$html_imports;
 		}
-	}
-	/**
-	 * Getting of HTML, JS and CSS files list to be included
-	 *
-	 * @return string[][]
-	 */
-	protected function get_includes_list () {
-		$includes = [];
-		/**
-		 * Get includes of system and theme
-		 */
-		$this->get_includes_list_add_includes(DIR.'/includes', $includes);
-		$this->get_includes_list_add_includes(THEMES."/$this->theme", $includes);
-		$Config = Config::instance();
-		foreach ($Config->components['modules'] as $module_name => $module_data) {
-			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
-				continue;
-			}
-			$this->get_includes_list_add_includes(MODULES."/$module_name/includes", $includes);
-		}
-		foreach ($Config->components['plugins'] as $plugin_name) {
-			$this->get_includes_list_add_includes(PLUGINS."/$plugin_name/includes", $includes);
-		}
-		return [
-			'html' => array_merge(...$includes['html']),
-			'js'   => array_merge(...$includes['js']),
-			'css'  => array_merge(...$includes['css'])
-		];
-	}
-	/**
-	 * @param string     $base_dir
-	 * @param string[][] $includes
-	 */
-	protected function get_includes_list_add_includes ($base_dir, &$includes) {
-		$includes['html'][] = $this->get_includes_list_add_includes_internal($base_dir, 'html');
-		$includes['js'][]   = $this->get_includes_list_add_includes_internal($base_dir, 'js');
-		$includes['css'][]  = $this->get_includes_list_add_includes_internal($base_dir, 'css');
-	}
-	/**
-	 * @param string $base_dir
-	 * @param string $ext
-	 *
-	 * @return array
-	 */
-	protected function get_includes_list_add_includes_internal ($base_dir, $ext) {
-		return get_files_list("$base_dir/$ext", "/.*\\.$ext\$/i", 'f', true, true, 'name', '!include') ?: [];
-	}
-	/**
-	 * Get dependencies of components between each other (only that contains some HTML, JS and CSS files) and mapping HTML, JS and CSS files to URL paths
-	 *
-	 * @return array[] [$dependencies, $includes_map]
-	 */
-	protected function includes_dependencies_and_map () {
-		/**
-		 * Get all includes
-		 */
-		$all_includes = $this->get_includes_list();
-		$includes_map = [];
-		/**
-		 * Array [package => [list of packages it depends on]]
-		 */
-		$dependencies    = [];
-		$functionalities = [];
-		/**
-		 * According to components's maps some files should be included only on specific pages.
-		 * Here we read this rules, and remove from whole includes list such items, that should be included only on specific pages.
-		 * Also collect dependencies.
-		 */
-		$Config = Config::instance();
-		foreach ($Config->components['modules'] as $module_name => $module_data) {
-			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
-				continue;
-			}
-			$this->process_meta(MODULES."/$module_name", $dependencies, $functionalities);
-			$this->process_map(MODULES."/$module_name", $includes_map, $all_includes);
-		}
-		unset($module_name, $module_data);
-		foreach ($Config->components['plugins'] as $plugin_name) {
-			$this->process_meta(PLUGINS."/$plugin_name", $dependencies, $functionalities);
-			$this->process_map(PLUGINS."/$plugin_name", $includes_map, $all_includes);
-		}
-		unset($plugin_name);
-		/**
-		 * For consistency
-		 */
-		$includes_map['System'] = $all_includes;
-		Event::instance()->fire(
-			'System/Page/includes_dependencies_and_map',
-			[
-				'dependencies' => &$dependencies,
-				'includes_map' => &$includes_map
-			]
-		);
-		$dependencies = $this->normalize_dependencies($dependencies, $functionalities);
-		$includes_map = $this->clean_includes_arrays_without_files($dependencies, $includes_map);
-		$dependencies = array_map('array_values', $dependencies);
-		$dependencies = array_filter($dependencies);
-		return [$dependencies, $includes_map];
-	}
-	/**
-	 * Process meta information and corresponding entries to dependencies and functionalities
-	 *
-	 * @param string $base_dir
-	 * @param array  $dependencies
-	 * @param array  $functionalities
-	 */
-	protected function process_meta ($base_dir, &$dependencies, &$functionalities) {
-		if (!file_exists("$base_dir/meta.json")) {
-			return;
-		}
-		$meta = file_get_json("$base_dir/meta.json");
-		$meta += [
-			'require'  => [],
-			'optional' => [],
-			'provide'  => []
-		];
-		$package = $meta['package'];
-		foreach ((array)$meta['require'] as $r) {
-			/**
-			 * Get only name of package or functionality
-			 */
-			$r                        = preg_split('/[=<>]/', $r, 2)[0];
-			$dependencies[$package][] = $r;
-		}
-		foreach ((array)$meta['optional'] as $o) {
-			/**
-			 * Get only name of package or functionality
-			 */
-			$o                        = preg_split('/[=<>]/', $o, 2)[0];
-			$dependencies[$package][] = $o;
-		}
-		foreach ((array)$meta['provide'] as $p) {
-			/**
-			 * If provides sub-functionality for other component (for instance, `Blog/post_patch`) - inverse "providing" to "dependency"
-			 * Otherwise it is just functionality alias to package name
-			 */
-			if (strpos($p, '/') !== false) {
-				/**
-				 * Get name of package or functionality
-				 */
-				$p                  = explode('/', $p)[0];
-				$dependencies[$p][] = $package;
-			} else {
-				$functionalities[$p] = $package;
-			}
-		}
-	}
-	/**
-	 * Process map structure, fill includes map and remove files from list of all includes (remaining files will be included on all pages)
-	 *
-	 * @param string $base_dir
-	 * @param array  $includes_map
-	 * @param array  $all_includes
-	 */
-	protected function process_map ($base_dir, &$includes_map, &$all_includes) {
-		if (!file_exists("$base_dir/includes/map.json")) {
-			return;
-		}
-		$this->process_map_internal(file_get_json("$base_dir/includes/map.json"), "$base_dir/includes", $includes_map, $all_includes);
-	}
-	/**
-	 * Process map structure, fill includes map and remove files from list of all includes (remaining files will be included on all pages)
-	 *
-	 * @param array  $map
-	 * @param string $includes_dir
-	 * @param array  $includes_map
-	 * @param array  $all_includes
-	 */
-	protected function process_map_internal ($map, $includes_dir, &$includes_map, &$all_includes) {
-		foreach ($map as $path => $files) {
-			foreach ((array)$files as $file) {
-				$extension = file_extension($file);
-				if (in_array($extension, ['css', 'js', 'html'])) {
-					$file                              = "$includes_dir/$extension/$file";
-					$includes_map[$path][$extension][] = $file;
-					$all_includes[$extension]          = array_diff($all_includes[$extension], [$file]);
-				} else {
-					$file = rtrim($file, '*');
-					/**
-					 * Wildcard support, it is possible to specify just path prefix and all files with this prefix will be included
-					 */
-					$found_files = array_filter(
-						get_files_list($includes_dir, '/.*\.(css|js|html)$/i', 'f', '', true, 'name', '!include') ?: [],
-						function ($f) use ($file) {
-							// We need only files with specified mask and only those located in directory that corresponds to file's extension
-							return preg_match("#^(css|js|html)/$file.*\\1$#i", $f);
-						}
-					);
-					// Drop first level directory
-					$found_files = _preg_replace('#^[^/]+/(.*)#', '$1', $found_files);
-					$this->process_map_internal([$path => $found_files], $includes_dir, $includes_map, $all_includes);
-				}
-			}
-		}
-	}
-	/**
-	 * Replace functionalities by real packages names, take into account recursive dependencies
-	 *
-	 * @param array $dependencies
-	 * @param array $functionalities
-	 *
-	 * @return array
-	 */
-	protected function normalize_dependencies ($dependencies, $functionalities) {
-		/**
-		 * First of all remove packages without any dependencies
-		 */
-		$dependencies = array_filter($dependencies);
-		/**
-		 * First round, process aliases among keys
-		 */
-		foreach (array_keys($dependencies) as $d) {
-			if (isset($functionalities[$d])) {
-				$package = $functionalities[$d];
-				/**
-				 * Add dependencies to existing package dependencies
-				 */
-				foreach ($dependencies[$d] as $dependency) {
-					$dependencies[$package][] = $dependency;
-				}
-				/**
-				 * Drop alias
-				 */
-				unset($dependencies[$d]);
-			}
-		}
-		unset($d, $dependency);
-		/**
-		 * Second round, process aliases among dependencies
-		 */
-		foreach ($dependencies as &$depends_on) {
-			foreach ($depends_on as &$dependency) {
-				if (isset($functionalities[$dependency])) {
-					$dependency = $functionalities[$dependency];
-				}
-			}
-		}
-		unset($depends_on, $dependency);
-		/**
-		 * Third round, process recursive dependencies
-		 */
-		foreach ($dependencies as &$depends_on) {
-			foreach ($depends_on as &$dependency) {
-				if ($dependency != 'System' && isset($dependencies[$dependency])) {
-					foreach (array_diff($dependencies[$dependency], $depends_on) as $new_dependency) {
-						$depends_on[] = $new_dependency;
-					}
-				}
-			}
-		}
-		return array_map('array_unique', $dependencies);
-	}
-	/**
-	 * Includes array is composed from dependencies and sometimes dependencies doesn't have any files, so we'll clean that
-	 *
-	 * @param array $dependencies
-	 * @param array $includes_map
-	 *
-	 * @return array
-	 */
-	protected function clean_includes_arrays_without_files ($dependencies, $includes_map) {
-		foreach ($dependencies as &$depends_on) {
-			foreach ($depends_on as $index => &$dependency) {
-				if (!isset($includes_map[$dependency])) {
-					unset($depends_on[$index]);
-				}
-			}
-			unset($dependency);
-		}
-		return $includes_map;
 	}
 }
