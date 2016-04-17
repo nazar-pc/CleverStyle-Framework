@@ -355,7 +355,30 @@ trait Includes {
 				$includes[] = $local_includes;
 			}
 		}
-		return array_merge_recursive($system_includes, $dependencies_includes, $includes);
+		return array_merge_recursive($system_includes, ...$dependencies_includes, ...$includes);
+	}
+	/**
+	 * @param array  $dependencies
+	 * @param string $separator `+` or `/`
+	 *
+	 * @return array
+	 */
+	protected function get_includes_prepare ($dependencies, $separator) {
+		$Request        = Request::instance();
+		$current_module = $Request->current_module;
+		/**
+		 * Current URL based on controller path (it better represents how page was rendered)
+		 */
+		$current_url = array_slice(App::instance()->controller_path, 1);
+		$current_url = ($Request->admin_path ? "admin$separator" : '')."$current_module$separator".implode($separator, $current_url);
+		/**
+		 * Narrow the dependencies to current module only
+		 */
+		$dependencies = array_merge(
+			isset($dependencies[$current_module]) ? $dependencies[$current_module] : [],
+			$dependencies['System']
+		);
+		return [$dependencies, $current_url];
 	}
 	/**
 	 * Creates cached version of given HTML, JS and CSS files.
@@ -440,29 +463,6 @@ trait Includes {
 			$includes = $this->get_includes_list();
 		}
 		return $this->add_versions_hash($this->absolute_path_to_relative($includes));
-	}
-	/**
-	 * @param array  $dependencies
-	 * @param string $separator `+` or `/`
-	 *
-	 * @return array
-	 */
-	protected function get_includes_prepare ($dependencies, $separator) {
-		$Request        = Request::instance();
-		$current_module = $Request->current_module;
-		/**
-		 * Current URL based on controller path (it better represents how page was rendered)
-		 */
-		$current_url = array_slice(App::instance()->controller_path, 1);
-		$current_url = ($Request->admin_path ? "admin$separator" : '')."$current_module$separator".implode($separator, $current_url);
-		/**
-		 * Narrow the dependencies to current module only
-		 */
-		$dependencies = array_merge(
-			isset($dependencies[$current_module]) ? $dependencies[$current_module] : [],
-			$dependencies['System']
-		);
-		return [$dependencies, $current_url];
 	}
 	/**
 	 * @param array  $dependencies
