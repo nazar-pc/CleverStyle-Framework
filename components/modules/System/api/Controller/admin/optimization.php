@@ -79,9 +79,7 @@ trait optimization {
 		if (!$Config->apply()) {
 			throw new ExitException(500);
 		}
-		if (!$Config->core['cache_compress_js_css']) {
-			static::admin_optimization_clean_pcache();
-		}
+		static::admin_optimization_clean_pcache();
 	}
 	/**
 	 * @param \cs\Request $Request
@@ -113,9 +111,7 @@ trait optimization {
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
-		if (!$Config->core['cache_compress_js_css']) {
-			static::admin_optimization_clean_pcache();
-		}
+		static::admin_optimization_clean_pcache();
 	}
 	/**
 	 * Cancel optimization settings
