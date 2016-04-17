@@ -1,5 +1,5 @@
 --TEST--
-Home page rendering
+Administration page rendering (403)
 --FILE--
 <?php
 namespace cs;

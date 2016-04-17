@@ -342,24 +342,22 @@ trait Includes {
 			file_put_json(PUBLIC_CACHE."/$this->pcache_basename.json", [$dependencies, $hashes_structure]);
 			Event::instance()->fire('System/Page/rebuild_cache');
 		}
-		$system_includes = [
-			'css'  => ["storage/pcache/$this->pcache_basename:System.css?{$hashes_structure['System']['css']}"],
-			'js'   => ["storage/pcache/$this->pcache_basename:System.js?{$hashes_structure['System']['js']}"],
-			'html' => ["storage/pcache/$this->pcache_basename:System.html?{$hashes_structure['System']['html']}"]
-		];
-		list($includes, $dependencies_includes, $dependencies, $current_url) = $this->get_includes_prepare($dependencies, '+');
+		list($dependencies, $current_url) = $this->get_includes_prepare($dependencies, '+');
+		$system_includes       = [];
+		$dependencies_includes = [];
+		$includes              = [];
 		foreach ($hashes_structure as $filename_prefix => $hashes) {
-			if ($filename_prefix == 'System') {
-				continue;
-			}
-			$is_dependency = $this->get_includes_is_dependency($dependencies, $filename_prefix, '+');
-			if ($is_dependency || mb_strpos($current_url, $filename_prefix) === 0) {
-				foreach ($hashes as $extension => $hash) {
-					if ($is_dependency) {
-						$dependencies_includes[$extension][] = "storage/pcache/$this->pcache_basename:$filename_prefix.$extension?$hash";
-					} else {
-						$includes[$extension][] = "storage/pcache/$this->pcache_basename:$filename_prefix.$extension?$hash";
-					}
+			foreach ($hashes as $extension => $hash) {
+				$path = "storage/pcache/$this->pcache_basename:$filename_prefix.$extension?$hash";
+				if ($filename_prefix == 'System') {
+					$system_includes[$extension] = $path;
+				} elseif ($this->get_includes_is_dependency($dependencies, $filename_prefix, '+')) {
+					$dependencies_includes[$extension][] = $path;
+				} elseif (strpos($current_url, $filename_prefix) === 0) {
+					$includes[$extension][] = $path;
+				} else {
+					// Optimize additional loop cycles by exiting right here
+					break;
 				}
 			}
 		}
@@ -429,20 +427,20 @@ trait Includes {
 		// To determine all dependencies and stuff we need `$Config` object to be already created
 		if ($Config) {
 			list($dependencies, $includes_map) = $this->includes_dependencies_and_map();
-			$system_includes = $includes_map['System'];
-			list($includes, $dependencies_includes, $dependencies, $current_url) = $this->get_includes_prepare($dependencies, '/');
+			list($dependencies, $current_url) = $this->get_includes_prepare($dependencies, '/');
+			$system_includes       = [];
+			$dependencies_includes = [];
+			$includes              = [];
 			foreach ($includes_map as $url => $local_includes) {
-				if (!$url) {
-					continue;
-				}
-				$is_dependency = $this->get_includes_is_dependency($dependencies, $url, '/');
-				if ($is_dependency) {
-					$dependencies_includes = array_merge_recursive($dependencies_includes, $local_includes);
+				if ($url == 'System') {
+					$system_includes = $local_includes;
+				} elseif ($this->get_includes_is_dependency($dependencies, $url, '/')) {
+					$dependencies_includes[] = $local_includes;
 				} elseif (mb_strpos($current_url, $url) === 0) {
-					$includes = array_merge_recursive($includes, $local_includes);
+					$includes[] = $local_includes;
 				}
 			}
-			$includes = array_merge_recursive($system_includes, $dependencies_includes, $includes);
+			$includes = array_merge_recursive($system_includes, ...$dependencies_includes, ...$includes);
 		} else {
 			$includes = $this->get_includes_list();
 		}
@@ -455,14 +453,8 @@ trait Includes {
 	 * @return array
 	 */
 	protected function get_includes_prepare ($dependencies, $separator) {
-		$Request               = Request::instance();
-		$includes              = [
-			'css'  => [],
-			'js'   => [],
-			'html' => []
-		];
-		$dependencies_includes = $includes;
-		$current_module        = $Request->current_module;
+		$Request        = Request::instance();
+		$current_module = $Request->current_module;
 		/**
 		 * Current URL based on controller path (it better represents how page was rendered)
 		 */
@@ -475,7 +467,7 @@ trait Includes {
 			isset($dependencies[$current_module]) ? $dependencies[$current_module] : [],
 			$dependencies['System']
 		);
-		return [$includes, $dependencies_includes, $dependencies, $current_url];
+		return [$dependencies, $current_url];
 	}
 	/**
 	 * @param array  $dependencies
