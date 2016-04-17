@@ -591,13 +591,8 @@ trait Includes {
 	 */
 	protected function create_cached_includes_files ($filename_prefix, $includes) {
 		$cache_hash = [];
-		/** @noinspection AlterInForeachInspection */
 		foreach ($includes as $extension => $files) {
-			$content = $this->create_cached_includes_files_process_files(
-				$extension,
-				$filename_prefix,
-				$files
-			);
+			$content = $this->create_cached_includes_files_process_files($extension, $filename_prefix, $files);
 			file_put_contents(PUBLIC_CACHE."/$filename_prefix$this->pcache_basename.$extension", gzencode($content, 9), LOCK_EX | FILE_BINARY);
 			$cache_hash[$extension] = substr(md5($content), 0, 5);
 		}
@@ -612,12 +607,7 @@ trait Includes {
 			 */
 			case 'css':
 				$callback = function ($content, $file) {
-					return
-						$content.
-						Includes_processing::css(
-							file_get_contents($file),
-							$file
-						);
+					return $content.Includes_processing::css(file_get_contents($file), $file);
 				};
 				break;
 			/**
@@ -629,21 +619,13 @@ trait Includes {
 				 */
 				$destination = Config::instance()->core['vulcanization'] ? false : PUBLIC_CACHE;
 				$callback    = function ($content, $file) use ($filename_prefix, $destination) {
-					return
-						$content.
-						Includes_processing::html(
-							file_get_contents($file),
-							$file,
-							"$filename_prefix$this->pcache_basename-".basename($file).'+'.substr(md5($file), 0, 5),
-							$destination
-						);
+					$base_filename = "$filename_prefix$this->pcache_basename-".basename($file).'+'.substr(md5($file), 0, 5);
+					return $content.Includes_processing::html(file_get_contents($file), $file, $base_filename, $destination);
 				};
 				break;
 			case 'js':
 				$callback = function ($content, $file) {
-					return
-						$content.
-						Includes_processing::js(file_get_contents($file));
+					return $content.Includes_processing::js(file_get_contents($file));
 				};
 				if ($filename_prefix == '') {
 					$content = 'window.cs={Language:'._json_encode(Language::instance()).'};';
@@ -651,7 +633,7 @@ trait Includes {
 				}
 		}
 		/** @noinspection PhpUndefinedVariableInspection */
-		return array_reduce(array_filter($files, 'file_exists'), $callback, $content);
+		return array_reduce($files, $callback, $content);
 	}
 	/**
 	 * Get dependencies of components between each other (only that contains some HTML, JS and CSS files) and mapping HTML, JS and CSS files to URL paths
@@ -679,39 +661,13 @@ trait Includes {
 			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
 				continue;
 			}
-			if (file_exists(MODULES."/$module_name/meta.json")) {
-				$this->process_meta(
-					file_get_json(MODULES."/$module_name/meta.json"),
-					$dependencies,
-					$functionalities
-				);
-			}
-			if (file_exists(MODULES."/$module_name/includes/map.json")) {
-				$this->process_map(
-					file_get_json_nocomments(MODULES."/$module_name/includes/map.json"),
-					MODULES."/$module_name/includes",
-					$includes_map,
-					$all_includes
-				);
-			}
+			$this->process_meta(MODULES."/$module_name", $dependencies, $functionalities);
+			$this->process_map(MODULES."/$module_name", $includes_map, $all_includes);
 		}
 		unset($module_name, $module_data);
 		foreach ($Config->components['plugins'] as $plugin_name) {
-			if (file_exists(PLUGINS."/$plugin_name/meta.json")) {
-				$this->process_meta(
-					file_get_json(PLUGINS."/$plugin_name/meta.json"),
-					$dependencies,
-					$functionalities
-				);
-			}
-			if (file_exists(PLUGINS."/$plugin_name/includes/map.json")) {
-				$this->process_map(
-					file_get_json_nocomments(PLUGINS."/$plugin_name/includes/map.json"),
-					PLUGINS."/$plugin_name/includes",
-					$includes_map,
-					$all_includes
-				);
-			}
+			$this->process_meta(PLUGINS."/$plugin_name", $dependencies, $functionalities);
+			$this->process_map(PLUGINS."/$plugin_name", $includes_map, $all_includes);
 		}
 		unset($plugin_name);
 		/**
@@ -734,47 +690,63 @@ trait Includes {
 	/**
 	 * Process meta information and corresponding entries to dependencies and functionalities
 	 *
-	 * @param array $meta
-	 * @param array $dependencies
-	 * @param array $functionalities
+	 * @param string $base_dir
+	 * @param array  $dependencies
+	 * @param array  $functionalities
 	 */
-	protected function process_meta ($meta, &$dependencies, &$functionalities) {
+	protected function process_meta ($base_dir, &$dependencies, &$functionalities) {
+		if (!file_exists("$base_dir/meta.json")) {
+			return;
+		}
+		$meta = file_get_json("$base_dir/meta.json");
+		$meta += [
+			'require'  => [],
+			'optional' => [],
+			'provide'  => []
+		];
 		$package = $meta['package'];
-		if (isset($meta['require'])) {
-			foreach ((array)$meta['require'] as $r) {
+		foreach ((array)$meta['require'] as $r) {
+			/**
+			 * Get only name of package or functionality
+			 */
+			$r                        = preg_split('/[=<>]/', $r, 2)[0];
+			$dependencies[$package][] = $r;
+		}
+		foreach ((array)$meta['optional'] as $o) {
+			/**
+			 * Get only name of package or functionality
+			 */
+			$o                        = preg_split('/[=<>]/', $o, 2)[0];
+			$dependencies[$package][] = $o;
+		}
+		foreach ((array)$meta['provide'] as $p) {
+			/**
+			 * If provides sub-functionality for other component (for instance, `Blog/post_patch`) - inverse "providing" to "dependency"
+			 * Otherwise it is just functionality alias to package name
+			 */
+			if (strpos($p, '/') !== false) {
 				/**
-				 * Get only name of package or functionality
+				 * Get name of package or functionality
 				 */
-				$r                        = preg_split('/[=<>]/', $r, 2)[0];
-				$dependencies[$package][] = $r;
+				$p                  = explode('/', $p)[0];
+				$dependencies[$p][] = $package;
+			} else {
+				$functionalities[$p] = $package;
 			}
 		}
-		if (isset($meta['optional'])) {
-			foreach ((array)$meta['optional'] as $o) {
-				/**
-				 * Get only name of package or functionality
-				 */
-				$o                        = preg_split('/[=<>]/', $o, 2)[0];
-				$dependencies[$package][] = $o;
-			}
+	}
+	/**
+	 * Process map structure, fill includes map and remove files from list of all includes (remaining files will be included on all pages)
+	 *
+	 * @param string $base_dir
+	 * @param array  $includes_map
+	 * @param array  $all_includes
+	 */
+	protected function process_map ($base_dir, &$includes_map, &$all_includes) {
+		if (!file_exists("$base_dir/includes/map.json")) {
+			return;
 		}
-		if (isset($meta['provide'])) {
-			foreach ((array)$meta['provide'] as $p) {
-				/**
-				 * If provides sub-functionality for other component (for instance, `Blog/post_patch`) - inverse "providing" to "dependency"
-				 * Otherwise it is just functionality alias to package name
-				 */
-				if (strpos($p, '/') !== false) {
-					/**
-					 * Get name of package or functionality
-					 */
-					$p                  = explode('/', $p)[0];
-					$dependencies[$p][] = $package;
-				} else {
-					$functionalities[$p] = $package;
-				}
-			}
-		}
+		$this->process_map_internal(file_get_json("$base_dir/includes/map.json"), "$base_dir/includes", $includes_map, $all_includes);
 	}
 	/**
 	 * Process map structure, fill includes map and remove files from list of all includes (remaining files will be included on all pages)
@@ -784,7 +756,7 @@ trait Includes {
 	 * @param array  $includes_map
 	 * @param array  $all_includes
 	 */
-	protected function process_map ($map, $includes_dir, &$includes_map, &$all_includes) {
+	protected function process_map_internal ($map, $includes_dir, &$includes_map, &$all_includes) {
 		foreach ($map as $path => $files) {
 			foreach ((array)$files as $file) {
 				$extension = file_extension($file);
@@ -806,7 +778,7 @@ trait Includes {
 					);
 					// Drop first level directory
 					$found_files = _preg_replace('#^[^/]+/(.*)#', '$1', $found_files);
-					$this->process_map([$path => $found_files], $includes_dir, $includes_map, $all_includes);
+					$this->process_map_internal([$path => $found_files], $includes_dir, $includes_map, $all_includes);
 				}
 			}
 		}
