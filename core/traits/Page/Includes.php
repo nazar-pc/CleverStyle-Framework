@@ -31,15 +31,15 @@ trait Includes {
 	use
 		RequireJS;
 	/**
-	 * @var array[]
+	 * @var array
 	 */
 	protected $core_html;
 	/**
-	 * @var array[]
+	 * @var array
 	 */
 	protected $core_js;
 	/**
-	 * @var array[]
+	 * @var array
 	 */
 	protected $core_css;
 	/**
@@ -47,15 +47,15 @@ trait Includes {
 	 */
 	protected $core_config;
 	/**
-	 * @var array[]
+	 * @var array
 	 */
 	protected $html;
 	/**
-	 * @var array[]
+	 * @var array
 	 */
 	protected $js;
 	/**
-	 * @var array[]
+	 * @var array
 	 */
 	protected $css;
 	/**
