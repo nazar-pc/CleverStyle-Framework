@@ -94,26 +94,25 @@ Event::instance()
 			$includes_map = [];
 			foreach ($composer_lock['packages'] as $package) {
 				$package_name = $package['name'];
+				$package += [
+					'require' => [],
+					'provide' => [],
+					'replace' => []
+				];
 				if (strpos($package_name, '/') !== false) {
 					$package_name = explode('/', $package_name, 2)[1];
 				}
-				if (isset($package['require'])) {
-					foreach (array_keys($package['require']) as $r) {
-						if (strpos($r, '-asset/') !== false) {
-							$r = explode('/', $r, 2)[1];
-						}
-						$dependencies[$package_name][] = $r;
+				foreach (array_keys($package['require']) as $r) {
+					if (strpos($r, '-asset/') !== false) {
+						$r = explode('/', $r, 2)[1];
 					}
+					$dependencies[$package_name][] = $r;
 				}
-				if (isset($package['provide'])) {
-					foreach (array_keys($package['provide']) as $p) {
-						$dependencies[$p][] = $package_name;
-					}
+				foreach (array_keys($package['provide']) as $p) {
+					$dependencies[$p][] = $package_name;
 				}
-				if (isset($package['replace'])) {
-					foreach (array_keys($package['replace']) as $r) {
-						$dependencies[$r][] = $package_name;
-					}
+				foreach (array_keys($package['replace']) as $r) {
+					$dependencies[$r][] = $package_name;
 				}
 				/**
 				 * If current package is Bower or NPM package (we will analyse both configurations)

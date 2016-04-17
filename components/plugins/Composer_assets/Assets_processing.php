@@ -22,9 +22,11 @@ class Assets_processing {
 	 * @param string[][] $includes_map
 	 */
 	static function run ($package_name, $package_dir, $target_dir, &$includes_map) {
+		$Config = Config::instance();
 		self::save_content(
 			self::get_content(
-				self::get_files($package_name),
+				$Config,
+				self::get_files($Config, $package_name),
 				$package_name,
 				$package_dir,
 				$target_dir
@@ -35,13 +37,13 @@ class Assets_processing {
 		);
 	}
 	/**
+	 * @param Config $Config
 	 * @param string $package_name
 	 *
 	 * @return string[]
 	 */
-	protected static function get_files ($package_name) {
-		$Config = Config::instance();
-		$files  = [];
+	protected static function get_files ($Config, $package_name) {
+		$files = [];
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
 			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
 				continue;
@@ -71,6 +73,7 @@ class Assets_processing {
 		return isset($packages[$package_name]['files']) ? $packages[$package_name]['files'] : [];
 	}
 	/**
+	 * @param Config   $Config
 	 * @param string[] $files
 	 * @param string   $package_name
 	 * @param string   $package_dir
@@ -78,7 +81,7 @@ class Assets_processing {
 	 *
 	 * @return string[][]
 	 */
-	protected static function get_content ($files, $package_name, $package_dir, $target_dir) {
+	protected static function get_content ($Config, $files, $package_name, $package_dir, $target_dir) {
 		$content = [];
 		if ($files) {
 			@mkdir($target_dir, 0770, true);
@@ -92,7 +95,6 @@ class Assets_processing {
 HTACCESS
 			);
 		}
-		$vulcanization = Config::instance()->core['vulcanization'];
 		foreach ($files as $file) {
 			$file = "$package_dir/$file";
 			switch (file_extension($file)) {
@@ -103,7 +105,8 @@ HTACCESS
 					$content['css'][] = Includes_processing::css(file_get_contents($file), $file);
 					break;
 				case 'html':
-					$content['html'][] = Includes_processing::html(file_get_contents($file), $file, "$target_dir/$package_name", $vulcanization);
+					$content['html'][] =
+						Includes_processing::html(file_get_contents($file), $file, "$target_dir/$package_name", $Config->core['vulcanization']);
 					break;
 				case 'less':
 					try {
