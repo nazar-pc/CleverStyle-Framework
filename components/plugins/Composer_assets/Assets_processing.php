@@ -23,14 +23,22 @@ class Assets_processing {
 	 */
 	static function run ($package_name, $package_dir, $target_dir, &$includes_map) {
 		$Config = Config::instance();
+		$files  = self::get_files($Config, $package_name);
+		if (!$files) {
+			return;
+		}
+		@mkdir($target_dir, 0770, true);
+		file_put_contents(
+			"$target_dir/.htaccess",
+			/** @lang ApacheConfig */
+			<<<HTACCESS
+<FilesMatch "\.css$">
+	Header set Content-Type text/css
+</FilesMatch>
+HTACCESS
+		);
 		self::save_content(
-			self::get_content(
-				$Config,
-				self::get_files($Config, $package_name),
-				$package_name,
-				$package_dir,
-				$target_dir
-			),
+			self::get_content($Config, $files, $package_name, $package_dir, $target_dir),
 			$package_name,
 			$target_dir,
 			$includes_map
@@ -83,18 +91,6 @@ class Assets_processing {
 	 */
 	protected static function get_content ($Config, $files, $package_name, $package_dir, $target_dir) {
 		$content = [];
-		if ($files) {
-			@mkdir($target_dir, 0770, true);
-			file_put_contents(
-				"$target_dir/.htaccess",
-				/** @lang ApacheConfig */
-				<<<HTACCESS
-<FilesMatch "\.css$">
-	Header set Content-Type text/css
-</FilesMatch>
-HTACCESS
-			);
-		}
 		foreach ($files as $file) {
 			$file = "$package_dir/$file";
 			switch (file_extension($file)) {
@@ -105,21 +101,42 @@ HTACCESS
 					$content['css'][] = Includes_processing::css(file_get_contents($file), $file);
 					break;
 				case 'html':
-					$content['html'][] =
-						Includes_processing::html(file_get_contents($file), $file, "$target_dir/$package_name", $Config->core['vulcanization']);
+					$content['html'][] = Includes_processing::html(
+						file_get_contents($file),
+						$file,
+						"$target_dir/$package_name",
+						$Config->core['vulcanization']
+					);
 					break;
 				case 'less':
-					try {
-						$content['css'][] = Includes_processing::css((new Less_Parser)->parseFile($file)->getCss(), $file);
-					} catch (Exception $e) {
-					}
+					$content['css'][] = Includes_processing::css(self::compile_less($file), $file);
 					break;
 				case 'scss':
-					$content['css'][] = Includes_processing::css((new Scss_compiler)->compile(file_get_contents($file)), $file);
+					$content['css'][] = Includes_processing::css(self::compile_scss($file), $file);
 					break;
 			}
 		}
 		return $content;
+	}
+	/**
+	 * @param string $less_file
+	 *
+	 * @return string CSS
+	 */
+	protected static function compile_less ($less_file) {
+		try {
+			return (new Less_Parser)->parseFile($less_file)->getCss();
+		} catch (Exception $e) {
+			return '';
+		}
+	}
+	/**
+	 * @param string $scss_file
+	 *
+	 * @return string CSS
+	 */
+	protected static function compile_scss ($scss_file) {
+		return (new Scss_compiler)->compile(file_get_contents($scss_file));
 	}
 	/**
 	 * @param string[][] $content
