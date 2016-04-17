@@ -68,13 +68,13 @@ trait Includes {
 	 */
 	protected $pcache_basename;
 	protected function init_includes () {
-		$this->core_html       = [0 => [], 1 => []];
-		$this->core_js         = [0 => [], 1 => []];
-		$this->core_css        = [0 => [], 1 => []];
+		$this->core_html       = ['path' => [], 'plain' => ''];
+		$this->core_js         = ['path' => [], 'plain' => ''];
+		$this->core_css        = ['path' => [], 'plain' => ''];
 		$this->core_config     = '';
-		$this->html            = [0 => [], 1 => []];
-		$this->js              = [0 => [], 1 => []];
-		$this->css             = [0 => [], 1 => []];
+		$this->html            = ['path' => [], 'plain' => ''];
+		$this->js              = ['path' => [], 'plain' => ''];
+		$this->css             = ['path' => [], 'plain' => ''];
 		$this->config          = '';
 		$this->pcache_basename = '';
 	}
@@ -97,31 +97,7 @@ trait Includes {
 	 * @return \cs\Page
 	 */
 	protected function html_internal ($add, $mode = 'file', $core = false) {
-		if (!$add) {
-			return $this;
-		}
-		if (is_array($add)) {
-			foreach (array_filter($add) as $script) {
-				$this->html_internal($script, $mode, $core);
-			}
-		} else {
-			if ($core) {
-				$html = &$this->core_html;
-			} else {
-				$html = &$this->html;
-			}
-			if ($mode == 'file') {
-				$html[0][] = h::link(
-					[
-						'href' => $add,
-						'rel'  => 'import'
-					]
-				);
-			} elseif ($mode == 'code') {
-				$html[1][] = "$add\n";
-			}
-		}
-		return $this;
+		return $this->include_common('html', $add, $mode, $core);
 	}
 	/**
 	 * Including of JavaScript
@@ -142,30 +118,7 @@ trait Includes {
 	 * @return \cs\Page
 	 */
 	protected function js_internal ($add, $mode = 'file', $core = false) {
-		if (!$add) {
-			return $this;
-		}
-		if (is_array($add)) {
-			foreach (array_filter($add) as $script) {
-				$this->js_internal($script, $mode, $core);
-			}
-		} else {
-			if ($core) {
-				$js = &$this->core_js;
-			} else {
-				$js = &$this->js;
-			}
-			if ($mode == 'file') {
-				$js[0][] = h::script(
-					[
-						'src' => $add
-					]
-				);
-			} elseif ($mode == 'code') {
-				$js[1][] = "$add\n";
-			}
-		}
-		return $this;
+		return $this->include_common('js', $add, $mode, $core);
 	}
 	/**
 	 * Including of CSS
@@ -186,29 +139,33 @@ trait Includes {
 	 * @return \cs\Page
 	 */
 	protected function css_internal ($add, $mode = 'file', $core = false) {
+		return $this->include_common('css', $add, $mode, $core);
+	}
+	/**
+	 * @param string          $what
+	 * @param string|string[] $add
+	 * @param string          $mode
+	 * @param bool            $core
+	 *
+	 * @return \cs\Page
+	 */
+	protected function include_common ($what, $add, $mode, $core) {
 		if (!$add) {
 			return $this;
 		}
 		if (is_array($add)) {
 			foreach (array_filter($add) as $style) {
-				$this->css_internal($style, $mode, $core);
+				$this->include_common($what, $style, $mode, $core);
 			}
 		} else {
 			if ($core) {
-				$css = &$this->core_css;
-			} else {
-				$css = &$this->css;
+				$what = "core_$what";
 			}
+			$target = &$this->$what;
 			if ($mode == 'file') {
-				$css[0][] = h::link(
-					[
-						'href'           => $add,
-						'rel'            => 'stylesheet',
-						'shim-shadowdom' => true
-					]
-				);
+				$target['path'][] = $add;
 			} elseif ($mode == 'code') {
-				$css[1][] = "$add\n";
+				$target['plain'] .= "$add\n";
 			}
 		}
 		return $this;
@@ -305,13 +262,14 @@ trait Includes {
 	 * Add JS polyfills for IE/Edge
 	 */
 	protected function ie_edge () {
-		if (preg_match('/Trident|Edge/', Request::instance()->header('user-agent'))) {
-			$this->js_internal(
-				get_files_list(DIR."/includes/js/microsoft_sh*t", "/.*\\.js$/i", 'f', "includes/js/microsoft_sh*t", true),
-				'file',
-				true
-			);
+		if (!preg_match('/Trident|Edge/', Request::instance()->header('user-agent'))) {
+			return;
 		}
+		$this->js_internal(
+			get_files_list(DIR."/includes/js/microsoft_sh*t", "/.*\\.js$/i", 'f', "includes/js/microsoft_sh*t", true),
+			'file',
+			true
+		);
 	}
 	/**
 	 * Hack: Add WebComponents Polyfill for browsers without native Shadow DOM support
@@ -320,20 +278,21 @@ trait Includes {
 	 * @param bool    $with_compression
 	 */
 	protected function webcomponents_polyfill ($Request, $with_compression) {
-		if ($Request->cookie('shadow_dom') != 1) {
-			$file = 'includes/js/WebComponents-polyfill/webcomponents-custom.min.js';
-			if ($with_compression) {
-				$compressed_file = PUBLIC_CACHE.'/webcomponents.js';
-				if (!file_exists($compressed_file)) {
-					$content = file_get_contents(DIR."/$file");
-					file_put_contents($compressed_file, gzencode($content, 9), LOCK_EX | FILE_BINARY);
-					file_put_contents("$compressed_file.hash", substr(md5($content), 0, 5));
-				}
-				$hash = file_get_contents("$compressed_file.hash");
-				$this->js_internal("storage/pcache/webcomponents.js?$hash", 'file', true);
-			} else {
-				$this->js_internal($file, 'file', true);
+		if ($Request->cookie('shadow_dom') == 1) {
+			return;
+		}
+		$file = 'includes/js/WebComponents-polyfill/webcomponents-custom.min.js';
+		if ($with_compression) {
+			$compressed_file = PUBLIC_CACHE.'/webcomponents.js';
+			if (!file_exists($compressed_file)) {
+				$content = file_get_contents(DIR."/$file");
+				file_put_contents($compressed_file, gzencode($content, 9), LOCK_EX | FILE_BINARY);
+				file_put_contents("$compressed_file.hash", substr(md5($content), 0, 5));
 			}
+			$hash = file_get_contents("$compressed_file.hash");
+			$this->js_internal("storage/pcache/webcomponents.js?$hash", 'file', true);
+		} else {
+			$this->js_internal($file, 'file', true);
 		}
 	}
 	protected function add_system_configs () {
@@ -491,26 +450,39 @@ trait Includes {
 	 * @param Config $Config
 	 */
 	protected function add_includes_on_page_manually_added ($Config) {
-		foreach (['core_html', 'core_js', 'core_css', 'html', 'js', 'css'] as $type) {
-			foreach ($this->$type as &$elements) {
-				$elements = implode('', array_unique($elements));
-			}
-			unset($elements);
+		$configs = $this->core_config.$this->config;
+		/** @noinspection NestedTernaryOperatorInspection */
+		$styles =
+			array_reduce(
+				array_merge($this->core_css['path'], $this->css['path']),
+				function ($content, $href) {
+					return "$content<link href=\"/$href\" rel=\"stylesheet\" shim-shadowdom>\n";
+				}
+			).
+			h::style($this->core_css['plain'].$this->css['plain'] ?: false);
+		/** @noinspection NestedTernaryOperatorInspection */
+		$scripts      =
+			array_reduce(
+				array_merge($this->core_js['path'], $this->js['path']),
+				function ($content, $src) {
+					return "$content<script src=\"/$src\"></script>\n";
+				}
+			).
+			h::script($this->core_js['plain'].$this->js['plain'] ?: false);
+		$html_imports =
+			array_reduce(
+				array_merge($this->core_html['path'], $this->html['path']),
+				function ($content, $href) {
+					return "$content<link href=\"/$href\" rel=\"import\">\n";
+				}
+			).
+			$this->core_html['plain'].$this->html['plain'];
+		$this->Head .= $configs.$styles;
+		if ($Config->core['put_js_after_body']) {
+			$this->post_Body .= $scripts.$html_imports;
+		} else {
+			$this->Head .= $scripts.$html_imports;
 		}
-		$this->Head .=
-			$this->core_config.
-			$this->config.
-			$this->core_css[0].$this->css[0].
-			h::style($this->core_css[1].$this->css[1] ?: false);
-		$js_html_insert_to = $Config->core['put_js_after_body'] ? 'post_Body' : 'Head';
-		$js_html           =
-			$this->core_js[0].
-			h::script($this->core_js[1] ?: false).
-			$this->js[0].
-			h::script($this->js[1] ?: false).
-			$this->core_html[0].$this->html[0].
-			$this->core_html[1].$this->html[1];
-		$this->$js_html_insert_to .= $js_html;
 	}
 	/**
 	 * Getting of HTML, JS and CSS files list to be included
