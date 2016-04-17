@@ -322,15 +322,13 @@ trait Includes {
 		}
 	}
 	/**
-	 * @return array[]
+	 * @return string[][]
 	 */
 	protected function get_includes_for_page_with_compression () {
 		/**
 		 * Rebuilding HTML, JS and CSS cache if necessary
 		 */
-		if (file_exists(PUBLIC_CACHE."/$this->pcache_basename.json")) {
-			list($dependencies, $compressed_includes_map) = file_get_json(PUBLIC_CACHE."/$this->pcache_basename.json");
-		} else {
+		if (!file_exists(PUBLIC_CACHE."/$this->pcache_basename.json")) {
 			list($dependencies, $includes_map) = $this->includes_dependencies_and_map();
 			$compressed_includes_map = [];
 			foreach ($includes_map as $filename_prefix => $local_includes) {
@@ -342,6 +340,7 @@ trait Includes {
 			file_put_json(PUBLIC_CACHE."/$this->pcache_basename.json", [$dependencies, $compressed_includes_map]);
 			Event::instance()->fire('System/Page/rebuild_cache');
 		}
+		list($dependencies, $compressed_includes_map) = file_get_json(PUBLIC_CACHE."/$this->pcache_basename.json");
 		return $this->get_normalized_includes($dependencies, $compressed_includes_map, '+');
 	}
 	/**
@@ -439,7 +438,7 @@ trait Includes {
 	/**
 	 * @param Config $Config
 	 *
-	 * @return array[]
+	 * @return string[][]
 	 */
 	protected function get_includes_for_page_without_compression ($Config) {
 		// To determine all dependencies and stuff we need `$Config` object to be already created
