@@ -1,3 +1,4 @@
 {
-	"admin/Disqus" : "admin.css"
+	"admin/Disqus" : "admin.css",
+	"Disqus"       : "general.js"
 }
