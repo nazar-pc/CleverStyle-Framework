@@ -218,7 +218,7 @@ trait Includes {
 		/**
 		 * Base name for cache files
 		 */
-		$this->pcache_basename = "_{$this->theme}_".Language::instance()->clang;
+		$this->pcache_basename = $this->theme.'_'.Language::instance()->clang;
 		/**
 		 * Some JS configs required by system
 		 */
@@ -236,9 +236,6 @@ trait Includes {
 			$this->webcomponents_polyfill($Request, false);
 			/**
 			 * Language translation is added explicitly only when compression is disabled, otherwise it will be in compressed JS file
-			 */
-			/**
-			 * @var \cs\Page $this
 			 */
 			$this->config_internal(Language::instance(), 'cs.Language', true);
 			$this->config_internal($this->get_requirejs_paths(), 'requirejs.paths', true);
@@ -329,34 +326,99 @@ trait Includes {
 	 */
 	protected function get_includes_for_page_with_compression () {
 		/**
-		 * Rebuild cache if necessary
+		 * Rebuilding HTML, JS and CSS cache if necessary
 		 */
-		if (!file_exists(PUBLIC_CACHE."/$this->pcache_basename.json")) {
-			$this->rebuild_cache();
+		if (file_exists(PUBLIC_CACHE."/$this->pcache_basename.json")) {
+			list($dependencies, $hashes_structure) = file_get_json(PUBLIC_CACHE."/$this->pcache_basename.json");
+		} else {
+			list($dependencies, $includes_map) = $this->includes_dependencies_and_map();
+			$hashes_structure = [];
+			foreach ($includes_map as $filename_prefix => $local_includes) {
+				// We replace `/` by `+` to make it suitable for filename
+				$filename_prefix                    = str_replace('/', '+', $filename_prefix);
+				$hashes_structure[$filename_prefix] = $this->create_cached_includes_files($filename_prefix, $local_includes);
+			}
+			unset($includes_map, $filename_prefix, $local_includes);
+			file_put_json(PUBLIC_CACHE."/$this->pcache_basename.json", [$dependencies, $hashes_structure]);
+			Event::instance()->fire('System/Page/rebuild_cache');
 		}
-		list($dependencies, $structure) = file_get_json(PUBLIC_CACHE."/$this->pcache_basename.json");
 		$system_includes = [
-			'css'  => ["storage/pcache/$this->pcache_basename.css?{$structure['']['css']}"],
-			'js'   => ["storage/pcache/$this->pcache_basename.js?{$structure['']['js']}"],
-			'html' => ["storage/pcache/$this->pcache_basename.html?{$structure['']['html']}"]
+			'css'  => ["storage/pcache/$this->pcache_basename:System.css?{$hashes_structure['System']['css']}"],
+			'js'   => ["storage/pcache/$this->pcache_basename:System.js?{$hashes_structure['System']['js']}"],
+			'html' => ["storage/pcache/$this->pcache_basename:System.html?{$hashes_structure['System']['html']}"]
 		];
 		list($includes, $dependencies_includes, $dependencies, $current_url) = $this->get_includes_prepare($dependencies, '+');
-		foreach ($structure as $filename_prefix => $hashes) {
-			if (!$filename_prefix) {
+		foreach ($hashes_structure as $filename_prefix => $hashes) {
+			if ($filename_prefix == 'System') {
 				continue;
 			}
 			$is_dependency = $this->get_includes_is_dependency($dependencies, $filename_prefix, '+');
 			if ($is_dependency || mb_strpos($current_url, $filename_prefix) === 0) {
 				foreach ($hashes as $extension => $hash) {
 					if ($is_dependency) {
-						$dependencies_includes[$extension][] = "storage/pcache/$filename_prefix$this->pcache_basename.$extension?$hash";
+						$dependencies_includes[$extension][] = "storage/pcache/$this->pcache_basename:$filename_prefix.$extension?$hash";
 					} else {
-						$includes[$extension][] = "storage/pcache/$filename_prefix$this->pcache_basename.$extension?$hash";
+						$includes[$extension][] = "storage/pcache/$this->pcache_basename:$filename_prefix.$extension?$hash";
 					}
 				}
 			}
 		}
 		return array_merge_recursive($system_includes, $dependencies_includes, $includes);
+	}
+	/**
+	 * Creates cached version of given HTML, JS and CSS files.
+	 * Resulting file name consists of `$filename_prefix` and `$this->pcache_basename`
+	 *
+	 * @param string $filename_prefix
+	 * @param array  $includes Array of paths to files, may have keys: `css` and/or `js` and/or `html`
+	 *
+	 * @return array
+	 */
+	protected function create_cached_includes_files ($filename_prefix, $includes) {
+		$cache_hash = [];
+		foreach ($includes as $extension => $files) {
+			$content = $this->create_cached_includes_files_process_files($extension, $filename_prefix, $files);
+			file_put_contents(PUBLIC_CACHE."/$this->pcache_basename:$filename_prefix.$extension", gzencode($content, 9), LOCK_EX | FILE_BINARY);
+			$cache_hash[$extension] = substr(md5($content), 0, 5);
+		}
+		return $cache_hash;
+	}
+	protected function create_cached_includes_files_process_files ($extension, $filename_prefix, $files) {
+		$content = '';
+		switch ($extension) {
+			/**
+			 * Insert external elements into resulting css file.
+			 * It is needed, because those files will not be copied into new destination of resulting css file.
+			 */
+			case 'css':
+				$callback = function ($content, $file) {
+					return $content.Includes_processing::css(file_get_contents($file), $file);
+				};
+				break;
+			/**
+			 * Combine css and js files for Web Component into resulting files in order to optimize loading process
+			 */
+			case 'html':
+				/**
+				 * For CSP-compatible HTML files we need to know destination to put there additional JS/CSS files
+				 */
+				$destination = Config::instance()->core['vulcanization'] ? false : PUBLIC_CACHE;
+				$callback    = function ($content, $file) use ($filename_prefix, $destination) {
+					$base_filename = "$this->pcache_basename:$filename_prefix-".basename($file).'+'.substr(md5($file), 0, 5);
+					return $content.Includes_processing::html(file_get_contents($file), $file, $base_filename, $destination);
+				};
+				break;
+			case 'js':
+				$callback = function ($content, $file) {
+					return $content.Includes_processing::js(file_get_contents($file));
+				};
+				if ($filename_prefix == 'System') {
+					$content = 'window.cs={Language:'._json_encode(Language::instance()).'};';
+					$content .= 'window.requirejs={paths:'._json_encode($this->get_requirejs_paths()).'};';
+				}
+		}
+		/** @noinspection PhpUndefinedVariableInspection */
+		return array_reduce($files, $callback, $content);
 	}
 	/**
 	 * @param Config $Config
@@ -367,7 +429,7 @@ trait Includes {
 		// To determine all dependencies and stuff we need `$Config` object to be already created
 		if ($Config) {
 			list($dependencies, $includes_map) = $this->includes_dependencies_and_map();
-			$system_includes = $includes_map[''];
+			$system_includes = $includes_map['System'];
 			list($includes, $dependencies_includes, $dependencies, $current_url) = $this->get_includes_prepare($dependencies, '/');
 			foreach ($includes_map as $url => $local_includes) {
 				if (!$url) {
@@ -531,83 +593,6 @@ trait Includes {
 		return get_files_list("$base_dir/$ext", "/.*\\.$ext\$/i", 'f', true, true, 'name', '!include') ?: [];
 	}
 	/**
-	 * Rebuilding of HTML, JS and CSS cache
-	 *
-	 * @return \cs\Page
-	 */
-	protected function rebuild_cache () {
-		list($dependencies, $includes_map) = $this->includes_dependencies_and_map();
-		$structure = [];
-		foreach ($includes_map as $filename_prefix => $includes) {
-			// We replace `/` by `+` to make it suitable for filename
-			$filename_prefix             = str_replace('/', '+', $filename_prefix);
-			$structure[$filename_prefix] = $this->create_cached_includes_files($filename_prefix, $includes);
-		}
-		unset($includes_map, $filename_prefix, $includes);
-		file_put_json(
-			PUBLIC_CACHE."/$this->pcache_basename.json",
-			[$dependencies, $structure]
-		);
-		unset($structure);
-		Event::instance()->fire('System/Page/rebuild_cache');
-		return $this;
-	}
-	/**
-	 * Creates cached version of given HTML, JS and CSS files.
-	 * Resulting file name consists of <b>$filename_prefix</b> and <b>$this->pcache_basename</b>
-	 *
-	 * @param string $filename_prefix
-	 * @param array  $includes Array of paths to files, may have keys: <b>css</b> and/or <b>js</b> and/or <b>html</b>
-	 *
-	 * @return array
-	 */
-	protected function create_cached_includes_files ($filename_prefix, $includes) {
-		$cache_hash = [];
-		foreach ($includes as $extension => $files) {
-			$content = $this->create_cached_includes_files_process_files($extension, $filename_prefix, $files);
-			file_put_contents(PUBLIC_CACHE."/$filename_prefix$this->pcache_basename.$extension", gzencode($content, 9), LOCK_EX | FILE_BINARY);
-			$cache_hash[$extension] = substr(md5($content), 0, 5);
-		}
-		return $cache_hash;
-	}
-	protected function create_cached_includes_files_process_files ($extension, $filename_prefix, $files) {
-		$content = '';
-		switch ($extension) {
-			/**
-			 * Insert external elements into resulting css file.
-			 * It is needed, because those files will not be copied into new destination of resulting css file.
-			 */
-			case 'css':
-				$callback = function ($content, $file) {
-					return $content.Includes_processing::css(file_get_contents($file), $file);
-				};
-				break;
-			/**
-			 * Combine css and js files for Web Component into resulting files in order to optimize loading process
-			 */
-			case 'html':
-				/**
-				 * For CSP-compatible HTML files we need to know destination to put there additional JS/CSS files
-				 */
-				$destination = Config::instance()->core['vulcanization'] ? false : PUBLIC_CACHE;
-				$callback    = function ($content, $file) use ($filename_prefix, $destination) {
-					$base_filename = "$filename_prefix$this->pcache_basename-".basename($file).'+'.substr(md5($file), 0, 5);
-					return $content.Includes_processing::html(file_get_contents($file), $file, $base_filename, $destination);
-				};
-				break;
-			case 'js':
-				$callback = function ($content, $file) {
-					return $content.Includes_processing::js(file_get_contents($file));
-				};
-				if ($filename_prefix == '') {
-					$content = 'window.cs={Language:'._json_encode(Language::instance()).'};';
-					$content .= 'window.requirejs={paths:'._json_encode($this->get_requirejs_paths()).'};';
-				}
-		}
-		/** @noinspection PhpUndefinedVariableInspection */
-		return array_reduce($files, $callback, $content);
-	}
-	/**
 	 * Get dependencies of components between each other (only that contains some HTML, JS and CSS files) and mapping HTML, JS and CSS files to URL paths
 	 *
 	 * @return array[] [$dependencies, $includes_map]
@@ -645,7 +630,7 @@ trait Includes {
 		/**
 		 * For consistency
 		 */
-		$includes_map[''] = $all_includes;
+		$includes_map['System'] = $all_includes;
 		Event::instance()->fire(
 			'System/Page/includes_dependencies_and_map',
 			[
