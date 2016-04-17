@@ -329,36 +329,30 @@ trait Includes {
 		 * Rebuilding HTML, JS and CSS cache if necessary
 		 */
 		if (file_exists(PUBLIC_CACHE."/$this->pcache_basename.json")) {
-			list($dependencies, $hashes_structure) = file_get_json(PUBLIC_CACHE."/$this->pcache_basename.json");
+			list($dependencies, $compressed_includes_map) = file_get_json(PUBLIC_CACHE."/$this->pcache_basename.json");
 		} else {
 			list($dependencies, $includes_map) = $this->includes_dependencies_and_map();
-			$hashes_structure = [];
+			$compressed_includes_map = [];
 			foreach ($includes_map as $filename_prefix => $local_includes) {
 				// We replace `/` by `+` to make it suitable for filename
-				$filename_prefix                    = str_replace('/', '+', $filename_prefix);
-				$hashes_structure[$filename_prefix] = $this->create_cached_includes_files($filename_prefix, $local_includes);
+				$filename_prefix                           = str_replace('/', '+', $filename_prefix);
+				$compressed_includes_map[$filename_prefix] = $this->create_cached_includes_files($filename_prefix, $local_includes);
 			}
 			unset($includes_map, $filename_prefix, $local_includes);
-			file_put_json(PUBLIC_CACHE."/$this->pcache_basename.json", [$dependencies, $hashes_structure]);
+			file_put_json(PUBLIC_CACHE."/$this->pcache_basename.json", [$dependencies, $compressed_includes_map]);
 			Event::instance()->fire('System/Page/rebuild_cache');
 		}
 		list($dependencies, $current_url) = $this->get_includes_prepare($dependencies, '+');
 		$system_includes       = [];
 		$dependencies_includes = [];
 		$includes              = [];
-		foreach ($hashes_structure as $filename_prefix => $hashes) {
-			foreach ($hashes as $extension => $hash) {
-				$path = "storage/pcache/$this->pcache_basename:$filename_prefix.$extension?$hash";
-				if ($filename_prefix == 'System') {
-					$system_includes[$extension] = $path;
-				} elseif ($this->get_includes_is_dependency($dependencies, $filename_prefix, '+')) {
-					$dependencies_includes[$extension][] = $path;
-				} elseif (strpos($current_url, $filename_prefix) === 0) {
-					$includes[$extension][] = $path;
-				} else {
-					// Optimize additional loop cycles by exiting right here
-					break;
-				}
+		foreach ($compressed_includes_map as $filename_prefix => $local_includes) {
+			if ($filename_prefix == 'System') {
+				$system_includes = $local_includes;
+			} elseif ($this->get_includes_is_dependency($dependencies, $filename_prefix, '/')) {
+				$dependencies_includes[] = $local_includes;
+			} elseif (mb_strpos($current_url, $filename_prefix) === 0) {
+				$includes[] = $local_includes;
 			}
 		}
 		return array_merge_recursive($system_includes, $dependencies_includes, $includes);
@@ -373,13 +367,14 @@ trait Includes {
 	 * @return array
 	 */
 	protected function create_cached_includes_files ($filename_prefix, $includes) {
-		$cache_hash = [];
+		$local_includes = [];
 		foreach ($includes as $extension => $files) {
-			$content = $this->create_cached_includes_files_process_files($extension, $filename_prefix, $files);
-			file_put_contents(PUBLIC_CACHE."/$this->pcache_basename:$filename_prefix.$extension", gzencode($content, 9), LOCK_EX | FILE_BINARY);
-			$cache_hash[$extension] = substr(md5($content), 0, 5);
+			$content  = $this->create_cached_includes_files_process_files($extension, $filename_prefix, $files);
+			$filename = "$this->pcache_basename:$filename_prefix.$extension";
+			file_put_contents(PUBLIC_CACHE."/$filename", gzencode($content, 9), LOCK_EX | FILE_BINARY);
+			$local_includes[$extension] = "storage/pcache/$filename?".substr(md5($content), 0, 5);
 		}
-		return $cache_hash;
+		return $local_includes;
 	}
 	protected function create_cached_includes_files_process_files ($extension, $filename_prefix, $files) {
 		$content = '';
