@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-themes',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_appearance_'), cs.Polymer.behaviors.admin.System.components, cs.Polymer.behaviors.admin.System.upload],
@@ -66,7 +64,7 @@
             theme: this$.current_theme
           },
           success: function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
+            cs.ui.notify(this$.L.changes_saved, 'success', 5);
             this$.reload();
             cs.Event.fire('admin/System/components/themes/current/after', {
               name: this$.current_theme
@@ -91,7 +89,7 @@
       this._upload_package(this.$.file).then(function(meta){
         var i$, ref$, len$, theme;
         if (meta.category !== 'themes' || !meta['package'] || !meta.version) {
-          cs.ui.notify(L.this_is_not_theme_installer_file, 'error', 5);
+          cs.ui.notify(this$.L.this_is_not_theme_installer_file, 'error', 5);
           return;
         }
         for (i$ = 0, len$ = (ref$ = this$.themes).length; i$ < len$; ++i$) {
@@ -111,7 +109,7 @@
         type: 'extract',
         success: function(){
           this$.reload();
-          cs.ui.notify(L.changes_saved, 'success', 5);
+          cs.ui.notify(this$.L.changes_saved, 'success', 5);
         }
       });
     }

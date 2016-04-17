@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-blocks-form',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_blocks_')],
@@ -59,14 +57,14 @@
       $(this.shadowRoot).find('.html, .raw_html').prop('hidden', true).filter('.' + type).prop('hidden', false);
     },
     _save: function(){
-      var index;
+      var index, this$ = this;
       index = this.index;
       $.ajax({
         url: 'api/System/admin/blocks' + (index ? "/" + index : ''),
         type: index ? 'put' : 'post',
         data: this.block,
         success: function(){
-          return cs.ui.notify(L.changes_saved, 'success', 5);
+          cs.ui.notify(this$.L.changes_saved, 'success', 5);
         }
       });
     }

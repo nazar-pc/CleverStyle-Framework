@@ -7,7 +7,7 @@ dom-module#cs-system-admin-groups-form
 			label [[L.group_name]]
 			input(is="cs-input-text" type="text" value="{{group_title}}")/
 			label [[L.group_description]]
-			input(is="cs-input-text" type="text" value="{{description}}")/
+			input(is="cs-input-text" type="text" value="{{group_description}}")/
 			div
 				button(is="cs-button" type="button" primary on-tap="save" disabled="[[!group_title]]") [[L.save]]
 	script(src="script.js")

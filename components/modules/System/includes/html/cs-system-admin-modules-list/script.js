@@ -202,7 +202,7 @@
             content += "<input type=\"hidden\" name=\"db[" + db_name + "]\" value=\"0\">";
           }
         } else {
-          content += "<tr>\n	<th tooltip=\"" + cs.prepare_attr_value(L.appointment_of_db_info) + "\">\n		" + L.appointment_of_db + "\n		<cs-tooltip/>\n	</th>\n	<th tooltip=\"" + cs.prepare_attr_value(L.system_db_info) + "\">\n		" + L.system_db + "\n		<cs-tooltip/>\n	</th>\n</tr>";
+          content += "<tr>\n	<th tooltip=\"" + L.appointment_of_db_info + "\">\n		" + L.appointment_of_db + "\n		<cs-tooltip/>\n	</th>\n	<th tooltip=\"" + L.system_db_info + "\">\n		" + L.system_db + "\n		<cs-tooltip/>\n	</th>\n</tr>";
           db_options = '';
           for (i$ = 0, len$ = databases.length; i$ < len$; ++i$) {
             db = databases[i$];
@@ -223,7 +223,7 @@
             content += "<input type=\"hidden\" name=\"storage[" + storage_name + "]\" value=\"0\">";
           }
         } else {
-          content += "<tr>\n	<th tooltip=\"" + cs.prepare_attr_value(L.appointment_of_storage_info) + "\">\n		" + L.appointment_of_storage + "\n		<cs-tooltip/>\n	</th>\n	<th tooltip=\"" + cs.prepare_attr_value(L.system_storage_info) + "\">\n		" + L.system_storage + "\n		<cs-tooltip/>\n	</th>\n</tr>";
+          content += "<tr>\n	<th tooltip=\"" + L.appointment_of_storage_info + "\">\n		" + L.appointment_of_storage + "\n		<cs-tooltip/>\n	</th>\n	<th tooltip=\"" + L.system_storage_info + "\">\n		" + L.system_storage + "\n		<cs-tooltip/>\n	</th>\n</tr>";
           storage_options = '';
           for (i$ = 0, len$ = storages.length; i$ < len$; ++i$) {
             storage = storages[i$];

@@ -6,7 +6,6 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L	= cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-users-groups-form'
 	behaviors	: [
@@ -58,7 +57,7 @@ Polymer(
 			data	:
 				groups	: $(@$['user-groups']).children('div:not(:first)').map(-> @group).get()
 			type	: 'put'
-			success	: ->
-				cs.ui.notify(L.changes_saved, 'success', 5)
+			success	: !~>
+				cs.ui.notify(@L.changes_saved, 'success', 5)
 		)
 )

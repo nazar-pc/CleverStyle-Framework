@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-permissions-for',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_permissions_')],
@@ -57,12 +55,13 @@
       });
     },
     save: function(){
+      var this$ = this;
       $.ajax({
         url: "api/System/admin/" + this['for'] + "s/" + this[this['for']] + "/permissions",
         data: $(this.$.form).serialize(),
         type: 'put',
         success: function(){
-          cs.ui.notify(L.changes_saved, 'success', 5);
+          cs.ui.notify(this$.L.changes_saved, 'success', 5);
         }
       });
     },

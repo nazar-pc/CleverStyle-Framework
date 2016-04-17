@@ -6,7 +6,6 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L				= cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-themes'
 	behaviors	: [
@@ -55,7 +54,7 @@ Polymer(
 				data	:
 					theme	: @current_theme
 				success	: !~>
-					cs.ui.notify(L.changes_saved, 'success', 5)
+					cs.ui.notify(@L.changes_saved, 'success', 5)
 					@reload()
 					cs.Event.fire(
 						'admin/System/components/themes/current/after'
@@ -75,7 +74,7 @@ Polymer(
 	_upload : !->
 		@_upload_package(@$.file).then (meta) !~>
 			if meta.category != 'themes' || !meta.package || !meta.version
-				cs.ui.notify(L.this_is_not_theme_installer_file, 'error', 5)
+				cs.ui.notify(@L.this_is_not_theme_installer_file, 'error', 5)
 				return
 			# Looking for already present theme
 			for theme in @themes
@@ -90,6 +89,6 @@ Polymer(
 			type	: 'extract'
 			success	: !~>
 				@reload()
-				cs.ui.notify(L.changes_saved, 'success', 5)
+				cs.ui.notify(@L.changes_saved, 'success', 5)
 		)
 )

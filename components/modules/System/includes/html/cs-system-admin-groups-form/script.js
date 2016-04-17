@@ -8,27 +8,33 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-groups-form',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_groups_')],
     properties: {
       group_id: Number,
       group_title: '',
-      description: ''
+      group_description: ''
+    },
+    ready: function(){
+      var this$ = this;
+      if (this.group_id) {
+        $.getJSON('api/System/admin/groups/' + this.group_id, function(arg$){
+          this$.group_title = arg$.title, this$.group_description = arg$.description;
+        });
+      }
     },
     save: function(){
+      var this$ = this;
       $.ajax({
         url: 'api/System/admin/groups' + (this.group_id ? '/' + this.group_id : ''),
         type: this.group_id ? 'put' : 'post',
         data: {
-          id: this.group_id,
           title: this.group_title,
-          description: this.description
+          description: this.group_description
         },
         success: function(){
-          cs.ui.notify(L.changes_saved, 'success', 5);
+          cs.ui.notify(this$.L.changes_saved, 'success', 5);
         }
       });
     }

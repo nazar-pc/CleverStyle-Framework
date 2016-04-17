@@ -186,11 +186,11 @@ Polymer(
 					content	+= """<input type="hidden" name="db[#db_name]" value="0">"""
 			else
 				content	+= """<tr>
-					<th tooltip="#{cs.prepare_attr_value(L.appointment_of_db_info)}">
+					<th tooltip="#{L.appointment_of_db_info}">
 						#{L.appointment_of_db}
 						<cs-tooltip/>
 					</th>
-					<th tooltip="#{cs.prepare_attr_value(L.system_db_info)}">
+					<th tooltip="#{L.system_db_info}">
 						#{L.system_db}
 						<cs-tooltip/>
 					</th>
@@ -212,11 +212,11 @@ Polymer(
 					content	+= """<input type="hidden" name="storage[#storage_name]" value="0">"""
 			else
 				content	+= """<tr>
-					<th tooltip="#{cs.prepare_attr_value(L.appointment_of_storage_info)}">
+					<th tooltip="#{L.appointment_of_storage_info}">
 						#{L.appointment_of_storage}
 						<cs-tooltip/>
 					</th>
-					<th tooltip="#{cs.prepare_attr_value(L.system_storage_info)}">
+					<th tooltip="#{L.system_storage_info}">
 						#{L.system_storage}
 						<cs-tooltip/>
 					</th>

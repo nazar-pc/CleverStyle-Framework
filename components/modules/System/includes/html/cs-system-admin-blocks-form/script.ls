@@ -6,7 +6,6 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L	= cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-blocks-form'
 	behaviors	: [
@@ -55,7 +54,7 @@ Polymer(
 			url		: 'api/System/admin/blocks' + (if index then "/#index" else '')
 			type	: if index then 'put' else 'post'
 			data	: @block
-			success	: ->
-				cs.ui.notify(L.changes_saved, 'success', 5)
+			success	: !~>
+				cs.ui.notify(@L.changes_saved, 'success', 5)
 		)
 )

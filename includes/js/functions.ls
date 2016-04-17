@@ -6,16 +6,6 @@
  */
 L = cs.Language('system_profile_')
 /**
- * Adds method for symbol replacing at specified position
- *
- * @param {int}		index
- * @param {string}	symbol
- *
- * @return {string}
- */
-String::replaceAt = (index, symbol) ->
-	this.substr(0, index) + symbol + this.substr(index + symbol.length)
-/**
  * Supports algorithms sha1, sha224, sha256, sha384, sha512
  *
  * @param {object} jssha jsSHA object
@@ -183,41 +173,6 @@ cs.password_check = (password, min_length) ->
 			if matches.length > 1
 				++strength
 	strength
-/**
- * Bitwise XOR operation for 2 strings
- *
- * @param {string} string1
- * @param {string} string2
- *
- * @return {string}
- */
-cs.xor_string = (string1, string2) ->
-	len1	= string1.length
-	len2	= string2.length
-	if len2 > len1
-		[string1, string2, len1, len2]	= [string2, string1, len2, len1]
-	for j from 0 to len1
-		pos	= j % len2
-		string1	= string1.replaceAt(j, String.fromCharCode(string1.charCodeAt(j) ^ string2.charCodeAt(pos)))
-	string1
-/**
- * Prepare text to be used as value for html attribute value
- *
- * @param {string}|{string}[] string
- *
- * @return {string}|{string}[]
- */
-cs.prepare_attr_value = (string) ->
-	if string instanceof Array
-		for s in string.slice(0)
-			cs.prepare_attr_value(s)
-	else
-		String(string)
-			.replace(/&/g, '&amp;')
-			.replace(/'/g, '&apos;')
-			.replace(/"/g, '&quot;')
-			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;')
 cs.{}ui
 	/**
 	 * Modal dialog

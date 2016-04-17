@@ -33,7 +33,7 @@ Polymer(
 		group	= e.model.group
 		$(cs.ui.simple_modal("""
 			<h3>#{L.editing_group(group.title)}</h3>
-			<cs-system-admin-groups-form group_id="#{group.id}" group_title="#{cs.prepare_attr_value(group.title)}" description="#{cs.prepare_attr_value(group.description)}"/>
+			<cs-system-admin-groups-form group_id="#{group.id}"/>
 		""")).on('close', @~reload)
 	delete_group : (e) !->
 		group	= e.model.group

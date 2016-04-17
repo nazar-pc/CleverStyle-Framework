@@ -6,7 +6,6 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L	= cs.Language
 Polymer(
 	'is'		: 'cs-system-admin-permissions-for-item'
 	behaviors	: [
@@ -85,8 +84,8 @@ Polymer(
 			url		: 'api/System/admin/permissions/for_item'
 			data	: $(@$.form).serialize() + '&label=' + @label + '&group=' + @group
 			type	: 'post'
-			success	: !->
-				cs.ui.notify(L.changes_saved, 'success', 5)
+			success	: !~>
+				cs.ui.notify(@L.changes_saved, 'success', 5)
 		)
 	invert : (e) !->
 		$(e.currentTarget).closest('div')

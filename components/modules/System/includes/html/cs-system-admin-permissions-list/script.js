@@ -52,7 +52,7 @@
     edit_permission: function(e){
       var permission;
       permission = e.model.permission;
-      $(cs.ui.simple_modal("<h3>" + L.editing_permission(permission.group + '/' + permission.label) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form permission_id=\"" + permission.id + "\" label=\"" + cs.prepare_attr_value(permission.label) + "\" group=\"" + cs.prepare_attr_value(permission.group) + "\"/>")).on('close', bind$(this, 'reload'));
+      $(cs.ui.simple_modal("<h3>" + L.editing_permission(permission.group + '/' + permission.label) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form permission_id=\"" + permission.id + "\"/>")).on('close', bind$(this, 'reload'));
     },
     delete_permission: function(e){
       var permission, this$ = this;

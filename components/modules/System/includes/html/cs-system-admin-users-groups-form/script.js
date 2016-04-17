@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language;
   Polymer({
     'is': 'cs-system-admin-users-groups-form',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_users_')],
@@ -59,6 +57,7 @@
       });
     },
     save: function(){
+      var this$ = this;
       $.ajax({
         url: "api/System/admin/users/" + this.user + "/groups",
         data: {
@@ -68,7 +67,7 @@
         },
         type: 'put',
         success: function(){
-          return cs.ui.notify(L.changes_saved, 'success', 5);
+          cs.ui.notify(this$.L.changes_saved, 'success', 5);
         }
       });
     }
