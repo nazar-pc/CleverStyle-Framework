@@ -150,7 +150,7 @@ class Packages_manipulation {
 			) as $file
 		) {
 			$file = "$target_directory/$file";
-			if (file_exists($file) && is_writable($file)) {
+			if (is_writable($file)) {
 				unlink($file);
 				// Recursively remove all empty parent directories
 				while (!get_files_list($file = dirname($file))) {
@@ -168,6 +168,8 @@ class Packages_manipulation {
 	 * @param string     $target_directory
 	 * @param string     $old_version
 	 * @param array|null $db_array `$Config->components['modules'][$module]['db']` if module or system
+	 *
+	 * @throws \cs\ExitException
 	 */
 	static function update_php_sql ($target_directory, $old_version, $db_array = null) {
 		foreach (self::get_update_versions($target_directory) as $version) {
@@ -207,6 +209,8 @@ class Packages_manipulation {
 	 * @param string $directory        Base path to SQL files
 	 * @param array  $db_configuration Array in form [$db_name => $index]
 	 * @param string $version          In case when we are working with update script we might have version subdirectory
+	 *
+	 * @throws \cs\ExitException
 	 */
 	static function execute_sql_from_directory ($directory, $db_configuration, $version = '') {
 		$Config = Config::instance();
@@ -286,15 +290,13 @@ class Packages_manipulation {
 		/**
 		 * If some required packages still missing
 		 */
-		if (!empty($meta['require'])) {
-			foreach ($meta['require'] as $package => $details) {
-				$dependencies['require']['unknown'][] = [
-					'name'     => $package,
-					'required' => $details
-				];
-			}
-			unset($package, $details);
+		foreach ($meta['require'] as $package => $details) {
+			$dependencies['require']['unknown'][] = [
+				'name'     => $package,
+				'required' => $details
+			];
 		}
+		unset($package, $details);
 		if (!self::check_dependencies_db($meta['db_support'])) {
 			$dependencies['db_support'] = $meta['db_support'];
 		}
@@ -459,17 +461,7 @@ class Packages_manipulation {
 	 * @return array
 	 */
 	protected static function check_requirement_satisfaction ($new_meta, $existing_meta) {
-		if (
-			isset($new_meta['require']) &&
-			$conflicts = self::check_conflicts(
-				$new_meta['require'],
-				$existing_meta['package'],
-				$existing_meta['version']
-			)
-		) {
-			return $conflicts;
-		}
-		return [];
+		return self::check_conflicts($new_meta['require'], $existing_meta['package'], $existing_meta['version']);
 	}
 	/**
 	 * Check whether other component is required and have satisfactory version
@@ -524,14 +516,8 @@ class Packages_manipulation {
 	 * @return array
 	 */
 	protected static function get_dependencies_conflicts_one_step ($meta_from, $meta_to) {
-		if (
-			isset($meta_from['conflict']) &&
-			$conflicts = self::check_conflicts(
-				$meta_from['conflict'],
-				$meta_to['package'],
-				$meta_to['version']
-			)
-		) {
+		$conflicts = self::check_conflicts($meta_from['conflict'], $meta_to['package'], $meta_to['version']);
+		if ($conflicts) {
 			return [
 				'package'        => $meta_from['package'],
 				'conflicts_with' => $meta_to['package'],
@@ -645,7 +631,7 @@ class Packages_manipulation {
 			preg_match('/^([^<=>!]+)([<=>!]*)(.*)$/', $d, $d);
 			/** @noinspection NestedTernaryOperatorInspection */
 			$return[$d[1]][] = [
-				isset($d[2]) && $d[2] ? str_replace('=>', '>=', $d[2]) : (isset($d[3]) && $d[3] ? '=' : '>='),
+				isset($d[2]) && $d[2] ? $d[2] : (isset($d[3]) && $d[3] ? '=' : '>='),
 				isset($d[3]) && $d[3] ? $d[3] : 0
 			];
 		}
