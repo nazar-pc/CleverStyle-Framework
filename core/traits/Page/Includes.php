@@ -248,9 +248,9 @@ trait Includes {
 		return $this;
 	}
 	/**
-	 * @param string[] $path
+	 * @param string[]|string[][] $path
 	 *
-	 * @return string[]
+	 * @return string[]|string[][]
 	 */
 	protected function absolute_path_to_relative ($path) {
 		return _substr($path, strlen(DIR) + 1);
@@ -342,28 +342,16 @@ trait Includes {
 			file_put_json(PUBLIC_CACHE."/$this->pcache_basename.json", [$dependencies, $compressed_includes_map]);
 			Event::instance()->fire('System/Page/rebuild_cache');
 		}
-		list($dependencies, $current_url) = $this->get_includes_prepare($dependencies, '+');
-		$system_includes       = [];
-		$dependencies_includes = [];
-		$includes              = [];
-		foreach ($compressed_includes_map as $filename_prefix => $local_includes) {
-			if ($filename_prefix == 'System') {
-				$system_includes = $local_includes;
-			} elseif ($this->get_includes_is_dependency($dependencies, $filename_prefix, '/')) {
-				$dependencies_includes[] = $local_includes;
-			} elseif (mb_strpos($current_url, $filename_prefix) === 0) {
-				$includes[] = $local_includes;
-			}
-		}
-		return array_merge_recursive($system_includes, ...$dependencies_includes, ...$includes);
+		return $this->get_normalized_includes($dependencies, $compressed_includes_map, '+');
 	}
 	/**
-	 * @param array  $dependencies
-	 * @param string $separator `+` or `/`
+	 * @param array      $dependencies
+	 * @param string[][] $includes_map
+	 * @param string     $separator `+` or `/`
 	 *
 	 * @return array
 	 */
-	protected function get_includes_prepare ($dependencies, $separator) {
+	protected function get_normalized_includes ($dependencies, $includes_map, $separator) {
 		$Request        = Request::instance();
 		$current_module = $Request->current_module;
 		/**
@@ -374,11 +362,23 @@ trait Includes {
 		/**
 		 * Narrow the dependencies to current module only
 		 */
-		$dependencies = array_merge(
+		$dependencies          = array_merge(
 			isset($dependencies[$current_module]) ? $dependencies[$current_module] : [],
 			$dependencies['System']
 		);
-		return [$dependencies, $current_url];
+		$system_includes       = [];
+		$dependencies_includes = [];
+		$includes              = [];
+		foreach ($includes_map as $path => $local_includes) {
+			if ($path == 'System') {
+				$system_includes = $local_includes;
+			} elseif ($this->get_includes_is_dependency($dependencies, $path, '/')) {
+				$dependencies_includes[] = $local_includes;
+			} elseif (mb_strpos($current_url, $path) === 0) {
+				$includes[] = $local_includes;
+			}
+		}
+		return array_merge_recursive($system_includes, ...$dependencies_includes, ...$includes);
 	}
 	/**
 	 * Creates cached version of given HTML, JS and CSS files.
@@ -445,20 +445,7 @@ trait Includes {
 		// To determine all dependencies and stuff we need `$Config` object to be already created
 		if ($Config) {
 			list($dependencies, $includes_map) = $this->includes_dependencies_and_map();
-			list($dependencies, $current_url) = $this->get_includes_prepare($dependencies, '/');
-			$system_includes       = [];
-			$dependencies_includes = [];
-			$includes              = [];
-			foreach ($includes_map as $url => $local_includes) {
-				if ($url == 'System') {
-					$system_includes = $local_includes;
-				} elseif ($this->get_includes_is_dependency($dependencies, $url, '/')) {
-					$dependencies_includes[] = $local_includes;
-				} elseif (mb_strpos($current_url, $url) === 0) {
-					$includes[] = $local_includes;
-				}
-			}
-			$includes = array_merge_recursive($system_includes, ...$dependencies_includes, ...$includes);
+			$includes = $this->get_normalized_includes($dependencies, $includes_map, '/');
 		} else {
 			$includes = $this->get_includes_list();
 		}
@@ -483,6 +470,11 @@ trait Includes {
 				$Request->admin_path || $Request->admin_path == ($url_exploded[0] == 'admin')
 			);
 	}
+	/**
+	 * @param string[][] $includes
+	 *
+	 * @return string[][]
+	 */
 	protected function add_versions_hash ($includes) {
 		$content = array_map('file_get_contents', get_files_list(DIR.'/components', '/^meta\.json$/', 'f', true, true));
 		$content = implode('', $content);
