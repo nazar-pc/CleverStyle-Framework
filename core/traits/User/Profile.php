@@ -36,11 +36,6 @@ trait Profile {
 	 */
 	protected $data = [];
 	/**
-	 * Changed users data, at the finish, data in db must be replaced by this data
-	 * @var array
-	 */
-	protected $data_set = [];
-	/**
 	 * Whether to use memory cache (locally, inside object, may require a lot of memory if working with many users together)
 	 * @var bool
 	 */
@@ -124,54 +119,54 @@ trait Profile {
 	 * @return bool
 	 */
 	function set ($item, $value = null, $user = false) {
-		$result = $this->set_internal($item, $value, $user);
-		$this->persist_data();
-		return $result;
-	}
-	/**
-	 * Saving changes of cache and users data
-	 */
-	protected function persist_data () {
-		foreach ($this->data_set as $user => $data_set) {
-			$update = [];
-			foreach ($data_set as $item => $value) {
-				if ($item != 'id' && in_array($item, $this->users_columns)) {
-					$value    = xap($value, false);
-					$update[] = "`$item` = ".$this->db_prime()->s($value);
-				}
-			}
-			if ($update) {
-				$update = implode(', ', $update);
-				$this->db_prime()->q(
-					"UPDATE `[prefix]users`
-					SET $update
-					WHERE `id` = '$user'"
-				);
-				unset($this->data[$user], $this->cache->$user);
-			}
+		$user     = (int)$user ?: $this->id;
+		$data_set = [];
+		if (!$this->set_internal($item, $value, $user, $data_set)) {
+			return false;
 		}
-		$this->data_set = [];
+		if (!$data_set) {
+			return true;
+		}
+		$update = [];
+		foreach (array_keys($data_set) as $column) {
+			$update[] = "`$column` = '%s'";
+		}
+		$update = implode(', ', $update);
+		$result = $this->db_prime()->q(
+			"UPDATE `[prefix]users`
+			SET $update
+			WHERE `id` = '$user'",
+			xap($data_set, false)
+		);
+		if ($result) {
+			unset($this->data[$user], $this->cache->$user);
+		}
+		return $result;
 	}
 	/**
 	 * Set data item of specified user
 	 *
 	 * @param array|string    $item Item-value array may be specified for setting several items at once
 	 * @param int|null|string $value
-	 * @param false|int       $user If not specified - current user assumed
+	 * @param int             $user If not specified - current user assumed
+	 * @param array           $data_set
 	 *
 	 * @return bool
 	 */
-	protected function set_internal ($item, $value = null, $user = false) {
-		$user = (int)$user ?: $this->id;
+	protected function set_internal ($item, $value = null, $user, &$data_set) {
 		if (is_array($item)) {
 			$result = true;
 			foreach ($item as $i => $v) {
-				$result = $result && $this->set($i, $v, $user);
+				$result = $result && $this->set_internal($i, $v, $user, $data_set);
 			}
 			return $result;
 		}
 		if (!$this->set_internal_allowed($user, $item, $value)) {
 			return false;
+		}
+		$old_value = $this->get($item, $user);
+		if ($value == $old_value) {
+			return true;
 		}
 		if ($item == 'language') {
 			$value = $value ? Language::instance()->get('clanguage', $value) : '';
@@ -184,30 +179,30 @@ trait Profile {
 			) {
 				$value = '';
 			} else {
-				$old_value = $this->get($item, $user);
-				if ($value !== $old_value) {
-					$Event = Event::instance();
-					$Event->fire(
-						'System/upload_files/del_tag',
-						[
-							'url' => $old_value,
-							'tag' => "users/$user/avatar"
-						]
-					);
-					$Event->fire(
-						'System/upload_files/add_tag',
-						[
-							'url' => $value,
-							'tag' => "users/$user/avatar"
-						]
-					);
-				}
+				$Event = Event::instance();
+				$Event->fire(
+					'System/upload_files/del_tag',
+					[
+						'url' => $old_value,
+						'tag' => "users/$user/avatar"
+					]
+				);
+				$Event->fire(
+					'System/upload_files/add_tag',
+					[
+						'url' => $value,
+						'tag' => "users/$user/avatar"
+					]
+				);
 			}
 		}
-		$this->data_set[$user][$item] = $value;
+		/**
+		 * @var string $item
+		 */
+		$data_set[$item] = $value;
 		if (in_array($item, ['login', 'email'], true)) {
-			$old_value                            = $this->get($item.'_hash', $user);
-			$this->data_set[$user][$item.'_hash'] = hash('sha224', $value);
+			$old_value               = $this->get($item.'_hash', $user);
+			$data_set[$item.'_hash'] = hash('sha224', $value);
 			unset($this->cache->$old_value);
 		} elseif ($item == 'password_hash' || ($item == 'status' && $value == 0)) {
 			Session::instance()->del_all($user);
