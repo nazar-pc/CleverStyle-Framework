@@ -153,7 +153,7 @@ trait Profile {
 	 *
 	 * @return bool
 	 */
-	protected function set_internal ($item, $value = null, $user, &$data_set) {
+	protected function set_internal ($item, $value, $user, &$data_set) {
 		if (is_array($item)) {
 			$result = true;
 			foreach ($item as $i => $v) {
