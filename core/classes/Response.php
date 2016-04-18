@@ -177,6 +177,7 @@ class Response {
 	 * Provides default output for all the response data using `header()`, `http_response_code()` and `echo` or `php://output`
 	 */
 	function output_default () {
+		ob_implicit_flush(true);
 		if (Request::instance()->cli_path) {
 			$this->output_default_cli();
 		} else {
