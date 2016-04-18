@@ -141,7 +141,7 @@ trait Profile {
 		if ($result) {
 			unset($this->data[$user], $this->cache->$user);
 		}
-		return $result;
+		return (bool)$result;
 	}
 	/**
 	 * Set data item of specified user
