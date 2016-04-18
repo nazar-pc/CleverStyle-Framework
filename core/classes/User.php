@@ -11,7 +11,8 @@ use
 	cs\User\Data as User_data,
 	cs\User\Group as User_group,
 	cs\User\Management as User_management,
-	cs\User\Permission as User_permission;
+	cs\User\Permission as User_permission,
+	cs\User\Profile as User_profile;
 
 /**
  * Class for users manipulating
@@ -70,7 +71,8 @@ class User {
 		User_data,
 		User_group,
 		User_management,
-		User_permission;
+		User_permission,
+		User_profile;
 	/**
 	 * Id of system guest user
 	 */
