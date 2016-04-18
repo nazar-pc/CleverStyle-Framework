@@ -16,6 +16,7 @@ use
 	cs\Language,
 	cs\Permission,
 	cs\Session,
+	cs\modules\System\Packages_dependencies,
 	cs\modules\System\Packages_manipulation;
 
 trait modules {
@@ -82,7 +83,7 @@ trait modules {
 			throw new ExitException(404);
 		}
 		$meta_file = MODULES."/$module/meta.json";
-		return file_exists($meta_file) ? Packages_manipulation::get_dependent_packages(file_get_json($meta_file)) : [];
+		return file_exists($meta_file) ? Packages_dependencies::get_dependent_packages(file_get_json($meta_file)) : [];
 	}
 	/**
 	 * @param string $module
@@ -96,7 +97,7 @@ trait modules {
 			throw new ExitException(404);
 		}
 		$meta_file = MODULES."/$module/meta.json";
-		return file_exists($meta_file) ? Packages_manipulation::get_dependencies(file_get_json($meta_file)) : [];
+		return file_exists($meta_file) ? Packages_dependencies::get_dependencies(file_get_json($meta_file)) : [];
 	}
 	/**
 	 * @param string $module
@@ -121,7 +122,7 @@ trait modules {
 		if (!static::is_same_module($new_meta, $module)) {
 			throw new ExitException(Language::prefix('system_admin_modules_')->this_is_not_module_installer_file, 400);
 		}
-		return Packages_manipulation::get_dependencies($new_meta);
+		return Packages_dependencies::get_dependencies($new_meta);
 	}
 	/**
 	 * @param array  $meta

@@ -15,6 +15,7 @@ use
 	cs\ExitException,
 	cs\Language,
 	cs\Session,
+	cs\modules\System\Packages_dependencies,
 	cs\modules\System\Packages_manipulation;
 
 trait plugins {
@@ -65,7 +66,7 @@ trait plugins {
 			throw new ExitException(404);
 		}
 		$meta_file = PLUGINS."/$plugin/meta.json";
-		return file_exists($meta_file) ? Packages_manipulation::get_dependent_packages(file_get_json($meta_file)) : [];
+		return file_exists($meta_file) ? Packages_dependencies::get_dependent_packages(file_get_json($meta_file)) : [];
 	}
 	/**
 	 * @param string $plugin
@@ -80,7 +81,7 @@ trait plugins {
 			throw new ExitException(404);
 		}
 		$meta_file = PLUGINS."/$plugin/meta.json";
-		return file_exists($meta_file) ? Packages_manipulation::get_dependencies(file_get_json($meta_file)) : [];
+		return file_exists($meta_file) ? Packages_dependencies::get_dependencies(file_get_json($meta_file)) : [];
 	}
 	/**
 	 * @param string $plugin
@@ -110,7 +111,7 @@ trait plugins {
 		) {
 			throw new ExitException(Language::prefix('system_admin_modules_')->this_is_not_plugin_installer_file, 400);
 		}
-		return Packages_manipulation::get_dependencies($new_meta);
+		return Packages_dependencies::get_dependencies($new_meta);
 	}
 	protected static function get_plugins_list () {
 		$Config       = Config::instance();
