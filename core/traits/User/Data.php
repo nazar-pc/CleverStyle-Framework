@@ -77,9 +77,6 @@ trait Data {
 	 */
 	protected function get_internal ($item, $user = false) {
 		$user = (int)$user ?: $this->id;
-		if (!$user) {
-			return false;
-		}
 		if (isset($this->data[$user])) {
 			$data = $this->data[$user];
 		} else {
@@ -142,9 +139,6 @@ trait Data {
 	 */
 	protected function set_internal ($item, $value = null, $user = false) {
 		$user = (int)$user ?: $this->id;
-		if (!$user) {
-			return false;
-		}
 		if (is_array($item)) {
 			$result = true;
 			foreach ($item as $i => $v) {
@@ -155,9 +149,9 @@ trait Data {
 		if (!$this->set_internal_allowed($user, $item, $value)) {
 			return false;
 		}
-		if ($item === 'language') {
+		if ($item == 'language') {
 			$value = $value ? Language::instance()->get('clanguage', $value) : '';
-		} elseif ($item === 'timezone') {
+		} elseif ($item == 'timezone') {
 			$value = in_array($value, get_timezones_list(), true) ? $value : '';
 		} elseif ($item == 'avatar') {
 			if (
@@ -191,7 +185,7 @@ trait Data {
 			$old_value                            = $this->get($item.'_hash', $user);
 			$this->data_set[$user][$item.'_hash'] = hash('sha224', $value);
 			unset($this->cache->$old_value);
-		} elseif ($item === 'password_hash' || ($item === 'status' && $value == 0)) {
+		} elseif ($item == 'password_hash' || ($item == 'status' && $value == 0)) {
 			Session::instance()->del_all($user);
 		}
 		return true;
@@ -207,8 +201,8 @@ trait Data {
 	 */
 	protected function set_internal_allowed ($user, $item, $value) {
 		if (
-			$user === User::GUEST_ID ||
-			$item === 'id' ||
+			$user == User::GUEST_ID ||
+			$item == 'id' ||
 			!in_array($item, $this->users_columns, true)
 		) {
 			return false;
@@ -216,12 +210,12 @@ trait Data {
 		if (in_array($item, ['login', 'email'], true)) {
 			$value = mb_strtolower($value);
 			if (
-				$item === 'email' &&
+				$item == 'email' &&
 				!filter_var($value, FILTER_VALIDATE_EMAIL)
 			) {
 				return false;
 			}
-			if ($value === $this->get($item, $user)) {
+			if ($value == $this->get($item, $user)) {
 				return true;
 			}
 			return !$this->get_id(hash('sha224', $value));
@@ -238,7 +232,7 @@ trait Data {
 	 */
 	function get_data ($item, $user = false) {
 		$user = (int)$user ?: $this->id;
-		if (!$user || !$item || $user == User::GUEST_ID) {
+		if (!$item || $user == User::GUEST_ID) {
 			return false;
 		}
 		$Cache = $this->cache;
@@ -314,49 +308,34 @@ trait Data {
 	 */
 	function set_data ($item, $value = null, $user = false) {
 		$user = (int)$user ?: $this->id;
-		if (!$user || !$item || $user == User::GUEST_ID) {
+		if (!$item || $user == User::GUEST_ID) {
 			return false;
 		}
-		if (is_array($item)) {
-			$params = [];
-			foreach ($item as $i => $v) {
-				$params[] = [
-					$i,
-					_json_encode($v)
-				];
-			}
-			unset($i, $v);
-			$result = $this->db_prime()->insert(
-				"REPLACE INTO `[prefix]users_data`
-					(
-						`id`,
-						`item`,
-						`value`
-					) VALUES (
-						$user,
-						'%s',
-						'%s'
-					)",
-				$params
-			);
-		} else {
-			$result = $this->db_prime()->q(
-				"REPLACE INTO `[prefix]users_data`
-					(
-						`id`,
-						`item`,
-						`value`
-					) VALUES (
-						'$user',
-						'%s',
-						'%s'
-					)",
-				$item,
-				_json_encode($value)
-			);
+		if (!is_array($item)) {
+			$item = [
+				$item => $value
+			];
 		}
-		unset($this->cache->{"data/$user"});
-		return (bool)$result;
+		$params = [];
+		foreach ($item as $i => $v) {
+			$params[] = [$i, _json_encode($v)];
+		}
+		unset($i, $v);
+		$result = $this->db_prime()->insert(
+			"REPLACE INTO `[prefix]users_data`
+				(
+					`id`,
+					`item`,
+					`value`
+				) VALUES (
+					$user,
+					'%s',
+					'%s'
+				)",
+			$params
+		);
+		$this->cache->del("data/$user");
+		return $result;
 	}
 	/**
 	 * Deletion of additional data item(s) of specified user
@@ -368,7 +347,7 @@ trait Data {
 	 */
 	function del_data ($item, $user = false) {
 		$user = (int)$user ?: $this->id;
-		if (!$user || !$item || $user == User::GUEST_ID) {
+		if (!$item || $user == User::GUEST_ID) {
 			return false;
 		}
 		$item   = implode(
@@ -381,7 +360,7 @@ trait Data {
 				`id`	= '$user' AND
 				`item`	IN($item)"
 		);
-		unset($this->cache->{"data/$user"});
+		$this->cache->del("data/$user");
 		return (bool)$result;
 	}
 	/**
@@ -443,7 +422,7 @@ trait Data {
 	 */
 	function username ($user = false) {
 		$user = (int)$user ?: $this->id;
-		if ($user === User::GUEST_ID) {
+		if ($user == User::GUEST_ID) {
 			return Language::instance()->system_profile_guest;
 		}
 		$username = $this->get('username', $user);
