@@ -3,7 +3,7 @@ Basic operations on permissions
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 $Permission = Permission::instance();
 var_dump('all permissions', $Permission->get_all());
 var_dump('permission 1', $Permission->get(1));

@@ -7,7 +7,7 @@
  * @license    MIT License, see license.txt
  */
 namespace cs;
-include __DIR__.'/../../custom_loader.php';
+include __DIR__.'/../../bootstrap.php';
 include __DIR__.'/_Fake_engine.php';
 Config::instance_stub(
 	[

@@ -3,7 +3,7 @@ Basic features using FileSystem cache engine
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 Core::instance_stub(
 	[
 		'cache_engine' => 'FileSystem'
@@ -45,6 +45,6 @@ Done
 Done
 --CLEAN--
 <?php
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 exec('rm -r '.CACHE.'/*');
 ?>

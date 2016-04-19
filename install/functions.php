@@ -219,7 +219,7 @@ function install_process ($fs, $argv = null) {
 	 * Basic system configuration
 	 */
 	$public_key  = hash('sha512', random_bytes(1000));
-	$main_config = file_exists(ROOT.'/config') && file_put_contents(
+	$main_config = is_dir(ROOT.'/config') && file_put_contents(
 			ROOT.'/config/main.json',
 			str_replace(
 				[

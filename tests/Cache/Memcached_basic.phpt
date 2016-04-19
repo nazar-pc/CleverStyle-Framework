@@ -9,7 +9,7 @@ if (!class_exists('Memcached')) {
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 Core::instance_stub([
 	'cache_engine'		=> 'Memcached',
 	'memcached_host'	=> '127.0.0.1',
@@ -48,6 +48,6 @@ Done
 Done
 --CLEAN--
 <?php
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 exec('rm -r '.CACHE.'/*');
 ?>

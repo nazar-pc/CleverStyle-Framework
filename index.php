@@ -30,7 +30,7 @@ if (version_compare(PHP_VERSION, '5.6', '<')) {
 	return;
 }
 
-require_once DIR.'/core/bootstrap.php';
+require_once __DIR__.'/core/bootstrap.php';
 
 try {
 	Request::instance()->init_from_globals();

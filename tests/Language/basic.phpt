@@ -3,7 +3,7 @@ Basic Language functionality
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 Config::instance_stub(
 	[
 		'core' => [

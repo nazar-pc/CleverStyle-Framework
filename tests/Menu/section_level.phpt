@@ -3,7 +3,7 @@ Section level menu
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 Request::instance()->current_module = 'System';
 Event::instance_stub();
 $Menu = Menu::instance();

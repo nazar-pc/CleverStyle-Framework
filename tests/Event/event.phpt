@@ -3,7 +3,7 @@ Events functionality
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 $Event = Event::instance();
 $Event->on('event/empty_return', function () {
 	return;

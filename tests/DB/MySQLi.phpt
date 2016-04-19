@@ -8,7 +8,7 @@ if (getenv('DB') && getenv('DB') != 'MySQLi') {
 ?>
 --FILE--
 <?php
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 $db = new \cs\DB\MySQLi('cscms.travis', 'travis', '', '127.0.0.1', 'utf8mb4', 'xyz_');
 if (!$db->connected()) {
 	die('Connection failed:(');

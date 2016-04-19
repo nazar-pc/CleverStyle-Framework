@@ -3,7 +3,7 @@ Basic operations on groups
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 $Group = Group::instance();
 var_dump('all groups', $Group->get_all());
 var_dump('group 1', $Group->get(1));

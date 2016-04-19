@@ -4,7 +4,7 @@ Language in Accept-Language header
 <?php
 namespace cs;
 
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'uk,uk-ua;q=0.5';
 Request::instance()->init_server($_SERVER);
 Config::instance_stub(

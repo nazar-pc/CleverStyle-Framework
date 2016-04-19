@@ -3,7 +3,7 @@ Language in url
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 $_SERVER['REQUEST_URI'] = '/uk';
 Request::instance()->init_server($_SERVER);
 Config::instance_stub(

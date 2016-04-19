@@ -3,7 +3,7 @@ Home page rendering
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 do_request();
 echo Response::instance()->body;
 ?>

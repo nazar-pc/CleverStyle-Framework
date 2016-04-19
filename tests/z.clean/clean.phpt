@@ -9,7 +9,7 @@ if (!is_dir("$root/cscms.travis")) {
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 /**
  * @var DB\_Abstract $cdb
  */

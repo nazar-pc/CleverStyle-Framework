@@ -2,7 +2,7 @@
 Test for correctly modified PHPMailer and SMTP classes
 --FILE--
 <?php
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 require DIR.'/core/thirdparty/PHPMailer.php';
 if (method_exists('PHPMailer', '__construct')) {
 	die('__construct() method should be removed from PHPMailer class');

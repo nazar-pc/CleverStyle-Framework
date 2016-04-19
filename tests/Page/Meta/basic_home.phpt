@@ -4,7 +4,7 @@ Basic Meta functionality (home page)
 <?php
 namespace cs;
 use cs\Page\Meta;
-include __DIR__.'/../../custom_loader.php';
+include __DIR__.'/../../bootstrap.php';
 Request::instance()->home_page = true;
 Config::instance_stub(
 	[

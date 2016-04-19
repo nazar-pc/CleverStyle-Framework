@@ -7,9 +7,10 @@
  * @license    MIT License, see license.txt
  */
 namespace cs;
+require_once __DIR__.'/../cscms.travis/core/traits/Singleton/Base.php';
+require_once __DIR__.'/Singleton.php';
 require_once __DIR__.'/../cscms.travis/core/bootstrap.php';
 require_once __DIR__.'/Mock_object.php';
-require_once __DIR__.'/Singleton.php';
 require_once __DIR__.'/functions.php';
 
 $_SERVER = [
@@ -21,3 +22,7 @@ $_SERVER = [
 	'QUERY_STRING'         => '',
 	'REQUEST_URI'          => '/'
 ];
+
+if (!defined('DEBUG')) {
+	define('DEBUG', false);
+}

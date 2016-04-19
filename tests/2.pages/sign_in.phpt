@@ -3,7 +3,7 @@ Sign in test
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 $_SERVER['REQUEST_URI']           = '/api/System/profile';
 $_SERVER['REQUEST_METHOD']        = 'SIGN_IN';
 $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';

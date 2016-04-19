@@ -3,7 +3,7 @@ Language in -Locale header
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 $_SERVER['HTTP_X_FACEBOOK_LOCALE'] = 'uk_UA';
 Request::instance()->init_server($_SERVER);
 Config::instance_stub(

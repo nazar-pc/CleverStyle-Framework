@@ -17,4 +17,4 @@ rename(__DIR__."/../../cscms.travis/CleverStyle_CMS_$version.phar.php", __DIR__.
 chdir($target);
 system("$_SERVER[TEST_PHP_EXECUTABLE] distributive.phar.php $arguments");
 // Remove php config because its parameters anyway will be declared by custom loader or tests or not used at all
-unlink("$target/config/main.php");
+file_put_contents("$target/config/main.php", '');
