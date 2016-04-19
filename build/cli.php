@@ -27,8 +27,8 @@ $themes  = array_filter(explode(',', @$options['t'] ?: @$options['themes']));
 /** @noinspection NestedTernaryOperatorInspection */
 $suffix = (@$options['s'] ?: @$options['suffix']) ?: null;
 if (
-	@$options['h'] ||
-	@$options['help'] ||
+	isset($options['h']) ||
+	isset($options['help']) ||
 	!in_array($mode, ['core', 'module', 'plugin', 'theme'])
 ) {
 	echo <<<HELP
