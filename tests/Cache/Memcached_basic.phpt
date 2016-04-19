@@ -21,8 +21,3 @@ require __DIR__.'/_test.php';
 ?>
 --EXPECT_EXTERNAL--
 _test.expect
---CLEAN--
-<?php
-include __DIR__.'/../bootstrap.php';
-exec('rm -r '.CACHE.'/*');
-?>
