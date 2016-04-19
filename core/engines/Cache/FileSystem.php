@@ -69,7 +69,7 @@ class FileSystem extends _Abstract {
 			unset($path);
 		}
 		if (!file_exists($path_in_filesystem) || is_writable($path_in_filesystem)) {
-			return file_put_contents($path_in_filesystem, $data, LOCK_EX | FILE_BINARY);
+			return (bool)file_put_contents($path_in_filesystem, $data, LOCK_EX | FILE_BINARY);
 		}
 		trigger_error("File $path_in_filesystem not available for writing", E_USER_WARNING);
 		return false;

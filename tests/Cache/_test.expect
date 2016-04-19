@@ -1,0 +1,18 @@
+string(13) "initial state"
+bool(true)
+string(10) "simple set"
+bool(true)
+string(10) "simple get"
+string(9) "blablabla"
+string(10) "simple del"
+bool(true)
+string(13) "get after del"
+bool(false)
+string(16) "set the same key"
+bool(true)
+string(19) "state after disable"
+bool(false)
+string(17) "get after disable"
+bool(false)
+string(31) "get with callback after disable"
+int(5)
