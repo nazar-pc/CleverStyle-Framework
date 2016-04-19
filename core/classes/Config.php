@@ -120,7 +120,7 @@ class Config {
 				FROM `[prefix]config`
 				WHERE `domain` = '%s'
 				LIMIT 1",
-				DOMAIN
+				Core::instance()->domain
 			]
 		);
 		if (is_array($result)) {
@@ -208,7 +208,7 @@ class Config {
 			_json_encode($this->db),
 			_json_encode($this->storage),
 			_json_encode($this->components),
-			DOMAIN
+			Core::instance()->domain
 		)
 		) {
 			$this->apply_internal(false);

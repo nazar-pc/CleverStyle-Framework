@@ -6,6 +6,9 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\Cache;
+use
+	cs\Core;
+
 /**
  * Abstract class that simplifies creating cache engines without namespaces support
  *
@@ -105,10 +108,21 @@ abstract class _Abstract_with_namespace extends _Abstract {
 		if (!$this->available_internal()) {
 			return false;
 		}
+		$domain = $this->domain();
 		$this->del_internal($this->namespaces_imitation($item));
-		$this->increment_internal('/'.DOMAIN."/$item");
-		unset($this->root_versions_cache['/'.DOMAIN."/$item"]);
+		$this->increment_internal("/$domain/$item");
+		unset($this->root_versions_cache["/$domain/$item"]);
 		return true;
+	}
+	/**
+	 * @return string
+	 */
+	protected function domain () {
+		static $domain;
+		if (!isset($domain)) {
+			$domain = Core::instance()->domain;
+		}
+		return $domain;
 	}
 	/**
 	 * @inheritdoc
@@ -129,10 +143,11 @@ abstract class _Abstract_with_namespace extends _Abstract {
 	 * @return string
 	 */
 	protected function namespaces_imitation ($item) {
+		$domain = $this->domain();
 		$exploded = explode('/', $item);
 		$count    = count($exploded);
 		if ($count > 1) {
-			$item_path = DOMAIN;
+			$item_path = $domain;
 			--$count;
 			/** @noinspection ForeachInvariantsInspection */
 			for ($i = 0; $i < $count; ++$i) {
@@ -151,8 +166,8 @@ abstract class _Abstract_with_namespace extends _Abstract {
 					$this->root_versions_cache["/$item_path"] = $version;
 				}
 			}
-			return DOMAIN.'/'.implode('/', $exploded);
+			return "$domain/".implode('/', $exploded);
 		}
-		return DOMAIN."/$item";
+		return "$domain/$item";
 	}
 }

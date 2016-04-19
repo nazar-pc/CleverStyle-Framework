@@ -6,16 +6,12 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
+namespace cs\modules\Http_server;
 use
-	cs\modules\Http_server\Request;
+	React;
 
-/**
- * Time of start of execution, is used as current time
- */
-define('MICROTIME', microtime(true));         //Time in seconds (float)
-define('TIME', floor(MICROTIME));             //Time in seconds (integer)
-define('DIR', realpath(__DIR__.'/../../..')); //Root directory
-chdir(DIR);
+require_once __DIR__.'/../../../core/bootstrap.php';
+
 for ($i = 1; isset($argv[$i]); ++$i) {
 	switch ($argv[$i]) {
 		case '-p':
@@ -23,14 +19,14 @@ for ($i = 1; isset($argv[$i]); ++$i) {
 			break;
 	}
 }
-require_once __DIR__.'/custom_loader.php';
+
 $loop   = React\EventLoop\Factory::create();
 $socket = new React\Socket\Server($loop);
 $http   = new React\Http\Server($socket);
 
 $http->on(
 	'request',
-	function (\React\Http\Request $request, \React\Http\Response $response) {
+	function (React\Http\Request $request, React\Http\Response $response) {
 		$request->on(
 			'data',
 			function ($data) use ($request, $response) {

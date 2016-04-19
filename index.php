@@ -23,15 +23,22 @@
  * * MySQL 5.6+
  * * or MariaDB 10.0.5+
  */
+namespace cs;
+
 if (version_compare(PHP_VERSION, '5.6', '<')) {
 	echo 'CleverStyle CMS require PHP 5.6 or higher';
 	return;
 }
-/**
- * Time of start of execution, is used as current time
- */
-define('MICROTIME', microtime(true)); //Time in seconds (float)
-define('TIME', floor(MICROTIME));     //Time in seconds (integer)
-define('DIR', __DIR__);               //Root directory
-chdir(DIR);
-require_once DIR.'/core/loader.php';  //Loader starting
+
+require_once DIR.'/core/bootstrap.php';
+
+try {
+	Request::instance()->init_from_globals();
+	Response::instance()->init_with_typical_default_settings();
+	App::instance()->execute();
+} catch (ExitException $e) {
+	if ($e->getCode() >= 400) {
+		Page::instance()->error($e->getMessage() ?: null, $e->getJson());
+	}
+}
+Response::instance()->output_default();

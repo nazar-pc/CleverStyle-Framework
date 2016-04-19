@@ -7,21 +7,7 @@
  * @license    MIT License, see license.txt
  */
 namespace cs;
-/**
- * This is custom loader that includes basic files and defines constants,
- * but do not call any class to leave that all for test cases
- */
-if (!defined('MICROTIME')) {
-	/**
-	 * Time of start of execution, is used as current time
-	 */
-	define('MICROTIME', microtime(true));                //Time in seconds (float)
-	define('TIME', floor(MICROTIME));                    //Time in seconds (integer)
-	define('DIR', realpath(__DIR__.'/../cscms.travis')); //Root directory
-}
-chdir(DIR);
-
-require_once DIR.'/core/loader_base.php';      //Inclusion of loader base
+require_once __DIR__.'/../cscms.travis/core/bootstrap.php';
 require_once __DIR__.'/Mock_object.php';
 require_once __DIR__.'/Singleton.php';
 require_once __DIR__.'/functions.php';
@@ -35,10 +21,3 @@ $_SERVER = [
 	'QUERY_STRING'         => '',
 	'REQUEST_URI'          => '/'
 ];
-if (!defined('DEBUG')) {
-	define('DEBUG', false);
-}
-
-if (!defined('DOMAIN')) {
-	define('DOMAIN', 'cscms.travis');
-}

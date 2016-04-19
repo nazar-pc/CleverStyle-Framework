@@ -22,8 +22,8 @@ class Memcached extends _Abstract_with_namespace {
 		if (!extension_loaded('memcached')) {
 			return;
 		}
-		$this->memcached = new \Memcached(DOMAIN);
 		$Core            = Core::instance();
+		$this->memcached = new \Memcached($Core->domain);
 		$this->memcached->addServer($Core->memcached_host ?: '127.0.0.1', $Core->memcached_port ?: 11211);
 	}
 	/**
