@@ -16,18 +16,35 @@ trait Cache {
 	 * Resulting files names consist of `$filename_prefix` and extension.
 	 *
 	 * @param string     $target_file_path
-	 * @param string[][] $includes      Array of paths to files, may have keys: `css` and/or `js` and/or `html`
-	 * @param bool       $vulcanization Whether to put combined files separately or to make includes built-in (vulcanization)
+	 * @param string[][] $includes                   Array of paths to files, may have keys: `css` and/or `js` and/or `html`
+	 * @param bool       $vulcanization              Whether to put combined files separately or to make includes built-in (vulcanization)
+	 * @param string[][] $not_embedded_resources_map Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because
+	 *                                               of CSP
 	 *
 	 * @return array
 	 */
-	protected function cache_compressed_includes_files ($target_file_path, $includes, $vulcanization) {
+	protected function cache_compressed_includes_files ($target_file_path, $includes, $vulcanization, &$not_embedded_resources_map) {
 		$local_includes = [];
 		foreach ($includes as $extension => $files) {
-			$content   = $this->cache_compressed_includes_files_single($extension, $target_file_path, $files, $vulcanization);
+			$not_embedded_resources = [];
+			$content                = $this->cache_compressed_includes_files_single(
+				$extension,
+				$target_file_path,
+				$files,
+				$vulcanization,
+				$not_embedded_resources
+			);
+			foreach ($not_embedded_resources as &$resource) {
+				if (strpos($resource, '/') !== 0) {
+					$resource = "/storage/pcache/$resource";
+				}
+			}
+			unset($resource);
 			$file_path = "$target_file_path.$extension";
 			file_put_contents($file_path, gzencode($content, 9), LOCK_EX | FILE_BINARY);
-			$local_includes[$extension] = 'storage/pcache/'.basename($file_path).'?'.substr(md5($content), 0, 5);
+			$relative_path                              = 'storage/pcache/'.basename($file_path).'?'.substr(md5($content), 0, 5);
+			$local_includes[$extension]                 = $relative_path;
+			$not_embedded_resources_map[$relative_path] = $not_embedded_resources;
 		}
 		return $local_includes;
 	}
@@ -35,11 +52,12 @@ trait Cache {
 	 * @param string   $extension
 	 * @param string   $target_file_path
 	 * @param string[] $files
-	 * @param bool     $vulcanization Whether to put combined files separately or to make includes built-in (vulcanization)
+	 * @param bool     $vulcanization          Whether to put combined files separately or to make includes built-in (vulcanization)
+	 * @param string[] $not_embedded_resources Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because of CSP
 	 *
 	 * @return mixed
 	 */
-	protected function cache_compressed_includes_files_single ($extension, $target_file_path, $files, $vulcanization) {
+	protected function cache_compressed_includes_files_single ($extension, $target_file_path, $files, $vulcanization, &$not_embedded_resources) {
 		$content = '';
 		switch ($extension) {
 			/**
@@ -53,8 +71,8 @@ trait Cache {
 				 *
 				 * @return string
 				 */
-				$callback = function ($content, $file) {
-					return $content.Includes_processing::css(file_get_contents($file), $file);
+				$callback = function ($content, $file) use (&$not_embedded_resources) {
+					return $content.Includes_processing::css(file_get_contents($file), $file, $not_embedded_resources);
 				};
 				break;
 			/**
@@ -69,9 +87,15 @@ trait Cache {
 				 *
 				 * @return string
 				 */
-				$callback = function ($content, $file) use ($target_file_path, $vulcanization) {
+				$callback = function ($content, $file) use ($target_file_path, $vulcanization, &$not_embedded_resources) {
 					$base_target_file_path = "$target_file_path-".basename($file).'+'.substr(md5($file), 0, 5);
-					return $content.Includes_processing::html(file_get_contents($file), $file, $base_target_file_path, $vulcanization);
+					return $content.Includes_processing::html(
+						file_get_contents($file),
+						$file,
+						$base_target_file_path,
+						$vulcanization,
+						$not_embedded_resources
+					);
 				};
 				break;
 			case 'js':

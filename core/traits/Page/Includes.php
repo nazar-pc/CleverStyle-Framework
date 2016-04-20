@@ -13,6 +13,7 @@ use
 	cs\Event,
 	cs\Language,
 	cs\Request,
+	cs\Response,
 	cs\User,
 	h,
 	cs\Page\Includes\Cache,
@@ -235,7 +236,8 @@ trait Includes {
 		 */
 		if ($Config->core['cache_compress_js_css'] && !($Request->admin_path && isset($Request->query['debug']))) {
 			$this->webcomponents_polyfill($Request, true);
-			$includes = $this->get_includes_for_page_with_compression($Config);
+			list($includes, $preload) = $this->get_includes_and_preload_resource_for_page_with_compression($Config, $Request);
+			$this->add_preloads($preload);
 		} else {
 			$this->webcomponents_polyfill($Request, false);
 			/**
@@ -243,21 +245,13 @@ trait Includes {
 			 */
 			$this->config_internal(Language::instance(), 'cs.Language', true);
 			$this->config_internal($this->get_requirejs_paths(), 'requirejs.paths', true);
-			$includes = $this->get_includes_for_page_without_compression($Config);
+			$includes = $this->get_includes_for_page_without_compression($Config, $Request);
 		}
 		$this->css_internal($includes['css'], 'file', true);
 		$this->js_internal($includes['js'], 'file', true);
 		$this->html_internal($includes['html'], 'file', true);
 		$this->add_includes_on_page_manually_added($Config);
 		return $this;
-	}
-	/**
-	 * @param string[]|string[][] $path
-	 *
-	 * @return string[]|string[][]
-	 */
-	protected function absolute_path_to_relative ($path) {
-		return _substr($path, strlen(DIR) + 1);
 	}
 	/**
 	 * Add JS polyfills for IE/Edge
@@ -271,30 +265,6 @@ trait Includes {
 			'file',
 			true
 		);
-	}
-	/**
-	 * Hack: Add WebComponents Polyfill for browsers without native Shadow DOM support
-	 *
-	 * @param Request $Request
-	 * @param bool    $with_compression
-	 */
-	protected function webcomponents_polyfill ($Request, $with_compression) {
-		if ($Request->cookie('shadow_dom') == 1) {
-			return;
-		}
-		$file = 'includes/js/WebComponents-polyfill/webcomponents-custom.min.js';
-		if ($with_compression) {
-			$compressed_file = PUBLIC_CACHE.'/webcomponents.js';
-			if (!file_exists($compressed_file)) {
-				$content = file_get_contents(DIR."/$file");
-				file_put_contents($compressed_file, gzencode($content, 9), LOCK_EX | FILE_BINARY);
-				file_put_contents("$compressed_file.hash", substr(md5($content), 0, 5));
-			}
-			$hash = file_get_contents("$compressed_file.hash");
-			$this->js_internal("storage/pcache/webcomponents.js?$hash", 'file', true);
-		} else {
-			$this->js_internal($file, 'file', true);
-		}
 	}
 	protected function add_system_configs () {
 		$Config         = Config::instance();
@@ -326,42 +296,117 @@ trait Includes {
 		}
 	}
 	/**
-	 * @param Config $Config
+	 * Hack: Add WebComponents Polyfill for browsers without native Shadow DOM support
 	 *
-	 * @return string[][]
+	 * @param Request $Request
+	 * @param bool    $with_compression
 	 */
-	protected function get_includes_for_page_with_compression ($Config) {
+	protected function webcomponents_polyfill ($Request, $with_compression) {
+		if ($Request->cookie('shadow_dom') == 1) {
+			return;
+		}
+		$file = 'includes/js/WebComponents-polyfill/webcomponents-custom.min.js';
+		if ($with_compression) {
+			$compressed_file = PUBLIC_CACHE.'/webcomponents.js';
+			if (!file_exists($compressed_file)) {
+				$content = file_get_contents(DIR."/$file");
+				file_put_contents($compressed_file, gzencode($content, 9), LOCK_EX | FILE_BINARY);
+				file_put_contents("$compressed_file.hash", substr(md5($content), 0, 5));
+			}
+			$hash = file_get_contents("$compressed_file.hash");
+			$this->js_internal("storage/pcache/webcomponents.js?$hash", 'file', true);
+		} else {
+			$this->js_internal($file, 'file', true);
+		}
+	}
+	/**
+	 * @param string[] $preload
+	 */
+	protected function add_preloads ($preload) {
+		$Response = Response::instance();
+		foreach ($preload as $resource) {
+			$extension = explode('?', file_extension($resource))[0];
+			switch ($extension) {
+				case 'jpeg':
+				case 'jpe':
+				case 'jpg':
+				case 'gif':
+				case 'png':
+				case 'svg':
+				case 'svgz':
+					$as = 'image';
+					break;
+				case 'ttf':
+				case 'ttc':
+				case 'otf':
+				case 'woff':
+				case 'woff2':
+				case 'eot':
+					$as = 'font';
+					break;
+				case 'css':
+					$as = 'style';
+					break;
+				case 'js':
+					$as = 'script';
+					break;
+				case 'html':
+					$as = 'document';
+					break;
+				default:
+					continue 2;
+			}
+			$resource = str_replace(' ', '%20', $resource);
+			$Response->header('Link', "<$resource>; rel=preload; as=$as'", false);
+		}
+	}
+	/**
+	 * @param Config  $Config
+	 * @param Request $Request
+	 *
+	 * @return array
+	 */
+	protected function get_includes_and_preload_resource_for_page_with_compression ($Config, $Request) {
 		/**
 		 * Rebuilding HTML, JS and CSS cache if necessary
 		 */
 		if (!file_exists("$this->pcache_basename_path.json")) {
 			list($dependencies, $includes_map) = $this->get_includes_dependencies_and_map($Config);
-			$compressed_includes_map = [];
+			$compressed_includes_map    = [];
+			$not_embedded_resources_map = [];
 			foreach ($includes_map as $filename_prefix => $local_includes) {
 				// We replace `/` by `+` to make it suitable for filename
 				$filename_prefix                           = str_replace('/', '+', $filename_prefix);
 				$compressed_includes_map[$filename_prefix] = $this->cache_compressed_includes_files(
 					"$this->pcache_basename_path:$filename_prefix",
 					$local_includes,
-					$Config->core['vulcanization']
+					$Config->core['vulcanization'],
+					$not_embedded_resources_map
 				);
 			}
 			unset($includes_map, $filename_prefix, $local_includes);
-			file_put_json("$this->pcache_basename_path.json", [$dependencies, $compressed_includes_map]);
+			file_put_json("$this->pcache_basename_path.json", [$dependencies, $compressed_includes_map, array_filter($not_embedded_resources_map)]);
 			Event::instance()->fire('System/Page/rebuild_cache');
 		}
-		list($dependencies, $compressed_includes_map) = file_get_json("$this->pcache_basename_path.json");
-		return $this->get_normalized_includes($dependencies, $compressed_includes_map, '+');
+		list($dependencies, $compressed_includes_map, $not_embedded_resources_map) = file_get_json("$this->pcache_basename_path.json");
+		$includes = $this->get_normalized_includes($dependencies, $compressed_includes_map, '+', $Request);
+		$preload  = [];
+		foreach (array_merge(...array_values($includes)) as $path) {
+			if (isset($not_embedded_resources_map[$path])) {
+				$preload[] = $not_embedded_resources_map[$path];
+			}
+		}
+		return [$includes, array_merge(...$preload)];
 	}
 	/**
 	 * @param array      $dependencies
 	 * @param string[][] $includes_map
 	 * @param string     $separator `+` or `/`
+	 * @param Request    $Request
 	 *
 	 * @return array
 	 */
-	protected function get_normalized_includes ($dependencies, $includes_map, $separator) {
-		$Request        = Request::instance();
+	protected function get_normalized_includes ($dependencies, $includes_map, $separator, $Request) {
 		$current_module = $Request->current_module;
 		/**
 		 * Current URL based on controller path (it better represents how page was rendered)
@@ -381,7 +426,7 @@ trait Includes {
 		foreach ($includes_map as $path => $local_includes) {
 			if ($path == 'System') {
 				$system_includes = $local_includes;
-			} elseif ($this->is_dependency($dependencies, $path, '/')) {
+			} elseif ($this->is_dependency($dependencies, $path, '/', $Request)) {
 				$dependencies_includes[] = $local_includes;
 			} elseif (mb_strpos($current_url, $path) === 0) {
 				$includes[] = $local_includes;
@@ -390,17 +435,17 @@ trait Includes {
 		return array_merge_recursive($system_includes, ...$dependencies_includes, ...$includes);
 	}
 	/**
-	 * @param array  $dependencies
-	 * @param string $url
-	 * @param string $separator `+` or `/`
+	 * @param array   $dependencies
+	 * @param string  $url
+	 * @param string  $separator `+` or `/`
+	 * @param Request $Request
 	 *
 	 * @return bool
 	 */
-	protected function is_dependency ($dependencies, $url, $separator) {
+	protected function is_dependency ($dependencies, $url, $separator, $Request) {
 		$url_exploded = explode($separator, $url);
 		/** @noinspection NestedTernaryOperatorInspection */
 		$url_module = $url_exploded[0] != 'admin' ? $url_exploded[0] : (@$url_exploded[1] ?: '');
-		$Request    = Request::instance();
 		return
 			$url_module !== Config::SYSTEM_MODULE &&
 			in_array($url_module, $dependencies) &&
@@ -409,15 +454,24 @@ trait Includes {
 			);
 	}
 	/**
-	 * @param Config $Config
+	 * @param Config  $Config
+	 * @param Request $Request
 	 *
 	 * @return string[][]
 	 */
-	protected function get_includes_for_page_without_compression ($Config) {
+	protected function get_includes_for_page_without_compression ($Config, $Request) {
 		// To determine all dependencies and stuff we need `$Config` object to be already created
 		list($dependencies, $includes_map) = $this->get_includes_dependencies_and_map($Config);
-		$includes = $this->get_normalized_includes($dependencies, $includes_map, '/');
+		$includes = $this->get_normalized_includes($dependencies, $includes_map, '/', $Request);
 		return $this->add_versions_hash($this->absolute_path_to_relative($includes));
+	}
+	/**
+	 * @param string[]|string[][] $path
+	 *
+	 * @return string[]|string[][]
+	 */
+	protected function absolute_path_to_relative ($path) {
+		return _substr($path, strlen(DIR) + 1);
 	}
 	/**
 	 * @param string[][] $includes

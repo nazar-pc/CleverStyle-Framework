@@ -41,12 +41,13 @@ class Includes_processing {
 	 * Supports next file extensions for possible includes:
 	 * jpeg, jpe, jpg, gif, png, ttf, ttc, svg, svgz, woff, eot, css
 	 *
-	 * @param string $data Content of processed file
-	 * @param string $file Path to file, that includes specified in previous parameter content
+	 * @param string   $data                   Content of processed file
+	 * @param string   $file                   Path to file, that includes specified in previous parameter content
+	 * @param string[] $not_embedded_resources Some resources like images and fonts might not be embedded into resulting CSS because of their size
 	 *
 	 * @return string    $data
 	 */
-	static function css ($data, $file) {
+	static function css ($data, $file, &$not_embedded_resources = []) {
 		$dir = dirname($file);
 		/**
 		 * Remove comments, tabs and new lines
@@ -93,7 +94,7 @@ class Includes_processing {
 		 */
 		$data = preg_replace_callback(
 			'/url\((.*?)\)|@import[\s\t\n\r]*[\'"](.*?)[\'"]/',
-			function ($match) use ($dir) {
+			function ($match) use ($dir, &$not_embedded_resources) {
 				$link = trim($match[1], '\'" ');
 				$link = explode('?', $link, 2)[0];
 				if (!static::is_relative_path_and_exists($link, $dir)) {
@@ -103,7 +104,8 @@ class Includes_processing {
 				if (filesize("$dir/$link") > static::MAX_EMBEDDING_SIZE) {
 					$path_relatively_to_the_root = str_replace(getcwd(), '', realpath("$dir/$link"));
 					$path_relatively_to_the_root .= '?'.substr(md5($content), 0, 5);
-					return str_replace($match[1], $path_relatively_to_the_root, $match[0]);
+					$not_embedded_resources[] = $path_relatively_to_the_root;
+					return str_replace($match[1], "'".str_replace("'", "\\'", $path_relatively_to_the_root)."'", $match[0]);
 				}
 				$mime_type = 'text/html';
 				$extension = file_extension($link);
@@ -114,7 +116,7 @@ class Includes_processing {
 					/**
 					 * For recursive includes processing, if CSS file includes others CSS files
 					 */
-					$content = static::css($content, $link);
+					$content = static::css($content, $link, $not_embedded_resources);
 				}
 				$content = base64_encode($content);
 				return str_replace($match[1], "data:$mime_type;charset=utf-8;base64,$content", $match[0]);
@@ -202,16 +204,17 @@ class Includes_processing {
 	 * Analyses file for scripts and styles, combines them into resulting files in order to optimize loading process
 	 * (files with combined scripts and styles will be created)
 	 *
-	 * @param string $data                  Content of processed file
-	 * @param string $file                  Path to file, that includes specified in previous parameter content
-	 * @param string $base_target_file_path Base filename for resulting combined files
-	 * @param bool   $vulcanization         Whether to put combined files separately or to make includes built-in (vulcanization)
+	 * @param string   $data                   Content of processed file
+	 * @param string   $file                   Path to file, that includes specified in previous parameter content
+	 * @param string   $base_target_file_path  Base filename for resulting combined files
+	 * @param bool     $vulcanization          Whether to put combined files separately or to make includes built-in (vulcanization)
+	 * @param string[] $not_embedded_resources Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because of CSP
 	 *
-	 * @return string    $data
+	 * @return string
 	 */
-	static function html ($data, $file, $base_target_file_path, $vulcanization) {
-		static::html_process_scripts($data, $file, $base_target_file_path, $vulcanization);
-		static::html_process_links_and_styles($data, $file, $base_target_file_path, $vulcanization);
+	static function html ($data, $file, $base_target_file_path, $vulcanization, &$not_embedded_resources = []) {
+		static::html_process_scripts($data, $file, $base_target_file_path, $vulcanization, $not_embedded_resources);
+		static::html_process_links_and_styles($data, $file, $base_target_file_path, $vulcanization, $not_embedded_resources);
 		// Removing HTML comments (those that are mostly likely comments, to avoid problems)
 		$data = preg_replace_callback(
 			'/^\s*<!--([^>-].*[^-])?-->/Ums',
@@ -223,14 +226,15 @@ class Includes_processing {
 		return preg_replace("/\n+/", "\n", $data);
 	}
 	/**
-	 * @param string $data                  Content of processed file
-	 * @param string $file                  Path to file, that includes specified in previous parameter content
-	 * @param string $base_target_file_path Base filename for resulting combined files
-	 * @param bool   $vulcanization         Whether to put combined files separately or to make includes built-in (vulcanization)
+	 * @param string   $data                   Content of processed file
+	 * @param string   $file                   Path to file, that includes specified in previous parameter content
+	 * @param string   $base_target_file_path  Base filename for resulting combined files
+	 * @param bool     $vulcanization          Whether to put combined files separately or to make includes built-in (vulcanization)
+	 * @param string[] $not_embedded_resources Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because of CSP
 	 *
 	 * @return string
 	 */
-	protected static function html_process_scripts (&$data, $file, $base_target_file_path, $vulcanization) {
+	protected static function html_process_scripts (&$data, $file, $base_target_file_path, $vulcanization, &$not_embedded_resources) {
 		if (!preg_match_all('/<script(.*)<\/script>/Uims', $data, $scripts)) {
 			return;
 		}
@@ -269,11 +273,12 @@ class Includes_processing {
 			);
 			$base_target_file_name = basename($base_target_file_path);
 			// Replace first script with combined file
-			$data = str_replace(
+			$data                     = str_replace(
 				$scripts_to_replace[0],
 				"<script src=\"$base_target_file_name.js?$content_md5\"></script>",
 				$data
 			);
+			$not_embedded_resources[] = "$base_target_file_name.js?$content_md5";
 		} else {
 			// Replace first script with combined content
 			$data = str_replace(
@@ -286,14 +291,15 @@ class Includes_processing {
 		$data = str_replace($scripts_to_replace, '', $data);
 	}
 	/**
-	 * @param string $data                  Content of processed file
-	 * @param string $file                  Path to file, that includes specified in previous parameter content
-	 * @param string $base_target_file_path Base filename for resulting combined files
-	 * @param bool   $vulcanization         Whether to put combined files separately or to make includes built-in (vulcanization)
+	 * @param string   $data                   Content of processed file
+	 * @param string   $file                   Path to file, that includes specified in previous parameter content
+	 * @param string   $base_target_file_path  Base filename for resulting combined files
+	 * @param bool     $vulcanization          Whether to put combined files separately or to make includes built-in (vulcanization)
+	 * @param string[] $not_embedded_resources Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because of CSP
 	 *
 	 * @return string
 	 */
-	protected static function html_process_links_and_styles (&$data, $file, $base_target_file_path, $vulcanization) {
+	protected static function html_process_links_and_styles (&$data, $file, $base_target_file_path, $vulcanization, &$not_embedded_resources) {
 		// Drop Polymer inclusion, since it is already present
 		$data = str_replace('<link rel="import" href="../polymer/polymer.html">', '', $data);
 		if (!preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles)) {
@@ -315,7 +321,7 @@ class Includes_processing {
 				$content = explode('>', $links_and_styles[2][$index], 2)[1];
 				$data    = str_replace(
 					$content,
-					static::css($content, $file),
+					static::css($content, $file, $not_embedded_resources),
 					$data
 				);
 				continue;
@@ -336,7 +342,8 @@ class Includes_processing {
 				$links_and_styles_to_replace[] = $links_and_styles[0][$index];
 				$styles_content .= static::css(
 					file_get_contents("$dir/$url"),
-					"$dir/$url"
+					"$dir/$url",
+					$not_embedded_resources
 				);
 				/**
 				 * If content is HTML import
@@ -347,7 +354,8 @@ class Includes_processing {
 					file_get_contents("$dir/$url"),
 					"$dir/$url",
 					"$base_target_file_path-".basename($url, '.html'),
-					$vulcanization
+					$vulcanization,
+					$not_embedded_resources
 				);
 			}
 		}
@@ -369,11 +377,12 @@ class Includes_processing {
 			);
 			$base_target_file_name = basename($base_target_file_path);
 			// Replace first link or style with combined file
-			$data = str_replace(
+			$data                     = str_replace(
 				$links_and_styles_to_replace[0],
 				"<link rel=\"import\" type=\"css\" href=\"$base_target_file_name.css?$content_md5\">",
 				$data
 			);
+			$not_embedded_resources[] = "$base_target_file_name.css?$content_md5";
 		} else {
 			// Replace first `<template>` with combined content
 			$data = preg_replace(
