@@ -86,7 +86,8 @@ function run_test ($test_file, $base_text) {
 	$php_arguments = [
 		'-d variables_order=EGPCS',
 		'-d error_reporting='.E_ALL,
-		'-d display_errors=1'
+		'-d display_errors=1',
+		'-d xdebug.default_enable=0'
 	];
 	if (isset($parsed_test['INI'])) {
 		foreach (explode("\n", trim($parsed_test['INI'])) as $line) {
