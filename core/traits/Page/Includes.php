@@ -35,6 +35,24 @@ trait Includes {
 		Cache,
 		Collecting,
 		RequireJS;
+	protected $extension_to_as = [
+		'jpeg'  => 'image',
+		'jpe'   => 'image',
+		'jpg'   => 'image',
+		'gif'   => 'image',
+		'png'   => 'image',
+		'svg'   => 'image',
+		'svgz'  => 'image',
+		'ttf'   => 'font',
+		'ttc'   => 'font',
+		'otf'   => 'font',
+		'woff'  => 'font',
+		'woff2' => 'font',
+		'eot'   => 'font',
+		'css'   => 'style',
+		'js'    => 'script',
+		'html'  => 'document'
+	];
 	/**
 	 * @var array
 	 */
@@ -237,7 +255,7 @@ trait Includes {
 		if ($Config->core['cache_compress_js_css'] && !($Request->admin_path && isset($Request->query['debug']))) {
 			$this->webcomponents_polyfill($Request, true);
 			list($includes, $preload) = $this->get_includes_and_preload_resource_for_page_with_compression($Config, $Request);
-			$this->add_preloads($preload);
+			$this->add_preload($preload);
 		} else {
 			$this->webcomponents_polyfill($Request, false);
 			/**
@@ -322,41 +340,12 @@ trait Includes {
 	/**
 	 * @param string[] $preload
 	 */
-	protected function add_preloads ($preload) {
+	protected function add_preload ($preload) {
 		$Response = Response::instance();
 		foreach ($preload as $resource) {
 			$extension = explode('?', file_extension($resource))[0];
-			switch ($extension) {
-				case 'jpeg':
-				case 'jpe':
-				case 'jpg':
-				case 'gif':
-				case 'png':
-				case 'svg':
-				case 'svgz':
-					$as = 'image';
-					break;
-				case 'ttf':
-				case 'ttc':
-				case 'otf':
-				case 'woff':
-				case 'woff2':
-				case 'eot':
-					$as = 'font';
-					break;
-				case 'css':
-					$as = 'style';
-					break;
-				case 'js':
-					$as = 'script';
-					break;
-				case 'html':
-					$as = 'document';
-					break;
-				default:
-					continue 2;
-			}
-			$resource = str_replace(' ', '%20', $resource);
+			$as        = $this->extension_to_as[$extension];
+			$resource  = str_replace(' ', '%20', $resource);
 			$Response->header('Link', "<$resource>; rel=preload; as=$as'", false);
 		}
 	}
@@ -392,6 +381,7 @@ trait Includes {
 		$includes = $this->get_normalized_includes($dependencies, $compressed_includes_map, '+', $Request);
 		$preload  = [];
 		foreach (array_merge(...array_values($includes)) as $path) {
+			$preload[] = ["/$path"];
 			if (isset($not_embedded_resources_map[$path])) {
 				$preload[] = $not_embedded_resources_map[$path];
 			}
