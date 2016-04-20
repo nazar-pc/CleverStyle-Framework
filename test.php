@@ -215,7 +215,7 @@ function compute_diff ($test_file, $expect, $output) {
 	file_put_contents($exp_file, $expect);
 	file_put_contents($out_file, $output);
 	$diff = shell_exec(
-		"diff --minimal --old-line-format='-%3dn %L' --new-line-format='+%3dn %L' --from-file=".escapeshellarg($exp_file).' '.escapeshellarg($out_file)
+		"diff --old-line-format='-%3dn %L' --new-line-format='+%3dn %L' --from-file=".escapeshellarg($exp_file).' '.escapeshellarg($out_file)
 	);
 	file_put_contents("$test_file.diff", $diff);
 	return $diff;

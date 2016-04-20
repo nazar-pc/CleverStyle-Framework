@@ -364,7 +364,7 @@ trait Includes {
 	 * @param Config  $Config
 	 * @param Request $Request
 	 *
-	 * @return array
+	 * @return array[]
 	 */
 	protected function get_includes_and_preload_resource_for_page_with_compression ($Config, $Request) {
 		/**
@@ -404,7 +404,7 @@ trait Includes {
 	 * @param string     $separator `+` or `/`
 	 * @param Request    $Request
 	 *
-	 * @return array
+	 * @return array[]
 	 */
 	protected function get_normalized_includes ($dependencies, $includes_map, $separator, $Request) {
 		$current_module = $Request->current_module;
@@ -432,7 +432,7 @@ trait Includes {
 				$includes[] = $local_includes;
 			}
 		}
-		return array_merge_recursive($system_includes, ...$dependencies_includes, ...$includes);
+		return _array(array_merge_recursive($system_includes, ...$dependencies_includes, ...$includes));
 	}
 	/**
 	 * @param array   $dependencies
