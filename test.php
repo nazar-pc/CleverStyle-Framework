@@ -1,0 +1,364 @@
+<?php
+/**
+ * @package    CleverStyle CMS
+ * @subpackage PHPT Tests runner
+ * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
+ * @license    MIT License, see license.txt
+ */
+/**
+ * @param string $text
+ *
+ * @return string
+ */
+function colorize ($text) {
+	return preg_replace_callback(
+		'#<([gyr])>(.*)</\1>#Us',
+		function ($matches) {
+			$color_codes = [
+				'g' => 32, // Green
+				'y' => 33, // Yellow
+				'r' => 31, // Red
+			];
+			$color       = $color_codes[$matches[1]];
+			$text        = $matches[2];
+			return "\033[{$color}m$text\033[0m";
+		},
+		$text
+	);
+}
+
+/**
+ * Output something to console
+ *
+ * Will colorize stuff in process
+ *
+ * @param bool   $clean Clean current line before output
+ * @param string $text
+ */
+function out ($text, $clean = false) {
+	if ($clean) {
+		echo "\r";
+	}
+	echo colorize($text);
+}
+
+/**
+ * Output something to console and add new line at the end
+ *
+ * Will colorize stuff in process
+ *
+ * @param bool   $clean Clean current line before output
+ * @param string $text
+ */
+function line ($text = '', $clean = false) {
+	out($text, $clean);
+	echo "\n";
+}
+
+/**
+ * @param string $test_file
+ * @param string $base_text
+ *
+ * @return string `skipped`, `success` or `error`
+ */
+function run_test ($test_file, $base_text) {
+	out("<y>$base_text ...</y>");
+	$test_file = realpath($test_file);
+	@unlink("$test_file.exp");
+	@unlink("$test_file.out");
+	@unlink("$test_file.diff");
+	$parsed_test = parse_test($test_file);
+	/**
+	 * Check required sections
+	 */
+	if (!isset($parsed_test['FILE'])) {
+		line("<r>$base_text ERROR</r>", true);
+		line("--FILE-- section MUST be present");
+		return 'error';
+	}
+	$output_sections = ['EXPECT', 'EXPECTF', 'EXPECTREGEX'];
+	if (!array_intersect(array_keys($parsed_test), $output_sections)) {
+		line("<r>$base_text ERROR</r>", true);
+		line('One of the following sections MUST be present: '.implode(',', $output_sections));
+		return 'error';
+	}
+	$php_arguments = [
+		'-d variables_order=EGPCS',
+		'-d error_reporting='.E_ALL,
+		'-d display_errors=1'
+	];
+	if (isset($parsed_test['INI'])) {
+		foreach (explode("\n", trim($parsed_test['INI'])) as $line) {
+			list($key, $value) = explode('=', $line, 2);
+			$php_arguments[] = '-d '.trim($key).'='.trim($value);
+		}
+		unset($line, $key, $value);
+	}
+	$script_arguments = isset($parsed_test['ARGS']) ? $parsed_test['ARGS'] : '';
+	$working_dir      = dirname($test_file);
+	if (isset($parsed_test['SKIPIF'])) {
+		$result = execute_code($working_dir, $parsed_test['SKIPIF'], $php_arguments, $script_arguments);
+		if (stripos($result, 'skip') === 0) {
+			line("<y>$base_text SKIPPED</y>", true);
+			line(ltrim(substr($result, 4)));
+			return 'skipped';
+		}
+	}
+	$output = rtrim(execute_code($working_dir, $parsed_test['FILE'], $php_arguments, $script_arguments));
+	if (isset($parsed_test['EXPECT'])) {
+		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECT'], $php_arguments, $script_arguments));
+		if ($expect === $output) {
+			line("<g>$base_text SUCCESS</g>", true);
+			return 'success';
+		}
+		$expect = $parsed_test['EXPECT'];
+	} elseif (isset($parsed_test['EXPECTF'])) {
+		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECTF'], $php_arguments, $script_arguments));
+		$regex  = str_replace(
+			[
+				'%s',
+				'%S',
+				'%a',
+				'%A',
+				'%w',
+				'%i',
+				'%d',
+				'%x',
+				'%f',
+				'%c'
+			],
+			[
+				'[^\r\n]+',
+				'[^\r\n]*',
+				'.+',
+				'.*',
+				'\s*',
+				'[+-]?\d+',
+				'\d+',
+				'[0-9a-fA-F]+',
+				'[+-]?\.?\d+\.?\d*(?:[Ee][+-]?\d+)?',
+				'.'
+			],
+			preg_quote($expect, '/')
+		);
+		if (preg_match("/^$regex\$/s", $output)) {
+			line("<g>$base_text SUCCESS</g>", true);
+			return 'success';
+		}
+		$expect = $parsed_test['EXPECTF'];
+	} else {
+		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECREGEX'], $php_arguments, $script_arguments));
+		$regex  = preg_quote($expect, '/');
+		if (preg_match("/^$regex\$/s", $output)) {
+			line("<g>$base_text SUCCESS</g>", true);
+			return 'success';
+		}
+	}
+	line("<r>$base_text ERROR:</r>", true);
+	$diff = preg_replace_callback(
+		'/^([-+]).*$/m',
+		function ($match) {
+			return $match[1] == '-' ? "<r>$match[0]</r>" : "<g>$match[0]</g>";
+		},
+		compute_diff($test_file, $expect, $output)
+	);
+	line($diff);
+	return 'error';
+}
+
+/**
+ * @param string $test_file
+ *
+ * @return string[]
+ */
+function parse_test ($test_file) {
+	$result      = [];
+	$current_key = null;
+	foreach (file($test_file) as $line) {
+		if (preg_match(
+			"/^--(SKIPIF|INI|ARGS|FILE|EXPECT|EXPECTF|EXPECTREGEX|CLEAN)--\n$/",
+			$line,
+			$match
+		)) {
+			$current_key = $match[1];
+		} elseif ($current_key) {
+			if (!isset($result[$current_key])) {
+				$result[$current_key] = '';
+			}
+			$result[$current_key] .= $line;
+		}
+	}
+	return $result;
+}
+
+/**
+ * @param string   $working_dir
+ * @param string   $code
+ * @param string[] $php_arguments
+ * @param string   $script_arguments
+ *
+ * @return string
+ */
+function execute_code ($working_dir, $code, $php_arguments, $script_arguments) {
+	$file = "$working_dir/__code.php";
+	file_put_contents($file, $code);
+	$output = shell_exec(PHP_BINARY.' '.implode(' ', $php_arguments).' -f='.escapeshellarg($file)." -- $script_arguments 2>&1");
+	unlink($file);
+	return $output;
+}
+
+function compute_diff ($test_file, $expect, $output) {
+	$exp_file = "$test_file.exp";
+	$out_file = "$test_file.out";
+	file_put_contents($exp_file, $expect);
+	file_put_contents($out_file, $output);
+	$diff = shell_exec(
+		"diff --minimal --old-line-format='-%3dn %L' --new-line-format='+%3dn %L' --from-file=".escapeshellarg($exp_file).' '.escapeshellarg($out_file)
+	);
+	file_put_contents("$test_file.diff", $diff);
+	return $diff;
+}
+
+/**
+ * @param string|string[] $target
+ *
+ * @return string[]
+ */
+function find_tests ($target) {
+	if (is_array($target)) {
+		return array_merge(...array_map('find_tests', $target));
+	}
+
+	if (is_dir($target)) {
+		$iterator = new RegexIterator(
+			new RecursiveIteratorIterator(
+				new RecursiveDirectoryIterator($target)
+			),
+			'/.*\.phpt$/',
+			RecursiveRegexIterator::GET_MATCH
+		);
+		return array_merge(...array_values(iterator_to_array($iterator)));
+	}
+
+	return file_exists($target) ? [$target] : [];
+}
+
+/** @var bool[] $options */
+$options = [];
+$targets = [];
+foreach (array_slice($argv, 1) as $arg) {
+	if (strpos($arg, '-') === 0) {
+		$options[ltrim($arg, '-')] = true;
+	} else {
+		$targets[] = $arg;
+	}
+}
+$options += [
+	'h'         => false,
+	'skip-slow' => false
+];
+$version = json_decode(file_get_contents(__DIR__.'/components/modules/System/meta.json'), true)['version'];
+
+line("<g>CleverStyle CMS</g> version <y>$version</y>, PHPT Tests runner\n");
+
+if (!$targets || $options['h']) {
+	line(
+		<<<HTML
+<y>Usage:</y>
+  php -d variables_order=EGPCS test.php [-h] [files] [directories] 
+
+<y>Arguments:</y>
+  <g>h</g> Print this help message  
+
+<y>Examples:</y>
+  Execute tests from tests directory:
+    <g>php -d variables_order=EGPCS test.php tests</g>
+  Execute tests single test:
+    <g>php -d variables_order=EGPCS test.php tests/sample.phpt</g>
+  Execute tests from tests directory, but skip slow tests using environment variable:
+    <g>SKIP_SLOW_TESTS=1 php -d variables_order=EGPCS test.php tests</g>
+  Execute tests from tests directory, but only those for MySQLi database engine:
+    <g>DB=MySQLi php -d variables_order=EGPCS test.php tests</g>
+  Execute tests from tests directory, but only those for SQLite database engine:
+    <g>DB=SQLite php -d variables_order=EGPCS test.php tests</g>
+
+<y>PHPT Format:</y>
+  This runner uses modification of PHPT format used by PHP itself, so that it can run many original PHPT tests without any changes.
+  
+  PHPT test if text file with *.phpt extension.
+  Each file contains sections followed by section contents, everything before first section is ignored, you can use it for storing test description.
+  
+  Required sections are <g>--FILE--</g> and one of [<g>--EXPECT--</g>, <g>--EXPECTF--</g>, <g>--EXPECTREGEX--</g>].
+
+<y>PHPT sections supported:</y>
+  <g>--FILE--</g>        The test source code
+  <g>--EXPECT--</g>      The expected output from the test script (will be executed as PHP script, so it might be code as well as plain text)
+  <g>--EXPECTF--</g>     Similar to <g>--EXPECT--</g>, but it uses substitution tags for strings, spaces, digits, which may vary between test runs
+    The following is a list of all tags and what they are used to represent:
+      <g>%s</g> One or more of anything (character or white space) except the end of line character
+      <g>%S</g> Zero or more of anything (character or white space) except the end of line character
+      <g>%a</g> One or more of anything (character or white space) including the end of line character
+      <g>%A</g> Zero or more of anything (character or white space) including the end of line character
+      <g>%w</g> Zero or more white space characters
+      <g>%i</g> A signed integer value, for example +3142, -3142
+      <g>%d</g> An unsigned integer value, for example 123456
+      <g>%x</g> One or more hexadecimal character. That is, characters in the range 0-9, a-f, A-F
+      <g>%f</g> A floating point number, for example: 3.142, -3.142, 3.142E-10, 3.142e+10
+      <g>%c</g> A single character of any sort (.)
+  <g>--EXPECTREGEX--</g> Similar to <g>--EXPECT--</g>, but is treated as regular expression
+  <g>--SKIPIF--</g>      If output of execution starts with `skip` then test will be skipped
+  <g>--INI--</g>         Specific php.ini setting for the test, one per line
+  <g>--ARGS--</g>        A single line defining the arguments passed to php
+  <g>--CLEAN--</g>       Code that is executed after a test completes
+
+<y>PHPT tests examples:</y>
+  Examples can be found at <<g>https://qa.php.net/phpt_details.php</g>> (taking into account differences here) and in <g>tests</g> directory
+
+<y>Main differences from original PHPT tests files:</y>
+  1. <g>--TEST--</g> is not required and not even used (files names are used instead)
+  2. Only sub-set of sections supported and only sub-set of <g>--EXPECTF--</g> tags
+  3. <g>--EXPECT*--</g> sections are interpreted as code and its output is used as expected result
+HTML
+	);
+	exit;
+}
+
+$tests = find_tests($targets);
+sort($tests, SORT_NATURAL);
+$tests_count = count($tests);
+
+if (!$tests_count) {
+	line("<r>No tests found, there is nothing to do here</r>");
+	exit(1);
+}
+
+line("<y>$tests_count tests found</y>, running them:");
+
+$max_length = 0;
+foreach ($tests as $test_file) {
+	$max_length = max($max_length, strlen($test_file));
+}
+
+$results = [
+	'skipped' => 0,
+	'success' => 0,
+	'error'   => 0
+];
+
+foreach ($tests as $index => $test_file) {
+	$base_text = sprintf("%' 3d/$tests_count %s", $index + 1, str_pad($test_file, $max_length));
+	$results[run_test($test_file, $base_text)]++;
+}
+
+line("\nResults:");
+if ($results['skipped']) {
+	line(sprintf("<y>%' 3d/$tests_count tests (%' 6.2f%%) skipped</y>", $results['skipped'], $results['skipped'] / $tests_count * 100));
+}
+if ($results['success']) {
+	line(sprintf("<g>%' 3d/$tests_count tests (%' 6.2f%%) succeed</g>", $results['success'], $results['success'] / $tests_count * 100));
+}
+if ($results['error']) {
+	line(sprintf("<r>%' 3d/$tests_count tests (%' 6.2f%%) failed</r>", $results['error'], $results['error'] / $tests_count * 100));
+	exit(1);
+}

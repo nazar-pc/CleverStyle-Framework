@@ -1,5 +1,3 @@
---TEST--
-Test for correctly modified PHPMailer and SMTP classes
 --FILE--
 <?php
 include __DIR__.'/../bootstrap.php';

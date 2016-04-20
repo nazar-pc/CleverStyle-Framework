@@ -1,5 +1,3 @@
---TEST--
-Basic Meta functionality (home page)
 --FILE--
 <?php
 namespace cs;

@@ -1,5 +1,3 @@
---TEST--
-Installation of distributive using MySQLi database
 --SKIPIF--
 <?php
 if (getenv('DB') && getenv('DB') != 'MySQLi') {
@@ -7,7 +5,7 @@ if (getenv('DB') && getenv('DB') != 'MySQLi') {
 }
 ?>
 --INI--
-phar.readonly	= Off
+phar.readonly = Off
 --FILE--
 <?php
 $arguments = '-sn Web-site -su http://cscms.travis -dh 127.0.0.1 -dn cscms.travis -du travis -dp "" -dr \'xyz_\' -ae admin@cscms.travis -ap 1111';

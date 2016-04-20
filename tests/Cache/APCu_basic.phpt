@@ -1,5 +1,3 @@
---TEST--
-Basic features using APCu cache engine
 --SKIPIF--
 <?php
 if (!function_exists('apcu_fetch')) {
@@ -15,5 +13,6 @@ include __DIR__.'/../bootstrap.php';
 Core::instance_stub(['cache_engine' => 'APCu']);
 require __DIR__.'/_test.php';
 ?>
---EXPECT_EXTERNAL--
-_test.expect
+--EXPECT--
+<?php
+require __DIR__.'/_test.expect';

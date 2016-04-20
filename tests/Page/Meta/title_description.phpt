@@ -1,5 +1,3 @@
---TEST--
-Meta functionality with title and description
 --FILE--
 <?php
 namespace cs;

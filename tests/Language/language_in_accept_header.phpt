@@ -1,5 +1,3 @@
---TEST--
-Language in Accept-Language header
 --FILE--
 <?php
 namespace cs;

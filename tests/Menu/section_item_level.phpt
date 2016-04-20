@@ -1,5 +1,3 @@
---TEST--
-Section item level menu
 --FILE--
 <?php
 namespace cs;

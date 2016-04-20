@@ -1,5 +1,3 @@
---TEST--
-Building distributive of system core with built-in module, plugin and theme
 --SKIPIF--
 <?php
 if (getenv('SKIP_SLOW_TESTS')) {
@@ -10,7 +8,7 @@ if (getenv('DB') && getenv('DB') != 'MySQLi') {
 }
 ?>
 --INI--
-phar.readonly	= Off
+phar.readonly = Off
 --ARGS--
 -M core -m Blogs -p TinyMCE -t DarkEnergy
 --FILE--
@@ -21,6 +19,5 @@ include __DIR__.'/../../build.php';
 Done! CleverStyle CMS %s+build-%d
 --CLEAN--
 <?php
-$version	= json_decode(file_get_contents(__DIR__.'/../../components/modules/System/meta.json'), true)['version'];
+$version = json_decode(file_get_contents(__DIR__.'/../../components/modules/System/meta.json'), true)['version'];
 unlink(__DIR__."/../../CleverStyle_CMS_$version.phar.php");
-?>

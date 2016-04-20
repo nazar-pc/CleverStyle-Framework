@@ -1,5 +1,3 @@
---TEST--
-Installation of distributive using SQLite database
 --SKIPIF--
 <?php
 if (getenv('DB') != 'SQLite') {
@@ -7,7 +5,7 @@ if (getenv('DB') != 'SQLite') {
 }
 ?>
 --INI--
-phar.readonly	= Off
+phar.readonly = Off
 --FILE--
 <?php
 $arguments = '-sn Web-site -su http://cscms.travis -de SQLite -dh storage/sqlite.db -dn "" -du "" -dp "" -dr "xyz_" -ae admin@cscms.travis -ap 1111';

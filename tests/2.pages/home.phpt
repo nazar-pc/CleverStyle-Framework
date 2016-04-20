@@ -1,5 +1,3 @@
---TEST--
-Home page rendering
 --FILE--
 <?php
 namespace cs;

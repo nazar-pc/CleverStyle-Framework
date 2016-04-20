@@ -15,6 +15,6 @@ $version = json_decode(file_get_contents(__DIR__.'/../../components/modules/Syst
 (new \cs\Builder($root, $target))->core();
 rename(__DIR__."/../../cscms.travis/CleverStyle_CMS_$version.phar.php", __DIR__.'/../../cscms.travis/distributive.phar.php');
 chdir($target);
-system("$_SERVER[TEST_PHP_EXECUTABLE] distributive.phar.php $arguments");
+system(PHP_BINARY." distributive.phar.php $arguments");
 // Remove php config because its parameters anyway will be declared by custom loader or tests or not used at all
 file_put_contents("$target/config/main.php", '');

@@ -17,6 +17,6 @@ matrix:
 before_script:
   - mysql -e 'CREATE DATABASE `cscms.travis`;'
 script:
-  - php -d variables_order=EGPCS run-tests.php -P --show-diff tests
+  - php -d variables_order=EGPCS test.php tests
 after_success:
   - php -d variables_order=EGPCS -d phar.readonly=Off upload_build.php

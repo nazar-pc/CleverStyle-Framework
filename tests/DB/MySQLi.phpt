@@ -1,5 +1,3 @@
---TEST--
-Basic database features
 --SKIPIF--
 <?php
 if (getenv('DB') && getenv('DB') != 'MySQLi') {

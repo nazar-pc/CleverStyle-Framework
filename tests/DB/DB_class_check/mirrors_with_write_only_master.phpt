@@ -1,5 +1,3 @@
---TEST--
-DB mirrors with write to master only
 --FILE--
 <?php
 namespace cs;

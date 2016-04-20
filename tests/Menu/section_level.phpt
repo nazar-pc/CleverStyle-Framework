@@ -1,5 +1,3 @@
---TEST--
-Section level menu
 --FILE--
 <?php
 namespace cs;

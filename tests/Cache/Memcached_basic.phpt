@@ -1,5 +1,3 @@
---TEST--
-Basic features using Memcached cache engine
 --SKIPIF--
 <?php
 if (!class_exists('Memcached')) {
@@ -19,5 +17,6 @@ Core::instance_stub(
 );
 require __DIR__.'/_test.php';
 ?>
---EXPECT_EXTERNAL--
-_test.expect
+--EXPECT--
+<?php
+require __DIR__.'/_test.expect';

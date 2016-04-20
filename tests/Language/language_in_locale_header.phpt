@@ -1,5 +1,3 @@
---TEST--
-Language in -Locale header
 --FILE--
 <?php
 namespace cs;

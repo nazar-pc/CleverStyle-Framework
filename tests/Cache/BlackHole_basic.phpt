@@ -1,5 +1,3 @@
---TEST--
-Basic features using BlackHole cache engine
 --FILE--
 <?php
 namespace cs;

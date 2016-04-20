@@ -1,5 +1,3 @@
---TEST--
-Language in url
 --FILE--
 <?php
 namespace cs;

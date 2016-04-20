@@ -1,5 +1,3 @@
---TEST--
-Basic Language functionality
 --FILE--
 <?php
 namespace cs;

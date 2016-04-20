@@ -1,5 +1,3 @@
---TEST--
-Administration page rendering (403)
 --FILE--
 <?php
 namespace cs;

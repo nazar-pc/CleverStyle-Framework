@@ -1,5 +1,3 @@
---TEST--
-Sign in test
 --FILE--
 <?php
 namespace cs;

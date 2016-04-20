@@ -1,5 +1,3 @@
---TEST--
-Basic operations on permissions
 --FILE--
 <?php
 namespace cs;

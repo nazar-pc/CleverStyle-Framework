@@ -1,5 +1,3 @@
---TEST--
-Basic operations on groups
 --FILE--
 <?php
 namespace cs;

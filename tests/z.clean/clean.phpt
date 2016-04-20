@@ -1,5 +1,3 @@
---TEST--
-Clean installed files
 --SKIPIF--
 <?php
 if (!is_dir("$root/cscms.travis")) {

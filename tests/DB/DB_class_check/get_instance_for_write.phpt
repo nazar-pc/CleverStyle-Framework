@@ -1,11 +1,9 @@
---TEST--
-DB get instance for read
 --FILE--
 <?php
 namespace cs;
 include __DIR__.'/_bootstrap.php';
 
-var_dump(DB::instance()->db(0));
+var_dump(DB::instance()->db_prime(0));
 ?>
 --EXPECTF--
 string(34) "Fake engine called with arguments:"

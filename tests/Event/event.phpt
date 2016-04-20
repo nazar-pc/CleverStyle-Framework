@@ -1,5 +1,3 @@
---TEST--
-Events functionality
 --FILE--
 <?php
 namespace cs;
