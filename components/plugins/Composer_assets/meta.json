@@ -1,7 +1,7 @@
 {
 	"package"          : "Composer_assets",
 	"category"         : "plugins",
-	"version"          : "1.7.2+build-31",
+	"version"          : "1.7.3+build-32",
 	"description"      : "Bower and NPM packages support through Composer using fxp/composer-asset-plugin for assets management, oyejorge/less.php for LESS compilation and leafo/scssphp for SCSS",
 	"author"           : "Nazar Mokrynskyi",
 	"website"          : "cleverstyle.org/cms",
@@ -14,10 +14,10 @@
 	"require"          : [
 		"System>=4.30",
 		"System<5.0",
-		"Composer>=1.0.0-alpha11+git+cs-1.2.0"
+		"Composer>=1.0.2"
 	],
 	"require_composer" : {
-		"fxp/composer-asset-plugin" : "^1.1.3",
+		"fxp/composer-asset-plugin" : "^1.1.4",
 		"oyejorge/less.php"         : "~1.7",
 		"leafo/scssphp"             : "^0.6.2"
 	}
