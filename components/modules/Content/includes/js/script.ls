@@ -1,19 +1,19 @@
-###*
+/**
  * @package   Content
  * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
+ */
 if !cs.is_admin
 	return
-$ ->
+$ !->
 	L	= cs.Language('content_')
 	$('body')
 		.on(
 			'click'
 			'.cs-content-add'
-			->
+			!->
 				modal_body	= $("""<form is="cs-form">
 					<label>#{L.key}</label>
 					<input is="cs-input-text" type="text" name="key">
@@ -39,15 +39,15 @@ $ ->
 				content	= modal_body.find('.text')
 				modal_body.find('.html').hide()
 				type	= modal_body.find('[name=type]')
-				type.change ->
+				type.change !->
 					if type.val() == 'text'
 						modal_body.find('.html').hide()
-						content	= modal_body.find('.text').show().val(content.val())
+						content	:= modal_body.find('.text').show().val(content.val())
 					else
 						modal_body.find('.text').hide()
-						content	= modal_body.find('.html').val(content.val()).show().children('textarea').val(content.val())
+						content	:= modal_body.find('.html').val(content.val()).show().children('textarea').val(content.val())
 				cs.ui.simple_modal(modal_body)
-				modal_body.find('button').click ->
+				modal_body.find('button').click !->
 					$.ajax(
 						url		: 'api/Content'
 						data	:
@@ -56,19 +56,18 @@ $ ->
 							content	: content.val()
 							type	: type.val()
 						type	: 'post'
-						success	: ->
-							location.reload()
+						success	: location~reload
 					)
 		)
 		.on(
 			'click'
 			'.cs-content-edit'
-			->
+			!->
 				key = $(@).data('key')
 				$.ajax(
 					url		: "api/Content/#{key}"
 					type	: 'get'
-					success	: (data) ->
+					success	: (data) !->
 						modal_body	= $("""<form is="cs-form">
 							<label>#{L.key}</label>
 							<input is="cs-input-text" readonly value="#{data.key}">
@@ -92,15 +91,15 @@ $ ->
 						content	= modal_body.find('.' + data.type).val(data.content)
 						modal_body.find('.text, .html').not('.' + data.type).hide()
 						type	= modal_body.find('[name=type]').val(data.type)
-						type.change ->
+						type.change !->
 							if type.val() == 'text'
 								modal_body.find('.html').hide()
-								content	= modal_body.find('.text').show().val(content.val())
+								content	:= modal_body.find('.text').show().val(content.val())
 							else
 								modal_body.find('.text').hide()
-								content	= modal_body.find('.html').val(content.val()).show().children('textarea').val(content.val())
+								content	:= modal_body.find('.html').val(content.val()).show().children('textarea').val(content.val())
 						cs.ui.simple_modal(modal_body)
-						modal_body.find('button').click ->
+						modal_body.find('button').click !->
 							$.ajax(
 								url		: "api/Content/#{key}"
 								data	:
@@ -108,29 +107,27 @@ $ ->
 									content	: content.val()
 									type	: type.val()
 								type	: 'put'
-								success	: ->
-									location.reload()
+								success	: location~reload
 							)
 				)
 		)
 		.on(
 			'click'
 			'.cs-content-delete'
-			->
+			!->
 				if !confirm("#{L.delete}?")
 					return
 				key = $(@).data('key')
 				$.ajax(
 					url		: "api/Content/#{key}"
 					type	: 'delete'
-					success	: ->
-						location.reload()
+					success	: location~reload
 				)
 		)
-	do ->
+	do !->
 		mousemove_timeout	= 0
 		showed_button		= false
-		show_edit_button	= (key, x, y, container) ->
+		show_edit_button	= (key, x, y, container) !->
 			button = $("""<button is="cs-button" class="cs-content-edit" data-key="#{key}">#{L.edit}</button>""")
 				.css('position', 'absolute')
 				.offset(
@@ -138,27 +135,26 @@ $ ->
 					left	: x
 				)
 				.appendTo(container)
-			container.mouseleave ->
-				showed_button	= false
+			container.mouseleave !->
+				showed_button	:= false
 				button.remove()
 		$('body')
 			.on(
 				'mousemove'
 				'[data-cs-content]'
-				(e) ->
+				(e) !->
 					if showed_button
 						return
 					$this = $(@)
 					clearTimeout(mousemove_timeout)
-					mousemove_timeout = setTimeout (->
-						showed_button	= true
+					mousemove_timeout := setTimeout (!->
+						showed_button	:= true
 						show_edit_button($this.data('cs-content'), e.pageX, e.pageY, $this)
 					), 200
-					return
 			)
 			.on(
 				'mouseleave'
 				'[data-cs-content]'
-				->
+				!->
 					clearTimeout(mousemove_timeout)
-		)
+			)

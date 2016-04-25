@@ -1,7 +1,7 @@
 {
 	"package"     : "Prism",
 	"category"    : "plugins",
-	"version"     : "1.0.0-cs9",
+	"version"     : "1.0.1-cs10",
 	"description" : "Prism is a lightweight, extensible syntax highlighter, built with modern web standards in mind. Integration into CleverStyle CMS.",
 	"author"      : "Lea Verou",
 	"website"     : "prismjs.com",

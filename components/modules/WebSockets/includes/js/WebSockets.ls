@@ -1,25 +1,24 @@
-###*
+/**
  * @package   WebSockets
  * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
+ */
 socket			= null
 handlers		= {}
 messages_pool	= []
 allow_reconnect = true
 socket_active	= ->
 	socket && socket.readyState not in [WebSocket.CLOSING, WebSocket.CLOSED]
-do ->
+do !->
 	delay			= 0
-	onopen			= ->
-		delay	= 1000
+	onopen			= !->
+		delay	:= 1000
 		cs.WebSockets.send('Client/authentication')
 		while messages_pool.length
 			cs.WebSockets.send(messages_pool.shift())
-		return
-	onmessage		= (message) ->
+	onmessage		= (message) !->
 		[action, details]	= JSON.parse(message.data)
 		[action, type]	= action.split(':')
 		# Special system actions
@@ -31,25 +30,23 @@ do ->
 			return
 		if typeof details in ['boolean', 'number', 'string']
 			details	= [details]
-		action_handlers.forEach (h) ->
+		action_handlers.forEach (h) !->
 			if type == 'error'
 				h[1] && h[1].apply(h[1], details)
 			else
 				h[0] && h[0].apply(h[0], details)
-		return
-	connect			= ->
+	connect			= !->
 		socket				= new WebSocket(
 			(if location.protocol == 'https:' then 'wss' else 'ws') + "://#{location.host}/WebSockets"
 		)
 		socket.onopen		= onopen
 		socket.onmessage	= onmessage
-		return
-	keep_connection	= ->
-		setTimeout (->
+	keep_connection	= !->
+		setTimeout (!->
 			if !allow_reconnect
 				return
 			if !socket_active()
-				delay	= (delay || 1000) * 2
+				delay	:= (delay || 1000) * 2
 				connect()
 			keep_connection()
 		), delay

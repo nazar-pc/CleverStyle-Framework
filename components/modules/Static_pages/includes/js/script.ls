@@ -1,19 +1,18 @@
-###*
+/**
  * @package   Static Pages
  * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
-$ ->
+ */
+$ !->
 	title	= $('.cs-static-pages-page-title')
 	if title.length
-		window.onbeforeunload	= ->
-			true
+		window.onbeforeunload	= -> true
 	content	= $('.cs-static-pages-page-content')
 	$('.cs-static-pages-page-form')
 		.parents('form')
-		.submit ->
+		.submit !->
 			window.onbeforeunload	= null
 			form					= $(@)
 			form.append(
