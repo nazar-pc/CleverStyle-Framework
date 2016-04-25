@@ -1,10 +1,10 @@
-###*
+/**
  * @package   Shop
  * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
+ */
 Polymer(
 	'is'		: 'cs-shop-item'
 	'extends'	: 'section'
@@ -16,7 +16,7 @@ Polymer(
 		item_id			: Number
 		price			: String
 		in_stock		: Number
-	ready		: ->
+	ready : !->
 		@set('header_title', @querySelector('h1').textContent)
 		@set('price', sprintf(cs.shop.settings.price_formatting, @price))
 		attributes	= $(@querySelector('#attributes'))
@@ -30,7 +30,7 @@ Polymer(
 						.addClass('cs-text-bold')
 		$(@$.images)
 			.append(
-				$(@querySelectorAll('#videos > a')).each ->
+				$(@querySelectorAll('#videos > a')).each !->
 					$this	= $(@)
 					if $this.children('img')
 						$this.attr('data-video', 'true')

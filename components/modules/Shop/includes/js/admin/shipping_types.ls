@@ -1,11 +1,11 @@
-###*
+/**
  * @package   Shop
  * @shipping-type  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
-$ ->
+ */
+$ !->
 	L			= cs.Language('shop_')
 	make_modal	= (title, action) ->
 		$(cs.ui.simple_modal("""<form is="cs-form">
@@ -30,29 +30,29 @@ $ ->
 			<button is="cs-button" primary type="submit">#{action}</button>
 		</form>"""))
 	$('html')
-		.on('mousedown', '.cs-shop-shipping-type-add', ->
+		.on('mousedown', '.cs-shop-shipping-type-add', !->
 			$modal = make_modal(L.shipping_type_addition, L.add)
-			$modal.find('form').submit ->
+			$modal.find('form').submit !->
 				$.ajax(
 					url     : 'api/Shop/admin/shipping_types'
 					type    : 'post'
 					data    : $(@).serialize()
-					success : ->
+					success : !->
 						alert(L.added_successfully)
 						location.reload()
 				)
 				return false
 		)
-		.on('mousedown', '.cs-shop-shipping-type-edit', ->
+		.on('mousedown', '.cs-shop-shipping-type-edit', !->
 			id = $(@).data('id')
-			$.getJSON("api/Shop/admin/shipping_types/#{id}", (shipping_type) ->
+			$.getJSON("api/Shop/admin/shipping_types/#{id}", (shipping_type) !->
 				$modal = make_modal(L.shipping_type_edition, L.edit)
-				$modal.find('form').submit ->
+				$modal.find('form').submit !->
 					$.ajax(
 						url     : "api/Shop/admin/shipping_types/#{id}"
 						type    : 'put'
 						data    : $(@).serialize()
-						success : ->
+						success : !->
 							alert(L.edited_successfully)
 							location.reload()
 					)
@@ -64,13 +64,13 @@ $ ->
 				$modal.find('[name=description]').val(shipping_type.description)
 			)
 		)
-		.on('mousedown', '.cs-shop-shipping-type-delete', ->
+		.on('mousedown', '.cs-shop-shipping-type-delete', !->
 			id = $(@).data('id')
 			if confirm(L.sure_want_to_delete)
 				$.ajax(
 					url     : "api/Shop/admin/shipping_types/#{id}"
 					type    : 'delete'
-					success : ->
+					success : !->
 						alert(L.deleted_successfully)
 						location.reload()
 				)

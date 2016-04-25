@@ -1,10 +1,10 @@
-###*
+/**
  * @package   Shop
  * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
+ */
 $ ->
 	L			= cs.Language('shop_')
 	make_modal	= (attributes, categories, title, action) ->
@@ -90,7 +90,7 @@ $ ->
 				<button is="cs-button" primary type="submit">#{action}</button>
 			</p>
 		</form>"""))
-		modal.set_image	= (image) ->
+		modal.set_image	= (image) !->
 			modal.find('[name=image]').val(image)
 			if image
 				modal.find('.image')
@@ -101,63 +101,62 @@ $ ->
 							.attr('src', image)
 			else
 				modal.find('.image').attr('hidden')
-		modal.find('.remove-image').click ->
+		modal.find('.remove-image').click !->
 			modal.set_image('')
 		if cs.file_upload
-			do ->
+			do !->
 				progress	= modal.find('.set-image').next()[0]
 				uploader	= cs.file_upload(
 					modal.find('.set-image')
-					(image) ->
+					(image) !->
 						progress.hidden = true
 						modal.set_image(image[0])
-					(error) ->
+					(error) !->
 						progress.hidden = true
 						cs.ui.notify(error, 'error')
-					(percents) ->
+					(percents) !->
 						progress.value	= percents
 						progress.hidden	= false
 				)
-				modal.on 'hide.uk.modal', ->
-					uploader.destroy()
+				modal.on('hide.uk.modal', uploader~destroy)
 		else
-			modal.find('.set-image').click ->
+			modal.find('.set-image').click !->
 				image	= prompt(L.image_url)
 				if image
 					modal.set_image(image)
 		modal
 	$('html')
-		.on('mousedown', '.cs-shop-category-add', ->
+		.on('mousedown', '.cs-shop-category-add', !->
 			Promise.all([
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
-			]).then ([attributes, categories]) ->
+			]).then ([attributes, categories]) !->
 				modal = make_modal(attributes, categories, L.category_addition, L.add)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : 'api/Shop/admin/categories'
 						type    : 'post'
 						data    : $(@).serialize()
-						success : ->
+						success : !->
 							alert(L.added_successfully)
 							location.reload()
 					)
 					return false
 		)
-		.on('mousedown', '.cs-shop-category-edit', ->
+		.on('mousedown', '.cs-shop-category-edit', !->
 			id = $(@).data('id')
 			Promise.all([
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
 				$.getJSON("api/Shop/admin/categories/#{id}")
-			]).then ([attributes, categories, category]) ->
+			]).then ([attributes, categories, category]) !->
 				modal = make_modal(attributes, categories, L.category_edition, L.edit)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : "api/Shop/admin/categories/#{id}"
 						type    : 'put'
 						data    : $(@).serialize()
-						success : ->
+						success : !->
 							alert(L.edited_successfully)
 							location.reload()
 					)
@@ -165,20 +164,20 @@ $ ->
 				modal.find('[name=parent]').val(category.parent)
 				modal.find('[name=title]').val(category.title)
 				modal.find('[name=description]').val(category.description)
-				category.attributes.forEach (attribute) ->
+				category.attributes.forEach (attribute) !->
 					modal.find("[name='attributes[]'] > [value=#{attribute}]").prop('selected', true)
 				modal.find('[name=title_attribute]').val(category.title_attribute)
 				modal.find('[name=description_attribute]').val(category.description_attribute)
 				modal.set_image(category.image)
 				modal.find("[name=visible][value=#{category.visible}]").prop('checked', true)
 		)
-		.on('mousedown', '.cs-shop-category-delete', ->
+		.on('mousedown', '.cs-shop-category-delete', !->
 			id = $(@).data('id')
 			if confirm(L.sure_want_to_delete_category)
 				$.ajax(
 					url     : "api/Shop/admin/categories/#{id}"
 					type    : 'delete'
-					success : ->
+					success : !->
 						alert(L.deleted_successfully)
 						location.reload()
 				)

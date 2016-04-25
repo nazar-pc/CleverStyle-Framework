@@ -1,11 +1,11 @@
-###*
+/**
  * @package   Shop
  * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
-$ ->
+ */
+$ !->
 	L							= cs.Language('shop_')
 	set_attribute_types			= [1, 2, 6, 9]	# Attributes types that represents sets: TYPE_INT_SET, TYPE_FLOAT_SET, TYPE_STRING_SET, TYPE_COLOR_SET
 	color_set_attribute_type	= [1, 2, 6, 9]	# Attributes types that represents color set: TYPE_COLOR_SET
@@ -48,7 +48,7 @@ $ ->
 			<div></div>
 		</form>"""))
 		modal.item_data			= {}
-		modal.update_item_data	= ->
+		modal.update_item_data	= !->
 			item	= modal.item_data
 			modal.find('[name=price]').val(item.price)
 			modal.find('[name=in_stock]').val(item.in_stock)
@@ -63,14 +63,13 @@ $ ->
 					modal.find("[name='attributes[#{attribute}]']").val(value)
 			if item.tags
 				modal.find('[name=tags]').val(item.tags.join(', '))
-		modal.find('[name=category]').change ->
-			modal.find('form').serializeArray().forEach (item) ->
+		modal.find('[name=category]').change !->
+			modal.find('form').serializeArray().forEach (item) !->
 				value	= item.value
 				name	= item.name
 				switch name
 					when 'tags'
-						value	= value.split(',').map (v) ->
-							$.trim(v)
+						value	= value.split(',').map($.trim)
 					when 'images'
 						if value
 							value	= JSON.parse(value)
@@ -149,9 +148,9 @@ $ ->
 				</p>
 			""")
 			images_container	= modal.find('.images')
-			modal.update_images	= ->
+			modal.update_images	= !->
 				images	= []
-				images_container.find('a').each ->
+				images_container.find('a').each !->
 					images.push $(@).attr('href')
 				modal.find('[name=images]').val(
 					JSON.stringify(images)
@@ -166,8 +165,8 @@ $ ->
 						'sortupdate'
 						modal.update_images
 					)
-			modal.add_images	= (images) ->
-				images.forEach (image) ->
+			modal.add_images	= (images) !->
+				images.forEach (image) !->
 					images_container.append("""<a href="#{image}" target="_blank" style="display: inline-block; padding: .5em; width: 150px">
 						<img src="#{image}">
 						<br>
@@ -175,35 +174,34 @@ $ ->
 					</a>""")
 				modal.update_images()
 			if cs.file_upload
-				do ->
+				do !->
 					progress	= modal.find('.add-images').next()[0]
 					uploader	= cs.file_upload(
 						modal.find('.add-images')
-						(images) ->
+						(images) !->
 							progress.hidden = true
 							modal.add_images(images)
-						(error) ->
+						(error) !->
 							progress.hidden = true
 							cs.ui.notify(error, 'error')
-						(percents) ->
+						(percents) !->
 							progress.value	= percents
 							progress.hidden	= false
 						true
 					)
-					modal.on 'hide.uk.modal', ->
-						uploader.destroy()
+					modal.on('hide.uk.modal', uploader~destroy)
 			else
-				modal.find('.add-images').click ->
+				modal.find('.add-images').click !->
 					image	= prompt(L.image_url)
 					if image
 						modal.add_images([image])
 			modal.on('click', '.remove-image', ->
 				$(@).parent().remove()
 				modal.update_images()
-				return false
+				false
 			)
 			videos_container	= modal.find('.videos')
-			modal.update_videos	= ->
+			modal.update_videos	= !->
 				videos_container.sortable('destroy')
 				videos_container
 					.sortable(
@@ -214,8 +212,8 @@ $ ->
 						'sortupdate'
 						modal.update_videos
 					)
-			modal.add_videos	= (videos) ->
-				videos.forEach (video) ->
+			modal.add_videos	= (videos) !->
+				videos.forEach (video) !->
 					videos_container.append("""<p>
 						<cs-icon icon="sort" class="handle"></cs-icon>
 						<select is="cs-select" name="videos[type][]" class="video-type">
@@ -232,47 +230,45 @@ $ ->
 					video_video		= added_video.find('.video-video').val(video.video)
 					video_poster	= added_video.find('.video-poster').val(video.poster)
 					if cs.file_upload
-						do ->
+						do !->
 							video_video.after("""
 								&nbsp;<button is="cs-button" type="button" icon="upload"></button>
 							""")
 							progress	= video_video.parent().find('progress')[0]
 							uploader	= cs.file_upload(
 								video_video.next()
-								(video) ->
+								(video) !->
 									progress.hidden = true
 									video_video.val(video[0])
-								(error) ->
+								(error) !->
 									progress.hidden = true
 									cs.ui.notify(error, 'error')
-								(percents) ->
+								(percents) !->
 									progress.value	= percents
 									progress.hidden	= false
 							)
-							modal.on 'hide.uk.modal', ->
-								uploader.destroy()
-						do ->
+							modal.on('hide.uk.modal', uploader~destroy)
+						do !->
 							video_poster.after("""
 								&nbsp;<button is="cs-button" type="button" icon="upload"></button>
 							""")
 							progress	= video_video.parent().find('progress')[0]
 							uploader	= cs.file_upload(
 								video_poster.next()
-								(poster) ->
+								(poster) !->
 									progress.hidden = true
 									video_poster.val(poster[0])
-								(error) ->
+								(error) !->
 									progress.hidden = true
 									cs.ui.notify(error, 'error')
-								(percents) ->
+								(percents) !->
 									progress.value	= percents
 									progress.hidden	= false
 							)
-							modal.on 'hide.uk.modal', ->
-								uploader.destroy()
+							modal.on('hide.uk.modal', uploader~destroy)
 					added_video.find('.video-type').val(video.type).change()
 				modal.update_videos()
-			modal.find('.add-video').click ->
+			modal.find('.add-video').click !->
 				modal.add_videos([
 					video	: ''
 					poster	: ''
@@ -281,13 +277,13 @@ $ ->
 			videos_container.on(
 				'click'
 				'.delete-video'
-				->
+				!->
 					$(@).parent().remove()
 			)
 			videos_container.on(
 				'change'
 				'.video-type'
-				->
+				!->
 					$this		= $(@)
 					container	= $this.parent()
 					switch $this.val()
@@ -304,11 +300,11 @@ $ ->
 			modal.update_item_data()
 		modal
 	$('html')
-		.on('mousedown', '.cs-shop-item-add', ->
+		.on('mousedown', '.cs-shop-item-add', !->
 			Promise.all([
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
-			]).then ([attributes, categories]) ->
+			]).then ([attributes, categories]) !->
 				modal = make_modal(attributes, categories, L.item_addition, L.add)
 				modal.find("[name=category]").change()
 				modal.find('form').submit ->
@@ -316,40 +312,40 @@ $ ->
 						url     : 'api/Shop/admin/items'
 						type    : 'post'
 						data    : $(@).serialize()
-						success : ->
+						success : !->
 							alert(L.added_successfully)
 							location.reload()
 					)
-					return false
+					false
 		)
-		.on('mousedown', '.cs-shop-item-edit', ->
+		.on('mousedown', '.cs-shop-item-edit', !->
 			id = $(@).data('id')
 			Promise.all([
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
 				$.getJSON("api/Shop/admin/items/#{id}")
-			]).then ([attributes, categories, item]) ->
+			]).then ([attributes, categories, item]) !->
 				modal = make_modal(attributes, categories, L.item_edition, L.edit)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : "api/Shop/admin/items/#{id}"
 						type    : 'put'
 						data    : $(@).serialize()
-						success : ->
+						success : !->
 							alert(L.edited_successfully)
 							location.reload()
 					)
-					return false
+					false
 				modal.item_data	= item
 				modal.find("[name=category]").val(item.category).change()
 		)
-		.on('mousedown', '.cs-shop-item-delete', ->
+		.on('mousedown', '.cs-shop-item-delete', !->
 			id = $(@).data('id')
 			if confirm(L.sure_want_to_delete)
 				$.ajax(
 					url     : "api/Shop/admin/items/#{id}"
 					type    : 'delete'
-					success : ->
+					success : !->
 						alert(L.deleted_successfully)
 						location.reload()
 				)

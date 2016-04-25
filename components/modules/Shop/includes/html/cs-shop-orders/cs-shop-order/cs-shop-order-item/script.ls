@@ -1,10 +1,10 @@
-###*
+/**
  * @package   Shop
  * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
+ */
 Polymer(
 	'is'		: 'cs-shop-order-item'
 	properties	:
@@ -12,10 +12,10 @@ Polymer(
 		price		: Number
 		unit_price	: Number
 		units		: Number
-	ready		: ->
-		do (img = @querySelector('#img')) =>
-			@$.img.src		= img.src
-			@$.img.title	= img.title
+	ready		: !->
+		img				= @querySelector('#img')
+		@$.img.src		= img.src
+		@$.img.title	= img.title
 		href = @querySelector('#link').href
 		if href
 			@$['img-link'].href	= href

@@ -1,11 +1,11 @@
-###*
+/**
  * @package   Shop
  * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
-$ ->
+ */
+$ !->
 	L			= cs.Language('shop_')
 	make_modal	= (shipping_types, order_statuses, payment_methods, title, action) ->
 		shipping_types	= do ->
@@ -82,27 +82,27 @@ $ ->
 				<button is="cs-button" primary type="submit">#{action}</button>
 			</p>
 		</form>"""))
-		do ->
+		do !->
 			timeout = 0
-			modal.find('[name=user]').keyup ->
+			modal.find('[name=user]').keyup !->
 				clearTimeout(timeout)
-				timeout = setTimeout (=>
+				timeout := setTimeout (=>
 					$.getJSON('api/System/profiles/' + $(@).val(), (profile) ->
 						modal.find('.username').html(profile.username || profile.login)
 					)
 				), 300
-		do ->
+		do !->
 			shipping_type_select	= modal.find('[name=shipping_type]')
-			shipping_type_select.change ->
+			shipping_type_select.change !->
 				shipping_type	= shipping_types[$(@).val()]
 				modal.find('[name=shipping_phone]').parent()[if parseInt(shipping_type.phone_needed) then 'show' else 'hide']()
 				modal.find('[name=shipping_address]').parent()[if parseInt(shipping_type.address_needed) then 'show' else 'hide']()
 				modal.find('#shipping_cost').html(shipping_type.price)
 			shipping_type_select.change()
-		do ->
+		do !->
 			items_container	= modal.find('.items')
-			modal.add_item	= (item) ->
-				callback	= (item_data) ->
+			modal.add_item	= (item) !->
+				callback	= (item_data) !->
 					total_price	= item_data.price * item.units
 					items_container.append("""<p>
 						#{L.item}: <input is="cs-input-text" compact value="-" class="title" readonly>
@@ -122,27 +122,27 @@ $ ->
 					)
 			timeout	= 0
 			items_container
-				.on('keyup change', "[name='items[units][]']", ->
+				.on('keyup change', "[name='items[units][]']", !->
 					$this					= $(@)
 					item_price_container	= $this.parent().find('.item-price')
 					item_price_container.html(
 						item_price_container.data('original-price') * $this.val()
 					)
 				)
-				.on('keyup', "[name='items[item][]']", ->
+				.on('keyup', "[name='items[item][]']", !->
 					clearTimeout(timeout)
-					timeout = setTimeout (=>
+					timeout := setTimeout (=>
 						$this		= $(@)
 						container	= $this.parent()
 						$.ajax(
 							url		: 'api/Shop/admin/items/' + $this.val()
 							type	: 'get'
-							success	: (item) ->
+							success	: (item) !->
 								container.find('.title').val(item.title)
 								container.find('.unit-price').html(item.price)
 								container.find('.item-price').data('original-price', item.price)
 								container.find("[name='items[units][]']").change()
-							error	: ->
+							error	: !->
 								container.find('.title').val('-')
 								container.find('.unit-price').html(0)
 								container.find('.item-price').data('original-price', 0)
@@ -150,11 +150,11 @@ $ ->
 						)
 					), 300
 				)
-				.on('click', '.delete-item', ->
+				.on('click', '.delete-item', !->
 					$(@).parent().remove()
 				)
 		modal
-			.on('click', '.add-item', ->
+			.on('click', '.add-item', !->
 				modal.add_item(
 					item		: ''
 					unit_price	: ''
@@ -163,45 +163,45 @@ $ ->
 				)
 			)
 	$('html')
-		.on('mousedown', '.cs-shop-order-add', ->
+		.on('mousedown', '.cs-shop-order-add', !->
 			Promise.all([
 				$.getJSON('api/Shop/admin/shipping_types')
 				$.getJSON('api/Shop/admin/order_statuses')
 				$.getJSON('api/Shop/payment_methods')
-			]).then ([shipping_types, order_statuses, payment_methods]) ->
+			]).then ([shipping_types, order_statuses, payment_methods]) !->
 				modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_addition, L.add)
-				modal.find('form').submit ->
+				modal.find('form').submit !->
 					data	= $(@).serialize()
 					$.ajax(
 						url     : 'api/Shop/admin/orders'
 						type    : 'post'
 						data    : data
-						success : (url) ->
+						success : (url) !->
 							url	= url.split('/')
 							$.ajax(
 								url     : 'api/Shop/admin/orders/' + url.pop() + '/items'
 								type    : 'put'
 								data    : data
-								success : ->
+								success : !->
 									alert(L.added_successfully)
 									location.reload()
 							)
 					)
 					return false
 		)
-		.on('mousedown', '.cs-shop-order-statuses-history', ->
+		.on('mousedown', '.cs-shop-order-statuses-history', !->
 			id	= $(@).data('id')
 			Promise.all([
 				$.getJSON('api/Shop/admin/order_statuses')
 				$.getJSON("api/Shop/admin/orders/#{id}/statuses")
-			]).then ([order_statuses, statuses]) ->
+			]).then ([order_statuses, statuses]) !->
 				order_statuses	= do ->
 					result	= {}
-					order_statuses.forEach (status) ->
+					order_statuses.forEach (status) !->
 						result[status.id]	= status
 					result
 				content			= ''
-				statuses.forEach (status) ->
+				statuses.forEach (status) !->
 					order_status	= order_statuses?[status.status]
 					color			=
 						if order_status
@@ -227,8 +227,8 @@ $ ->
 				cs.ui.simple_modal("""
 					<table class="cs-table" list>#{content}</table>
 				""")
-	)
-		.on('mousedown', '.cs-shop-order-edit', ->
+		)
+		.on('mousedown', '.cs-shop-order-edit', !->
 			$this		= $(@)
 			id			= $this.data('id')
 			username	= $this.data('username')
@@ -239,20 +239,20 @@ $ ->
 				$.getJSON('api/Shop/payment_methods')
 				$.getJSON("api/Shop/admin/orders/#{id}")
 				$.getJSON("api/Shop/admin/orders/#{id}/items")
-			]).then ([shipping_types, order_statuses, payment_methods, order, items]) ->
+			]).then ([shipping_types, order_statuses, payment_methods, order, items]) !->
 				modal	= make_modal(shipping_types, order_statuses, payment_methods, L.order_edition, L.edit)
-				modal.find('form').submit ->
+				modal.find('form').submit !->
 					data	= $(@).serialize()
 					$.ajax(
 						url     : "api/Shop/admin/orders/#{id}"
 						type    : 'put'
 						data    : data
-						success : ->
+						success : !->
 							$.ajax(
 								url     : "api/Shop/admin/orders/#{id}/items"
 								type    : 'put'
 								data    : data
-								success : ->
+								success : !->
 									alert(L.edited_successfully)
 									location.reload()
 							)
@@ -270,16 +270,16 @@ $ ->
 				modal.find('[name=paid][value=' + (if parseInt(order.paid) then 1 else 0) + ']').prop('checked', true)
 				modal.find('[name=status]').val(order.status)
 				modal.find('[name=comment]').val(order.comment)
-				items.forEach (item) ->
+				items.forEach (item) !->
 					modal.add_item(item)
 		)
-		.on('mousedown', '.cs-shop-order-delete', ->
+		.on('mousedown', '.cs-shop-order-delete', !->
 			id = $(@).data('id')
 			if confirm(L.sure_want_to_delete)
 				$.ajax(
 					url     : "api/Shop/admin/orders/#{id}"
 					type    : 'delete'
-					success : ->
+					success : !->
 						alert(L.deleted_successfully)
 						location.reload()
 				)

@@ -1,17 +1,17 @@
-###*
+/**
  * @package   Shop
  * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
+ */
 L	= cs.Language('shop_')
 Polymer(
-	'is'				: 'cs-shop-order'
+	'is'		: 'cs-shop-order'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('shop_')
 	]
-	properties			:
+	properties	:
 		order_id			: Number
 		date				: Number
 		date_formatted		: String
@@ -19,7 +19,7 @@ Polymer(
 		for_payment			: Number
 		payment_method		: String
 		paid				: Boolean
-	ready				: ->
+	ready : !->
 		@show_pay_now				= !@paid && @payment_method != 'shop:cash'
 		@order_number				= sprintf('' + Lorder_number, @order_id)
 		@order_status				= @querySelector('#order_status').textContent
@@ -27,8 +27,8 @@ Polymer(
 		@shipping_cost_formatted	= sprintf(cs.shop.settings.price_formatting, @shipping_cost)
 		total_price					= 0
 		discount					= 0
-		$(@).find('cs-shop-order-item').each ->
-			# TODO calling properties doesn't work in FireFox for some reason
+		$(@).find('cs-shop-order-item').each !->
+			# TODO calling properties doesn't work in Firefox for some reason
 			total_price	+= @getAttribute('units') * @getAttribute('unit_price')
 			discount	+= (@getAttribute('units') * @getAttribute('unit_price')) - @getAttribute('price')
 		@total_price_formatted	= sprintf(cs.shop.settings.price_formatting, total_price)
@@ -40,6 +40,6 @@ Polymer(
 		@$.address.textContent	= @address
 		@comment				= $.trim(@querySelector('#comment')?.textContent || '').replace(/\n/g, '<br>')
 		@$.comment.textContent	= @comment
-	pay					: ->
+	pay : !->
 		location.href	= 'Shop/pay/' + @order_id
 );

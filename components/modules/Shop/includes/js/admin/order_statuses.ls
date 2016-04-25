@@ -1,11 +1,11 @@
-###*
+/**
  * @package   Shop
- * @order-status  modules
+ * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
-###
-$ ->
+ */
+$ !->
 	L			= cs.Language('shop_')
 	make_modal	= (types, title, action) ->
 		types	=
@@ -31,48 +31,48 @@ $ ->
 			<br>
 			<button is="cs-button" primary type="submit">#{action}</button>
 		</form>"""))
-		modal.find('[type=color]').change ->
+		modal.find('[type=color]').change !->
 			modal.find('[name=color]').val(
 				$(@).val()
 			)
-		modal.find('[name=color]').change ->
+		modal.find('[name=color]').change !->
 			modal.find('[type=color]').val(
 				$(@).val()
 			)
 		modal
 	$('html')
-		.on('mousedown', '.cs-shop-order-status-add', ->
-			$.getJSON('api/Shop/admin/order_statuses/types', (types) ->
+		.on('mousedown', '.cs-shop-order-status-add', !->
+			$.getJSON('api/Shop/admin/order_statuses/types', (types) !->
 				modal = make_modal(types, L.order_status_addition, L.add)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : 'api/Shop/admin/order_statuses'
 						type    : 'post'
 						data    : $(@).serialize()
-						success : ->
+						success : !->
 							alert(L.added_successfully)
 							location.reload()
 					)
-					return false
+					false
 			)
 		)
-		.on('mousedown', '.cs-shop-order-status-edit', ->
+		.on('mousedown', '.cs-shop-order-status-edit', !->
 			id = $(@).data('id')
 			Promise.all([
 				$.getJSON('api/Shop/admin/order_statuses/types')
 				$.getJSON("api/Shop/admin/order_statuses/#{id}")
-			]).then ([types, type]) ->
+			]).then ([types, type]) !->
 				modal = make_modal(types, L.order_status_edition, L.edit)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : "api/Shop/admin/order_statuses/#{id}"
 						type    : 'put'
 						data    : $(@).serialize()
-						success : ->
+						success : !->
 							alert(L.edited_successfully)
 							location.reload()
 					)
-					return false
+					false
 				modal.find('[name=title]').val(type.title)
 				modal.find('[name=color]').val(type.color)
 				modal.find('[type=color]').val(type.color)
@@ -80,13 +80,13 @@ $ ->
 				modal.find("[name=send_update_status_email][value=#{type.send_update_status_email}]").prop('checked', true)
 				modal.find('[name=comment]').val(type.comment)
 		)
-		.on('mousedown', '.cs-shop-order-status-delete', ->
+		.on('mousedown', '.cs-shop-order-status-delete', !->
 			id = $(@).data('id')
 			if confirm(L.sure_want_to_delete)
 				$.ajax(
 					url     : "api/Shop/admin/order_statuses/#{id}"
 					type    : 'delete'
-					success : ->
+					success : !->
 						alert(L.deleted_successfully)
 						location.reload()
 				)
