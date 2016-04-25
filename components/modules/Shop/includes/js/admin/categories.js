@@ -90,7 +90,7 @@
             progress.value = percents;
             progress.hidden = false;
           });
-          modal.on('hide.uk.modal', bind$(uploader, 'destroy'));
+          modal.on('close', bind$(uploader, 'destroy'));
         })();
       } else {
         modal.find('.set-image').click(function(){

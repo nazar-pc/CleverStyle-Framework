@@ -184,7 +184,7 @@
       return Math.ceil(users_count / search_limit);
     },
     add_user: function(){
-      $(cs.ui.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>")).on('hide.uk.modal', bind$(this, 'search'));
+      $(cs.ui.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>")).on('close', bind$(this, 'search'));
     },
     edit_user: function(e){
       var $sender, index, user, title;
@@ -192,7 +192,7 @@
       index = $sender.closest('[data-user-index]').data('user-index');
       user = this.users[index];
       title = L.editing_of_user_information(user.username || user.login);
-      $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>")).on('hide.uk.modal', bind$(this, 'search'));
+      $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>")).on('close', bind$(this, 'search'));
     },
     edit_groups: function(e){
       var $sender, index, user, title;

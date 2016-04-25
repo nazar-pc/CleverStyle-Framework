@@ -146,7 +146,7 @@ Polymer(
 		$(cs.ui.simple_modal("""
 			<h3>#{L.adding_a_user}</h3>
 			<cs-system-admin-users-add-user-form/>
-		""")).on('hide.uk.modal', @~search)
+		""")).on('close', @~search)
 	edit_user : (e) !->
 		$sender	= $(e.currentTarget)
 		index	= $sender.closest('[data-user-index]').data('user-index')
@@ -157,7 +157,7 @@ Polymer(
 		$(cs.ui.simple_modal("""
 			<h2>#{title}</h2>
 			<cs-system-admin-users-edit-user-form user_id="#{user.id}"/>
-		""")).on('hide.uk.modal', @~search)
+		""")).on('close', @~search)
 	edit_groups : (e) !->
 		$sender		= $(e.currentTarget)
 		index		= $sender.closest('[data-user-index]').data('user-index')

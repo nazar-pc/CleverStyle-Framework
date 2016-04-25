@@ -189,7 +189,7 @@ $ !->
 							progress.hidden	= false
 						true
 					)
-					modal.on('hide.uk.modal', uploader~destroy)
+					modal.on('close', uploader~destroy)
 			else
 				modal.find('.add-images').click !->
 					image	= prompt(L.image_url)
@@ -247,7 +247,7 @@ $ !->
 									progress.value	= percents
 									progress.hidden	= false
 							)
-							modal.on('hide.uk.modal', uploader~destroy)
+							modal.on('close', uploader~destroy)
 						do !->
 							video_poster.after("""
 								&nbsp;<button is="cs-button" type="button" icon="upload"></button>
@@ -265,7 +265,7 @@ $ !->
 									progress.value	= percents
 									progress.hidden	= false
 							)
-							modal.on('hide.uk.modal', uploader~destroy)
+							modal.on('close', uploader~destroy)
 					added_video.find('.video-type').val(video.type).change()
 				modal.update_videos()
 			modal.find('.add-video').click !->

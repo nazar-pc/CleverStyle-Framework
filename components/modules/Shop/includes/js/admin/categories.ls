@@ -118,7 +118,7 @@ $ ->
 						progress.value	= percents
 						progress.hidden	= false
 				)
-				modal.on('hide.uk.modal', uploader~destroy)
+				modal.on('close', uploader~destroy)
 		else
 			modal.find('.set-image').click !->
 				image	= prompt(L.image_url)

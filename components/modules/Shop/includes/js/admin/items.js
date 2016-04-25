@@ -175,7 +175,7 @@
               progress.value = percents;
               progress.hidden = false;
             }, true);
-            modal.on('hide.uk.modal', bind$(uploader, 'destroy'));
+            modal.on('close', bind$(uploader, 'destroy'));
           })();
         } else {
           modal.find('.add-images').click(function(){
@@ -221,7 +221,7 @@
                   progress.value = percents;
                   progress.hidden = false;
                 });
-                modal.on('hide.uk.modal', bind$(uploader, 'destroy'));
+                modal.on('close', bind$(uploader, 'destroy'));
               })();
               (function(){
                 var progress, uploader;
@@ -237,7 +237,7 @@
                   progress.value = percents;
                   progress.hidden = false;
                 });
-                modal.on('hide.uk.modal', bind$(uploader, 'destroy'));
+                modal.on('close', bind$(uploader, 'destroy'));
               })();
             }
             added_video.find('.video-type').val(video.type).change();
