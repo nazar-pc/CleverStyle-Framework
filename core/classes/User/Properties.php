@@ -1,12 +1,14 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2016, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs\User;
-use			cs\User;
+namespace cs\User;
+use
+	cs\User;
+
 /**
  * Class for getting of user information
  *
@@ -30,19 +32,19 @@ class Properties {
 	/**
 	 * @var int
 	 */
-	protected	$id;
+	protected $id;
 	/**
 	 * Creating of object and saving user id inside
 	 *
 	 * @param int $user
 	 */
 	function __construct ($user) {
-		$this->id	= $user;
+		$this->id = $user;
 	}
 	/**
 	 * Get data item of user
 	 *
-	 * @param string|string[]		$item
+	 * @param string|string[] $item
 	 *
 	 * @return false|string|mixed[]
 	 */
@@ -52,8 +54,8 @@ class Properties {
 	/**
 	 * Set data item of specified user
 	 *
-	 * @param array|string	$item
-	 * @param mixed|null	$value
+	 * @param array|string $item
+	 * @param mixed|null   $value
 	 *
 	 * @return bool
 	 */
@@ -63,7 +65,7 @@ class Properties {
 	/**
 	 * Get data item of user
 	 *
-	 * @param string|string[]		$item
+	 * @param string|string[] $item
 	 *
 	 * @return array|false|string
 	 */
@@ -73,7 +75,7 @@ class Properties {
 	/**
 	 * Get user avatar, if no one present - uses Gravatar
 	 *
-	 * @param int|null	$size	Avatar size, if not specified or resizing is not possible - original image is used
+	 * @param int|null $size Avatar size, if not specified or resizing is not possible - original image is used
 	 *
 	 * @return string
 	 */
@@ -91,8 +93,8 @@ class Properties {
 	/**
 	 * Set data item of user
 	 *
-	 * @param array|string	$item
-	 * @param mixed|null	$value
+	 * @param array|string $item
+	 * @param mixed|null   $value
 	 */
 	function __set ($item, $value = null) {
 		User::instance()->set($item, $value, $this->id);
@@ -100,7 +102,7 @@ class Properties {
 	/**
 	 * Getting additional data item(s) of specified user
 	 *
-	 * @param string|string[]		$item
+	 * @param string|string[] $item
 	 *
 	 * @return false|string|mixed[]
 	 */
@@ -110,8 +112,8 @@ class Properties {
 	/**
 	 * Setting additional data item(s) of specified user
 	 *
-	 * @param array|string	$item
-	 * @param mixed|null	$value
+	 * @param array|string $item
+	 * @param mixed|null   $value
 	 *
 	 * @return bool
 	 */
@@ -121,7 +123,7 @@ class Properties {
 	/**
 	 * Deletion of additional data item(s) of specified user
 	 *
-	 * @param string|string[]		$item
+	 * @param string|string[] $item
 	 *
 	 * @return bool
 	 */

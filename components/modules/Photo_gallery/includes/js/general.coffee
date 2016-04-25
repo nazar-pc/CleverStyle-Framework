@@ -1,9 +1,9 @@
 ###*
- * @package		Photo gallery
- * @category	modules
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2013-2016, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   Photo gallery
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2013-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
 ###
 $ ->
 	L				= cs.Language('photo_gallery_')
