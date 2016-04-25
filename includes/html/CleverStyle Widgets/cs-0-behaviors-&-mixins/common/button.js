@@ -9,10 +9,7 @@
   var ref$;
   ((ref$ = Polymer.cs || (Polymer.cs = {})).behaviors || (ref$.behaviors = {})).button = {
     properties: {
-      action: {
-        type: String,
-        value: 'button_action'
-      },
+      action: String,
       active: {
         notify: true,
         reflectToAttribute: true,

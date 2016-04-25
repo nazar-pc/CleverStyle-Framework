@@ -16,21 +16,21 @@ Polymer.cs.behaviors.cs-section-modal	= [
 		autoOpen	: Boolean
 		manualClose	: Boolean
 		opened		:
-			observer			: '_opened_changed'
-			reflectToAttribute	: true
-			type				: Boolean
+			observer	: '_opened_changed'
+			type		: Boolean
 	listeners	:
 		transitionend	: '_transitionend'
 		'overlay.tap'	: '_overlay_tap'
-	created : !->
-		@_esc_handler	= (e) !~>
-			if e.keyCode == 27 && !@manualClose # Esc
-				@close()
+	_esc_handler : (e) !~>
+		if e.keyCode == 27 && !@manualClose # Esc
+			@close()
 	attached : !->
-		if !@_attached_to_html && @previousElementSibling.tagName == 'BUTTON'
+		if @previousElementSibling?.tagName == 'BUTTON' && !@previousElementSibling.action
 			@previousElementSibling.action	= 'open'
 			@previousElementSibling.bind	= @
 		if @autoOpen
+			# Prevent repeated opening
+			@autoOpen = false
 			@open()
 	_transitionend : !->
 		if !@opened && @autoDestroy
@@ -39,12 +39,14 @@ Polymer.cs.behaviors.cs-section-modal	= [
 		if !@manualClose
 			@close()
 	_opened_changed : !->
-		if !@_attached_to_html
-			@_attached_to_html	= true
+		if @parentNode?.tagName != 'HTML'
 			html.appendChild(@)
+		# Hack to make modal opening really smooth
+		@distributeContent(true)
+		Polymer.dom.flush()
 		body.modalOpened = body.modalOpened || 0
 		if @opened
-			document.addEventListener('keydown', @_esc_handler)
+			document.addEventListener('keydown', @~_esc_handler)
 			# Actually insert content only when needed
 			if @content
 				@innerHTML	= @content
@@ -53,22 +55,19 @@ Polymer.cs.behaviors.cs-section-modal	= [
 			++body.modalOpened
 			@fire('open')
 			document.body.setAttribute('modal-opened', '')
+			setTimeout (!~>
+				@setAttribute('opened', '')
+			), 100
 		else
-			document.removeEventListener('keydown', @_esc_handler)
+			document.removeEventListener('keydown', @~_esc_handler)
 			--body.modalOpened
 			@fire('close')
+			@removeAttribute('opened')
 			if !body.modalOpened
 				document.body.removeAttribute('modal-opened')
 	open : ->
 		if !@opened
-			if !@_attached_to_html
-				@_attached_to_html	= true
-				if @parentNode.tagName != 'HTML'
-					html.appendChild(@)
-				# Put modal opening into stack of functions to call
-				setTimeout(@~open, 0)
-			else
-				@opened = true
+			@opened = true
 		@
 	close : ->
 		if @opened

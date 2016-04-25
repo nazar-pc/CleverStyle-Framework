@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var body, html;
+  var body, html, this$ = this;
   body = document.body;
   html = document.documentElement;
   Polymer.cs.behaviors.csSectionModal = [
@@ -21,7 +21,6 @@
         manualClose: Boolean,
         opened: {
           observer: '_opened_changed',
-          reflectToAttribute: true,
           type: Boolean
         }
       },
@@ -29,20 +28,19 @@
         transitionend: '_transitionend',
         'overlay.tap': '_overlay_tap'
       },
-      created: function(){
-        var this$ = this;
-        this._esc_handler = function(e){
-          if (e.keyCode === 27 && !this$.manualClose) {
-            this$.close();
-          }
-        };
+      _esc_handler: function(e){
+        if (e.keyCode === 27 && !this$.manualClose) {
+          this$.close();
+        }
       },
       attached: function(){
-        if (!this._attached_to_html && this.previousElementSibling.tagName === 'BUTTON') {
+        var ref$;
+        if (((ref$ = this.previousElementSibling) != null ? ref$.tagName : void 8) === 'BUTTON' && !this.previousElementSibling.action) {
           this.previousElementSibling.action = 'open';
           this.previousElementSibling.bind = this;
         }
         if (this.autoOpen) {
+          this.autoOpen = false;
           this.open();
         }
       },
@@ -60,13 +58,15 @@
         }
       },
       _opened_changed: function(){
-        if (!this._attached_to_html) {
-          this._attached_to_html = true;
+        var ref$, this$ = this;
+        if (((ref$ = this.parentNode) != null ? ref$.tagName : void 8) !== 'HTML') {
           html.appendChild(this);
         }
+        this.distributeContent(true);
+        Polymer.dom.flush();
         body.modalOpened = body.modalOpened || 0;
         if (this.opened) {
-          document.addEventListener('keydown', this._esc_handler);
+          document.addEventListener('keydown', bind$(this, '_esc_handler'));
           if (this.content) {
             this.innerHTML = this.content;
             this.content = null;
@@ -74,10 +74,14 @@
           ++body.modalOpened;
           this.fire('open');
           document.body.setAttribute('modal-opened', '');
+          setTimeout(function(){
+            this$.setAttribute('opened', '');
+          }, 100);
         } else {
-          document.removeEventListener('keydown', this._esc_handler);
+          document.removeEventListener('keydown', bind$(this, '_esc_handler'));
           --body.modalOpened;
           this.fire('close');
+          this.removeAttribute('opened');
           if (!body.modalOpened) {
             document.body.removeAttribute('modal-opened');
           }
@@ -85,15 +89,7 @@
       },
       open: function(){
         if (!this.opened) {
-          if (!this._attached_to_html) {
-            this._attached_to_html = true;
-            if (this.parentNode.tagName !== 'HTML') {
-              html.appendChild(this);
-            }
-            setTimeout(bind$(this, 'open'), 0);
-          } else {
-            this.opened = true;
-          }
+          this.opened = true;
         }
         return this;
       },
