@@ -13,11 +13,10 @@ function form () {
 	return h::{'form[method=post]'}(
 		h::nav(
 			'Build: '.
-			h::{'radio.build-mode[name=mode]'}(
+			h::{'radio[name=mode]'}(
 				[
-					'value'   => ['core', 'module', 'plugin', 'theme'],
-					'in'      => ['Core', 'Module', 'Plugin', 'Theme'],
-					'onclick' => 'change_mode(this.value, this);'
+					'value' => ['core', 'module', 'plugin', 'theme'],
+					'in'    => ['Core', 'Module', 'Plugin', 'Theme']
 				]
 			)
 		).
@@ -28,13 +27,13 @@ function form () {
 				'Themes'
 			],
 			[
-				h::{'select#modules[name=modules[]][size=20][multiple] option'}(
+				h::{'select[name=modules[]][size=20][multiple] option'}(
 					get_list_for_form(DIR.'/components/modules', 'System')
 				),
-				h::{'select#plugins[name=plugins[]][size=20][multiple] option'}(
+				h::{'select[name=plugins[]][size=20][multiple] option'}(
 					get_list_for_form(DIR.'/components/plugins')
 				),
-				h::{'select#themes[name=themes[]][size=20][multiple] option'}(
+				h::{'select[name=themes[]][size=20][multiple] option'}(
 					get_list_for_form(DIR.'/themes', 'CleverStyle')
 				)
 			]
@@ -42,12 +41,6 @@ function form () {
 		h::{'input[name=suffix]'}(
 			[
 				'placeholder' => 'Package file suffix'
-			]
-		).
-		h::{'button.license'}(
-			'License',
-			[
-				'onclick' => "window.open('license.txt', 'license', 'location=no')"
 			]
 		).
 		h::{'button[type=submit]'}(

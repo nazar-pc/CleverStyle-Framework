@@ -110,14 +110,7 @@ section {
 		cursor           : pointer;
 		padding          : 4px 20px;
 		position         : absolute;
-
-		&.license {
-			left : 12px;
-		}
-
-		&[type=submit] {
-			right : 12px;
-		}
+		right            : 12px;
 	}
 }
 
