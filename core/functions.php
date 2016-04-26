@@ -91,14 +91,6 @@ spl_autoload_register(
 	true,
 	true
 );
-/**
- * @param string $class
- *
- * @return null|string
- */
-function __autoload_find_alias ($class) {
-	//
-}
 
 /**
  * Clean cache of classes autoload and customization
