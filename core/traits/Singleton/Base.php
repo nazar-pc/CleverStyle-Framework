@@ -7,6 +7,7 @@
  */
 namespace cs\Singleton;
 use
+	cs\Config,
 	cs\False_class,
 	cs\Request;
 
@@ -52,22 +53,45 @@ trait Base {
 		if (strpos($class, 'cs') !== 0) {
 			return False_class::instance();
 		}
-		$custom_class_base = 'cs\\custom'.substr($class, 2);
-		$next_alias        = $class;
-		if (class_exists($custom_class_base, false)) {
-			$next_alias = $custom_class_base;
+		list($aliases, $final_class) = static::instance_prototype_get_aliases_final_class($class);
+		foreach ($aliases as $alias) {
+			/**
+			 * If for whatever reason base class does not exists or file that should be included does not exists
+			 */
+			if (
+				!class_exists($alias['original'], false) ||
+				!file_exists($alias['path'])
+			) {
+				clean_classes_cache();
+				$instance = new $class;
+				static::instance_prototype_state_init($instance);
+				$instance->construct();
+				return $instance;
+			}
+			class_alias($alias['original'], $alias['alias']);
+			require_once $alias['path'];
 		}
+		$instance = new $final_class;
+		static::instance_prototype_state_init($instance);
+		$instance->construct();
+		return $instance;
+	}
+	/**
+	 * @param string $class
+	 *
+	 * @return array
+	 */
+	protected static function instance_prototype_get_aliases_final_class ($class) {
 		$modified_classes = modified_classes();
 		if (!isset($modified_classes[$class])) {
-			$aliases                  = [];
-			$modified_classes[$class] = [
-				'aliases'     => &$aliases,
-				'final_class' => &$next_alias
-			];
-			$classes                  = defined('CUSTOM') ? glob(CUSTOM.'/classes/'.substr($class, 2).'_*.php') : [];
-			foreach ($classes as $custom_class) {
-				// Path to file with customized class
-				$custom_class = str_replace(CUSTOM.'/classes/', '', substr($custom_class, 0, -4));
+			$custom_class_base = 'cs\\custom'.substr($class, 2);
+			$next_alias        = $class;
+			$aliases           = [];
+			if (class_exists($custom_class_base, false)) {
+				$next_alias = $custom_class_base;
+			}
+			$custom_classes = defined('CUSTOM') ? glob(CUSTOM.'/classes/'.substr($class, 2).'_*.php') : [];
+			foreach ($custom_classes as $custom_class) {
 				// Same path with prefixed class name
 				$_custom_class   = explode('/', $custom_class);
 				$_custom_class[] = '_'.array_pop($_custom_class);
@@ -79,29 +103,16 @@ trait Base {
 				];
 				$next_alias      = "cs\\custom\\$custom_class";
 			}
+			$modified_classes[$class] = [
+				'aliases'     => $aliases,
+				'final_class' => $next_alias
+			];
 			modified_classes($modified_classes);
 		}
-		foreach ($modified_classes[$class]['aliases'] as $alias) {
-			/**
-			 * If for whatever reason base class does not exists or file that should be included does not exists
-			 */
-			if (
-				!class_exists($alias['original'], false) ||
-				!file_exists(CUSTOM."/classes/$alias[path].php")
-			) {
-				clean_classes_cache();
-				$instance = new $class;
-				static::instance_prototype_state_init($instance);
-				$instance->construct();
-				return $instance;
-			}
-			class_alias($alias['original'], $alias['alias']);
-			require_once CUSTOM."/classes/$alias[path].php";
-		}
-		$instance = new $modified_classes[$class]['final_class'];
-		static::instance_prototype_state_init($instance);
-		$instance->construct();
-		return $instance;
+		return [
+			$modified_classes[$class]['aliases'],
+			$modified_classes[$class]['final_class']
+		];
 	}
 	/**
 	 * @param static $instance

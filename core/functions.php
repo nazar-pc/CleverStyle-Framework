@@ -21,9 +21,14 @@ use
  */
 spl_autoload_register(
 	function ($class) {
-		static $cache;
+		static $cache, $aliases;
 		if (!isset($cache)) {
-			$cache = file_exists(CACHE.'/classes/autoload') ? file_get_json(CACHE.'/classes/autoload') : [];
+			$cache   = file_exists(CACHE.'/classes/autoload') ? file_get_json(CACHE.'/classes/autoload') : [];
+			$aliases = file_exists(CACHE.'/classes/aliases') ? file_get_json(CACHE.'/classes/aliases') : [];
+		}
+		if (isset($aliases[$class])) {
+			class_alias($aliases[$class], $class);
+			return class_exists($aliases[$class]);
 		}
 		if (isset($cache[$class])) {
 			return $cache[$class] ? require_once $cache[$class] : false;
@@ -35,6 +40,9 @@ spl_autoload_register(
 		$prepared_class_name = explode('\\', $prepared_class_name);
 		$namespace           = count($prepared_class_name) > 1 ? implode('/', array_slice($prepared_class_name, 0, -1)) : '';
 		$class_name          = array_pop($prepared_class_name);
+		$cache[$class]       = false;
+		/** @noinspection MkdirRaceConditionInspection */
+		@mkdir(CACHE.'/classes', 0770, true);
 		/**
 		 * Try to load classes from different places. If not found in one place - try in another.
 		 */
@@ -47,27 +55,58 @@ spl_autoload_register(
 			_require_once($file = PLUGINS."/../$namespace/$class_name.php", false)             //Classes in plugins
 		) {
 			$cache[$class] = realpath($file);
-		} else {
-			$cache[$class] = false;
+			file_put_json(CACHE.'/classes/autoload', $cache);
+			return (bool)$cache[$class];
 		}
-		/** @noinspection MkdirRaceConditionInspection */
-		@mkdir(CACHE.'/classes', 0770, true);
-		file_put_json(CACHE.'/classes/autoload', $cache);
-		return (bool)$cache[$class];
+		// Processing components aliases
+		if (strpos($namespace, 'modules') === 0 || strpos($namespace, 'plugins') === 0) {
+			$Config      = Config::instance();
+			$directories = [];
+			foreach ($Config->components['modules'] ?: [] as $module_name => $module_data) {
+				if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
+					continue;
+				}
+				$directories[] = MODULES."/$module_name";
+			}
+			foreach ($Config->components['plugins'] ?: [] as $plugin_name) {
+				$directories[] = PLUGINS."/$plugin_name";
+			}
+			$class_exploded = explode('\\', $class);
+			foreach ($directories as $directory) {
+				if (file_exists("$directory/meta.json")) {
+					$meta = file_get_json("$directory/meta.json") + ['provide' => []];
+					if ($class_exploded[2] != $meta['package'] && in_array($class_exploded[2], (array)$meta['provide'])) {
+						$class_exploded[2] = $meta['package'];
+						$alias             = implode('\\', $class_exploded);
+						$aliases[$class]   = $alias;
+						file_put_json(CACHE.'/classes/aliases', $aliases);
+						class_alias($alias, $class);
+						return class_exists($alias);
+					}
+				}
+			}
+		}
+		return false;
 	},
 	true,
 	true
 );
 /**
+ * @param string $class
+ *
+ * @return null|string
+ */
+function __autoload_find_alias ($class) {
+	//
+}
+
+/**
  * Clean cache of classes autoload and customization
  */
 function clean_classes_cache () {
-	if (file_exists(CACHE.'/classes/autoload')) {
-		unlink(CACHE.'/classes/autoload');
-	}
-	if (file_exists(CACHE.'/classes/modified')) {
-		unlink(CACHE.'/classes/modified');
-	}
+	@unlink(CACHE.'/classes/autoload');
+	@unlink(CACHE.'/classes/aliases');
+	@unlink(CACHE.'/classes/modified');
 }
 
 /**
