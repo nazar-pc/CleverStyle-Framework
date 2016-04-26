@@ -7,7 +7,6 @@
  */
 namespace cs\Singleton;
 use
-	cs\Config,
 	cs\False_class,
 	cs\Request;
 
