@@ -16,6 +16,9 @@ matrix:
     - env: DB=SQLite
 before_script:
   - mysql -e 'CREATE DATABASE `cscms.travis`;'
+  - if [[ "$(php -v | grep 'PHP 5')" ]]; then echo yes | pecl install apcu-4.0.11; fi
+  - if [[ "$(php -v | grep 'PHP 7')" ]]; then echo yes | pecl install apcu-5.1.3; fi
+  - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script:
   - php -d variables_order=EGPCS test.php tests
 after_success:
