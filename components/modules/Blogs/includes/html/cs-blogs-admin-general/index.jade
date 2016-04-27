@@ -1,0 +1,33 @@
+mixin input (name, type, min)
+	label(tooltip="[[L.#{name}_info]]")
+		[[L.#{name}]]
+		cs-tooltip
+	input(is="cs-input-text" type=type value="{{settings.#{name}}}" min=min)
+mixin on-off-switcher (name)
+	- values = [0,1]
+	- translations = ['[[L.no]]', '[[L.yes]]']
+	label(tooltip="[[L.#{name}_info]]")
+		[[L.#{name}]]
+		cs-tooltip
+	nav(is="cs-nav-button-group")
+		each value, index in values
+			if index
+				label(is="cs-label-button")
+					input(type="radio" value=value)
+					= translations[index]
+			else
+				label(is="cs-label-button" value="{{settings.#{name}}}")
+					input(type="radio" value=value)
+					= translations[index]
+dom-module#cs-blogs-admin-general
+	template
+		style(include="advanced-styles")
+		form.cs-text-center(is="cs-form")
+			+input("posts_per_page", "number", 1)
+			+input("max_sections", "number", 1)
+			+on-off-switcher("enable_comments")
+			+on-off-switcher("new_posts_only_from_admins")
+			+on-off-switcher("allow_iframes_without_content")
+			p
+				button(is="cs-button" type="button" on-tap="_save" tooltip="[[L.save_info]]") [[L.save]]
+	script(src="script.js")

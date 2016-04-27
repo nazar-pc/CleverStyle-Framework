@@ -1,5 +1,10 @@
-[
-	"_",
-	"posts",
-	"sections"
-]
+{
+	"_"        : [],
+	"posts"    : [],
+	"sections" : [],
+	"admin"    : [
+		"_",
+		"posts",
+		"sections"
+	]
+}

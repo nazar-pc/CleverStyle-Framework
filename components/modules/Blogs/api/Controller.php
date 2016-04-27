@@ -13,9 +13,13 @@ use
 	cs\Language\Prefix,
 	cs\User,
 	cs\modules\Blogs\Posts,
-	cs\modules\Blogs\Sections;
+	cs\modules\Blogs\Sections,
+	cs\modules\Blogs\api\Controller\admin;
 
 class Controller {
+	use
+		admin;
+
 	static function __get_settings () {
 		$User        = User::instance();
 		$module_data = Config::instance()->module('Blogs');

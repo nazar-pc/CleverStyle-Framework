@@ -1,6 +1,7 @@
 {
 	"admin/Blogs" : [
-		"admin.css"
+		"admin.css",
+		"cs-blogs-admin-*"
 	],
 	"Blogs"       : [
 		"cs-blogs-*"
