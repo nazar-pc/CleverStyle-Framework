@@ -9,7 +9,8 @@
 namespace cs\modules\Blogs\api\Controller;
 use
 	cs\Config,
-	cs\ExitException;
+	cs\ExitException,
+	cs\modules\Blogs\Sections;
 
 trait admin {
 	static function admin___get_settings () {
@@ -35,5 +36,24 @@ trait admin {
 		if (!Config::instance()->module('Blogs')->set($data)) {
 			throw new ExitException(500);
 		}
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @return array
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_sections_get ($Request) {
+		$id       = $Request->route_ids(0);
+		$Sections = Sections::instance();
+		if ($id) {
+			$data = $Sections->get($id);
+			if (!$data) {
+				throw new ExitException(404);
+			}
+			return $data;
+		}
+		return $Sections->get_all();
 	}
 }

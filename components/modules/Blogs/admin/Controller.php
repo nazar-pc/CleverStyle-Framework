@@ -15,7 +15,6 @@ use
 	cs\modules\Blogs\Posts,
 	cs\modules\Blogs\Sections;
 use function
-	cs\modules\Blogs\get_sections_rows,
 	cs\modules\Blogs\get_sections_select_section,
 	cs\modules\Blogs\get_posts_rows;
 
@@ -72,26 +71,7 @@ class Controller {
 		Page::instance()
 			->title($L->browse_sections)
 			->content(
-				h::{'table.cs-table[list]'}(
-					h::{'tr th'}(
-						[
-							$L->blogs_sections,
-							[
-								'style' => 'width: 80%'
-							]
-						],
-						$L->action
-					).
-					h::{'tr| td'}(
-						get_sections_rows()
-					)
-				).
-				h::{'p.cs-text-left a[is=cs-link-button]'}(
-					$L->add_section,
-					[
-						'href' => 'admin/Blogs/add_section'
-					]
-				)
+				h::cs_blogs_admin_sections_list()
 			);
 	}
 	/**

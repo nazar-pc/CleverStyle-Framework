@@ -1,0 +1,15 @@
+/**
+ * @package   Blogs
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+td:nth-child(2n+1) {
+	@apply (--layout);
+	@apply (--layout-justified);
+
+	span {
+		font-weight : bold;
+	}
+}

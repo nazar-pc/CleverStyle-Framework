@@ -259,7 +259,7 @@ class Posts {
 			],
 			'total_count' => true
 		];
-		return $this->search($search_parameters) ?: 0;
+		return $this->search($search_parameters);
 	}
 	/**
 	 * Get posts for tag
@@ -298,7 +298,7 @@ class Posts {
 			],
 			'total_count' => true
 		];
-		return $this->search($search_parameters) ?: 0;
+		return $this->search($search_parameters);
 	}
 	/**
 	 * Get drafts
@@ -329,7 +329,7 @@ class Posts {
 			'draft'       => 1,
 			'total_count' => true
 		];
-		return $this->search($search_parameters) ?: 0;
+		return $this->search($search_parameters);
 	}
 	/**
 	 * Add new post
@@ -473,7 +473,7 @@ class Posts {
 					'draft'       => 0,
 					'total_count' => true
 				];
-				return $this->search($search_parameters) ?: 0;
+				return $this->search($search_parameters);
 			}
 		);
 	}

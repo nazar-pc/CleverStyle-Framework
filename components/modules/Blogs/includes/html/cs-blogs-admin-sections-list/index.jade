@@ -1,0 +1,25 @@
+dom-module#cs-blogs-admin-sections-list
+	link(rel="import" href="style.css" type="css")
+	template
+		style(include="advanced-styles")
+		table.cs-table(list)
+			tr
+				th [[L.blogs_sections]]
+				th [[L.action]]
+			template(is="dom-repeat" items="[[sections]]")
+				tr
+					td
+						a(href="/Blogs/section/[[item.full_path]]") [[item.title]]
+						a(href="/Blogs/section/[[item.full_path]]")
+							span(tooltip="[[L.posts_in_section]]")
+								[[item.posts]]
+								cs-tooltip
+					td
+						a(is="cs-link-button" icon="plus" href="/admin/Blogs/add_section/[[item.id]]" tooltip="[[L.add_subsection]]")
+						= ' '
+						a(is="cs-link-button" icon="pencil" href="/admin/Blogs/edit_section/[[item.id]]" tooltip="[[L.edit]]")
+						= ' '
+						a(is="cs-link-button" icon="trash" href="/admin/Blogs/delete_section/[[item.id]]" tooltip="[[L.delete]]")
+		p
+			a(is="cs-link-button" href="/admin/Blogs/add_section") [[L.add_section]]
+	script(src="script.js")

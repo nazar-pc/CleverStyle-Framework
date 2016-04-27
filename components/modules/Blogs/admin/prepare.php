@@ -14,63 +14,6 @@ use
 	cs\Language\Prefix,
 	cs\User;
 
-function get_sections_rows ($structure = null, $level = 0) {
-	$L			= new Prefix('blogs_');
-	$root		= false;
-	$module		= path($L->Blogs);
-	if ($structure === null) {
-		$structure			= Sections::instance()->get_structure();
-		$structure['title']	= $L->root_section;
-		$root				= true;
-	}
-	$content	= [];
-	$content[]	= [
-		[
-			h::a(
-				$structure['title'].
-				h::{'b.cs-blogs-posts-count'}(
-					(empty($structure['sections']) ? ' '.$structure['posts'] : ''),
-					[
-						'tooltip' => $L->posts_in_section
-					]
-				),
-				[
-					'href'	=> $module.(isset($structure['full_path']) ? '/'.path($L->section)."/$structure[full_path]" : '')
-				]
-			),
-			[
-				'class'	=> "cs-blogs-padding-left-$level"
-			]
-		],
-		h::{'a[is=cs-link-button][icon=plus]'}(
-			[
-				'href'		=> "admin/Blogs/add_section/$structure[id]",
-				'tooltip'	=> $L->add_subsection
-			]
-		).
-		(!$root
-			? h::{'a[is=cs-link-button][icon=pencil]'}(
-				[
-					'href'		=> "admin/Blogs/edit_section/$structure[id]",
-					'tooltip'	=> $L->edit
-				]
-			).
-			h::{'a[is=cs-link-button][icon=trash]'}(
-				[
-					'href'		=> "admin/Blogs/delete_section/$structure[id]",
-					'tooltip'	=> $L->delete
-				]
-			)
-			: false
-		)
-	];
-	if (!empty($structure['sections'])) {
-		foreach ($structure['sections'] as $section) {
-			$content = array_merge($content, get_sections_rows($section, $level + 1));
-		}
-	}
-	return $content;
-}
 function get_sections_select_section ($current = null, $structure = null, $level = 0) {
 	$list	= [
 		'in'	=> [],
