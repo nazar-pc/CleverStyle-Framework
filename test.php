@@ -111,6 +111,7 @@ function run_test ($test_file, $base_text) {
 		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECT'], $php_arguments, $script_arguments));
 		if ($expect === $output) {
 			line("<g>$base_text SUCCESS</g>", true);
+			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments);;
 			return 'success';
 		}
 		$expect = $parsed_test['EXPECT'];
@@ -145,6 +146,7 @@ function run_test ($test_file, $base_text) {
 		);
 		if (preg_match("/^$regex\$/s", $output)) {
 			line("<g>$base_text SUCCESS</g>", true);
+			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments);;
 			return 'success';
 		}
 		$expect = $parsed_test['EXPECTF'];
@@ -153,6 +155,7 @@ function run_test ($test_file, $base_text) {
 		$regex  = preg_quote($expect, '/');
 		if (preg_match("/^$regex\$/s", $output)) {
 			line("<g>$base_text SUCCESS</g>", true);
+			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments);;
 			return 'success';
 		}
 	}
