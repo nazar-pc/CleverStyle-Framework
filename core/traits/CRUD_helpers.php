@@ -68,7 +68,7 @@ trait CRUD_helpers {
 		$first_column = array_keys($this->data_model)[0];
 		$where        = $where ? 'WHERE '.implode(' AND ', $where) : '';
 		if ($total_count) {
-			return $this->db()->qfs(
+			return (int)$this->db()->qfs(
 				"SELECT COUNT(`$table_alias`.`$first_column`)
 				FROM `$this->table` AS `$table_alias`
 				$joins
