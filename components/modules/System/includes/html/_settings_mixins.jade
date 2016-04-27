@@ -2,7 +2,7 @@ mixin on-off-switcher (name, hidden, values, translations)
 	- hidden = hidden && '[[' + hidden + ']]'
 	- values = values || [0,1]
 	- translations = translations || ['[[L.system_admin_off]]', '[[L.system_admin_on]]']
-	label(tooltip="[[if(settings.show_tooltips, L.#{name}_info)]]" hidden=hidden)
+	label(tooltip="[[L.#{name}_info]]" hidden=hidden)
 		[[L.#{name}]]
 		cs-tooltip
 	nav(is="cs-nav-button-group" hidden=hidden)
@@ -24,18 +24,18 @@ mixin footer-buttons
 		button(is="cs-button" type="button" on-tap="_cancel" tooltip="[[L.system_admin_cancel_info]]" disabled="[[!settings.applied]]") [[L.system_admin_cancel]]
 mixin input (name, hidden, type, min, max)
 	- hidden = hidden && '[[' + hidden + ']]'
-	label(tooltip="[[if(settings.show_tooltips, L.#{name}_info)]]" hidden=hidden)
+	label(tooltip="[[L.#{name}_info]]" hidden=hidden)
 		[[L.#{name}]]
 		cs-tooltip
 	input(is="cs-input-text" type=type value="{{settings.#{name}}}" hidden=hidden min=min max=max)
 mixin textarea (name, hidden)
 	- hidden = hidden && '[[' + hidden + ']]'
-	label(tooltip="[[if(settings.show_tooltips, L.#{name}_info)]]" hidden=hidden)
+	label(tooltip="[[L.#{name}_info]]" hidden=hidden)
 		[[L.#{name}]]
 		cs-tooltip
 	textarea(is="cs-textarea" autosize value="{{settings.#{name}}}" hidden=hidden)
 mixin editor (name, simple)
-	label(tooltip="[[if(settings.show_tooltips, L.#{name}_info)]]")
+	label(tooltip="[[L.#{name}_info]]")
 		[[L.#{name}]]
 		cs-tooltip
 	if simple

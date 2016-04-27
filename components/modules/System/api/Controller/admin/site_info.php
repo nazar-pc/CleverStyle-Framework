@@ -25,7 +25,6 @@ trait site_info {
 			'cookie_prefix'     => $Config->core['cookie_prefix'],
 			'timezone'          => $Config->core['timezone'],
 			'admin_email'       => $Config->core['admin_email'],
-			'show_tooltips'     => $Config->core['show_tooltips'],
 			'simple_admin_mode' => $Config->core['simple_admin_mode'],
 			'applied'           => $Config->cancel_available()
 		];

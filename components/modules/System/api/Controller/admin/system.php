@@ -24,7 +24,6 @@ trait system {
 			'closed_text'       => get_core_ml_text('closed_text'),
 			'title_delimiter'   => $Config->core['title_delimiter'],
 			'title_reverse'     => $Config->core['title_reverse'],
-			'show_tooltips'     => $Config->core['show_tooltips'],
 			'simple_admin_mode' => $Config->core['simple_admin_mode'],
 			'applied'           => $Config->cancel_available()
 		];
@@ -48,7 +47,7 @@ trait system {
 	 * @throws ExitException
 	 */
 	protected static function admin_system_settings_common ($Request) {
-		$data = $Request->data('site_mode', 'closed_title', 'closed_text', 'title_delimiter', 'title_reverse', 'show_tooltips', 'simple_admin_mode');
+		$data = $Request->data('site_mode', 'closed_title', 'closed_text', 'title_delimiter', 'title_reverse', 'simple_admin_mode');
 		if (!$data) {
 			throw new ExitException(400);
 		}
@@ -58,7 +57,6 @@ trait system {
 		$Config->core['closed_text']       = set_core_ml_text('closed_text', xap($data['closed_text'], true));
 		$Config->core['title_delimiter']   = xap($data['title_delimiter']);
 		$Config->core['title_reverse']     = (int)(bool)$data['title_reverse'];
-		$Config->core['show_tooltips']     = (int)(bool)$data['show_tooltips'];
 		$Config->core['simple_admin_mode'] = (int)(bool)$data['simple_admin_mode'];
 	}
 	/**

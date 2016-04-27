@@ -23,8 +23,7 @@ trait languages {
 			'active_languages' => $Config->core['active_languages'],
 			'languages'        => static::get_languages_array(),
 			'multilingual'     => $Config->core['multilingual'],
-			'applied'          => $Config->cancel_available(),
-			'show_tooltips'    => $Config->core['show_tooltips']
+			'applied'          => $Config->cancel_available()
 		];
 	}
 	/**

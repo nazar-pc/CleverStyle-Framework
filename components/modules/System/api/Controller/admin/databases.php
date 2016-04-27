@@ -201,7 +201,6 @@ trait databases {
 		return [
 			'db_balance'        => $Config->core['db_balance'],
 			'db_mirror_mode'    => $Config->core['db_mirror_mode'],
-			'show_tooltips'     => $Config->core['show_tooltips'],
 			'simple_admin_mode' => $Config->core['simple_admin_mode'],
 			'applied'           => $Config->cancel_available()
 		];

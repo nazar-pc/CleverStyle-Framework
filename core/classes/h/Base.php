@@ -125,16 +125,12 @@ abstract class Base extends BananaHTML {
 			return static::__callStatic(__FUNCTION__, [$in, $data]);
 		}
 		$L = Language::instance();
-		if (Config::instance(true)->core['show_tooltips']) {
-			return static::span(
-				$L->$in,
-				[
-					'tooltip' => $L->{$in.'_info'}
-				] + $data
-			);
-		} else {
-			return static::span($L->$in, $data);
-		}
+		return static::span(
+			$L->$in,
+			[
+				'tooltip' => $L->{$in.'_info'}
+			] + $data
+		);
 	}
 	/**
 	 * Pseudo tag for inserting of icons

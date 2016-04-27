@@ -42,7 +42,6 @@
 	"auto_sign_in_after_registration",
 	"registration_confirmation_time",
 	"mail_signature",
-	"show_tooltips",
 	"remember_user_ip",
 	"simple_admin_mode",
 	"default_module"

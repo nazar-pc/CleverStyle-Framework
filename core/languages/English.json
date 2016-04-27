@@ -438,7 +438,6 @@
 				"title_delimiter_info"   : "Different parts of title will be delimited by specified text",
 				"title_reverse"          : "Title reverse",
 				"title_reverse_info"     : "Parts of title will be rotated 180˚. For example, instead of \"Site :: Section\" will be \"Section :: Site\", where \" :: \" - title delimiter.",
-				"show_tooltips"          : "Show tooltips",
 				"simple_admin_mode"      : "Simple mode of administration",
 				"simple_admin_mode_info" : "Some functionality may be too complicated to set up, and even excessive for a beginner administrator. This option allows you to hide some of the settings, making system management easier and more intuitive."
 			},
