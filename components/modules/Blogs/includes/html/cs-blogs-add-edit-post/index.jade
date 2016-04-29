@@ -16,7 +16,7 @@ dom-module#cs-blogs-add-edit-post
 				td
 					select(is="cs-select" selected="{{post.sections}}" multiple="[[settings.multiple_sections]]" size="7")
 						template(is="dom-repeat" items="[[sections]]" as="section")
-							option(value="[[section.id]]" disabled="[[section.disabled]]") [[section.title]]
+							option(value="[[section.id]]" disabled="[[section.disabled]]") [[section.full_title]]
 					p(hidden="[[!settings.multiple_sections]]") [[__('select_sections_num', settings.max_sections)]]
 			tr
 				td [[L.post_content]]

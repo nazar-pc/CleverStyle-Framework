@@ -113,15 +113,18 @@ class Sections {
 			function () use ($id) {
 				$data = $this->read($id);
 				if ($data) {
-					$data['posts']     = Posts::instance()->get_for_section_count($id);
-					$data['full_path'] = [$data['path']];
-					$parent            = $data['parent'];
-					while ($parent != 0) {
-						$section             = $this->get($parent);
-						$data['full_path'][] = $section['path'];
-						$parent              = $section['parent'];
+					$data['posts']      = Posts::instance()->get_for_section_count($id);
+					$data['full_title'] = [$data['title']];
+					$data['full_path']  = [$data['path']];
+					$parent             = $data['parent'];
+					while ($parent > 0) {
+						$section              = $this->get($parent);
+						$data['full_title'][] = $section['path'];
+						$data['full_path'][]  = $section['path'];
+						$parent               = $section['parent'];
 					}
-					$data['full_path'] = implode('/', array_reverse($data['full_path']));
+					$data['full_title'] = implode(' :: ', array_reverse($data['full_title']));
+					$data['full_path']  = implode('/', array_reverse($data['full_path']));
 				}
 				return $data;
 			}
@@ -135,9 +138,16 @@ class Sections {
 		return $this->cache->get(
 			"sections/all/$L->clang",
 			function () {
-				return $this->get(
+				$result = $this->get(
 					$this->search([], 1, PHP_INT_MAX, 'id', true) ?: []
 				);
+				usort(
+					$result,
+					function ($a, $b) {
+						return strcmp($a['full_title'], $b['full_title']);
+					}
+				);
+				return $result;
 			}
 		) ?: [];
 	}

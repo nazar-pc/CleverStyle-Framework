@@ -74,24 +74,17 @@
       e.returnValue = L.sure_want_to_exit;
     },
     _prepare_sections: function(sections){
-      var sections_normalized, sections_parents, i$, len$, section;
-      sections_normalized = {};
-      sections_parents = [];
+      var sections_parents, i$, len$, section;
+      sections_parents = {};
       for (i$ = 0, len$ = sections.length; i$ < len$; ++i$) {
         section = sections[i$];
-        sections_normalized[section.id] = section;
-        sections_parents.push(section.parent);
+        sections_parents[section.parent] = true;
       }
       for (i$ = 0, len$ = sections.length; i$ < len$; ++i$) {
         section = sections[i$];
-        section.disabled = sections_parents.indexOf(section.id) !== -1;
-        if (section.parent > 0) {
-          section.title = sections_normalized[section.parent].title + ' :: ' + section.title;
-        }
+        section.disabled = sections_parents[section.id];
       }
-      return sections.sort(function(a, b){
-        return a.title > b.title;
-      });
+      return sections;
     },
     _prepare: function(){
       delete this.post.path;

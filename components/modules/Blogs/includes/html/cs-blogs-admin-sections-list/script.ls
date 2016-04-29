@@ -19,17 +19,6 @@ Polymer(
 			url		: 'api/Blogs/admin/sections'
 			type	: 'get'
 			success	: (sections) !~>
-				@set('sections', @_prepare_sections(sections))
+				@set('sections', sections)
 		)
-	_prepare_sections : (sections) ->
-		sections_normalized	= {}
-		sections_parents	= []
-		for section in sections
-			sections_normalized[section.id] = section
-			sections_parents.push(section.parent)
-		for section in sections
-			if section.parent > 0
-				section.title	= sections_normalized[section.parent].title + ' :: ' + section.title
-		sections.sort (a, b) ->
-			a.title > b.title
 )

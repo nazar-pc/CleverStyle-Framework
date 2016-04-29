@@ -22,27 +22,8 @@
         url: 'api/Blogs/admin/sections',
         type: 'get',
         success: function(sections){
-          this$.set('sections', this$._prepare_sections(sections));
+          this$.set('sections', sections);
         }
-      });
-    },
-    _prepare_sections: function(sections){
-      var sections_normalized, sections_parents, i$, len$, section;
-      sections_normalized = {};
-      sections_parents = [];
-      for (i$ = 0, len$ = sections.length; i$ < len$; ++i$) {
-        section = sections[i$];
-        sections_normalized[section.id] = section;
-        sections_parents.push(section.parent);
-      }
-      for (i$ = 0, len$ = sections.length; i$ < len$; ++i$) {
-        section = sections[i$];
-        if (section.parent > 0) {
-          section.title = sections_normalized[section.parent].title + ' :: ' + section.title;
-        }
-      }
-      return sections.sort(function(a, b){
-        return a.title > b.title;
       });
     }
   });

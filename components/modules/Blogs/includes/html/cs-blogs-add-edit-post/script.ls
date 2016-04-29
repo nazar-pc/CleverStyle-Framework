@@ -62,17 +62,12 @@ Polymer(
 	_close_tab_handler : (e) !->
 		e.returnValue = L.sure_want_to_exit
 	_prepare_sections : (sections) ->
-		sections_normalized	= {}
-		sections_parents	= []
+		sections_parents	= {}
 		for section in sections
-			sections_normalized[section.id] = section
-			sections_parents.push(section.parent)
+			sections_parents[section.parent] = true
 		for section in sections
-			section.disabled	= sections_parents.indexOf(section.id) != -1
-			if section.parent > 0
-				section.title	= sections_normalized[section.parent].title + ' :: ' + section.title
-		sections.sort (a, b) ->
-			a.title > b.title
+			section.disabled	= sections_parents[section.id]
+		sections
 	_prepare : !->
 		delete @post.path
 		@set('post.title', @$.title.textContent)

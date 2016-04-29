@@ -9,7 +9,7 @@ dom-module#cs-blogs-admin-sections-list
 			template(is="dom-repeat" items="[[sections]]")
 				tr
 					td
-						a(href="/Blogs/section/[[item.full_path]]") [[item.title]]
+						a(href="/Blogs/section/[[item.full_path]]") [[item.full_title]]
 						a(href="/Blogs/section/[[item.full_path]]")
 							span(tooltip="[[L.posts_in_section]]")
 								[[item.posts]]
