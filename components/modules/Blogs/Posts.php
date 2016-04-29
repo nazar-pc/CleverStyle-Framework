@@ -113,6 +113,15 @@ class Posts {
 		return $data;
 	}
 	/**
+	 * @param int $page
+	 * @param int $count
+	 *
+	 * @return int[]
+	 */
+	function get_all ($page, $count) {
+		return $this->search([], $page, $count, 'id');
+	}
+	/**
 	 * Transform tags ids back into array of strings
 	 *
 	 * @param int[] $tags

@@ -11,6 +11,8 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Language,
+	cs\User,
+	cs\modules\Blogs\Posts,
 	cs\modules\Blogs\Sections;
 
 trait admin {
@@ -36,6 +38,52 @@ trait admin {
 		}
 		if (!Config::instance()->module('Blogs')->set($data)) {
 			throw new ExitException(500);
+		}
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @return array
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_posts_get ($Request) {
+		$id    = $Request->route_ids(0);
+		$Posts = Posts::instance();
+		if ($id) {
+			$data = $Posts->get($id);
+			if (!$data) {
+				throw new ExitException(404);
+			}
+			return $data;
+		}
+		$posts = $Posts->get(
+			$Posts->get_all(1, PHP_INT_MAX)
+		);
+		$L     = Language::instance();
+		$User  = User::instance();
+		foreach ($posts as &$post) {
+			$post['username']       = $User->username($post['user']);
+			$post['date_formatted'] = date($L->_datetime, $post['date']);
+		}
+		return $posts;
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_posts_delete ($Request) {
+		$id = $Request->route_ids(0);
+		if (!$id) {
+			throw new ExitException(400);
+		}
+		$Posts = Posts::instance();
+		if (!$Posts->get($id)) {
+			throw new ExitException(404);
+		}
+		if (!$Posts->del($id)) {
+			throw new ExitException(Language::instance()->blogs_changes_save_error, 500);
 		}
 	}
 	/**
