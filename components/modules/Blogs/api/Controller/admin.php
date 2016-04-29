@@ -75,8 +75,6 @@ trait admin {
 	/**
 	 * @param \cs\Request $Request
 	 *
-	 * @return array
-	 *
 	 * @throws ExitException
 	 */
 	static function admin_sections_put ($Request) {
@@ -95,8 +93,6 @@ trait admin {
 	}
 	/**
 	 * @param \cs\Request $Request
-	 *
-	 * @return array
 	 *
 	 * @throws ExitException
 	 */
