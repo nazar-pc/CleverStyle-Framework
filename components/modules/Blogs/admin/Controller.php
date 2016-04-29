@@ -22,10 +22,9 @@ class Controller {
 		if (!isset($_POST['mode'])) {
 			return;
 		}
-		$L        = Language::prefix('blogs_');
-		$Page     = Page::instance();
-		$Posts    = Posts::instance();
-		$Sections = Sections::instance();
+		$L     = Language::prefix('blogs_');
+		$Page  = Page::instance();
+		$Posts = Posts::instance();
 		switch ($_POST['mode']) {
 			case 'delete_post':
 				if ($Posts->del($_POST['id'])) {
