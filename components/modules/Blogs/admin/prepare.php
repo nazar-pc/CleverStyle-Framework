@@ -14,32 +14,6 @@ use
 	cs\Language\Prefix,
 	cs\User;
 
-function get_sections_select_section ($current = null, $structure = null, $level = 0) {
-	$list	= [
-		'in'	=> [],
-		'value'	=> []
-	];
-	if ($structure === null) {
-		$structure			= Sections::instance()->get_structure();
-		$L					= new Prefix('blogs_');
-		$list['in'][]		= $L->root_section;
-		$list['value'][]	= 0;
-	} else {
-		if ($structure['id'] == $current) {
-			return $list;
-		}
-		$list['in'][]		= str_repeat('&nbsp;', $level).$structure['title'];
-		$list['value'][]	= $structure['id'];
-	}
-	if (!empty($structure['sections'])) {
-		foreach ($structure['sections'] as $section) {
-			$tmp			= get_sections_select_section($current, $section, $level+1);
-			$list['in']		= array_merge($list['in'], $tmp['in']);
-			$list['value']	= array_merge($list['value'], $tmp['value']);
-		}
-	}
-	return $list;
-}
 function get_posts_rows ($page = 1) {
 	$Posts		= Posts::instance();
 	$Sections	= Sections::instance();

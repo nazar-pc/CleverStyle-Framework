@@ -203,7 +203,23 @@ class Controller {
 		$Posts = Posts::instance();
 		return $Posts->post_to_jsonld($data);
 	}
-	static function sections_get () {
-		return Sections::instance()->get_all();
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @return array
+	 * 
+	 * @throws ExitException
+	 */
+	static function sections_get ($Request) {
+		$id       = $Request->route_ids(0);
+		$Sections = Sections::instance();
+		if ($id) {
+			$data = $Sections->get($id);
+			if (!$data) {
+				throw new ExitException(404);
+			}
+			return $data;
+		}
+		return $Sections->get_all();
 	}
 }

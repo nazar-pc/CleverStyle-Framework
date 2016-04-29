@@ -21,4 +21,27 @@ Polymer(
 			success	: (sections) !~>
 				@set('sections', sections)
 		)
+	_add : !->
+		$(cs.ui.simple_modal("""
+			<h3>#{@L.addition_of_posts_section}</h3>
+			<cs-blogs-admin-sections-add-edit-form/>
+		""")).on('close', @~_reload_sections)
+	_edit : (e) !->
+		title	= @L.editing_of_posts_section(e.model.item.title)
+		$(cs.ui.simple_modal("""
+			<h2>#{title}</h2>
+			<cs-blogs-admin-sections-add-edit-form id="#{e.model.item.id}"/>
+		""")).on('close', @~_reload_sections)
+	_delete : (e) !->
+		cs.ui.confirm(
+			@L.sure_to_delete_posts_section(e.model.item.title)
+			!~>
+				$.ajax(
+					url		: 'api/Blogs/admin/sections/' + e.model.item.id
+					type	: 'delete'
+					success	: !~>
+						cs.ui.notify(@L.changes_saved, 'success', 5)
+						@_reload_sections()
+				)
+		)
 )

@@ -10,6 +10,7 @@ namespace cs\modules\Blogs\api\Controller;
 use
 	cs\Config,
 	cs\ExitException,
+	cs\Language,
 	cs\modules\Blogs\Sections;
 
 trait admin {
@@ -45,15 +46,71 @@ trait admin {
 	 * @throws ExitException
 	 */
 	static function admin_sections_get ($Request) {
-		$id       = $Request->route_ids(0);
-		$Sections = Sections::instance();
-		if ($id) {
-			$data = $Sections->get($id);
-			if (!$data) {
-				throw new ExitException(404);
-			}
-			return $data;
+		return static::sections_get($Request);
+	}
+	/**
+	 * @param \cs\Request  $Request
+	 * @param \cs\Response $Response
+	 *
+	 * @return array
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_sections_post ($Request, $Response) {
+		$data = $Request->data('title', 'path', 'parent');
+		if (!$data) {
+			throw new ExitException(400);
 		}
-		return $Sections->get_all();
+		$Sections = Sections::instance();
+		$id       = $Sections->add($data['parent'], $data['title'], $data['path']);
+		if (!$id) {
+			throw new ExitException(Language::instance()->blogs_changes_save_error, 500);
+		}
+		$Response->code = 201;
+		return [
+			'id'  => $id,
+			'url' => Config::instance()->base_url().'/Blogs/section/'.$Sections->get($id)['full_path']
+		];
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @return array
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_sections_put ($Request) {
+		$id   = $Request->route_ids(0);
+		$data = $Request->data('title', 'path', 'parent');
+		if (!$id || !$data) {
+			throw new ExitException(400);
+		}
+		$Sections = Sections::instance();
+		if (!$Sections->get($id)) {
+			throw new ExitException(404);
+		}
+		if (!$Sections->set($id, $data['parent'], $data['title'], $data['path'])) {
+			throw new ExitException(Language::instance()->blogs_changes_save_error, 500);
+		}
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @return array
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_sections_delete ($Request) {
+		$id = $Request->route_ids(0);
+		if (!$id) {
+			throw new ExitException(400);
+		}
+		$Sections = Sections::instance();
+		if (!$Sections->get($id)) {
+			throw new ExitException(404);
+		}
+		if (!$Sections->del($id)) {
+			throw new ExitException(Language::instance()->blogs_changes_save_error, 500);
+		}
 	}
 }

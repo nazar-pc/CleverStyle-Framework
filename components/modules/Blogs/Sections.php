@@ -184,7 +184,7 @@ class Sections {
 	 * @return false|int Id of created section on success of <b>false</> on failure
 	 */
 	function add ($parent, $title, $path) {
-		$id = $this->create($parent, $title, $path);
+		$id = $this->create($parent, $title, path($path ?: $title));
 		if ($id) {
 			$this->db_prime()->q(
 				"UPDATE `[prefix]blogs_posts_sections`
@@ -210,7 +210,7 @@ class Sections {
 	 * @return bool
 	 */
 	function set ($id, $parent, $title, $path) {
-		$result = $this->update($id, $parent, $title, $path);
+		$result = $this->update($id, $parent, $title, path($path ?: $title));
 		if ($result) {
 			unset($this->cache->sections);
 		}

@@ -1,9 +1,6 @@
 [
 	"general",
 	"browse_sections",
-	"add_section",
-	"edit_section",
-	"delete_section",
 	"browse_posts",
 	"delete_post"
 ]
