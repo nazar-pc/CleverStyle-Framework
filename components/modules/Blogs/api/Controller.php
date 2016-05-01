@@ -34,14 +34,14 @@ class Controller {
 		/**
 		 * @var \cs\modules\Comments\Comments $Comments
 		 */
+		$admin = $User->admin() && $User->get_permission('admin/Blogs', 'index');
 		return [
-			'inline_editor'    => functionality('inline_editor'),
-			'max_sections'     => $module_data->max_sections,
-			'comments_enabled' => $module_data->enable_comments && $Comments,
-			'can_delete_posts' =>
-				$User->admin() &&
-				$User->get_permission('admin/Blogs', 'index') &&
-				$User->get_permission('admin/Blogs', 'edit_post')
+			'inline_editor'              => functionality('inline_editor'),
+			'max_sections'               => $module_data->max_sections,
+			'new_posts_only_from_admins' => (bool)$module_data->new_posts_only_from_admins,
+			'comments_enabled'           => $module_data->enable_comments && $Comments,
+			'admin'                      => $admin,
+			'admin_edit'                 => $admin && $User->get_permission('admin/Blogs', 'edit_post')
 		];
 	}
 	/**

@@ -29,14 +29,8 @@ class Helpers {
 		$module_data = Config::instance()->module('Blogs');
 		$L           = new Prefix('blogs_');
 		$Page        = Page::instance();
-		$User        = User::instance();
 		$Page->content(
-			h::{'cs-blogs-head-actions'}(
-				[
-					'admin'          => $User->admin() && $User->get_permission('admin/Blogs', 'index'),
-					'can_write_post' => $User->user() && ($User->admin() || !$module_data->new_posts_only_from_admins)
-				]
-			)
+			h::cs_blogs_head_actions()
 		);
 		if (!$posts) {
 			$Page->content(

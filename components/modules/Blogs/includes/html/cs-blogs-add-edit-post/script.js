@@ -13,19 +13,19 @@
     is: 'cs-blogs-add-edit-post',
     behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {
-      add: false,
       post: Object,
       original_title: String,
       sections: Array,
       settings: Object,
       local_tags: String,
-      user_id: Number,
-      delete_button: Boolean
+      user_id: Number
     },
     observers: ['_add_close_tab_handler(post.*, local_tags)'],
     ready: function(){
       var this$ = this;
-      this.add = !this.id;
+      if (!this.id) {
+        this.id = false;
+      }
       Promise.all([
         this.id
           ? $.getJSON('api/Blogs/posts/' + this.id)
@@ -52,7 +52,6 @@
         this$.sections = this$._prepare_sections(sections);
         settings.multiple_sections = settings.max_sections > 1;
         this$.settings = settings;
-        this$.delete_button = !this$.add || settings.can_delete_posts;
         this$.user_id = profile.id;
       });
       this.$.use_pagebreak.innerHTML = L.post_use_pagebreak;

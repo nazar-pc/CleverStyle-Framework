@@ -12,19 +12,18 @@ Polymer(
 		cs.Polymer.behaviors.Language('blogs_')
 	]
 	properties		:
-		add				: false
 		post			: Object
 		original_title	: String
 		sections		: Array
 		settings		: Object
 		local_tags		: String
 		user_id			: Number
-		delete_button	: Boolean
 	observers		: [
 		'_add_close_tab_handler(post.*, local_tags)'
 	]
 	ready : !->
-		@add	= !@id
+		if !@id
+			@id = false
 		Promise.all([
 			if @id then $.getJSON('api/Blogs/posts/' + @id) else {
 				title		: ''
@@ -46,7 +45,6 @@ Polymer(
 			@sections					= @_prepare_sections(sections)
 			settings.multiple_sections	= settings.max_sections > 1
 			@settings					= settings
-			@delete_button				= !@add || settings.can_delete_posts
 			@user_id					= profile.id
 		@$.use_pagebreak.innerHTML	= L.post_use_pagebreak
 		@$.title.addEventListener('keydown', @~_add_close_tab_handler)

@@ -30,7 +30,7 @@
       ]).then(function(arg$){
         var profile;
         this$.settings = arg$[0], profile = arg$[1];
-        this$.can_edit = this$.settings.can_delete_posts || this$.jsonld.user === profile.id;
+        this$.can_edit = this$.settings.admin_edit || this$.jsonld.user === profile.id;
       });
     },
     sections_path: function(index){

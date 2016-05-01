@@ -11,6 +11,13 @@ Polymer(
 		cs.Polymer.behaviors.Language('blogs_')
 	]
 	properties	:
-		admin			: false
+		settings		: Object
 		can_write_post	: false
+	ready : !->
+		$.ajax(
+			url		: 'api/Blogs'
+			type	: 'get_settings'
+			success	: (@settings) !~>
+				@can_write_post	= cs.is_user && (@settings.admin || !settings.new_posts_only_from_admins)
+		)
 )

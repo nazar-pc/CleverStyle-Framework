@@ -23,7 +23,7 @@ Polymer(
 			)
 			if cs.is_user then $.getJSON('api/System/profile') else {id : 1}
 		]).then ([@settings, profile]) !~>
-			@can_edit	= @settings.can_delete_posts || @jsonld.user == profile.id
+			@can_edit	= @settings.admin_edit || @jsonld.user == profile.id
 	sections_path : (index) ->
 		@jsonld.sections_paths[index]
 	tags_path : (index) ->

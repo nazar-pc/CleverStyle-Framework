@@ -2,8 +2,8 @@ dom-module#cs-blogs-add-edit-post
 	link(rel="import" href="style.css" type="css")
 	template
 		style(include="advanced-styles")
-		h2.cs-text-center(hidden="[[add]]") [[__('editing_of_post', original_title)]]
-		h2.cs-text-center(hidden="[[!add]]") [[L.new_post]]
+		h2.cs-text-center(hidden="[[!id]]") [[__('editing_of_post', original_title)]]
+		h2.cs-text-center(hidden="[[id]]") [[L.new_post]]
 		#preview
 		table.cs-table
 			tr
@@ -38,7 +38,7 @@ dom-module#cs-blogs-add-edit-post
 		= ' '
 		button(is="cs-button" on-tap="_to_drafts") [[L.to_drafts]]
 		= ' '
-		button(is="cs-button" on-tap="_delete" hidden="[[!delete_button]]") [[L.delete]]
+		button(is="cs-button" on-tap="_delete" hidden="[[!and(id, settings.admin_edit)]]") [[L.delete]]
 		= ' '
 		button(is="cs-button" on-tap="_cancel") [[L.cancel]]
 	script(src="script.js")

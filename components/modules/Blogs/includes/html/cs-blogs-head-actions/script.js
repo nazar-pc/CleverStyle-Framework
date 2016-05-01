@@ -11,8 +11,19 @@
     'is': 'cs-blogs-head-actions',
     behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {
-      admin: false,
+      settings: Object,
       can_write_post: false
+    },
+    ready: function(){
+      var this$ = this;
+      $.ajax({
+        url: 'api/Blogs',
+        type: 'get_settings',
+        success: function(settings){
+          this$.settings = settings;
+          this$.can_write_post = cs.is_user && (this$.settings.admin || !settings.new_posts_only_from_admins);
+        }
+      });
     }
   });
 }).call(this);
