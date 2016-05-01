@@ -11,7 +11,6 @@ use
 	cs\Config,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\User,
 	h;
 
 class Helpers {
