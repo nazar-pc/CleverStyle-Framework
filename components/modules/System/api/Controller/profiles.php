@@ -44,7 +44,9 @@ trait profiles {
 		}
 		return $single ? $User->get($fields, $ids[0]) : array_map(
 			function ($id) use ($fields, $User) {
-				return $User->get($fields, $id);
+				$result       = $User->get($fields, $id);
+				$result['id'] = (int)$result['id'];
+				return $result;
 			},
 			$ids
 		);

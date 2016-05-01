@@ -22,7 +22,7 @@ trait profile {
 		if ($User->guest()) {
 			throw new ExitException(403);
 		}
-		$fields = [
+		$fields       = [
 			'id',
 			'login',
 			'username',
@@ -30,7 +30,9 @@ trait profile {
 			'timezone',
 			'avatar'
 		];
-		return $User->get($fields, $User->id);
+		$result       = $User->get($fields, $User->id);
+		$result['id'] = (int)$result['id'];
+		return $result;
 	}
 	/**
 	 * @param \cs\Request $Request
