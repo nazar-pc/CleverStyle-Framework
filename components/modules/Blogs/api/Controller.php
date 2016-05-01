@@ -9,6 +9,7 @@
 namespace cs\modules\Blogs\api;
 use
 	cs\Config,
+	cs\Event,
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\User,
@@ -23,11 +24,21 @@ class Controller {
 	static function __get_settings () {
 		$User        = User::instance();
 		$module_data = Config::instance()->module('Blogs');
+		$Comments    = null;
+		Event::instance()->fire(
+			'Comments/instance',
+			[
+				'Comments' => &$Comments
+			]
+		);
+		/**
+		 * @var \cs\modules\Comments\Comments $Comments
+		 */
 		return [
-			'inline_editor'              => functionality('inline_editor'),
-			'max_sections'               => $module_data->max_sections,
-			'new_posts_only_from_admins' => $module_data->new_posts_only_from_admins, //TODO use this on frontend
-			'can_delete_posts'           => //TODO use this on frontend
+			'inline_editor'    => functionality('inline_editor'),
+			'max_sections'     => $module_data->max_sections,
+			'comments_enabled' => $module_data->enable_comments && $Comments,
+			'can_delete_posts' =>
 				$User->admin() &&
 				$User->get_permission('admin/Blogs', 'index') &&
 				$User->get_permission('admin/Blogs', 'edit_post')
@@ -207,7 +218,7 @@ class Controller {
 	 * @param \cs\Request $Request
 	 *
 	 * @return array
-	 * 
+	 *
 	 * @throws ExitException
 	 */
 	static function sections_get ($Request) {

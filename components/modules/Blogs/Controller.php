@@ -185,7 +185,7 @@ class Controller {
 		if (
 			!$post ||
 			(
-				$post['draft'] && $post['user'] != $User->id
+				$post['draft'] && $post['user'] != User::instance()->id
 			)
 		) {
 			throw new ExitException(404);
@@ -205,17 +205,9 @@ class Controller {
 			->article('tag', $post['tags']);
 		array_map([$Meta, 'image'], $post['image']);
 		$comments_enabled = $Config->module('Blogs')->enable_comments && $Comments;
-		$is_admin         = static::is_blogs_admin();
 		$Page->content(
-			h::{'article[is=cs-blogs-post]'}(
-				h::{'script[type=application/ld+json]'}(
-					json_encode($post, JSON_UNESCAPED_UNICODE)
-				),
-				[
-					'comments_enabled' => $comments_enabled,
-					'can_edit'         => $is_admin || User::instance()->id == $post['user'],
-					'can_delete'       => $is_admin
-				]
+			h::{'article[is=cs-blogs-post] script[type=application/ld+json]'}(
+				json_encode($post, JSON_UNESCAPED_UNICODE)
 			).
 			($comments_enabled ? $Comments->block($post['id']) : '')
 		);

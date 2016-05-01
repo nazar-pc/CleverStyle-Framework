@@ -12,12 +12,18 @@ Polymer(
 		cs.Polymer.behaviors.Language('blogs_')
 	]
 	properties		:
-		can_edit			: false
-		can_delete			: false
-		comments_enabled	: false
+		can_edit	: false
 	ready			: !->
 		@jsonld					= JSON.parse(@querySelector('script').innerHTML)
 		@$.content.innerHTML	= @jsonld.content
+		Promise.all([
+			$.ajax(
+				url		: 'api/Blogs'
+				type	: 'get_settings'
+			)
+			if cs.is_user then $.getJSON('api/System/profile') else {id : 1}
+		]).then ([@settings, profile]) !~>
+			@can_edit	= @settings.can_delete_posts || @jsonld.user == profile.id
 	sections_path : (index) ->
 		@jsonld.sections_paths[index]
 	tags_path : (index) ->

@@ -12,13 +12,26 @@
     'extends': 'article',
     behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {
-      can_edit: false,
-      can_delete: false,
-      comments_enabled: false
+      can_edit: false
     },
     ready: function(){
+      var this$ = this;
       this.jsonld = JSON.parse(this.querySelector('script').innerHTML);
       this.$.content.innerHTML = this.jsonld.content;
+      Promise.all([
+        $.ajax({
+          url: 'api/Blogs',
+          type: 'get_settings'
+        }), cs.is_user
+          ? $.getJSON('api/System/profile')
+          : {
+            id: 1
+          }
+      ]).then(function(arg$){
+        var profile;
+        this$.settings = arg$[0], profile = arg$[1];
+        this$.can_edit = this$.settings.can_delete_posts || this$.jsonld.user === profile.id;
+      });
     },
     sections_path: function(index){
       return this.jsonld.sections_paths[index];
