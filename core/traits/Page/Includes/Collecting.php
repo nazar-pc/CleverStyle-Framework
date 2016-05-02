@@ -82,7 +82,7 @@ trait Collecting {
 		 * Also collect dependencies.
 		 */
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
-			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
+			if ($module_data['active'] != Config\Module_Properties::ENABLED) {
 				continue;
 			}
 			$this->process_meta(MODULES."/$module_name", $dependencies, $functionalities);
