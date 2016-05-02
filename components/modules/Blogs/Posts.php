@@ -443,7 +443,7 @@ class Posts {
 		$result = $this->delete($id);
 		if ($result) {
 			if (functionality('comments')) {
-				\cs\modules\comments\Comments::instance()->del_all($id);
+				\cs\modules\comments\Comments::instance()->del_all($id, 'Blogs');
 			}
 			$this->cache_cleanups($id);
 		}
