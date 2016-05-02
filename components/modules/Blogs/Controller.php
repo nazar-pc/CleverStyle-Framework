@@ -163,18 +163,8 @@ class Controller {
 			return;
 		}
 
-		$Config   = Config::instance();
-		$Page     = Page::instance();
-		$Comments = null;
-		Event::instance()->fire(
-			'Comments/instance',
-			[
-				'Comments' => &$Comments
-			]
-		);
-		/**
-		 * @var \cs\modules\Comments\Comments $Comments
-		 */
+		$Config  = Config::instance();
+		$Page    = Page::instance();
 		$Posts   = Posts::instance();
 		$rc      = $Request->route;
 		$post_id = (int)mb_substr($rc[1], mb_strrpos($rc[1], ':') + 1);
@@ -204,13 +194,17 @@ class Controller {
 			->article('section', $post['articleSection'] ? $post['articleSection'][0] : false)
 			->article('tag', $post['tags']);
 		array_map([$Meta, 'image'], $post['image']);
-		$comments_enabled = $Config->module('Blogs')->enable_comments && $Comments;
 		$Page->content(
 			h::{'article[is=cs-blogs-post] script[type=application/ld+json]'}(
 				json_encode($post, JSON_UNESCAPED_UNICODE)
-			).
-			($comments_enabled ? $Comments->block($post['id']) : '')
+			)
 		);
+		if (
+			$Config->module('Blogs')->enable_comments &&
+			functionality('comments')
+		) {
+			$Page->content(\cs\modules\comments\Comments::instance()->block($post['id'], 'Blogs'));
+		}
 	}
 	protected static function is_blogs_admin () {
 		$User = User::instance();

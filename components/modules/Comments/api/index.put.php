@@ -20,9 +20,11 @@ use
  * Provides next events:
  *  api/Comments/edit
  *  [
- *   'Comments' => <i>&$Comments //Comments object should be returned in this parameter (after access checking)<br>
- *   'id'       => <i>id         //Comment id<br>
- *   'module'   => <i>module     //Module<br>
+ *   'id'     => id      //Comment id
+ *   'user'   => user    //User id
+ *   'item'   => item_id //Item id
+ *   'module' => module  //Module
+ *   'allow'  => &$allow //Whether allow or not
  *  ]
  */
 $Config = Config::instance();
@@ -41,24 +43,28 @@ $Page = Page::instance();
 if (!$_POST['text'] || !strip_tags($_POST['text'])) {
 	throw new ExitException($L->comment_cant_be_empty, 400);
 }
-$Comments = false;
+$Comments = Comments::instance();
+$comment  = $Comments->get($Request->route[0]);
+if (!$comment) {
+	throw new ExitException(404);
+}
+$allow = false;
 Event::instance()->fire(
 	'api/Comments/edit',
 	[
-		'Comments' => &$Comments,
-		'id'       => $Request->route[0],
-		'module'   => $_POST['module']
+		'id'     => $Request->route[0],
+		'user'   => $comment['user'],
+		'item'   => $comment['item'],
+		'module' => $_POST['module'],
+		'allow'  => &$allow
 	]
 );
-if (!is_object($Comments)) {
+if (!$allow) {
 	throw new ExitException($L->comment_editing_server_error, 500);
 }
-/**
- * @var Comments $Comments
- */
 $result = $Comments->set($Request->route[0], $_POST['text']);
 if ($result) {
-	$Page->json($result['text']);
+	$Page->json($Comments->get($Request->route[0])['text']);
 } else {
 	throw new ExitException($L->comment_editing_server_error, 500);
 }

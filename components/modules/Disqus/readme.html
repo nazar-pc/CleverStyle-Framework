@@ -2,39 +2,16 @@
 <h4>Disqus module is compatible with Comments module by interface, but even simpler in usage.</h4>
 <h4>Integration of comments displaying:</h4>
 <pre>$Page	= \cs\Page::instance();
-$Comments	= null;
-\cs\Event::instance()->fire(
-	'Comments/instance',
-	[
-		'Comments'	=> &$Comments
-	]
-);
-/**
- * @var \cs\modules\Disqus\Disqus $Comments
- */
 $Page->content(
-	$Comments ? $Comments->block($id) : ''
+	functionality('comments') ? \cs\modules\comments\Comments::instance()->block($id, 'Blogs') : ''
 );</pre>
-<p>Where <i>$id</i> is integer identifier of article, page or anything else, that will be commented. <i>$Comments</i> - is object created by module, but you can use own object of class, which inherits <i>cs\modules\Disqus\Disqus</i> class.</p>
-<h4>Event for getting instance of Comments class:</h4>
-<pre>$Comments	= null;
-\cs\Event::instance()->fire(
-	'Comments\instance',
-	[
-		'Comments'	=> &$Comments
-	]
-);
-/**
- * @var \cs\modules\Disqus\Disqus $Comments
- */
-if ($Comments) {
-	//Some work here
-}</pre>
-<h4>Other methods of Disqus class:</h4>
+<p>Where <i>$id</i> is integer identifier of article, page or anything else, that will be commented.</p>
+<p>NOTE: Use lowercase <code>comments</code> word in namespace (as in <code>provide</code> key in <code>meta.json</code>) to allow easy changing commenting system by alternative one.</p>
+<h4>Other methods of Comments class:</h4>
 <ul>
 	<li>
-		int Disqus::count($item : int)
-		<p>Returns count of comments for specified item</p>
+		string Comments::count($item : int)
+		<p>Returns HTML snipped that will be replaced with actual number of comments on frontend</p>
 	</li>
 </ul>
 <p>There are several other methods, but they are used directly not so frequent, so, you can find them with description in source code and IDE suggestions.</p>

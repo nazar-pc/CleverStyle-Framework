@@ -99,8 +99,8 @@ $(function () {
 				},
 				dataType	: 'json',
 				type		: 'put',
-				success		: function (result) {
-					$('#comment_' + id).children('.cs-comments-comment-text').html(result);
+				success		: function () {
+					$('#comment_' + id).children('.cs-comments-comment-text').html($textarea.val());
 					blogs_comment_cancel();
 				}
 			}

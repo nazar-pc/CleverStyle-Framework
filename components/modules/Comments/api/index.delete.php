@@ -8,7 +8,6 @@
  */
 namespace cs\modules\Comments;
 use
-	h,
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
@@ -21,10 +20,11 @@ use
  * Provides next events:
  *  api/Comments/delete
  *  [
- *   'Comments'      => &$Comments      //Comments object should be returned in this parameter (after access checking)<br>
- *   'delete_parent' => &$delete_parent //Boolean parameter, should contain boolean true, if parent comment may be deleted by current user<br>
- *   'id'            => id              //Comment id<br>
- *   'module'        => module          //Module<br>
+ *   'id'     => id      //Comment id
+ *   'user'   => user    //User id
+ *   'item'   => item_id //Item id
+ *   'module' => module  //Module
+ *   'allow'  => &$allow //Whether allow or not
  *  ]
  */
 $Config = Config::instance();
@@ -38,27 +38,28 @@ $Request = Request::instance();
 if (!isset($Request->route[0], $_POST['module'])) {
 	throw new ExitException(400);
 }
-$Comments      = false;
-$delete_parent = false;
+$Comments = Comments::instance();
+$comment  = $Comments->get($Request->route[0]);
+if (!$comment) {
+	throw new ExitException(404);
+}
+$allow = false;
 Event::instance()->fire(
 	'api/Comments/delete',
 	[
-		'Comments'      => &$Comments,
-		'delete_parent' => &$delete_parent,
-		'id'            => $Request->route[0],
-		'module'        => $_POST['module']
+		'Comments' => &$Comments,
+		'id'       => $Request->route[0],
+		'module'   => $_POST['module'],
+		'allow'    => &$allow
 	]
 );
 $L    = new Prefix('comments_');
 $Page = Page::instance();
-if (!is_object($Comments)) {
+if (!$allow) {
 	throw new ExitException($L->comment_deleting_server_error, 500);
 }
-/**
- * @var Comments $Comments
- */
-if ($result = $Comments->del($Request->route[0])) {
-	$Page->json($delete_parent ? h::{'icon.cs-comments-comment-delete.cs-cursor-pointer'}('trash') : '');
+if ($Comments->del($Request->route[0])) {
+	$Page->json('');//TODO: get rid of this
 } else {
 	throw new ExitException($L->comment_deleting_server_error, 500);
 }

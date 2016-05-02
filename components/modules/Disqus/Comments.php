@@ -17,62 +17,51 @@ use
 /**
  * @method static $this instance($check = false)
  */
-class Disqus {
+class Comments {
 	use	Singleton;
 
-	/**
-	 * @var string
-	 */
-	protected	$module;
 	/**
 	 * @var string
 	 */
 	protected	$shortname;
 
 	protected function construct () {
-		$this->module		= Request::instance()->current_module;
 		$this->shortname	= Config::instance()->module('Disqus')->shortname;
-	}
-	/**
-	 * Set module (current module assumed by default)
-	 *
-	 * @param string	$module	Module name
-	 */
-	function set_module ($module) {
-		$this->module	= $module;
 	}
 	/**
 	 * Count of comments for specified item
 	 *
-	 * @param int	$item	Item id
+	 * @param int    $item   Item id
+	 * @param string $module Module name
 	 *
-	 * @return int
+	 * @return string HTML snipped that will be replaced with actual count on frontend
 	 */
-	function count ($item) {
+	function count ($item, $module) {
 		if (!$this->shortname) {
 			return '';
 		}
 		$this->count_js();
 		Page::instance()->js(
-			"disqus_count_items.push('".str_replace("'", "\'", "$this->module/$item")."');",
+			"disqus_count_items.push('".str_replace("'", "'", "$module/$item")."');",
 			'code'
 		);
 		return h::{'span.cs-disqus-comments-count'}([
-			'data-identifier'=> "$this->module/$item"
+			'data-identifier'=> "$module/$item"
 		]);
 	}
 	/**
 	 * Get comments block with comments tree and comments sending form
 	 *
-	 * @param int		$item	Item id
+	 * @param int    $item   Item id
+	 * @param string $module Module name
 	 *
 	 * @return string
 	 */
-	function block ($item) {
+	function block ($item, $module) {
 		if (!$this->shortname) {
 			return '';
 		}
-		$this->block_js($item);
+		$this->block_js($item, $module);
 		return '<div id="disqus_thread"></div>';
 	}
 	protected function count_js () {
@@ -87,14 +76,14 @@ if (!window.disqus_count_items) { window.disqus_count_items = []; }",
 			'code'
 		);
 	}
-	protected function block_js ($item) {
+	protected function block_js ($item, $module) {
 		static	$added	= false;
 		if ($added) {
 			return;
 		}
 		$added		= true;
 		Page::instance()->js(
-			"var disqus_shortname = '$this->shortname', disqus_identifier = '".str_replace("'", "\'", "$this->module/$item")."';",
+			"var disqus_shortname = '$this->shortname', disqus_identifier = '".str_replace("'", "'", "$module/$item")."';",
 			'code'
 		);
 	}

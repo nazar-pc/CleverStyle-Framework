@@ -19,9 +19,9 @@ use
  * Provides next events:
  *  api/Comments/add
  *  [
- *   'Comments' => &$Comments //Comments object should be returned in this parameter (after access checking)<br>
- *   'item'     => item       //Item id<br>
- *   'module'   => module     //Module<br>
+ *   'item'   => item    //Item id
+ *   'module' => module  //Module
+ *   'allow'  => &$allow //Whether allow or not
  *  ]
  */
 $Config = Config::instance();
@@ -39,25 +39,24 @@ $Page = Page::instance();
 if (!$_POST['text'] || !strip_tags($_POST['text'])) {
 	throw new ExitException($L->comment_cant_be_empty, 400);
 }
-$Comments = false;
+$allow = false;
 Event::instance()->fire(
 	'api/Comments/add',
 	[
-		'Comments' => &$Comments,
-		'item'     => $_POST['item'],
-		'module'   => $_POST['module']
+		'item'   => $_POST['item'],
+		'module' => $_POST['module'],
+		'allow'  => &$allow
 	]
 );
-if (!is_object($Comments)) {
+if (!$allow) {
 	throw new ExitException($L->comment_sending_server_error, 500);
 }
-/**
- * @var Comments $Comments
- */
-$result = $Comments->add($_POST['item'], $_POST['text'], $_POST['parent']);
-if ($result) {
-	$result['comments'] = false;
-	$Page->json($Comments->tree_html([$result]));
+$Comments = Comments::instance();
+$id       = $Comments->add($_POST['item'], $_POST['module'], $_POST['text'], $_POST['parent']);
+if ($id) {
+	$data             = $Comments->get($id);
+	$data['comments'] = false;
+	$Page->json($Comments->tree_html([$data]));
 } else {
 	throw new ExitException($L->comment_sending_server_error, 500);
 }

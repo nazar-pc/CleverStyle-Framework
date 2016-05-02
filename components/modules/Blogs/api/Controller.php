@@ -9,7 +9,6 @@
 namespace cs\modules\Blogs\api;
 use
 	cs\Config,
-	cs\Event,
 	cs\ExitException,
 	cs\Language\Prefix,
 	cs\User,
@@ -24,22 +23,12 @@ class Controller {
 	static function __get_settings () {
 		$User        = User::instance();
 		$module_data = Config::instance()->module('Blogs');
-		$Comments    = null;
-		Event::instance()->fire(
-			'Comments/instance',
-			[
-				'Comments' => &$Comments
-			]
-		);
-		/**
-		 * @var \cs\modules\Comments\Comments $Comments
-		 */
-		$admin = $User->admin() && $User->get_permission('admin/Blogs', 'index');
+		$admin       = $User->admin() && $User->get_permission('admin/Blogs', 'index');
 		return [
 			'inline_editor'              => functionality('inline_editor'),
 			'max_sections'               => $module_data->max_sections,
 			'new_posts_only_from_admins' => (bool)$module_data->new_posts_only_from_admins,
-			'comments_enabled'           => $module_data->enable_comments && $Comments,
+			'comments_enabled'           => $module_data->enable_comments && functionality('comments'),
 			'admin'                      => $admin,
 			'admin_edit'                 => $admin && $User->get_permission('admin/Blogs', 'edit_post')
 		];

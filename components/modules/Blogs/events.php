@@ -70,104 +70,51 @@ Event::instance()
 	->on(
 		'api/Comments/add',
 		function ($data) {
-			$Comments = null;
-			Event::instance()->fire(
-				'Comments/instance',
-				[
-					'Comments' => &$Comments
-				]
-			);
 			$module_data = Config::instance()->module('Blogs');
-			/**
-			 * @var \cs\modules\Comments\Comments $Comments
-			 */
-			if (!(
+			if (
 				$module_data->enabled() &&
 				$data['module'] == 'Blogs' &&
 				$module_data->enable_comments &&
 				User::instance()->user() &&
-				$Comments
-			)
+				Posts::instance()->get($data['item'])
 			) {
-				return true;
+				$data['allow'] = true;
+				return false;
 			}
-			if (Posts::instance()->get($data['item'])) {
-				$Comments->set_module('Blogs');
-				$data['Comments'] = $Comments;
-			}
-			return false;
 		}
 	)
 	->on(
 		'api/Comments/edit',
 		function ($data) {
-			$Comments = null;
-			Event::instance()->fire(
-				'Comments/instance',
-				[
-					'Comments' => &$Comments
-				]
-			);
-			/**
-			 * @var \cs\modules\Comments\Comments $Comments
-			 */
 			$User        = User::instance();
 			$module_data = Config::instance()->module('Blogs');
-			if (!(
+			if (
 				$module_data->enabled() &&
 				$data['module'] == 'Blogs' &&
 				$module_data->enable_comments &&
 				$User->user() &&
-				$Comments
-			)
+				($data['user'] == $User->id || $User->admin())
 			) {
-				return true;
+				$data['allow'] = true;
+				return false;
 			}
-			$Comments->set_module('Blogs');
-			$comment = $Comments->get($data['id']);
-			if ($comment && ($comment['user'] == $User->id || $User->admin())) {
-				$data['Comments'] = $Comments;
-			}
-			return false;
 		}
 	)
 	->on(
 		'api/Comments/delete',
 		function ($data) {
-			$Comments = null;
-			Event::instance()->fire(
-				'Comments/instance',
-				[
-					'Comments' => &$Comments
-				]
-			);
-			/**
-			 * @var \cs\modules\Comments\Comments $Comments
-			 */
 			$User        = User::instance();
 			$module_data = Config::instance()->module('Blogs');
-			if (!(
+			if (
 				$module_data->enabled() &&
 				$data['module'] == 'Blogs' &&
 				$module_data->enable_comments &&
 				$User->user() &&
-				$Comments
-			)
+				($data['user'] == $User->id || $User->admin())
 			) {
-				return true;
+				$data['allow'] = true;
+				return false;
 			}
-			$Comments->set_module('Blogs');
-			$comment = $Comments->get($data['id']);
-			if ($comment && ($comment['user'] == $User->id || $User->admin())) {
-				$data['Comments'] = $Comments;
-				if (
-					$comment['parent'] &&
-					($comment = $Comments->get($comment['parent']))
-				) {
-					$data['delete_parent'] = true;
-				}
-			}
-			return false;
 		}
 	)
 	->on(

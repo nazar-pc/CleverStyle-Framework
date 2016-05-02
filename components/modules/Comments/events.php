@@ -12,25 +12,14 @@ use
 	cs\Config,
 	cs\Event;
 
-Event::instance()
-	->on(
-		'Comments/instance',
-		function ($data) {
-			if (!Config::instance()->module('Comments')->enabled()) {
-				return true;
-			}
-			$data['Comments'] = Comments::instance();
-			return false;
+Event::instance()->on(
+	'admin/System/components/modules/uninstall/before',
+	function ($data) {
+		if ($data['name'] != 'Comments') {
+			return;
 		}
-	)
-	->on(
-		'admin/System/components/modules/uninstall/before',
-		function ($data) {
-			if ($data['name'] != 'Comments') {
-				return;
-			}
-			time_limit_pause();
-			Cache::instance()->del('Comments');
-			time_limit_pause(false);
-		}
-	);
+		time_limit_pause();
+		Cache::instance()->del('Comments');
+		time_limit_pause(false);
+	}
+);

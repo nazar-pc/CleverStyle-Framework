@@ -83,9 +83,9 @@ class Posts {
 			}
 			return $id;
 		}
-		$L        = Language::instance();
-		$id       = (int)$id;
-		$data     = $this->cache->get(
+		$L                      = Language::instance();
+		$id                     = (int)$id;
+		$data                   = $this->cache->get(
 			"posts/$id/$L->clang",
 			function () use ($id) {
 				$data = $this->read($id);
@@ -96,19 +96,9 @@ class Posts {
 				return $data;
 			}
 		);
-		$Comments = null;
-		Event::instance()->fire(
-			'Comments/instance',
-			[
-				'Comments' => &$Comments
-			]
-		);
-		/**
-		 * @var \cs\modules\Comments\Comments $Comments
-		 */
 		$data['comments_count'] =
-			Config::instance()->module('Blogs')->enable_comments && $Comments
-				? $Comments->count($data['id'])
+			Config::instance()->module('Blogs')->enable_comments && functionality('comments')
+				? \cs\modules\comments\Comments::instance()->count($data['id'], 'Blogs')
 				: 0;
 		return $data;
 	}
@@ -452,18 +442,8 @@ class Posts {
 		$id     = (int)$id;
 		$result = $this->delete($id);
 		if ($result) {
-			$Comments = null;
-			Event::instance()->fire(
-				'Comments/instance',
-				[
-					'Comments' => &$Comments
-				]
-			);
-			/**
-			 * @var \cs\modules\Comments\Comments $Comments
-			 */
-			if ($Comments) {
-				$Comments->del_all($id);
+			if (functionality('comments')) {
+				\cs\modules\comments\Comments::instance()->del_all($id);
 			}
 			$this->cache_cleanups($id);
 		}
