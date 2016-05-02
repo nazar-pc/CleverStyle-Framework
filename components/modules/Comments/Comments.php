@@ -26,7 +26,7 @@ class Comments {
 		Singleton;
 
 	/**
-	 * @var Cache
+	 * @var Cache\Prefix
 	 */
 	protected $cache;
 	/**
@@ -168,7 +168,7 @@ class Comments {
 		if ($result) {
 			$this->cache->del("$module/$item");
 		}
-		return $result;
+		return (bool)$result;
 	}
 	/**
 	 * Count of comments for specified item
