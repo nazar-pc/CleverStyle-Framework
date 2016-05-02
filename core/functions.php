@@ -28,7 +28,7 @@ spl_autoload_register(
 		}
 		if (isset($aliases[$class])) {
 			spl_autoload_call($aliases[$class]);
-			return class_alias($aliases[$class], $class);
+			return class_exists($aliases[$class]) || class_alias($aliases[$class], $class);
 		}
 		if (isset($cache[$class])) {
 			return $cache[$class] ? require_once $cache[$class] : false;
@@ -81,7 +81,7 @@ spl_autoload_register(
 						$aliases[$class]   = $alias;
 						file_put_json(CACHE.'/classes/aliases', $aliases);
 						spl_autoload_call($alias);
-						return class_alias($alias, $class);
+						return class_exists($alias) || class_alias($alias, $class);
 					}
 				}
 			}
