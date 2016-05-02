@@ -27,8 +27,8 @@ spl_autoload_register(
 			$aliases = file_exists(CACHE.'/classes/aliases') ? file_get_json(CACHE.'/classes/aliases') : [];
 		}
 		if (isset($aliases[$class])) {
-			class_alias($aliases[$class], $class);
-			return class_exists($aliases[$class]);
+			spl_autoload_call($aliases[$class]);
+			return class_alias($aliases[$class], $class);
 		}
 		if (isset($cache[$class])) {
 			return $cache[$class] ? require_once $cache[$class] : false;
@@ -80,8 +80,8 @@ spl_autoload_register(
 						$alias             = implode('\\', $class_exploded);
 						$aliases[$class]   = $alias;
 						file_put_json(CACHE.'/classes/aliases', $aliases);
-						class_alias($alias, $class);
-						return class_exists($alias);
+						spl_autoload_call($alias);
+						return class_alias($alias, $class);
 					}
 				}
 			}
