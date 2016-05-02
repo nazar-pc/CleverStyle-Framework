@@ -8,14 +8,13 @@
  */
 namespace cs\modules\Comments;
 use
-	cs\DB\Accessor,
 	h,
-	cs\Cache\Prefix as Cache_prefix,
+	cs\Cache,
 	cs\Config,
 	cs\Language,
-	cs\Language\Prefix as Language_prefix,
 	cs\Request,
 	cs\User,
+	cs\CRUD_helpers,
 	cs\Singleton;
 
 /**
@@ -23,20 +22,33 @@ use
  */
 class Comments {
 	use
-		Accessor,
+		CRUD_helpers,
 		Singleton;
 
 	/**
-	 * @var Cache_prefix
+	 * @var Cache
 	 */
-	protected	$cache;
+	protected $cache;
 	/**
-	 * @var int	Avatar size in px, can be redefined
+	 * @var int    Avatar size in px, can be redefined
 	 */
-	public		$avatar_size	= 36;
+	public $avatar_size = 36;
+
+	protected $data_model = [
+		'id'     => 'int:1',
+		'parent' => 'int:0',
+		'module' => 'text',
+		'item'   => 'int:1',
+		'user'   => 'int:1',
+		'date'   => 'int:1',
+		'text'   => 'html',
+		'lang'   => 'text'
+	];
+
+	protected $table = '[prefix]comments';
 
 	protected function construct () {
-		$this->cache	= new Cache_prefix('Comments');
+		$this->cache = Cache::prefix('Comments');
 	}
 	/**
 	 * Returns database index
@@ -49,162 +61,91 @@ class Comments {
 	/**
 	 * Get comment data
 	 *
-	 * @param int			$id Comment id
+	 * @param int|int[] $id
 	 *
-	 * @return array|false		Array of comment data on success or <b>false</b> on failure
+	 * @return array|false
 	 */
 	function get ($id) {
-		$id	= (int)$id;
-		return $this->db()->qf(
-			"SELECT
-				`id`,
-				`parent`,
-				`module`,
-				`item`,
-				`user`,
-				`date`,
-				`text`,
-				`lang`
-			FROM `[prefix]comments`
-			WHERE
-				`id`	= '%d'
-			LIMIT 1",
-			$id
-		);
+		return $this->read($id);
 	}
 	/**
 	 * Add new comment
 	 *
-	 * @param int			$item	Item id
-	 * @param string		$module	Module name
-	 * @param string		$text	Comment text
-	 * @param int			$parent	Parent comment id
+	 * @param int    $item   Item id
+	 * @param string $module Module name
+	 * @param string $text   Comment text
+	 * @param int    $parent Parent comment id
 	 *
 	 * @return false|int
 	 */
 	function add ($item, $module, $text, $parent = 0) {
-		$L		= Language::instance();
-		$User	= User::instance();
-		$text	= xap($text, true);
+		$L    = Language::instance();
+		$User = User::instance();
+		$text = xap($text, true);
 		if (!$text) {
 			return false;
 		}
-		$item	= (int)$item;
-		$parent	= (int)$parent;
-		if (
-			$parent != 0 &&
-			$this->db_prime()->qfs(
-				"SELECT `item`
-				FROM `[prefix]comments`
-				WHERE
-					`id`		= '%d' AND
-					`module`	= '%s'
-				LIMIT 1",
-				$parent,
-				$module
-			) != $item
-		) {
-			return false;
+		if ($parent) {
+			$parent_comment = $this->read($parent);
+			if ($parent_comment['item'] != $item || $parent_comment['module'] != $module) {
+				return false;
+			}
 		}
-		if ($this->db_prime()->q(
-			"INSERT INTO `[prefix]comments`
-				(
-					`parent`,
-					`module`,
-					`item`,
-					`user`,
-					`date`,
-					`text`,
-					`lang`
-				)
-			VALUES
-				(
-					'%s',
-					'%s',
-					'%s',
-					'%s',
-					'%s',
-					'%s',
-					'%s'
-				)",
-			$parent,
-			$module,
-			$item,
-			$User->id,
-			time(),
-			$text,
-			$L->clang
-		)) {
+		$id = $this->create($parent, $module, $item, $User->id, time(), $text, $L->clang);
+		if ($id) {
 			$this->cache->del("$module/$item");
-			return $this->db_prime()->id();
 		}
-		return false;
+		return $id;
 	}
 	/**
 	 * Set comment text
 	 *
-	 * @param int		$id		Comment id
-	 * @param string	$text	New comment text
+	 * @param int    $id
+	 * @param string $text
 	 *
 	 * @return bool
 	 */
 	function set ($id, $text) {
-		$text	= xap($text, true);
+		$text = xap($text, true);
 		if (!$text) {
 			return false;
 		}
-		$id				= (int)$id;
-		$comment		= $this->get($id);
+		$comment = $this->get($id);
 		if (!$comment) {
 			return false;
 		}
-		if ($this->db_prime()->q(
-			"UPDATE `[prefix]comments`
-			SET `text` = '%s'
-			WHERE
-				`id`	= '%d'
-			LIMIT 1",
-			$text,
-			$id
-		)) {
+		$comment['text'] = $text;
+		$result          = $this->update($comment);
+		if ($result) {
 			$this->cache->del("$comment[module]/$comment[item]");
-			return true;
 		}
-		return false;
+		return $result;
 	}
 	/**
 	 * Delete comment
 	 *
-	 * @param int	$id	Comment id
+	 * @param int $id
 	 *
 	 * @return bool
 	 */
 	function del ($id) {
-		$id				= (int)$id;
-		$comment		= $this->db_prime()->qf(
-			"SELECT `p`.*, COUNT(`c`.`id`) AS `count`
-			FROM `[prefix]comments` AS `p`
-			LEFT JOIN `[prefix]comments` AS `c`
-			ON `p`.`id` = `c`.`parent`
-			WHERE
-				`p`.`id`	= '%d'
-			LIMIT 1",
-			$id
-		);
-		if (!$comment || $comment['count']) {
+		$comment = $this->read($id);
+		if (
+			!$comment ||
+			$this->search(
+				[
+					'parent'      => $id,
+					'total_count' => true
+				]
+			)
+		) {
 			return false;
 		}
-		if ($this->db_prime()->q(
-			"DELETE FROM `[prefix]comments`
-			WHERE
-				`id`	= '%s'
-			LIMIT 1",
-			$id
-		)) {
+		$result = $this->delete($id);
+		if ($result) {
 			$this->cache->del("$comment[module]/$comment[item]");
-			return true;
 		}
-		return false;
+		return $result;
 	}
 	/**
 	 * Delete all comments of specified item
@@ -215,19 +156,19 @@ class Comments {
 	 * @return bool
 	 */
 	function del_all ($item, $module) {
-		$item			= (int)$item;
-		if ($this->db_prime()->q(
+		$item   = (int)$item;
+		$result = $this->db_prime()->q(
 			"DELETE FROM `[prefix]comments`
 			WHERE
 				`module`	= '%s' AND
 				`item`		= '%d'",
 			$module,
 			$item
-		)) {
+		);
+		if ($result) {
 			$this->cache->del("$module/$item");
-			return true;
 		}
-		return false;
+		return $result;
 	}
 	/**
 	 * Count of comments for specified item
@@ -240,19 +181,19 @@ class Comments {
 	function count ($item, $module) {
 		$item = (int)$item;
 		$L    = Language::instance();
-		return $this->cache->get("$module/$item/count/$L->clang", function () use ($item, $module)  {
-			return $this->count_internal($this->tree_data($item, $module)) ?: 0;
-		});
-	}
-	protected function count_internal ($data) {
-		if (!is_array($data)) {
-			return 0;
-		}
-		$count	= 0;
-		foreach ($data as &$d) {
-			$count	+= $this->count_internal($d['comments']) + 1;
-		}
-		return $count;
+		return $this->cache->get(
+			"$module/$item/count/$L->clang",
+			function () use ($item, $module, $L) {
+				return $this->search(
+					[
+						'module'      => $module,
+						'item'        => $item,
+						'lang'        => $L->clang,
+						'total_count' => true
+					]
+				);
+			}
+		);
 	}
 	/**
 	 * Get comments tree in html format for specified item (look at ::block() method before usage)
@@ -385,7 +326,7 @@ class Comments {
 	 * @return string
 	 */
 	function block ($item, $module) {
-		$L	= new Language_prefix('comments_');
+		$L	= Language::prefix('comments_');
 		return h::{'section#comments.cs-comments-comments'}(
 			$L->comments.':'.
 			(
