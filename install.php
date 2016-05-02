@@ -229,7 +229,7 @@ Examples:
 		if (!isset($_POST['language'])) {
 			$_POST['language'] = 'English';
 		}
-		echo install_process($fs, $argv);
+		echo cs\install_process($fs, $argv);
 	}
 	echo "\n";
 	return;
@@ -259,7 +259,7 @@ echo
 		h::h1("CleverStyle CMS $version Installation")
 	).
 	h::section(
-		isset($_POST['site_name']) ? install_process($fs) : install_form()
+		isset($_POST['site_name']) ? cs\install_process($fs) : cs\install_form()
 	).
 	h::footer(
 		'Copyright (c) 2011-2016, Nazar Mokrynskyi'

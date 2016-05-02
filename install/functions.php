@@ -6,6 +6,10 @@
  * @copyright  Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
+namespace cs;
+use
+	h;
+
 function install_form () {
 	$timezones = get_timezones_list();
 	return h::{'form[method=post]'}(
@@ -124,7 +128,7 @@ function install_process ($fs, $argv = null) {
 	if (!file_exists(DIR."/install/DB/$_POST[db_engine].sql")) {
 		return "Can't find system tables structure for selected database engine! Installation aborted.";
 	}
-	$Request = \cs\Request::instance();
+	$Request = Request::instance();
 	/**
 	 * General system configuration
 	 */
@@ -191,9 +195,10 @@ function install_process ($fs, $argv = null) {
 	$extracted = array_filter(
 		array_map(
 			function ($index, $file) {
+				$dir = dirname(ROOT."/$file");
 				if (
-					!file_exists(dirname(ROOT."/$file")) &&
-					!mkdir(dirname(ROOT."/$file"), 0770, true)
+					!@mkdir($dir, 0770, true) &&
+					!is_dir($dir)
 				) {
 					return false;
 				}
@@ -209,7 +214,9 @@ function install_process ($fs, $argv = null) {
 	);
 	if (
 		count($extracted) !== count($fs) ||
-		!(file_exists(ROOT.'/storage') || mkdir(ROOT.'/storage', 0770)) ||
+		(
+			!@mkdir(ROOT.'/storage', 0770) && !is_dir(ROOT.'/storage')
+		) ||
 		!file_put_contents(ROOT.'/storage/.htaccess', "Deny from all\nRewriteEngine Off\n<Files *>\n\tSetHandler default-handler\n</Files>")
 	) {
 		return "Can't extract system files from the archive! Installation aborted.";
@@ -312,7 +319,7 @@ function install_process ($fs, $argv = null) {
 	 */
 	$modules = [
 		'System' => [
-			'active' => 1,
+			'active' => Config\Module_Properties::ENABLED,
 			'db'     => [
 				'keys'  => '0',
 				'users' => '0',
@@ -323,7 +330,7 @@ function install_process ($fs, $argv = null) {
 	if (file_exists(DIR.'/modules.json')) {
 		foreach (file_get_json(DIR.'/modules.json') as $module) {
 			$modules[$module] = [
-				'active'  => -1,
+				'active'  => Config\Module_Properties::UNINSTALLED,
 				'db'      => [],
 				'storage' => []
 			];
@@ -367,10 +374,11 @@ function install_process ($fs, $argv = null) {
 		return "Can't register administrator user! Installation aborted.";
 	}
 	/**
-	 * Disconnecting from the DataBase, removing of installer file
+	 * Disconnecting from the DataBase
 	 */
 	$cdb->__destruct();
 	$warning   = false;
+	// Removing of installer file
 	$cli       = PHP_SAPI == 'cli';
 	$installer = $cli ? ROOT."/$argv[0]" : ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME);
 	if (!is_writable($installer) || !unlink($installer)) {
