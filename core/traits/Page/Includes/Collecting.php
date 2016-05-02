@@ -82,10 +82,10 @@ trait Collecting {
 		 * Also collect dependencies.
 		 */
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
-			if ($module_data['active'] != Config\Module_Properties::ENABLED) {
+			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
 				continue;
 			}
-			$this->process_meta(MODULES."/$module_name", $dependencies, $functionalities);
+			$this->process_meta(MODULES."/$module_name", $dependencies, $functionalities, $module_data['active'] != Config\Module_Properties::ENABLED);
 			$this->process_map(MODULES."/$module_name", $includes_map, $all_includes);
 		}
 		unset($module_name, $module_data);
@@ -117,8 +117,9 @@ trait Collecting {
 	 * @param string $base_dir
 	 * @param array  $dependencies
 	 * @param array  $functionalities
+	 * @param bool   $skip_functionalities
 	 */
-	protected function process_meta ($base_dir, &$dependencies, &$functionalities) {
+	protected function process_meta ($base_dir, &$dependencies, &$functionalities, $skip_functionalities = false) {
 		if (!file_exists("$base_dir/meta.json")) {
 			return;
 		}
@@ -142,6 +143,9 @@ trait Collecting {
 			 */
 			$o                        = preg_split('/[=<>]/', $o, 2)[0];
 			$dependencies[$package][] = $o;
+		}
+		if ($skip_functionalities) {
+			return;
 		}
 		foreach ((array)$meta['provide'] as $p) {
 			/**
