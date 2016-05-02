@@ -9,7 +9,6 @@
 namespace cs\modules\Comments;
 use
 	cs\Cache,
-	cs\Config,
 	cs\Event;
 
 Event::instance()->on(
