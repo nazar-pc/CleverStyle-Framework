@@ -254,7 +254,9 @@ function install_process ($fs, $argv = null) {
 					$_POST['language'],
 					$public_key
 				],
-				'{
+				/** @lang JSON */
+				<<<CONFIG
+{
 //Domain of main mirror
 	"domain"			: "@domain",
 //Base timezone
@@ -282,7 +284,8 @@ function install_process ($fs, $argv = null) {
 	"memcache_port"		: "11211",
 //Any length
 	"public_key"		: "@public_key"
-}'
+}
+CONFIG
 			)
 		);
 	extension_loaded('apc') && apc_clear_cache('user');
@@ -377,7 +380,7 @@ function install_process ($fs, $argv = null) {
 	 * Disconnecting from the DataBase
 	 */
 	$cdb->__destruct();
-	$warning   = false;
+	$warning = false;
 	// Removing of installer file
 	$cli       = PHP_SAPI == 'cli';
 	$installer = $cli ? ROOT."/$argv[0]" : ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME);
