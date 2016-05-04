@@ -112,26 +112,13 @@ function install_form () {
 }
 
 /**
- * @param array[]    $fs
  * @param array|null $argv
  *
  * @return string
  */
-function install_process ($fs, $argv = null) {
-	/**
-	 * Connecting to the DataBase
-	 */
-	define('DEBUG', false);
-	/**
-	 * DataBase structure import
-	 */
-	if (!file_exists(DIR."/install/DB/$_POST[db_engine].sql")) {
-		return "Can't find system tables structure for selected database engine! Installation aborted.";
-	}
+function install_process ($argv = null) {
+	Installer::install(DIR, ROOT, $_POST['db_engine']);
 	$Request = Request::instance();
-	/**
-	 * General system configuration
-	 */
 	if (isset($_POST['site_url'])) {
 		$url = $_POST['site_url'];
 	} else {
@@ -139,88 +126,7 @@ function install_process ($fs, $argv = null) {
 		$url = "$Request->scheme://$Request->host$Request->path";
 		$url = implode('/', array_slice(explode('/', $url), 0, -2)); //Remove 2 last items
 	}
-	preg_match('#//([^/]+)#', $url, $domain);
-	$domain = explode(':', $domain[1])[0];
-	$config = [
-		'name'                              => $_POST['site_name'],
-		'url'                               => [$url],
-		'admin_email'                       => $_POST['admin_email'],
-		'closed_title'                      => 'Site closed',
-		'closed_text'                       => '<p>Site closed for maintenance</p>',
-		'site_mode'                         => 1,
-		'title_delimiter'                   => ' | ',
-		'title_reverse'                     => 0,
-		'cache_compress_js_css'             => 1,
-		'vulcanization'                     => 1,
-		'put_js_after_body'                 => 1,
-		'theme'                             => 'CleverStyle',
-		'language'                          => $_POST['language'],
-		'active_languages'                  => [$_POST['language']],
-		'multilingual'                      => 0,
-		'db_balance'                        => 0,
-		'db_mirror_mode'                    => \cs\DB::MIRROR_MODE_MASTER_MASTER,
-		'cookie_prefix'                     => '',
-		'cookie_domain'                     => [$domain],
-		'inserts_limit'                     => 1000,
-		'key_expire'                        => 120,
-		'gravatar_support'                  => 0,
-		'session_expire'                    => 2592000,
-		'update_ratio'                      => 75,
-		'sign_in_attempts_block_count'      => 0,
-		'sign_in_attempts_block_time'       => 5,
-		'timezone'                          => $_POST['timezone'],
-		'password_min_length'               => 4,
-		'password_min_strength'             => 3,
-		'smtp'                              => 0,
-		'smtp_host'                         => '',
-		'smtp_port'                         => '',
-		'smtp_secure'                       => '',
-		'smtp_auth'                         => 0,
-		'smtp_user'                         => '',
-		'smtp_password'                     => '',
-		'mail_from'                         => $_POST['admin_email'],
-		'mail_from_name'                    => "Administrator of $_POST[site_name]",
-		'allow_user_registration'           => 1,
-		'require_registration_confirmation' => 1,
-		'auto_sign_in_after_registration'   => 1,
-		'registration_confirmation_time'    => 1,
-		'mail_signature'                    => '',
-		'remember_user_ip'                  => 0,
-		'simple_admin_mode'                 => !isset($_POST['mode']) || $_POST['mode'] ? 1 : 0,
-		'default_module'                    => 'System'
-	];
-	/**
-	 * Extracting of engine's files
-	 */
-	$extracted = array_filter(
-		array_map(
-			function ($index, $file) {
-				$dir = dirname(ROOT."/$file");
-				if (
-					!@mkdir($dir, 0770, true) &&
-					!is_dir($dir)
-				) {
-					return false;
-				}
-				/**
-				 * TODO: copy() + file_exists() is a hack for HHVM, when bug fixed upstream (copying of empty files) this should be simplified
-				 */
-				copy(DIR."/fs/$index", ROOT."/$file");
-				return file_exists(ROOT."/$file");
-			},
-			$fs,
-			array_keys($fs)
-		)
-	);
-	if (
-		count($extracted) !== count($fs) ||
-		(
-			!@mkdir(ROOT.'/storage', 0770) && !is_dir(ROOT.'/storage')
-		) ||
-		!file_put_contents(ROOT.'/storage/.htaccess', "Deny from all\nRewriteEngine Off\n<Files *>\n\tSetHandler default-handler\n</Files>")
-	) {
-		return "Can't extract system files from the archive! Installation aborted.";
-	}
+	$domain = parse_url($url, PHP_URL_HOST);
 	/**
 	 * Basic system configuration
 	 */
@@ -242,7 +148,7 @@ function install_process ($fs, $argv = null) {
 					'@public_key'
 				],
 				[
-					$config['cookie_domain'][0],
+					$domain,
 					$_POST['timezone'],
 					$_POST['db_host'],
 					$_POST['db_engine'],
@@ -254,38 +160,7 @@ function install_process ($fs, $argv = null) {
 					$_POST['language'],
 					$public_key
 				],
-				/** @lang JSON */
-				<<<CONFIG
-{
-//Domain of main mirror
-	"domain"			: "@domain",
-//Base timezone
-	"timezone"			: "@timezone",
-//Settings of main DB
-	"db_host"			: "@db_host",
-	"db_type"			: "@db_type",
-	"db_name"			: "@db_name",
-	"db_user"			: "@db_user",
-	"db_password"		: "@db_password",
-	"db_prefix"			: "@db_prefix",
-	"db_charset"		: "@db_charset",
-//Settings of main Storage
-	"storage_type"		: "Local",
-	"storage_url"		: "",
-	"storage_host"		: "localhost",
-	"storage_user"		: "",
-	"storage_password"	: "",
-//Base language
-	"language"			: "@language",
-//Cache engine
-	"cache_engine"		: "FileSystem",
-//Settings of Memcached cache engine
-	"memcache_host"		: "127.0.0.1",
-	"memcache_port"		: "11211",
-//Any length
-	"public_key"		: "@public_key"
-}
-CONFIG
+				Installer::MAIN_CONFIG_STUB
 			)
 		);
 	extension_loaded('apc') && apc_clear_cache('user');
@@ -340,13 +215,64 @@ CONFIG
 		}
 		unset($module);
 	}
+	/**
+	 * General system configuration
+	 */
+	$config = [
+		'name'                              => $_POST['site_name'],
+		'url'                               => [$url],
+		'admin_email'                       => $_POST['admin_email'],
+		'closed_title'                      => 'Site closed',
+		'closed_text'                       => '<p>Site closed for maintenance</p>',
+		'site_mode'                         => 1,
+		'title_delimiter'                   => ' | ',
+		'title_reverse'                     => 0,
+		'cache_compress_js_css'             => 1,
+		'vulcanization'                     => 1,
+		'put_js_after_body'                 => 1,
+		'theme'                             => 'CleverStyle',
+		'language'                          => $_POST['language'],
+		'active_languages'                  => [$_POST['language']],
+		'multilingual'                      => 0,
+		'db_balance'                        => 0,
+		'db_mirror_mode'                    => DB::MIRROR_MODE_MASTER_MASTER,
+		'cookie_prefix'                     => '',
+		'cookie_domain'                     => [$domain],
+		'inserts_limit'                     => 1000,
+		'key_expire'                        => 120,
+		'gravatar_support'                  => 0,
+		'session_expire'                    => 3600 * 24 * 30,
+		'update_ratio'                      => 75,
+		'sign_in_attempts_block_count'      => 0,
+		'sign_in_attempts_block_time'       => 5,
+		'timezone'                          => $_POST['timezone'],
+		'password_min_length'               => 4,
+		'password_min_strength'             => 3,
+		'smtp'                              => 0,
+		'smtp_host'                         => '',
+		'smtp_port'                         => '',
+		'smtp_secure'                       => '',
+		'smtp_auth'                         => 0,
+		'smtp_user'                         => '',
+		'smtp_password'                     => '',
+		'mail_from'                         => $_POST['admin_email'],
+		'mail_from_name'                    => "Administrator of $_POST[site_name]",
+		'allow_user_registration'           => 1,
+		'require_registration_confirmation' => 1,
+		'auto_sign_in_after_registration'   => 1,
+		'registration_confirmation_time'    => 1,
+		'mail_signature'                    => '',
+		'remember_user_ip'                  => 0,
+		'simple_admin_mode'                 => !isset($_POST['mode']) || $_POST['mode'] ? 1 : 0,
+		'default_module'                    => Config::SYSTEM_MODULE
+	];
 	if (!$cdb->q(
 		"INSERT INTO `[prefix]config` (
 			`domain`, `core`, `db`, `storage`, `components`
 		) VALUES (
 			'%s', '%s', '[]', '[]', '%s'
 		)",
-		$config['cookie_domain'][0],
+		$domain,
 		_json_encode($config),
 		'{"modules":'._json_encode($modules).',"plugins":[],"blocks":[]}'
 	)

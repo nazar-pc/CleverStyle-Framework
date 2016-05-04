@@ -6,8 +6,6 @@ require_once __DIR__.'/../../core/classes/h.php';
 require_once __DIR__.'/../../core/thirdparty/upf.php';
 $root   = __DIR__.'/../..';
 $target = __DIR__.'/../../cscms.travis';
-/** @noinspection MkdirRaceConditionInspection */
-@mkdir($target);
 if (is_dir($target)) {
 	exec("rm -r $target");
 }
