@@ -34,7 +34,7 @@ function install_form () {
 			h::{'tr.expert td'}(
 				'Database engine:',
 				h::{'select[name=db_engine][size=3][selected=MySQLi]'}(
-					file_get_json(DIR.'/db_engines.json')
+					file_get_json(__DIR__.'/../db_engines.json')
 				)
 			).
 			h::{'tr.expert td'}(
@@ -81,7 +81,7 @@ function install_form () {
 			h::{'tr td'}(
 				'Language:',
 				h::{'select[name=language][size=3][selected=English]'}(
-					file_get_json(DIR.'/languages.json')
+					file_get_json(__DIR__.'/../languages.json')
 				)
 			).
 			h::{'tr td'}(
@@ -132,8 +132,8 @@ function install_process ($argv = null) {
 	}
 	try {
 		Installer::install(
-			DIR,
-			ROOT,
+			__DIR__.'/..',
+			getcwd(),
 			$_POST['site_name'],
 			$url,
 			$_POST['timezone'],
@@ -156,7 +156,7 @@ function install_process ($argv = null) {
 	$warning     = false;
 	// Removing of installer file
 	$cli       = PHP_SAPI == 'cli';
-	$installer = $cli ? ROOT."/$argv[0]" : ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME);
+	$installer = $cli ? getcwd()."/$argv[0]" : getcwd().'/'.basename(__DIR__.'/..');
 	if (!is_writable($installer) || !unlink($installer)) {
 		$warning = "Please, remove installer file $installer for security!\n";
 	}
