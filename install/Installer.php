@@ -122,33 +122,26 @@ CONFIG;
 	 * @param string  $source
 	 * @param string  $target
 	 *
-	 * @return string
-	 *
 	 * @throws Exception
 	 */
 	protected static function extract ($file_index_map, $source, $target) {
 		/**
 		 * Extracting of engine's files
 		 */
-		$extracted = array_filter(
-			array_map(
-				function ($index, $file) use ($source, $target) {
-					$dir = dirname("$target/$file");
-					if (!@mkdir($dir, 0770, true) && !is_dir($dir)) {
-						return false;
-					}
-					/**
-					 * TODO: copy() + file_exists() is a hack for HHVM, when bug fixed upstream (copying of empty files) this should be simplified
-					 */
-					copy("$source/fs/$index", "$target/$file");
-					return file_exists("$target/$file");
-				},
-				$file_index_map,
-				array_keys($file_index_map)
-			)
-		);
+		foreach ($file_index_map as $index => $file) {
+			$dir = dirname("$target/$file");
+			if (!@mkdir($dir, 0770, true) && !is_dir($dir)) {
+				throw new Exception("Can't extract system files from the archive, creating directory $dir failed! Installation aborted.");
+			}
+			/**
+			 * TODO: copy() + file_exists() is a hack for HHVM, when bug fixed upstream (copying of empty files) this should be simplified
+			 */
+			copy("$source/fs/$index", "$target/$file");
+			if (!file_exists("$target/$file")) {
+				throw new Exception("Can't extract system files from the archive, creating file $target/$file failed! Installation aborted.");
+			}
+		}
 		if (
-			count($extracted) !== count($file_index_map) ||
 			(
 				!@mkdir("$target/storage", 0770) && !is_dir("$target/storage")
 			) ||
