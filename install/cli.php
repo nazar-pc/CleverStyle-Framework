@@ -6,13 +6,23 @@
  * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-namespace cs;
-
 $help        = false;
 $interactive = false;
-/** @var int $argc */
-/** @var array $argv */
+/**
+ * @var array $options
+ */
+$options = [
+	'db_engine'  => 'MySQLi',
+	'db_host'    => 'localhost',
+	'db_prefix'  => substr(md5(function_exists('random_bytes') ? random_bytes(1000) : openssl_random_pseudo_bytes(1000)), 0, 5).'_',
+	'db_charset' => 'utf8',
+	'timezone'   => 'UTC',
+	'language'   => 'English',
+	'mode'       => 1
+];
+
 for ($i = 1; $i < $argc; $i += 2) {
+	$value = $argv[$i + 1];
 	switch ($argv[$i]) {
 		case '-h':
 		case '--help':
@@ -20,55 +30,59 @@ for ($i = 1; $i < $argc; $i += 2) {
 			break;
 		case '-sn':
 		case '--site_name':
-			$_POST['site_name'] = $argv[$i + 1];
+			$options['site_name'] = $value;
 			break;
 		case '-su':
 		case '--site_url':
-			$_POST['site_url'] = $argv[$i + 1];
+			$options['site_url'] = $value;
 			break;
 		case '-de':
 		case '--db_engine':
-			$_POST['db_engine'] = $argv[$i + 1];
+			$options['db_engine'] = $value;
 			break;
 		case '-dh':
 		case '--db_host':
-			$_POST['db_host'] = $argv[$i + 1];
+			$options['db_host'] = $value;
 			break;
 		case '-dn':
 		case '--db_name':
-			$_POST['db_name'] = $argv[$i + 1];
+			$options['db_name'] = $value;
 			break;
 		case '-du':
 		case '--db_user':
-			$_POST['db_user'] = $argv[$i + 1];
+			$options['db_user'] = $value;
 			break;
 		case '-dp':
 		case '--db_password':
-			$_POST['db_password'] = $argv[$i + 1];
+			$options['db_password'] = $value;
 			break;
 		case '-dr':
 		case '--db_prefix':
-			$_POST['db_prefix'] = $argv[$i + 1];
+			$options['db_prefix'] = $value;
 			break;
 		case '-dc':
 		case '--db_charset':
-			$_POST['db_charset'] = $argv[$i + 1];
+			$options['db_charset'] = $value;
 			break;
 		case '-t':
 		case '--timezone':
-			$_POST['timezone'] = $argv[$i + 1];
+			$options['timezone'] = $value;
 			break;
 		case '-l':
 		case '--language':
-			$_POST['language'] = $argv[$i + 1];
+			$options['language'] = $value;
+			break;
+		case '-m':
+		case '--mode':
+			$options['mode'] = $value;
 			break;
 		case '-ae':
 		case '--admin_email':
-			$_POST['admin_email'] = $argv[$i + 1];
+			$options['admin_email'] = $value;
 			break;
 		case '-ap':
 		case '--admin_password':
-			$_POST['admin_password'] = $argv[$i + 1];
+			$options['admin_password'] = $value;
 			break;
 		case '-i':
 		case '--interactive':
@@ -88,9 +102,9 @@ if ($interactive) {
 		'admin_password' => 'Password of administrator'
 	];
 	foreach ($required_parameters as $parameter => $description) {
-		if (!isset($_POST[$parameter])) {
+		if (!isset($options[$parameter])) {
 			echo "$description: ";
-			$_POST[$parameter] = substr(fgets(STDIN), 0, -1);
+			$options[$parameter] = substr(fgets(STDIN), 0, -1);
 		}
 	}
 }
@@ -98,16 +112,17 @@ if (
 	$help ||
 	$argc == 1 ||
 	!isset(
-		$_POST['site_name'],
-		$_POST['site_url'],
-		$_POST['db_name'],
-		$_POST['db_user'],
-		$_POST['db_password'],
-		$_POST['admin_email'],
-		$_POST['admin_password']
+		$options['site_name'],
+		$options['site_url'],
+		$options['db_name'],
+		$options['db_user'],
+		$options['db_password'],
+		$options['admin_email'],
+		$options['admin_password']
 	)
 ) {
-	echo "CleverStyle CMS installer
+	echo <<<HELP
+CleverStyle CMS installer
 Installer is used for installation of CleverStyle CMS and built-in components from distributive.
 Usage: php $argv[0]
          --site_name <site_name>
@@ -151,6 +166,8 @@ Usage: php $argv[0]
   --timezone       - Timezone, check http://php.net/manual/en/suffixtimezones.php for possible values
   -l
   --language       - Language, currently English, Українська and Русский languages supported
+  -m
+  --mode           - Mode, 0 for Expert and 1 for Regular user
   -ae
   --admin_email    - Email of first, primary administrator
   -ap
@@ -159,27 +176,45 @@ Examples:
   php $argv[0] -sn Web-site -su http://web.site -dn web.site -du web.site -dp pass -ae admin@web.site -ap pass
   php $argv[0] -i
   php $argv[0] -sn Web-site -i
-";
+
+HELP;
 	return;
-} else {
-	if (!isset($_POST['db_engine'])) {
-		$_POST['db_engine'] = 'MySQLi';
-	}
-	if (!isset($_POST['db_host'])) {
-		$_POST['db_host'] = 'localhost';
-	}
-	if (!isset($_POST['db_prefix'])) {
-		$_POST['db_prefix'] = substr(md5(function_exists('random_bytes') ? random_bytes(1000) : openssl_random_pseudo_bytes(1000)), 0, 5).'_';
-	}
-	if (!isset($_POST['db_charset'])) {
-		$_POST['db_charset'] = 'utf8';
-	}
-	if (!isset($_POST['timezone'])) {
-		$_POST['timezone'] = 'UTC';
-	}
-	if (!isset($_POST['language'])) {
-		$_POST['language'] = 'English';
-	}
-	echo install_process($argv);
 }
-echo "\n";
+
+try {
+	cs\Installer::install(
+		__DIR__.'/..',
+		getcwd(),
+		$options['site_name'],
+		$options['site_url'],
+		$options['timezone'],
+		$options['db_host'],
+		$options['db_engine'],
+		$options['db_name'],
+		$options['db_user'],
+		$options['db_password'],
+		$options['db_prefix'],
+		$options['db_charset'],
+		$options['language'],
+		$options['admin_email'],
+		$options['admin_password'],
+		$options['mode']
+	);
+} catch (Exception $e) {
+	echo $e->getMessage();
+	exit(1);
+}
+$admin_login = strstr($options['admin_email'], '@', true);
+$warning     = false;
+// Removing of installer file
+$installer = getcwd()."/$argv[0]";
+if (!is_writable($installer) || !unlink($installer)) {
+	$warning = "Please, remove installer file $installer for security!\n";
+}
+echo <<<SUCCESS
+Congratulations! CleverStyle CMS has been installed successfully!
+$warning
+Login: $admin_login
+Password: $options[admin_password]
+
+SUCCESS;

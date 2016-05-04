@@ -10,11 +10,9 @@ if (version_compare(PHP_VERSION, '5.6', '<')) {
 	echo 'CleverStyle CMS require PHP 5.6 or higher';
 	return;
 }
-$cli = PHP_SAPI == 'cli';
 
-require_once __DIR__.'/install/Installer.php';
-require_once __DIR__.'/install/functions.php';
 date_default_timezone_set('UTC');
+require_once __DIR__.'/install/Installer.php';
 
 if (PHP_SAPI == 'cli') {
 	require __DIR__.'/install/cli.php';

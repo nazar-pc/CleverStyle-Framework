@@ -8,7 +8,7 @@
  */
 namespace cs;
 use
-	Exception;
+	RuntimeException;
 
 class Installer {
 	const MAIN_CONFIG_STUB = /** @lang JSON */
@@ -62,7 +62,7 @@ CONFIG;
 	 * @param string $admin_password
 	 * @param int    $mode
 	 *
-	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	static function install (
 		$source,
@@ -109,7 +109,7 @@ CONFIG;
 		$cdb = "cs\\DB\\$db_engine";
 		$cdb = new $cdb($db_name, $db_user, $db_password, $db_host, $db_charset, $db_prefix);
 		if (!is_object($cdb) || !$cdb->connected()) {
-			throw new Exception("Can't connect to database! Installation aborted.");
+			throw new RuntimeException("Can't connect to database! Installation aborted.");
 		}
 		static::initialize_db_structure($cdb, $source, $db_engine);
 		static::initialize_system_config($cdb, $source, $site_name, $url, $admin_email, $language, $domain, $timezone, $mode);
@@ -121,14 +121,14 @@ CONFIG;
 	 * @param string $target
 	 * @param string $db_engine
 	 *
-	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	protected static function pre_installation_checks ($source, $target, $db_engine) {
 		if (file_exists("$target/config/main.json")) {
-			throw new Exception('"config/main.json" file already present! Installation aborted.');
+			throw new RuntimeException('"config/main.json" file already present! Installation aborted.');
 		}
 		if (!file_exists("$source/install/DB/$db_engine.sql")) {
-			throw new Exception("Can't find system tables structure for selected database engine! Installation aborted.");
+			throw new RuntimeException("Can't find system tables structure for selected database engine! Installation aborted.");
 		}
 	}
 	/**
@@ -180,7 +180,7 @@ CONFIG;
 	 * @param string  $source
 	 * @param string  $target
 	 *
-	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	protected static function extract ($file_index_map, $source, $target) {
 		/**
@@ -189,14 +189,14 @@ CONFIG;
 		foreach ($file_index_map as $file_path => $file_index) {
 			$dir = dirname("$target/$file_path");
 			if (!@mkdir($dir, 0770, true) && !is_dir($dir)) {
-				throw new Exception("Can't extract system files from the archive, creating directory $dir failed! Installation aborted.");
+				throw new RuntimeException("Can't extract system files from the archive, creating directory $dir failed! Installation aborted.");
 			}
 			/**
 			 * TODO: copy() + file_exists() is a hack for HHVM, when bug fixed upstream (copying of empty files) this should be simplified
 			 */
 			copy("$source/fs/$file_index", "$target/$file_path");
 			if (!file_exists("$target/$file_path")) {
-				throw new Exception("Can't extract system files from the archive, creating file $target/$file_path failed! Installation aborted.");
+				throw new RuntimeException("Can't extract system files from the archive, creating file $target/$file_path failed! Installation aborted.");
 			}
 		}
 		if (
@@ -205,7 +205,7 @@ CONFIG;
 			) ||
 			!file_put_contents("$target/storage/.htaccess", "Deny from all\nRewriteEngine Off\n<Files *>\n\tSetHandler default-handler\n</Files>")
 		) {
-			throw new Exception("Can't extract system files from the archive! Installation aborted.");
+			throw new RuntimeException("Can't extract system files from the archive! Installation aborted.");
 		}
 	}
 	/**
@@ -222,7 +222,7 @@ CONFIG;
 	 * @param string $language
 	 * @param string $public_key
 	 *
-	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	protected static function initialize_core_config (
 		$target,
@@ -245,7 +245,7 @@ CONFIG;
 			self::MAIN_CONFIG_STUB
 		);
 		if (!file_put_contents("$target/config/main.json", $config)) {
-			throw new Exception("Can't write core system configuration! Installation aborted.");
+			throw new RuntimeException("Can't write core system configuration! Installation aborted.");
 		}
 		chmod("$target/config/main.json", 0600);
 	}
@@ -254,7 +254,7 @@ CONFIG;
 	 * @param string       $source
 	 * @param string       $db_engine
 	 *
-	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	protected static function initialize_db_structure ($cdb, $source, $db_engine) {
 		$query = array_filter(
@@ -262,7 +262,7 @@ CONFIG;
 			'_trim'
 		);
 		if (!$cdb->q($query)) {
-			throw new Exception("Can't import system tables structure for selected database engine! Installation aborted.");
+			throw new RuntimeException("Can't import system tables structure for selected database engine! Installation aborted.");
 		}
 	}
 	/**
@@ -276,7 +276,7 @@ CONFIG;
 	 * @param string       $timezone
 	 * @param int          $mode
 	 *
-	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	protected static function initialize_system_config ($cdb, $source, $site_name, $url, $admin_email, $language, $domain, $timezone, $mode) {
 		$config     = [
@@ -359,7 +359,7 @@ CONFIG;
 			_json_encode($components)
 		);
 		if (!$result) {
-			throw new Exception("Can't import system configuration into database! Installation aborted.");
+			throw new RuntimeException("Can't import system configuration into database! Installation aborted.");
 		}
 	}
 	/**
@@ -368,7 +368,7 @@ CONFIG;
 	 * @param string       $admin_password
 	 * @param string       $public_key
 	 *
-	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	protected static function create_root_administrator ($cdb, $admin_email, $admin_password, $public_key) {
 		$admin_email = strtolower($admin_email);
@@ -389,7 +389,7 @@ CONFIG;
 			User::STATUS_ACTIVE
 		);
 		if (!$result) {
-			throw new Exception("Can't register root administrator user! Installation aborted.");
+			throw new RuntimeException("Can't register root administrator user! Installation aborted.");
 		}
 	}
 }
