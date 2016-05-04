@@ -279,39 +279,20 @@ function format_filesize ($size, $round = false) {
  * @return array
  */
 function get_timezones_list () {
-	if (
-		!class_exists('\\cs\\Cache', false) ||
-		!($Cache = Cache::instance(true)) ||
-		($timezones = $Cache->timezones) === false
-	) {
-		$tzs        = timezone_identifiers_list();
-		$timezones_ = $timezones = [];
-		foreach ($tzs as $tz) {
-			$offset           = (new DateTimeZone($tz))->getOffset(new DateTime);
-			$offset_          = ($offset < 0 ? '-' : '+').
-								str_pad(floor(abs($offset / 3600)), 2, 0, STR_PAD_LEFT).':'.
-								str_pad(abs(($offset % 3600) / 60), 2, 0, STR_PAD_LEFT);
-			$key              = (39600 + $offset).$tz;
-			$timezones_[$key] = [
-				'key'   => strtr($tz, '_', ' ')." ($offset_)",
-				'value' => $tz
-			];
-		}
-		unset($tzs, $tz, $offset);
-		ksort($timezones_, SORT_NATURAL);
-		/**
-		 * @var array $offset
-		 */
-		foreach ($timezones_ as $tz) {
-			$timezones[$tz['key']] = $tz['value'];
-		}
-		unset($timezones_, $tz);
-		/** @noinspection NotOptimalIfConditionsInspection */
-		if (isset($Cache) && $Cache) {
-			$Cache->timezones = $timezones;
-		}
+	$timezones = [];
+	foreach (timezone_identifiers_list() as $timezone) {
+		$offset          = (new DateTimeZone($timezone))->getOffset(new DateTime);
+		$key             = (39600 + $offset).$timezone;
+		$sign            = ($offset < 0 ? '-' : '+');
+		$hours           = str_pad(floor(abs($offset / 3600)), 2, 0, STR_PAD_LEFT);
+		$minutes         = str_pad(abs(($offset % 3600) / 60), 2, 0, STR_PAD_LEFT);
+		$timezones[$key] = [
+			'key'   => str_replace('_', ' ', $timezone)." ($sign$hours:$minutes)",
+			'value' => $timezone
+		];
 	}
-	return $timezones;
+	ksort($timezones, SORT_NATURAL);
+	return array_column($timezones, 'value', 'key');
 }
 
 /**
