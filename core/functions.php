@@ -449,8 +449,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[] = [
 				'...',
 				[
-					'is' => 'cs-link-button',
-					'disabled'
+					'disabled' => true
 				]
 			];
 			for ($i = $total - 2; $i <= $total; ++$i) {
@@ -463,8 +462,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[] = [
 				'...',
 				[
-					'is' => 'cs-link-button',
-					'disabled'
+					'disabled' => true
 				]
 			];
 			for ($i = $total - 6; $i <= $total; ++$i) {
@@ -477,8 +475,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[] = [
 				'...',
 				[
-					'is' => 'cs-link-button',
-					'disabled'
+					'disabled' => true
 				]
 			];
 			for ($i = $page - 2; $i <= $page + 2; ++$i) {
@@ -487,8 +484,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[] = [
 				'...',
 				[
-					'is' => 'cs-link-button',
-					'disabled'
+					'disabled' => true
 				]
 			];
 			for ($i = $total - 1; $i <= $total; ++$i) {
@@ -496,7 +492,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			}
 		}
 	}
-	return h::a($output);
+	return h::{'a[is=cs-link-button]'}($output);
 }
 
 /**
@@ -526,7 +522,6 @@ function pages_buttons ($page, $total, $url = false) {
 		return [
 			$i,
 			[
-				'is'         => 'cs-button',
 				'formaction' => $i == $page || $url === false ? false : $url($i),
 				'value'      => $i == $page ? false : $i,
 				'type'       => $i == $page ? 'button' : 'submit',
@@ -546,7 +541,6 @@ function pages_buttons ($page, $total, $url = false) {
 			$output[] = [
 				'...',
 				[
-					'is'   => 'cs-button',
 					'type' => 'button',
 					'disabled'
 				]
@@ -561,7 +555,6 @@ function pages_buttons ($page, $total, $url = false) {
 			$output[] = [
 				'...',
 				[
-					'is'   => 'cs-button',
 					'type' => 'button',
 					'disabled'
 				]
@@ -576,7 +569,6 @@ function pages_buttons ($page, $total, $url = false) {
 			$output[] = [
 				'...',
 				[
-					'is'   => 'cs-button',
 					'type' => 'button',
 					'disabled'
 				]
@@ -587,7 +579,6 @@ function pages_buttons ($page, $total, $url = false) {
 			$output[] = [
 				'...',
 				[
-					'is'   => 'cs-button',
 					'type' => 'button',
 					'disabled'
 				]
