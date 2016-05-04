@@ -196,8 +196,9 @@ trait Server {
 	 * @return bool
 	 */
 	protected function secure ($server) {
-		return isset($server['HTTPS']) && $server['HTTPS'] ? $server['HTTPS'] !== 'off' : (
-			isset($server['HTTP_X_FORWARDED_PROTO']) && $server['HTTP_X_FORWARDED_PROTO'] === 'https'
+		return @$server['HTTPS'] ? $server['HTTPS'] !== 'off' : (
+			@$server['REQUEST_SCHEME'] === 'https' ||
+			@$server['HTTP_X_FORWARDED_PROTO'] === 'https'
 		);
 	}
 	/**
