@@ -184,7 +184,7 @@ Examples:
 			$_POST['db_host'] = 'localhost';
 		}
 		if (!isset($_POST['db_prefix'])) {
-			$_POST['db_prefix'] = substr(md5(random_bytes(1000)), 0, 5).'_';
+			$_POST['db_prefix'] = substr(md5(function_exists('random_bytes') ? random_bytes(1000) : openssl_random_pseudo_bytes(1000)), 0, 5).'_';
 		}
 		if (!isset($_POST['db_charset'])) {
 			$_POST['db_charset'] = 'utf8';
