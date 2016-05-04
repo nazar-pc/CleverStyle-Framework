@@ -117,196 +117,43 @@ function install_form () {
  * @return string
  */
 function install_process ($argv = null) {
-	Installer::install(DIR, ROOT, $_POST['db_engine']);
-	$Request = Request::instance();
 	if (isset($_POST['site_url'])) {
 		$url = $_POST['site_url'];
 	} else {
-		$Request->init_server($_SERVER);
-		$url = "$Request->scheme://$Request->host$Request->path";
-		$url = implode('/', array_slice(explode('/', $url), 0, -2)); //Remove 2 last items
-	}
-	$domain = parse_url($url, PHP_URL_HOST);
-	/**
-	 * Basic system configuration
-	 */
-	$public_key  = hash('sha512', random_bytes(1000));
-	$main_config = is_dir(ROOT.'/config') && file_put_contents(
-			ROOT.'/config/main.json',
-			str_replace(
-				[
-					'@domain',
-					'@timezone',
-					'@db_host',
-					'@db_type',
-					'@db_name',
-					'@db_user',
-					'@db_password',
-					'@db_prefix',
-					'@db_charset',
-					'@language',
-					'@public_key'
-				],
-				[
-					$domain,
-					$_POST['timezone'],
-					$_POST['db_host'],
-					$_POST['db_engine'],
-					$_POST['db_name'],
-					$_POST['db_user'],
-					str_replace('"', '\\"', $_POST['db_password']),
-					$_POST['db_prefix'],
-					$_POST['db_charset'],
-					$_POST['language'],
-					$public_key
-				],
-				Installer::MAIN_CONFIG_STUB
-			)
+		$https  = @$_SERVER['HTTPS'] ? $_SERVER['HTTPS'] !== 'off' : (
+			@$_SERVER['REQUEST_SCHEME'] === 'https' ||
+			@$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https'
 		);
-	extension_loaded('apc') && apc_clear_cache('user');
-	if (!$main_config) {
-		return "Can't write base system configuration! Installation aborted.";
+		$scheme = $https ? 'https' : 'http';
+		$host   = explode(':', $_SERVER['HTTP_HOST'])[0];
+		$path   = explode('?', $_SERVER['REQUEST_URI'])[0] ?: '/';
+		$url    = "$scheme://$host$path";
+		$url    = implode('/', array_slice(explode('/', $url), 0, -2)); //Remove 2 last items
 	}
-	chmod(ROOT.'/config/main.json', 0600);
-	/**
-	 * @var \cs\DB\_Abstract $cdb
-	 */
-	$cdb = "cs\\DB\\$_POST[db_engine]";
-	$cdb = new $cdb(
-		$_POST['db_name'],
-		$_POST['db_user'],
-		$_POST['db_password'],
-		$_POST['db_host'],
-		$_POST['db_charset'],
-		$_POST['db_prefix']
-	);
-	if (!is_object($cdb) || !$cdb->connected()) {
-		return 'Database connection failed! Installation aborted.';
+	try {
+		Installer::install(
+			DIR,
+			ROOT,
+			$_POST['site_name'],
+			$url,
+			$_POST['timezone'],
+			$_POST['db_host'],
+			$_POST['db_engine'],
+			$_POST['db_name'],
+			$_POST['db_user'],
+			$_POST['db_password'],
+			$_POST['db_prefix'],
+			$_POST['db_charset'],
+			$_POST['language'],
+			$_POST['admin_email'],
+			$_POST['admin_password'],
+			!isset($_POST['mode']) || $_POST['mode'] ? 1 : 0
+		);
+	} catch (\Exception $e) {
+		return $e;
 	}
-	if (!$cdb->q(
-		array_filter(
-			explode(';', file_get_contents(DIR."/install/DB/$_POST[db_engine].sql")),
-			'_trim'
-		)
-	)
-	) {
-		return "Can't import system tables structure for selected database engine! Installation aborted.";
-	}
-	/**
-	 * General configuration import
-	 */
-	$modules = [
-		'System' => [
-			'active' => Config\Module_Properties::ENABLED,
-			'db'     => [
-				'keys'  => '0',
-				'users' => '0',
-				'texts' => '0'
-			]
-		]
-	];
-	if (file_exists(DIR.'/modules.json')) {
-		foreach (file_get_json(DIR.'/modules.json') as $module) {
-			$modules[$module] = [
-				'active'  => Config\Module_Properties::UNINSTALLED,
-				'db'      => [],
-				'storage' => []
-			];
-		}
-		unset($module);
-	}
-	/**
-	 * General system configuration
-	 */
-	$config = [
-		'name'                              => $_POST['site_name'],
-		'url'                               => [$url],
-		'admin_email'                       => $_POST['admin_email'],
-		'closed_title'                      => 'Site closed',
-		'closed_text'                       => '<p>Site closed for maintenance</p>',
-		'site_mode'                         => 1,
-		'title_delimiter'                   => ' | ',
-		'title_reverse'                     => 0,
-		'cache_compress_js_css'             => 1,
-		'vulcanization'                     => 1,
-		'put_js_after_body'                 => 1,
-		'theme'                             => 'CleverStyle',
-		'language'                          => $_POST['language'],
-		'active_languages'                  => [$_POST['language']],
-		'multilingual'                      => 0,
-		'db_balance'                        => 0,
-		'db_mirror_mode'                    => DB::MIRROR_MODE_MASTER_MASTER,
-		'cookie_prefix'                     => '',
-		'cookie_domain'                     => [$domain],
-		'inserts_limit'                     => 1000,
-		'key_expire'                        => 120,
-		'gravatar_support'                  => 0,
-		'session_expire'                    => 3600 * 24 * 30,
-		'update_ratio'                      => 75,
-		'sign_in_attempts_block_count'      => 0,
-		'sign_in_attempts_block_time'       => 5,
-		'timezone'                          => $_POST['timezone'],
-		'password_min_length'               => 4,
-		'password_min_strength'             => 3,
-		'smtp'                              => 0,
-		'smtp_host'                         => '',
-		'smtp_port'                         => '',
-		'smtp_secure'                       => '',
-		'smtp_auth'                         => 0,
-		'smtp_user'                         => '',
-		'smtp_password'                     => '',
-		'mail_from'                         => $_POST['admin_email'],
-		'mail_from_name'                    => "Administrator of $_POST[site_name]",
-		'allow_user_registration'           => 1,
-		'require_registration_confirmation' => 1,
-		'auto_sign_in_after_registration'   => 1,
-		'registration_confirmation_time'    => 1,
-		'mail_signature'                    => '',
-		'remember_user_ip'                  => 0,
-		'simple_admin_mode'                 => !isset($_POST['mode']) || $_POST['mode'] ? 1 : 0,
-		'default_module'                    => Config::SYSTEM_MODULE
-	];
-	if (!$cdb->q(
-		"INSERT INTO `[prefix]config` (
-			`domain`, `core`, `db`, `storage`, `components`
-		) VALUES (
-			'%s', '%s', '[]', '[]', '%s'
-		)",
-		$domain,
-		_json_encode($config),
-		'{"modules":'._json_encode($modules).',"plugins":[],"blocks":[]}'
-	)
-	) {
-		return "Can't import system configuration into database! Installation aborted.";
-	}
-	unset($modules);
-	/**
-	 * Administrator registration
-	 */
 	$admin_login = strstr($_POST['admin_email'], '@', true);
-	if (!$cdb->q(
-		"INSERT INTO `[prefix]users` (
-			`login`, `login_hash`, `password_hash`, `email`, `email_hash`, `reg_date`, `reg_ip`, `status`
-		) VALUES (
-			'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'
-		)",
-		$admin_login,
-		hash('sha224', $admin_login),
-		password_hash(hash('sha512', hash('sha512', $_POST['admin_password']).$public_key), PASSWORD_DEFAULT),
-		$_POST['admin_email'],
-		hash('sha224', $_POST['admin_email']),
-		time(),
-		ip2hex($Request->remote_addr),
-		1
-	)
-	) {
-		return "Can't register administrator user! Installation aborted.";
-	}
-	/**
-	 * Disconnecting from the DataBase
-	 */
-	$cdb->__destruct();
-	$warning = false;
+	$warning     = false;
 	// Removing of installer file
 	$cli       = PHP_SAPI == 'cli';
 	$installer = $cli ? ROOT."/$argv[0]" : ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME);
