@@ -401,62 +401,42 @@ function pages ($page, $total, $url, $head_links = false) {
 	if ($total == 1) {
 		return false;
 	}
-	$Page   = Page::instance();
-	$output = [];
-	if (is_callable($url)) {
-		$url_func = $url;
-	} else {
-		$original_url = $url;
-		$url_func     = function ($page) use ($original_url) {
-			return sprintf($original_url, $page);
-		};
-	}
-	$base_url          = Config::instance()->base_url();
-	$url               = function ($page) use ($url_func, $base_url) {
-		$url = $url_func($page);
-		if (is_string($url) && strpos($url, 'http') !== 0) {
-			$url = ltrim($url, '/');
-			$url = "$base_url/$url";
+	$Page             = Page::instance();
+	$original_url     = $url;
+	$base_url         = Config::instance()->base_url();
+	$url              = function ($page) use ($original_url, $base_url) {
+		$href = is_callable($original_url) ? $original_url($page) : sprintf($original_url, $page);
+		if (is_string($href) && strpos($href, 'http') !== 0) {
+			$href = ltrim($href, '/');
+			$href = "$base_url/$href";
 		}
-		return $url;
+		return $href;
 	};
-	$render_head_links = function ($i) use ($Page, $page, $url) {
-		$href = is_callable($url) ? $url($i) : sprintf($url, $i);
-		switch ($i) {
-			case $page - 1:
-				$rel = 'prev';
-				break;
-			case $page + 1:
-				$rel = 'next';
-				break;
-			case $page:
-				$Page->canonical_url($href);
-			/**
-			 * This is not a mistake, break is not needed here
-			 */
-			default:
-				return;
-		}
-		$Page->link(
-			[
-				'href' => $href,
-				'rel'  => $rel
-			]
-		);
-	};
-	$render_page_item  = function ($i) use ($page, $url, $head_links, $render_head_links) {
+	$render_page_item = function ($i) use ($Page, $page, $url, $head_links) {
+		$href = $url($i);
 		if ($head_links) {
-			$render_head_links($i);
+			switch ($i) {
+				case $page - 1:
+					$Page->link(['href' => $href, 'rel' => 'prev']);
+					break;
+				case $page + 1:
+					$Page->link(['href' => $href, 'rel' => 'next']);
+					break;
+				case $page:
+					$Page->canonical_url($href);
+					break;
+			}
 		}
 		return [
 			$i,
 			[
-				'href'    => $i == $page ? false : $url($i),
+				'href'    => $i == $page ? false : $href,
 				'is'      => 'cs-link-button',
 				'primary' => $i == $page
 			]
 		];
 	};
+	$output           = [];
 	if ($total <= 11) {
 		for ($i = 1; $i <= $total; ++$i) {
 			$output[] = $render_page_item($i);
@@ -542,32 +522,26 @@ function pages_buttons ($page, $total, $url = false) {
 			return sprintf($original_url, $page);
 		};
 	}
+	$render_page_item = function ($i) use ($page, $url) {
+		return [
+			$i,
+			[
+				'is'         => 'cs-button',
+				'formaction' => $i == $page || $url === false ? false : $url($i),
+				'value'      => $i == $page ? false : $i,
+				'type'       => $i == $page ? 'button' : 'submit',
+				'primary'    => $i == $page
+			]
+		];
+	};
 	if ($total <= 11) {
 		for ($i = 1; $i <= $total; ++$i) {
-			$output[] = [
-				$i,
-				[
-					'is'         => 'cs-button',
-					'formaction' => $i == $page || $url === false ? false : $url($i),
-					'value'      => $i,
-					'type'       => $i == $page ? 'button' : 'submit',
-					'primary'    => $i == $page
-				]
-			];
+			$output[] = $render_page_item($i);
 		}
 	} else {
 		if ($page <= 6) {
 			for ($i = 1; $i <= 7; ++$i) {
-				$output[] = [
-					$i,
-					[
-						'is'         => 'cs-button',
-						'formaction' => $i == $page || $url === false ? false : $url($i),
-						'value'      => $i == $page ? false : $i,
-						'type'       => $i == $page ? 'button' : 'submit',
-						'primary'    => $i == $page
-					]
-				];
+				$output[] = $render_page_item($i);
 			}
 			$output[] = [
 				'...',
@@ -578,27 +552,11 @@ function pages_buttons ($page, $total, $url = false) {
 				]
 			];
 			for ($i = $total - 2; $i <= $total; ++$i) {
-				$output[] = [
-					$i,
-					[
-						'is'         => 'cs-button',
-						'formaction' => is_callable($url) ? $url($i) : sprintf($url, $i),
-						'value'      => $i,
-						'type'       => 'submit'
-					]
-				];
+				$output[] = $render_page_item($i);
 			}
 		} elseif ($page >= $total - 5) {
 			for ($i = 1; $i <= 3; ++$i) {
-				$output[] = [
-					$i,
-					[
-						'is'         => 'cs-button',
-						'formaction' => is_callable($url) ? $url($i) : sprintf($url, $i),
-						'value'      => $i,
-						'type'       => 'submit'
-					]
-				];
+				$output[] = $render_page_item($i);
 			}
 			$output[] = [
 				'...',
@@ -609,28 +567,11 @@ function pages_buttons ($page, $total, $url = false) {
 				]
 			];
 			for ($i = $total - 6; $i <= $total; ++$i) {
-				$output[] = [
-					$i,
-					[
-						'is'         => 'cs-button',
-						'formaction' => $i == $page || $url === false ? false : $url($i),
-						'value'      => $i == $page ? false : $i,
-						'type'       => $i == $page ? 'button' : 'submit',
-						'primary'    => $i == $page
-					]
-				];
+				$output[] = $render_page_item($i);
 			}
 		} else {
 			for ($i = 1; $i <= 2; ++$i) {
-				$output[] = [
-					$i,
-					[
-						'is'         => 'cs-button',
-						'formaction' => is_callable($url) ? $url($i) : sprintf($url, $i),
-						'value'      => $i,
-						'type'       => 'submit'
-					]
-				];
+				$output[] = $render_page_item($i);
 			}
 			$output[] = [
 				'...',
@@ -641,16 +582,7 @@ function pages_buttons ($page, $total, $url = false) {
 				]
 			];
 			for ($i = $page - 2; $i <= $page + 2; ++$i) {
-				$output[] = [
-					$i,
-					[
-						'is'         => 'cs-button',
-						'formaction' => $i == $page || $url === false ? false : $url($i),
-						'value'      => $i == $page ? false : $i,
-						'type'       => $i == $page ? 'button' : 'submit',
-						'primary'    => $i == $page
-					]
-				];
+				$output[] = $render_page_item($i);
 			}
 			$output[] = [
 				'...',
@@ -661,15 +593,7 @@ function pages_buttons ($page, $total, $url = false) {
 				]
 			];
 			for ($i = $total - 1; $i <= $total; ++$i) {
-				$output[] = [
-					$i,
-					[
-						'is'         => 'cs-button',
-						'formaction' => is_callable($url) ? $url($i) : sprintf($url, $i),
-						'value'      => $i,
-						'type'       => 'submit'
-					]
-				];
+				$output[] = $render_page_item($i);
 			}
 		}
 	}
