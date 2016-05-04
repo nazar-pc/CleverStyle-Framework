@@ -8,11 +8,9 @@
  */
 namespace cs\modules\Blogs;
 use
-	cs\Event,
-	cs\Cache\Prefix as Cache_prefix,
+	cs\Cache,
 	cs\Config,
 	cs\Language,
-	cs\Language\Prefix as Language_prefix,
 	cs\User,
 	cs\CRUD_helpers,
 	cs\Singleton,
@@ -51,12 +49,12 @@ class Posts {
 	protected $data_model_ml_group         = 'Blogs/posts';
 	protected $data_model_files_tag_prefix = 'Blogs/posts';
 	/**
-	 * @var Cache_prefix
+	 * @var Cache\Prefix
 	 */
 	protected $cache;
 
 	protected function construct () {
-		$this->cache = new Cache_prefix('Blogs');
+		$this->cache = Cache::prefix('Blogs');
 		if (Config::instance()->module('Blogs')->allow_iframes_without_content) {
 			$this->data_model['content'] = 'ml:html_iframe';
 		}
@@ -179,7 +177,7 @@ class Posts {
 				'title'
 			);
 		}
-		$L            = new Language_prefix('blogs_');
+		$L            = Language::prefix('blogs_');
 		$base_url     = Config::instance()->base_url();
 		$module_path  = path($L->Blogs);
 		$section_path = "$base_url/$module_path/".path($L->section);
@@ -386,6 +384,7 @@ class Posts {
 			array_column(Sections::instance()->get_all(), 'id'),
 			$sections
 		);
+		$sections = array_values($sections);
 		return $sections && count($sections) <= Config::instance()->module('Blogs')->max_sections;
 	}
 	/**

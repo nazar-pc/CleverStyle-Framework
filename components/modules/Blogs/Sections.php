@@ -8,11 +8,9 @@
  */
 namespace cs\modules\Blogs;
 use
-	cs\Cache\Prefix as Cache_prefix,
+	cs\Cache,
 	cs\Config,
 	cs\Language,
-	cs\Language\Prefix as Language_prefix,
-	cs\Text,
 	cs\User,
 	cs\CRUD_helpers,
 	cs\Singleton;
@@ -34,12 +32,12 @@ class Sections {
 	protected $table               = '[prefix]blogs_sections';
 	protected $data_model_ml_group = 'Blogs/sections';
 	/**
-	 * @var Cache_prefix
+	 * @var Cache\Prefix
 	 */
 	protected $cache;
 
 	protected function construct () {
-		$this->cache = new Cache_prefix('Blogs');
+		$this->cache = Cache::prefix('Blogs');
 	}
 	/**
 	 * Returns database index
@@ -48,49 +46,6 @@ class Sections {
 	 */
 	protected function cdb () {
 		return Config::instance()->module('Blogs')->db('posts');
-	}
-	/**
-	 * Get array of sections structure
-	 *
-	 * @return array|false
-	 */
-	function get_structure () {
-		$L = Language::instance();
-		return $this->cache->get(
-			"sections/structure/$L->clang",
-			function () {
-				return $this->get_structure_internal();
-			}
-		);
-	}
-	private function get_structure_internal ($parent = 0) {
-		$structure = [
-			'id'    => $parent,
-			'posts' => 0
-		];
-		if ($parent != 0) {
-			$structure = array_merge(
-				$structure,
-				$this->get($parent)
-			);
-		} else {
-			$L                  = new Language_prefix('blogs_');
-			$structure['title'] = $L->root_section;
-			$structure['posts'] = Posts::instance()->get_for_section_count($structure['id']);
-		}
-		$sections              = $this->db()->qfa(
-			"SELECT
-				`id`,
-				`path`
-			FROM `[prefix]blogs_sections`
-			WHERE `parent` = '%s'",
-			$parent
-		) ?: [];
-		$structure['sections'] = [];
-		foreach ($sections as $section) {
-			$structure['sections'][$this->ml_process($section['path'])] = $this->get_structure_internal($section['id']);
-		}
-		return $structure;
 	}
 	/**
 	 * Get data of specified section
@@ -159,20 +114,24 @@ class Sections {
 	 * @return false|int[]
 	 */
 	function get_by_path ($path) {
-		if (!is_array($path)) {
-			$path = explode('/', $path);
-		}
-		$structure = $this->get_structure();
-		$ids       = [];
-		foreach ($path as $p) {
-			if (!isset($structure['sections'][$p])) {
-				break;
+		$full_path = implode('/', (array)$path);
+		$sections  = $this->get_all();
+		$found     = false;
+		foreach ($sections as $section) {
+			if ($section['full_path'] == $full_path) {
+				$found = true;
 			}
-			array_shift($path);
-			$structure = $structure['sections'][$p];
-			$ids[]     = $structure['id'];
 		}
-		return $ids ?: false;
+		if (!$found) {
+			return false;
+		}
+		/** @noinspection PhpUndefinedVariableInspection */
+		$ids = [$section['id']];
+		while ($section['parent']) {
+			$section = $this->get($section['parent']);
+			$ids[]   = $section['id'];
+		}
+		return array_reverse($ids);
 	}
 	/**
 	 * Add new section
@@ -253,8 +212,5 @@ class Sections {
 			$this->cache->del('/');
 		}
 		return $update;
-	}
-	private function ml_process ($text) {
-		return Text::instance()->process($this->cdb(), $text, true);
 	}
 }
