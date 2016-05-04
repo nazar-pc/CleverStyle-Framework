@@ -107,6 +107,62 @@ function run_test ($test_file, $base_text) {
 		}
 	}
 	$output = rtrim(execute_code($working_dir, $parsed_test['FILE'], $php_arguments, $script_arguments));
+	return compare_output($output, $base_text, $test_file, $php_arguments, $script_arguments, $parsed_test);
+}
+
+/**
+ * @param string $test_file
+ *
+ * @return string[]
+ */
+function parse_test ($test_file) {
+	$result      = [];
+	$current_key = null;
+	foreach (file($test_file) as $line) {
+		if (preg_match(
+			"/^--(SKIPIF|INI|ARGS|FILE|EXPECT|EXPECTF|EXPECTREGEX|CLEAN)--\n$/",
+			$line,
+			$match
+		)) {
+			$current_key = $match[1];
+		} elseif ($current_key) {
+			if (!isset($result[$current_key])) {
+				$result[$current_key] = '';
+			}
+			$result[$current_key] .= $line;
+		}
+	}
+	return $result;
+}
+
+/**
+ * @param string   $working_dir
+ * @param string   $code
+ * @param string[] $php_arguments
+ * @param string   $script_arguments
+ *
+ * @return string
+ */
+function execute_code ($working_dir, $code, $php_arguments, $script_arguments) {
+	$file = "$working_dir/__code.php";
+	file_put_contents($file, $code);
+	$output = shell_exec(PHP_BINARY.' '.implode(' ', $php_arguments).' -f='.escapeshellarg($file)." -- $script_arguments 2>&1");
+	unlink($file);
+	return $output;
+}
+
+/**
+ * @param string   $output
+ * @param string   $base_text
+ * @param string   $test_file
+ * @param array    $php_arguments
+ * @param string   $script_arguments
+ * @param string[] $parsed_test
+ *
+ * @return string `skipped`, `success` or `error`
+ */
+function compare_output ($output, $base_text, $test_file, $php_arguments, $script_arguments, $parsed_test) {
+	$working_dir = dirname($test_file);
 	if (isset($parsed_test['EXPECT'])) {
 		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECT'], $php_arguments, $script_arguments));
 		if ($expect === $output) {
@@ -169,47 +225,6 @@ function run_test ($test_file, $base_text) {
 	);
 	line($diff);
 	return 'error';
-}
-
-/**
- * @param string $test_file
- *
- * @return string[]
- */
-function parse_test ($test_file) {
-	$result      = [];
-	$current_key = null;
-	foreach (file($test_file) as $line) {
-		if (preg_match(
-			"/^--(SKIPIF|INI|ARGS|FILE|EXPECT|EXPECTF|EXPECTREGEX|CLEAN)--\n$/",
-			$line,
-			$match
-		)) {
-			$current_key = $match[1];
-		} elseif ($current_key) {
-			if (!isset($result[$current_key])) {
-				$result[$current_key] = '';
-			}
-			$result[$current_key] .= $line;
-		}
-	}
-	return $result;
-}
-
-/**
- * @param string   $working_dir
- * @param string   $code
- * @param string[] $php_arguments
- * @param string   $script_arguments
- *
- * @return string
- */
-function execute_code ($working_dir, $code, $php_arguments, $script_arguments) {
-	$file = "$working_dir/__code.php";
-	file_put_contents($file, $code);
-	$output = shell_exec(PHP_BINARY.' '.implode(' ', $php_arguments).' -f='.escapeshellarg($file)." -- $script_arguments 2>&1");
-	unlink($file);
-	return $output;
 }
 
 function compute_diff ($test_file, $expect, $output) {
