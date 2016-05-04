@@ -45,6 +45,30 @@ class Controller {
 	/**
 	 * @param \cs\Request $Request
 	 *
+	 * @return array|array[]
+	 *
+	 * @throws ExitException
+	 */
+	static function index_get ($Request) {
+		$query    = $Request->query('module', 'item');
+		$id       = $Request->route_ids(0);
+		$Comments = Comments::instance();
+		if ($query) {
+			return $Comments->get(
+				$Comments->get_for_module_item($query['module'], $query['item'])
+			);
+		} elseif ($id) {
+			$comment = $Comments->get($id);
+			if (!$comment) {
+				throw new ExitException(404);
+			}
+			return $comment;
+		}
+		throw new ExitException(400);
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
 	 * @return string
 	 *
 	 * @throws ExitException

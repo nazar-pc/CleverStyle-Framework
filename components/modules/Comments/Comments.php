@@ -69,6 +69,19 @@ class Comments {
 		return $this->read($id);
 	}
 	/**
+	 * @param string $module
+	 * @param int    $item
+	 *
+	 * @return int[]
+	 */
+	function get_for_module_item ($module, $item) {
+		$search_parameters = [
+			'module' => $module,
+			'item'   => $item
+		];
+		return $this->search($search_parameters, 1, PHP_INT_MAX, 'id', true) ?: [];
+	}
+	/**
 	 * Add new comment
 	 *
 	 * @param int    $item   Item id
