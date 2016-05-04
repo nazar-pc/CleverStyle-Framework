@@ -47,10 +47,11 @@ $allow = false;
 Event::instance()->fire(
 	'api/Comments/delete',
 	[
-		'Comments' => &$Comments,
-		'id'       => $Request->route[0],
-		'module'   => $_POST['module'],
-		'allow'    => &$allow
+		'id'     => $Request->route[0],
+		'user'   => $comment['user'],
+		'item'   => $comment['item'],
+		'module' => $_POST['module'],
+		'allow'  => &$allow
 	]
 );
 $L    = new Prefix('comments_');
