@@ -15,9 +15,6 @@
       post: {},
       comments_enabled: false
     },
-    ready: function(){
-      this.$.short_content.innerHTML = this.post.short_content;
-    },
     sections_path: function(index){
       return this.post.sections_paths[index];
     }

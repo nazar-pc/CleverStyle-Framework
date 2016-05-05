@@ -54,7 +54,6 @@
         this$.settings = settings;
         this$.user_id = profile.id;
       });
-      this.$.use_pagebreak.innerHTML = L.post_use_pagebreak;
       this.$.title.addEventListener('keydown', bind$(this, '_add_close_tab_handler'));
     },
     _add_close_tab_handler: function(){

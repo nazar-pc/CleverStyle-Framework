@@ -27,7 +27,7 @@ dom-module#cs-blogs-add-edit-post
 					template(is="dom-if" if="[[!settings.inline_editor]]")
 						cs-editor(value="{{post.content}}")
 							textarea(is="cs-textarea" autosize name="content" required value="{{post.content}}") [[post.content]]
-					p#use_pagebreak
+					p(inner-h-t-m-l="[[L.post_use_pagebreak]]")
 			tr
 				td [[L.post_tags]]
 				td

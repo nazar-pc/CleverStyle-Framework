@@ -17,7 +17,6 @@
     ready: function(){
       var this$ = this;
       this.jsonld = JSON.parse(this.querySelector('script').innerHTML);
-      this.$.content.innerHTML = this.jsonld.content;
       Promise.all([
         $.ajax({
           url: 'api/Blogs',

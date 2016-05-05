@@ -14,8 +14,7 @@ Polymer(
 	properties		:
 		can_edit	: false
 	ready			: !->
-		@jsonld					= JSON.parse(@querySelector('script').innerHTML)
-		@$.content.innerHTML	= @jsonld.content
+		@jsonld	= JSON.parse(@querySelector('script').innerHTML)
 		Promise.all([
 			$.ajax(
 				url		: 'api/Blogs'

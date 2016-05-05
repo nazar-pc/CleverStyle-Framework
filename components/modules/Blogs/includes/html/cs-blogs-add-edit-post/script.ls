@@ -46,7 +46,6 @@ Polymer(
 			settings.multiple_sections	= settings.max_sections > 1
 			@settings					= settings
 			@user_id					= profile.id
-		@$.use_pagebreak.innerHTML	= L.post_use_pagebreak
 		@$.title.addEventListener('keydown', @~_add_close_tab_handler)
 	_add_close_tab_handler : !->
 		# user_id presence means that element was initialized properly

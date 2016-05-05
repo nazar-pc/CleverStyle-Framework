@@ -14,8 +14,6 @@ Polymer(
 	properties	:
 		post				: {}
 		comments_enabled	: false
-	ready : !->
-		@$.short_content.innerHTML	= @post.short_content
 	sections_path : (index) ->
 		@post.sections_paths[index]
 )
