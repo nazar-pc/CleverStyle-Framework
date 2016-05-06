@@ -49,14 +49,7 @@
           editor.on('remove', function(){
             target.focus = target._original_focus;
           });
-          editor.on('change', function(){
-            var event;
-            editor.save();
-            this$.value = editor.getContent();
-            event = document.createEvent('Event');
-            event.initEvent('change', false, true);
-            editor.getElement().dispatchEvent(event);
-          });
+          this$._editor_change_callback_init(editor);
         }
       }, this.editor_config));
     },
@@ -78,6 +71,21 @@
       Array.prototype.forEach.call(document.querySelectorAll('body > [class^=mce-]'), function(node){
         this$.scopeSubtree(node, true);
       });
+    },
+    _editor_change_callback_init: function(editor){
+      var this$ = this;
+      editor.once('change', function(){
+        this$._editor_change_callback(editor);
+      });
+    },
+    _editor_change_callback: function(editor){
+      var event;
+      editor.save();
+      this.value = editor.getContent();
+      event = document.createEvent('Event');
+      event.initEvent('change', false, true);
+      editor.getElement().dispatchEvent(event);
+      this._editor_change_callback_init(editor);
     },
     _value_changed: function(){
       if (this._tinymce_editor && this.value !== this._tinymce_editor.getContent()) {

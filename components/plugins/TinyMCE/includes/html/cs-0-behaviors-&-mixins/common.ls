@@ -45,13 +45,7 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 					editor.on('remove', !->
 						target.focus = target._original_focus
 					)
-					editor.on('change', !~>
-						editor.save()
-						@value	= editor.getContent()
-						event	= document.createEvent('Event')
-						event.initEvent('change', false, true)
-						editor.getElement().dispatchEvent(event)
-					)
+					@_editor_change_callback_init(editor)
 			} <<<< @editor_config
 		)
 	detached : !->
@@ -71,6 +65,17 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 			(node) !~>
 				@scopeSubtree(node, true)
 		)
+	_editor_change_callback_init : (editor) !->
+		editor.once('change', !~>
+			@_editor_change_callback(editor)
+		)
+	_editor_change_callback : (editor) !->
+		editor.save()
+		@value	= editor.getContent()
+		event	= document.createEvent('Event')
+		event.initEvent('change', false, true)
+		editor.getElement().dispatchEvent(event)
+		@_editor_change_callback_init(editor)
 	_value_changed : !->
 		if @_tinymce_editor && @value != @_tinymce_editor.getContent()
 			@_tinymce_editor.setContent(@value)
