@@ -9,7 +9,7 @@
   var promise;
   promise = Promise.resolve();
   Polymer.cs.behaviors.csNotify = [
-    Polymer.cs.behaviors['this'], {
+    Polymer.cs.behaviors.ready, Polymer.cs.behaviors['this'], {
       properties: {
         bottom: {
           reflectToAttribute: true,
@@ -55,7 +55,6 @@
         transitionend: '_transitionend'
       },
       attached: function(){
-        var this$ = this;
         this.last_node = this.parentNode;
         if (this.parentNode.tagName !== 'HTML') {
           document.documentElement.appendChild(this);
@@ -64,13 +63,7 @@
         if (!this.bottom && !this.top) {
           this.top = true;
         }
-        if (document.readyState !== 'complete') {
-          addEventListener('WebComponentsReady', function(){
-            setTimeout(bind$(this$, '_schedule_show'));
-          });
-        } else {
-          setTimeout(bind$(this, '_schedule_show'));
-        }
+        this._when_ready(bind$(this, '_schedule_show'));
       },
       _schedule_show: function(){
         var this$ = this;

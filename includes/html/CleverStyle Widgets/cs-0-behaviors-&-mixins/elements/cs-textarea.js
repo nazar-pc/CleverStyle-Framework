@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer.cs.behaviors.csTextarea = [
-    Polymer.cs.behaviors.size, Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value, {
+    Polymer.cs.behaviors.ready, Polymer.cs.behaviors.size, Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value, {
       properties: {
         autosize: {
           observer: '_autosize_changed',
@@ -18,7 +18,7 @@
       },
       attached: function(){
         this.initialized = true;
-        setTimeout(bind$(this, '_do_autosizing'));
+        this._when_ready(bind$(this, '_do_autosizing'));
       },
       _autosize_changed: function(){
         this._do_autosizing();

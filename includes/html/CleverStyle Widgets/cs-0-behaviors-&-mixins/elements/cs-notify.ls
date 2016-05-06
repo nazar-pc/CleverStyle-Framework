@@ -7,6 +7,7 @@
 # Chain of promises is used to show/hide notifications sequentially, variable contains always latest promise in chain and is constantly updated
 promise		= Promise.resolve()
 Polymer.cs.behaviors.cs-notify = [
+	Polymer.cs.behaviors.ready
 	Polymer.cs.behaviors.this
 	properties	:
 		bottom	:
@@ -49,12 +50,7 @@ Polymer.cs.behaviors.cs-notify = [
 		if !@bottom && !@top
 			@top	= true
 		# Hack for the case when notification is present in original page source code, so we need to wait until all Web Components are loaded
-		if document.readyState != 'complete'
-			addEventListener('WebComponentsReady', !~>
-				setTimeout(@~_schedule_show)
-			)
-		else
-			setTimeout(@~_schedule_show)
+		@_when_ready(@~_schedule_show)
 	_schedule_show : !->
 		promise := promise.then ~>
 			new Promise (resolve) !~>

@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer.cs.behaviors.csSelect = [
-    Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value, {
+    Polymer.cs.behaviors.ready, Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value, {
       listeners: {
         'value-changed': '_value_changed'
       },
@@ -19,12 +19,8 @@
         }
       },
       ready: function(){
-        var scroll_once, timeout, callback, this$ = this;
-        scroll_once = function(){
-          this$._scroll_to_selected();
-          document.removeEventListener('WebComponentsReady', scroll_once);
-        };
-        document.addEventListener('WebComponentsReady', scroll_once);
+        var timeout, callback, this$ = this;
+        this._when_ready(bind$(this, '_scroll_to_selected'));
         timeout = null;
         callback = function(){
           var timeout, height_in_px, font_size;
@@ -105,4 +101,7 @@
       }
     }
   ];
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

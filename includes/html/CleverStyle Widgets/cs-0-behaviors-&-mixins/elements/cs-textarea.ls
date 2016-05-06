@@ -5,6 +5,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer.cs.behaviors.cs-textarea = [
+	Polymer.cs.behaviors.ready
 	Polymer.cs.behaviors.size
 	Polymer.cs.behaviors.this
 	Polymer.cs.behaviors.tooltip
@@ -17,7 +18,7 @@ Polymer.cs.behaviors.cs-textarea = [
 		initialized	: Boolean
 	attached : !->
 		@initialized = true
-		setTimeout(@~_do_autosizing)
+		@_when_ready(@~_do_autosizing)
 	_autosize_changed : !->
 		@_do_autosizing()
 	_do_autosizing : !->

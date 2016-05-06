@@ -5,6 +5,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer.cs.behaviors.cs-select = [
+	Polymer.cs.behaviors.ready
 	Polymer.cs.behaviors.size
 	Polymer.cs.behaviors.tight
 	Polymer.cs.behaviors.this
@@ -19,10 +20,7 @@ Polymer.cs.behaviors.cs-select = [
 			type		: Object
 	ready : !->
 		# We need to scroll because of possible changed height of `option`, so that `option[selected]` will not be visible
-		scroll_once	= !~>
-			@_scroll_to_selected()
-			document.removeEventListener('WebComponentsReady', scroll_once)
-		document.addEventListener('WebComponentsReady', scroll_once)
+		@_when_ready(@~_scroll_to_selected)
 		# Hack to work nicely with `dom-repeat`-created options inside
 		timeout		= null
 		callback	= !~>
