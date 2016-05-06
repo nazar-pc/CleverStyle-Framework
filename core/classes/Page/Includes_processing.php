@@ -198,6 +198,7 @@ class Includes_processing {
 			}
 		}
 		$data = implode('', $data);
+		$data = str_replace('</script>', '<\/script>', $data);
 		return trim($data, ';').';';
 	}
 	/**

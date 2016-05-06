@@ -394,7 +394,7 @@ trait Includes {
 	 * @param string     $separator `+` or `/`
 	 * @param Request    $Request
 	 *
-	 * @return array[]
+	 * @return string[][]
 	 */
 	protected function get_normalized_includes ($dependencies, $includes_map, $separator, $Request) {
 		$current_module = $Request->current_module;
@@ -406,22 +406,33 @@ trait Includes {
 		/**
 		 * Narrow the dependencies to current module only
 		 */
-		$dependencies          = array_merge(
-			isset($dependencies[$current_module]) ? $dependencies[$current_module] : [],
-			$dependencies['System']
+		$dependencies    = array_unique(
+			array_merge(
+				['System'],
+				$dependencies['System'],
+				isset($dependencies[$current_module]) ? $dependencies[$current_module] : []
+			)
 		);
-		$system_includes       = [];
-		$dependencies_includes = [];
+		$system_includes = [];
+		// Array with empty array in order to avoid `array_merge()` failure later
+		$dependencies_includes = array_fill_keys($dependencies, [[]]);
 		$includes              = [];
 		foreach ($includes_map as $path => $local_includes) {
 			if ($path == 'System') {
 				$system_includes = $local_includes;
-			} elseif ($this->is_dependency($dependencies, $path, '/', $Request)) {
-				$dependencies_includes[] = $local_includes;
+			} elseif ($component = $this->get_dependency_component($dependencies, $path, $separator, $Request)) {
+				/**
+				 * @var string $component
+				 */
+				$dependencies_includes[$component][] = $local_includes;
 			} elseif (mb_strpos($current_url, $path) === 0) {
 				$includes[] = $local_includes;
 			}
 		}
+		// Convert to indexed array first
+		$dependencies_includes = array_values($dependencies_includes);
+		// Flatten array on higher level
+		$dependencies_includes = array_merge(...$dependencies_includes);
 		return _array(array_merge_recursive($system_includes, ...$dependencies_includes, ...$includes));
 	}
 	/**
@@ -430,18 +441,19 @@ trait Includes {
 	 * @param string  $separator `+` or `/`
 	 * @param Request $Request
 	 *
-	 * @return bool
+	 * @return false|string
 	 */
-	protected function is_dependency ($dependencies, $url, $separator, $Request) {
+	protected function get_dependency_component ($dependencies, $url, $separator, $Request) {
 		$url_exploded = explode($separator, $url);
 		/** @noinspection NestedTernaryOperatorInspection */
-		$url_module = $url_exploded[0] != 'admin' ? $url_exploded[0] : (@$url_exploded[1] ?: '');
-		return
-			$url_module !== Config::SYSTEM_MODULE &&
-			in_array($url_module, $dependencies) &&
+		$url_component = $url_exploded[0] != 'admin' ? $url_exploded[0] : (@$url_exploded[1] ?: '');
+		$is_dependency =
+			$url_component !== Config::SYSTEM_MODULE &&
+			in_array($url_component, $dependencies) &&
 			(
 				$Request->admin_path || $Request->admin_path == ($url_exploded[0] == 'admin')
 			);
+		return $is_dependency ? $url_component : false;
 	}
 	/**
 	 * @param Config  $Config

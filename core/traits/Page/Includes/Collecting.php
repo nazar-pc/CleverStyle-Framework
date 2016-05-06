@@ -252,21 +252,38 @@ trait Collecting {
 					$dependency = $functionalities[$dependency];
 				}
 			}
+			unset($dependency);
 		}
-		unset($depends_on, $dependency);
+		unset($depends_on);
 		/**
-		 * Third round, process recursive dependencies
+		 * Third round, build dependencies tree using references to corresponding recursive dependencies
 		 */
 		foreach ($dependencies as &$depends_on) {
 			foreach ($depends_on as &$dependency) {
 				if ($dependency != 'System' && isset($dependencies[$dependency])) {
-					foreach (array_diff($dependencies[$dependency], $depends_on) as $new_dependency) {
-						$depends_on[] = $new_dependency;
-					}
+					$dependency = [&$dependencies[$dependency], $dependency];
 				}
 			}
+			unset($dependency);
 		}
+		unset($depends_on);
+		$dependencies = array_map([$this, 'array_flatten'], $dependencies);
 		return array_map('array_unique', $dependencies);
+	}
+	/**
+	 * Convert array of arbitrary nested structure into flat array
+	 *
+	 * @param array $array
+	 *
+	 * @return string[]
+	 */
+	protected function array_flatten ($array) {
+		foreach ($array as &$a) {
+			if (is_array($a)) {
+				$a = $this->array_flatten($a);
+			}
+		}
+		return array_merge(..._array($array));
 	}
 	/**
 	 * Includes array is composed from dependencies and sometimes dependencies doesn't have any files, so we'll clean that
