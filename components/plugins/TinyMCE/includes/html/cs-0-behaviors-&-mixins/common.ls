@@ -13,7 +13,18 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 			notify		: true
 			observer	: '_value_changed'
 			type		: String
-	attached : !->
+	ready : !->
+		# Hack: we need to wait until all Web Components are loaded
+		@_when_ready(@~_initialize_editor)
+	_when_ready : (action) !->
+		if document.readyState != 'complete'
+			callback	= !->
+				setTimeout(action)
+				document.removeEventListener('WebComponentsReady', callback)
+			document.addEventListener('WebComponentsReady', callback)
+		else
+			setTimeout(action)
+	_initialize_editor : !->
 		# TinyMCE takes some time to initialize, if we'll re-attach it right from start we might end up with two instances instead of one, so lets check if
 		# initialization already started
 		if @_init_started

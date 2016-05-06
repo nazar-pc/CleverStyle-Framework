@@ -19,7 +19,22 @@
         type: String
       }
     },
-    attached: function(){
+    ready: function(){
+      this._when_ready(bind$(this, '_initialize_editor'));
+    },
+    _when_ready: function(action){
+      var callback;
+      if (document.readyState !== 'complete') {
+        callback = function(){
+          setTimeout(action);
+          document.removeEventListener('WebComponentsReady', callback);
+        };
+        document.addEventListener('WebComponentsReady', callback);
+      } else {
+        setTimeout(action);
+      }
+    },
+    _initialize_editor: function(){
       var this$ = this;
       if (this._init_started) {
         return;
@@ -94,11 +109,11 @@
       }
     }
   };
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
   function importAll$(obj, src){
     for (var key in src) obj[key] = src[key];
     return obj;
-  }
-  function bind$(obj, key, target){
-    return function(){ return (target || obj)[key].apply(obj, arguments) };
   }
 }).call(this);
