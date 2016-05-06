@@ -54,11 +54,11 @@ class Controller {
 		$id       = $Request->route_ids(0);
 		$Comments = Comments::instance();
 		if ($query) {
-			return $Comments->get(
+			return $Comments->get_extended(
 				$Comments->get_for_module_item($query['module'], $query['item'])
 			);
 		} elseif ($id) {
-			$comment = $Comments->get($id);
+			$comment = $Comments->get_extended($id);
 			if (!$comment) {
 				throw new ExitException(404);
 			}
@@ -67,13 +67,14 @@ class Controller {
 		throw new ExitException(400);
 	}
 	/**
-	 * @param \cs\Request $Request
+	 * @param \cs\Request  $Request
+	 * @param \cs\Response $Response
 	 *
 	 * @return string
 	 *
 	 * @throws ExitException
 	 */
-	static function index_post ($Request) {
+	static function index_post ($Request, $Response) {
 		if (!User::instance()->user()) {
 			throw new ExitException(403);
 		}
@@ -102,10 +103,7 @@ class Controller {
 		if (!$id) {
 			throw new ExitException($L->comment_sending_server_error, 500);
 		}
-		$data             = $Comments->get($id);
-		$data['comments'] = false;
-		//TODO: get rid of this
-		return $Comments->tree_html([$data]);
+		$Response->code = 201;
 	}
 	/**
 	 * @param \cs\Request $Request
@@ -147,8 +145,6 @@ class Controller {
 		) {
 			throw new ExitException($L->comment_editing_server_error, 500);
 		}
-		//TODO: get rid of this
-		return $Comments->get($comment['id'])['text'];
 	}
 	/**
 	 * @param \cs\Request $Request
@@ -188,7 +184,5 @@ class Controller {
 		) {
 			throw new ExitException($L->comment_deleting_server_error, 500);
 		}
-		//TODO: get rid of this
-		return '';
 	}
 }

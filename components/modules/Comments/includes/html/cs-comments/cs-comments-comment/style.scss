@@ -1,0 +1,85 @@
+/**
+ * @package   Comments
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+$avatar-size : 3em;
+$padding : .5em;
+:host {
+	@apply (--layout-horizontal);
+
+	> div > {
+		#img {
+			display         : block;
+			background-size : cover;
+			height          : var(--cs-comments-avatar-size, $avatar-size);
+			width           : var(--cs-comments-avatar-size, $avatar-size);
+		}
+
+		.details {
+			min-height   : calc(var(--cs-comments-avatar-size, #{$avatar-size}) + var(--cs-comments-padding, #{$padding}));
+			padding-left : var(--cs-comments-padding, $padding);
+
+			> {
+				.header {
+					> * {
+						margin-right : .5em;
+					}
+
+					> span {
+						font-weight : bold;
+					}
+				}
+
+				#text {
+					padding-bottom : var(--cs-comments-padding, $padding);
+
+					&[can-reply] {
+						cursor : pointer;
+					}
+
+					> :first-child {
+						margin-top : 0;
+					}
+
+					> :last-child {
+						margin-bottom : 0;
+					}
+				}
+			}
+		}
+
+		.children {
+			border-left  : calc(var(--cs-comments-padding, #{$padding}) / 3) solid rgba(0, 0, 0, .05);
+			margin-left  : -var(--cs-comments-avatar-size, $avatar-size);
+			padding-left : calc(var(--cs-comments-avatar-size, #{$avatar-size}) / 2 + var(--cs-comments-padding, #{$padding}));
+		}
+	}
+
+	//
+	//&-text {
+	//	cursor       : pointer;
+	//	min-height   : 24px;
+	//	padding-left : 41px;
+	//
+	//	> p:first-of-type {
+	//		margin-top : 5px;
+	//	}
+	//
+	//	> p:last-of-type {
+	//		margin-bottom : 0;
+	//	}
+	//}
+	//
+	//&-write-text {
+	//	height        : 200px;
+	//	margin-bottom : 20px;
+	//	width         : 100%;
+	//}
+}
+
+:host([parent]) > div > .children {
+	margin-bottom : var(--cs-comments-padding, $padding);
+}

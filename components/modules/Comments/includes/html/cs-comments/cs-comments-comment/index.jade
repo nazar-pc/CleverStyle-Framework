@@ -1,0 +1,36 @@
+dom-module#cs-comments-comment
+	link(rel="import" href="style.css" type="css")
+	template
+		style(include="advanced-styles")
+		div
+			#img(style="background-image: url([[comment.avatar]])")
+		div
+			.details
+				.header
+					span [[comment.username]]
+					time(datetime$="[[date_iso8601]]") [[date]]
+					a(href="[[location]]#comment_[[comment.id]]")
+						cs-icon(icon="anchor")
+					a(href="[[location]]#comment_[[comment.parent]]" hidden="[[!and(comment.parent)]]")
+						cs-icon(icon="level-up")
+					cs-icon.cs-cursor-pointer(icon="pencil" on-tap="_edit" hidden="[[!comment.can_edit]]")
+					cs-icon.cs-cursor-pointer(icon="trash-o" on-tap="_delete" hidden="[[!comment.can_delete]]")
+				#text(inner-h-t-m-l="[[comment.text]]" on-tap="_reply" hidden="[[editing]]" can-reply$="[[and(cs.is_user)]]")
+				template(is="dom-if" if="[[editing]]")
+					cs-editor-simple(value="{{comment.edited_text}}")
+						textarea(is="cs-textarea" autosize value="{{comment.edited_text}}")
+					p
+						button(is="cs-button" type="button" on-tap="_save_edit") [[L.save]]
+						= ' '
+						button(is="cs-button" type="button" on-tap="_cancel_edit") [[L.cancel]]
+			.children
+				template(is="dom-if" if="[[replying]]")
+					cs-editor-simple(value="{{reply.text}}")
+						textarea(is="cs-textarea" autosize value="{{reply.text}}")
+					p
+						button(is="cs-button" type="button" on-tap="_post_reply") [[L.send_comment]]
+						= ' '
+						button(is="cs-button" type="button" on-tap="_cancel_reply") [[L.cancel]]
+				template(is="dom-repeat" items="[[comment.children]]")
+					cs-comments-comment(comment="[[item]]" id="comment_[[item.id]]" parent-comment="[[_this]]" children$="[[and(item.parent)]]" parent$="[[and(item.children.length)]]")
+	script(src="script.js")

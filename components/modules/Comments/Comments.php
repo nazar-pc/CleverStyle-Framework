@@ -29,10 +29,6 @@ class Comments {
 	 * @var Cache\Prefix
 	 */
 	protected $cache;
-	/**
-	 * @var int    Avatar size in px, can be redefined
-	 */
-	public $avatar_size = 36;
 
 	protected $data_model = [
 		'id'     => 'int:1',
@@ -67,6 +63,28 @@ class Comments {
 	 */
 	function get ($id) {
 		return $this->read($id);
+	}
+	/**
+	 * Get comment data with user details and formatted date
+	 *
+	 * @param int|int[] $id
+	 *
+	 * @return array|false
+	 */
+	function get_extended ($id) {
+		if (is_array($id)) {
+			foreach ($id as &$i) {
+				$i = $this->get_extended($i);
+			}
+			return $id;
+		}
+		$comment                   = $this->get($id);
+		$profile                   = User::instance()->get(['username', 'avatar'], $comment['user']);
+		$comment['username']       = $profile['username'];
+		$comment['avatar']         = $profile['avatar'];
+		$comment['date_formatted'] = date(Language::instance()->_datetime, $comment['date']);
+		$comment['time_formatted'] = date(Language::instance()->_datetime, $comment['date']);
+		return $comment;
 	}
 	/**
 	 * @param string $module
@@ -209,128 +227,6 @@ class Comments {
 		);
 	}
 	/**
-	 * Get comments tree in html format for specified item (look at ::block() method before usage)
-	 *
-	 * @param int    $item   Item id
-	 * @param string $module Module name
-	 *
-	 * @return string
-	 */
-	function tree ($item, $module) {
-		return $this->tree_html($this->tree_data($item, $module) ?: []);
-	}
-	/**
-	 * Get comments structure of specified item
-	 *
-	 * @param int			$item
-	 * @param string		$module
-	 * @param int			$parent
-	 *
-	 * @return false|array
-	 */
-	function tree_data ($item, $module, $parent = 0) {
-		$Cache	= $this->cache;
-		$L		= Language::instance();
-		if (($comments = $Cache->{"$module/$item/$L->clang"}) === false) {
-			$item		= (int)$item;
-			$parent		= (int)$parent;
-			$comments	= $this->db()->qfa(
-				"SELECT
-					`id`,
-					`parent`,
-					`user`,
-					`date`,
-					`text`,
-					`lang`
-				FROM `[prefix]comments`
-				WHERE
-					`parent`	= '%d' AND
-					`item`		= '%d' AND
-					`module`	= '%s' AND
-					`lang`		= '%s'",
-				$parent,
-				$item,
-				$module,
-				$L->clang
-			) ?: [];
-			foreach ($comments as &$comment) {
-				$comment['comments'] = $this->tree_data($item, $module, $comment['id']);
-			}
-			unset($comment);
-			/**
-			 * Cache only root tree data
-			 */
-			if ($parent == 0) {
-				$Cache->{"$module/$item/$L->clang"}	= $comments;
-			}
-		}
-		return $comments;
-	}
-	/**
-	 * Get comments tree in html format for given data structure (usually uses ::tree_data() method)
-	 *
-	 * @param array[]	$comments
-	 *
-	 * @return string
-	 */
-	function tree_html ($comments) {
-		$L			= Language::instance();
-		$User		= User::instance();
-		if (!is_array($comments) || !$comments) {
-			return '';
-		}
-		$content	= '';
-		foreach ($comments as $comment) {
-			$uniqid		= uniqid('comment_', true);
-			$content	.= str_replace($uniqid, $comment['text'], h::{'article.cs-comments-comment'}(
-				h::{'img.cs-comments-comment-avatar'}([
-					'src'	=> $User->avatar($this->avatar_size, $comment['user']),
-					'alt'	=> $User->username($comment['user']),
-					'title'	=> $User->username($comment['user'])
-				]).
-				h::span($User->username($comment['user'])).
-				h::{'time.cs-comments-comment-date'}(
-					date('dmY', time()) == date('dmY', $comment['date']) ?
-						date($L->_time, $comment['date']) : $L->to_locale(date($L->_datetime, $comment['date'])),
-					[
-						'datetime'		=> date('c', $comment['date'])
-					]
-				).
-				h::{'a.cs-comments-comment-link'}(
-					h::icon('anchor'),
-					[
-						'href'	=> "#comment_$comment[id]"
-					]
-				).
-				(
-					$comment['parent'] ? h::{'a.cs-comments-comment-parent'}(
-						h::icon('level-up'),
-						[
-							'href'	=> "#comment_$comment[parent]"
-						]
-					) : ''
-				).
-				(
-					$User->id == $comment['user'] || $User->admin() ? h::{'icon.cs-comments-comment-edit.cs-cursor-pointer'}('pencil') : ''
-				).
-				(
-					!$comment['comments'] &&
-					(
-						$User->id == $comment['user'] || $User->admin()
-					) ? h::{'icon.cs-comments-comment-delete.cs-cursor-pointer'}('trash-o') : ''
-				).
-				h::{'div.cs-comments-comment-text'}($uniqid).
-				(
-					$comment['comments'] ? $this->tree_html($comment['comments']) : ''
-				),
-				[
-					'id'	=> "comment_$comment[id]"
-				]
-			));
-		}
-		return $content;
-	}
-	/**
 	 * Get comments block with comments tree and comments sending form
 	 *
 	 * @param int    $item   Item id
@@ -339,42 +235,12 @@ class Comments {
 	 * @return string
 	 */
 	function block ($item, $module) {
-		$L	= Language::prefix('comments_');
-		return h::{'section#comments.cs-comments-comments'}(
-			$L->comments.':'.
-			(
-				$this->tree($item, $module) ?: h::{'article.cs-blogs-no-comments'}($L->no_comments_yet)
-			)
-		).
-		h::{'p.cs-comments-add-comment'}("$L->add_comment:").
-		(
-			User::instance()->user() ? h::{'section.cs-comments-comment-write'}(
-				h::{'cs-editor-simple textarea.cs-comments-comment-write-text[is=cs-textarea][autosize]'}(
-					'',
-					[
-						'data-item'		=> $item,
-						'data-parent'	=> 0,
-						'data-id'		=> 0,
-						'data-module'	=> $module
-					]
-				).
-				h::br().
-				h::{'button.cs-comments-comment-write-send[is=cs-button]'}(
-					$L->send_comment
-				).
-				h::{'button.cs-comments-comment-write-edit[is=cs-button]'}(
-					$L->save,
-					[
-						'style'	=>	'display: none'
-					]
-				).
-				h::{'button.cs-comments-comment-write-cancel[is=cs-button]'}(
-					$L->cancel,
-					[
-						'style'	=>	'display: none'
-					]
-				)
-			) : h::p($L->register_for_comments_sending)
+		// TODO: get rid of this, insert into DOM directly by consumer
+		return h::cs_comments(
+			[
+				'module' => $module,
+				'item'   => $item
+			]
 		);
 	}
 }
