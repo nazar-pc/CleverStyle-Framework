@@ -70,8 +70,6 @@ class Controller {
 	 * @param \cs\Request  $Request
 	 * @param \cs\Response $Response
 	 *
-	 * @return string
-	 *
 	 * @throws ExitException
 	 */
 	static function index_post ($Request, $Response) {
@@ -149,8 +147,6 @@ class Controller {
 	/**
 	 * @param \cs\Request $Request
 	 *
-	 * @return string
-	 *
 	 * @throws ExitException
 	 */
 	static function index_delete ($Request) {
@@ -177,12 +173,11 @@ class Controller {
 				'allow'  => &$allow
 			]
 		);
-		$L = Language::prefix('comments_');
 		if (
 			!$allow ||
 			!$Comments->del($comment['id'])
 		) {
-			throw new ExitException($L->comment_deleting_server_error, 500);
+			throw new ExitException(Language::prefix('comments_')->comment_deleting_server_error, 500);
 		}
 	}
 }
