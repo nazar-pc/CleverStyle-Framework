@@ -89,5 +89,5 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 		@_editor_change_callback_init(editor)
 	_value_changed : !->
 		if @_tinymce_editor && @value != @_tinymce_editor.getContent()
-			@_tinymce_editor.setContent(@value)
+			@_tinymce_editor.setContent(@value || '')
 			@_tinymce_editor.save()

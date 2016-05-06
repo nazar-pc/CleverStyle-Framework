@@ -104,7 +104,7 @@
     },
     _value_changed: function(){
       if (this._tinymce_editor && this.value !== this._tinymce_editor.getContent()) {
-        this._tinymce_editor.setContent(this.value);
+        this._tinymce_editor.setContent(this.value || '');
         this._tinymce_editor.save();
       }
     }
