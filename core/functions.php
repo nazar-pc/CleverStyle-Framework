@@ -412,7 +412,8 @@ function pages ($page, $total, $url, $head_links = false) {
 		}
 		return $href;
 	};
-	$render_page_item = function ($i) use ($Page, $page, $url, $head_links) {
+	$output           = [];
+	$render_page_item = function ($i) use ($Page, $page, $url, $head_links, &$output) {
 		$href = $url($i);
 		if ($head_links) {
 			switch ($i) {
@@ -427,7 +428,7 @@ function pages ($page, $total, $url, $head_links = false) {
 					break;
 			}
 		}
-		return [
+		$output[] = [
 			$i,
 			[
 				'href'    => $i == $page ? false : $href,
@@ -436,60 +437,43 @@ function pages ($page, $total, $url, $head_links = false) {
 			]
 		];
 	};
-	$output           = [];
 	if ($total <= 11) {
-		for ($i = 1; $i <= $total; ++$i) {
-			$output[] = $render_page_item($i);
-		}
+		array_map($render_page_item, range(1, $total));
 	} else {
 		if ($page <= 6) {
-			for ($i = 1; $i <= 7; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range(1, 7));
 			$output[] = [
 				'...',
 				[
 					'disabled' => true
 				]
 			];
-			for ($i = $total - 2; $i <= $total; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range($total - 2, $total));
 		} elseif ($page >= $total - 5) {
-			for ($i = 1; $i <= 3; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range(1, 3));
 			$output[] = [
 				'...',
 				[
 					'disabled' => true
 				]
 			];
-			for ($i = $total - 6; $i <= $total; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range($total - 6, $total));
 		} else {
-			for ($i = 1; $i <= 2; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range(1, 2));
 			$output[] = [
 				'...',
 				[
 					'disabled' => true
 				]
 			];
-			for ($i = $page - 2; $i <= $page + 2; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range($page - 2, $page + 2));
 			$output[] = [
 				'...',
 				[
 					'disabled' => true
 				]
 			];
-			for ($i = $total - 1; $i <= $total; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range($total - 1, $total));
 		}
 	}
 	return h::{'a[is=cs-link-button]'}($output);
@@ -511,15 +495,15 @@ function pages_buttons ($page, $total, $url = false) {
 	if ($total == 1) {
 		return false;
 	}
-	$output = [];
 	if (!is_callable($url)) {
 		$original_url = $url;
 		$url          = function ($page) use ($original_url) {
 			return sprintf($original_url, $page);
 		};
 	}
-	$render_page_item = function ($i) use ($page, $url) {
-		return [
+	$output           = [];
+	$render_page_item = function ($i) use ($page, $url, &$output) {
+		$output[] = [
 			$i,
 			[
 				'formaction' => $i == $page || $url === false ? false : $url($i),
@@ -530,14 +514,10 @@ function pages_buttons ($page, $total, $url = false) {
 		];
 	};
 	if ($total <= 11) {
-		for ($i = 1; $i <= $total; ++$i) {
-			$output[] = $render_page_item($i);
-		}
+		array_map($render_page_item, range(1, $total));
 	} else {
 		if ($page <= 6) {
-			for ($i = 1; $i <= 7; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range(1, 7));
 			$output[] = [
 				'...',
 				[
@@ -545,13 +525,9 @@ function pages_buttons ($page, $total, $url = false) {
 					'disabled'
 				]
 			];
-			for ($i = $total - 2; $i <= $total; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range($total - 2, $total));
 		} elseif ($page >= $total - 5) {
-			for ($i = 1; $i <= 3; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range(1, 3));
 			$output[] = [
 				'...',
 				[
@@ -559,13 +535,9 @@ function pages_buttons ($page, $total, $url = false) {
 					'disabled'
 				]
 			];
-			for ($i = $total - 6; $i <= $total; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range($total - 6, $total));
 		} else {
-			for ($i = 1; $i <= 2; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range(1, 2));
 			$output[] = [
 				'...',
 				[
@@ -573,9 +545,7 @@ function pages_buttons ($page, $total, $url = false) {
 					'disabled'
 				]
 			];
-			for ($i = $page - 2; $i <= $page + 2; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range($page - 2, $page + 2));
 			$output[] = [
 				'...',
 				[
@@ -583,9 +553,7 @@ function pages_buttons ($page, $total, $url = false) {
 					'disabled'
 				]
 			];
-			for ($i = $total - 1; $i <= $total; ++$i) {
-				$output[] = $render_page_item($i);
-			}
+			array_map($render_page_item, range($total - 1, $total));
 		}
 	}
 	return h::{'button[is=cs-button][name=page]'}($output);
