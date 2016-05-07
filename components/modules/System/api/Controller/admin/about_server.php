@@ -80,8 +80,9 @@ trait about_server {
 	 * @return string
 	 */
 	static private function admin_about_server_get_server_api () {
-		$phpinfo = ob_wrapper('phpinfo');
-		if (stripos($_SERVER['SERVER_SOFTWARE'], 'apache') !== false) {
+		$server_software = @$_SERVER['SERVER_SOFTWARE'] ?: '';
+		$phpinfo         = ob_wrapper('phpinfo');
+		if (stripos($server_software, 'apache') !== false) {
 			preg_match(
 				'/Apache[\-\/]([0-9\.\-]+)/',
 				ob_wrapper('phpinfo'),
@@ -92,18 +93,16 @@ trait about_server {
 				$return .= ' + mod_php + PHP '.PHP_VERSION;
 			}
 			return $return;
-		} elseif (stripos($_SERVER['SERVER_SOFTWARE'], 'nginx') !== false) {
-			$return = 'Nginx '.explode('/', $_SERVER['SERVER_SOFTWARE'])[1];
+		}
+		if (stripos($server_software, 'nginx') !== false) {
+			$return = 'Nginx '.explode('/', $server_software)[1];
 			if (stripos($phpinfo, 'php-fpm') !== false) {
 				$return .= ' + PHP-FPM '.PHP_VERSION;
 			} elseif (defined('HHVM_VERSION')) {
 				$return .= ' + HHVM '.HHVM_VERSION;
 			}
 			return $return;
-		} elseif (isset($_SERVER['SERVER_SOFTWARE'])) {
-			return $_SERVER['SERVER_SOFTWARE'];
-		} else {
-			return '';
 		}
+		return $server_software;
 	}
 }
