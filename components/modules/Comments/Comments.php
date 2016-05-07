@@ -8,7 +8,6 @@
  */
 namespace cs\modules\Comments;
 use
-	h,
 	cs\Cache,
 	cs\Config,
 	cs\Language,
@@ -116,14 +115,14 @@ class Comments {
 	/**
 	 * Add new comment
 	 *
-	 * @param int    $item   Item id
 	 * @param string $module Module name
+	 * @param int    $item   Item id
 	 * @param string $text   Comment text
 	 * @param int    $parent Parent comment id
 	 *
 	 * @return false|int
 	 */
-	function add ($item, $module, $text, $parent = 0) {
+	function add ($module, $item, $text, $parent = 0) {
 		$L    = Language::instance();
 		$User = User::instance();
 		$text = xap($text, true);
@@ -195,12 +194,12 @@ class Comments {
 	/**
 	 * Delete all comments of specified item
 	 *
-	 * @param int    $item   Item id
 	 * @param string $module Module name
+	 * @param int    $item   Item id
 	 *
 	 * @return bool
 	 */
-	function del_all ($item, $module) {
+	function del_all ($module, $item) {
 		$item   = (int)$item;
 		$result = $this->db_prime()->q(
 			"DELETE FROM `[prefix]comments`

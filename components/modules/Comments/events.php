@@ -11,14 +11,21 @@ use
 	cs\Cache,
 	cs\Event;
 
-Event::instance()->on(
-	'admin/System/components/modules/uninstall/before',
-	function ($data) {
-		if ($data['name'] != 'Comments') {
-			return;
+Event::instance()
+	->on(
+		'admin/System/components/modules/uninstall/before',
+		function ($data) {
+			if ($data['name'] != 'Comments') {
+				return;
+			}
+			time_limit_pause();
+			Cache::instance()->del('Comments');
+			time_limit_pause(false);
 		}
-		time_limit_pause();
-		Cache::instance()->del('Comments');
-		time_limit_pause(false);
-	}
-);
+	)
+	->on(
+		'Comments/deleted',
+		function ($data) {
+			Comments::instance()->del_all($data['module'], $data['item']);
+		}
+	);

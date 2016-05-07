@@ -100,7 +100,7 @@ class Controller {
 			throw new ExitException($L->comment_sending_server_error, 500);
 		}
 		$Comments = Comments::instance();
-		$id       = $Comments->add($data['item'], $data['module'], $data['text'], $data['parent']);
+		$id       = $Comments->add($data['module'], $data['item'], $data['text'], $data['parent']);
 		if (!$id) {
 			throw new ExitException($L->comment_sending_server_error, 500);
 		}

@@ -10,6 +10,7 @@ namespace cs\modules\Blogs;
 use
 	cs\Cache,
 	cs\Config,
+	cs\Event,
 	cs\Language,
 	cs\User,
 	cs\CRUD_helpers,
@@ -436,10 +437,13 @@ class Posts {
 		$id     = (int)$id;
 		$result = $this->delete($id);
 		if ($result) {
-			if (functionality('comments')) {
-				// TODO: this should use events instead
-				\cs\modules\comments\Comments::instance()->del_all($id, 'Blogs');
-			}
+			Event::instance()->fire(
+				'Comments/deleted',
+				[
+					'module' => 'Blogs',
+					'item'   => $id
+				]
+			);
 			$this->cache_cleanups($id);
 		}
 		return $result;

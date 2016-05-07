@@ -119,4 +119,26 @@
 	}
 );</pre>
 	</li>
+	<li>
+		<h4>Comments/deleted</h4>
+		<pre>[
+	'item'			=> <i>item</i>
+	'module'		=> <i>module</i>
+]</pre>
+		<dl>
+			<dt>item</dt>
+			<dd>Item id</dd>
+			<dt>module</dt>
+			<dd>Module</dd>
+		</dl>
+		<p>Module should fire this event when <i>item</i> is removed to clean all comments associated with it.</p>
+		<p>Example (Blogs module):</p>
+		<pre>\cs\Event::instance()->on(
+	'api/Comments/deleted',
+	[
+		'module' => 'Blogs',
+		'item'   => $id
+	]
+);</pre>
+	</li>
 </ul>
