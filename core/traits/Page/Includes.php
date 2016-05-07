@@ -364,10 +364,8 @@ trait Includes {
 			$compressed_includes_map    = [];
 			$not_embedded_resources_map = [];
 			foreach ($includes_map as $filename_prefix => $local_includes) {
-				// We replace `/` by `+` to make it suitable for filename
-				$filename_prefix                           = str_replace('/', '+', $filename_prefix);
 				$compressed_includes_map[$filename_prefix] = $this->cache_compressed_includes_files(
-					"$this->pcache_basename_path:$filename_prefix",
+					"$this->pcache_basename_path:$filename_prefix".str_replace('/', '+', $filename_prefix),
 					$local_includes,
 					$Config->core['vulcanization'],
 					$not_embedded_resources_map
@@ -378,7 +376,7 @@ trait Includes {
 			Event::instance()->fire('System/Page/rebuild_cache');
 		}
 		list($dependencies, $compressed_includes_map, $not_embedded_resources_map) = file_get_json("$this->pcache_basename_path.json");
-		$includes = $this->get_normalized_includes($dependencies, $compressed_includes_map, '+', $Request);
+		$includes = $this->get_normalized_includes($dependencies, $compressed_includes_map, $Request);
 		$preload  = [];
 		foreach (array_merge(...array_values($includes)) as $path) {
 			$preload[] = ["/$path"];
@@ -391,18 +389,17 @@ trait Includes {
 	/**
 	 * @param array      $dependencies
 	 * @param string[][] $includes_map
-	 * @param string     $separator `+` or `/`
 	 * @param Request    $Request
 	 *
 	 * @return string[][]
 	 */
-	protected function get_normalized_includes ($dependencies, $includes_map, $separator, $Request) {
+	protected function get_normalized_includes ($dependencies, $includes_map, $Request) {
 		$current_module = $Request->current_module;
 		/**
 		 * Current URL based on controller path (it better represents how page was rendered)
 		 */
 		$current_url = array_slice(App::instance()->controller_path, 1);
-		$current_url = ($Request->admin_path ? "admin$separator" : '')."$current_module$separator".implode($separator, $current_url);
+		$current_url = ($Request->admin_path ? "admin/" : '')."$current_module/".implode('/', $current_url);
 		/**
 		 * Narrow the dependencies to current module only
 		 */
@@ -420,7 +417,7 @@ trait Includes {
 		foreach ($includes_map as $path => $local_includes) {
 			if ($path == 'System') {
 				$system_includes = $local_includes;
-			} elseif ($component = $this->get_dependency_component($dependencies, $path, $separator, $Request)) {
+			} elseif ($component = $this->get_dependency_component($dependencies, $path, $Request)) {
 				/**
 				 * @var string $component
 				 */
@@ -438,13 +435,12 @@ trait Includes {
 	/**
 	 * @param array   $dependencies
 	 * @param string  $url
-	 * @param string  $separator `+` or `/`
 	 * @param Request $Request
 	 *
 	 * @return false|string
 	 */
-	protected function get_dependency_component ($dependencies, $url, $separator, $Request) {
-		$url_exploded = explode($separator, $url);
+	protected function get_dependency_component ($dependencies, $url, $Request) {
+		$url_exploded = explode('/', $url);
 		/** @noinspection NestedTernaryOperatorInspection */
 		$url_component = $url_exploded[0] != 'admin' ? $url_exploded[0] : (@$url_exploded[1] ?: '');
 		$is_dependency =
@@ -464,7 +460,7 @@ trait Includes {
 	protected function get_includes_for_page_without_compression ($Config, $Request) {
 		// To determine all dependencies and stuff we need `$Config` object to be already created
 		list($dependencies, $includes_map) = $this->get_includes_dependencies_and_map($Config);
-		$includes = $this->get_normalized_includes($dependencies, $includes_map, '/', $Request);
+		$includes = $this->get_normalized_includes($dependencies, $includes_map, $Request);
 		return $this->add_versions_hash($this->absolute_path_to_relative($includes));
 	}
 	/**
