@@ -54,7 +54,7 @@ class Controller {
 		$id       = $Request->route_ids(0);
 		$Comments = Comments::instance();
 		if ($query) {
-			if ($Request->route_path[0] == 'count') {
+			if ($Request->route_path(0) == 'count') {
 				return $Comments->get_for_module_item_count($query['module'], $query['item']);
 			}
 			return $Comments->get_extended(
