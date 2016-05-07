@@ -166,9 +166,6 @@ class Controller {
 		$Posts   = Posts::instance();
 		$rc      = $Request->route;
 		$post_id = (int)mb_substr($rc[1], mb_strrpos($rc[1], ':') + 1);
-		if (!$post_id) {
-			throw new ExitException(404);
-		}
 		$post = $Posts->get_as_json_ld($post_id);
 		if (
 			!$post ||
