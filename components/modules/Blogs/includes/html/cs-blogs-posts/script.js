@@ -14,7 +14,7 @@
       comments_enabled: false
     },
     ready: function(){
-      this.jsonld = JSON.parse(this.querySelector('script').innerHTML);
+      this.jsonld = JSON.parse(this.children[0].innerHTML);
       this.posts = this.jsonld['@graph'];
     }
   });

@@ -11,6 +11,6 @@ Polymer(
 	properties	:
 		comments_enabled	: false
 	ready		: !->
-		@jsonld = JSON.parse(@querySelector('script').innerHTML)
+		@jsonld = JSON.parse(@children[0].innerHTML)
 		@posts	= @jsonld['@graph']
 )
