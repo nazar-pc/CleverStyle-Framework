@@ -94,19 +94,23 @@ Event::instance()
 			$includes_map = [];
 			foreach ($composer_lock['packages'] as $package) {
 				$package_name = $package['name'];
+				if (preg_match('#^(modules|plugins)/#', $package_name)) {
+					$package_name = explode('/', $package_name, 2)[1];
+				} elseif (strpos($package_name, '-asset/') !== false) {
+					$package_name = str_replace('-asset/', '-asset-', $package_name);
+				} else {
+					// Ignore other Composer packages here
+					continue;
+				}
 				$package += [
 					'require' => [],
 					'provide' => [],
 					'replace' => []
 				];
-				if (strpos($package_name, '/') !== false) {
-					$package_name = explode('/', $package_name, 2)[1];
-				}
 				foreach (array_keys($package['require']) as $r) {
 					if (strpos($r, '-asset/') !== false) {
-						$r = explode('/', $r, 2)[1];
+						$dependencies[$package_name][] = str_replace('-asset/', '-asset-', $r);
 					}
-					$dependencies[$package_name][] = $r;
 				}
 				foreach (array_keys($package['provide']) as $p) {
 					$dependencies[$p][] = $package_name;
@@ -118,9 +122,7 @@ Event::instance()
 				 * If current package is Bower or NPM package (we will analyse both configurations)
 				 */
 				if (strpos($package['name'], '-asset/') !== false) {
-					$package_dir = "$composer_dir/vendor/$package[name]";
-					$target_dir  = "$composer_assets_dir/$package_name";
-					Assets_processing::run($package_name, $package_dir, $target_dir, $includes_map);
+					$includes_map[$package_name] = Assets_processing::run($package['name'], "$composer_dir/vendor/$package[name]", $composer_assets_dir);
 				}
 			}
 			$data['dependencies'] = array_merge_recursive($data['dependencies'], $dependencies);

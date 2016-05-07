@@ -16,17 +16,20 @@ use
 
 class Assets_processing {
 	/**
-	 * @param string     $package_name
-	 * @param string     $package_dir
-	 * @param string     $target_dir
-	 * @param string[][] $includes_map
+	 * @param string $package_name
+	 * @param string $package_dir
+	 * @param string $composer_assets_dir
+	 *
+	 * @return string[][]
 	 */
-	static function run ($package_name, $package_dir, $target_dir, &$includes_map) {
-		$Config = Config::instance();
-		$files  = self::get_files($Config, $package_name);
+	static function run ($package_name, $package_dir, $composer_assets_dir) {
+		$package_name = explode('/', $package_name, 2)[1];
+		$Config       = Config::instance();
+		$files        = self::get_files($Config, $package_name);
 		if (!$files) {
-			return;
+			return [];
 		}
+		$target_dir = "$composer_assets_dir/$package_name";
 		@mkdir($target_dir, 0770, true);
 		file_put_contents(
 			"$target_dir/.htaccess",
@@ -37,11 +40,9 @@ class Assets_processing {
 </FilesMatch>
 HTACCESS
 		);
-		self::save_content(
+		return self::save_content(
 			self::get_content($Config, $files, $package_name, $package_dir, $target_dir),
-			$package_name,
-			$target_dir,
-			$includes_map
+			$target_dir
 		);
 	}
 	/**
@@ -140,15 +141,17 @@ HTACCESS
 	}
 	/**
 	 * @param string[][] $content
-	 * @param string     $package_name
 	 * @param string     $target_dir
-	 * @param string[][] $includes_map
+	 *
+	 * @return string[][]
 	 */
-	protected static function save_content ($content, $package_name, $target_dir, &$includes_map) {
+	protected static function save_content ($content, $target_dir) {
+		$result = [];
 		foreach ($content as $extension => $c) {
 			$target_file = "$target_dir/index.$extension";
 			file_put_contents($target_file, implode('', $c), FILE_APPEND);
-			$includes_map[$package_name][$extension][] = $target_file;
+			$result[$extension][] = $target_file;
 		}
+		return $result;
 	}
 }
