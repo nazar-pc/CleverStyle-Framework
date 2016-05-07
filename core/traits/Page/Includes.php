@@ -365,7 +365,7 @@ trait Includes {
 			$not_embedded_resources_map = [];
 			foreach ($includes_map as $filename_prefix => $local_includes) {
 				$compressed_includes_map[$filename_prefix] = $this->cache_compressed_includes_files(
-					"$this->pcache_basename_path:$filename_prefix".str_replace('/', '+', $filename_prefix),
+					"$this->pcache_basename_path:".str_replace('/', '+', $filename_prefix),
 					$local_includes,
 					$Config->core['vulcanization'],
 					$not_embedded_resources_map
