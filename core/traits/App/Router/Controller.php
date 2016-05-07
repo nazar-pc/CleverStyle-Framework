@@ -30,7 +30,9 @@ trait Controller {
 		} elseif ($Request->api_path) {
 			$suffix = '\\api';
 		}
-		$controller_class = "cs\\modules\\$Request->current_module$suffix\\Controller";
+		$controller_class = class_exists("cs\\custom\\modules\\$Request->current_module$suffix\\Controller")
+			? "cs\\custom\\modules\\$Request->current_module$suffix\\Controller"
+			: "cs\\modules\\$Request->current_module$suffix\\Controller";
 		foreach ($this->controller_path as $index => $path) {
 			/**
 			 * Starting from index 2 we need to maintain underscore-separated string that includes all paths from index 1 and till current
