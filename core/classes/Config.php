@@ -185,10 +185,9 @@ class Config {
 			}
 		}
 		if (!$this->update(Core::instance()->domain, $this->core, $this->db, $this->storage, $this->components)) {
-			$this->apply_internal(false);
-			return true;
+			return false;
 		}
-		return false;
+		return $this->apply_internal(false);
 	}
 	/**
 	 * Whether configuration was applied (not saved) and can be canceled
