@@ -37,6 +37,19 @@
     },
     tags_path: function(index){
       return this.jsonld.tags_paths[index];
+    },
+    _delete: function(){
+      var this$ = this;
+      cs.ui.confirm(this.L.sure_to_delete_post(this.jsonld.title), function(){
+        $.ajax({
+          url: 'api/Blogs/posts/' + this$.jsonld.id,
+          type: 'delete',
+          success: function(result){
+            this$._remove_close_tab_handler();
+            location.href = 'Blogs';
+          }
+        });
+      });
     }
   });
 }).call(this);

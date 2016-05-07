@@ -27,4 +27,16 @@ Polymer(
 		@jsonld.sections_paths[index]
 	tags_path : (index) ->
 		@jsonld.tags_paths[index]
+	_delete : !->
+		cs.ui.confirm(
+			@L.sure_to_delete_post(@jsonld.title)
+			!~>
+				$.ajax(
+					url		: 'api/Blogs/posts/' + @jsonld.id
+					type	: 'delete'
+					success	: (result) !~>
+						@_remove_close_tab_handler()
+						location.href = 'Blogs'
+				)
+		)
 )
