@@ -56,11 +56,7 @@ class Config {
 	 *
 	 * @var array
 	 */
-	public $mirrors = [
-		'count' => 0,
-		'http'  => [],
-		'https' => []
-	];
+	public $mirrors;
 	/**
 	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
 	 *
@@ -95,6 +91,11 @@ class Config {
 	 * Is used to fill `$this->mirrors` using current configuration
 	 */
 	protected function fill_mirrors () {
+		$this->mirrors = [
+			'count' => 0,
+			'http'  => [],
+			'https' => []
+		];
 		foreach ($this->core['url'] as $i => $address) {
 			list($protocol, $urls) = explode('://', $address, 2);
 			$urls                       = explode(';', $urls);
