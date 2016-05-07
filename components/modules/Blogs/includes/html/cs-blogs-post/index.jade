@@ -5,7 +5,7 @@ dom-module#cs-blogs-post
 		header
 			a(is="cs-link-button" icon="pencil" href="/Blogs/edit_post/[[jsonld.id]]" tooltip="[[L.edit]]" hidden="[[!can_edit]]")
 			= ' '
-			button(is="cs-button" type="button" icon="trash" on-tap="_delete" tooltip="[[L.delete]]" hidden="[[!settings.admin_edit]]")
+			button(is="cs-button" type="button" icon="trash" on-tap="_delete" tooltip="[[L.delete]]" hidden="[[!can_delete]]")
 			h1 [[jsonld.title]]
 			template(is="dom-if" if="[[jsonld.articleSection.length]]")
 				p
@@ -29,10 +29,10 @@ dom-module#cs-blogs-post
 				= ' '
 				[[jsonld.author.name]]
 				= ' '
-				template(is="dom-if" if="[[settings.comments_enabled]]")
+				template(is="dom-if" if="[[show_comments]]")
 					cs-icon(icon="comments")
 					= ' '
 					cs-comments-count(module="Blogs" item="[[jsonld.id]]")
-		template(is="dom-if" if="[[settings.comments_enabled]]")
+		template(is="dom-if" if="[[show_comments]]")
 			cs-comments(module="Blogs" item="[[jsonld.id]]")
 	script(src="script.js")

@@ -12,7 +12,10 @@
     'extends': 'article',
     behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {
-      can_edit: false
+      can_edit: false,
+      can_delete: false,
+      show_comments: false,
+      preview: false
     },
     ready: function(){
       var this$ = this;
@@ -29,7 +32,9 @@
       ]).then(function(arg$){
         var profile;
         this$.settings = arg$[0], profile = arg$[1];
-        this$.can_edit = this$.settings.admin_edit || this$.jsonld.user === profile.id;
+        this$.can_edit = !this$.preview && (this$.settings.admin_edit || this$.jsonld.user === profile.id);
+        this$.can_delete = !this$.preview && settings.admin_edit;
+        this$.show_comments = !this$.preview && settings.comments_enabled;
       });
     },
     sections_path: function(index){

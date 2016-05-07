@@ -85,7 +85,7 @@ Polymer(
 			dataType	: 'text'
 			success	: (result) !~>
 				@$.preview.innerHTML	= """
-				<article is="cs-blogs-post">
+				<article is="cs-blogs-post" preview>
 					<script type="application/ld+json">#result</script>
 				</article>
 				"""

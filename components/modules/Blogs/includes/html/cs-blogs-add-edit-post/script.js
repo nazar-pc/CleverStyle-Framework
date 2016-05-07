@@ -104,7 +104,7 @@
         type: 'preview',
         dataType: 'text',
         success: function(result){
-          this$.$.preview.innerHTML = "<article is=\"cs-blogs-post\">\n	<script type=\"application/ld+json\">" + result + "</script>\n</article>";
+          this$.$.preview.innerHTML = "<article is=\"cs-blogs-post\" preview>\n	<script type=\"application/ld+json\">" + result + "</script>\n</article>";
           $('html, body').stop().animate({
             scrollTop: this$.$.preview.offsetTop
           }, 500);
