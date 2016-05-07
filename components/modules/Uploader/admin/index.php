@@ -13,12 +13,14 @@ use
 
 $L           = new Prefix('uploader_');
 $Page        = Page::instance();
+$Request     = Request::instance();
 $module_data = Config::instance()->module('Uploader');
-if (isset($_POST['max_file_size'], $_POST['confirmation_time'])) {
+$data        = $Request->data('max_file_size', 'confirmation_time');
+if ($data) {
 	if ($module_data->set(
 		[
-			'max_file_size'     => xap($_POST['max_file_size']),
-			'confirmation_time' => (int)$_POST['confirmation_time']
+			'max_file_size'     => xap($data['max_file_size']),
+			'confirmation_time' => (int)$data['confirmation_time']
 		]
 	)
 	) {

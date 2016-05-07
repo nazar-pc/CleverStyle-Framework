@@ -10,13 +10,15 @@ namespace cs;
 use
 	Karwana\Mime\Mime;
 
-$L    = new Language\Prefix('uploader_');
-$Page = Page::instance();
-$User = User::instance();
+$L       = new Language\Prefix('uploader_');
+$Page    = Page::instance();
+$Request = Request::instance();
+$User    = User::instance();
 /**
  * File should be specified
  */
-if (!isset($_FILES['file'])) {
+$file = $Request->files('file');
+if (!$file) {
 	throw new ExitException('File Not Specified', 400);
 }
 /**
@@ -32,7 +34,7 @@ switch (substr(strtolower($module_data->max_file_size), -2)) {
 	case 'kb':
 		$max_file_size *= 1024;
 }
-if ($_FILES['file']['error'] & (UPLOAD_ERR_INI_SIZE | UPLOAD_ERR_FORM_SIZE) || $_FILES['file']['size'] > $max_file_size) {
+if ($file['error'] & (UPLOAD_ERR_INI_SIZE | UPLOAD_ERR_FORM_SIZE) || $file['size'] > $max_file_size) {
 	throw new ExitException(
 		$L->file_too_large(
 			format_filesize($max_file_size)
@@ -41,7 +43,7 @@ if ($_FILES['file']['error'] & (UPLOAD_ERR_INI_SIZE | UPLOAD_ERR_FORM_SIZE) || $
 	);
 }
 unset($max_file_size);
-if ($_FILES['file']['error'] != UPLOAD_ERR_OK) {
+if ($file['error'] != UPLOAD_ERR_OK) {
 	throw new ExitException(500);
 }
 /**
@@ -78,8 +80,8 @@ if (!$storage->file_exists($destination_file)) {
 }
 $destination_file .= "/$User->id".uniqid(date('_is'), true);
 require_once __DIR__.'/../Mime/Mime.php';
-$destination_file .= '.'.Mime::guessExtension($_FILES['file']['tmp_name'], $_FILES['file']['name']);
-if (!$storage->copy($_FILES['file']['tmp_name'], $destination_file)) {
+$destination_file .= '.'.Mime::guessExtension($file['tmp_name'], $file['name']);
+if (!$storage->copy($file['tmp_name'], $destination_file)) {
 	throw new ExitException(500);
 }
 /**
