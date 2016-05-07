@@ -5,7 +5,6 @@
  * @copyright Copyright (c) 2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-# TODO: handle comments anchors and scroll page correspondingly
 Polymer(
 	'is'		: 'cs-comments-comment'
 	behaviors	: [
@@ -28,6 +27,15 @@ Polymer(
 	ready : !->
 		@_this	= @
 		@scopeSubtree(@$.text, true)
+	attached : !->
+		if @comment.scroll_to
+			setTimeout(@~_scroll_to, 300)
+	_scroll_to : !->
+		$('html, body').stop().animate(
+			scrollTop	: @offsetTop
+		)
+	_scroll_to_parent : !->
+		@parent-comment._scroll_to()
 	_date : (date, date_formatted, time_formatted) ->
 		if Math.abs(date - (new Date).getTime() / 1000) < 3600s * 24h
 			time_formatted

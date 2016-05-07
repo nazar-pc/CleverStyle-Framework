@@ -11,7 +11,7 @@ dom-module#cs-comments-comment
 					time(datetime$="[[date_iso8601]]") [[date]]
 					a(href="[[location]]#comment_[[comment.id]]")
 						cs-icon(icon="anchor")
-					a(href="[[location]]#comment_[[comment.parent]]" hidden="[[!and(comment.parent)]]")
+					a(href="[[location]]#comment_[[comment.parent]]" on-tap="_scroll_to_parent" hidden="[[!and(comment.parent)]]")
 						cs-icon(icon="level-up")
 					cs-icon.cs-cursor-pointer(icon="pencil" on-tap="_edit" hidden="[[!comment.can_edit]]")
 					cs-icon.cs-cursor-pointer(icon="trash-o" on-tap="_delete" hidden="[[!comment.can_delete]]")

@@ -18,6 +18,7 @@ Polymer(
 		_this		: Object
 		text		: ''
 	ready : !->
+		@anchor	= location.hash.substr(1)
 		@_this	= @
 		@reload()
 	reload : !->
@@ -30,6 +31,7 @@ Polymer(
 				id_index_map[comment.id] = index
 				comment.children = []
 				comment.can_edit = cs.is_admin || comment.user == profile.id
+				comment.scroll_to	= @anchor == 'comment_' + comment.id
 			normalized_comments = []
 			for comment, index in comments
 				if !comment.parent
@@ -39,6 +41,7 @@ Polymer(
 			for comment, index in comments
 				comment.can_delete = comment.can_edit && !comment.children.length
 			@set('comments', normalized_comments)
+			delete @anchor
 	_send : !->
 		$.ajax(
 			url		: 'api/Comments'

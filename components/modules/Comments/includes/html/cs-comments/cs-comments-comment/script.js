@@ -30,6 +30,19 @@
       this._this = this;
       this.scopeSubtree(this.$.text, true);
     },
+    attached: function(){
+      if (this.comment.scroll_to) {
+        setTimeout(bind$(this, '_scroll_to'), 300);
+      }
+    },
+    _scroll_to: function(){
+      $('html, body').stop().animate({
+        scrollTop: this.offsetTop
+      });
+    },
+    _scroll_to_parent: function(){
+      this.parentComment._scroll_to();
+    },
     _date: function(date, date_formatted, time_formatted){
       if (Math.abs(date - (new Date).getTime() / 1000) < 3600 * 24) {
         return time_formatted;
@@ -107,4 +120,7 @@
       });
     }
   });
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

@@ -18,6 +18,7 @@
       text: ''
     },
     ready: function(){
+      this.anchor = location.hash.substr(1);
       this._this = this;
       this.reload();
     },
@@ -39,6 +40,7 @@
           id_index_map[comment.id] = index;
           comment.children = [];
           comment.can_edit = cs.is_admin || comment.user === profile.id;
+          comment.scroll_to = this$.anchor === 'comment_' + comment.id;
         }
         normalized_comments = [];
         for (i$ = 0, len$ = comments.length; i$ < len$; ++i$) {
@@ -56,6 +58,7 @@
           comment.can_delete = comment.can_edit && !comment.children.length;
         }
         this$.set('comments', normalized_comments);
+        delete this$.anchor;
       });
     },
     _send: function(){
