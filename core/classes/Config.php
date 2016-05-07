@@ -19,6 +19,7 @@ namespace cs;
  */
 class Config {
 	use
+		CRUD,
 		Singleton;
 	const SYSTEM_MODULE = 'System';
 	const SYSTEM_THEME  = 'CleverStyle';
@@ -56,7 +57,18 @@ class Config {
 	 *
 	 * @var array
 	 */
-	public $mirrors;
+	public    $mirrors;
+	protected $data_model = [
+		'domain'     => 'text',
+		'core'       => 'json',
+		'db'         => 'json',
+		'storage'    => 'json',
+		'components' => 'json'
+	];
+	protected $table      = '[prefix]config';
+	protected function cdb () {
+		return 0;
+	}
 	/**
 	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
 	 *
@@ -64,21 +76,7 @@ class Config {
 	 */
 	protected function construct () {
 		Event::instance()->fire('System/Config/init/before');
-		/**
-		 * Reading settings from cache and defining missing data
-		 */
-		$config = Cache::instance()->config;
-		/**
-		 * Cache reloading, if necessary
-		 */
-		if (!is_array($config)) {
-			$this->load_config_from_db();
-		} else {
-			foreach ($config as $part => $value) {
-				$this->$part = $value;
-			}
-			unset($part, $value);
-		}
+		$this->load_configuration();
 		date_default_timezone_set($this->core['timezone']);
 		$this->fill_mirrors();
 		Event::instance()->fire('System/Config/init/after');
@@ -110,30 +108,20 @@ class Config {
 	 *
 	 * @throws ExitException
 	 */
-	protected function load_config_from_db () {
-		$result = DB::instance()->qf(
-			[
-				"SELECT
-					`core`,
-					`db`,
-					`storage`,
-					`components`
-				FROM `[prefix]config`
-				WHERE `domain` = '%s'
-				LIMIT 1",
-				Core::instance()->domain
-			]
-		);
-		if (is_array($result)) {
-			foreach ($result as $part => $value) {
-				$this->$part = _json_decode($value);
+	protected function load_configuration () {
+		$config = Cache::instance()->get(
+			'config',
+			function () {
+				return $this->read(Core::instance()->domain);
 			}
-			unset($part, $value);
-		} else {
-			return false;
+		);
+		if (!$config) {
+			throw new ExitException('Failed to load system configuration', 500);
 		}
-		$this->apply_internal(false);
-		return true;
+		foreach ($config as $part => $value) {
+			$this->$part = $value;
+		}
+		return $this->apply_internal(false);
 	}
 	/**
 	 * Applying settings without saving changes into db
@@ -173,7 +161,7 @@ class Config {
 		) {
 			return false;
 		}
-		unset($Cache->{'languages'});
+		$Cache->del('languages');
 		date_default_timezone_set($this->core['timezone']);
 		$this->fill_mirrors();
 		Event::instance()->fire('System/Config/changed');
@@ -196,22 +184,7 @@ class Config {
 				unset($this->core[$key]);
 			}
 		}
-		if (DB::instance()->db_prime(0)->q(
-			"UPDATE `[prefix]config`
-			SET
-				`core`			= '%s',
-				`db`			= '%s',
-				`storage`		= '%s',
-				`components`	= '%s'
-			WHERE `domain` = '%s'
-			LIMIT 1",
-			_json_encode($this->core),
-			_json_encode($this->db),
-			_json_encode($this->storage),
-			_json_encode($this->components),
-			Core::instance()->domain
-		)
-		) {
+		if (!$this->update(Core::instance()->domain, $this->core, $this->db, $this->storage, $this->components)) {
 			$this->apply_internal(false);
 			return true;
 		}
@@ -233,7 +206,8 @@ class Config {
 	 * @throws ExitException
 	 */
 	function cancel () {
-		return $this->load_config_from_db() && $this->apply_internal(false);
+		Cache::instance()->del('config');
+		return $this->load_configuration();
 	}
 	/**
 	 * Get base url of current mirror including language suffix
