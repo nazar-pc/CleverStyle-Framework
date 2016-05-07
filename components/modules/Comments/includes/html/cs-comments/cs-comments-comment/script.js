@@ -59,6 +59,7 @@
           text: this.comment.edited_text
         },
         success: function(){
+          cs.ui.notify(this$.L.saved, 'success', 5);
           this$.reload();
           this$._cancel_edit();
         }
@@ -83,6 +84,7 @@
         type: 'post',
         data: this.reply,
         success: function(){
+          cs.ui.notify(this$.L.reply_posted, 'success', 5);
           this$.reload();
           this$._cancel_reply();
         }
@@ -93,12 +95,15 @@
     },
     _delete: function(){
       var this$ = this;
-      $.ajax({
-        url: 'api/Comments/' + this.comment.id,
-        type: 'delete',
-        success: function(){
-          this$.reload();
-        }
+      cs.ui.confirm(this.L.sure_to_delete, function(){
+        $.ajax({
+          url: 'api/Comments/' + this$.comment.id,
+          type: 'delete',
+          success: function(){
+            cs.ui.notify(this$.L.deleted, 'success', 5);
+            this$.reload();
+          }
+        });
       });
     }
   });

@@ -49,7 +49,7 @@ Polymer(
 			data	:
 				text	: @comment.edited_text
 			success	: !~>
-				# TODO: success notification
+				cs.ui.notify(@L.saved, 'success', 5)
 				@reload()
 				@_cancel_edit()
 		)
@@ -70,19 +70,19 @@ Polymer(
 			type	: 'post'
 			data	: @reply
 			success	: !~>
-				# TODO: success notification
+				cs.ui.notify(@L.reply_posted, 'success', 5)
 				@reload()
 				@_cancel_reply()
 		)
 	_cancel_reply : !->
 		@replying	= false
 	_delete : !->
-		# TODO: confirmation dialog
+		<~! cs.ui.confirm(@L.sure_to_delete)
 		$.ajax(
 			url		: 'api/Comments/' + @comment.id
 			type	: 'delete'
 			success	: !~>
-				# TODO: success notification
+				cs.ui.notify(@L.deleted, 'success', 5)
 				@reload()
 		)
 )

@@ -49,7 +49,7 @@ Polymer(
 				text	: @text
 				parent	: 0
 			success	: !~>
-				# TODO: success notification
+				cs.ui.notify(@L.comment_posted, 'success', 5)
 				@reload()
 				@text	= ''
 		)

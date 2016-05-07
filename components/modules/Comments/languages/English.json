@@ -12,6 +12,11 @@
 		"comment_editing_server_error"  : "Comment editing error: fault on the server. Wait for several minutes, please, and try again.",
 		"save"                          : "Save",
 		"save_info"                     : "Save changes",
-		"cancel"                        : "Cancel"
+		"cancel"                        : "Cancel",
+		"comment_posted"                : "Comment posted",
+		"reply_posted"                  : "Reply to the comment posted",
+		"sure_to_delete"                : "Are you sure want to delete?",
+		"deleted"                       : "Deleted",
+		"saved"                         : "Saved"
 	}
 }

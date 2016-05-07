@@ -70,6 +70,7 @@
           parent: 0
         },
         success: function(){
+          cs.ui.notify(this$.L.comment_posted, 'success', 5);
           this$.reload();
           this$.text = '';
         }
