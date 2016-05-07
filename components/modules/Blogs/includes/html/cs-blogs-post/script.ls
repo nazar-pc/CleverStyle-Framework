@@ -26,8 +26,8 @@ Polymer(
 			if cs.is_user then $.getJSON('api/System/profile') else {id : 1}
 		]).then ([@settings, profile]) !~>
 			@can_edit		= !@preview && (@settings.admin_edit || @jsonld.user == profile.id)
-			@can_delete		= !@preview && settings.admin_edit
-			@show_comments	= !@preview && settings.comments_enabled
+			@can_delete		= !@preview && @settings.admin_edit
+			@show_comments	= !@preview && @settings.comments_enabled
 	sections_path : (index) ->
 		@jsonld.sections_paths[index]
 	tags_path : (index) ->
