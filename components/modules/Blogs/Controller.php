@@ -162,8 +162,6 @@ class Controller {
 		if (!Event::instance()->fire('Blogs/post')) {
 			return;
 		}
-
-		$Config  = Config::instance();
 		$Page    = Page::instance();
 		$Posts   = Posts::instance();
 		$rc      = $Request->route;
@@ -199,12 +197,6 @@ class Controller {
 				json_encode($post, JSON_UNESCAPED_UNICODE)
 			)
 		);
-		if (
-			$Config->module('Blogs')->enable_comments &&
-			functionality('comments')
-		) {
-			$Page->content(\cs\modules\comments\Comments::instance()->block($post['id'], 'Blogs'));
-		}
 	}
 	protected static function is_blogs_admin () {
 		$User = User::instance();

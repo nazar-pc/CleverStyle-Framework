@@ -6,6 +6,7 @@
  * @license   MIT License, see license.txt
  */
 do !->
+	# TODO: Count also render in WebComponent
 	if !window.disqus_shortname
 		return
 	container	= document.querySelector('head') || document.querySelector('body')
@@ -28,14 +29,3 @@ do !->
 					element.outerHTML = d.counts[0].comments
 		container.appendChild(s)
 	load_counts(0)
-	# Comments block
-	if !window.disqus_identifier
-		return
-	disqus_title	= document.querySelector("meta[property='og:title']")
-	disqus_title	= if disqus_title then disqus_title.content else document.querySelector('title').text
-	disqus_url		= document.querySelector('link[rel=canonical]')
-	disqus_url		= if disqus_url then disqus_url.href else window.location.href
-	dsq				= document.createElement('script')
-	dsq.async		= true
-	dsq.src			= "//#disqus_shortname.disqus.com/embed.js"
-	container.appendChild(dsq)

@@ -1,13 +1,10 @@
 <h3 style="text-align: center;">Comments module, adds comments functionality to other modules</h3>
 <h4>Integration of comments displaying:</h4>
-<pre>$Page	= \cs\Page::instance();
-$Page->content(
-	functionality('comments') ? \cs\modules\comments\Comments::instance()->block($id, 'Blogs') : ''
-);</pre>
-<p>Where <i>$id</i> is integer identifier of article, page or anything else, that will be commented.</p>
-<p>NOTE: Use lowercase <code>comments</code> word in namespace (as in <code>provide</code> key in <code>meta.json</code>) to allow easy changing commenting system by alternative one.</p>
+<p>Insert following snippet anywhere on page</p>
+<pre>&lt;cs-comments module="Blogs" item="$id"&gt;&lt;/cs-comments&gt;</pre>
+<p>Where <code>$id</code> is integer identifier of article, page or anything else, that will be commented and <code>Blogs</code> is module name.</p>
 <h4>Integration of comments adding, editing, and deleting.</h4>
-<p>For this module should support next events on comments module:</p>
+<p>For this module MUST support next events on comments module:</p>
 <ul>
 	<li>
 		<h4>api/Comments/add</h4>
@@ -122,7 +119,7 @@ $Page->content(
 );</pre>
 	</li>
 </ul>
-<h4>Other methods of Comments class:</h4>
+<h4>Other methods of `\cs\modules\comments\Comments` class:</h4>
 <ul>
 	<li>
 		int Comments::count($item : int)

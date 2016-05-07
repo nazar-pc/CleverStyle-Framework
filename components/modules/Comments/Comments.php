@@ -226,21 +226,4 @@ class Comments {
 			}
 		);
 	}
-	/**
-	 * Get comments block with comments tree and comments sending form
-	 *
-	 * @param int    $item   Item id
-	 * @param string $module Module name
-	 *
-	 * @return string
-	 */
-	function block ($item, $module) {
-		// TODO: get rid of this, insert into DOM directly by consumer
-		return h::cs_comments(
-			[
-				'module' => $module,
-				'item'   => $item
-			]
-		);
-	}
 }

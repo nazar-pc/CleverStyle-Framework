@@ -1,9 +1,11 @@
 dom-module#cs-comments
 	template
-		template(is="dom-repeat" items="[[comments]]")
-			cs-comments-comment(comment="[[item]]" id="comment_[[item.id]]" parent-comment="[[_this]]" parent$="[[and(item.children.length)]]")
+		template(is="dom-if" if="[[comments.length]]")
+			p [[L.comments]]:
 		template(is="dom-if" if="[[!comments.length]]")
 			p [[L.no_comments_yet]]
+		template(is="dom-repeat" items="[[comments]]")
+			cs-comments-comment(comment="[[item]]" id="comment_[[item.id]]" parent-comment="[[_this]]" parent$="[[and(item.children.length)]]")
 		template(is="dom-if" if="[[and(cs.is_user)]]")
 			p [[L.add_comment]]:
 			cs-editor-simple(value="{{text}}")

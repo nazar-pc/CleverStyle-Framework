@@ -30,6 +30,7 @@ class Comments {
 	}
 	/**
 	 * Count of comments for specified item
+	 * TODO: Count also render in WebComponent
 	 *
 	 * @param int    $item   Item id
 	 * @param string $module Module name
@@ -49,21 +50,6 @@ class Comments {
 			'data-identifier'=> "$module/$item"
 		]);
 	}
-	/**
-	 * Get comments block with comments tree and comments sending form
-	 *
-	 * @param int    $item   Item id
-	 * @param string $module Module name
-	 *
-	 * @return string
-	 */
-	function block ($item, $module) {
-		if (!$this->shortname) {
-			return '';
-		}
-		$this->block_js($item, $module);
-		return '<div id="disqus_thread"></div>';
-	}
 	protected function count_js () {
 		static	$added	= false;
 		if ($added) {
@@ -73,17 +59,6 @@ class Comments {
 		Page::instance()->js(
 			"var disqus_shortname = '$this->shortname';
 if (!window.disqus_count_items) { window.disqus_count_items = []; }",
-			'code'
-		);
-	}
-	protected function block_js ($item, $module) {
-		static	$added	= false;
-		if ($added) {
-			return;
-		}
-		$added		= true;
-		Page::instance()->js(
-			"var disqus_shortname = '$this->shortname', disqus_identifier = '".str_replace("'", "'", "$module/$item")."';",
 			'code'
 		);
 	}

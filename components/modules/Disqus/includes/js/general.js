@@ -8,7 +8,7 @@
  */
 (function(){
   (function(){
-    var container, d, load_counts, disqus_title, disqus_url, dsq;
+    var container, d, load_counts;
     if (!window.disqus_shortname) {
       return;
     }
@@ -39,20 +39,5 @@
       container.appendChild(s);
     };
     load_counts(0);
-    if (!window.disqus_identifier) {
-      return;
-    }
-    disqus_title = document.querySelector("meta[property='og:title']");
-    disqus_title = disqus_title
-      ? disqus_title.content
-      : document.querySelector('title').text;
-    disqus_url = document.querySelector('link[rel=canonical]');
-    disqus_url = disqus_url
-      ? disqus_url.href
-      : window.location.href;
-    dsq = document.createElement('script');
-    dsq.async = true;
-    dsq.src = "//" + disqus_shortname + ".disqus.com/embed.js";
-    container.appendChild(dsq);
   })();
 }).call(this);
