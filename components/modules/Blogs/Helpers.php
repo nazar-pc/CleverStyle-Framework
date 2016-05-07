@@ -38,16 +38,11 @@ class Helpers {
 			return;
 		}
 		$Page->content(
-			h::{'section[is=cs-blogs-posts]'}(
-				h::{'script[type=application/ld+json]'}(
-					json_encode(
-						Posts::instance()->get_as_json_ld($posts),
-						JSON_UNESCAPED_UNICODE
-					)
-				),
-				[
-					'comments_enabled' => $module_data->enable_comments && functionality('comments')
-				]
+			h::{'section[is=cs-blogs-posts] script[type=application/ld+json]'}(
+				json_encode(
+					Posts::instance()->get_as_json_ld($posts),
+					JSON_UNESCAPED_UNICODE
+				)
 			).
 			h::{'.cs-block-margin.cs-text-center.cs-margin nav[is=cs-nav-pagination]'}(
 				pages(

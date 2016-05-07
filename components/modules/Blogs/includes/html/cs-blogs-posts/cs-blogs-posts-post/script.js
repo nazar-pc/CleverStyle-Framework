@@ -13,7 +13,17 @@
     behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {
       post: {},
-      comments_enabled: false
+      settings: Object
+    },
+    ready: function(){
+      var this$ = this;
+      $.ajax({
+        url: 'api/Blogs',
+        type: 'get_settings',
+        success: function(settings){
+          this$.settings = settings;
+        }
+      });
     },
     sections_path: function(index){
       return this.post.sections_paths[index];

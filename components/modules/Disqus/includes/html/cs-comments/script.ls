@@ -27,7 +27,7 @@ Polymer(
 			@page.identifier	= instance.module + '/' + instance.item
 			@callbacks.onReady.push(ready_callback)
 			# Hack: Disable this experiment, otherwise Disqus will fail by putting `document` into `window.getComputedStyle()` call under Shadow DOM polyfill
-			@experiment.enable_scroll_container = false
+			@experiment.enable_scroll_container = !window.WebComponents?.flags
 		if window.DISQUS
 			DISQUS.reset(
 				reload	: true
@@ -41,10 +41,14 @@ Polymer(
 			return
 		# TODO: __proto__ might be used here, but shitty IE10 doesn't support it
 		Object.getPrototypeOf(@)_loaded	= true
-		{shortname} <~! $.getJSON('api/Disqus/settings', _)
-		script	= document.createElement('script')
-			..async	= true
-			..src	= "//#shortname.disqus.com/embed.js"
-			..setAttribute('data-timestamp', +new Date())
-		document.head.appendChild(script)
+		$.ajax(
+			url		: 'api/Disqus'
+			type	: 'get_settings'
+			success	: ({shortname}) !~>
+				script	= document.createElement('script')
+					..async	= true
+					..src	= "//#shortname.disqus.com/embed.js"
+					..setAttribute('data-timestamp', +new Date())
+				document.head.appendChild(script)
+		)
 )

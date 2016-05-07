@@ -1,9 +1,10 @@
 <h3 style="text-align: center;">Comments module, adds comments functionality to other modules</h3>
-<h4>Integration of comments displaying:</h4>
-<p>Insert following snippet anywhere on page</p>
+<h4>To show comments list insert following snippet anywhere on page:</h4>
 <pre>&lt;cs-comments module="Blogs" item="$id"&gt;&lt;/cs-comments&gt;</pre>
 <p>Where <code>$id</code> is integer identifier of article, page or anything else, that will be commented and <code>Blogs</code> is module name.</p>
-<h4>Integration of comments adding, editing, and deleting.</h4>
+<h4>To show comments number insert following snippet anywhere on page:</h4>
+<pre>&lt;cs-comments-count module="Blogs" item="$id"&gt;&lt;/cs-comments-count&gt;</pre>
+<h4>Integration of comments adding, editing, and deletion.</h4>
 <p>For this module MUST support next events on comments module:</p>
 <ul>
 	<li>
@@ -119,11 +120,3 @@
 );</pre>
 	</li>
 </ul>
-<h4>Other methods of `\cs\modules\comments\Comments` class:</h4>
-<ul>
-	<li>
-		int Comments::count($item : int)
-		<p>Returns number of comments for specified item</p>
-	</li>
-</ul>
-<p>There are several other methods, but they are used directly not so frequent, so, you can find them with description in source code and IDE suggestions.</p>

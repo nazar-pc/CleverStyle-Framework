@@ -1,14 +1,7 @@
 <h3 style="text-align: center;">Disqus module (integration of Disqus commenting service), adds comments functionality to other modules</h3>
 <h4>Disqus module is compatible with Comments module by interface, but even simpler in usage.</h4>
-<h4>Integration of comments displaying:</h4>
-<p>Insert following snippet anywhere on page</p>
+<h4>To show comments list insert following snippet anywhere on page:</h4>
 <pre>&lt;cs-comments module="Blogs" item="$id"&gt;&lt;/cs-comments&gt;</pre>
 <p>Where <code>$id</code> is integer identifier of article, page or anything else, that will be commented and <code>Blogs</code> is module name.</p>
-<h4>Other methods of `\cs\modules\comments\Comments` class:</h4>
-<ul>
-	<li>
-		string Comments::count($item : int)
-		<p>Returns HTML snipped that will be replaced with actual number of comments on frontend</p>
-	</li>
-</ul>
-<p>There are several other methods, but they are used directly not so frequent, so, you can find them with description in source code and IDE suggestions.</p>
+<h4>To show comments number insert following snippet anywhere on page:</h4>
+<pre>&lt;cs-comments-count module="Blogs" item="$id"&gt;&lt;/cs-comments-count&gt;</pre>

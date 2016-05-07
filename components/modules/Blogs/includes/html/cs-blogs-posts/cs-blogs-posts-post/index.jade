@@ -21,11 +21,11 @@ dom-module#cs-blogs-posts-post
 					= ' '
 					[[post.author.name]]
 					= ' '
-					template(is="dom-if" if="[[comments_enabled]]")
+					template(is="dom-if" if="[[settings.comments_enabled]]")
 						a(href="[[post.url]]#comments")
 							cs-icon(icon="comments")
 							= ' '
-							[[post.comments_count]]
+							cs-comments-count(module="Blogs" item="[[post.id]]")
 							= ' '
 					a(href="[[post.url]]")
 						cs-icon(icon="angle-double-right")

@@ -100,6 +100,20 @@ class Comments {
 		return $this->search($search_parameters, 1, PHP_INT_MAX, 'id', true) ?: [];
 	}
 	/**
+	 * @param string $module
+	 * @param int    $item
+	 *
+	 * @return int
+	 */
+	function get_for_module_item_count ($module, $item) {
+		$search_parameters = [
+			'module'      => $module,
+			'item'        => $item,
+			'total_count' => true
+		];
+		return $this->search($search_parameters);
+	}
+	/**
 	 * Add new comment
 	 *
 	 * @param int    $item   Item id
@@ -200,30 +214,5 @@ class Comments {
 			$this->cache->del("$module/$item");
 		}
 		return (bool)$result;
-	}
-	/**
-	 * Count of comments for specified item
-	 *
-	 * @param int    $item   Item id
-	 * @param string $module Module name
-	 *
-	 * @return int
-	 */
-	function count ($item, $module) {
-		$item = (int)$item;
-		$L    = Language::instance();
-		return $this->cache->get(
-			"$module/$item/count/$L->clang",
-			function () use ($item, $module, $L) {
-				return $this->search(
-					[
-						'module'      => $module,
-						'item'        => $item,
-						'lang'        => $L->clang,
-						'total_count' => true
-					]
-				);
-			}
-		);
 	}
 }

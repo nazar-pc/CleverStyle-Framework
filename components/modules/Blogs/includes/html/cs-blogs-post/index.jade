@@ -32,7 +32,7 @@ dom-module#cs-blogs-post
 				template(is="dom-if" if="[[settings.comments_enabled]]")
 					cs-icon(icon="comments")
 					= ' '
-					[[jsonld.comments_count]]
+					cs-comments-count(module="Blogs" item="[[jsonld.id]]")
 		template(is="dom-if" if="[[settings.comments_enabled]]")
 			cs-comments(module="Blogs" item="[[jsonld.id]]")
 	script(src="script.js")

@@ -14,7 +14,7 @@ class Controller {
 	/**
 	 * @return array
 	 */
-	static function settings_get () {
+	static function index_get_settings () {
 		return [
 			'shortname' => Config::instance()->module('Disqus')->shortname
 		];

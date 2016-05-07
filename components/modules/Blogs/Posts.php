@@ -81,9 +81,9 @@ class Posts {
 			}
 			return $id;
 		}
-		$L                      = Language::instance();
-		$id                     = (int)$id;
-		$data                   = $this->cache->get(
+		$L    = Language::instance();
+		$id   = (int)$id;
+		$data = $this->cache->get(
 			"posts/$id/$L->clang",
 			function () use ($id) {
 				$data = $this->read($id);
@@ -94,10 +94,6 @@ class Posts {
 				return $data;
 			}
 		);
-		$data['comments_count'] =
-			Config::instance()->module('Blogs')->enable_comments && functionality('comments')
-				? \cs\modules\comments\Comments::instance()->count($data['id'], 'Blogs')
-				: 0;
 		return $data;
 	}
 	/**
@@ -144,7 +140,6 @@ class Posts {
 				[
 					'content'        => 'articleBody',
 					'title'          => 'headline',
-					'comments_count' => 'commentCount',
 					'tags'           => 'keywords',
 					'datetime'       => null,
 					'sections_paths' => null,
@@ -442,6 +437,7 @@ class Posts {
 		$result = $this->delete($id);
 		if ($result) {
 			if (functionality('comments')) {
+				// TODO: this should use events instead
 				\cs\modules\comments\Comments::instance()->del_all($id, 'Blogs');
 			}
 			$this->cache_cleanups($id);

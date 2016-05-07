@@ -7,37 +7,9 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  (function(){
-    var container, d, load_counts;
-    if (!window.disqus_shortname) {
-      return;
+  window.DISQUSWIDGETS = {
+    displayCount: function(data){
+      this[data.counts[0].id] = data.counts[0].comments;
     }
-    container = document.querySelector('head') || document.querySelector('body');
-    d = window.DISQUSWIDGETS;
-    load_counts = function(i){
-      var item, s;
-      item = window.disqus_count_items[i];
-      if (!window.disqus_count_items.length || !item) {
-        window.DISQUSWIDGETS = d;
-        return;
-      }
-      s = document.createElement('script');
-      s.async = true;
-      s.src = "//" + disqus_shortname + ".disqus.com/count-data.js?q=1&0=1," + item;
-      s.onload = function(){
-        load_counts(i + 1);
-      };
-      window.DISQUSWIDGETS = {
-        displayCount: function(d){
-          var element;
-          element = document.querySelector(".cs-disqus-comments-count[data-identifier='" + item + "']");
-          if (element) {
-            element.outerHTML = d.counts[0].comments;
-          }
-        }
-      };
-      container.appendChild(s);
-    };
-    load_counts(0);
-  })();
+  };
 }).call(this);

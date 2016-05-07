@@ -31,9 +31,10 @@
         }
       };
       config = function(){
+        var ref$;
         this.page.identifier = instance.module + '/' + instance.item;
         this.callbacks.onReady.push(ready_callback);
-        this.experiment.enable_scroll_container = false;
+        this.experiment.enable_scroll_container = !((ref$ = window.WebComponents) != null && ref$.flags);
       };
       if (window.DISQUS) {
         DISQUS.reset({
@@ -50,14 +51,18 @@
         return;
       }
       Object.getPrototypeOf(this)._loaded = true;
-      $.getJSON('api/Disqus/settings', function(arg$){
-        var shortname, x$, script;
-        shortname = arg$.shortname;
-        x$ = script = document.createElement('script');
-        x$.async = true;
-        x$.src = "//" + shortname + ".disqus.com/embed.js";
-        x$.setAttribute('data-timestamp', +new Date());
-        document.head.appendChild(script);
+      $.ajax({
+        url: 'api/Disqus',
+        type: 'get_settings',
+        success: function(arg$){
+          var shortname, x$, script;
+          shortname = arg$.shortname;
+          x$ = script = document.createElement('script');
+          x$.async = true;
+          x$.src = "//" + shortname + ".disqus.com/embed.js";
+          x$.setAttribute('data-timestamp', +new Date());
+          document.head.appendChild(script);
+        }
       });
     }
   });

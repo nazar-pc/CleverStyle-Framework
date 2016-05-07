@@ -12,8 +12,14 @@ Polymer(
 		cs.Polymer.behaviors.Language('blogs_')
 	]
 	properties	:
-		post				: {}
-		comments_enabled	: false
+		post		: {}
+		settings	: Object
+	ready : !->
+		$.ajax(
+			url		: 'api/Blogs'
+			type	: 'get_settings'
+			success	: (@settings) !~>
+		)
 	sections_path : (index) ->
 		@post.sections_paths[index]
 )

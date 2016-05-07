@@ -8,8 +8,6 @@
 Polymer(
 	'is'		: 'cs-blogs-posts'
 	'extends'	: 'section'
-	properties	:
-		comments_enabled	: false
 	ready		: !->
 		@jsonld = JSON.parse(@children[0].innerHTML)
 		@posts	= @jsonld['@graph']
