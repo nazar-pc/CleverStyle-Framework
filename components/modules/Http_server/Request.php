@@ -27,17 +27,7 @@ class Request {
 		static::fill_superglobals(
 			static::prepare_superglobals($request, $data)
 		);
-		try {
-			try {
-				static::execute_request($request_started);
-			} catch (ExitException $e) {
-				if ($e->getCode() >= 400) {
-					Page::instance()->error($e->getMessage() ?: null, $e->getJson());
-				}
-			}
-		} catch (\Exception $e) {
-			trigger_error($e->getMessage(), E_USER_WARNING);
-		}
+		static::execute($request_started);
 		$Response = System_response::instance();
 		/**
 		 * When error happens in \cs\Request initialization, there might be no headers yet since \cs\Response was not initialized
@@ -57,6 +47,22 @@ class Request {
 		}
 		$request->close();
 		User::instance()->disable_memory_cache();
+	}
+	/**
+	 * @param float $request_started
+	 */
+	protected static function execute ($request_started) {
+		try {
+			try {
+				static::execute_request($request_started);
+			} catch (ExitException $e) {
+				if ($e->getCode() >= 400) {
+					Page::instance()->error($e->getMessage() ?: null, $e->getJson());
+				}
+			}
+		} catch (\Exception $e) {
+			trigger_error($e->getMessage(), E_USER_WARNING);
+		}
 	}
 	/**
 	 * @param \React\HTTP\Request $request
