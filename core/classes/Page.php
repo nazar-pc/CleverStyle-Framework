@@ -244,9 +244,8 @@ class Page {
 		if (Request::instance()->admin_path) {
 			$this->theme = 'CleverStyle';
 		}
-		$theme_dir = THEMES."/$this->theme";
-		_include("$theme_dir/prepare.php", false, false);
 		ob_start();
+		$theme_dir = THEMES."/$this->theme";
 		_include("$theme_dir/index.php", false, false) || _include("$theme_dir/index.html");
 		$this->Html = ob_get_clean();
 	}

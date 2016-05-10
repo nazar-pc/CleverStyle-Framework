@@ -67,7 +67,6 @@ class App {
 		foreach ($Config->components['plugins'] as $plugin) {
 			_include(PLUGINS."/$plugin/index.php", false, false);
 		}
-		_include("$this->working_directory/prepare.php", false, false);
 		Event::instance()->fire('System/App/render/before');
 		/**
 		 * Title only for non-CLI and non-API calls
