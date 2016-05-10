@@ -7,3 +7,4 @@
  * @license   MIT License, see license.txt
  */
 include __DIR__.'/save.php';
+require_once __DIR__.'/functions.php';

@@ -55,11 +55,8 @@ if ($page['interface']) {
 		$Meta->image($images[1]);
 	}
 	unset($images);
-	/**
-	 * @var array $canonical_url
-	 */
-	$canonical_url = $Config->base_url();
 	if ($Request->home_page) {
+		$canonical_url = $Config->base_url();
 		$Page->canonical_url($canonical_url);
 	} else {
 		$category      = $page['category'];

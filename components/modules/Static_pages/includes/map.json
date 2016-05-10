@@ -1,5 +1,8 @@
 {
-	"admin/Static_pages" : "admin.css",
+	"admin/Static_pages" : [
+		"admin.css",
+		"style.css"
+	],
 	"Static_pages"       : [
 		"style.css",
 		"script.js"

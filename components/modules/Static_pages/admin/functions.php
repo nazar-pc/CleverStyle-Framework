@@ -13,8 +13,6 @@ use
 	cs\Page,
 	cs\Request;
 
-$Page = Page::instance();
-$Page->css('components/modules/Static_pages/includes/css/style.css');
 function get_categories_rows ($structure = null, $level = 0, $parent_categories = []) {
 	$L    = new Prefix('static_pages_');
 	$root = false;
