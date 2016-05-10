@@ -362,8 +362,7 @@ trait CRUD {
 				$result &&
 				$this->db_prime()->q(
 					"DELETE FROM `$table`
-					WHERE `$first_column` = '%s'
-					LIMIT 1",
+					WHERE `$first_column` = '%s'",
 					$i
 				);
 			/**

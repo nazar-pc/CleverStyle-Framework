@@ -78,8 +78,7 @@ class Pool {
 	function del ($server_address) {
 		return (bool)$this->db_prime()->q(
 			"DELETE FROM `[prefix]websockets_pool`
-			WHERE `address` = '%s'
-			LIMIT 1",
+			WHERE `address` = '%s'",
 			$server_address
 		);
 	}

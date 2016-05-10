@@ -421,8 +421,7 @@ trait Management {
 		$login_hash = hash('sha224', $this->get('login', $user));
 		$this->db_prime()->q(
 			"DELETE FROM `[prefix]users`
-			WHERE `id` = $user
-			LIMIT 1"
+			WHERE `id` = $user"
 		);
 		unset(
 			$Cache->$login_hash,

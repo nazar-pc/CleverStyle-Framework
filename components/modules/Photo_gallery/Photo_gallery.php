@@ -181,8 +181,7 @@ class Photo_gallery {
 			} else {
 				$this->db_prime()->q(
 					"DELETE FROM `[prefix]photo_gallery_images`
-					WHERE `id` = $id
-					LIMIT 1"
+					WHERE `id` = $id"
 				);
 			}
 		}
@@ -236,8 +235,7 @@ class Photo_gallery {
 		$data	= $this->get($id);
 		if ($this->db_prime()->q(
 			"DELETE FROM `[prefix]photo_gallery_images`
-			WHERE `id` = $id
-			LIMIT 1"
+			WHERE `id` = $id"
 		)) {
 			$this->ml_del('Photo_gallery/images/title', $id);
 			$this->ml_del('Photo_gallery/images/description', $id);
@@ -421,8 +419,7 @@ class Photo_gallery {
 		$id		= (int)$id;
 		if (!$this->db_prime()->q(
 			"DELETE FROM `[prefix]photo_gallery_galleries`
-			WHERE `id` = '%s'
-			LIMIT 1",
+			WHERE `id` = '%s'",
 			$id
 		)) {
 			return false;

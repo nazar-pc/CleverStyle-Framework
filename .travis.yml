@@ -16,7 +16,6 @@ env:
     - DB=PostgreSQL
 matrix:
   allow_failures:
-    - env: DB=SQLite
     - env: DB=PostgreSQL
 before_script:
   - mysql -e 'CREATE DATABASE `travis`;'

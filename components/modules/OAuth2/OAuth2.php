@@ -179,8 +179,7 @@ class OAuth2 {
 		$result = $this->db_prime()->q(
 			[
 				"DELETE FROM `[prefix]oauth2_clients`
-				WHERE `id` = '%s'
-				LIMIT 1",
+				WHERE `id` = '%s'",
 				"DELETE FROM `[prefix]oauth2_clients_grant_access`
 				WHERE `id`	= '%s'",
 				"DELETE FROM `[prefix]oauth2_clients_sessions`
@@ -273,8 +272,7 @@ class OAuth2 {
 				"DELETE FROM `[prefix]oauth2_clients_grant_access`
 				WHERE
 					`user`	= $user AND
-					`id`	= '%s'
-				LIMIT 1",
+					`id`	= '%s'",
 				"DELETE FROM `[prefix]oauth2_clients_sessions`
 				WHERE
 					`user`	= $user AND
@@ -471,9 +469,7 @@ class OAuth2 {
 			if (!$this->get_access($data['client_id'], $data['user'])) {
 				$this->db_prime()->q(
 					"DELETE FROM `[prefix]oauth2_clients_sessions`
-					WHERE
-						`access_token`	= '%s'
-					LIMIT 1",
+					WHERE `access_token` = '%s'",
 					$access_token
 				);
 				unset($Cache->{"tokens/$access_token"});
@@ -516,9 +512,7 @@ class OAuth2 {
 		);
 		if ($this->db_prime()->q(
 			"DELETE FROM `[prefix]oauth2_clients_sessions`
-			WHERE
-				`access_token`	= '%s'
-			LIMIT 1",
+			WHERE `access_token`	= '%s'",
 			$access_token
 		)
 		) {
@@ -563,8 +557,7 @@ class OAuth2 {
 			"DELETE FROM `[prefix]oauth2_clients_sessions`
 			WHERE
 				`id`			= '%s' AND
-				`refresh_token`	= '%s'
-			LIMIT 1",
+				`refresh_token`	= '%s'",
 			$client['id'],
 			$refresh_token
 		);

@@ -604,8 +604,7 @@ class Orders {
 			"DELETE FROM `{$this->table}_items`
 			WHERE
 				`id`	= '%d' AND
-				`item`	= '%d'
-			LIMIT 1",
+				`item`	= '%d'",
 			$id,
 			$item
 		);
