@@ -8,7 +8,7 @@ if (getenv('DB') && getenv('DB') != 'MySQLi') {
 phar.readonly = Off
 --FILE--
 <?php
-$arguments = '-sn Web-site -su http://cscms.travis -dh 127.0.0.1 -dn cscms.travis -du travis -dp "" -ae admin@cscms.travis -ap 1111';
+$arguments = '-sn Web-site -su http://cscms.travis -dh 127.0.0.1 -dn travis -du travis -dp "" -ae admin@cscms.travis -ap 1111';
 include __DIR__.'/_install.php';
 ?>
 --CLEAN--

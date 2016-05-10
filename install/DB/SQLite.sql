@@ -18,7 +18,8 @@ INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('Administrators', 
 CREATE TABLE "[prefix]groups_permissions" (
   "id" smallint(5) NOT NULL,
   "permission" smallint(5) NOT NULL,
-  "value" tinyint(1) NOT NULL
+  "value" tinyint(1) NOT NULL,
+  PRIMARY KEY ("id", "permission")
 );
 
 INSERT INTO `[prefix]groups_permissions` (`id`, `permission`, `value`) VALUES (1, 2, 1), (2, 2, 0);
@@ -112,7 +113,8 @@ INSERT INTO `[prefix]users_groups` (`id`, `group`, `priority`) VALUES (2, 1, 0),
 CREATE TABLE "[prefix]users_permissions" (
   "id" int(10) NOT NULL,
   "permission" smallint(5) NOT NULL,
-  "value" tinyint(1) NOT NULL
+  "value" tinyint(1) NOT NULL,
+  PRIMARY KEY ("id", "permission")
 );
 
 CREATE INDEX "[prefix]texts_label" ON "[prefix]texts" ("label","group");
@@ -121,10 +123,6 @@ CREATE INDEX "[prefix]users_login_hash" ON "[prefix]users" ("login_hash");
 CREATE INDEX "[prefix]users_email_hash" ON "[prefix]users" ("email_hash");
 CREATE INDEX "[prefix]users_language" ON "[prefix]users" ("language");
 CREATE INDEX "[prefix]users_status" ON "[prefix]users" ("status");
-CREATE INDEX "[prefix]users_permissions_id" ON "[prefix]users_permissions" ("id");
-CREATE INDEX "[prefix]users_permissions_permission" ON "[prefix]users_permissions" ("permission","value");
-CREATE INDEX "[prefix]groups_permissions_id" ON "[prefix]groups_permissions" ("id");
-CREATE INDEX "[prefix]groups_permissions_permission" ON "[prefix]groups_permissions" ("permission","value");
 CREATE INDEX "[prefix]sign_ins_id" ON "[prefix]sign_ins" ("id");
 CREATE INDEX "[prefix]permissions_label" ON "[prefix]permissions" ("label");
 CREATE INDEX "[prefix]permissions_group" ON "[prefix]permissions" ("group");

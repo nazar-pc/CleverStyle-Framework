@@ -37,7 +37,7 @@ class SQLite extends _Abstract {
 	function q ($query, $params = [], ...$param) {
 		// Hack to convert small subset of MySQL queries into SQLite-compatible syntax
 		$query = str_replace('INSERT IGNORE', 'INSERT OR IGNORE', $query);
-		return call_user_func_array([__NAMESPACE__.'\\_Abstract', 'q'], [$query] + func_get_args());
+		return parent::q(...([$query] + func_get_args()));
 	}
 	/**
 	 * @inheritdoc
@@ -122,7 +122,7 @@ class SQLite extends _Abstract {
 	 */
 	function free ($query_result) {
 		if (is_object($query_result)) {
-			$query_result->finalize();
+			return $query_result->finalize();
 		}
 		return true;
 	}
@@ -143,12 +143,14 @@ class SQLite extends _Abstract {
 		if ($like) {
 			if (substr($like, -1) == '%') {
 				$like = substr($like, 0, -1);
-				return array_values(array_filter(
-					$columns,
-					function ($column) use ($like) {
-						return strpos($column, $like) === 0;
-					}
-				));
+				return array_values(
+					array_filter(
+						$columns,
+						function ($column) use ($like) {
+							return strpos($column, $like) === 0;
+						}
+					)
+				);
 			} elseif (strpos($like, '%') === false) {
 				return in_array($like, $columns) ? [$like] : [];
 			} else {

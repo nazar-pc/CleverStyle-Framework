@@ -26,4 +26,6 @@ class Fake extends _Abstract {
 	protected function s_internal ($string, $single_quotes_around) { }
 	function server () { }
 	function __destruct () { }
+	function columns ($table, $like = false) { }
+	function tables ($like = false) { }
 }

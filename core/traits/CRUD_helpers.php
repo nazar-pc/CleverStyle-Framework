@@ -76,8 +76,8 @@ trait CRUD_helpers {
 				array_merge($join_params, $where_params)
 			);
 		}
-		$where_params[] = ($page - 1) * $count;
 		$where_params[] = $count;
+		$where_params[] = ($page - 1) * $count;
 		$order_by       = $this->search_order_by($table_alias, $order_by, $joins, $join_index);
 		$asc            = $asc ? 'ASC' : 'DESC';
 		$return         = $this->db()->qfas(
@@ -86,7 +86,7 @@ trait CRUD_helpers {
 			$joins
 			$where
 			ORDER BY $order_by $asc
-			LIMIT %d, %d",
+			LIMIT %d OFFSET %d",
 			array_merge($join_params, $where_params)
 		);
 		return $this->read_field_post_processing($return, array_values($this->data_model)[0]);

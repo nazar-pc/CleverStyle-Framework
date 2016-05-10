@@ -496,7 +496,7 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param object|resource $query_result
+	 * @param false|object|resource $query_result
 	 */
 	abstract function free ($query_result);
 	/**
@@ -507,21 +507,7 @@ abstract class _Abstract {
 	 *
 	 * @return string[]
 	 */
-	function columns ($table, $like = false) {
-		if (!$table) {
-			return false;
-		}
-		if ($like) {
-			$like    = $this->s($like);
-			$columns = $this->qfa("SHOW COLUMNS FROM `$table` LIKE $like") ?: [];
-		} else {
-			$columns = $this->qfa("SHOW COLUMNS FROM `$table`") ?: [];
-		}
-		foreach ($columns as &$column) {
-			$column = $column['Field'];
-		}
-		return $columns;
-	}
+	abstract function columns ($table, $like = false);
 	/**
 	 * Get tables list
 	 *
@@ -529,14 +515,7 @@ abstract class _Abstract {
 	 *
 	 * @return string[]
 	 */
-	function tables ($like = false) {
-		if ($like) {
-			$like = $this->s($like);
-			return $this->qfas("SHOW TABLES FROM `$this->database` LIKE $like") ?: [];
-		} else {
-			return $this->qfas("SHOW TABLES FROM `$this->database`") ?: [];
-		}
-	}
+	abstract function tables ($like = false);
 	/**
 	 * Safe
 	 *

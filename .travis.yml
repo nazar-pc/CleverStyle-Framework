@@ -5,17 +5,22 @@ php:
 sudo: false
 services:
   - memcached
+  - mysql
+  - postgresql
 env:
   global:
     - REPORT_EXIT_STATUS=1
   matrix:
     - DB=MySQLi
     - DB=SQLite
+    - DB=PostgreSQL
 matrix:
   allow_failures:
     - env: DB=SQLite
+    - env: DB=PostgreSQL
 before_script:
-  - mysql -e 'CREATE DATABASE `cscms.travis`;'
+  - mysql -e 'CREATE DATABASE `travis`;'
+  - psql -c 'CREATE DATABASE "travis";' -U postgres
   - if [[ "$(php -v | grep 'PHP 5')" ]]; then echo yes | pecl install apcu-4.0.11; fi
   - if [[ "$(php -v | grep 'PHP 7')" ]]; then echo yes | pecl install apcu-5.1.3; fi
   - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini

@@ -1,18 +1,18 @@
 --SKIPIF--
 <?php
-if (getenv('DB') && getenv('DB') != 'MySQLi') {
-	exit('skip only running for database MySQLi engine');
+if (getenv('DB') && getenv('DB') != 'PostgreSQL') {
+	exit('skip only running for database PostgreSQL engine');
 }
 ?>
 --FILE--
 <?php
 include __DIR__.'/../bootstrap.php';
-$db = new \cs\DB\MySQLi('travis', 'travis', '', '127.0.0.1', 'utf8mb4', 'xyz_');
+$db = new \cs\DB\PostgreSQL('travis', 'postgres', '', '127.0.0.1', 'UTF8', 'xyz_');
 if (!$db->connected()) {
 	die('Connection failed:(');
 }
 $result = $db->q('SELECT `id`, `login` from `[prefix]users`');
-if (!($result instanceof \mysqli_result)) {
+if (!is_resource($result)) {
 	die('Simple query failed');
 }
 $u = $db->f($result);
@@ -35,7 +35,7 @@ $result = $db->q('SELECT `id`, `login` from `[prefix]users`');
 $u = $db->f($result, true, true, true);
 var_dump('multiple rows indexed array single column', $u);
 
-$db->q('CREATE TABLE `test` ( `id` INT NOT NULL AUTO_INCREMENT , `title` VARCHAR(1024) NOT NULL , `description` TEXT NOT NULL , `value` FLOAT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;');
+$db->q('CREATE TABLE public.test (id SERIAL PRIMARY KEY, title VARCHAR(1024), description TEXT, value FLOAT);');
 
 $query = "INSERT INTO `test` (`title`, `description`, `value`) VALUES ('%s', '%s', '%f')";
 $result = $db->insert(
@@ -82,7 +82,7 @@ var_dump('tables list like test', $db->tables('test'));
 var_dump('tables list like [prefix]users%', $db->tables('[prefix]users%'));
 $db->transaction(function ($db) {
 	/**
-	 * @var \cs\DB\MySQLi $db
+	 * @var \cs\DB\PostgreSQL $db
 	 */
 	$db->q('DELETE FROM `test` WHERE `id` = 2');
 	return false;
@@ -91,7 +91,7 @@ var_dump('transaction for deletion: rollback #1', $db->qfs("SELECT `id` FROM `te
 try {
 	$db->transaction(function ($db) {
 		/**
-		 * @var \cs\DB\MySQLi $db
+		 * @var \cs\DB\PostgreSQL $db
 		 */
 		$db->q('DELETE FROM `test` WHERE `id` = 2');
 		throw new Exception;
@@ -103,7 +103,7 @@ var_dump('transaction for deletion: rollback #2', $db->qfs("SELECT `id` FROM `te
 try {
 	$db->transaction(function ($db) {
 		/**
-		 * @var \cs\DB\MySQLi $db
+		 * @var \cs\DB\PostgreSQL $db
 		 */
 		$db->q('DELETE FROM `test` WHERE `id` = 2');
 		$db->transaction(function () {
@@ -117,11 +117,11 @@ var_dump('transaction for deletion: rollback #3 (nested transaction)', $db->qfs(
 try {
 	$db->transaction(function ($db) {
 		/**
-		 * @var \cs\DB\MySQLi $db
+		 * @var \cs\DB\PostgreSQL $db
 		 */
 		$db->transaction(function ($db) {
 			/**
-			 * @var \cs\DB\MySQLi $db
+			 * @var \cs\DB\PostgreSQL $db
 			 */
 			$db->q('DELETE FROM `test` WHERE `id` = 2');
 		});
@@ -133,7 +133,7 @@ try {
 var_dump('transaction for deletion: rollback #4 (nested transaction)', $db->qfs("SELECT `id` FROM `test` WHERE `id` = 2"));
 $db->transaction(function ($db) {
 	/**
-	 * @var \cs\DB\MySQLi $db
+	 * @var \cs\DB\PostgreSQL $db
 	 */
 	$db->q('DELETE FROM `test` WHERE `id` = 2');
 });

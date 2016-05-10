@@ -318,8 +318,7 @@ trait CRUD {
 		if (!$this->db_prime()->q(
 			"UPDATE `$table`
 			SET $columns
-			WHERE `$first_column` = '%s'
-			LIMIT 1",
+			WHERE `$first_column` = '%s'",
 			$prepared_arguments
 		)
 		) {

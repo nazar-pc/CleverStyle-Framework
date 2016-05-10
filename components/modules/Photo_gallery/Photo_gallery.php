@@ -212,8 +212,7 @@ class Photo_gallery {
 				(
 					`user`	= '%s' OR
 					%d
-				)
-			LIMIT 1",
+				)",
 			$title ? $this->ml_set('Photo_gallery/images/title', $id, $title) : '',
 			$description ? $this->ml_set('Photo_gallery/images/description', $id, $description) : '',
 			$id,
@@ -393,8 +392,7 @@ class Photo_gallery {
 				`description`	= '%s',
 				`active`		= '%s',
 				`preview_image`	= '%s'
-			WHERE `id` = '%s'
-			LIMIT 1",
+			WHERE `id` = '%s'",
 			$this->ml_set('Photo_gallery/galleries/title', $id, $title),
 			$this->ml_set('Photo_gallery/galleries/path', $id, $path),
 			$this->ml_set('Photo_gallery/galleries/description', $id, $description),

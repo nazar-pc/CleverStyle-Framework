@@ -158,8 +158,7 @@ class OAuth2 {
 				`name`			= '%s',
 				`domain`		= '%s',
 				`active`		= '%s'
-			WHERE `id` = '%s'
-			LIMIT 1",
+			WHERE `id` = '%s'",
 			$secret,
 			xap($name),
 			xap($domain),
@@ -422,8 +421,7 @@ class OAuth2 {
 			WHERE
 				`id`			= '%s' AND
 				`code`			= '%s' AND
-				`redirect_uri`	= '%s'
-			LIMIT 1",
+				`redirect_uri`	= '%s'",
 			$client['id'],
 			$code,
 			md5($redirect_uri)
@@ -488,9 +486,7 @@ class OAuth2 {
 				$this->db_prime()->q(
 					"UPDATE `[prefix]oauth2_clients_sessions`
 					SET `expire` = '%s'
-					WHERE
-						`access_token`	= '%s'
-					LIMIT 1",
+					WHERE `access_token`	= '%s'",
 					$data['expire'],
 					$access_token
 				);

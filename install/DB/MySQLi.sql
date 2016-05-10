@@ -20,8 +20,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]groups_permissions` (
   `id` smallint(5) unsigned NOT NULL COMMENT 'Group id',
   `permission` smallint(5) unsigned NOT NULL COMMENT 'Permission id',
   `value` tinyint(1) unsigned NOT NULL,
-  KEY `id` (`id`),
-  KEY `permission` (`permission`,`value`)
+  PRIMARY KEY (`id`, `permission`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO `[prefix]groups_permissions` (`id`, `permission`, `value`) VALUES (1, 2, 1), (2, 2, 0);
@@ -138,6 +137,5 @@ CREATE TABLE IF NOT EXISTS `[prefix]users_permissions` (
   `id` int(10) unsigned NOT NULL COMMENT 'User id',
   `permission` smallint(5) unsigned NOT NULL COMMENT 'Permission id',
   `value` tinyint(1) unsigned NOT NULL,
-  KEY `id` (`id`),
-  KEY `permission` (`permission`,`value`)
+  PRIMARY KEY  (`id`, `permission`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;

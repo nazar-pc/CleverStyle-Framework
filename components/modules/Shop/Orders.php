@@ -497,8 +497,7 @@ class Orders {
 				`unit_price`	= '%s'
 			WHERE
 				`id`	= '%d' AND
-				`item`	= '%d'
-			LIMIT 1",
+				`item`	= '%d'",
 			$units,
 			min($price, $units * $unit_price),
 			$unit_price,

@@ -247,8 +247,7 @@ class Text {
 				SET `text` = '%s'
 				WHERE
 					`id` = '%s' AND
-					`lang` = '%s'
-				LIMIT 1",
+					`lang` = '%s'",
 				$text,
 				$id,
 				$L->clang

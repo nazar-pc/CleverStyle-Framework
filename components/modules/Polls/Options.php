@@ -117,8 +117,7 @@ class Options {
 				FROM `[prefix]polls_options_answers`
 				WHERE `option` = '%1\$d'
 			)
-			WHERE `id` = '%1\$d'
-			LIMIT 1",
+			WHERE `id` = '%1\$d'",
 			$id
 		);
 		if ($result) {

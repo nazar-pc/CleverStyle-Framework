@@ -185,9 +185,9 @@ trait users {
 			FROM `[prefix]users`
 			WHERE $where
 			ORDER BY `id`
-			LIMIT %d, %d",
-			($page - 1) * $limit,
-			$limit
+			LIMIT %d OFFSET %d",
+			$limit,
+			($page - 1) * $limit
 		);
 		return [
 			'count' => $count,
