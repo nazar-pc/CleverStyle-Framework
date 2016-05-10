@@ -58,7 +58,7 @@ unset($images_titles);
 $module = path($L->Photo_gallery);
 $Page->canonical_url("{$Config->base_url()}/$module/$gallery[path]");
 $Page->content(
-	h::{'section.cs-photo-gallery-images.fotorama'}(
+	h::{'section.cs-photo-gallery-images'}(
 		h::div(
 			array_map(
 				function ($image) use ($L, $User) {
@@ -93,16 +93,6 @@ $Page->content(
 				},
 				$images
 			)
-		),
-		[
-			'data-allow-full-screen' => 'native',
-			'data-controlsonstart'   => 'false',
-			'data-fit'               => 'scaledown',
-			'data-height'            => '80%',
-			'data-keyboard'          => 'true',
-			'data-nav'               => 'thumbs',
-			'data-trackpad'          => 'true',
-			'data-width'             => '100%'
-		]
+		)
 	)
 );

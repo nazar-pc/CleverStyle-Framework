@@ -38,6 +38,18 @@
       $('html, body').stop().animate({
         scrollTop: $('.cs-photo-gallery-images').offset().top - $(document).height() * 0.1
       });
+      cs.ui.ready.then(function(){
+        images_section.fotorama({
+          allowfullscreen: 'native',
+          controlsonstart: false,
+          fit: 'scaledown',
+          height: '80%',
+          keyboard: true,
+          nav: 'thumbs',
+          trackpad: true,
+          width: '100%'
+        });
+      });
       $('body').on('click', '.cs-photo-gallery-image-delete', function(){
         if (confirm(L.sure_to_delete_image)) {
           $.ajax('api/Photo_gallery/images/' + $(this).data('image'), {

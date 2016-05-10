@@ -18,7 +18,7 @@
 	],
 	"provide"             : "photo_gallery",
 	"require"             : [
-		"System>=4.11",
+		"System>=4.43",
 		"System<5.0",
 		"Fotorama>=4.4.9",
 		"SimpleImage",
