@@ -31,8 +31,7 @@ class Text {
 		if ($store_in_cache && ($text = $Cache->$cache_key) !== false) {
 			return $text;
 		}
-		$db  = DB::instance();
-		$cdb = $db->$database;
+		$cdb = DB::instance()->db($database);
 		if ($id) {
 			$text = $this->get_text_by_id($id, $cdb, $L);
 		} else {
@@ -141,7 +140,7 @@ class Text {
 	 * @return array[]|false Array of items `['id' => id, 'lang' => lang]` on success, `false` otherwise
 	 */
 	function search ($database, $group, $label, $text) {
-		return DB::instance()->$database->qfa(
+		return DB::instance()->db($database)->qfa(
 			"SELECT
 				`t`.`id`,
 				`d`.`lang`
@@ -172,7 +171,7 @@ class Text {
 		$Cache  = Cache::instance();
 		$Config = Config::instance();
 		$L      = Language::instance();
-		$cdb    = DB::instance()->$database();
+		$cdb    = DB::instance()->db_prime($database);
 		/**
 		 * Security check, do not allow to silently substitute text from another item
 		 */
@@ -293,8 +292,8 @@ class Text {
 	 */
 	function del ($database, $group, $label) {
 		$Cache = Cache::instance();
-		$db    = DB::instance();
-		$id    = $db->$database()->qfs(
+		$cdb   = DB::instance()->db_prime($database);
+		$id    = $cdb->qfs(
 			[
 				"SELECT `id`
 				FROM `[prefix]texts`
@@ -312,7 +311,7 @@ class Text {
 				$Cache->{"texts/$database/{$id}_$L->clang"},
 				$Cache->{"texts/$database/".md5($group).md5($label)."_$L->clang"}
 			);
-			return $db->$database()->q(
+			return $cdb->q(
 				[
 					"DELETE FROM `[prefix]texts`
 					WHERE `id` = '%s'",
