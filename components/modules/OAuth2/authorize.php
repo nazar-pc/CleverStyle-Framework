@@ -22,7 +22,30 @@ use
 	cs\Response,
 	cs\User;
 
-if (!function_exists(__NAMESPACE__.'\\error_redirect')) {
+if (!function_exists(__NAMESPACE__.'\\http_build_url')) {
+	/**
+	 * @param string   $url
+	 * @param string[] $parts
+	 *
+	 * @return string
+	 */
+	function http_build_url ($url, $parts) {
+		$url    = explode('?', $url, 2);
+		$params = [];
+		if (isset($url[1])) {
+			foreach (explode('&', $url[1]) as $u) {
+				$params[] = $u;
+			}
+			unset($u, $url[1]);
+		}
+		$url = $url[0];
+		foreach ($parts as $name => $value) {
+			$params[] = $name.'='.urlencode($value);
+		}
+		$params = array_unique($params);
+		return "$url?".implode('&', $params);
+	}
+
 	function error_redirect ($error, $description) {
 		Response::instance()->redirect(
 			http_build_url(
@@ -35,7 +58,6 @@ if (!function_exists(__NAMESPACE__.'\\error_redirect')) {
 			),
 			302
 		);
-		Page::instance()->interface = false;
 	}
 }
 $OAuth2 = OAuth2::instance();
@@ -137,17 +159,7 @@ if (isset($_POST['mode'])) {
 	if ($_POST['mode'] == 'allow') {
 		$OAuth2->add_access($client['id']);
 	} else {
-		$Response->redirect(
-			http_build_url(
-				urldecode($redirect_uri),
-				[
-					'error'             => 'access_denied',
-					'error_description' => 'User denied access',
-					'state'             => isset($_GET['state']) ? $_GET['state'] : false
-				]
-			),
-			302
-		);
+		error_redirect('access_denied', 'User denied access');
 		$Page->Content = '';
 		return;
 	}
@@ -175,7 +187,7 @@ switch ($_GET['response_type']) {
 	case 'code':
 		$Response->redirect(
 			http_build_url(
-				urldecode($redirect_uri),
+				$redirect_uri,
 				[
 					'code'  => $code,
 					'state' => isset($_GET['state']) ? $_GET['state'] : false
@@ -189,20 +201,17 @@ switch ($_GET['response_type']) {
 		$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], $redirect_uri);
 		if ($token_data) {
 			unset($token_data['refresh_token']);
-			$Response->redirect(
-				uri_for_token(
-					http_build_url(
-						urldecode($redirect_uri),
-						array_merge(
-							$token_data,
-							[
-								'state' => isset($_GET['state']) ? $_GET['state'] : false
-							]
-						)
-					)
-				),
-				302
+			$url = http_build_url(
+				$redirect_uri,
+				array_merge(
+					$token_data,
+					[
+						'state' => isset($_GET['state']) ? $_GET['state'] : false
+					]
+				)
 			);
+			$url = implode('#', explode('?', $url, 2));
+			$Response->redirect($url, 302);
 			$Page->Content = '';
 			return;
 		} else {
