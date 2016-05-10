@@ -74,7 +74,7 @@ class Response {
 		return $this;
 	}
 	/**
-	 * Initialize with typical default settings (headers `Content-Type` and `Vary`, protocol taken from `cs\Request::$protocol`)
+	 * Initialize with typical default settings (headers `Content-Type`, `Vary` and `X-UA-Compatible`, protocol taken from `cs\Request::$protocol`)
 	 *
 	 * @return Response
 	 */
@@ -83,8 +83,9 @@ class Response {
 			'',
 			null,
 			[
-				'Content-Type' => 'text/html; charset=utf-8',
-				'Vary'         => 'Accept-Language,User-Agent,Cookie'
+				'Content-Type'    => 'text/html; charset=utf-8',
+				'Vary'            => 'Accept-Language,User-Agent,Cookie',
+				'X-UA-Compatible' => 'IE=edge' // TODO: I hope some day we'll get rid of this sh*t :(
 			],
 			200,
 			Request::instance()->protocol
