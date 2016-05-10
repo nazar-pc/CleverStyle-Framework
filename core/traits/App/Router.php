@@ -14,9 +14,6 @@ use
 	cs\App\Router\Controller,
 	cs\App\Router\Files;
 
-/**
- * @property string[] $controller_path Path that will be used by controller to render page
- */
 trait Router {
 	use
 		CLI,
@@ -28,6 +25,9 @@ trait Router {
 	 * @var string[]
 	 */
 	protected $controller_path;
+	protected function init_router () {
+		$this->controller_path = ['index'];
+	}
 	/**
 	 * Execute router
 	 *

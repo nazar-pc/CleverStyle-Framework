@@ -23,6 +23,8 @@ use
  *
  *  System/App/render/after
  *
+ * @property string[] $controller_path Path that will be used by controller to render page
+ *
  * @method static $this instance($check = false)
  */
 class App {
@@ -36,7 +38,7 @@ class App {
 	protected $working_directory;
 	protected function init () {
 		$this->working_directory = '';
-		$this->controller_path   = ['index'];
+		$this->init_router();
 	}
 	/**
 	 * Executes plugins processing, blocks and module page generation
