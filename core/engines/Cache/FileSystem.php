@@ -44,7 +44,7 @@ class FileSystem extends _Abstract {
 		) {
 			return false;
 		}
-		$cache = file_get_contents($path_in_filesystem, FILE_BINARY);
+		$cache = file_get_contents($path_in_filesystem);
 		$cache = @_json_decode($cache);
 		if ($cache !== false) {
 			return $cache;
