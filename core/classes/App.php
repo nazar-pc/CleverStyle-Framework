@@ -21,6 +21,10 @@ use
  *
  *  System/App/render/before
  *
+ *  System/App/execute_router/before
+ *
+ *  System/App/execute_router/after
+ *
  *  System/App/render/after
  *
  * @property string[] $controller_path Path that will be used by controller to render page

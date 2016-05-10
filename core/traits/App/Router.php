@@ -7,6 +7,7 @@
  */
 namespace cs\App;
 use
+	cs\Event,
 	cs\ExitException,
 	cs\Request,
 	cs\Response,
@@ -38,11 +39,15 @@ trait Router {
 	protected function execute_router () {
 		$Request = Request::instance();
 		$this->check_and_normalize_route($Request);
+		if (!Event::instance()->fire('System/App/execute_router/before')) {
+			return;
+		}
 		if (file_exists("$this->working_directory/Controller.php")) {
 			$this->controller_router($Request);
 		} else {
 			$this->files_router($Request);
 		}
+		Event::instance()->fire('System/App/execute_router/after');
 	}
 	/**
 	 * Normalize `cs\Request::$route_path` and fill `cs\App::$controller_path`
