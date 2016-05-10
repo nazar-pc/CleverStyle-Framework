@@ -361,4 +361,16 @@
     document.documentElement.appendChild(notify);
     return notify;
   };
+  x$.ready = new Promise(function(resolve){
+    var callback;
+    if (document.readyState !== 'complete') {
+      callback = function(){
+        setTimeout(resolve);
+        document.removeEventListener('WebComponentsReady', callback);
+      };
+      document.addEventListener('WebComponentsReady', callback);
+    } else {
+      setTimeout(resolve);
+    }
+  });
 }).call(this);

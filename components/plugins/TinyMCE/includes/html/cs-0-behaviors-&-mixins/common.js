@@ -20,19 +20,7 @@
       }
     },
     ready: function(){
-      this._when_ready(bind$(this, '_initialize_editor'));
-    },
-    _when_ready: function(action){
-      var callback;
-      if (document.readyState !== 'complete') {
-        callback = function(){
-          setTimeout(action);
-          document.removeEventListener('WebComponentsReady', callback);
-        };
-        document.addEventListener('WebComponentsReady', callback);
-      } else {
-        setTimeout(action);
-      }
+      cs.ui.ready.then(bind$(this, '_initialize_editor'));
     },
     _initialize_editor: function(){
       var this$ = this;

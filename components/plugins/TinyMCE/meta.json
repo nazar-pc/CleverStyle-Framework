@@ -14,7 +14,7 @@
 		"tiny_inline_editor"
 	],
 	"require"      : [
-		"System>=3.212",
+		"System>=4.43",
 		"System<5.0"
 	],
 	"optional"     : [

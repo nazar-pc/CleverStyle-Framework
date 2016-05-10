@@ -289,3 +289,11 @@ cs.{}ui
 					notify.timeout = option
 		document.documentElement.appendChild(notify)
 		notify
+	..ready = new Promise (resolve) !->
+		if document.readyState != 'complete'
+			callback	= !->
+				setTimeout(resolve)
+				document.removeEventListener('WebComponentsReady', callback)
+			document.addEventListener('WebComponentsReady', callback)
+		else
+			setTimeout(resolve)
