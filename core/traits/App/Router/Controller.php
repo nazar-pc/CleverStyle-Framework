@@ -94,7 +94,7 @@ trait Controller {
 		$structure = file_exists("$working_directory/index.json") ? file_get_json("$working_directory/index.json") : ['index'];
 		$structure = $this->controller_router_available_methods_to_flat_structure($structure);
 		$methods   = array_filter(
-			get_class_methods($controller_class),
+			get_class_methods($controller_class) ?: [],
 			function ($found_method) use ($method_name, $structure) {
 				if (!preg_match("/^{$method_name}_[a-z_]+$/", $found_method)) {
 					return false;
