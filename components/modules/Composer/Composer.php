@@ -114,12 +114,13 @@ class Composer {
 				$verbosity          = !DEBUG && $Config->core['simple_admin_mode'] ? '-vv' : '-vvv';
 				$input              = new ArrayInput(
 					[
-						'command'       => 'update',
-						'--working-dir' => "$storage/tmp",
-						'--no-dev'      => true,
-						'--ansi'        => true,
-						'--prefer-dist' => true,
-						$verbosity      => true
+						'command'               => 'update',
+						'--working-dir'         => "$storage/tmp",
+						'--no-dev'              => true,
+						'--ansi'                => true,
+						'--prefer-dist'         => true,
+						'--optimize-autoloader' => true,
+						$verbosity              => true
 					]
 				);
 				$output             = new Output;
