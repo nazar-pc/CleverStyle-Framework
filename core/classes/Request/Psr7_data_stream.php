@@ -80,13 +80,13 @@ class Psr7_data_stream {
 	 * @param int $offset
 	 * @param int $whence
 	 *
-	 * @return int
+	 * @return bool
 	 */
 	function stream_seek ($offset, $whence = SEEK_SET) {
 		try {
 			return static::$stream->seek($offset, $whence);
 		} catch (Exception $e) {
-			return -1;
+			return false;
 		}
 	}
 	/**

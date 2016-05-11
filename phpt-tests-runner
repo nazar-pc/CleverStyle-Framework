@@ -1,10 +1,10 @@
+#!/usr/bin/env php
 <?php
 /**
- * @package    CleverStyle CMS
- * @subpackage PHPT Tests runner
- * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
- * @license    MIT License, see license.txt
+ * @package   PHPT Tests runner
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 /**
  * @param string $text
@@ -124,7 +124,8 @@ function parse_test ($test_file) {
 			$line,
 			$match
 		)) {
-			$current_key = $match[1];
+			$current_key          = $match[1];
+			$result[$current_key] = '';
 		} elseif ($current_key) {
 			if (!isset($result[$current_key])) {
 				$result[$current_key] = '';
@@ -273,34 +274,29 @@ foreach (array_slice($argv, 1) as $arg) {
 		$targets[] = $arg;
 	}
 }
+/** @noinspection AdditionOperationOnArraysInspection */
 $options += [
 	'h'         => false,
 	'skip-slow' => false
 ];
-$version = json_decode(file_get_contents(__DIR__.'/components/modules/System/meta.json'), true)['version'];
-
-line("<g>CleverStyle CMS</g> version <y>$version</y>, PHPT Tests runner\n");
+line("<g>PHPT Tests runner</g>\n");
 
 if (!$targets || $options['h']) {
 	line(
 		<<<HTML
 <y>Usage:</y>
-  php -d variables_order=EGPCS test.php [-h] [files] [directories] 
+  phpt-tests-runner [-h] [files] [directories] 
 
 <y>Arguments:</y>
   <g>h</g> Print this help message  
 
 <y>Examples:</y>
   Execute tests from tests directory:
-    <g>php -d variables_order=EGPCS test.php tests</g>
+    <g>phpt-tests-runner tests</g>
   Execute tests single test:
-    <g>php -d variables_order=EGPCS test.php tests/sample.phpt</g>
+    <g>phpt-tests-runner tests/sample.phpt</g>
   Execute tests from tests directory, but skip slow tests using environment variable:
-    <g>SKIP_SLOW_TESTS=1 php -d variables_order=EGPCS test.php tests</g>
-  Execute tests from tests directory, but only those for MySQLi database engine:
-    <g>DB=MySQLi php -d variables_order=EGPCS test.php tests</g>
-  Execute tests from tests directory, but only those for SQLite database engine:
-    <g>DB=SQLite php -d variables_order=EGPCS test.php tests</g>
+    <g>SKIP_SLOW_TESTS=1 phpt-tests-runner tests</g>
 
 <y>PHPT Format:</y>
   This runner uses modification of PHPT format used by PHP itself, so that it can run many original PHPT tests without any changes.
@@ -332,7 +328,7 @@ if (!$targets || $options['h']) {
   <g>--CLEAN--</g>       Code that is executed after a test completes
 
 <y>PHPT tests examples:</y>
-  Examples can be found at <<g>https://qa.php.net/phpt_details.php</g>> (taking into account differences here) and in <g>tests</g> directory
+  Examples can be found at <<g>https://qa.php.net/phpt_details.php</g>> (taking into account differences here)
 
 <y>Main differences from original PHPT tests files:</y>
   1. <g>--TEST--</g> is not required and not even used (files names are used instead)
@@ -348,7 +344,7 @@ sort($tests, SORT_NATURAL);
 $tests_count = count($tests);
 
 if (!$tests_count) {
-	line("<r>No tests found, there is nothing to do here</r>");
+	line('<r>No tests found, there is nothing to do here</r>');
 	exit(1);
 }
 

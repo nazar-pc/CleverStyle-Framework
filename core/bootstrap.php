@@ -45,9 +45,8 @@ require_once DIR.'/core/functions.php';
 error_reporting(E_ALL);
 
 /**
- * Request data stream and request file stream wrappers that are used by system when handling requests data and uploaded files
+ * Request file stream wrappers that is used by system when handling uploaded files
  */
-stream_wrapper_register('request-data', cs\Request\Data_sub_stream::class);
 stream_wrapper_register('request-file', cs\Request\File_stream::class);
 /**
  * Stream wrapper for PSR7 interface

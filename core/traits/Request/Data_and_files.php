@@ -8,7 +8,8 @@
 namespace cs\Request;
 use
 	UnexpectedValueException,
-	cs\ExitException;
+	cs\ExitException,
+	nazarpc\Stream_slicer;
 
 trait Data_and_files {
 	/**
@@ -293,9 +294,8 @@ trait Data_and_files {
 		$data  = [];
 		$files = [];
 		foreach ($parts as $part) {
-			fseek($stream, $part['headers']['offset']);
 			$headers = $this->parse_multipart_headers(
-				fread($stream, $part['headers']['size'])
+				stream_get_contents($stream, $part['headers']['size'], $part['headers']['offset'])
 			);
 			if (
 				!isset($headers['content-disposition'][0], $headers['content-disposition']['name']) ||
@@ -306,30 +306,29 @@ trait Data_and_files {
 			$name = $headers['content-disposition']['name'];
 			if (isset($headers['content-disposition']['filename'])) {
 				$file = [
-					'name'     => $headers['content-disposition']['filename'],
-					'type'     => @$headers['content-type'] ?: 'application/octet-stream',
-					'size'     => $part['body']['size'],
-					'tmp_name' => 'request-data://'.$part['body']['offset'].':'.$part['body']['size'],
-					'error'    => UPLOAD_ERR_OK
+					'name'   => $headers['content-disposition']['filename'],
+					'type'   => @$headers['content-type'] ?: 'application/octet-stream',
+					'size'   => $part['body']['size'],
+					'stream' => Stream_slicer::slice($stream, $part['body']['offset'], $part['body']['size']),
+					'error'  => UPLOAD_ERR_OK
 				];
 				if ($headers['content-disposition']['filename'] === '') {
-					$file['type']     = '';
-					$file['tmp_name'] = '';
-					$file['error']    = UPLOAD_ERR_NO_FILE;
+					$file['type']   = '';
+					$file['stream'] = null;
+					$file['error']  = UPLOAD_ERR_NO_FILE;
 				} elseif ($file['size'] > $this->upload_max_file_size()) {
-					$file['tmp_name'] = '';
-					$file['error']    = UPLOAD_ERR_INI_SIZE;
+					$file['stream'] = null;
+					$file['error']  = UPLOAD_ERR_INI_SIZE;
 				}
 				$this->parse_multipart_set_target($files, $name, $file);
 			} else {
 				if ($part['body']['size'] == 0) {
 					$this->parse_multipart_set_target($data, $name, '');
 				} else {
-					fseek($stream, $part['body']['offset']);
 					$this->parse_multipart_set_target(
 						$data,
 						$name,
-						fread($stream, $part['body']['size'])
+						stream_get_contents($stream, $part['body']['size'], $part['body']['offset'])
 					);
 				}
 			}
