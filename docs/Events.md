@@ -1,7 +1,7 @@
 <a name="up" />
 Event - special feature of CleverStyle CMS, that allows to change behaviour of some system processes or react on them.
 
-### [Naming](#naming) [Registration](#registration) [Running](#running) [System events](#system-events)
+### [Naming](#naming) [Subscribing](#subscribing) [Unsubscribing](#unsubscribing) [One-time subscribing](#one-time-subscribing) [Dispatching](#dispatching) [System events](#system-events)
 
 General workflow:
 * someone subscribe for event somewhere in code (even several times)
@@ -52,6 +52,7 @@ Example:
 Parameter `$data` in callback is used to put some addition information of context into callback.
 In this case, `$data['name']` contains name of installable module, and module can perform some additional operations when it installs, for example, set default configuration parameters.
 
+<a name="unsubscribing" />
 ###[Up](#up) Unsubscribing from event
 Sometimes it may be necessary to unsubscribe from event, this can be done with `::off()` method:
 Example:
@@ -65,6 +66,7 @@ $Event->off('Module/event', $callback);
 $Event->off('Module/event');
 ```
 
+<a name="one-time-subscribing" />
 ###[Up](#up) One-time subscribing for event
 Sometimes it may be useful to unsubscribe from event right after first dispatching, it is possible with method `::once()`:
 ```php
