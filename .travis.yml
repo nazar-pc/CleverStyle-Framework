@@ -10,8 +10,6 @@ services:
 #addons:
 #  postgresql: "9.4"
 env:
-  global:
-    - REPORT_EXIT_STATUS=1
   matrix:
     - DB=MySQLi
     - DB=SQLite
