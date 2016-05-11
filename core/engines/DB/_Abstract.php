@@ -66,12 +66,6 @@ abstract class _Abstract {
 	 */
 	protected $connecting_time;
 	/**
-	 * Asynchronous request
-	 *
-	 * @var bool
-	 */
-	protected $async = false;
-	/**
 	 * @var bool
 	 */
 	protected $in_transaction = false;
@@ -189,21 +183,15 @@ abstract class _Abstract {
 	 * Asynchronous SQL request into DB (if is not supported - ordinary request will me executed).
 	 * Result of execution can't be obtained, so, use it, for example, for deleting some non-critical data
 	 *
-	 * @abstract
+	 * @deprecated
+	 * @todo remove after 4.x release
 	 *
-	 * @param string|string[] $query  SQL query string, may be a format string in accordance with the first parameter of sprintf() function
-	 * @param string|string[] $params May be array of arguments for formatting of <b>$query</b><br>
-	 *                                or string - in this case it will be first argument for formatting of <b>$query</b>
-	 * @param string[]        $param  if <b>$params</b> is string - this parameter will be second argument for formatting of <b>$query</b>.
-	 *                                If you need more arguments - add them after this one, function will accept them.
+	 * @param mixed $arguments
 	 *
 	 * @return false|object|resource
 	 */
-	function aq ($query, $params = [], ...$param) {
-		$this->async = true;
-		$result      = $this->q($query, $params, ...$param);
-		$this->async = false;
-		return $result;
+	function aq (...$arguments) {
+		return $this->q(...$arguments);
 	}
 	/**
 	 * SQL request to DB

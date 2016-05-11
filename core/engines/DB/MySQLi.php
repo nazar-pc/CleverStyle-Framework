@@ -74,15 +74,14 @@ class MySQLi extends _Abstract {
 		if (!$query) {
 			return false;
 		}
-		$result_mode = $this->async && defined('MYSQLI_ASYNC') ? MYSQLI_ASYNC : MYSQLI_STORE_RESULT;
-		$result      = @$this->instance->query($query, $result_mode);
+		$result = @$this->instance->query($query);
 		// In case of MySQL Client error - try to fix everything, but only once
 		if (
 			!$result &&
 			$this->instance->errno >= 2000 &&
 			$this->instance->ping()
 		) {
-			$result = @$this->instance->query($query, $result_mode);
+			$result = @$this->instance->query($query);
 		}
 		return $result;
 	}

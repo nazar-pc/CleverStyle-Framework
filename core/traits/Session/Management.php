@@ -435,7 +435,7 @@ trait Management {
 	 * Delete all old sessions from DB
 	 */
 	protected function delete_old_sessions () {
-		$this->db_prime()->aq(
+		$this->db_prime()->q(
 			"DELETE FROM `[prefix]sessions`
 			WHERE `expire` < ".time()
 		);

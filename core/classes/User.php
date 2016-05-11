@@ -189,7 +189,7 @@ class User {
 				$ip
 			);
 			if ($this->db_prime()->id() % $Config->core['inserts_limit'] == 0) {
-				$this->db_prime()->aq("DELETE FROM `[prefix]sign_ins` WHERE `expire` < $time");
+				$this->db_prime()->q("DELETE FROM `[prefix]sign_ins` WHERE `expire` < $time");
 			}
 		}
 	}

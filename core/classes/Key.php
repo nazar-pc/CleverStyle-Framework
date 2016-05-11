@@ -89,7 +89,7 @@ class Key {
 		 * Cleaning old keys
 		 */
 		if ($id && ($id % $Config->core['inserts_limit']) == 0) {
-			$database->aq(
+			$database->q(
 				"DELETE FROM `[prefix]keys`
 				WHERE `expire` < $time"
 			);
