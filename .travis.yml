@@ -6,19 +6,19 @@ sudo: false
 services:
   - memcached
   - mysql
-  - postgresql
-addons:
-  postgresql: "9.4"
+#  - postgresql
+#addons:
+#  postgresql: "9.4"
 env:
   global:
     - REPORT_EXIT_STATUS=1
   matrix:
     - DB=MySQLi
     - DB=SQLite
-    - DB=PostgreSQL
-matrix:
-  allow_failures:
-    - env: DB=PostgreSQL
+#    - DB=PostgreSQL
+#matrix:
+#  allow_failures:
+#    - env: DB=PostgreSQL
 before_script:
   - mysql -e 'CREATE DATABASE `travis`;'
   - if [[ "$(php -v | grep 'PHP 5')" ]]; then echo yes | pecl install apcu-4.0.11; fi
