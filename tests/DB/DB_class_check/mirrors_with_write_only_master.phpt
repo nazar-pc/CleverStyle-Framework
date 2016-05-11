@@ -24,7 +24,7 @@ array(6) {
   string(11) "__prefix2__"
 }
 string(19) "Connection: succeed"
-object(cs\DB\Fake)#7 (10) {
+object(cs\DB\Fake)#%d (%d) {
   ["connected":protected]=>
   bool(true)
   ["db_type":protected]=>
@@ -55,8 +55,6 @@ object(cs\DB\Fake)#7 (10) {
   }
   ["connecting_time":protected]=>
   NULL
-  ["async":protected]=>
-  bool(false)
   ["in_transaction":protected]=>
   bool(false)
 }

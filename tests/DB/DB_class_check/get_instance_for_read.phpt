@@ -53,8 +53,6 @@ object(cs\DB\Fake)#%d (%d) {
   }
   ["connecting_time":protected]=>
   NULL
-  ["async":protected]=>
-  bool(false)
   ["in_transaction":protected]=>
   bool(false)
 }
