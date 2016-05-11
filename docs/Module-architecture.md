@@ -288,7 +288,7 @@ Other possible properties are:
 * optional
 * conflict
 
-[Read about dependencies and conflicts](/docs/Components-dependencies-and-conflicts)
+[Read about dependencies and conflicts](/docs/Components-dependencies-and-conflicts.md)
 
 ##### More about `db` property
 Contains array with identifiers for databases. If some tables of module can be completely separated, it may be useful to use different identifiers. In such case if you have several configured databases in system (physically separated, or even with different engines, which is more reliable for some data), every identifier may be connected with any existing configured database.
@@ -320,4 +320,4 @@ $result			= $Storage->$users_storage_id->file_put_contents('test', 123);
 Readme file with extended description of module and some other additional information.
 
 #### events.php
-This file is included on every page, even when module is not installed or enabled. It is used mainly for [events subscribing](/docs/Events#wiki-subscribing), but also may be used for other purposes.
+This file is included on every page, even when module is not installed or enabled. It is used mainly for [events subscribing](/docs/Events.md#wiki-subscribing), but also may be used for other purposes.

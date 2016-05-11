@@ -1,4 +1,4 @@
-Before getting into details here, make sure you are familiar with [Web Components](http://webcomponents.org/) in general, [Polymer](https://www.polymer-project.org/) itself and with [behaviors](https://www.polymer-project.org/1.0/docs/devguide/behaviors.html) in particular.
+Before getting into details here, make sure you are familiar with [Web Components](http://webcomponents.org/) in general, [Polymer](https://www.polymer-project.org/) itself and with [behaviors](https://www.polymer-project.org/1.0/docs/devguide/behaviors.html.md) in particular.
 
 Since CleverStyle CMS uses custom elements heavily, it also provides some convenient behaviors for elements building out of the box:
 * cs.Polymer.behaviors.cs
@@ -45,7 +45,7 @@ A bit more advanced usage is to use formatted translations using exposed `__()` 
 </dom-module>
 ```
 `__('permissions_for_user', username)` is equivalent to standalone call `cs.Language.format('permissions_for_user', username)` or  `cs.Language.permissions_for_user(username)`.
- 
+
  The last feature is using prefixes, which is useful for translations from components:
  ```html
  <dom-module id="test-element">

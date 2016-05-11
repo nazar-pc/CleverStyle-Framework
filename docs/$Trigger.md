@@ -1,1 +1,1 @@
-Deprecated, use [$Event](/docs/$Event) instead
+Deprecated, use [$Event](/docs/$Event.md) instead

@@ -1,4 +1,4 @@
-Before getting into details here, make sure you are familiar with [Web Components](http://webcomponents.org/) in general, [Polymer](https://www.polymer-project.org/) itself and with [behaviors](https://www.polymer-project.org/1.0/docs/devguide/behaviors.html) in particular.
+Before getting into details here, make sure you are familiar with [Web Components](http://webcomponents.org/) in general, [Polymer](https://www.polymer-project.org/) itself and with [behaviors](https://www.polymer-project.org/1.0/docs/devguide/behaviors.html.md) in particular.
 
 Custom elements ideally can extend native or other custom elements. Even though Polymer 1.x doesn't support extending custom elements yet, there are behaviors that can help to share JS part and shared styles can help to share some CSS.
 The main restriction anywhere is that you can only extend elements that are already exists and can't use their names (obviously, but anyway).
@@ -78,4 +78,4 @@ Example (DOM module override):
 </dom-module>
 ```
 
-You can leverage power of [Reverse dependencies](/docs/Components-dependencies-and-conflicts#reverse-dependencies) to patch page elements of other components.
+You can leverage power of [Reverse dependencies](/docs/Components-dependencies-and-conflicts.md#reverse-dependencies) to patch page elements of other components.

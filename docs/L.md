@@ -8,7 +8,7 @@ L	= window.cs.Language(prefix);
 ```
 In case of prefixed usage full keys are still available, but prefixed keys are preferred in case of conflict.
 
-Object is similar to [$L](/docs/$L) object on backend, but have less number of methods.
+Object is similar to [$L](/docs/$L.md) object on backend, but have less number of methods.
 
 `L` is used only because it is short for frequent usage
 

@@ -2,7 +2,7 @@ CleverStyle CMS doesn't enforce any styling by default at all. This means develo
 
 However, some defaults are actually present and can be explicitly used if necessary with granular control over what is actually used and where.
 
-These defaults are implemented in form of [Shared styles](https://www.polymer-project.org/1.0/docs/devguide/styling.html#style-modules):
+These defaults are implemented in form of [Shared styles](https://www.polymer-project.org/1.0/docs/devguide/styling.html.md#style-modules):
 * `normalize` provides custom elements-aware version of normalize.css
 * `basic-styles-alone` provides custom provide advanced basic styling (including sane typography) on top of `normalize`
 * `advanced-styles-alone` contains utility classes (refer to source code for actual contents):

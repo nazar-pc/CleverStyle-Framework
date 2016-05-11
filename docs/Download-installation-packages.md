@@ -4,7 +4,7 @@ Nightly builds represent bleeding edge state of system and components, is update
 ### [Stable builds](https://sourceforge.net/projects/cleverstyle-cms/files/stable/)
 Stable builds are based on releases, they are more stable, but always much older that nightly builds, recommended for production environments.
 
-Please, read [how to install](/docs/Installation) it properly depending on your environment
+Please, read [how to install](/docs/Installation.md) it properly depending on your environment
 
 ### Digital signature
 All new builds starting from version `2.28.0+build-1076` are digitally signed.

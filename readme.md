@@ -10,7 +10,7 @@ CleverStyle CMS is simple, scalable, and fast content management framework (CMF)
 
 System is free, Open Source and is distributed under MIT license, see [license.txt](https://github.com/nazar-pc/CleverStyle-CMS/blob/master/license.txt)
 
-Installation builds of core and components can be found on [downloads page](/docs/Download-installation-packages).
+Installation builds of core and components can be found on [downloads page](/docs/Download-installation-packages.md).
 
 Author – Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
@@ -127,7 +127,7 @@ Some components are developed in parallel with core in this repository
 * Apache2 with modules:
  * REQUIRED: rewrite, headers
  * OPTIONAL: expires
-* or Nginx ([config sample](/docs/Nginx-config-sample))
+* or Nginx ([config sample](/docs/Nginx-config-sample.md))
 * PHP 5.6+ with libraries:
  * REQUIRED: cURL
  * OPTIONAL: APCu, Memcached
@@ -155,6 +155,6 @@ Now in `/some_dir` you'll have source code of CleverStyle CMS from container whi
 
 # How to install?
 
-[Read simple instructions in our wiki](/docs/Installation)
+[Read simple instructions in our wiki](/docs/Installation.md)
 
 # [Video tutorials for developers](https://www.youtube.com/watch?v=GVXHeCVbO_c&list=PLVUA3QJ02XIiKEzpD4dxoCENgzzJyNEnH)

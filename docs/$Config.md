@@ -371,7 +371,7 @@ $module_conf->set(
 );
 ```
 #### db($db_name : string) : int
-Is used to get database index by associated identifier, as it is described in *meta.json* section of [Module architecture](/docs/Module-architecture).
+Is used to get database index by associated identifier, as it is described in *meta.json* section of [Module architecture](/docs/Module-architecture.md).
 ```php
 <?php
 $Config		= \cs\Config::instance();
@@ -383,7 +383,7 @@ $result    	= $db->$users_db_id->q(
 );
 ```
 #### storage($storage_name : string) : int
-Is used to get storage index by associated identifier, as it is described in *meta.json* section of [Module architecture](/docs/Module-architecture).
+Is used to get storage index by associated identifier, as it is described in *meta.json* section of [Module architecture](/docs/Module-architecture.md).
 ```php
 <?php
 $Config			= \cs\Config::instance();

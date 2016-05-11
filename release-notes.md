@@ -1,7 +1,7 @@
 # 1.0.0+build-749: First release 1.0.0
 
 First release after more than 4 years of development.
-[Installation instructions](/docs/Installation)
+[Installation instructions](/docs/Installation.md)
 Feel free to report bugs if any, feature requests and questions, they are highly appreciated!
 ![logo mono](https://cloud.githubusercontent.com/assets/928965/5197643/de7aa1aa-7545-11e4-89a1-696b9ddfdba6.jpg)
 
@@ -16,8 +16,8 @@ Improved and extended OAuth2 module:
 Bunch of system constants removed.
 Of course, some bug fixes to improve stability.
 New builds are not attached anymore to releases:
-* you can always find latest builds on [downloads page](/docs/Download-installation-packages)
-* or download source code and [build it yourself](/docs/Installer-builder)
+* you can always find latest builds on [downloads page](/docs/Download-installation-packages.md)
+* or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 1.5.0+build-764: New stable release 1.5.0
 
@@ -25,9 +25,9 @@ Added 2 new triggers:
 * `System/Config/before_init`
 * `System/Config/after_init`
 
-[wiki](/docs/%24Config#systemconfigbefore_init)
+[wiki](/docs/%24Config.md#systemconfigbefore_init)
 
-`cs\CRUD` trait can handle multilingual functionality automatically: [wiki](/docs/CRUD#ml-prefix-and-this-data_model_ml_group)
+`cs\CRUD` trait can handle multilingual functionality automatically: [wiki](/docs/CRUD.md#ml-prefix-and-this-data_model_ml_group)
 
 `cs\DB\_Abstract::insert()` now can accept single-dimensional array of parameters if needed so.
 
@@ -35,7 +35,7 @@ API requests fix (for certain cases).
 
 Fixes in Blogs and Photo gallery modules.
 
-Latest builds on [downloads page](/docs/Download-installation-packages) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [downloads page](/docs/Download-installation-packages.md) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 1.8.3+build-770: New stable release 1.8.3
 
@@ -52,14 +52,14 @@ Fixes and small improvements in components:
 
 There is `shop` branch with WIP version of Shop module, will be merged into master as soon as will be ready (currently administration side is almost ready).
 
-Latest builds on [downloads page](/docs/Download-installation-packages) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [downloads page](/docs/Download-installation-packages.md) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 1.16.0+build-790: The most stable, extensible and Web Components-ready version ever
 
 New features:
 * `wait` cursor while web components are cooking
 * System styles are ShadowDOM-ready
-* [Extremely flexible patching of system classes](/docs/System-classes-extension)
+* [Extremely flexible patching of system classes](/docs/System-classes-extension.md)
 * Possibility to extend Polymer element with the same name like `<polymer-element name="some-element" extends="some-element">...`
 * Service script to convert any CSS to ShadowDOM-ready (for instance, used for UIkit), `service_scripts/make_css_shadow_dom_ready.php` file
 
@@ -86,13 +86,13 @@ Important patches of upstream third-party libraries:
 
 There is `shop` branch with WIP version of Shop module, will be merged into master as soon as will be ready (most of major features ready, need some supplementary features and triggers to be more hackable).
 
-Latest builds on [downloads page](/docs/Download-installation-packages) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [downloads page](/docs/Download-installation-packages.md) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 1.22.2+build-811: More features and new Prism plugin
 
 New features:
 * Inverse dependency through `provide` property in `meta.json` like `Blog/post_patch` (crucial for same name extending of Web Components).
-* Added controller-based routing support in addition to files-based ([documentation](/docs/Routing))
+* Added controller-based routing support in addition to files-based ([documentation](/docs/Routing.md))
 * Atom feed in Blogs module (for all posts, specific category, specific tag)
 * New Prism plugin for source code highlighting on pages
 
@@ -112,7 +112,7 @@ Fixes and small improvements:
 
 There is `shop` branch with WIP version of Shop module, will be merged into master as soon as will be ready (very likely to be included in next release).
 
-Latest builds on [downloads page](/docs/Download-installation-packages) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [downloads page](/docs/Download-installation-packages.md) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 1.40.2+build-853: Huge leap forward to the future, WebSockets and Shop modules added
 
@@ -121,11 +121,11 @@ New components:
 * New **Shop** module, provides simple, but highly extensible and customizable shopping functionality
 
 New features:
-* `$_SERVER` superglobal is now [wrapped by object](/docs/$_SERVER) to provide simplified, more functional and secure alternative to raw elements (while keeping original array-like behavior for compatibility)
+* `$_SERVER` superglobal is now [wrapped by object](/docs/$_SERVER.md) to provide simplified, more functional and secure alternative to raw elements (while keeping original array-like behavior for compatibility)
 * `\cs\Language::init()` and `::url_language()` methods added
 * `\cs\User::get_session()` refactored to `::get_session_id()` which much better explains what function actually do
 * Possibility to attach volume to Docker container with demo
-* Triggers are now Events, corresponding class `Event` [added](/docs/$Event), `Trigger` still exists for backward compatibility, but uses `Event` under the hood (transition is simple - `Trigger::register() -> Event::on()`, `Trigger::run() -> Event::fire()`, also `Event` have some new functionality with methods `::off()` and `::once()`, `events.php` is used now instead `trigger.php` which is deprecated now
+* Triggers are now Events, corresponding class `Event` [added](/docs/$Event.md), `Trigger` still exists for backward compatibility, but uses `Event` under the hood (transition is simple - `Trigger::register() -> Event::on()`, `Trigger::run() -> Event::fire()`, also `Event` have some new functionality with methods `::off()` and `::once()`, `events.php` is used now instead `trigger.php` which is deprecated now
 * `cs.Event` object added on frontend similar to `cs\Event` on backend with the same methods
 
 Updates:
@@ -157,7 +157,7 @@ Possible partial compatibility breaking (very unlikely, but still possible):
   * Good random key generated on installation with the help of `openssl_random_pseudo_bytes()`
 * `\cs\User::get_session_user()` refactored to `::load_session()` which much better explains what function actually do
 
-Latest builds on [downloads page](/docs/Download-installation-packages) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [downloads page](/docs/Download-installation-packages.md) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 1.54.0+build-880: What if we just make everything 5 times faster?
 
@@ -203,7 +203,7 @@ Deprecations:
 Possible partial compatibility breaking (very unlikely, but still possible):
 * Update support for Blogs module from very old versions removed (not likely to be an issue)
 
-Latest builds on [downloads page](/docs/Download-installation-packages) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [downloads page](/docs/Download-installation-packages.md) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 1.58.0+build-887: We love Composer!
 
@@ -263,7 +263,7 @@ Deprecations:
 Possible partial compatibility breaking (very unlikely, but still possible):
 * PCACHE and STORAGE constants renamed to new names, STORAGE constant now points to another directory (not likely to cause any problems)
 
-Latest builds on [downloads page](/docs/Download-installation-packages) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [downloads page](/docs/Download-installation-packages.md) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 1.88.4+build-938: Better consistency in routing and improved security
 
@@ -315,7 +315,7 @@ Deprecations:
 Possible partial compatibility breaking (very unlikely, but still possible):
 * None
 
-Latest builds on [downloads page](/docs/Download-installation-packages) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [downloads page](/docs/Download-installation-packages.md) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 1.110.0+build-985: Bitcoin payment, automated builds and lots of polishing all over the place
 
@@ -421,7 +421,7 @@ Possible partial compatibility breaking (very unlikely, but still possible):
   * apc
   * memcached
 
-Latest builds on [SourceForge downloads page](/docs/Download-installation-packages) ([details about installation process](/docs/Installation)) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [SourceForge downloads page](/docs/Download-installation-packages.md) ([details about installation process](/docs/Installation.md)) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 2.4.2+build-1005: Code quality and bugs hunting
 
@@ -480,7 +480,7 @@ Dropped backward compatibility:
   * `meta/storage.json` contents of components now available as `storage` field in `meta.json`
   * `versions.json` contents of components now available as `update_versions` field in `meta.json`
 
-Latest builds on [SourceForge downloads page](/docs/Download-installation-packages) ([details about installation process](/docs/Installation)) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [SourceForge downloads page](/docs/Download-installation-packages.md) ([details about installation process](/docs/Installation.md)) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 2.28.0+build-1076: Semantics matters
 
@@ -492,7 +492,7 @@ Also this release includes important fixes for some regressions that made it una
 
 As usual many small fixes and improvements, especially exiting improvements happened in `\cs\CRUD` trait that now supports JSON type, html with iframes and automatically handles files uploads + introduces new simplified interface.
 
-And the last important thing here: all new builds and git tags are [digitally signed](/docs/Download-installation-packages#digital-signature) now!
+And the last important thing here: all new builds and git tags are [digitally signed](/docs/Download-installation-packages.md#digital-signature) now!
 
 New components:
 * New **Json_ld** plugin - simplifies some parts of JSON-LD generation
@@ -599,7 +599,7 @@ Deprecations:
 Possible partial compatibility breaking (very unlikely, but still possible):
 * Dropped support for 2-level arrays in `\cs\DB\_Abstract::q()` (very unlikely someone used this construction since it was not documented and looks too complex)
 
-Latest builds on [SourceForge downloads page](/docs/Download-installation-packages) ([details about installation process](/docs/Installation)) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [SourceForge downloads page](/docs/Download-installation-packages.md) ([details about installation process](/docs/Installation.md)) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 2.43.0+build-1113: Write less, do more
 
@@ -609,7 +609,7 @@ Joined tables allow to make CRUD operations on tables that are tightly connected
 * shop item attributes
 * shop item images
 
-Now you can manage things of such kind automatically together with fields from main table just by specifying all such tables in common data model, read [updated documentation](/docs/CRUD) for more details of implementation.
+Now you can manage things of such kind automatically together with fields from main table just by specifying all such tables in common data model, read [updated documentation](/docs/CRUD.md) for more details of implementation.
 Obviously, `\cs\CRUD_helpers::search()` supports joined tables as well, allowing creation of most common queries even including joined tables very easily and naturally.
 
 Second important thing is basically rewrite of HybridAuth integration, now code is much simpler, better structured and reliable. Also some small fixes and new features were introduced.
@@ -683,7 +683,7 @@ Deprecations:
 Possible partial compatibility breaking (very unlikely, but still possible):
 * `$_POST['login']` is not used directly in `\cs\User` anymore, not likely to break anything, but still possible
 
-Latest builds on [SourceForge downloads page](/docs/Download-installation-packages) ([details about installation process](/docs/Installation)) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [SourceForge downloads page](/docs/Download-installation-packages.md) ([details about installation process](/docs/Installation.md)) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 2.86.0+build-1210: Bower and NPM support, Emoji, powerful WebSockets
 
@@ -819,7 +819,7 @@ Deprecations:
 Possible partial compatibility breaking (very unlikely, but still possible):
 * TinyMCE: TinyMCE methods for re-initialization accept DOM element as argument instead of ID
 
-Latest builds on [SourceForge downloads page](/docs/Download-installation-packages) ([details about installation process](/docs/Installation)) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [SourceForge downloads page](/docs/Download-installation-packages.md) ([details about installation process](/docs/Installation.md)) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 2.119.0+build-1286: No frontend on backend
 
@@ -841,7 +841,7 @@ New features:
   * System/Session/add
 * `\cs\CRUD` now can accept associative arrays of arguments, not only indexed with proper order
 * Allow underscore in HTTP request method
-* Wildcards support in `map.json` (more details in [updated documentation](/docs/Module-architecture#includesmapjson))
+* Wildcards support in `map.json` (more details in [updated documentation](/docs/Module-architecture.md#includesmapjson))
 * Composer assets: Ignore packages on earlier stage, this improves installation time and slightly simplifies runtime
 
 Updates:
@@ -901,7 +901,7 @@ Possible partial compatibility breaking (very unlikely, but still possible):
 * `\cs\Group::set()` method signature changed, group data will be dropped and not available anymore
 * `data` column dropped from groups table
 
-Latest builds on [SourceForge downloads page](/docs/Download-installation-packages) ([details about installation process](/docs/Installation)) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [SourceForge downloads page](/docs/Download-installation-packages.md) ([details about installation process](/docs/Installation.md)) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 3.145.7+build-1787: Pure frontend
 
@@ -1280,7 +1280,7 @@ Dropped backward compatibility:
 * Also specifying protocol doesn't make sense since already available on frontend
 * Do not enforce `POST` method in `$.ajax()` calls, it is explicitly specified where necessary
 
-Latest builds on [SourceForge downloads page](/docs/Download-installation-packages) ([details about installation process](/docs/Installation)) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [SourceForge downloads page](/docs/Download-installation-packages.md) ([details about installation process](/docs/Installation.md)) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 3.152.1+build-1808: Few things here and there
 
@@ -1332,7 +1332,7 @@ Dropped backward compatibility:
 * Dropped upgrade support from versions earlier than latest stable
 * Dropped hack for upgrade from 2.x versions
 
-Latest builds on [SourceForge downloads page](/docs/Download-installation-packages) ([details about installation process](/docs/Installation)) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [SourceForge downloads page](/docs/Download-installation-packages.md) ([details about installation process](/docs/Installation.md)) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 3.155.0+build-1818: Security update
 
@@ -1367,7 +1367,7 @@ Deprecations:
 Possible partial compatibility breaking (very unlikely, but still possible):
 * jQuery ready event is now completely standalone again (not likely, but potential BC-break)
 
-Latest builds on [SourceForge downloads page](/docs/Download-installation-packages) ([details about installation process](/docs/Installation)) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [SourceForge downloads page](/docs/Download-installation-packages.md) ([details about installation process](/docs/Installation.md)) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 3.162.4+build-1841: Towards sub-1ms page rendering performance
 
@@ -1423,7 +1423,7 @@ Possible partial compatibility breaking (very unlikely, but still possible):
 * Potential BC break (very unlikely) is that `$user` argument in `\cs\Session::add()` is now mandatory
 * Undocumented `\cs\Page::$link`, `::$Search` and `$Replace` properties now have protected access
 
-Latest builds on [SourceForge downloads page](/docs/Download-installation-packages) ([details about installation process](/docs/Installation)) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [SourceForge downloads page](/docs/Download-installation-packages.md) ([details about installation process](/docs/Installation.md)) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 3.174.2+build-1883: RequireJS integration, Bower/NPM integration with system and SQLite support
 
@@ -1512,7 +1512,7 @@ Possible partial compatibility breaking (very unlikely, but still possible):
 * Composer assets plugin will not include any files completely automatically anymore, explicit files listing required or AMD module loading can be used
 * Site rules configuration removed from system
 
-Latest builds on [SourceForge downloads page](/docs/Download-installation-packages) ([details about installation process](/docs/Installation)) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [SourceForge downloads page](/docs/Download-installation-packages.md) ([details about installation process](/docs/Installation.md)) or download source code and [build it yourself](/docs/Installer-builder.md)
 
 # 3.212.0+build-1965: Sub-1ms performance achieved, PSR-7 compatibility, request/response abstractions
 
@@ -1648,4 +1648,4 @@ Possible partial compatibility breaking (very unlikely, but still possible):
   * `cs\Page::init()`
 * Partially breaking change: translation files renamed to latin names
 
-Latest builds on [SourceForge downloads page](/docs/Download-installation-packages) ([details about installation process](/docs/Installation)) or download source code and [build it yourself](/docs/Installer-builder)
+Latest builds on [SourceForge downloads page](/docs/Download-installation-packages.md) ([details about installation process](/docs/Installation.md)) or download source code and [build it yourself](/docs/Installer-builder.md)

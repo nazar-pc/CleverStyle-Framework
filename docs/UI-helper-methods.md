@@ -1,4 +1,4 @@
-While [CleverStyle Widgets](/docs/CleverStyle-Widgets) provide set of elements, for some use cases using plain elements is a bit too low-level and simpler wrappers might be very useful.
+While [CleverStyle Widgets](/docs/CleverStyle-Widgets.md) provide set of elements, for some use cases using plain elements is a bit too low-level and simpler wrappers might be very useful.
 
 For this purposes CleverStyle CMS provides few convenient methods under `cs.ui` namespace:
 * `cs.ui.modal()`

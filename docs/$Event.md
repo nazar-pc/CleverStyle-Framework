@@ -16,13 +16,13 @@ $Event	= \cs\Event::instance();
 * fire()
 
 #### on($event : string, $callback : callable) : bool
-Subscribing for event. [More details, and example of use](/docs/Events#wiki-subscribing)
+Subscribing for event. [More details, and example of use](/docs/Events.md#wiki-subscribing)
 
 #### off($event : string, $callback : callable) : bool
-Unsubscribing from event. [More details, and example of use](/docs/Events#wiki-subscribing)
+Unsubscribing from event. [More details, and example of use](/docs/Events.md#wiki-subscribing)
 
 #### once($event : string, $callback : callable) : bool
-Subscribing for event for single execution. [More details, and example of use](/docs/Events#wiki-subscribing)
+Subscribing for event for single execution. [More details, and example of use](/docs/Events.md#wiki-subscribing)
 
 #### fire($event : string, $param1 = null : mixed|null, $_ = null : mixed|null) : bool
-Dispatching of event. [More details, and example of use](/docs/Events#wiki-dispatching)
+Dispatching of event. [More details, and example of use](/docs/Events.md#wiki-dispatching)

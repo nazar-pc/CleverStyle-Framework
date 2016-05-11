@@ -30,7 +30,7 @@ Comments with less importance may be one-line comments started with `//`, but it
  * Comment here
  */
 ```
-When writing documentation, please use [PHPDocumentor’s](http://www.phpdoc.org/docs/latest/for-users/phpdoc-reference.html) or [JSDoc](https://en.wikipedia.org/wiki/JSDoc) syntax.
+When writing documentation, please use [PHPDocumentor’s](http://www.phpdoc.org/docs/latest/for-users/phpdoc-reference.html.md) or [JSDoc](https://en.wikipedia.org/wiki/JSDoc) syntax.
 
 #### Spaces and wrapping
 Indentation should consist of 1 tab. 1 tab = 4 spaces (should be configured in you editor's settings).
@@ -132,7 +132,7 @@ All ids and classes must start with `cs`, components must add their namespace in
 
 #### Classes and functions vs. plain code
 File should either declare class of functions or cause side-effect, not both at the same file.
-There may be several functions in the same file, but there should be only one class to work properly with classes autoloading. 
+There may be several functions in the same file, but there should be only one class to work properly with classes autoloading.
 
 #### Web Components
 Names of Web Components elements should start with `cs-` also and contain component name in logs or short form, or use some other prefix without `cs-`:

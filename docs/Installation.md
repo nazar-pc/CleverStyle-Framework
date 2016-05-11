@@ -1,6 +1,6 @@
 To install CleverStyle CMS you have to have installation package, which has extension **\*.phar.php**.
 
-Latest build of installer may be found on [downloads page](/docs/Download-installation-packages) of this repository or you can [prepare your own](/docs/Installer-builder) installation package.
+Latest build of installer may be found on [downloads page](/docs/Download-installation-packages.md) of this repository or you can [prepare your own](/docs/Installer-builder.md) installation package.
 
 ### GUI way
 Put installer to the root directory of future website. And open this file from web browser.
@@ -13,7 +13,7 @@ For example:
 * Fill several fields and click **Install**
 * That's it! You have installed CleverStyle CMS
 
-If you are using Nginx - here is [Nginx config sample](/docs/Nginx-config-sample) with necessary configuration for installation and usage.
+If you are using Nginx - here is [Nginx config sample](/docs/Nginx-config-sample.md) with necessary configuration for installation and usage.
 
 ### CLI way
 Alternative way to install CleverStyle CMS is by using command line.

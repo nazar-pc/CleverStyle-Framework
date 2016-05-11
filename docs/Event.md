@@ -3,7 +3,7 @@
 Event	= window.cs.Event;
 ```
 
-Object is the similar to [$Event](/docs/$Event) object on backend, see [examples](/docs/Events).
+Object is the similar to [$Event](/docs/$Event.md) object on backend, see [examples](/docs/Events.md).
 
 ### [Methods](#methods)
 
@@ -17,17 +17,17 @@ Object is the similar to [$Event](/docs/$Event) object on backend, see [examples
 * fire()
 
 #### on(event : string, callback : function) : cs.Event
-Subscribing for event. [More details, and example of use](/docs/Events#wiki-subscribing)
+Subscribing for event. [More details, and example of use](/docs/Events.md#wiki-subscribing)
 Callback might either return boolean value or Promise object.
 
 #### off(event : string, callback : function) : cs.Event
-Unsubscribing from event. [More details, and example of use](/docs/Events#wiki-subscribing)
+Unsubscribing from event. [More details, and example of use](/docs/Events.md#wiki-subscribing)
 Callback might either return boolean value or Promise object.
 
 #### once(event : string, callback : function) : cs.Event
-Subscribing for event for single execution. [More details, and example of use](/docs/Events#wiki-subscribing)
+Subscribing for event for single execution. [More details, and example of use](/docs/Events.md#wiki-subscribing)
 Callback might either return boolean value or Promise object.
 
 #### fire(event : string, callback : function) : Promise
-Dispatching of event. [More details, and example of use](/docs/Events#wiki-dispatching)
+Dispatching of event. [More details, and example of use](/docs/Events.md#wiki-dispatching)
 Will return Promise object, since event handlers might be asynchronous.
