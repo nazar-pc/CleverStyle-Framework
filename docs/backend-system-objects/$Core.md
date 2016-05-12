@@ -6,7 +6,7 @@ $Core	= \cs\Core::instance();
 
 Object provides loading of base system configuration.
 
-### [Methods](#methods) [Properties](#properties) [Constants](#constants)
+### [Methods](#methods) [Properties](#properties)
 
 <a name="methods" />
 ###[Up](#) Methods
@@ -60,12 +60,3 @@ $Core->parameter	= 'value';
 * public_key
 
 All properties are the same as specified in `config/main.json`, so if you add more keys there, they'll be all available as read-only properties on `$Core`.
-
-<a name="constants" />
-###[Up](#) Constants
-
-At creation `$Core` object defines several global constants:
-* DOMAIN
-
-#### DOMAIN
-Domain of main mirror
