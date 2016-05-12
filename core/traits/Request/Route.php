@@ -326,7 +326,7 @@ trait Route {
 	 * @return int|null|string
 	 */
 	function route ($index) {
-		return isset($this->route[$index]) ? $this->route[$index] : null;
+		return @$this->route[$index];
 	}
 	/**
 	 * Get route path part by index
@@ -336,7 +336,7 @@ trait Route {
 	 * @return null|string
 	 */
 	function route_path ($index) {
-		return isset($this->route_path[$index]) ? $this->route_path[$index] : null;
+		return @$this->route_path[$index];
 	}
 	/**
 	 * Get route ids part by index
@@ -346,6 +346,6 @@ trait Route {
 	 * @return int|null
 	 */
 	function route_ids ($index) {
-		return isset($this->route_ids[$index]) ? $this->route_ids[$index] : null;
+		return @$this->route_ids[$index];
 	}
 }

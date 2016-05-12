@@ -46,6 +46,6 @@ trait Query {
 			return $result;
 		}
 		/** @noinspection OffsetOperationsInspection */
-		return array_key_exists($name, $this->query) ? $this->query[$name] : null;
+		return @$this->query[$name];
 	}
 }

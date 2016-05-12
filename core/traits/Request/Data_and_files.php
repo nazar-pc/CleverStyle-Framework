@@ -102,7 +102,7 @@ trait Data_and_files {
 			return $result;
 		}
 		/** @noinspection OffsetOperationsInspection */
-		return array_key_exists($name, $this->data) ? $this->data[$name] : null;
+		return @$this->data[$name];
 	}
 	/**
 	 * Get file item by name
@@ -112,7 +112,7 @@ trait Data_and_files {
 	 * @return array|null File item if exists or `null` otherwise
 	 */
 	function files ($name) {
-		return array_key_exists($name, $this->files) ? $this->files[$name] : null;
+		return @$this->files[$name];
 	}
 	/**
 	 * @param array[] $files
@@ -135,8 +135,8 @@ trait Data_and_files {
 						'name'     => $files['name'][$index],
 						'type'     => $files['type'][$index],
 						'size'     => $files['size'][$index],
-						'tmp_name' => @$files['tmp_name'][$index] ?: null,
-						'stream'   => @$files['stream'][$index] ?: null,
+						'tmp_name' => @$files['tmp_name'][$index],
+						'stream'   => @$files['stream'][$index],
 						'error'    => $files['error'][$index]
 					],
 					$file_path
