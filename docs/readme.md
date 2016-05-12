@@ -91,6 +91,7 @@ Global system objects provides almost all functionality of CleverStyle CMS. Shor
  * [\cs\Config\Module_Properties class](/docs/backend-system-objects/$Config.md#module-properties-class)
 * [$Core](/docs/backend-system-objects/$Core.md)
  * [Methods](/docs/backend-system-objects/$Core.md#methods)
+ * [Properties](/docs/backend-system-objects/$Core.md#properties)
  * [Constants](/docs/backend-system-objects/$Core.md#constants)
 * [$db](/docs/backend-system-objects/$db.md) (from Database)
  * [Methods](/docs/backend-system-objects/$db.md#methods)

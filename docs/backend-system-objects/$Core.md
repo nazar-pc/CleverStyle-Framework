@@ -6,7 +6,7 @@ $Core	= \cs\Core::instance();
 
 Object provides loading of base system configuration.
 
-### [Methods](#methods) [Constants](#constants)
+### [Methods](#methods) [Properties](#properties) [Constants](#constants)
 
 <a name="methods" />
 ###[Up](#) Methods
@@ -34,6 +34,32 @@ $Core			= \cs\Core::instance();
 $Core->set('parameter', 'value');
 $Core->parameter	= 'value';
 ```
+
+<a name="properties" />
+###[Up](#) Properties
+
+`$Core` object has next public properties (which are not public, but instead available through magic methods as read-only):
+* domain
+* timezone
+* db_host
+* db_type
+* db_name
+* db_user
+* db_password
+* db_prefix
+* db_charset
+* storage_type
+* storage_url
+* storage_host
+* storage_user
+* storage_password
+* language
+* cache_engine
+* memcache_host
+* memcache_port
+* public_key
+
+All properties are the same as specified in `config/main.json`, so if you add more keys there, they'll be all available as read-only properties on `$Core`.
 
 <a name="constants" />
 ###[Up](#) Constants
