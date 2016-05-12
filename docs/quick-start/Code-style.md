@@ -46,8 +46,8 @@ Similarly for arrays:
 ```php
 <?php
 $array	= [
-	'key'		=> 'value',
-	'another_key'	=> 'value'
+	'key'         => 'value',
+	'another_key' => 'value'
 ];
 ```
 
@@ -122,7 +122,7 @@ use
 Following this convention will allow to use built-in class autoloader, for instance, `\cs\modules\Module_name\Class_name` class intended to be in `components/modules/Module_name/Class_name.php`.
 
 ##### JavaScript
-System functions/variables are defined inside `window.cs`, `$.cs` and `$().cs` (for jQuery).
+System functions/variables are defined inside `window.cs`.
 Components must create namespace inside `window.cs` namespace, for example `window.cs.plupload`.
 
 ##### CSS
@@ -135,7 +135,7 @@ File should either declare class of functions or cause side-effect, not both at 
 There may be several functions in the same file, but there should be only one class to work properly with classes autoloading.
 
 #### Web Components
-Names of Web Components elements should start with `cs-` also and contain component name in logs or short form, or use some other prefix without `cs-`:
+Names of Web Components elements should start with `cs-` also and contain component name in logs or short form, or use some other prefix without `cs-` if are project-specific:
 * `cs-blogs-post-latest`
 * `e-profile-select`
 
@@ -147,7 +147,7 @@ All SQL keywords must be in uppercase:
 * `INSERT`
 * `FROM`
 
-It is recommended to write every next logical part of query on new line, and also write every new table field on new line if there several:
+It is recommended to write every next logical part of query on new line, and also write every new table field on new line if there few of them:
 ```sql
 SELECT
 	`id`,
@@ -157,4 +157,4 @@ WHERE `id` = 5
 LIMIT 1`
 ```
 
-Also, every field/table name must be escaped with `` ` ``
+Also, every field/table name must be escaped with backticks `` ` `` (for databases that do not support backticks they'll be replaced with something supported by that particular RDBMS, for instance, with double quotes `"` for PostgreSQL).
