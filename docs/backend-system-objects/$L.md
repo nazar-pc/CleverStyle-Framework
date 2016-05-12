@@ -92,6 +92,7 @@ Method for language changing (usually is called by system automatically, and set
 * clanguage_en*
 * clang*
 * cregion*
+* content_language*
 * _datetime_long*
 * _datetime*
 * _date*
@@ -125,6 +126,9 @@ ISO 3166-1 Alpha-2 region code:
 * us
 * ru
 * ua
+
+### content_language
+Content language that is primarily used in HTTP header `Content-Language`, but might also be used in other places. If not given in translations, defaults to `clang`.
 
 #### _datetime_long
 Long format of date and time for `date()` PHP function
