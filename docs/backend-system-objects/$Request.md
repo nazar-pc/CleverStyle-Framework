@@ -21,6 +21,9 @@
 * query()
 * data()
 * cookie()
+* route()
+* route_path()
+* route_ids()
 * analyze_route_path()
 
 #### init($server : string[], $query : array, $data : array, $files : array[], $data_stream : null|resource|string, $cookie : string[], $request_started :: float)
@@ -50,11 +53,23 @@ Initializes route, required to be called after `::init_server()`
 #### header($name : string) : false|string
 Get header by name, if header not present - returns `false`
 
-#### query($name : string|string[]) : false|mixed|mixed[]
-Get query parameter by name, if parameter (ar least one in case of many) not present - returns `false`
+#### query(...$name : string[]|string[][]) : mixed|mixed[]|null
+Get query parameter by name, if parameter (ar least one in case of many) not present - returns `null`
 
-#### data($name : string|string[]) : false|mixed|mixed[]
-Get data item by name, if item (ar least one in case of many) not present - returns `false`
+#### data(...$name : string[]|string[][]) : mixed|mixed[]|null
+Get data item by name, if item (ar least one in case of many) not present - returns `null`
+
+#### cookie($name : string) : null|string
+Get cookie by name
+
+#### route($index : int) : int|null|string
+Get route part by index
+
+#### route_path($index : int) : null|string
+Get route path part by index
+
+#### route_ids($index : int) : int|null
+Get route ids part by index
 
 #### analyze_route_path($path : string) : array
 As result returns current route in system in form of array, normalized path, detects module path points to, whether this is API call, administration page, or home page
@@ -210,7 +225,7 @@ This event is used by components in order to change current route. Array with on
 Real example, allows to open module by localized module name in URL:
 ```php
 <?php
-\cs\Event::instance()->register(
+\cs\Event::instance()->on(
 	'System/Request/routing_replace',
 	function ($data) {
 		$L	= \cs\Language::instance();
