@@ -36,12 +36,7 @@ class App {
 		Singleton,
 		Router;
 	const INIT_STATE_METHOD = 'init';
-	/**
-	 * @var string
-	 */
-	protected $working_directory;
 	protected function init () {
-		$this->working_directory = '';
 		$this->init_router();
 	}
 	/**
@@ -56,7 +51,6 @@ class App {
 			throw new ExitException(400);
 		}
 		$this->handle_closed_site(!$Config->core['site_mode'], $Request);
-		$this->working_directory = $this->get_working_directory($Request);
 		if (!$this->check_permission('index')) {
 			throw new ExitException(403);
 		}
@@ -72,34 +66,13 @@ class App {
 		 * Title only for non-CLI and non-API calls
 		 */
 		$Request->cli_path || $Request->api_path || $this->render_title();
-		$this->render_content();
+		$this->execute_router($Request);
 		/**
 		 * Blocks only for non-CLI and non-API calls
 		 */
 		$Request->cli_path || $Request->api_path || $this->render_blocks();
 		Event::instance()->fire('System/App/render/after');
 		Page::instance()->render();
-	}
-	/**
-	 * @param Request $Request
-	 *
-	 * @return string
-	 *
-	 * @throws ExitException
-	 */
-	protected function get_working_directory ($Request) {
-		$working_directory = MODULES."/$Request->current_module";
-		if ($Request->cli_path) {
-			$working_directory .= '/cli';
-		} elseif ($Request->admin_path) {
-			$working_directory .= '/admin';
-		} elseif ($Request->api_path) {
-			$working_directory .= '/api';
-		}
-		if (!is_dir($working_directory) && (!$Request->cli_path || $Request->method != 'CLI')) {
-			throw new ExitException(404);
-		}
-		return $working_directory;
 	}
 	/**
 	 * @param bool    $closed_site
@@ -182,24 +155,6 @@ class App {
 				$L->{$Request->home_page ? 'system_home' : $Request->current_module}
 			);
 		}
-	}
-	/**
-	 * Render page content (without blocks, just module content)
-	 *
-	 * @throws ExitException
-	 */
-	protected function render_content () {
-		$Page = Page::instance();
-		/**
-		 * If module consists of index.html only
-		 */
-		if (file_exists("$this->working_directory/index.html")) {
-			ob_start();
-			_include("$this->working_directory/index.html", false, false);
-			$Page->content(ob_get_clean());
-			return;
-		}
-		$this->execute_router();
 	}
 	/**
 	 * Blocks rendering

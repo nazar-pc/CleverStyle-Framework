@@ -9,7 +9,7 @@ namespace cs\App;
 use
 	cs\Event,
 	cs\ExitException,
-	cs\Request,
+	cs\Page,
 	cs\Response,
 	cs\App\Router\CLI,
 	cs\App\Router\Controller,
@@ -26,18 +26,34 @@ trait Router {
 	 * @var string[]
 	 */
 	protected $controller_path;
+	/**
+	 * @var string
+	 */
+	protected $working_directory;
 	protected function init_router () {
-		$this->controller_path = ['index'];
+		$this->controller_path   = ['index'];
+		$this->working_directory = '';
 	}
 	/**
 	 * Execute router
 	 *
 	 * Depending on module, files-based or controller-based router might be used
 	 *
+	 * @param \cs\Request $Request
+	 *
 	 * @throws ExitException
 	 */
-	protected function execute_router () {
-		$Request = Request::instance();
+	protected function execute_router ($Request) {
+		$this->working_directory = $this->get_working_directory($Request);
+		/**
+		 * If module consists of index.html only
+		 */
+		if (file_exists("$this->working_directory/index.html")) {
+			ob_start();
+			_include("$this->working_directory/index.html", false, false);
+			Page::instance()->content(ob_get_clean());
+			return;
+		}
 		$this->check_and_normalize_route($Request);
 		if (!Event::instance()->fire('System/App/execute_router/before')) {
 			return;
@@ -50,9 +66,30 @@ trait Router {
 		Event::instance()->fire('System/App/execute_router/after');
 	}
 	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @return string
+	 *
+	 * @throws ExitException
+	 */
+	protected function get_working_directory ($Request) {
+		$working_directory = MODULES."/$Request->current_module";
+		if ($Request->cli_path) {
+			$working_directory .= '/cli';
+		} elseif ($Request->admin_path) {
+			$working_directory .= '/admin';
+		} elseif ($Request->api_path) {
+			$working_directory .= '/api';
+		}
+		if (!is_dir($working_directory) && (!$Request->cli_path || $Request->method != 'CLI')) {
+			throw new ExitException(404);
+		}
+		return $working_directory;
+	}
+	/**
 	 * Normalize `cs\Request::$route_path` and fill `cs\App::$controller_path`
 	 *
-	 * @param Request $Request
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
@@ -115,9 +152,9 @@ trait Router {
 	 * If HTTP method handler not found we generate either `501 Not Implemented` if other methods are supported or `404 Not Found` if handlers for others
 	 * methods also doesn't exist
 	 *
-	 * @param string[] $available_methods
-	 * @param string   $request_method
-	 * @param Request  $Request
+	 * @param string[]    $available_methods
+	 * @param string      $request_method
+	 * @param \cs\Request $Request
 	 *
 	 * @throws ExitException
 	 */
