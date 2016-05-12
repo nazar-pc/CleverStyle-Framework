@@ -22,33 +22,33 @@
 			<dt>drop_element</dt>
 			<dd>If specified - it will be possible to drop file on specified element to start file uploading; if not specified - <code>button</code> assumed</dd>
 		</dl>
-		<p>Example (TinyMCE plugin):</p>
-		<pre>var button, uploader_callback;
-button = document.createElement('button');
-var uploader = cs.file_upload ? cs.file_upload(
-	button,
-	function (files) {
-		tinymce.uploader_dialog.close();
-		if (files.length) {
-			uploader_callback(files[0]);
-		}
-		uploader_callback = undefined;
-	},
-	function (error) {
-		tinymce.uploader_dialog.close();
-		cs.ui.notify(error, 'error');
-	},
-	function (file) {
-		if (!tinymce.uploader_dialog) {
-			var progress                         = document.createElement('progress', 'cs-progress');
-			tinymce.uploader_dialog              = cs.ui.modal(progress);
-			tinymce.uploader_dialog.progress     = progress;
-			tinymce.uploader_dialog.style.zIndex = 100000;
-			tinymce.uploader_dialog.open();
-		}
-		tinymce.uploader_dialog.progress.value = file.percent || 1;
-	}
-) : false;</pre>
+		<p>Example (TinyMCE plugin, LiveScript):</p>
+		<pre>uploader_callback	= undefined
+button				= document.createElement('button')
+uploader			= cs.file_upload?(
+	button
+	(files) !->
+		tinymce.uploader_dialog.close()
+		if files.length
+			uploader_callback(files[0])
+		uploader_callback := undefined
+	(error) !->
+		tinymce.uploader_dialog.close()
+		cs.ui.notify(error, 'error')
+	(file) !->
+		if !tinymce.uploader_dialog
+			progress								= document.createElement('progress', 'cs-progress')
+			tinymce.uploader_dialog					= cs.ui.modal(progress)
+			tinymce.uploader_dialog.progress		= progress
+			tinymce.uploader_dialog.style.zIndex	= 100000
+			tinymce.uploader_dialog.open()
+		tinymce.uploader_dialog.progress.value = file.percent || 1
+)
+...
+	file_picker_callback	: uploader && (callback) !->
+		uploader_callback := callback
+		button.click()
+...</pre>
 	</li>
 </ul>
 <p><code>cs.file_upload</code> call will return object with 2 methods:</p>
@@ -76,10 +76,8 @@ var uploader = cs.file_upload ? cs.file_upload(
 			<dd>Tag of item, which will be associated with this file</dd>
 		</dl>
 		<p>Example (Blogs module):</p>
-		<pre>preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $data['content'], $old_files);
-preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $content, $new_files);
-$old_files	= isset($old_files[1]) ? $old_files[1] : [];
-$new_files	= isset($new_files[1]) ? $new_files[1] : [];
+		<pre>$old_files	= find_links($data['content']);
+$new_files	= find_links($content);
 if ($old_files || $new_files) {
 	foreach (array_diff($old_files, $new_files) as $file) {
 		\cs\Event::instance()->fire(

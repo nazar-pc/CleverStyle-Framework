@@ -14,7 +14,6 @@
     if (add_button.length) {
       cs.file_upload(add_button, function(files){
         $.ajax('api/Photo_gallery/images', {
-          cache: false,
           data: {
             files: files,
             gallery: add_button.data('gallery')
@@ -53,14 +52,14 @@
       $('body').on('click', '.cs-photo-gallery-image-delete', function(){
         if (confirm(L.sure_to_delete_image)) {
           $.ajax('api/Photo_gallery/images/' + $(this).data('image'), {
-            cache: false,
             type: 'delete',
-            success: function(){
-              location.reload();
-            }
+            success: bind$(location, 'reload')
           });
         }
       });
     }
   });
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

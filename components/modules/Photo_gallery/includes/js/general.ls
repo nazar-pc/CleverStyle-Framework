@@ -14,7 +14,6 @@ $ !->
 			(files) !->
 				$.ajax(
 					'api/Photo_gallery/images'
-					cache	: false
 					data	:
 						files	: files
 						gallery	: add_button.data('gallery')
@@ -54,9 +53,7 @@ $ !->
 				if confirm L.sure_to_delete_image
 					$.ajax(
 						'api/Photo_gallery/images/' + $(this).data('image'),
-						cache	: false
 						type	: 'delete'
-						success	: !->
-							location.reload()
+						success	: location~reload
 					)
 		)

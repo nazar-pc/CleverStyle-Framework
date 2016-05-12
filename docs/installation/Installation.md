@@ -59,4 +59,4 @@ AllowOverride All
 
 > Parse error: syntax error, unexpected '~' in ../../CleverStyle_CMS.phar.php on line 123
 
-This means you have too old version of PHP, please upgrade at least to 5.5 (minimum supported at the moment by CleverStyle CMS) or better to 5.6.
+This means you have too old version of PHP, please upgrade at least to 5.6 (minimum supported at the moment by CleverStyle CMS) or better latest stable.

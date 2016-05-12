@@ -42,7 +42,40 @@ Where arguments are the same, but both `tag` and `url` are optional, so you can:
 For searching files in any HTML code next RegExp usually is used:
 ```php
 <?php
-preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $some_text, $found_files);
+preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $text, $found_files);
+$found_files = isset($found_files[1]) ? $found_files[1] : [];
 ```
 
+or just function `find_links()` from UPF, which is bundled with system.
+
 It will work fine, because mentioned events will ignore all URLs which are not actually uploaded files registered in system.
+
+Example of usage in Blogs module:
+```php
+<?php
+$old_files	= find_links($data['content']);
+$new_files	= find_links($content);
+if ($old_files || $new_files) {
+	foreach (array_diff($old_files, $new_files) as $file) {
+		\cs\Event::instance()->fire(
+			'System/upload_files/del_tag',
+			[
+				'tag'	=> "Blogs/posts/$id/$L->clang",
+				'url'	=> $file
+			]
+		);
+	}
+	unset($file);
+	foreach (array_diff($new_files, $old_files) as $file) {
+		\cs\Event::instance()->fire(
+			'System/upload_files/add_tag',
+			[
+				'tag'	=> "Blogs/posts/$id/$L->clang",
+				'url'	=> $file
+			]
+		);
+	}
+	unset($file);
+}
+unset($old_files, $new_files);
+```
