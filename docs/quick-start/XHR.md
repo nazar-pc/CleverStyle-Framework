@@ -17,3 +17,14 @@ $.ajax({
     }
 });
 ```
+
+### success
+If you want to capture only some specific success code, you can provide custom `success_{code}` property to `$.ajax()` call:
+```javascript
+$.ajax({
+    ...
+    success_201 : function () {
+        // custom handler if item was successfully created
+    }
+});
+```
