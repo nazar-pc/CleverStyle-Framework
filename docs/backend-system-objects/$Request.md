@@ -20,6 +20,7 @@
 * header()
 * query()
 * data()
+* files()
 * cookie()
 * route()
 * route_path()
@@ -58,6 +59,9 @@ Get query parameter by name, if parameter (ar least one in case of many) not pre
 
 #### data(...$name : string[]|string[][]) : mixed|mixed[]|null
 Get data item by name, if item (ar least one in case of many) not present - returns `null`
+
+#### files($name : string) : array|null
+Get file item by name
 
 #### cookie($name : string) : null|string
 Get cookie by name
