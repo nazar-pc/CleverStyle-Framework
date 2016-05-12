@@ -37,6 +37,8 @@ Here you can find all useful information:
 * [Events](/docs/quick-start/Events.md)
  * [Naming](/docs/quick-start/Events.md#naming)
  * [Subscribing](/docs/quick-start/Events.md#subscribing)
+ * [Unsubscribing](/docs/quick-start/Events.md#unsubscribing)
+ * [One-time subscribing](/docs/quick-start/Events.md#one-time-subscribing)
  * [Dispatching](/docs/quick-start/Events.md#dispatching)
  * [System events](/docs/quick-start/Events.md#system-events)
 * [Classes autoloading](/docs/quick-start/Classes-autoloading.md)
