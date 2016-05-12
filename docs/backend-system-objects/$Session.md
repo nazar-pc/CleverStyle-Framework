@@ -13,7 +13,6 @@ $Session	= \cs\Session::instance();
 * admin()
 * user()
 * guest()
-* bot()
 * get_id()
 * get_user()
 * get()
@@ -34,9 +33,6 @@ Is user
 
 #### guest() : bool
 Is guest
-
-#### bot() : bool
-Is bot
 
 #### get_id() : false|int
 Returns id of current session

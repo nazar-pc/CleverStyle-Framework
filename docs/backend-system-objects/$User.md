@@ -18,7 +18,6 @@ $User	= \cs\User::instance();
 * admin()
 * user()
 * guest()
-* bot()
 * get_id()
 * avatar()
 * username()
@@ -43,9 +42,6 @@ $User	= \cs\User::instance();
 * restore_password()
 * restore_password_confirmation()
 * del_user()
-* add_bot()
-* set_bot()
-* del_bot()
 * get_users_columns()
 * dnt()
 * get_contacts()
@@ -88,9 +84,6 @@ Is user
 
 #### guest() : bool
 Is guest
-
-#### bot() : bool
-Is bot
 
 #### get_id($login_hash : string) : false|int
 Get user id by login or email hash (sha224) (hash from lowercase string)
@@ -166,15 +159,6 @@ Confirmation of password restoring process
 #### del_user($user : int|int[])
 Delete specified user or array of users
 
-#### add_bot($name : string, $user_agent : string, $ip : string) : false|int
-Add bot
-
-#### set_bot($id : int, $name : string, $user_agent : string, $ip : string) : bool
-Set bot
-
-#### del_bot($bot : int|int[])
-Delete specified bot or array of bots
-
 #### get_users_columns() : array
 Returns array of users columns, available for getting of data
 
@@ -220,7 +204,6 @@ All properties are accessed through "magic" methods. Every property have PhpDoc 
 * ROOT_ID
 * ADMIN_GROUP_ID
 * USER_GROUP_ID
-* BOT_GROUP_ID
 * STATUS_ACTIVE
 * STATUS_INACTIVE
 * STATUS_NOT_ACTIVATED
@@ -236,9 +219,6 @@ Id of system group for administrators
 
 #### USER_GROUP_ID
 Id of system group for users
-
-#### BOT_GROUP_ID
-Id of system group for bots
 
 #### STATUS_ACTIVE
 Status of active user
@@ -261,7 +241,6 @@ Status of not activated user
 * System/User/registration/confirmation/after
 * System/User/del/before
 * System/User/del/after
-* System/User/add_bot
 * System/User/get_contacts
 
 #### System/User/construct/before
@@ -303,7 +282,7 @@ Is running after registration confirmation, `return false` stops and cancels reg
 ```
 
 #### System/User/del/before
-Is running before user (and bot) deletion. Parameters array:
+Is running before user deletion. Parameters array:
 ```
 [
 	'id'	=> user_id	//id or array of ids
@@ -311,18 +290,10 @@ Is running before user (and bot) deletion. Parameters array:
 ```
 
 #### System/User/del/after
-Is running after user (and bot) deletion. Parameters array:
+Is running after user  deletion. Parameters array:
 ```
 [
 	'id'	=> user_id	//id or array of ids
-]
-```
-
-#### System/User/add_bot
-Is running after successful bot addition. Parameters array:
-```
-[
-	'id'	=> bot_id
 ]
 ```
 

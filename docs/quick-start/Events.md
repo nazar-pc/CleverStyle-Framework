@@ -158,7 +158,6 @@ Backend events:
 * System/User/registration/confirmation/after
 * System/User/del/before
 * System/User/del/after
-* System/User/add_bot
 * System/User/Group/add
 * System/User/Group/del/before
 * System/User/Group/del/after
