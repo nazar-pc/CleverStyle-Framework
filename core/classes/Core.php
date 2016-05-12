@@ -62,7 +62,7 @@ class Core {
 			if (PHP_SAPI == 'cli') {
 				echo <<<CONFIG_NOT_FOUND
 Config file not found, is system installed properly?
-How to install CleverStyle CMS: https://github.com/nazar-pc/CleverStyle-CMS/tree/master/docs/Installation.md
+How to install CleverStyle CMS: https://github.com/nazar-pc/CleverStyle-CMS/tree/master/docs/installation/Installation.md
 
 CONFIG_NOT_FOUND;
 			} else {
@@ -70,7 +70,7 @@ CONFIG_NOT_FOUND;
 				<<<CONFIG_NOT_FOUND
 <!doctype html>
 <p>Config file not found, is system installed properly?</p>
-<a href="https://github.com/nazar-pc/CleverStyle-CMS/tree/master/docs/Installation.md">How to install CleverStyle CMS</a>
+<a href="https://github.com/nazar-pc/CleverStyle-CMS/tree/master/docs/installation/Installation.md">How to install CleverStyle CMS</a>
 CONFIG_NOT_FOUND;
 				http_response_code(500);
 			}
