@@ -1,36 +1,34 @@
-Testing in CleverStyle CMS is done using PHPT tests. This tests are very simple to read and write, they are used in PHP development itself.
+Testing in CleverStyle CMS is done using slightly modified dialect of PHPT tests. These tests are very simple to read and write, they are used in PHP development itself.
 
 However, in your custom project you can use any other testing tool as well.
 
 ### Run testing
 To run existing tests you need:
 * have full copy of repository source codes (since building, installing and functioning of the system will be checked, and all files are needed)
-* have database with name `cscms.travis` created in local MySQL database and user `travis` without password should have access to this database
-* PHP extensions `APCU` and `memcached` together with memcached server itself should be present to successfully pass all tests
+* For MySQL: have database with name `travis` created in local MySQL database and user `travis` without password should have access to this database
+* For PostgreSQL: have database with name `travis` created in local PostgreSQL database and user `postgres` without password should have access to this database
+* For SQLite: nothing special needed
+* PHP extensions `APCu` and `memcached` together with memcached server itself should be present to successfully pass all tests
 
 If you have all of this - you are ready to run tests:
 
 ```bash
-php run-tests.php -P --show-diff tests
+php -d variables_order=EGPCS phpt-tests-runner tests
 ```
 
-`-P` means that we'll use default PHP interpreter and `--show-diff` will print difference between expected test output and actual when test fails.
-
 ### To write tests
-First of all - read [PHPT - Test File Layout](https://qa.php.net/phpt_details.php)
+First of all - read [PHPT - Test File Layout](https://qa.php.net/phpt_details.php) and then differences of [phpt-tests-runner dialect](https://github.com/nazar-pc/phpt-tests-runner#phpt-tests-runner---runner-for-phpt-tests-with-few-differences-comparing-to-original-phpt-format)
 
-Also you can look at `tests` directory for already existing tests to see how they works.
+Also you can look at `tests` directory for already existing tests to see how they work.
 
-When you're ready - either choose appropriate directory from existing within `tests` directory or create new one and put new `*.phpt` test file there.
-
-This works for very simple cases. Most of times you'll encounter errors about missing constants and things like that. This is because of system coupling, but this can be overcome easily.
+When you're ready - either choose existing directory within `tests` directory or create new one and put new `*.phpt` test file there.
 
 ### Environment
 Since CleverStyle CMS have high coupling level most of times you'll need some basic environment for your tests, and there is already such.
 
-To get basic system environment (all the build-in constants, functions, classes autoloader) you just need to include `tests/custom_loader.php` file.
+To get basic system environment (all the system functions, classes autoloader) you just need to include `tests/bootstrap.php` file.
 
-It looks like system loader, but differs from default in few ways:
+It looks like system bootstrap, but differs from default in few ways:
 * configures superglobals like in `GET` request to home page
 * doesn't output anything at the end of execution itself
 * `cs\Singleton` trait is different, it allows to stub system objects and replace them with custom ones (for testing purposes), so, this doesn't cause overhead in production
@@ -65,7 +63,7 @@ This is a convenient wrapper that allows to execute request, for instance:
 ```php
 <?php
 namespace cs;
-include __DIR__.'/../custom_loader.php';
+include __DIR__.'/../bootstrap.php';
 $_SERVER['REQUEST_URI'] = '/admin';
 do_request();
 echo Response::instance()->body;
