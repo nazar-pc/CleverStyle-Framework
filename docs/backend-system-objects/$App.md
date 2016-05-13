@@ -45,7 +45,7 @@ This event is used for custom rendering (or even rendering skipping) for certain
 is set as parameter for event. *&$blocks_array* reference is used for storing of rendered blocks, so, rendered block should be as added to corresponding position element of this array (in html string form). Also after custom rendering closure for event should return boolean `false` to stop further block rendering.
 
 #### System/App/construct
-This event is used mainly by modules, and executes in constructor right before plugins inclusion and running of *prepare.php* of current module.
+This event is used mainly by modules, and executes in constructor right before plugins inclusion.
 
 #### System/App/render/before
 This event is used mainly by plugins, fired before module and blocks being rendered.

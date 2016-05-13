@@ -15,9 +15,6 @@ Working directory (`working_dir` hereinafter) for files and controller searching
 
 `path` and `sub_path` are two levels of routing supported by system core, and they should be non-numeric (purely numeric elements are ignored here and next path element will be taken), everything else might be implemented by developer if needed.
 
-### Before routing
-Before any type of routing `working_dir/prepare.php` file will be included if present.
-
 ### Files-based routing
 This type of routing is very simple.
 

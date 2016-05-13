@@ -5,13 +5,11 @@ Every described below element is optional, even empty directory in `components/m
   * Controller.php
   * index.json
   * index.php
-  * prepare.php
 * api
   * Controller.php
   * index.json
   * index.php
   * index.{http_method_lowercase}.php
-  * prepare.php
 * cli
   * Controller.php
   * index.json
@@ -117,7 +115,7 @@ system will try to find and include file `general.php` in the `admin` directory.
 Both files are optional.
 
 #### admin/index.php
-Usually is used for simple administration page. It is included after `admin/prepare.php` (see below).
+Usually is used for simple administration page.
 
 Before including of this file, system checks index.json file and corrects current route if it is not complete
 > System/admin
@@ -126,9 +124,6 @@ will be changed into
 > System/admin/general/site_info
 
 (see second half of `admin/index.json` section above).
-
-#### admin/prepare.php
-First file of module, which will be called on any administration page. Usually is used to make some preparation procedures.
 
 #### api/Controller.php
 Completely the same as for `admin/Controller.php`, but for API.
@@ -139,14 +134,11 @@ Completely the same as for `admin/index.json`, but for API.
 The only difference if that php files also may have suffixes of http methods like `api/index.{http_method_lowercase}.php`.
 
 #### api/index.php
-Usually is used for simple api. It is included after `api/prepare.php` (just like `admin/prepare.php`, see above).
+Usually is used for simple api.
 
 #### api/index.{http_method_lowercase}.php
 May be one or several files (like `api/index.get.php`, `api/index.post.php`, `api/index.put.php`, `api/index.delete.php`) that corresponds to request with different http methods. Methods can be standardized or custom, but always lowercase.
 Every is included after `api/index.php` only for its http method.
-
-#### api/prepare.php
-First file of module, which will be called on any api request. Usually is used to make some preparation procedures. Similarly to `admin/prepare.php`.
 
 #### cli/index.json
 Completely the same as for `api/index.json`, but for CLI.
@@ -236,7 +228,7 @@ This file contains paths of all files of module. All paths are relative, relativ
 The same as `admin/index.json`
 
 #### index.php
-Usually is used for simple pages. It is included after `prepare.php` (just like `admin/prepare.php`, see below).
+Usually is used for simple pages.
 
 #### license.html / license.txt
 License file, may be of txt or html format.
