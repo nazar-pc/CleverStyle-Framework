@@ -1,6 +1,7 @@
 {
-	"nazar-pc/bananahtml"  : "*",
-	"nazar-pc/upf"         : "*",
-	"phpmailer/phpmailer"  : "*",
-	"wp-cli/php-cli-tools" : "*"
+	"nazar-pc/bananahtml"    : "*",
+	"nazar-pc/stream-slicer" : "*",
+	"nazar-pc/upf"           : "*",
+	"phpmailer/phpmailer"    : "*",
+	"wp-cli/php-cli-tools"   : "*"
 }
