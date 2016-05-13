@@ -62,6 +62,7 @@ Here you can find all useful information:
 * [Database](/docs/backend-advanced/Database.md)
 * [Permissions](/docs/backend-advanced/Permissions.md)
 * [Composer](/docs/backend-advanced/Composer.md)
+* [Classes aliases](/docs/backend-advanced/Classes-aliases.md)
 
 ### Advanced [Frontend] [dev]
 * [Polymer behaviors](/docs/frontend-advanced/Polymer-behaviors.md)
