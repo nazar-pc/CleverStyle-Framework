@@ -74,6 +74,7 @@ This class has next public methods:
 * insert()
 * id()
 * affected()
+* transaction()
 * free()
 * columns()
 * tables()
@@ -86,7 +87,7 @@ This class has next public methods:
 * time()
 * connecting_time()
 
-#### q($query : string|string[], $params = [] : string|string[], $param = null : string) : false|object|resource
+#### q($query : string|string[], $params = [] : string|string[], ...$param : string[]) : false|object|resource
 Query method. `$query` may be SQL string or array of strings. Strings may be formatted according to [sprintf()](http://www.php.net/manual/en/function.sprintf.php) PHP function. In this case `$params` argument may contain array of arguments for formatting of string, another way - to specify arguments as arguments of this method started from second argument.
 
 For example:
@@ -180,6 +181,12 @@ $result = $db->insert(
 
 #### affected() : int
 Returns number of row affected by last query
+
+#### transaction($callback : callable) : bool
+Execute transaction
+
+All queries done inside callback will be within single transaction, throwing any exception or returning boolean `false` from callback will cause
+rollback. Nested transaction calls will be wrapped into single big outer transaction, so you might call it safely if needed.
 
 #### free($query_result : object|resource)
 Free result memory
