@@ -69,6 +69,7 @@ This results in constant and predictable performance, efficient storage usage (n
 * Users, groups and permissions for granular access to functionality
 * Localization and internationalization (both interface and content)
 * CSS, JavaScript and HTML processing with intelligent, high-performance and completely automatic minification, compression and caching
+* HTTP/2 Server Push (via preload) works automatically
 * Visual themes to personalize appearance
 * Multiple Databases and mirrors awareness
 * Multiple static content storages awareness
