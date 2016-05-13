@@ -1,11 +1,12 @@
 While [CleverStyle Widgets](/docs/CleverStyle-Widgets.md) provide set of elements, for some use cases using plain elements is a bit too low-level and simpler wrappers might be very useful.
 
-For this purposes CleverStyle CMS provides few convenient methods under `cs.ui` namespace:
+For this purposes CleverStyle CMS provides few convenient methods and properties under `cs.ui` namespace:
 * `cs.ui.modal()`
 * `cs.ui.simple_modal()`
 * `cs.ui.alert()`
 * `cs.ui.confirm()`
 * `cs.ui.notify()`
+* `cs.ui.ready`
 
 #### cs.ui.modal(content : {HTMLElement}|{jQuery}|{String}) : HTMLElement
 Generic interface for creating modal from string or element as its content.
@@ -36,3 +37,6 @@ Interface for creating notifications from string or element as its content.
 * `warning`
 * `error`
 Notification element will be attached to `document.documentElement` and returned.
+
+#### cs.ui.ready : Promise
+Promise, which is resolved when all Web Components are ready to be used

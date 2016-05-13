@@ -46,7 +46,7 @@ Here you can find all useful information:
 * [Page layout](/docs/quick-start/Page-layout.md)
 * [XHR (AJAX)](/docs/quick-start/XHR.md)
 * [CleverStyle Widgets](/docs/quick-start/CleverStyle-Widgets.md)
-* [UI helper methods](/docs/quick-start/UI-helper-methods.md)
+* [UI helpers](/docs/quick-start/UI-helpers.md)
 * [Shared styles](/docs/quick-start/Shared-styles.md)
 * [WYSIWYG wrapper elements](/docs/quick-start/WYSIWYG-wrapper-elements.md)
 
