@@ -12,7 +12,6 @@ $L = \cs\Language::instance();
 ###[Up](#) Methods
 
 `$L` object has next public methods:
-* init()
 * url_language()
 * get()
 * set()
@@ -21,8 +20,8 @@ $L = \cs\Language::instance();
 * to_locale()
 * change()
 
-#### init()
-Method for initialization, is used by system.
+#### static prefix($prefix : string) : \cs\Language\Prefix
+Returns instance for simplified work with translations, when using common prefix
 
 #### url_language($url = false : false|string) : false|string
 Does URL have language prefix. If there is language prefix - language will be returned, `false` otherwise.

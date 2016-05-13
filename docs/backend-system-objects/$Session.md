@@ -44,7 +44,7 @@ Returns user id of current session
 Returns session details by session id
 
 #### load($session_id = null : false|null|string) : int
-Load session by id and return id of session owner (user), updates last_sign_in, last_ip and last_online information
+Load session by id and return id of session owner (user), update session expiration
 
 #### add($user = false : false|int, $delete_current_session = true : bool) : false|string
 Create the session for the user with specified id
@@ -65,6 +65,7 @@ Store data with session
 Delete data, stored with session
 
 #### is_session_owner($session_id : string, $user_agent : string, $remote_addr : string, $ip : string) : bool
+Whether session data belongs to current visitor (user agent, remote addr and ip check)
 
 <a name="events" />
 ###[Up](#) Events

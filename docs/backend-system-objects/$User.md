@@ -32,8 +32,8 @@ $User = \cs\User::instance();
 * get_groups()
 * set_groups()
 * del_groups()
-* login_attempts()
-* login_result()
+* get_sign_in_attempts_count()
+* sign_in_result()
 * registration()
 * registration_confirmation()
 * registration_cancel()
@@ -129,13 +129,13 @@ Set user's groups
 #### del_groups($group : int|int[], $user = false : false|int) : bool
 Delete user's groups
 
-#### login_attempts($login_hash : string) : int
-Check number of login attempts (is used by system)
+#### get_sign_in_attempts_count($login_hash : string) : int
+Check number of sign in attempts (is used by system)
 
-#### ($result : bool, $login_hash : string) : login_result
-Process login result (is used by system)
+#### sign_in_result($success : bool, $login_hash : string) : login_result
+Process sign in result (is used by system)
 
-#### registration($email : string, $confirmation = true : bool, $autologin = true : bool) : array|false|string
+#### registration($email : string, $confirmation = true : bool, $auto_sign_in = true : bool) : array|false|string
 User registration
 
 #### registration_confirmation($reg_key : string) : array|false
@@ -189,9 +189,6 @@ Disable memory cache to decrease RAM usage when working with large number of use
 * reg_key
 * status
 * block_until
-* last_login
-* last_ip
-* last_online
 * avatar
 
 All properties are accessed through "magic" methods. Every property have PhpDoc section, so, type and format you can see there. All properties have simple scalar values.
@@ -339,9 +336,6 @@ This class has next public properties:
 * reg_key
 * status
 * block_until
-* last_login
-* last_ip
-* last_online
 * avatar
 
 All properties are accessed through "magic" methods. Every property have PhpDoc section, so, type and format you can see there. All properties have simple scalar values.

@@ -25,7 +25,6 @@ $Page = \cs\Page::instance();
 * link()
 * atom()
 * rss()
-* init()
 * set_theme()
 * replace()
 * render()
@@ -108,9 +107,6 @@ Is used for simple adding of atom feed (actually, wrapper for `$Page->link()` me
 
 #### rss($href : string, $title = 'RSS Feed' : string) : cs\Page
 Is used for simple adding of rss feed (actually, wrapper for `$Page->link()` method)
-
-#### init($title : string, $theme : string) : cs\Page
-Method for initialization (reinitialization), is used by system.
 
 #### set_theme($theme : string) : cs\Page
 Is used for theme changing (in most cases there is no need to use this method directly).

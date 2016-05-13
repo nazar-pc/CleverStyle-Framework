@@ -12,7 +12,7 @@ This object allow to get store/get/delete any number, string or array value in c
 ###[Up](#) Methods
 
 `$Cache` object has next public methods:
-* init()
+* prefix()
 * cache_state()
 * disable()
 * get()
@@ -20,8 +20,8 @@ This object allow to get store/get/delete any number, string or array value in c
 * del()
 * clean()
 
-#### init()
-Function for initialization, is used by system.
+#### static prefix($prefix : string) : \cs\Cache\Prefix
+Returns instance for simplified work with cache, when using common prefix
 
 #### cache_state() : bool
 Method returns boolean value, `true` if cache enabled, and `false` otherwise.
