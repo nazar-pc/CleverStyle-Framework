@@ -14,16 +14,19 @@ CRUD defines next 4 obvious methods:
 * find_urls
 * update_files_tags
 
-#### create($arguments : array) : false|int|string
+#### create(...$arguments : array) : false|int|string
 Method is for creation of new items. `$arguments` should contain all elements of `$this->data_model` (except first one if it is autoincrement column in database).
 Arguments order in array should be the same as in data model or should be an associative array (in associative array order doesn't matter).
+Arguments might be passed as single argument with array or as multiple arguments in the same order as in `$this->data_model`.
 
 #### read($id : int|int[]|string|string[]) : array|false
 Method is for reading of items. `$arguments` should contain only one element, `id` (which means first item in `$this->data_model`, might be array of `id`).
+Strings in returned data will be casted to integers or floats types if they are specified as integers or floats in `$this->data_model`.
 
-#### update($arguments : array) : bool
+#### update(...$arguments : array) : bool
 Method is for updating of items. `$arguments` should contain all elements of `$this->data_model`.
 Arguments order in array should be the same as in data model or should be an associative array (in associative array order doesn't matter).
+Arguments might be passed as single argument with array or as multiple arguments in the same order as in `$this->data_model`.
 
 #### delete($id : int|int[]|string|string[]) : bool
 Method is for deletion of items. `$arguments` should contain only one element, `id` (which means first item in `$this->data_model`, might be array of `id`).
