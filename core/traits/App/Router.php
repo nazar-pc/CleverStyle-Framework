@@ -45,6 +45,10 @@ trait Router {
 	 */
 	protected function execute_router ($Request) {
 		$this->working_directory = $this->get_working_directory($Request);
+		$this->check_and_normalize_route($Request);
+		if (!Event::instance()->fire('System/App/execute_router/before')) {
+			return;
+		}
 		/**
 		 * If module consists of index.html only
 		 */
@@ -52,10 +56,6 @@ trait Router {
 			ob_start();
 			_include("$this->working_directory/index.html", false, false);
 			Page::instance()->content(ob_get_clean());
-			return;
-		}
-		$this->check_and_normalize_route($Request);
-		if (!Event::instance()->fire('System/App/execute_router/before')) {
 			return;
 		}
 		if (file_exists("$this->working_directory/Controller.php")) {
