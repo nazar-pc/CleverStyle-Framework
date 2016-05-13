@@ -20,24 +20,24 @@ throw new \cs\ExitException('Login required', 400);
 It is also possible to specify short and long description instead of just status text (which is sort description), especially useful for JSON responses:
 ```php
 <?php
-throw new ExitException(
-	[
-		'invalid_request',
-		'redirect_uri parameter invalid'
-	],
-	400
+throw new \cs\ExitException(
+    [
+        'invalid_request',
+        'redirect_uri parameter invalid'
+    ],
+    400
 );
 ```
 
 Last thing is forcing JSON response for non-API requests:
 ```php
 <?php
-$e = new ExitException(
-	[
-		'invalid_request',
-		'redirect_uri parameter invalid'
-	],
-	400
+$e = new \cs\ExitException(
+    [
+        'invalid_request',
+        'redirect_uri parameter invalid'
+    ],
+    400
 );
 $e->setJson();
 throw $e;

@@ -1,6 +1,6 @@
 `cs.Event` - is system object, that handles events subscribing and dispatching, instance can be obtained in such way:
 ```javascript
-Event	= window.cs.Event;
+Event = window.cs.Event;
 ```
 
 Object is the similar to [$Event](/docs/$Event.md) object on backend, see [examples](/docs/Events.md).

@@ -8,7 +8,7 @@ For instance, lets assume you've installed `d3` package using Bower and`lodash` 
 
 ```javascript
 require(['d3', 'lodash'], function (d3, _) {
-	// Do stuff
+    // Do stuff
 });
 ```
 

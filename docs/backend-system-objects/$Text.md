@@ -1,7 +1,7 @@
 `$Text` - is system object, that provides interface for working with multilingual texts. Instance can be obtained in such way:
 ```php
 <?php
-$Text	= \cs\Text::instance();
+$Text = \cs\Text::instance();
 ```
 
 ### [Methods](#methods)
@@ -38,9 +38,9 @@ Process text, and replace {¶([0-9]+)} on real text, is used before showing mult
 Example how it works:
 ```php
 <?php
-$Text		= \cs\Text::instance();
+$Text = \cs\Text::instance();
 //Set text by group and label
-$result		= $Text->set($this->cdb(), 'Blogs/sections/title', $id, $text);
+$result = $Text->set($this->cdb(), 'Blogs/sections/title', $id, $text);
 //Process text
-$content	= $Text->process($this->cdb(), $result);
+$content = $Text->process($this->cdb(), $result);
 ```

@@ -1,7 +1,7 @@
 `$db` - is system object, that provides abstraction for databases, instance can be obtained in such way:
 ```php
 <?php
-$db	= \cs\DB::instance();
+$db    = \cs\DB::instance();
 ```
 
 ### [Methods](#methods) [Properties](#properties) [\cs\DB\\_Abstract class](#abstract-class) [\cs\DB\Accessor class](#accessor-trait)
@@ -17,11 +17,11 @@ $db	= \cs\DB::instance();
 Also if there is only one configured database it is possible to call methods of `\cs\DB\\_Abstract` class directly from this object:
 ```php
 <?php
-$db	= \cs\DB::instance();
-$query	= $db->q(
-	"SELECT `id`
-	FROM `[prefix]users`
-	LIMIT 1"
+$db    = \cs\DB::instance();
+$query    = $db->q(
+    "SELECT `id`
+    FROM `[prefix]users`
+    LIMIT 1"
 );
 ```
 #### db($database_id : int) : cs\\DB\\_Abstract|False_class
@@ -30,8 +30,8 @@ Method returns instance of class for database abstraction. This object guarantee
 Also there is simplified way to get instance - to get it as property of object:
 ```php
 <?php
-$db	= \cs\DB::instance();
-$cdb	= $db->{'0'};
+$db    = \cs\DB::instance();
+$cdb    = $db->{'0'};
 ```
 #### db_prime($database_id : int) : cs\\DB\\_Abstract|False_class
 Similar to `db()`, but guaranteed will have write access to database. These two methods were separated in order to balance load on DB when database replication is used.
@@ -39,8 +39,8 @@ Similar to `db()`, but guaranteed will have write access to database. These two 
 Also there is simplified way to get instance - to get it as result of calling of object function:
 ```php
 <?php
-$db	= \cs\DB::instance();
-$cdb	= $db->{'0'}();
+$db    = \cs\DB::instance();
+$cdb    = $db->{'0'}();
 ```
 #### get_connections_list($status = null : bool|null|string) : array|null
 Is used for getting of successful, failed and mirror connections.
@@ -92,14 +92,14 @@ Query method. `$query` may be SQL string or array of strings. Strings may be for
 For example:
 ```php
 <?php
-$db	= \cs\DB::instance();
-$query	= $db->q(
-	"SELECT `id`
-	FROM `[prefix]users`
-	WHERE `login`	= '%s'
-	LIMIT %d",
-	$login,
-	1
+$db    = \cs\DB::instance();
+$query = $db->q(
+    "SELECT `id`
+    FROM `[prefix]users`
+    WHERE `login`    = '%s'
+    LIMIT %d",
+    $login,
+    1
 );
 ```
 Every parameter, passed in such way will have escaped special characters for use in an SQL statement.
@@ -116,14 +116,14 @@ Short for `::f(::q())`, arguments are exactly the same as in `::q()`
 For example:
 ```php
 <?php
-$db	= \cs\DB::instance();
-$query	= $db->qf(
-	"SELECT `id`
-	FROM `[prefix]users`
-	WHERE `login`	= '%s'
-	LIMIT %d",
-	$login,
-	1
+$db    = \cs\DB::instance();
+$query = $db->qf(
+    "SELECT `id`
+    FROM `[prefix]users`
+    WHERE `login`    = '%s'
+    LIMIT %d",
+    $login,
+    1
 );
 ```
 
@@ -151,30 +151,30 @@ Method for simplified inserting of several rows
 For example:
 ```php
 <?php
-$db	= \cs\DB::instance();
-$result	= $db->insert(
-	"INSERT INTO `[prefix]table`
-	(
-		`id`,
-		`value`
-	) VALUES (
-		'%s',
-		'%s'
-	)",
-	[
-		[
-			1,
-			'Value 1'
-		],
-		[
-			2,
-			'Value 2'
-		],
-		[
-			3,
-			'Value 3'
-		]
-	]
+$db     = \cs\DB::instance();
+$result = $db->insert(
+    "INSERT INTO `[prefix]table`
+    (
+        `id`,
+        `value`
+    ) VALUES (
+        '%s',
+        '%s'
+    )",
+    [
+        [
+            1,
+            'Value 1'
+        ],
+        [
+            2,
+            'Value 2'
+        ],
+        [
+            3,
+            'Value 3'
+        ]
+    ]
 );
 ```
 

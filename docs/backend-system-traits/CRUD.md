@@ -72,9 +72,9 @@ Items are keys of array, values are types of keys.
 
 ```json
 {
-	"id"		: "int",
-	"title"		: "text",
-	"content"	: "ml:html"
+    "id"      : "int",
+    "title"   : "text",
+    "content" : "ml:html"
 }
 ```
 
@@ -100,10 +100,10 @@ These two types can have 3 forms of writing:
 
 ```json
 {
-	"id"		: "int",
-	"user"		: "int:1",
-	"status"	: "int:0..1",
-	"score"		: "float"
+    "id"     : "int",
+    "user"   : "int:1",
+    "status" : "int:0..1",
+    "score"  : "float"
 }
 ```
 
@@ -137,7 +137,7 @@ If `callable` was specified - it will be called with single parameter and must r
 ```php
 <?php
 function ($string) {
-	return xap($string, false);
+    return xap($string, false);
 }
 ```
 
@@ -165,48 +165,48 @@ Let's look at example:
 ```php
 <?php
 ...
-	protected $data_model                  = [
-		'id'         => 'int',
-		'date'       => 'int',
-		'category'   => 'int',
-		'price'      => 'float',
-		'in_stock'   => 'int',
-		'soon'       => 'int:0..1',
-		'listed'     => 'int:0..1',
-		'attributes' => [
-			'data_model' => [
-				'id'            => 'int',
-				'attribute'     => 'int',
-				'numeric_value' => 'float',
-				'string_value'  => 'text',
-				'text_value'    => 'html',
-				'lang'          => 'text' // Some attributes are language-dependent, some aren't, so we'll handle that manually
-			]
-		],
-		'images'     => [
-			'data_model' => [
-				'id'    => 'int',
-				'image' => 'text'
-			]
-		],
-		'videos'     => [
-			'data_model' => [
-				'id'     => 'int',
-				'video'  => 'text',
-				'poster' => 'text',
-				'type'   => 'text'
-			]
-		],
-		'tags'       => [
-			'data_model'     => [
-				'id'  => 'int',
-				'tag' => 'html'
-			],
-			'language_field' => 'lang'
-		]
-	];
-	protected $table                       = '[prefix]shop_items';
-	protected $data_model_files_tag_prefix = 'Shop/items';
+    protected $data_model                  = [
+        'id'         => 'int',
+        'date'       => 'int',
+        'category'   => 'int',
+        'price'      => 'float',
+        'in_stock'   => 'int',
+        'soon'       => 'int:0..1',
+        'listed'     => 'int:0..1',
+        'attributes' => [
+            'data_model' => [
+                'id'            => 'int',
+                'attribute'     => 'int',
+                'numeric_value' => 'float',
+                'string_value'  => 'text',
+                'text_value'    => 'html',
+                'lang'          => 'text' // Some attributes are language-dependent, some aren't, so we'll handle that manually
+            ]
+        ],
+        'images'     => [
+            'data_model' => [
+                'id'    => 'int',
+                'image' => 'text'
+            ]
+        ],
+        'videos'     => [
+            'data_model' => [
+                'id'     => 'int',
+                'video'  => 'text',
+                'poster' => 'text',
+                'type'   => 'text'
+            ]
+        ],
+        'tags'       => [
+            'data_model'     => [
+                'id'  => 'int',
+                'tag' => 'html'
+            ],
+            'language_field' => 'lang'
+        ]
+    ];
+    protected $table                       = '[prefix]shop_items';
+    protected $data_model_files_tag_prefix = 'Shop/items';
 ...
 ```
 In this case `attributes`, `images`, `videos` and `tags` are not fields of `[prefix]shop_items` table, but additional joined tables:
@@ -238,74 +238,74 @@ If data model consists only from two keys (identifier and another field) - you c
 <?php
 namespace cs\modules\News;
 use
-	cs\CRUD,
-	cs\Singleton;
+    cs\CRUD,
+    cs\Singleton;
 class News {
-	use
-		CRUD,
-		Singleton;
-	/**
-	 * News data model
-	 */
-	protected $data_model = [
-		'id'      => 'int',
-		'title'   => 'text:255',
-		'content' => 'html',
-		'tags'    => [ // [prefix]news_tags(id, tag, lang)
-			'data_model'     => [
-				'id'  => 'int',
-				'tag' => 'string'
-			],
-			'language_field' => 'lang'
-		]
-	];
-	/**
-	 * Table name
-	 */
-	protected $table = '[prefix]news';
-	/**
-	 * Required because \cs\CRUD trait uses trait \cs\DB\Accessor
-	 */
-	protected cdb () {
-		return Config::instance()->module('News')->db('news');
-	}
-	/**
-	 * @param string   $title
-	 * @param string   $content
-	 * @param string[] $tags
-	 *
-	 * @return false|int
-	 */
-	function add ($title, $content, $tags) {
-		return $this->create([$title, $content, $tags]);
-	}
-	/**
-	 * @param int $id
-	 *
-	 * @return array
-	 */
-	function get ($id) {
-		return $this->read($id);
-	}
-	/**
-	 * @param int      $id
-	 * @param string   $title
-	 * @param string   $content
-	 * @param string[] $tags
-	 *
-	 * @return bool
-	 */
-	function set ($id, $title, $content, $tags) {
-		return $this->update([$id, $title, $content, $tags]);
-	}
-	/**
-	 * @param int $id
-	 *
-	 * @return bool
-	 */
-	function del ($id) {
-		return $this->delete($id);
-	}
+    use
+        CRUD,
+        Singleton;
+    /**
+     * News data model
+     */
+    protected $data_model = [
+        'id'      => 'int',
+        'title'   => 'text:255',
+        'content' => 'html',
+        'tags'    => [ // [prefix]news_tags(id, tag, lang)
+            'data_model'     => [
+                'id'  => 'int',
+                'tag' => 'string'
+            ],
+            'language_field' => 'lang'
+        ]
+    ];
+    /**
+     * Table name
+     */
+    protected $table = '[prefix]news';
+    /**
+     * Required because \cs\CRUD trait uses trait \cs\DB\Accessor
+     */
+    protected cdb () {
+        return Config::instance()->module('News')->db('news');
+    }
+    /**
+     * @param string   $title
+     * @param string   $content
+     * @param string[] $tags
+     *
+     * @return false|int
+     */
+    function add ($title, $content, $tags) {
+        return $this->create([$title, $content, $tags]);
+    }
+    /**
+     * @param int $id
+     *
+     * @return array
+     */
+    function get ($id) {
+        return $this->read($id);
+    }
+    /**
+     * @param int      $id
+     * @param string   $title
+     * @param string   $content
+     * @param string[] $tags
+     *
+     * @return bool
+     */
+    function set ($id, $title, $content, $tags) {
+        return $this->update([$id, $title, $content, $tags]);
+    }
+    /**
+     * @param int $id
+     *
+     * @return bool
+     */
+    function del ($id) {
+        return $this->delete($id);
+    }
 }
 ```
 

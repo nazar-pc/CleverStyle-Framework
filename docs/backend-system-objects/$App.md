@@ -1,7 +1,7 @@
 `$App` - is system object, that provides functionality of application execution (plugins processing, blocks and module page generation, etc.), instance can be obtained in such way:
 ```php
 <?php
-$App	= \cs\App::instance();
+$App = \cs\App::instance();
 ```
 
 ### [Methods](#methods) [Properties](#properties) [Events](#events)
@@ -38,8 +38,8 @@ This event is used for custom rendering (or even rendering skipping) for certain
 
 ```
 [
-	'index'			=> $index,			//Block index
-	'blocks_array'	=> &$blocks_array	//Reference to array in form ['top' => '', 'left' => '', 'right' => '', 'bottom' => '']
+    'index'        => $index,        //Block index
+    'blocks_array' => &$blocks_array //Reference to array in form ['top' => '', 'left' => '', 'right' => '', 'bottom' => '']
 ]
 ```
 is set as parameter for event. *&$blocks_array* reference is used for storing of rendered blocks, so, rendered block should be as added to corresponding position element of this array (in html string form). Also after custom rendering closure for event should return boolean `false` to stop further block rendering.

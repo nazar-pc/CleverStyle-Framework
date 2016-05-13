@@ -81,14 +81,14 @@ As result returns current route in system in form of array, normalized path, det
 Example of returned data:
 ```json
 {
-	"route"           : [
-		"general"
-	],
-	"path_normalized" : "admin/System/general",
-	"admin_path"      : true,
-	"api_path"        : false,
-	"current_module"  : "System",
-	"home_page"       : false
+    "route"           : [
+        "general"
+    ],
+    "path_normalized" : "admin/System/general",
+    "admin_path"      : true,
+    "api_path"        : false,
+    "current_module"  : "System",
+    "home_page"       : false
 }
 ```
 
@@ -194,8 +194,8 @@ Contains parsed route of current page url in form of array without module name a
 For page `admin/System/general/system`:
 ```json
 [
-	"general",
-	"system"
+    "general",
+    "system"
 ]
 ```
 
@@ -230,15 +230,15 @@ Real example, allows to open module by localized module name in URL:
 ```php
 <?php
 \cs\Event::instance()->on(
-	'System/Request/routing_replace',
-	function ($data) {
-		$L	= \cs\Language::instance();
-		$module	= basename(__DIR__);
-		$rc	= explode('/', $data['rc']);
-		if ($rc[0] == $L->$module) {
-			$rc[0]		= $module;
-			$data['rc']	= implode('/', $rc);
-		}
-	}
+    'System/Request/routing_replace',
+    function ($data) {
+        $L      = \cs\Language::instance();
+        $module = basename(__DIR__);
+        $rc     = explode('/', $data['rc']);
+        if ($rc[0] == $L->$module) {
+            $rc[0]      = $module;
+            $data['rc'] = implode('/', $rc);
+        }
+    }
 );
 ```

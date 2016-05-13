@@ -1,7 +1,7 @@
 `$Core` - is system object, that responses for some core functionality. This is first system object, which is created, instance can be obtained in such way:
 ```php
 <?php
-$Core	= \cs\Core::instance();
+$Core = \cs\Core::instance();
 ```
 
 Object provides loading of base system configuration.
@@ -21,7 +21,7 @@ Getting of base configuration parameter (which are defined in configuration file
 Also there is simplified way to get item - to get it as property of object:
 ```php
 <?php
-$Core	= \cs\Core::instance();
+$Core  = \cs\Core::instance();
 $Core->get('timezone');
 $Core->timezone;
 ```
@@ -30,9 +30,9 @@ $Core->timezone;
 Setting of base configuration parameter (available only at object construction, i.e. from file *config/main.php*). Also works with items as properties:
 ```php
 <?php
-$Core			= \cs\Core::instance();
+$Core = \cs\Core::instance();
 $Core->set('parameter', 'value');
-$Core->parameter	= 'value';
+$Core->parameter = 'value';
 ```
 
 <a name="properties" />

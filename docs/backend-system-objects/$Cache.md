@@ -1,7 +1,7 @@
 `$Cache` - is system object, that responses for system cache, instance can be obtained in such way:
 ```php
 <?php
-$Cache	= \cs\Cache::instance();
+$Cache = \cs\Cache::instance();
 ```
 
 This object allow to get store/get/delete any number, string or array value in cache. Data may be lost or erased any time, so this is not permanent storage for data, it is used to store some frequently used data for fasted access.
@@ -41,12 +41,12 @@ This allows to replace construction like:
 ```php
 <?php
 function foo () {
-	$Cache	= Cache::instance();
-	if (($result = $Cache->long_item) === false) {
-		...
-		$Cache->long_item	= $result;
-	}
-	return $result;
+    $Cache = \cs\Cache::instance();
+    if (($result = $Cache->long_item) === false) {
+        ...
+        $Cache->long_item    = $result;
+    }
+    return $result;
 }
 ```
 
@@ -55,10 +55,10 @@ by
 ```php
 <?php
 function foo () {
-	return Cache::instance()->get('long_item', function () {
-		...
-		return $result;
-	}
+    return \cs\Cache::instance()->get('long_item', function () {
+        ...
+        return $result;
+    }
 }
 ```
 
@@ -102,13 +102,13 @@ FileSystem is fastest and most stable cache engine, and it is recommended for pr
 
 ```php
 <?php
-$Cache			= \cs\Cache::instance();
+$Cache = \cs\Cache::instance();
 //Setting
 $Cache->set('dir/item1', 1);
-$Cache->{'dir/item2'}	= 2;
+$Cache->{'dir/item2'} = 2;
 //Getting
-$one			= $Cache->get('dir/item1');
-$two			= $Cache->{'dir/item2'};
+$one = $Cache->get('dir/item1');
+$two = $Cache->{'dir/item2'};
 //Deleting
 $Cache->del('dir/item1');
 unset($Cache->dir);

@@ -46,8 +46,8 @@ Returned object will contain only properties and methods you've specified.
 
 ```php
 <?php
-$Core = Core::instance_stub([
-	'cache_engine'	=> 'APC'
+$Core = \cs\Core::instance_stub([
+    'cache_engine' => 'APC'
 ]);
 ```
 

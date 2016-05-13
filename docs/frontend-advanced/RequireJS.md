@@ -8,7 +8,7 @@ For instance, you have module or plugin called `Experiment` and AMD module in `i
 
 ```javascript
 require(['Experiment/some-module'], function (some_module) {
-	// Do stuff
+    // Do stuff
 });
 ```
 

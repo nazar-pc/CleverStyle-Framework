@@ -21,30 +21,30 @@ This is basically all on frontend, you just specify where to click or where to d
 
 Example of usage in TinyMCE plugin (LiveScript):
 ```livescript
-uploader_callback	= undefined
-button				= document.createElement('button')
-uploader			= cs.file_upload?(
-	button
-	(files) !->
-		tinymce.uploader_dialog.close()
-		if files.length
-			uploader_callback(files[0])
-		uploader_callback := undefined
-	(error) !->
-		tinymce.uploader_dialog.close()
-		cs.ui.notify(error, 'error')
-	(file) !->
-		if !tinymce.uploader_dialog
-			progress								= document.createElement('progress', 'cs-progress')
-			tinymce.uploader_dialog					= cs.ui.modal(progress)
-			tinymce.uploader_dialog.progress		= progress
-			tinymce.uploader_dialog.style.zIndex	= 100000
-			tinymce.uploader_dialog.open()
-		tinymce.uploader_dialog.progress.value = file.percent || 1
+uploader_callback = undefined
+button            = document.createElement('button')
+uploader          = cs.file_upload?(
+    button
+    (files) !->
+        tinymce.uploader_dialog.close()
+        if files.length
+            uploader_callback(files[0])
+        uploader_callback := undefined
+    (error) !->
+        tinymce.uploader_dialog.close()
+        cs.ui.notify(error, 'error')
+    (file) !->
+        if !tinymce.uploader_dialog
+            progress                             = document.createElement('progress', 'cs-progress')
+            tinymce.uploader_dialog              = cs.ui.modal(progress)
+            tinymce.uploader_dialog.progress     = progress
+            tinymce.uploader_dialog.style.zIndex = 100000
+            tinymce.uploader_dialog.open()
+        tinymce.uploader_dialog.progress.value = file.percent || 1
 )
 ...
-	file_picker_callback	: uploader && (callback) !->
-		uploader_callback := callback
-		button.click()
+    file_picker_callback : uploader && (callback) !->
+        uploader_callback := callback
+        button.click()
 ...
 ```

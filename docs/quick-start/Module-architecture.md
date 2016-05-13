@@ -2,26 +2,26 @@ Every described below element is optional, even empty directory in `components/m
 
 ### File system structure of module
 * admin
-	* Controller.php
-	* index.json
-	* index.php
-	* prepare.php
+  * Controller.php
+  * index.json
+  * index.php
+  * prepare.php
 * api
-	* Controller.php
-	* index.json
-	* index.php
-	* index.{http_method_lowercase}.php
-	* prepare.php
+  * Controller.php
+  * index.json
+  * index.php
+  * index.{http_method_lowercase}.php
+  * prepare.php
 * includes
-	* css
-	* html
-	* js
-	* map.json
+  * css
+  * html
+  * js
+  * map.json
 * meta
-	* install_db
-	* uninstall_db
-	* update
-	* update_db
+  * install_db
+  * uninstall_db
+  * update
+  * update_db
 * Controller.php
 * fs.json
 * index.html / index.php
@@ -38,54 +38,54 @@ Controller with static methods that is used in controller-based routing.
 Describes module routing for administration pages. May have:
 * one level
 
-	```json
-	[
-		"latest_posts",
-		"section",
-		"post",
-		"tag",
-		"new_post",
-		"edit_post",
-		"drafts"
-	]
-	```
+    ```json
+    [
+        "latest_posts",
+        "section",
+        "post",
+        "tag",
+        "new_post",
+        "edit_post",
+        "drafts"
+    ]
+    ```
 
 * two levels
 
-	```json
-	{
-		"general"	: [
-			"site_info",
-			"system",
-			"optimization",
-			"appearance",
-			"languages",
-			"about_server"
-		],
-		"components"	: [
-			"modules",
-			"plugins",
-			"blocks",
-			"databases",
-			"storages"
-		]
-	}
-	```
+    ```json
+    {
+        "general"    : [
+            "site_info",
+            "system",
+            "optimization",
+            "appearance",
+            "languages",
+            "about_server"
+        ],
+        "components" : [
+            "modules",
+            "plugins",
+            "blocks",
+            "databases",
+            "storages"
+        ]
+    }
+    ```
 
 * mixed
 
-	```json
-	{
-		"blank"		: [],
-		"profile"	: [
-			"info",
-			"settings",
-			"registration_confirmation",
-			"restore_password_confirmation"
-		],
-		"robots.txt"	: []
-	}
-	```
+    ```json
+    {
+        "blank"      : [],
+        "profile"    : [
+            "info",
+            "settings",
+            "registration_confirmation",
+            "restore_password_confirmation"
+        ],
+        "robots.txt" : []
+    }
+    ```
 
 For example, if module name is *System* (real example), then urls will look as following:
 * System/admin/general/site_info
@@ -153,14 +153,14 @@ This file affects compressed version of CSS/HTML/JS files, and naturally account
 Example:
 ```json
 {
-	"admin/Blogs"	: [
-		"admin.css"
-	],
-	"Blogs"			: [
-		"general.css",
-		"general.js",
-		"my-component/index.html"
-	]
+    "admin/Blogs" : [
+        "admin.css"
+    ],
+    "Blogs"       : [
+        "general.css",
+        "general.js",
+        "my-component/index.html"
+    ]
 }
 ```
 
@@ -171,7 +171,7 @@ Please, note, that also there is no need to mention css and JS files in `html` d
 Sometimes it might be necessary to include many files, so there is special wildcard syntax:
 ```json
 {
-	"Fotorama" : "*"
+    "Fotorama" : "*"
 }
 ```
 Example above will include all `css`, `html` and `js` files in their respective directories.
@@ -179,13 +179,13 @@ Example above will include all `css`, `html` and `js` files in their respective 
 It is also possible to specify part of path:
 ```json
 {
-	"admin/Blogs" : [
-		"admin.css"
-	],
-	"Blogs"       : [
-		"general.*",
-		"cs-blogs-*"
-	]
+    "admin/Blogs" : [
+        "admin.css"
+    ],
+    "Blogs"       : [
+        "general.*",
+        "cs-blogs-*"
+    ]
 }
 ```
 
@@ -231,34 +231,34 @@ License file, may be of txt or html format.
 Main description file of module. A little bit extended in comparison with the same file for plugin. This file is required for module building, in order to be able to build module package. Example of meta.json file for module:
 ```json
 {
-	"package"		: "System",
-	"category"		: "modules",
-	"version"		: "0.171",
-	"update_from_version"	: "0.171",
-	"description"		: "Base system module of CleverStyle CMS",
-	"author"		: "Nazar Mokrynskyi",
-	"website"		: "cleverstyle.org/cms",
-	"license"		: "MIT License",
-	"db"			: [
+	"package"             : "System",
+	"category"            : "modules",
+	"version"             : "0.171",
+	"update_from_version" : "0.171",
+	"description"         : "Base system module of CleverStyle CMS",
+	"author"              : "Nazar Mokrynskyi",
+	"website"             : "cleverstyle.org/cms",
+	"license"             : "MIT License",
+	"db"                  : [
 		"keys",
 		"users",
 		"texts"
 	],
-	"db_support"		: [
+	"db_support"          : [
 		"MySQLi"
 	],
-	"provide"		: [
+	"provide"             : [
 		"system"
 	],
-	"multilingual"		: [
+	"multilingual"        : [
 		"interface",
 		"content"
 	],
-	"languages"		: [
+	"languages"           : [
 		"English",
 		"Русский"
 	],
-	"hide_in_menu"		: 1
+	"hide_in_menu"        : 1
 }
 ```
 
@@ -295,12 +295,12 @@ Contains array with identifiers for databases. If some tables of module can be c
 Index of configured database may be obtained from global object `$Config`. Example for module *System*:
 ```php
 <?php
-$Config		= \cs\Config::instance();
-$db		= \cs\DB::instance();
-$users_db_id	= $Config->module('System')->db('users');
-$result		= $db->$users_db_id->q(
-	"SELECT `login`
-	FROM `[prefix]users`"
+$Config        = \cs\Config::instance();
+$db        = \cs\DB::instance();
+$users_db_id    = $Config->module('System')->db('users');
+$result        = $db->$users_db_id->q(
+    "SELECT `login`
+    FROM `[prefix]users`"
 );
 ```
 
@@ -310,10 +310,10 @@ Contains array with identifiers for storage, similarly to `db` property. This al
 Index of configured storage may be obtained from system object `$Config`. Example for module *System*:
 ```php
 <?php
-$Config			= \cs\Config::instance();
-$Storage		= \cs\Storage::instance();
-$users_storage_id	= $Config->module('System')->storage('images');
-$result			= $Storage->$users_storage_id->file_put_contents('test', 123);
+$Config            = \cs\Config::instance();
+$Storage        = \cs\Storage::instance();
+$users_storage_id    = $Config->module('System')->storage('images');
+$result            = $Storage->$users_storage_id->file_put_contents('test', 123);
 ```
 
 #### readme.html / readme.txt

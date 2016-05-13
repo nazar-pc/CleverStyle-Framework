@@ -1,10 +1,10 @@
 `L` - is system object, that provides multilingual interface functionality, instance can be obtained in such way:
 ```javascript
-L	= window.cs.Language;
+L = window.cs.Language;
 ```
 Also there is possibility to simplify getting translations with common prefix:
 ```javascript
-L	= window.cs.Language(prefix);
+L = window.cs.Language(prefix);
 ```
 In case of prefixed usage full keys are still available, but prefixed keys are preferred in case of conflict.
 
@@ -24,13 +24,13 @@ Object is similar to [$L](/docs/$L.md) object on backend, but have less number o
 #### get(item : string) : string
 Get translation.
 ```javascript
-L	= cs.Language;
+L = cs.Language;
 L.get('module_name');
 ```
 
 Also there is simplified way to get translation - to get it as property of object:
 ```javascript
-L	= cs.Language;
+L = cs.Language;
 L.module_name;
 ```
 
@@ -38,11 +38,12 @@ L.module_name;
 Method is used for formatted translation. Example:
 
 translation (in json file)
-
-	"hello":"Hello, %s!"
+```
+    "hello":"Hello, %s!"
+```
 usage
 ```javascript
-L	= cs.Language;
+L = cs.Language;
 L.format('hello', ['my friend']);
 ```
 
@@ -50,7 +51,7 @@ Translation string should be formatted according to [sprintf()](http://www.php.n
 
 Also there is simplified way to get formatted string - to get it as result of calling of object function:
 ```javascript
-L	= cs.Language;
+L = cs.Language;
 L.hello('my friend')
 ```
 

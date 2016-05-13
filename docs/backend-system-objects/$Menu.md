@@ -1,7 +1,7 @@
 `$Menu` -  system object, that is used in administration for generating second and third level of menu:
 ```php
 <?php
-$Menu	= \cs\Menu::instance();
+$Menu = \cs\Menu::instance();
 ```
 
 ### [Methods](#methods) [Events](#events)
@@ -24,7 +24,7 @@ All third-level items which start with the same `$href` will be inside this seco
 Example of usage:
 ```php
 <?php
-$Menu	= \cs\Menu::instance();
+$Menu = \cs\Menu::instance();
 $Menu->add_section_item('System', 'General', "admin/System/general");
 ```
 
@@ -34,11 +34,10 @@ Add third-level item into menu (second-level when there is corresponding section
 Example of usage (together with second-level menu):
 ```php
 <?php
-$Menu	= \cs\Menu::instance();
+$Menu = \cs\Menu::instance();
 $Menu->add_section_item('System', 'General', "admin/System/general");
 $Menu->add_item('System', 'Optimization', "admin/System/general/optimization");
 ```
-
 
 <a name="events" />
 ###[Up](#) Events

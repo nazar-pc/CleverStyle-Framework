@@ -45,9 +45,9 @@ $next         = 2;
 Similarly for arrays:
 ```php
 <?php
-$array	= [
-	'key'         => 'value',
-	'another_key' => 'value'
+$array = [
+    'key'         => 'value',
+    'another_key' => 'value'
 ];
 ```
 
@@ -55,24 +55,24 @@ If number of function parameters is large, or parameters are not variables, but 
 ```php
 <?php
 $str = str_replace(
-	[
-		'a',
-		'b',
-		'd'
-	],
-	[
-		'e',
-		'f',
-		'g'
-	],
-	'adiabatic'
+    [
+        'a',
+        'b',
+        'd'
+    ],
+    [
+        'e',
+        'f',
+        'g'
+    ],
+    'adiabatic'
 );
 ```
 Function (method) name is followed by space on declaration, but doesn't during calling:
 ```php
 <?php
 function foo () {
-	//Code
+    //Code
 }
 foo();
 ```
@@ -83,11 +83,11 @@ Curly braces for *if*, *for*, *while*, etc. are written in the same line as keyw
 ```php
 <?php
 if (...) {
-	//Code
+    //Code
 } elseif (...) {
-	//Code
+    //Code
 } else {
-	//Code
+    //Code
 }
 ```
 #### Visibility and type
@@ -95,9 +95,9 @@ Visibility may be omitted for method, if it is public, because it is public by d
 ```php
 <?php
 class Example {
-	protected static function processing () {
-		//Code
-	}
+    protected static function processing () {
+        //Code
+    }
 }
 ```
 #### Namespaces
@@ -116,8 +116,8 @@ For engines, following namespaces are used (derivative from names of core classe
 If several classes from other namespaces are used, get them by one `use` with alignment of each class on new line:
 ```
 use
-	\cs\modules\Blogs\Blogs,
-	\cs\modules\Test\Test;
+    \cs\modules\Blogs\Blogs,
+    \cs\modules\Test\Test;
 ```
 Following this convention will allow to use built-in class autoloader, for instance, `\cs\modules\Module_name\Class_name` class intended to be in `components/modules/Module_name/Class_name.php`.
 
@@ -150,8 +150,8 @@ All SQL keywords must be in uppercase:
 It is recommended to write every next logical part of query on new line, and also write every new table field on new line if there few of them:
 ```sql
 SELECT
-	`id`,
-	`title`
+    `id`,
+    `title`
 FROM `[prefix]blogs_posts`
 WHERE `id` = 5
 LIMIT 1`

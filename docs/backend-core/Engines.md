@@ -8,8 +8,8 @@ They are created to provide simple unified interfaces for working with different
 For example if you want to get some item from cache you can just write:
 ```php
 <?php
-$Cache	= \cs\Cache::instance();
-$item	= $Cache->item;
+$Cache = \cs\Cache::instance();
+$item  = $Cache->item;
 ```
 and it doesn't matter what type of cache engine is used.
 

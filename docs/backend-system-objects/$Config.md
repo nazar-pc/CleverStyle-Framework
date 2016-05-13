@@ -1,6 +1,6 @@
 `$Config` - is system object, that responses for system configuration, instance can be obtained in such way:
 ```php
-$Config	= \cs\Config::instance();
+$Config = \cs\Config::instance();
 ```
 
 This object allow to get configuration of any module/plugin/block, and also general system parameters, configured databases/storages and others.
@@ -60,63 +60,63 @@ Whether configuration was applied (not saved) and can be canceled
 Property with most general configuration properties. Example for newly installed system (JSON only for presentation, property returns regular php array):
 ```json
 {
-	"name"                              : "CleverStyle test",
-	"url"                               : [
-		"http://cs.test"
-	],
-	"admin_email"                       : "admin@cscms.org",
-	"closed_title"                      : "Site closed",
-	"closed_text"                       : "<p>Site closed for maintenance<\/p>",
-	"site_mode"                         : 1,
-	"title_delimiter"                   : " | ",
-	"title_reverse"                     : 0,
-	"cache_compress_js_css"             : 0,
-	"theme"                             : "CleverStyle",
-	"language"                          : "English",
-	"allow_change_language"             : "0",
-	"multilingual"                      : 1,
-	"db_balance"                        : "0",
-	"db_mirror_mode"                    : "0",
-	"active_languages"                  : [
-		"English",
-		"Русский",
-		"Українська"
-	],
-	"cookie_domain"                     : [
-		"cs.test"
-	],
-	"inserts_limit"                     : 1000,
-	"key_expire"                        : 120,
-	"session_expire"                    : 2592000,
-	"update_ratio"                      : 75,
-	"sign_in_attempts_block_count"      : 0,
-	"sign_in_attempts_block_time"       : 30,
-	"cookie_prefix"                     : "",
-	"timezone"                          : "Europe/Kiev",
-	"password_min_length"               : 4,
-	"password_min_strength"             : 0,
-	"smtp"                              : "1",
-	"smtp_host"                         : "",
-	"smtp_port"                         : "465",
-	"smtp_secure"                       : "ssl",
-	"smtp_auth"                         : "1",
-	"smtp_user"                         : "",
-	"smtp_password"                     : "",
-	"mail_from_name"                    : "Administrator of CleverStyle test",
-	"allow_user_registration"           : 1,
-	"require_registration_confirmation" : 1,
-	"auto_sign_in_after_registration"   : 0,
-	"registration_confirmation_time"    : 1,
-	"mail_signature"                    : "",
-	"mail_from"                         : "admin@cs.test",
-	"rules"                             : "<p>Site rules<\/p>",
-	"show_tooltips"                     : 1,
-	"remember_user_ip"                  : 0,
-	"simple_admin_mode"                 : 0,
-	"default_module"                    : "System",
-	"put_js_after_body"                 : 1,
-	"vulcanization"                     : 1,
-	"gravatar_support"                  : 0
+    "name"                              : "CleverStyle test",
+    "url"                               : [
+        "http://cs.test"
+    ],
+    "admin_email"                       : "admin@cscms.org",
+    "closed_title"                      : "Site closed",
+    "closed_text"                       : "<p>Site closed for maintenance<\/p>",
+    "site_mode"                         : 1,
+    "title_delimiter"                   : " | ",
+    "title_reverse"                     : 0,
+    "cache_compress_js_css"             : 0,
+    "theme"                             : "CleverStyle",
+    "language"                          : "English",
+    "allow_change_language"             : "0",
+    "multilingual"                      : 1,
+    "db_balance"                        : "0",
+    "db_mirror_mode"                    : "0",
+    "active_languages"                  : [
+        "English",
+        "Русский",
+        "Українська"
+    ],
+    "cookie_domain"                     : [
+        "cs.test"
+    ],
+    "inserts_limit"                     : 1000,
+    "key_expire"                        : 120,
+    "session_expire"                    : 2592000,
+    "update_ratio"                      : 75,
+    "sign_in_attempts_block_count"      : 0,
+    "sign_in_attempts_block_time"       : 30,
+    "cookie_prefix"                     : "",
+    "timezone"                          : "Europe/Kiev",
+    "password_min_length"               : 4,
+    "password_min_strength"             : 0,
+    "smtp"                              : "1",
+    "smtp_host"                         : "",
+    "smtp_port"                         : "465",
+    "smtp_secure"                       : "ssl",
+    "smtp_auth"                         : "1",
+    "smtp_user"                         : "",
+    "smtp_password"                     : "",
+    "mail_from_name"                    : "Administrator of CleverStyle test",
+    "allow_user_registration"           : 1,
+    "require_registration_confirmation" : 1,
+    "auto_sign_in_after_registration"   : 0,
+    "registration_confirmation_time"    : 1,
+    "mail_signature"                    : "",
+    "mail_from"                         : "admin@cs.test",
+    "rules"                             : "<p>Site rules<\/p>",
+    "show_tooltips"                     : 1,
+    "remember_user_ip"                  : 0,
+    "simple_admin_mode"                 : 0,
+    "default_module"                    : "System",
+    "put_js_after_body"                 : 1,
+    "vulcanization"                     : 1,
+    "gravatar_support"                  : 0
 }
 ```
 Most of properties should be understandable from names, some properties are used by system only.
@@ -125,64 +125,64 @@ Most of properties should be understandable from names, some properties are used
 Property, that stores configuration of databases, except the main database, parameters of which are written in configuration file. Structure of this property is following (JSON only for presentation, property returns regular php array):
 ```json
 {
-	"0": {
-		"mirrors": [
+	"0" : {
+		"mirrors" : [
 			{
-				"mirror": "0",
-				"host": "localhost",
-				"type": "MySQL",
-				"prefix": "prefix_",
-				"name": "CleverStyle",
-				"user": "CleverStyle",
-				"password": "1111",
-				"charset": "utf8",
-				"mirrors": []
+				"mirror"   : "0",
+				"host"     : "localhost",
+				"type"     : "MySQL",
+				"prefix"   : "prefix_",
+				"name"     : "CleverStyle",
+				"user"     : "CleverStyle",
+				"password" : "1111",
+				"charset"  : "utf8",
+				"mirrors"  : []
 			}
 		]
 	},
-	"2": {
-		"mirrors": [],
-		"host": "localhost",
-		"type": "MySQL",
-		"prefix": "prefix_",
-		"name": "CS3",
-		"user": "CS3",
-		"password": "CS3",
-		"charset": "utf8",
-		"mirror": "-1"
+	"2" : {
+		"mirrors"  : [],
+		"host"     : "localhost",
+		"type"     : "MySQL",
+		"prefix"   : "prefix_",
+		"name"     : "CS3",
+		"user"     : "CS3",
+		"password" : "CS3",
+		"charset"  : "utf8",
+		"mirror"   : "-1"
 	},
-	"3": {
-		"mirrors": [
+	"3" : {
+		"mirrors"  : [
 			{
-				"mirror": "3",
-				"host": "localhost",
-				"type": "MySQL",
-				"prefix": "prefix_",
-				"name": "CS2-mirror",
-				"user": "CS2-mirror",
-				"password": "CS2-mirror",
-				"charset": "utf8",
-				"mirrors": []
+				"mirror"   : "3",
+				"host"     : "localhost",
+				"type"     : "MySQL",
+				"prefix"   : "prefix_",
+				"name"     : "CS2-mirror",
+				"user"     : "CS2-mirror",
+				"password" : "CS2-mirror",
+				"charset"  : "utf8",
+				"mirrors"  : []
 			},
 			{
-				"mirror": "3",
-				"host": "localhost",
-				"type": "MySQL",
-				"prefix": "prefix_",
-				"name": "CS2-mirror2",
-				"user": "CS2-mirror2",
-				"password": "CS2-mirror2",
-				"charset": "utf8",
-				"mirrors": []
+				"mirror"   : "3",
+				"host"     : "localhost",
+				"type"     : "MySQL",
+				"prefix"   : "prefix_",
+				"name"     : "CS2-mirror2",
+				"user"     : "CS2-mirror2",
+				"password" : "CS2-mirror2",
+				"charset"  : "utf8",
+				"mirrors"  : []
 			}
 		],
-		"host": "localhost",
-		"type": "MySQL",
-		"prefix": "prefix_",
-		"name": "CS2",
-		"user": "CS2",
-		"password": "CS2",
-		"charset": "utf8"
+		"host"     : "localhost",
+		"type"     : "MySQL",
+		"prefix"   : "prefix_",
+		"name"     : "CS2",
+		"user"     : "CS2",
+		"password" : "CS2",
+		"charset"  : "utf8"
 	}
 }
 ```
@@ -190,13 +190,13 @@ Property, that stores configuration of databases, except the main database, para
 Property, that stores configuration of storages, except the main storage, parameters of which are written in configuration file. Structure of this property is following (JSON only for presentation, property returns regular php array):
 ```json
 {
-	"0": "0",
-	"1": {
-		"host": "cscms.org",
-		"connection": "HTTP",
-		"user": "CleverStyle",
-		"password": "CleverStyle",
-		"url": "http:\/\/cscms.org"
+	"0" : "0",
+	"1" : {
+		"host"       : "cscms.org",
+		"connection" : "HTTP",
+		"user"       : "CleverStyle",
+		"password"   : "CleverStyle",
+		"url"        : "http:\/\/cscms.org"
 	}
 }
 ```
@@ -204,83 +204,78 @@ Property, that stores configuration of storages, except the main storage, parame
 Internal structure of components parameters (JSON only for presentation, property returns regular php array):
 ```json
 {
-	"modules": {
-		"Blogs": {
-			"active": 1,
-			"db": {
-				"posts": "0",
-				"comments": "0"
+	"modules" : {
+		"Blogs"        : {
+			"active"  : 1,
+			"db"      : {
+				"posts"    : "0",
+				"comments" : "0"
 			},
-			"storage": [
-
+			"storage" : [
 			],
-			"data": {
-				"posts_per_page": "2",
-				"max_sections": "3",
-				"enable_comments": "1"
+			"data"    : {
+				"posts_per_page"  : "2",
+				"max_sections"    : "3",
+				"enable_comments" : "1"
 			}
 		},
-		"Cron": {
-			"active": 0,
-			"db": [
-
+		"Cron"         : {
+			"active"  : 0,
+			"db"      : [
 			],
-			"storage": [
-
+			"storage" : [
 			]
 		},
-		"Static_pages": {
-			"active": 1,
-			"db": {
-				"pages": "0",
-				"texts": "0"
+		"Static_pages" : {
+			"active" : 1,
+			"db"     : {
+				"pages" : "0",
+				"texts" : "0"
 			}
 		},
-		"System": {
-			"active": 1,
-			"db": {
-				"keys": "0",
-				"users": "0",
-				"texts": "0"
+		"System"       : {
+			"active" : 1,
+			"db"     : {
+				"keys"  : "0",
+				"users" : "0",
+				"texts" : "0"
 			}
 		},
-		"Test": {
-			"active": 1,
-			"db": [
-
+		"Test"         : {
+			"active"  : 1,
+			"db"      : [
 			],
-			"storage": [
-
+			"storage" : [
 			]
 		}
 	},
-	"plugins": [
+	"plugins" : [
 		"TinyMCE"
 	],
-	"blocks": [
+	"blocks"  : [
 		{
-			"position": "top",
-			"type": "html",
-			"index": "7625906",
-			"title": "Testing title",
-			"active": 0,
-			"template": "default.html",
-			"start": 1337627340,
-			"expire": 0,
-			"update": 3600,
-			"content": "<p>Testing content<\/p>"
+			"position" : "top",
+			"type"     : "html",
+			"index"    : "7625906",
+			"title"    : "Testing title",
+			"active"   : 0,
+			"template" : "default.html",
+			"start"    : 1337627340,
+			"expire"   : 0,
+			"update"   : 3600,
+			"content"  : "<p>Testing content<\/p>"
 		},
 		{
-			"position": "left",
-			"type": "html",
-			"index": "7624258",
-			"title": "Testing left",
-			"active": "1",
-			"template": "default.html",
-			"start": 1337624220,
-			"expire": 0,
-			"update": 3600,
-			"content": "<p>Testing content left<\/p>"
+			"position" : "left",
+			"type"     : "html",
+			"index"    : "7624258",
+			"title"    : "Testing left",
+			"active"   : "1",
+			"template" : "default.html",
+			"start"    : 1337624220,
+			"expire"   : 0,
+			"update"   : 3600,
+			"content"  : "<p>Testing content left<\/p>"
 		}
 	]
 }
@@ -342,12 +337,11 @@ Method returns value of stored configuration parameter. If array of parameters i
 Also there is simplified way to get single parameter - to get it as property of object:
 ```php
 <?php
-$Config		= \cs\Config::instance();
-$module_conf	= $Config->module('News');
-$posts_per_page	= $module_conf->get('posts_per_page');
-
+$Config         = \cs\Config::instance();
+$module_conf    = $Config->module('News');
+$posts_per_page = $module_conf->get('posts_per_page');
 // Next line makes the same as previous, but looks more natural
-$posts_per_page	= $module_conf->posts_per_page;
+$posts_per_page = $module_conf->posts_per_page;
 ```
 #### set($item : array|string, $value = null : mixed|null) : bool
 Available only for administrators, for other user will have no effect!
@@ -355,41 +349,38 @@ Available only for administrators, for other user will have no effect!
 Opposite to `::get()` method, is used to store parameters. If `$item` is string - `$value` should contain value of specified parameter. Also, `$item` may be associative array, as it is returned by `::get()` method, in this case `$value` should be omitted. You are free to store strings, numbers and arrays:
 ```php
 <?php
-$Config				= \cs\Config::instance();
-$module_conf			= $Config->module('News');
-$module_conf->get('posts_per_page', 10);
-
+$Config      = \cs\Config::instance();
+$module_conf = $Config->module('News');
+$module_conf->set('posts_per_page', 10);
 // Next line makes the same as previous, but looks more natural
-
-$module_conf->posts_per_page	= 10;
-
+$module_conf->posts_per_page = 10;
 // Set several parameters at once
-$module_conf->set(
-	'pests_per_page'	=> 10,
-	'alow_comments'		=> 1,
-	'array_parameter'	=> [1, 2, 3]
-);
+$module_conf->set([
+    'pests_per_page'  => 10,
+    'allow_comments'  => 1,
+    'array_parameter' => [1, 2, 3]
+]);
 ```
 #### db($db_name : string) : int
 Is used to get database index by associated identifier, as it is described in *meta.json* section of [Module architecture](/docs/Module-architecture.md).
 ```php
 <?php
-$Config		= \cs\Config::instance();
-$db		= \cs\DB::instance();
-$users_db_id	= $Config->module('System')->db('users');
-$result    	= $db->$users_db_id->q(
-	"SELECT `login`
-	FROM `[prefix]users`"
+$Config      = \cs\Config::instance();
+$db          = \cs\DB::instance();
+$users_db_id = $Config->module('System')->db('users');
+$result      = $db->db($users_db_id)->q(
+    "SELECT `login`
+    FROM `[prefix]users`"
 );
 ```
 #### storage($storage_name : string) : int
 Is used to get storage index by associated identifier, as it is described in *meta.json* section of [Module architecture](/docs/Module-architecture.md).
 ```php
 <?php
-$Config			= \cs\Config::instance();
-$Storage		= \cs\Storage::instance();
-$users_storage_id	= $Config->module('System')->storage('images');
-$result			= $db->$users_storage_id->file_put_contents('test', 123);
+$Config           = \cs\Config::instance();
+$Storage          = \cs\Storage::instance();
+$users_storage_id = $Config->module('System')->storage('images');
+$result           = $db->$users_storage_id->file_put_contents('test', 123);
 ```
 #### enabled() : bool
 Returns boolean `true` if module is enabled, and `false` otherwise

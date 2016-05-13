@@ -13,11 +13,11 @@ To do that, you can use installed CleverStyle CMS or even non-installed.
 2\. Make sure, that `phar.readonly` option in `php.ini` is set to `Off` (this is needed in order to create installation package, that is phar file)
 
 3a\. Allow opening of *build.php* file directly, for example by adding next lines into *.htaccess* file in root directory of the site:
-
-	<Files build.php>
-		RewriteEngine Off
-	</Files>
-
+```
+<Files build.php>
+    RewriteEngine Off
+</Files>
+```
 Than go to **http\://my.website/build.php**.
 
 On this page you can make installer of CleverStyle CMS. There are several possible modes:

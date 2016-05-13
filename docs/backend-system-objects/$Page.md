@@ -1,7 +1,7 @@
 `$Page` - is system object, that provides functionality of page generation: content, meta-tags, errors pages, etc. Instance can be obtained in such way:
 ```php
 <?php
-$Page	= \cs\Page::instance();
+$Page = \cs\Page::instance();
 ```
 
 ### [Methods](#methods) [Properties](#properties) [Events](#events) [\cs\Page\Includes_processing class](#includes-processing-class) [\cs\Page\Meta class](#meta-class)
@@ -58,22 +58,22 @@ Is used mainly in API, shows specified data (array/string/number) in json format
 Is used to add css to page, can add links to css files and add inline css styles:
 ```php
 <?php
-$Page	= \cs\Page::instance();
-$Page->css(
-	'themes/CleverStyle/css/general.css'
-)->css(
-	'body { background-color: #fff; }',
-	'code'
-);
+\cs\Page::instance()
+    ->css(
+        'themes/CleverStyle/css/general.css'
+    )
+    ->css(
+        'body { background-color: #fff; }',
+        'code'
+    );
 ```
 
 #### html($add : string|string[], $mode = 'file' : string) : cs\Page
 Is used to add Web Component (Polymer elements) to page, can add links to html files and add inline html code:
 ```php
 <?php
-$Page	= \cs\Page::instance();
-$Page->html(
-	'themes/CleverStyle/html/general.html'
+\cs\Page::instance()->html(
+    'themes/CleverStyle/html/general.html'
 );
 ```
 
@@ -81,23 +81,22 @@ $Page->html(
 Is used to add js to page, can add links to js files and add inline js code:
 ```php
 <?php
-$Page	= \cs\Page::instance();
-$Page->js(
-	'themes/CleverStyle/js/general.js'
-)->js(
-	'var test_var = "value";',
-	'code'
-);
+\cs\Page::instance()
+    ->js(
+        'themes/CleverStyle/js/general.js'
+    )
+    ->js(
+        'var test_var = "value";',
+        'code'
+    );
 ```
 
 #### config($config_structure : mixed, $target : string) : cs\Page
 Add config on page to make it available on frontend:
 ```php
 <?php
-<?php
-$Page	= \cs\Page::instance();
-$Page->config([
-	'max_file_size'	=> $Config->module('Plupload')->max_file_size
+\cs\Page::instance()->config([
+    'max_file_size' => $Config->module('Plupload')->max_file_size
 ], 'cs.plupload');
 ```
 
@@ -147,18 +146,18 @@ All this properties are used to store generated data, and substituting into temp
 
 #### level
 This is array with code intending values for each elements, that will be substituted into template:
-
-	$level = [
-		'Head'		=> 0,
-		'pre_Body'	=> 0,
-		'Left'		=> 2,
-		'Top'		=> 2,
-		'Content'	=> 3,
-		'Bottom'	=> 2,
-		'Right'		=> 2,
-		'post_Body'	=> 0
-	]
-
+```
+$level = [
+    'Head'        => 0,
+    'pre_Body'    => 0,
+    'Left'        => 2,
+    'Top'        => 2,
+    'Content'    => 3,
+    'Bottom'    => 2,
+    'Right'        => 2,
+    'post_Body'    => 0
+]
+```
 Values may be redefined if it is needed.
 
 #### interface
@@ -197,11 +196,11 @@ Usage example (from Composer assets plugin):
 ```php
 <?php
 \cs\Event::instance()->on(
-	'System/Page/requirejs',
-	function ($data) {
-		$data['directories_to_browse'][] = STORAGE.'/Composer/vendor/bower-asset';
-		$data['directories_to_browse'][] = STORAGE.'/Composer/vendor/npm-asset';
-	}
+    'System/Page/requirejs',
+    function ($data) {
+        $data['directories_to_browse'][] = STORAGE.'/Composer/vendor/bower-asset';
+        $data['directories_to_browse'][] = STORAGE.'/Composer/vendor/npm-asset';
+    }
 );
 ```
 
@@ -251,9 +250,9 @@ results
 <?php
 $Meta = \cs\Page\Meta::instance();
 $Meta
-	->article()
-	->article('published_time', date('Y-m-d', $post['date'] ?: TIME))
-	->article('tag', ['magic'. 'awesome']);
+    ->article()
+    ->article('published_time', date('Y-m-d', $post['date'] ?: TIME))
+    ->article('tag', ['magic'. 'awesome']);
 ```
 results
 ```html

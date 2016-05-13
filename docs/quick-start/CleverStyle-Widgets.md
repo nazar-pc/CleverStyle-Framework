@@ -186,8 +186,8 @@ Properties:
 Example:
 ```html
 <nav is="cs-nav-button-group">
-	<button is="cs-button" primary type="submit") OK
-	<button is="cs-button" type="button") Cancel
+    <button is="cs-button" primary type="submit") OK
+    <button is="cs-button" type="button") Cancel
 </nav>
 ```
 

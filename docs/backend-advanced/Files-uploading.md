@@ -9,12 +9,12 @@ The idea here is to keep tracking on all files, that is why if file is kept if o
 First event is `System/upload_files/add_tag`, usage:
 ```php
 <?php
-\cs\Event::instance()->run(
-	'System/upload_files/add_tag',
-	[
-		'tag'	=> "Items/10",
-		'url'	=> $uploaded_file_url
-	]
+\cs\Event::instance()->fire(
+    'System/upload_files/add_tag',
+    [
+        'tag' => "Items/10",
+        'url' => $uploaded_file_url
+    ]
 );
 ```
 
@@ -25,12 +25,12 @@ Both `tag` and `url` are required.
 Second event is `System/upload_files/del_tag`, usage:
 ```php
 <?php
-\cs\Event::instance()->run(
-	'System/upload_files/del_tag',
-	[
-		'tag'	=> "Items/10",
-		'url'	=> $uploaded_file_url
-	]
+\cs\Event::instance()->fire(
+    'System/upload_files/del_tag',
+    [
+        'tag' => "Items/10",
+        'url' => $uploaded_file_url
+    ]
 );
 ```
 
@@ -53,29 +53,29 @@ It will work fine, because mentioned events will ignore all URLs which are not a
 Example of usage in Blogs module:
 ```php
 <?php
-$old_files	= find_links($data['content']);
-$new_files	= find_links($content);
+$old_files    = find_links($data['content']);
+$new_files    = find_links($content);
 if ($old_files || $new_files) {
-	foreach (array_diff($old_files, $new_files) as $file) {
-		\cs\Event::instance()->fire(
-			'System/upload_files/del_tag',
-			[
-				'tag'	=> "Blogs/posts/$id/$L->clang",
-				'url'	=> $file
-			]
-		);
-	}
-	unset($file);
-	foreach (array_diff($new_files, $old_files) as $file) {
-		\cs\Event::instance()->fire(
-			'System/upload_files/add_tag',
-			[
-				'tag'	=> "Blogs/posts/$id/$L->clang",
-				'url'	=> $file
-			]
-		);
-	}
-	unset($file);
+    foreach (array_diff($old_files, $new_files) as $file) {
+        \cs\Event::instance()->fire(
+            'System/upload_files/del_tag',
+            [
+                'tag' => "Blogs/posts/$id/$L->clang",
+                'url' => $file
+            ]
+        );
+    }
+    unset($file);
+    foreach (array_diff($new_files, $old_files) as $file) {
+        \cs\Event::instance()->fire(
+            'System/upload_files/add_tag',
+            [
+                'tag' => "Blogs/posts/$id/$L->clang",
+                'url' => $file
+            ]
+        );
+    }
+    unset($file);
 }
 unset($old_files, $new_files);
 ```

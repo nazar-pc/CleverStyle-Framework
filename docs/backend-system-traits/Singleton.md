@@ -24,13 +24,13 @@ If class need constructor - it is possible to add it by defining `protected` met
 ```php
 <?php
 class My_class {
-	use \cs\Singleton;
+    use \cs\Singleton;
 
-	protected function constructor () {
-		$this->five	= 5;
-	}
+    protected function constructor () {
+        $this->five = 5;
+    }
 }
 
-$object	= My_class::instance();
-$object->five;			//5
+$object = My_class::instance();
+$object->five; //5
 ```

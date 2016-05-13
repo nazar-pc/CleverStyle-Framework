@@ -1,7 +1,7 @@
 `$Group` - is system object, that provides groups manipulating interface, instance can be obtained in such way:
 ```php
 <?php
-$Group	= \cs\Group::instance();
+$Group = \cs\Group::instance();
 ```
 
 ### [Methods](#methods) [Events](#events)
@@ -55,7 +55,7 @@ Delete all permissions of specified group
 Is running after successful group addition. Parameters array:
 ```
 [
-	'id'	=> group_id
+    'id' => group_id
 ]
 ```
 
@@ -63,7 +63,7 @@ Is running after successful group addition. Parameters array:
 Is running before group deletion. Parameters array:
 ```
 [
-	'id'	=> group_id
+    'id' => group_id
 ]
 ```
 
@@ -71,6 +71,6 @@ Is running before group deletion. Parameters array:
 Is running after group deletion. Parameters array:
 ```
 [
-	'id'	=> group_id
+    'id' => group_id
 ]
 ```

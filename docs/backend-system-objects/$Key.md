@@ -1,7 +1,7 @@
 *$Key* - is system object, that provides functionality of keys generation. Keys are used for security purposes, have expiration date, and may be accompanied with some additional information. Also, keys may be stored in different databases (for different purposes), instance can be obtained in such way:
 ```php
 <?php
-$Key	= \cs\Key::instance();
+$Key = \cs\Key::instance();
 ```
 
 ### [Methods](#methods)

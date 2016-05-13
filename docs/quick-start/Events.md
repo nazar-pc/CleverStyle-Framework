@@ -24,11 +24,11 @@ It is a good practice to put into file, that runs event such comment section:
 /**
  * Provides next events:<br>
  *  System/general/languages/load([
- *   'clanguage'		=> <i>clanguage</i><br>
- *   'clang'			=> <i>clang</i><br>
- *   'clanguage_en'		=> <i>clanguage_en</i><br>
- *   'content_language'	=> <i>content_language</i><br>
- *   'locale'			=> <i>locale</i><br>
+ *   'clanguage'        => <i>clanguage</i><br>
+ *   'clang'            => <i>clang</i><br>
+ *   'clanguage_en'     => <i>clanguage_en</i><br>
+ *   'content_language' => <i>content_language</i><br>
+ *   'locale'           => <i>locale</i><br>
  *  ])
  */
 ```
@@ -41,12 +41,12 @@ Example:
 ```php
 <?php
 \cs\Event::instance()->on(
-	'admin/System/components/modules/disable',
-	function ($data) {
-		if ($data['name'] == basename(__DIR__)) {
-			clean_pcache();
-		}
-	}
+    'admin/System/components/modules/disable',
+    function ($data) {
+        if ($data['name'] == basename(__DIR__)) {
+            clean_pcache();
+        }
+    }
 );
 ```
 Parameter `$data` in callback is used to put some addition information of context into callback.
@@ -86,10 +86,10 @@ Event with parameter:
 ```php
 <?php
 \cs\Event::instance()->fire(
-	'System/Request/routing_replace',
-	[
-		'rc'	=> &$rc
-	]
+    'System/Request/routing_replace',
+    [
+        'rc' => &$rc
+    ]
 );
 ```
 
@@ -97,12 +97,12 @@ Result of event dispatching may be checked:
 ```php
 <?php
 if (!\cs\Event::instance()->fire(
-	'System/User/registration/before',
-	[
-		'email'	=> $email
-	]
+    'System/User/registration/before',
+    [
+        'email' => $email
+    ]
 )) {
-	return false;
+    return false;
 }
 ```
 `\cs\Event->fire()` returns `false` only if callback returns boolean `false`, otherwise `true` will be returned. Also, if there are several callbacks, that registered to the same event, and one of them returns `false` - next callbacks will not be executed.

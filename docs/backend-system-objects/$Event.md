@@ -1,7 +1,7 @@
 `$Event` - is system object, that handles events subscribing and dispatching, instance can be obtained in such way:
 ```php
 <?php
-$Event	= \cs\Event::instance();
+$Event = \cs\Event::instance();
 ```
 
 ### [Methods](#methods)

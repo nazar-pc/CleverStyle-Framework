@@ -17,10 +17,10 @@ Such tags in fact are shortcuts for more complicated specific structures:
 Renders icon with `span` tag from set of UIkit icons:
 ```php
 h::icon(
-	'plus',
-	[
-		'tooltip'	=> 'Plus'
-	]
+    'plus',
+    [
+        'tooltip' => 'Plus'
+    ]
 )
 ```
 results in
@@ -37,7 +37,7 @@ h::info('section_path')
 results in
 ```html
 <span tooltip="Section path info">
-	Section path<cs-tooltip></cs-tooltip>
+    Section path<cs-tooltip></cs-tooltip>
 </span>
 ```
 Where *Section path* from `$L->section_path` and *Section path info* from `$L->section_path_info`.
@@ -46,29 +46,29 @@ Where *Section path* from `$L->section_path` and *Section path info* from `$L->s
 Convenient simplified interface for `label[is=cs-label-button] > input[radio]`:
 ```php
 h::checkbox(
-	[
-		'name'    => 'active',
-		'checked' => 1,
-		'value'   => 1,
-		'in'      => 'Active'
-	]
+    [
+        'name'    => 'active',
+        'checked' => 1,
+        'value'   => 1,
+        'in'      => 'Active'
+    ]
 ).
 h::checkbox(
-	[
-		'name'    => 'inactive',
-		'checked' => 0,
-		'value'   => 1,
-		'in'      => 'Inactive'
-	]
+    [
+        'name'    => 'inactive',
+        'checked' => 0,
+        'value'   => 1,
+        'in'      => 'Inactive'
+    ]
 )
 ```
 results in:
 ```html
 <label is="cs-label-switcher">
-	<input checked name="active" type="checkbox" value="1"> Active
+    <input checked name="active" type="checkbox" value="1"> Active
 </label>
 <label is="cs-label-switcher">
-	<input name="inactive" type="checkbox" value="1"> Inactive
+    <input name="inactive" type="checkbox" value="1"> Inactive
 </label>
 ```
 
@@ -76,20 +76,20 @@ results in:
 Convenient simplified interface for `label[is=cs-label-button] > input[radio]`:
 ```php
 h::radio(
-	[
-		'name'    => 'active',
-		'checked' => 1,
-		'value'   => [0, 1],
-		'in'      => ['Off', 'On']
-	]
+    [
+        'name'    => 'active',
+        'checked' => 1,
+        'value'   => [0, 1],
+        'in'      => ['Off', 'On']
+    ]
 )
 ```
 results in:
 ```html
 <label is="cs-label-button">
-	<input name="active" tag="input" type="radio" value="0"> Off
+    <input name="active" tag="input" type="radio" value="0"> Off
 </label>
 <label is="cs-label-button">
-	<input checked name="active" tag="input" type="radio" value="1"> On
+    <input checked name="active" tag="input" type="radio" value="1"> On
 </label>
 ```

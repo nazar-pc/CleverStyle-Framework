@@ -1,7 +1,7 @@
 `$Session` - is system object, that is responsible for current user session, instance can be obtained in such way:
 ```php
 <?php
-$Session	= \cs\Session::instance();
+$Session = \cs\Session::instance();
 ```
 
 ### [Methods](#methods) [Events](#events)
@@ -88,7 +88,7 @@ Is fired after initialization of user session (at object creation)
 Event is fired during session loading
 ```
 [
-	'session_data' => $session_data
+    'session_data' => $session_data
 ]
 ```
 
@@ -96,7 +96,7 @@ Event is fired during session loading
 Event is fired during session addition
 ```
 [
-	'session_data' => $session_data
+    'session_data' => $session_data
 ]
 ```
 
@@ -104,7 +104,7 @@ Event is fired during session addition
 Event is fired before session deletion
 ```
 [
-	'id'	=> session_id
+    'id'    => session_id
 ]
 ```
 
@@ -112,7 +112,7 @@ Event is fired before session deletion
 Event is fired after session deletion
 ```
 [
-	'id'	=> session_id
+    'id'    => session_id
 ]
 ```
 
@@ -120,6 +120,6 @@ Event is fired after session deletion
 Event is fired before deleting of all sessions. Parameters array:
 ```
 [
-	'id'	=> user_id
+    'id'    => user_id
 ]
 ```

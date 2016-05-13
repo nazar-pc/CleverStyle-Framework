@@ -12,7 +12,7 @@ Steps to create the simplest module:
 Note: if you want to create module with php file, output should be done in next way:
 ```php
 <?php
-$Page	= \cs\Page::instance();
+$Page = \cs\Page::instance();
 $Page->content('Some content here');
 ```
 Any other output will be ignored.

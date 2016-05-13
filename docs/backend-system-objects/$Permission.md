@@ -1,7 +1,7 @@
 `$Permission` - is system object, that provides permissions manipulating interface, instance can be obtained in such way:
 ```php
 <?php
-$Permission	= \cs\Permission::instance();
+$Permission = \cs\Permission::instance();
 ```
 
 ### [Methods](#methods) [\cs\Permission\All trait](#all-trait)

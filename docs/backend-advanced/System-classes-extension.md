@@ -30,7 +30,7 @@ This all a bit complex, lets show on example of `cs\Page` class patching by `Foo
 namespace cs\custom;
 
 class Page_Foo extends _Page_Foo {
-	// Something here
+    // Something here
 }
 ```
 

@@ -1,7 +1,7 @@
 `$User` - is system object, that provides users manipulating interface, instance can be obtained in such way:
 ```php
 <?php
-$User	= \cs\User::instance();
+$User = \cs\User::instance();
 ```
 
 ### [Methods](#methods) [Properties](#properties) [Constants](#constants) [Events](#events) [\cs\User\Properties class](#properties-class)
@@ -54,8 +54,8 @@ List of possible item may be found in [properties section](#properties).
 Also there is simplified way to get item - to get it as property of object:
 ```php
 <?php
-$User	= \cs\User::instance();
-$login	= $User->login;
+$User  = \cs\User::instance();
+$login = $User->login;
 ```
 
 #### set($item : array|string, $value = null : int|null|string, $user = false : false|int) : bool
@@ -63,8 +63,8 @@ Set data item of specified user, like get() also works with items as properties.
 List of possible items may be found in [properties section](#properties) (except `login_hash` and `email_hash` - they changes automatically with `login` and `email` respectively).
 ```php
 <?php
-$User		= \cs\User::instance();
-$User->about	= 'Some about info';
+$User        = \cs\User::instance();
+$User->about = 'Some about info';
 ```
 
 #### get_data($item : string|string[], $user = false : false|int) : false|string|mixed[]
@@ -253,7 +253,7 @@ Event is fired at the end of constructor
 Is running before registration, `return false` stops and cancels registration process. Parameters array:
 ```
 [
-	'email'	=> email
+    'email' => email
 ]
 ```
 
@@ -261,7 +261,7 @@ Is running before registration, `return false` stops and cancels registration pr
 Is running after registration, `return false` stops and cancels registration process. Parameters array:
 ```
 [
-	'id'	=> user_id
+    'id' => user_id
 ]
 ```
 
@@ -269,7 +269,7 @@ Is running after registration, `return false` stops and cancels registration pro
 Is running before registration confirmation, `return false` stops and cancels registration process. Parameters array:
 ```
 [
-	'reg_key'	=> reg_key
+    'reg_key' => reg_key
 ]
 ```
 
@@ -277,7 +277,7 @@ Is running before registration confirmation, `return false` stops and cancels re
 Is running after registration confirmation, `return false` stops and cancels registration process. Parameters array:
 ```
 [
-	'id'	=> user_id
+    'id' => user_id
 ]
 ```
 
@@ -285,7 +285,7 @@ Is running after registration confirmation, `return false` stops and cancels reg
 Is running before user deletion. Parameters array:
 ```
 [
-	'id'	=> user_id	//id or array of ids
+    'id' => user_id    //id or array of ids
 ]
 ```
 
@@ -293,7 +293,7 @@ Is running before user deletion. Parameters array:
 Is running after user  deletion. Parameters array:
 ```
 [
-	'id'	=> user_id	//id or array of ids
+    'id' => user_id    //id or array of ids
 ]
 ```
 
@@ -301,8 +301,8 @@ Is running after user  deletion. Parameters array:
 Event is used by modules in order to determine contacts (friends) of specified user. Parameters array:
 ```
 [
-	'id'		=> user_id,
-	'contacts'	=> &$contacts	//Array of user id
+    'id'       => user_id,
+    'contacts' => &$contacts    //Array of user id
 ]
 ```
 

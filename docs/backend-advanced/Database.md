@@ -11,15 +11,14 @@ First thing you need to know - how to use prepared statements, because this is t
 There are few ways to use them:
 ```php
 <?php
-$db	= \cs\DB::instance();
-$db->q(
-	"DELETE FROM `[prefix]table`
-	WHERE
-		`param`	= '%s' AND
-		`id`	> %d
-	LIMIT 1",
-	'param value',
-	10
+\cs\DB::instance()->q(
+    "DELETE FROM `[prefix]table`
+    WHERE
+        `param`    = '%s' AND
+        `id`    > %d
+    LIMIT 1",
+    'param value',
+    10
 );
 ```
 
@@ -27,17 +26,16 @@ Method `::q()` just executes the query. First argument is query string followed 
 
 ```php
 <?php
-$db	= \cs\DB::instance();
-$db->q(
-	"DELETE FROM `[prefix]table`
-	WHERE
-		`param`	= '%s' AND
-		`id`	> %d
-	LIMIT 1",
-	[
-		'param value',
-		10
-	]
+\cs\DB::instance()->q(
+    "DELETE FROM `[prefix]table`
+    WHERE
+        `param`    = '%s' AND
+        `id`    > %d
+    LIMIT 1",
+    [
+        'param value',
+        10
+    ]
 );
 ```
 
@@ -45,15 +43,14 @@ Query string itself may be an array too.
 
 ```php
 <?php
-$db	= \cs\DB::instance();
-$db->q(
-	[
-		"DELETE FROM `[prefix]table`
-		WHERE `id` = %d",
-		"DELETE FROM `[prefix]other_table`
-		WHERE `id` = %d"
-	],
-	10
+\cs\DB::instance()->q(
+    [
+        "DELETE FROM `[prefix]table`
+        WHERE `id` = %d",
+        "DELETE FROM `[prefix]other_table`
+        WHERE `id` = %d"
+    ],
+    10
 );
 ```
 
@@ -70,15 +67,15 @@ Normally, you need to make query, then fetch result or make it few times to get 
 
 ```php
 <?php
-$db	= \cs\DB::instance();
-$result	= $db->qf([
-	"SELECT `id`, `name`
-	FROM `[prefix]table`
-	WHERE `id` = 10
-	LIMIT 1,
-	10
+$db     = \cs\DB::instance();
+$result = $db->qf([
+    "SELECT `id`, `name`
+    FROM `[prefix]table`
+    WHERE `id` = 10
+    LIMIT 1,
+    10
 ]);
-var_dump($result);	// ['id' => '10', 'name' => 'Some name']
+var_dump($result); // ['id' => '10', 'name' => 'Some name']
 ```
 
 `::qf()` is a combination Query + Fetch at once. First argument is either query string or array where all elements are just like arguments of `::q()` method.
@@ -98,9 +95,9 @@ To get instance of specific database in read only mode call:
 
 ```php
 <?php
-$db_index	= 0;
-$db			= \cs\DB:::instance()
-$cdb		= $db->$db_index;
+$db_index = 0;
+$db       = \cs\DB::instance();
+$cdb      = $db->$db_index;
 $cdb->q(...);
 ```
 
@@ -108,9 +105,9 @@ To get instance in write mode you need to call method instead of getting propert
 
 ```php
 <?php
-$db_index	= 0;
-$db			= \cs\DB:::instance()
-$cdb		= $db->$db_index();
+$db_index = 0;
+$db       = \cs\DB::instance();
+$cdb      = $db->$db_index();
 $cdb->q(...);
 ```
 

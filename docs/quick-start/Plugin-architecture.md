@@ -2,12 +2,12 @@ Every described below element is optional, even empty directory in **components/
 
 ### File system structure of plugin
 * includes
-	* css
-	* html
-	* js
-	* map.json
+  * css
+  * html
+  * js
+  * map.json
 * meta
-	* update
+  * update
 * fs.json
 * index.php
 * license.html / license.txt
@@ -25,14 +25,14 @@ This file affects compressed version of CSS/HTML/JS files, and naturally account
 Example:
 ```json
 {
-	"admin/Blogs"	: [
-		"admin.css"
-	],
-	"Blogs"			: [
-		"general.css",
-		"general.js",
-		"my-component/index.html"
-	]
+    "admin/Blogs" : [
+        "admin.css"
+    ],
+    "Blogs"       : [
+        "general.css",
+        "general.js",
+        "my-component/index.html"
+    ]
 }
 ```
 
@@ -43,7 +43,7 @@ Please, note, that also there is no need to mention css and JS files in `html` d
 Sometimes it might be necessary to include many files, so there is special wildcard syntax:
 ```json
 {
-	"Fotorama" : "*"
+    "Fotorama" : "*"
 }
 ```
 Example above will include all `css`, `html` and `js` files in their respective directories.
@@ -51,13 +51,13 @@ Example above will include all `css`, `html` and `js` files in their respective 
 It is also possible to specify part of path:
 ```json
 {
-	"admin/Blogs" : [
-		"admin.css"
-	],
-	"Blogs"       : [
-		"general.*",
-		"cs-blogs-*"
-	]
+    "admin/Blogs" : [
+        "admin.css"
+    ],
+    "Blogs"       : [
+        "general.*",
+        "cs-blogs-*"
+    ]
 }
 ```
 
@@ -82,23 +82,23 @@ License file, may be of txt or html format.
 Main description file of plugin. This file is required for plugin building, in order to be able to build plugin package. Example of meta.json file for plugin:
 ```json
 {
-	"package"	: "TinyMCE",
-	"category"	: "plugins",
-	"version"	: "4.0.1-cs4",
-	"description"	: "TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control.",
-	"author"	: "Moxiecode Systems AB",
-	"website"	: "www.tinymce.com",
-	"license"	: "GNU Lesser General Public License 2.1",
-	"provide"	: [
+	"package"      : "TinyMCE",
+	"category"     : "plugins",
+	"version"      : "4.0.1-cs4",
+	"description"  : "TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control.",
+	"author"       : "Moxiecode Systems AB",
+	"website"      : "www.tinymce.com",
+	"license"      : "GNU Lesser General Public License 2.1",
+	"provide"      : [
 		"editor",
 		"seditor",
 		"ieditor"
 	],
-	"multilingual"	: [
+	"multilingual" : [
 		"interface",
 		"content"
 	],
-	"languages"	: [
+	"languages"    : [
 		"English",
 		"Русский",
 		"Українська"

@@ -1,7 +1,7 @@
 `$L` - is system object, that provides multilingual interface functionality, instance can be obtained in such way:
 ```php
 <?php
-$L	= \cs\Language::instance();
+$L = \cs\Language::instance();
 ```
 
 `$L` is used only because it is short for frequent usage
@@ -31,15 +31,15 @@ Does URL have language prefix. If there is language prefix - language will be re
 Get translation.
 ```php
 <?php
-$L		= \cs\Language::instance();
-$module_name	= $L->get('module_name');
+$L           = \cs\Language::instance();
+$module_name = $L->get('module_name');
 ```
 
 Also there is simplified way to get translation - to get it as property of object:
 ```php
 <?php
-$L		= \cs\Language::instance();
-$module_name	= $L->module_name;
+$L           = \cs\Language::instance();
+$module_name = $L->module_name;
 ```
 
 #### set($item :array|string, $value = null : null|string)
@@ -56,7 +56,7 @@ translation (in json file)
 usage
 ```php
 <?php
-$L	= \cs\Language::instance();
+$L = \cs\Language::instance();
 $L->format('hello', ['my friend']);
 ```
 
@@ -65,7 +65,7 @@ Translation string should be formatted according to [sprintf()](http://www.php.n
 Also there is simplified way to get formatted string - to get it as result of calling of object function:
 ```php
 <?php
-$L	= \cs\Language::instance();
+$L = \cs\Language::instance();
 $L->hello('my friend');
 ```
 
@@ -158,13 +158,14 @@ Object implements `JsonSerializable` interface and allows getting of all transla
 
 #### System/general/languages/load
 This event is running at language changing to allow third-party components add their own translations. Array:
-
-	[
-		'clanguage'			=> clanguage
-		'clang'				=> clang
-		'cregion'			=> cregion
-		'clanguage_en'		=> clanguage_en
-	]
+```
+[
+    'clanguage'    => clanguage
+    'clang'        => clang
+    'cregion'      => cregion
+    'clanguage_en' => clanguage_en
+]
+```
 is set as parameter for event, all necessary language and locale aspects are given with event to determine exact translation.
 
 <a name="prefix-class" />
