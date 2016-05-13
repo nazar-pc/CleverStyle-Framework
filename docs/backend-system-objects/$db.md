@@ -66,12 +66,7 @@ This is abstract class is used as base for database engine classes. It is descri
 
 This class has next public methods:
 * q()
-* aq()
-* n()
 * f()
-* fa()
-* fs()
-* fas()
 * qf()
 * qfa()
 * qfs()
@@ -109,62 +104,43 @@ $query	= $db->q(
 ```
 Every parameter, passed in such way will have escaped special characters for use in an SQL statement.
 
-#### aq($query : string|string[], $params = [] : string|string[], $param = null : string) : false|object|resource
-Asynchronous query method. Is used in cases when it is not necessary to wait and get results of query.
-
-Similar to `q()` method.
-
-#### n($query_result : object|resource) : false|int
-Get number of selected rows.
-
 #### f($query_result : object|resource, $single_column = false : bool, $array = false : bool, $indexed = false : bool) : array[]|false|int|int[]|string|string[]
 Fetch a result row
 
-#### fa ($query_result : object|resource, $single_column = false : bool, $indexed = false : bool) : array[]|false
-Similar to `f()` with `$array = true`
 
-#### fs ($query_result : object|resource, $array = false : bool) : false|int|int[]|string|string[]
-Similar to `f()` with `$single_column = true`
+#### qf (...$query : string[]) : array|false
+Query, Fetch
 
-#### fas ($query_result : object|resource) : false|int[]|string[]
-Similar to `f()` with `$array = true` and `$single_column = true`
-
-#### qf ($query : array|string, $single_column = false : bool, $array = false : bool, $indexed = false : bool) : array[]|false|int|int[]|string|string[]
-Combination of `q()` and `f()`. `$query` may be string, array (first parameter string or array of strings, other arguments for string formatting, as it is for `q()` method)
+Short for `::f(::q())`, arguments are exactly the same as in `::q()`
 
 For example:
 ```php
 <?php
 $db	= \cs\DB::instance();
-$query	= $db->qf([
+$query	= $db->qf(
 	"SELECT `id`
 	FROM `[prefix]users`
 	WHERE `login`	= '%s'
 	LIMIT %d",
 	$login,
 	1
-]);
-```
-Notice, that in this case we specify all arguments related to `$query` as array, elements of which will be used for `::q()` call.
-
-If there is only one argument - array can be omitted:
-```php
-<?php
-$db	= \cs\DB::instance();
-$query	= $db->qf(
-	"SELECT COUNT(`id`) as `count`
-	FROM `[prefix]users`"
 );
 ```
 
-#### qfa ($query : array|string, $single_column = false : bool, $indexed = false : bool) : array[]|false
-Combination of `q()` and `fa()`
+#### qfa (...$query : string[]) : array[]|false
+Query, Fetch, Array
 
-#### qfs ($query : array|string, $array = false : bool) : false|int|int[]|string|string[]
-Combination of `q()` and `fs()`
+Short for `::f(::q(), false, true, false)`, arguments are exactly the same as in `::q()`
 
-#### qfas ($query : array|string) : false|int[]|string[]
-Combination of `q()` and `fas()`
+#### qfs (...$query : string[]) : false|int|string
+Query, Fetch, Single
+
+Short for `::f(::q(), true, false, false)`, arguments are exactly the same as in `::q()`
+
+#### qfas (...$query : string[]) : false|int[]|string[]
+Query, Fetch, Array, Single
+
+Short for `::f(::q(), true, true, false)`, arguments are exactly the same as in `::q()`
 
 #### id() : int
 Returns id of last inserted row

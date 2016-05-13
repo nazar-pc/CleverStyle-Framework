@@ -294,9 +294,9 @@ abstract class _Abstract {
 	/**
 	 * Query, Fetch
 	 *
-	 * Combination of ::q() and ::f() methods
+	 * Short for `::f(::q())`, arguments are exactly the same as in `::q()`
 	 *
-	 * @param string[] $query SQL query string, or you can put all parameters, that ::q() function can accept in form of array
+	 * @param string[] $query
 	 *
 	 * @return array|false
 	 */
@@ -322,9 +322,9 @@ abstract class _Abstract {
 	/**
 	 * Query, Fetch, Array
 	 *
-	 * Short for ::f(::q(), false, true, false)
+	 * Short for `::f(::q(), false, true, false)`, arguments are exactly the same as in `::q()`
 	 *
-	 * @param string[] $query SQL query string, or you can put all parameters, that ::q() function can accept in form of array
+	 * @param string[] $query
 	 *
 	 * @return array[]|false
 	 */
@@ -346,9 +346,9 @@ abstract class _Abstract {
 	/**
 	 * Query, Fetch, Single
 	 *
-	 * Short for ::f(::q(), true, false, false)
+	 * Short for `::f(::q(), true, false, false)`, arguments are exactly the same as in `::q()`
 	 *
-	 * @param string[] $query SQL query string, or you can put all parameters, that ::q() function can accept in form of array
+	 * @param string[] $query
 	 *
 	 * @return false|int|string
 	 */
@@ -366,9 +366,9 @@ abstract class _Abstract {
 	/**
 	 * Query, Fetch, Array, Single
 	 *
-	 * Short for ::f(::q(), true, true, false)
+	 * Short for `::f(::q(), true, true, false)`, arguments are exactly the same as in `::q()`
 	 *
-	 * @param string[] $query SQL query string, or you can put all parameters, that ::q() function can accept in form of array
+	 * @param string[] $query
 	 *
 	 * @return false|int[]|string[]
 	 */
