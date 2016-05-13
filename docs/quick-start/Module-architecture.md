@@ -12,6 +12,11 @@ Every described below element is optional, even empty directory in `components/m
   * index.php
   * index.{http_method_lowercase}.php
   * prepare.php
+* cli
+  * Controller.php
+  * index.json
+  * index.php
+  * index.{http_method_lowercase}.php
 * includes
   * css
   * html
@@ -101,7 +106,7 @@ Similarly:
 * System/components
 * System/components/modules
 
-Route may be accessed and read/changed through `$Request->route`. This property contains array of route parts without module name and `admin|api` prefix.
+Route may be accessed and read/changed through `$Request->route`. This property contains array of route parts without module name and `admin|api|cli` prefix.
 
 If parts are specified, system will try to find corresponding files for each part.
 For example, for route
@@ -142,6 +147,15 @@ Every is included after `api/index.php` only for its http method.
 
 #### api/prepare.php
 First file of module, which will be called on any api request. Usually is used to make some preparation procedures. Similarly to `admin/prepare.php`.
+
+#### cli/index.json
+Completely the same as for `api/index.json`, but for CLI.
+
+#### cli/index.php
+Completely the same as for `api/index.php`, but for CLI.
+
+#### cli/index.{http_method_lowercase}.php
+Completely the same as for `api/index.{http_method_lowercase}.php`, but for CLI.
 
 #### includes/css includes/html includes/js
 CSS/Web Components (Polymer elements)/JS files in these directories will be automatically included on necessary pages of website (including dependencies between components), and compressed (if was chosen in configuration)
@@ -212,7 +226,7 @@ Contains sql files with names, that corresponds to versions of module. Queries f
 Example of files structure:
 * meta/update_db/posts/1.0.2/MySQLi.sql
 
-#### api/Controller.php
+#### Controller.php
 The same as `admin/Controller.php`.
 
 #### fs.json

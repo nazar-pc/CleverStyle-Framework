@@ -5,12 +5,13 @@ There are two possible types of routing in CleverStyle CMS (while only one of th
 ### In general
 There are some general rules how system core processes routes for different pages.
 
-In generic form page URL looks like `admin|api/Module_name/path/sub_path/more`, while all parts except `Module_name` are optional.
+In generic form page URL looks like `admin|api|cli/Module_name/path/sub_path/more`, while all parts except `Module_name` are optional.
 
 Working directory (`working_dir` hereinafter) for files and controller searching depends on prefix before module name:
 * no prefix - `/components/modules/Module_name`
 * `admin` prefix - `/components/modules/Module_name/admin`
 * `api` prefix - `/components/modules/Module_name/api`
+* `cli` prefix - `/components/modules/Module_name/cli`
 
 `path` and `sub_path` are two levels of routing supported by system core, and they should be non-numeric (purely numeric elements are ignored here and next path element will be taken), everything else might be implemented by developer if needed.
 
@@ -56,10 +57,11 @@ Difference here is that instead of files static methods are used like follows:
 * `\cs\modules\Module_name\api\Controller::path_{request_method_lowercase}($ids, $path)`
 * `\cs\modules\Module_name\api\Controller::path_sub_path_{request_method_lowercase}($ids, $path)`
 
-Rules about methods existence similar to files, controllers classes are different for regular pages, `admin` pages and `api`, just like files:
+Rules about methods existence similar to files, controllers classes are different for regular pages, `admin` pages, `api` and `cli`, just like files:
 * `\cs\modules\Module_name\Controller`
 * `\cs\modules\Module_name\admin\Controller`
 * `\cs\modules\Module_name\api\Controller`
+* `\cs\modules\Module_name\cli\Controller`
 
 Also, please, note that `\cs\Request` and `\cs\Response` instances are passed as arguments into methods for convenience.
 

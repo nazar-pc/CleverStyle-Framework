@@ -87,6 +87,7 @@ Example of returned data:
     "path_normalized" : "admin/System/general",
     "admin_path"      : true,
     "api_path"        : false,
+    "cli_path"        : false,
     "current_module"  : "System",
     "home_page"       : false
 }
@@ -121,6 +122,7 @@ Example of returned data:
 * route_ids
 * admin_path
 * api_path
+* cli_path
 * current_module
 * home_page
 
@@ -210,6 +212,9 @@ Request to administration section
 
 #### api_path
 Request to api section
+
+#### cli_path
+Request to cli interface
 
 #### current_module
 Current module

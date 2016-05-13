@@ -17,7 +17,7 @@ All events are named like paths in file system (sometimes it corresponds to the 
 * admin/System/components/plugins/disable
 * System/Page/rebuild_cache
 
-Usually, system events are stated with *System/*, other components (modules and plugins) similarly starts with component name. Events, that are used in admin section are prefixed by *admin*, for api with *api*.
+Usually, system events are stated with `System/`, other components (modules and plugins) similarly starts with component name. Events, that are used in admin section are prefixed by `admin`, for api with `api` and for CLI with `cli`.
 
 It is a good practice to put into file, that runs event such comment section:
 ```
