@@ -135,8 +135,11 @@ Backend events:
 * admin/System/Menu
 * System/App/construct
 * System/App/render/before
+* System/App/execute_router/before
+* System/App/execute_router/after
+* System/App/block_render
 * System/App/render/after
-* System/App/block_render* System/Config/init/before
+* System/Config/init/before
 * System/Config/init/after
 * System/Config/changed
 * System/general/languages/load
