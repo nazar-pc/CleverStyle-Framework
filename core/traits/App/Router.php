@@ -109,7 +109,7 @@ trait Router {
 			/**
 			 * If path not specified - take first from structure
 			 */
-			$this->check_and_normalize_route_internal($path, $structure, $Request->cli_path || $Request->api_path);
+			$this->check_and_normalize_route_internal($Request, $path, $structure, $Request->cli_path || $Request->api_path);
 			$Request->route_path[$nesting_level] = $path;
 			/**
 			 * Fill paths array intended for controller's usage
@@ -122,13 +122,14 @@ trait Router {
 		}
 	}
 	/**
-	 * @param string $path
-	 * @param array  $structure
-	 * @param bool   $cli_or_api_path
+	 * @param \cs\Request $Request
+	 * @param string      $path
+	 * @param array       $structure
+	 * @param bool        $cli_or_api_path
 	 *
 	 * @throws ExitException
 	 */
-	protected function check_and_normalize_route_internal (&$path, $structure, $cli_or_api_path) {
+	protected function check_and_normalize_route_internal ($Request, &$path, $structure, $cli_or_api_path) {
 		/**
 		 * If path not specified - take first from structure
 		 */
@@ -143,8 +144,7 @@ trait Router {
 		} elseif (!isset($structure[$path]) && !in_array($path, $structure)) {
 			throw new ExitException(404);
 		}
-		/** @noinspection PhpUndefinedMethodInspection */
-		if (!$this->check_permission($path)) {
+		if (!$this->check_permission($Request, $path)) {
 			throw new ExitException(403);
 		}
 	}

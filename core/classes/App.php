@@ -51,7 +51,7 @@ class App {
 			throw new ExitException(400);
 		}
 		$this->handle_closed_site(!$Config->core['site_mode'], $Request);
-		if (!$this->check_permission('index')) {
+		if (!$this->check_permission($Request, 'index')) {
 			throw new ExitException(403);
 		}
 		Event::instance()->fire('System/App/construct');
@@ -62,15 +62,7 @@ class App {
 			_include(PLUGINS."/$plugin/index.php", false, false);
 		}
 		Event::instance()->fire('System/App/render/before');
-		/**
-		 * Title only for non-CLI and non-API calls
-		 */
-		$Request->cli_path || $Request->api_path || $this->render_title();
-		$this->execute_router($Request);
-		/**
-		 * Blocks only for non-CLI and non-API calls
-		 */
-		$Request->cli_path || $Request->api_path || $this->render_blocks();
+		$this->render($Request);
 		Event::instance()->fire('System/App/render/after');
 		Page::instance()->render();
 	}
@@ -120,12 +112,12 @@ class App {
 	/**
 	 * Check whether user allowed to access to specified label
 	 *
-	 * @param string $label
+	 * @param Request $Request
+	 * @param string  $label
 	 *
 	 * @return bool
 	 */
-	protected function check_permission ($label) {
-		$Request = Request::instance();
+	protected function check_permission ($Request, $label) {
 		if ($Request->cli_path) {
 			return true;
 		}
@@ -138,28 +130,44 @@ class App {
 		return User::instance()->get_permission($permission_group, $label);
 	}
 	/**
-	 * Render page title
+	 * @param Request $Request
+	 *
+	 * @throws ExitException
 	 */
-	protected function render_title () {
-		$Page    = Page::instance();
-		$Request = Request::instance();
-		/**
-		 * Add generic Home or Module name title
-		 */
-		if (!$Request->cli_path && !$Request->api_path) {
-			$L = Language::instance();
-			if ($Request->admin_path) {
-				$Page->title($L->system_admin_administration);
-			}
-			$Page->title(
-				$L->{$Request->home_page ? 'system_home' : $Request->current_module}
-			);
+	protected function render ($Request) {
+		if ($Request->cli_path || $Request->api_path) {
+			$this->execute_router($Request);
+		} else {
+			$Page = Page::instance();
+			$this->render_title($Request, $Page);
+			$this->execute_router($Request);
+			$this->render_blocks($Page);
 		}
 	}
 	/**
-	 * Blocks rendering
+	 * Render page title
+	 *
+	 * @param Request $Request
+	 * @param Page    $Page
 	 */
-	protected function render_blocks () {
+	protected function render_title ($Request, $Page) {
+		/**
+		 * Add generic Home or Module name title
+		 */
+		$L = Language::instance();
+		if ($Request->admin_path) {
+			$Page->title($L->system_admin_administration);
+		}
+		$Page->title(
+			$L->{$Request->home_page ? 'system_home' : $Request->current_module}
+		);
+	}
+	/**
+	 * Blocks rendering
+	 *
+	 * @param Page $Page
+	 */
+	protected function render_blocks ($Page) {
 		$blocks = Config::instance()->components['blocks'];
 		/**
 		 * It is frequent that there is no blocks - so, no need to to anything here
@@ -167,7 +175,6 @@ class App {
 		if (!$blocks) {
 			return;
 		}
-		$Page         = Page::instance();
 		$blocks_array = [
 			'top'    => '',
 			'left'   => '',
