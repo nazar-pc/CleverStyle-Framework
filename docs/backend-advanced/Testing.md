@@ -16,6 +16,14 @@ If you have all of this - you are ready to run tests:
 php -d variables_order=EGPCS phpt-tests-runner tests
 ```
 
+`SKIP_SLOW_TESTS` and `DB` environment variables are used to skip slow tests and specifying which database engine to use during tests:
+
+```bash
+DB=MySQLi SKIP_SLOW_TESTS=1 php -d variables_order=EGPCS phpt-tests-runner tests
+DB=PostgreSQL SKIP_SLOW_TESTS=1 php -d variables_order=EGPCS phpt-tests-runner tests
+DB=SQLite SKIP_SLOW_TESTS=1 php -d variables_order=EGPCS phpt-tests-runner tests
+```
+
 ### To write tests
 First of all - read [PHPT - Test File Layout](https://qa.php.net/phpt_details.php) and then differences of [phpt-tests-runner dialect](https://github.com/nazar-pc/phpt-tests-runner#phpt-tests-runner---runner-for-phpt-tests-with-few-differences-comparing-to-original-phpt-format)
 
