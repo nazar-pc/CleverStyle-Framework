@@ -62,8 +62,10 @@ Rules about methods existence similar to files, controllers classes are differen
 
 Also, please, note that `\cs\Request` and `\cs\Response` instances are passed as arguments into methods for convenience.
 
-The last convenient feature of controller-based routing comparing to file-based is that value, returned from controller method, that is different than `null` will be passed to `cs\Page::json()` for API calls and to `::content()` for other calls.
+One more convenient feature of controller-based routing comparing to file-based is that value, returned from controller method, that is different than `null` will be passed to `cs\Page::json()` for API calls and to `::content()` for other calls.
 This allows to avoid direct `cs\Page` usage in many cases and makes methods a bit closer to pure functions.
+
+And lastly, with Controller-based routing you can override controller by placing similar one into `cs\custom` namespace (namely, for `cs\modules\Blogs\Controller` customized version should be as `cs\custom\modules\Blogs\Controller` and it can even extend original controller).
 
 ### `\cs\Request::$route`, `\cs\Request::$route_ids` and `\cs\Request::$route_path`
 * `\cs\Request::$route` is primary and contains whole page URL after `Module_name` dropped by `/` on elements (part after and including `?` is dropped from the end also)
