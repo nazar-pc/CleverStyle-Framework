@@ -153,7 +153,7 @@ class Packages_manipulation {
 			if (is_writable($file)) {
 				unlink($file);
 				// Recursively remove all empty parent directories
-				while (!get_files_list($file = dirname($file))) {
+				while (!get_files_list($file = dirname($file), false, 'fd')) {
 					rmdir($file);
 				}
 			}
