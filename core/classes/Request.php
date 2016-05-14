@@ -10,7 +10,7 @@ use
 	cs\Request\Cookie,
 	cs\Request\Data_and_files,
 	cs\Request\Query,
-	cs\Request\Route as Request_route,
+	cs\Request\Route,
 	cs\Request\Psr7,
 	cs\Request\Server;
 
@@ -24,7 +24,7 @@ class Request {
 		Data_and_files,
 		Query,
 		Psr7,
-		Request_route,
+		Route,
 		Server;
 	/**
 	 * Global request id, used by system
