@@ -1,4 +1,4 @@
-### Welcome to the CleverStyle CMS wiki!
+### Welcome to the CleverStyle CMS documentation!
 Here you can find all useful information:
 * How to use
 * How to customize
