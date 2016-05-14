@@ -160,6 +160,10 @@ class Packages_manipulation {
 		}
 		unset($file, $dir);
 		file_put_json("$fs_location_directory/fs.json", $fs);
+		clearstatcache(true);
+		if (function_exists('opcache_reset')) {
+			opcache_reset();
+		}
 		return true;
 	}
 	/**
