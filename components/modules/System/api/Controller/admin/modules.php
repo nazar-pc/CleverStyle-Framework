@@ -364,6 +364,15 @@ trait modules {
 		) {
 			throw new ExitException(400);
 		}
+		static::admin_modules_disable_internal($Config, $module);
+	}
+	/**
+	 * @param Config $Config
+	 * @param string $module
+	 *
+	 * @throws ExitException
+	 */
+	protected static function admin_modules_disable_internal ($Config, $module) {
 		if (!Event::instance()->fire('admin/System/components/modules/disable/before', ['name' => $module])) {
 			throw new ExitException(500);
 		}
@@ -545,7 +554,7 @@ trait modules {
 		$enabled    = $Config->module($module)->enabled();
 		// If module is currently enabled - disable it temporary
 		if ($enabled) {
-			static::admin_modules_disable($Request);
+			static::admin_modules_disable_internal($Config, $module);
 		}
 		if (!static::is_same_module($new_meta, $module)) {
 			throw new ExitException($L->this_is_not_module_installer_file, 400);
