@@ -133,22 +133,17 @@ class Event {
 	 * @return string[]
 	 */
 	protected function events_files_paths () {
-		return Cache::instance()->get(
-			'events_files_paths',
-			function () {
-				$paths = [];
-				foreach (get_files_list(MODULES, false, 'd', 'components/modules') as $path) {
-					if (file_exists(DIR."/$path/events.php")) {
-						$paths[] = "$path/events.php";
-					}
-				}
-				foreach (get_files_list(PLUGINS, false, 'd', 'components/plugins') as $path) {
-					if (file_exists(DIR."/$path/events.php")) {
-						$paths[] = "$path/events.php";
-					}
-				}
-				return $paths;
+		$paths = [];
+		foreach (get_files_list(MODULES, false, 'd', 'components/modules') as $path) {
+			if (file_exists(DIR."/$path/events.php")) {
+				$paths[] = "$path/events.php";
 			}
-		);
+		}
+		foreach (get_files_list(PLUGINS, false, 'd', 'components/plugins') as $path) {
+			if (file_exists(DIR."/$path/events.php")) {
+				$paths[] = "$path/events.php";
+			}
+		}
+		return $paths;
 	}
 }

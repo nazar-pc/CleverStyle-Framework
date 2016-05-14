@@ -335,8 +335,7 @@ trait modules {
 		$Cache = System_cache::instance();
 		unset(
 			$Cache->functionality,
-			$Cache->languages,
-			$Cache->events_files_paths
+			$Cache->languages
 		);
 		clean_classes_cache();
 	}

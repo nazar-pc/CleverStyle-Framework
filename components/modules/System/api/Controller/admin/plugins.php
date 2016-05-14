@@ -200,7 +200,7 @@ trait plugins {
 		$Cache = System_cache::instance();
 		unset(
 			$Cache->functionality,
-			$Cache->events_files_paths
+			$Cache->languages
 		);
 		clean_classes_cache();
 	}
