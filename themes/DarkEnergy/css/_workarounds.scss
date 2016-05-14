@@ -6,9 +6,9 @@
  * @license    MIT License, see license.txt
  */
 html /deep/ a:not([is]):not([class]) {
-	color : #47adff;
+	color : #47adff !important;
 
 	&:hover {
-		color : #398ccc;
+		color : #398ccc !important;
 	}
 }

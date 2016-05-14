@@ -6,16 +6,18 @@
  * @license    MIT License, see license.txt
  */
 .cs-template-block-simple {
-	background : #262626;
+	background : #1c1c1c;
 	padding    : 1em;
 
-	* + & {
+	& + & {
 		margin-top : .5em;
 	}
 
-	h1, h2, h3 {
-		border-bottom  : 1px solid #2e2e2e;
-		padding-bottom : .7em;
-		margin-bottom  : 1em;
+	> {
+		h1, h2, h3 {
+			border-bottom  : 1px solid #2e2e2e;
+			padding-bottom : .7em;
+			margin-bottom  : 1em;
+		}
 	}
 }
