@@ -36,7 +36,6 @@
 |--------------------------------|------------------------------------------------------------------------------------------------------------------------|
 | `\cs\False_class`              | is used in some classes for chaining calls                                                                             |
 | `\cs\Page\Includes_processing` | includes few methods used for processing CSS and HTML files before putting into cache                                  |
-| `\cs\Request\Data_sub_stream`  | stream wrapper for request data                                                                                        |
 | `\cs\Request\File_stream`      | stream wrapper for request files                                                                                       |
 | `\cs\Request\Psr7_data_stream` | stream wrapper for PSR7-compatible request data stream                                                                 |
 
