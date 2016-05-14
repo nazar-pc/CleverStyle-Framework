@@ -7,7 +7,6 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  document.removeEventListener('DOMContentLoaded', Prism.highlightAll);
   Prism.highlightAll = function(async, callback){
     var elements, i$, len$, element;
     elements = document.querySelectorAll('html /deep/ code[class*="language-"], html /deep/ [class*="language-"] code, html /deep/ code[class*="lang-"], html /deep/ [class*="lang-"] code');
@@ -20,5 +19,5 @@
       Prism.highlightElement(element, async === true, callback);
     }
   };
-  $(Prism.highlightAll);
+  cs.ui.ready.then(Prism.highlightAll);
 }).call(this);
