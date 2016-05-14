@@ -51,7 +51,8 @@ Here you can find all useful information:
 * [WYSIWYG wrapper elements](/docs/quick-start/WYSIWYG-wrapper-elements.md)
 
 ### CleverStyle CMS-specific features [Backend] [dev]
-* [exit/die](/docs/framework-specific-features/exit_die.md)
+* [exit/die](/docs/framework-specific-features/exit-die.md)
+* [Request/Response](/docs/framework-specific-features/request-response.md)
 
 ### Advanced [Backend] [dev]
 * [Testing](/docs/backend-advanced/Testing.md)
