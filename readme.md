@@ -156,6 +156,6 @@ Now in `/some_dir` you'll have source code of CleverStyle CMS from container whi
 
 # How to install?
 
-[Read simple instructions in our wiki](/docs/Installation.md)
+[Read simple instructions in our documentation](/docs/Installation.md)
 
 # [Video tutorials for developers](https://www.youtube.com/watch?v=GVXHeCVbO_c&list=PLVUA3QJ02XIiKEzpD4dxoCENgzzJyNEnH)
