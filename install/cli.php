@@ -165,7 +165,7 @@ Usage: php $argv[0]
   -t
   --timezone       - Timezone, check http://php.net/manual/en/suffixtimezones.php for possible values
   -l
-  --language       - Language, currently English, Українська and Русский languages supported
+  --language       - Language, currently English, Ukrainian and Russian languages supported
   -m
   --mode           - Mode, 0 for Expert and 1 for Regular user
   -ae

@@ -102,8 +102,8 @@ Method for language changing (usually is called by system automatically, and set
 #### clanguage
 Current language (in original writing):
 * English
-* Русский
-* Українська
+* Russian
+* Ukrainian
 
 #### time
 May be set to closure to be used by `$L->time()` instead of built-in mechanism, to provide proper endings of words for some languages.

@@ -28,8 +28,8 @@ Components dependencies are specified in `meta.json` file of [module](/docs/Modu
     ],
     "languages"    : [
         "English",
-        "Русский",
-        "Українська"
+        "Russian",
+        "Ukrainian"
     ]
 }
 ```

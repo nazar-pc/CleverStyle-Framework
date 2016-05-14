@@ -100,8 +100,8 @@ Main description file of plugin. This file is required for plugin building, in o
 	],
 	"languages"    : [
 		"English",
-		"Русский",
-		"Українська"
+		"Russian",
+		"Ukrainian"
 	]
 }
 ```

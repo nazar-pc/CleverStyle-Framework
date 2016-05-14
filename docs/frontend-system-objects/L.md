@@ -75,8 +75,8 @@ This way is more natural. You can specify as much arguments as you need.
 #### clanguage
 Current language (in original writing):
 * English
-* Русский
-* Українська
+* Russian
+* Ukrainian
 
 #### clanguage_en
 English lowercase variant of language name:

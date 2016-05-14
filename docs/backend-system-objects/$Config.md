@@ -79,8 +79,8 @@ Property with most general configuration properties. Example for newly installed
     "db_mirror_mode"                    : "0",
     "active_languages"                  : [
         "English",
-        "Русский",
-        "Українська"
+        "Russian",
+        "Ukrainian"
     ],
     "cookie_domain"                     : [
         "cs.test"

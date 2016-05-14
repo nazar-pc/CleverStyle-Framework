@@ -262,7 +262,7 @@ Main description file of module. A little bit extended in comparison with the sa
 	],
 	"languages"           : [
 		"English",
-		"Русский"
+		"Russian"
 	],
 	"hide_in_menu"        : 1
 }
