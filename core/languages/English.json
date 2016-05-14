@@ -59,6 +59,7 @@
 			"cancel_info"                           : "Cancel applied changes",
 			"off"                                   : "Off",
 			"on"                                    : "On",
+			"yes"                                   : "Yes",
 			"enable"                                : "Enable",
 			"disable"                               : "Disable",
 			"about_server"                          : "About server",
