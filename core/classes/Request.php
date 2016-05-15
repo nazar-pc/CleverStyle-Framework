@@ -15,6 +15,10 @@ use
 	cs\Request\Server;
 
 /**
+ * Provides next events:
+ *  System/Request/routing_replace
+ *  ['rc'    => &$rc] //Reference to string with current route, this string can be changed
+ *
  * @method static $this instance($check = false)
  */
 class Request {

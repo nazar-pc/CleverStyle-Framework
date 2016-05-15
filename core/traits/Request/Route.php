@@ -14,10 +14,6 @@ use
 	cs\Response;
 
 /**
- * Provides next events:
- *  System/Request/routing_replace
- *  ['rc'    => &$rc] //Reference to string with current route, this string can be changed
- *
  * @property string $scheme
  * @property string $host
  * @property string $path
