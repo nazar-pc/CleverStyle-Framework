@@ -8,6 +8,9 @@
  */
 (function(){
   var uploader_callback, button, uploader, base_config, x$;
+  tinymce.ui.Control.prototype.getContainerElm = function(){
+    return document.children[0];
+  };
   tinymce.baseURL = '/components/plugins/TinyMCE/includes/js';
   uploader_callback = undefined;
   button = document.createElement('button');

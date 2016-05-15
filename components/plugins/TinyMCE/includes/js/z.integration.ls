@@ -5,10 +5,11 @@
  * @copyright Copyright (c) 2012-2016, Nazar Mokrynskyi
  * @license   GNU Lesser General Public License 2.1, see license.txt
  */
-tinymce.baseURL		= '/components/plugins/TinyMCE/includes/js'
-uploader_callback	= undefined
-button				= document.createElement('button')
-uploader			= cs.file_upload?(
+tinymce.ui.Control.prototype.getContainerElm	= -> document.children[0]
+tinymce.baseURL									= '/components/plugins/TinyMCE/includes/js'
+uploader_callback								= undefined
+button											= document.createElement('button')
+uploader										= cs.file_upload?(
 	button
 	(files) !->
 		tinymce.uploader_dialog.close()
