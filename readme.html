@@ -6,16 +6,19 @@
 		font-family : sans-serif;
 		font-size   : 16px;
 	}
+
 	body {
 		background-color : #b9b9b9;
 		margin           : 0;
 		padding          : 0;
 	}
+
 	header {
 		background-color : #d7d7d7;
 		border-bottom    : 5px #666 solid;
 		padding          : 10px;
 	}
+
 	header h1 {
 		display        : inline-block;
 		font-size      : 72px;
@@ -24,6 +27,7 @@
 		margin         : 0;
 		vertical-align : top;
 	}
+
 	section {
 		background-color : #d7d7d7;
 		border           : 1px #666 solid;
@@ -32,9 +36,11 @@
 		position         : relative;
 		width            : 45%;
 	}
+
 	a {
 		color : #000;
 	}
+
 	footer {
 		padding    : 20px;
 		text-align : center;
@@ -50,60 +56,54 @@
 	<p>Author – Nazar Mokrynskyi <<a href="mailto:Nazar Mokrynskyi <nazar@mokrynskyi.com>">nazar@mokrynskyi.com</a>></p>
 	<p>Copyright (c) 2011-2016, Nazar Mokrynskyi</p>
 	<p>Official page: <a href="http://cleverstyle.org/cms">http://cleverstyle.org/cms</a></p>
-	<h2>Main features:</h2>
+	<h2>Key features:</h2>
 	<ul>
 		<li>
 			Components
 			<ul>
-				<li>Modules (for displaying main page content)</li>
-				<li>Plugins (are loaded on every page and provides additional functionality)</li>
-				<li>Blocks (are placed on around the page for displaying additional information)</li>
+				<li>Modules - for displaying main page content</li>
+				<li>Plugins - do not have dedicated pages and provide additional functionality</li>
+				<li>Blocks - are placed on around the page for displaying additional information</li>
 			</ul>
 		</li>
-		<li>Human readable addresses</li>
-		<li>Users groups and types</li>
-		<li>Users permissions control</li>
+		<li>Events - ability to capture, respond or even override behavior of different aspects of the system without changing system itself</li>
+		<li>Users, groups and permissions for granular access to functionality</li>
 		<li>Localization and internationalization (both interface and content)</li>
-		<li>CSS and JavaScript minification and autocompression</li>
-		<li>
-			Site mirrors
-			<ul>
-				<li>Domain mirrors</li>
-				<li>Physical server mirrors for every domain name</li>
-			</ul>
-		</li>
-		<li>Themes</li>
-		<li>
-			Multiple Databases
-			<ul>
-				<li>Multiple Databases mirrors</li>
-			</ul>
-		</li>
-		<li>Multiple files storages</li>
-		<li>System cache (FileSystem, APC, Memcached)</li>
-		<li>RESTful API</li>
-		<li>IPv6</li>
+		<li>CSS, JavaScript and HTML processing with intelligent, high-performance and completely automatic minification, compression and caching</li>
+		<li>HTTP/2 Server Push (via preload) works automatically</li>
+		<li>Visual themes to personalize appearance</li>
+		<li>Multiple Databases and mirrors awareness</li>
+		<li>Multiple static content storages awareness</li>
+		<li>Caching everything that makes sense to put into cache</li>
+		<li>RESTful API and CLI interfaces</li>
+		<li>First-class WebComponents support (Polymer)</li>
+		<li>First-class AMD support (RequireJS)</li>
+		<li>First-class Composer, Bower and NPM support</li>
 	</ul>
 	<h2>Requirements:</h2>
 	<ul>
 		<li>Unix-like operating system</li>
-		<li>or Windows (is not tested, but should also work)</li>
+		<li>or Windows (not tested regularly, but should also work, do not use in production)</li>
 		<li>Apache2 with modules:
 			<ul>
 				<li>REQUIRED: rewrite, headers</li>
 				<li>OPTIONAL: expires</li>
 			</ul>
 		</li>
-		<li>or Nginx (<a href="https://github.com/nazar-pc/CleverStyle-CMS/tree/master/docs/installation/Nginx-config-sample.md" target="_blank">config sample</a>)</li>
+		<li>
+			or Nginx (<a href="https://github.com/nazar-pc/CleverStyle-CMS/tree/master/docs/installation/Nginx-config-sample.md" target="_blank">config sample</a>)
+		</li>
 		<li>PHP 5.6+ with libraries:
 			<ul>
-				<li>REQUIRED: cURL</li>
+				<li>REQUIRED: cURL, XML, mbstring</li>
 				<li>OPTIONAL: APCu, Memcached</li>
 			</ul>
 		</li>
 		<li>or HHVM 3.3.2+ LTS or HHVM 3.4.1+</li>
 		<li>MySQL 5.6+</li>
 		<li>or MariaDB 10.0.5+</li>
+		<li>or PostgreSQL 9.5+</li>
+		<li>or SQLite 3.6.4+</li>
 	</ul>
 </section>
 <footer>
