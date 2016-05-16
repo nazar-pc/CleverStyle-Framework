@@ -130,7 +130,7 @@ Some components are developed in parallel with core in this repository
  * OPTIONAL: expires
 * or Nginx ([config sample](/docs/Nginx-config-sample.md))
 * PHP 5.6+ with libraries:
- * REQUIRED: cURL
+ * REQUIRED: cURL, XML, mbstring
  * OPTIONAL: APCu, Memcached
 * or HHVM 3.3.2+ LTS or HHVM 3.4.1+
 * MySQL 5.6+
