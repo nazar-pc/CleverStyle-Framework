@@ -5,32 +5,42 @@
  * @copyright  Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-@import '../../../includes/css/flexy-plexy';
-
 html {
 	background : #161616;
-	transition : transform 1s, width 1s;
 }
 
 #body {
 	padding : .5em;
 
-	@include flexy-plexy(1rem child, 2 8, 1);
+	> aside {
+		padding-right : 1em;
+		width         : 25em;
+	}
 
-	@media (max-width : 959px) {
-		@include flexy-plexy(1rem child, 1);
-
-		.cs-mobile-menu:not([show]) ~ :nth-child(n+2) {
-			display : none;
-		}
+	> section {
+		width : calc(100% - 25em);
 	}
 
 	> footer {
 		text-align : center;
+		width      : 100%;
 
 		strong {
 			display     : block;
 			font-weight : normal;
+		}
+	}
+
+	@media (max-width : 959px) {
+		> aside,
+		> section,
+		> footer {
+			padding-right : 0;
+			width         : 100%;
+		}
+
+		.cs-mobile-menu:not([show]) ~ :nth-child(n+2) {
+			display : none;
 		}
 	}
 }
