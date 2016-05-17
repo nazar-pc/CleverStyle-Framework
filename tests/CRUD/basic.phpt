@@ -5,13 +5,13 @@ include __DIR__.'/../bootstrap.php';
 class CRUD_test {
 	use
 		CRUD;
-	protected $table      = '[prefix]crud_test';
+	protected $table      = '[prefix]crud_test_basic';
 	protected $data_model = [
 		'id'            => 'int:1',
 		'title'         => 'text',
 		'description'   => 'html',
 		'data'          => 'json',
-		'joined_table1' => [
+		'joined_table' => [
 			'data_model' => [
 				'id'    => 'int:1',
 				'value' => 'int:1'
@@ -24,7 +24,7 @@ class CRUD_test {
 	function test () {
 		$this->db_prime()->q(
 			array_filter(
-				explode(';', file_get_contents(__DIR__."/create.$_ENV[DB].sql")),
+				explode(';', file_get_contents(__DIR__."/basic.$_ENV[DB].sql")),
 				'trim'
 			)
 		);
@@ -111,7 +111,7 @@ class CRUD_test {
 
 		$this->db_prime()->q(
 			array_filter(
-				explode(';', file_get_contents(__DIR__."/cleanup.sql")),
+				explode(';', file_get_contents(__DIR__."/basic.cleanup.sql")),
 				'trim'
 			)
 		);
@@ -157,7 +157,7 @@ array(5) {
     [7]=>
     float(10.5)
   }
-  ["joined_table1"]=>
+  ["joined_table"]=>
   array(3) {
     [0]=>
     int(1)
@@ -195,7 +195,7 @@ array(5) {
     [7]=>
     float(10.5)
   }
-  ["joined_table1"]=>
+  ["joined_table"]=>
   array(3) {
     [0]=>
     int(2)
@@ -235,7 +235,7 @@ array(2) {
       [7]=>
       float(10.5)
     }
-    ["joined_table1"]=>
+    ["joined_table"]=>
     array(3) {
       [0]=>
       int(1)
@@ -273,7 +273,7 @@ array(2) {
       [7]=>
       float(10.5)
     }
-    ["joined_table1"]=>
+    ["joined_table"]=>
     array(3) {
       [0]=>
       int(2)
@@ -313,7 +313,7 @@ array(5) {
     [7]=>
     float(10.5)
   }
-  ["joined_table1"]=>
+  ["joined_table"]=>
   array(3) {
     [0]=>
     int(1)
@@ -352,7 +352,7 @@ array(5) {
     [7]=>
     float(10.5)
   }
-  ["joined_table1"]=>
+  ["joined_table"]=>
   array(3) {
     [0]=>
     int(2)
@@ -391,7 +391,7 @@ array(5) {
     [7]=>
     float(10.5)
   }
-  ["joined_table1"]=>
+  ["joined_table"]=>
   array(3) {
     [0]=>
     int(2)
@@ -421,7 +421,7 @@ array(3) {
     string(13) "Description 4"
     ["data"]=>
     bool(true)
-    ["joined_table1"]=>
+    ["joined_table"]=>
     array(0) {
     }
   }
