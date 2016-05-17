@@ -259,7 +259,7 @@ CONFIG;
 	protected static function initialize_db_structure ($cdb, $source, $db_engine) {
 		$query = array_filter(
 			explode(';', file_get_contents("$source/install/DB/$db_engine.sql")),
-			'_trim'
+			'trim'
 		);
 		if (!$cdb->q($query)) {
 			throw new RuntimeException("Can't import system tables structure for selected database engine! Installation aborted.");

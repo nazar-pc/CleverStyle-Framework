@@ -34,7 +34,7 @@ trait Data_model_processing {
 		}
 		$arguments_ = [];
 		foreach (array_keys($data_model) as $argument) {
-			if (isset($arguments[$argument])) {
+			if (array_key_exists($argument, $arguments)) {
 				$arguments_[] = $arguments[$argument];
 			}
 		}

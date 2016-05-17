@@ -15,6 +15,14 @@ $result = $db->q('SELECT `id`, `login` from `[prefix]users`');
 if (!is_resource($result)) {
 	die('Simple query failed');
 }
+if (!$db->q(
+	[
+		'SELECT `id`, `login` FROM `[prefix]users` ORDER BY `id` ASC',
+		'SELECT `id`, `login` FROM `[prefix]users` ORDER BY `id` ASC'
+	]
+)) {
+	die('Multi query failed');
+}
 $u = $db->f($result);
 var_dump('single row', $u);
 $u = $db->f($result, true);

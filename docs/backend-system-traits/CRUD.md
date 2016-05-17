@@ -5,7 +5,7 @@
 <a name="methods" />
 ###[Up](#) Methods
 
-CRUD defines next 4 obvious methods:
+CRUD defines next obvious methods:
 
 * create
 * read
@@ -32,10 +32,12 @@ Arguments might be passed as single argument with array or as multiple arguments
 Method is for deletion of items. `$arguments` should contain only one element, `id` (which means first item in `$this->data_model`, might be array of `id`).
 
 #### find_urls($data : string[]) : string[]
-Takes array (even multi-dimensional) and returns found URLs (might be string itself or found inside HTML code)
+Takes array (even multi-dimensional) and returns found URLs (might be string itself or found inside HTML code).
+Typically there is no need to use this method directly.
 
 #### update_files_tags($tag : string, $old_files : string[], $new_files : string[])
 Calculated difference between old and new files, drops files tags for old files and add files tags for new files. This allows easily add all necessary tags for uploaded files.
+Typically there is no need to use this method directly.
 
 <a name="properties" />
 ###[Up](#) Properties

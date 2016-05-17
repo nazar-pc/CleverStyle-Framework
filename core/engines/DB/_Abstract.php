@@ -198,7 +198,7 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param string|string[] $query
+	 * @param string $query
 	 *
 	 * @return false|object|resource
 	 */

@@ -136,7 +136,7 @@ Some components are developed in parallel with core in this repository
 * MySQL 5.6+
 * or MariaDB 10.0.5+
 * or PostgreSQL 9.5+
-* or SQLite 3.6.4+
+* or SQLite 3.7.11+
 
 # How to try?
 

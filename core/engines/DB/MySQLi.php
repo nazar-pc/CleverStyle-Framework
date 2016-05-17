@@ -89,16 +89,11 @@ class MySQLi extends _Abstract {
 	 * @inheritdoc
 	 */
 	protected function q_multi_internal ($query) {
-		$query  = implode(';', $query);
-		$return = @$this->instance->multi_query($query);
-		/** @noinspection LoopWhichDoesNotLoopInspection */
-		while ($this->instance->more_results() && $this->instance->next_result()) {
-			$result = $this->instance->use_result();
-			if (is_object($result)) {
-				$result->free();
-			}
+		$result = true;
+		foreach ($query as $q) {
+			$result = $result && $this->q_internal($q);
 		}
-		return $return;
+		return $result;
 	}
 	/**
 	 * @deprecated
