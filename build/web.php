@@ -21,8 +21,11 @@ $mode    = @$_POST['mode'] ?: 'form';
 if ($mode == 'core') {
 	$content = $Builder->core(@$_POST['modules'] ?: [], @$_POST['plugins'] ?: [], @$_POST['themes'] ?: [], @$_POST['suffix']);
 } elseif (in_array($mode, ['core', 'module', 'plugin', 'theme'])) {
-	foreach (@$_POST[$mode.'s'] as $component) {
+	foreach (@$_POST[$mode.'s'] ?: [] as $component) {
 		$content .= $Builder->$mode($component, @$_POST['suffix']).h::br();
+	}
+	if (!$content) {
+		$content = 'Nothing was selected';
 	}
 } else {
 	$content = form();
@@ -33,7 +36,6 @@ if ($mode == 'core') {
 <meta charset="utf-8">
 <link href="/build/includes/style.css" rel="stylesheet">
 <script src="/build/includes/functions.js"></script>
-
 <header>
 	<img alt="" src="/build/includes/logo.png">
 	<h1>CleverStyle CMS Builder</h1>
