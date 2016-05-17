@@ -1,17 +1,17 @@
 <?php
 /**
- * @package    UPF (Useful PHP Functions)
- * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2011-2016, Nazar Mokrynskyi
- * @license    MIT License, see license.txt
+ * @package   UPF (Useful PHP Functions)
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 
 /**
  * Special function for files including
  *
- * @param string		$file
- * @param bool			$once
- * @param bool|callable	$show_errors	If bool error will be processed, if callable - only callable will be called
+ * @param string        $file
+ * @param bool          $once
+ * @param bool|callable $show_errors If bool error will be processed, if callable - only callable will be called
  *
  * @return bool
  */
@@ -30,12 +30,13 @@ function _require ($file, $once = false, $show_errors = true) {
 	}
 	return false;
 }
+
 /**
  * Special function for files including
  *
- * @param string		$file
- * @param bool			$once
- * @param bool|callable	$show_errors	If bool error will be processed, if callable - only callable will be called
+ * @param string        $file
+ * @param bool          $once
+ * @param bool|callable $show_errors If bool error will be processed, if callable - only callable will be called
  *
  * @return bool
  */
@@ -50,32 +51,35 @@ function _include ($file, $once = false, $show_errors = true) {
 		$data = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
 		trigger_error("File $file does not exists in $data[file] on line $data[line]", E_USER_WARNING);
 	} elseif (is_callable($show_errors)) {
-			return (bool)$show_errors();
+		return (bool)$show_errors();
 	}
 	return false;
 }
+
 /**
  * Special function for files including
  *
- * @param string		$file
- * @param bool|callable	$show_errors	If bool error will be processed, if callable - only callable will be called
+ * @param string        $file
+ * @param bool|callable $show_errors If bool error will be processed, if callable - only callable will be called
  *
  * @return bool
  */
 function _require_once ($file, $show_errors = true) {
 	return _require($file, true, $show_errors);
 }
+
 /**
  * Special function for files including
  *
- * @param string		$file
- * @param bool|callable	$show_errors	If bool error will be processed, if callable - only callable will be called
+ * @param string        $file
+ * @param bool|callable $show_errors If bool error will be processed, if callable - only callable will be called
  *
  * @return bool
  */
 function _include_once ($file, $show_errors = true) {
 	return _include($file, true, $show_errors);
 }
+
 /**
  * Temporary disabling of time limit
  *
@@ -119,15 +123,15 @@ function time_limit_pause ($pause = true) {
  */
 function get_files_list (
 	$dir,
-	$mask			= false,
-	$mode			= 'f',
-	$prefix_path	= false,
-	$subfolders		= false,
-	$sort			= false,
-	$exclusion		= false,
-	$system_files	= false,
-	$apply			= null,
-	$limit			= null
+	$mask = false,
+	$mode = 'f',
+	$prefix_path = false,
+	$subfolders = false,
+	$sort = false,
+	$exclusion = false,
+	$system_files = false,
+	$apply = null,
+	$limit = null
 ) {
 	$dir = rtrim($dir, '/');
 	/**
@@ -314,13 +318,14 @@ function __get_files_list_add_to_list (&$list, $item) {
 /**
  * Get file extension from filename
  *
- * @param string	$filename
+ * @param string $filename
  *
  * @return string
  */
 function file_extension ($filename) {
 	return mb_substr(mb_strrchr($filename, '.'), 1);
 }
+
 /**
  * Function takes base filename and possible file extensions, returns filename of first file found in filesystem
  *
@@ -338,6 +343,7 @@ function file_exists_with_extension ($base_filename, $possible_extensions) {
 	}
 	return false;
 }
+
 /**
  * Recursively remove directory
  *
@@ -368,10 +374,11 @@ function rmdir_recursive ($dirname) {
 	);
 	return @rmdir($dirname);
 }
+
 /**
  * Protecting against null byte injection
  *
- * @param string|string[]	$in
+ * @param string|string[] $in
  *
  * @return string|string[]
  */
@@ -385,10 +392,11 @@ function null_byte_filter ($in) {
 	}
 	return $in;
 }
+
 /**
  * Prepare text to be used as value for html attribute value
  *
- * @param string|string[]	$text
+ * @param string|string[] $text
  *
  * @return string|string[]
  */
@@ -402,18 +410,19 @@ function prepare_attr_value ($text) {
 	return strtr(
 		$text,
 		[
-			'&'		=> '&amp;',
-			'"'		=> '&quot;',
-			'\''	=> '&apos;',
-			'<'		=> '&lt;',
-			'>'		=> '&gt;'
+			'&'  => '&amp;',
+			'"'  => '&quot;',
+			'\'' => '&apos;',
+			'<'  => '&lt;',
+			'>'  => '&gt;'
 		]
 	);
 }
+
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string|string[]	$str
+ * @param string|string[] $str
  *
  * @return string|string[]
  */
@@ -423,10 +432,11 @@ function _stripslashes ($str) {
 	}
 	return stripslashes($str);
 }
+
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string|string[]	$str
+ * @param string|string[] $str
  *
  * @return string|string[]
  */
@@ -436,11 +446,12 @@ function _addslashes ($str) {
 	}
 	return addslashes($str);
 }
+
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string|string[]	$str
- * @param string			$charlist
+ * @param string|string[] $str
+ * @param string          $charlist
  *
  * @return string|string[]
  */
@@ -453,11 +464,12 @@ function _trim ($str, $charlist = " \t\n\r\0\x0B") {
 	}
 	return trim($str, $charlist);
 }
+
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string|string[]	$str
- * @param string			$charlist
+ * @param string|string[] $str
+ * @param string          $charlist
  *
  * @return string|string[]
  */
@@ -470,11 +482,12 @@ function _ltrim ($str, $charlist = " \t\n\r\0\x0B") {
 	}
 	return ltrim($str, $charlist);
 }
+
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string|string[]	$str
- * @param string			$charlist
+ * @param string|string[] $str
+ * @param string          $charlist
  *
  * @return string|string[]
  */
@@ -487,12 +500,13 @@ function _rtrim ($str, $charlist = " \t\n\r\0\x0B") {
 	}
 	return rtrim($str, $charlist);
 }
+
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string|string[]	$string
- * @param int				$start
- * @param int				$length
+ * @param string|string[] $string
+ * @param int             $start
+ * @param int             $length
  *
  * @return string|string[]
  */
@@ -509,12 +523,13 @@ function _substr ($string, $start, $length = null) {
 		return substr($string, $start);
 	}
 }
+
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string|string[]	$string
- * @param int				$start
- * @param int				$length
+ * @param string|string[] $string
+ * @param int             $start
+ * @param int             $length
  *
  * @return string|string[]
  */
@@ -531,10 +546,11 @@ function _mb_substr ($string, $start, $length = null) {
 		return mb_substr($string, $start);
 	}
 }
+
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string|string[]	$string
+ * @param string|string[] $string
  *
  * @return string|string[]
  */
@@ -544,10 +560,11 @@ function _strtolower ($string) {
 	}
 	return strtolower($string);
 }
+
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string|string[]	$string
+ * @param string|string[] $string
  *
  * @return string|string[]
  */
@@ -557,10 +574,11 @@ function _strtoupper ($string) {
 	}
 	return strtoupper($string);
 }
+
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string|string[]	$string
+ * @param string|string[] $string
  *
  * @return string|string[]
  */
@@ -573,10 +591,11 @@ function _mb_strtolower ($string) {
 	}
 	return mb_strtolower($string, 'utf-8');
 }
+
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string|string[]	$string
+ * @param string|string[] $string
  *
  * @return string|string[]
  */
@@ -589,48 +608,52 @@ function _mb_strtoupper ($string) {
 	}
 	return mb_strtoupper($string, 'utf-8');
 }
+
 /**
  * Works similar to the system function, but adds JSON_UNESCAPED_UNICODE and JSON_UNESCAPED_SLASHES options
  *
- * @param mixed		$value
+ * @param mixed $value
  *
  * @return bool|string
  */
 function _json_encode ($value) {
 	return @json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 }
+
 /**
  * Works similar to the system function, but always returns array, not object
  *
- * @param string	$in
- * @param int		$depth
+ * @param string $in
+ * @param int    $depth
  *
  * @return bool|mixed
  */
 function _json_decode ($in, $depth = 512) {
 	return @json_decode($in, true, $depth);
 }
+
 /**
  * Works similar to _json_decode(), but deletes specific comments
  *
  * @see _json_decode()
  *
- * @param string	$in
- * @param int		$depth
+ * @param string $in
+ * @param int    $depth
  *
  * @return bool|mixed
  */
 function _json_decode_nocomments ($in, $depth = 512) {
-	$in	= preg_replace('#^\s*//[^\n]*\n#ims', '', $in);
+	$in = preg_replace('#^\s*//[^\n]*\n#ims', '', $in);
 	return @json_decode($in, true, $depth);
 }
+
 /**
  * file_put_contents(_json_encode())
  *
- * @param string	$filename	Name of the file to read.
- * @param mixed		$data		The data to write
- * @param int		$flags
- * @param resource	$context
+ * @param string   $filename Name of the file to read.
+ * @param mixed    $data     The data to write
+ * @param int      $flags
+ * @param resource $context
  *
  * @return mixed
  */
@@ -642,10 +665,11 @@ function file_put_json ($filename, $data, $flags = null, &$context = null) {
 		$context
 	);
 }
+
 /**
  * _json_decode(file_get_contents())
  *
- * @param string	$filename	Name of the file to read.
+ * @param string $filename Name of the file to read.
  *
  * @return mixed
  */
@@ -654,10 +678,11 @@ function file_get_json ($filename) {
 		file_get_contents($filename)
 	);
 }
+
 /**
  * _json_decode_nocomments(file_get_contents())
  *
- * @param string	$filename	Name of the file to read.
+ * @param string $filename Name of the file to read.
  *
  * @return mixed
  */
@@ -666,14 +691,15 @@ function file_get_json_nocomments ($filename) {
 		file_get_contents($filename)
 	);
 }
+
 /**
  * Similar to system function, but make simple check, whether regexp is correct (actually checks if first symbol is / or #)
  *
- * @param string		$pattern
- * @param string		$subject
- * @param null|mixed	$matches
- * @param int			$flags
- * @param int			$offset
+ * @param string     $pattern
+ * @param string     $subject
+ * @param null|mixed $matches
+ * @param int        $flags
+ * @param int        $offset
  *
  * @return bool|int
  */
@@ -688,11 +714,11 @@ function _preg_match ($pattern, $subject, &$matches = null, $flags = 0, $offset 
 /**
  * Similar to system function, but make simple check, whether regexp is correct (actually checks if first symbol is / or #)
  *
- * @param string	$pattern
- * @param string	$replacement
- * @param string	$subject
- * @param int		$limit
- * @param null		$count
+ * @param string $pattern
+ * @param string $replacement
+ * @param string $subject
+ * @param int    $limit
+ * @param null   $count
  *
  * @return bool|mixed
  */
@@ -703,15 +729,17 @@ function _preg_replace ($pattern, $replacement, $subject, $limit = -1, &$count =
 	$pattern = trim($pattern);
 	return preg_replace($pattern, $replacement, $subject, $limit, $count);
 }
+
 /**
  * XSS Attack Protection. Returns secure string using several types of filters
  *
- * @param string|string[]	$in		HTML code
- * @param bool|string		$html	<b>text</b> - text at output (default)<br>
- * 									<b>true</b> - processed HTML at output<br>
- * 									<b>false</b> - HTML tags will be deleted
- * @param bool				$iframe	Whether to allow iframes without inner content (for example, video from youtube)<br>
- * 									Works only if <i>$html === true</i>
+ * @param string|string[] $in     HTML code
+ * @param bool|string     $html   <b>text</b> - text at output (default)<br>
+ *                                <b>true</b> - processed HTML at output<br>
+ *                                <b>false</b> - HTML tags will be deleted
+ * @param bool            $iframe Whether to allow iframes without inner content (for example, video from youtube)<br>
+ *                                Works only if <i>$html === true</i>
+ *
  * @return string|string[]
  */
 function xap ($in, $html = 'text', $iframe = false) {
@@ -720,9 +748,9 @@ function xap ($in, $html = 'text', $iframe = false) {
 			$item = xap($item, $html, $iframe);
 		}
 		return $in;
-	/**
-	 * Make safe HTML
-	 */
+		/**
+		 * Make safe HTML
+		 */
 	} elseif ($html === true) {
 		$in = preg_replace(
 			'/
@@ -750,9 +778,9 @@ function xap ($in, $html = 'text', $iframe = false) {
 				'',
 				$in
 			);
-		/**
-		 * Allow iframes without inner content (for example, video from youtube)
-		 */
+			/**
+			 * Allow iframes without inner content (for example, video from youtube)
+			 */
 		} else {
 			$in = preg_replace(
 				'/
@@ -806,12 +834,13 @@ function xap ($in, $html = 'text', $iframe = false) {
 		return htmlspecialchars($in, ENT_NOQUOTES | ENT_HTML5 | ENT_DISALLOWED | ENT_SUBSTITUTE | ENT_HTML5);
 	}
 }
+
 /**
  * Function for converting of IPv4 and IPv6 into hex values to store in db
  *
  * @link http://www.php.net/manual/ru/function.ip2long.php#82013
  *
- * @param string		$ip
+ * @param string $ip
  *
  * @return bool|string
  */
@@ -826,38 +855,38 @@ function ip2hex ($ip) {
 	/**
 	 * IPv4 format
 	 */
-	if($isIPv4) {
+	if ($isIPv4) {
 		$parts = explode('.', $ip);
 		foreach ($parts as &$part) {
 			$part = str_pad(dechex($part), 2, '0', STR_PAD_LEFT);
 		}
 		unset($part);
-		$ip			= "::$parts[0]$parts[1]:$parts[2]$parts[3]";
-		$hex		= implode('', $parts);
-	/**
-	 * IPv6 format
-	 */
+		$ip  = "::$parts[0]$parts[1]:$parts[2]$parts[3]";
+		$hex = implode('', $parts);
+		/**
+		 * IPv6 format
+		 */
 	} else {
-		$parts		= explode(':', $ip);
-		$last_part	= count($parts) - 1;
+		$parts     = explode(':', $ip);
+		$last_part = count($parts) - 1;
 		/**
 		 * If mixed IPv6/IPv4, convert ending to IPv6
 		 */
-		if(filter_var($parts[$last_part], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
+		if (filter_var($parts[$last_part], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
 			$parts[$last_part] = explode('.', $parts[$last_part]);
 			foreach ($parts[$last_part] as &$part) {
 				$part = str_pad(dechex($part), 2, '0', STR_PAD_LEFT);
 			}
 			unset($part);
-			$parts[]			= $parts[$last_part][2].$parts[$last_part][3];
-			$parts[$last_part]	= $parts[$last_part][0].$parts[$last_part][1];
+			$parts[]           = $parts[$last_part][2].$parts[$last_part][3];
+			$parts[$last_part] = $parts[$last_part][0].$parts[$last_part][1];
 		}
-		$numMissing		= 8 - count($parts);
-		$expandedParts	= [];
-		$expansionDone	= false;
-		foreach($parts as $part) {
-			if(!$expansionDone && $part == '') {
-				for($i = 0; $i <= $numMissing; ++$i) {
+		$numMissing    = 8 - count($parts);
+		$expandedParts = [];
+		$expansionDone = false;
+		foreach ($parts as $part) {
+			if (!$expansionDone && $part == '') {
+				for ($i = 0; $i <= $numMissing; ++$i) {
 					$expandedParts[] = '0000';
 				}
 				$expansionDone = true;
@@ -865,27 +894,28 @@ function ip2hex ($ip) {
 				$expandedParts[] = $part;
 			}
 		}
-		foreach($expandedParts as &$part) {
+		foreach ($expandedParts as &$part) {
 			$part = str_pad($part, 4, '0', STR_PAD_LEFT);
 		}
-		$ip = implode(':', $expandedParts);
+		$ip  = implode(':', $expandedParts);
 		$hex = implode('', $expandedParts);
 	}
 	/**
 	 * Check final IP
 	 */
-	if(filter_var($ip, FILTER_VALIDATE_IP) === false) {
+	if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
 		return false;
 	}
 	return strtolower(str_pad($hex, 32, '0', STR_PAD_LEFT));
 }
+
 /**
  * Returns IP for given hex representation, function reverse to ip2hex()
  *
  * @param string $hex
- * @param int $mode	6	- result IP will be in form of Ipv6<br>
- * 					4	- if possible, result will be in form of Ipv4, otherwise in form of IPv6<br>
- * 					10	- result will be array(IPv6, IPv4)
+ * @param int    $mode 6    - result IP will be in form of Ipv6<br>
+ *                     4    - if possible, result will be in form of Ipv4, otherwise in form of IPv6<br>
+ *                     10    - result will be array(IPv6, IPv4)
  *
  * @return array|bool|string
  */
@@ -901,10 +931,11 @@ function hex2ip ($hex, $mode = 6) {
 		$hex = substr($hex, 24, 8);
 		switch ($mode) {
 			case 4:
-				return	hexdec(substr($hex, 0, 2)).'.'.
-						hexdec(substr($hex, 2, 2)).'.'.
-						hexdec(substr($hex, 4, 2)).'.'.
-						hexdec(substr($hex, 6, 2));
+				return
+					hexdec(substr($hex, 0, 2)).'.'.
+					hexdec(substr($hex, 2, 2)).'.'.
+					hexdec(substr($hex, 4, 2)).'.'.
+					hexdec(substr($hex, 6, 2));
 			case 10:
 				$result = [];
 				/**
@@ -914,23 +945,25 @@ function hex2ip ($hex, $mode = 6) {
 				/**
 				 * IPv4
 				 */
-				$result[] =	hexdec(substr($hex, 0, 2)).'.'.
-							hexdec(substr($hex, 2, 2)).'.'.
-							hexdec(substr($hex, 4, 2)).'.'.
-							hexdec(substr($hex, 6, 2));
+				$result[] =
+					hexdec(substr($hex, 0, 2)).'.'.
+					hexdec(substr($hex, 2, 2)).'.'.
+					hexdec(substr($hex, 4, 2)).'.'.
+					hexdec(substr($hex, 6, 2));
 				return $result;
 			default:
 				return '0000:0000:0000:0000:0000:0000:'.substr($hex, 0, 4).':'.substr($hex, 4, 4);
 		}
 	} else {
-		$result =	substr($hex, 0, 4).':'.
-					substr($hex, 4, 4).':'.
-					substr($hex, 8, 4).':'.
-					substr($hex, 12, 4).':'.
-					substr($hex, 16, 4).':'.
-					substr($hex, 20, 4).':'.
-					substr($hex, 24, 4).':'.
-					substr($hex, 28, 4);
+		$result =
+			substr($hex, 0, 4).':'.
+			substr($hex, 4, 4).':'.
+			substr($hex, 8, 4).':'.
+			substr($hex, 12, 4).':'.
+			substr($hex, 16, 4).':'.
+			substr($hex, 20, 4).':'.
+			substr($hex, 24, 4).':'.
+			substr($hex, 28, 4);
 		if ($mode == 10) {
 			return [$result, false];
 		} else {
@@ -938,21 +971,22 @@ function hex2ip ($hex, $mode = 6) {
 		}
 	}
 }
+
 /**
  * Check password strength
  *
- * @param	string	$password
- * @param	int		$min_length
+ * @param    string $password
+ * @param    int    $min_length
  *
- * @return	int		In range [0..7]<br><br>
- * 					<b>0</b> - short password<br>
- * 					<b>1</b> - numbers<br>
- *  				<b>2</b> - numbers + letters<br>
- * 					<b>3</b> - numbers + letters in different registers<br>
- * 		 			<b>4</b> - numbers + letters in different registers + special symbol on usual keyboard +=/^ and others<br>
- * 					<b>5</b> - numbers + letters in different registers + special symbols (more than one)<br>
- * 					<b>6</b> - as 5, but + special symbol, which can't be found on usual keyboard or non-latin letter<br>
- * 					<b>7</b> - as 5, but + special symbols, which can't be found on usual keyboard or non-latin letter (more than one symbol)<br>
+ * @return    int In range [0..7]<br><br>
+ *                <b>0</b> - short password<br>
+ *                <b>1</b> - numbers<br>
+ *                <b>2</b> - numbers + letters<br>
+ *                <b>3</b> - numbers + letters in different registers<br>
+ *                <b>4</b> - numbers + letters in different registers + special symbol on usual keyboard +=/^ and others<br>
+ *                <b>5</b> - numbers + letters in different registers + special symbols (more than one)<br>
+ *                <b>6</b> - as 5, but + special symbol, which can't be found on usual keyboard or non-latin letter<br>
+ *                <b>7</b> - as 5, but + special symbols, which can't be found on usual keyboard or non-latin letter (more than one symbol)<br>
  */
 function password_check ($password, $min_length = 4) {
 	$password = preg_replace('/\s+/', ' ', $password);
@@ -983,18 +1017,19 @@ function password_check ($password, $min_length = 4) {
 	}
 	return $strength;
 }
+
 /**
  * Generates passwords till 5th level of strength, 6-7 - only for humans:)
  *
- * @param	int		$length
- * @param	int		$strength	In range [1..5], but it must be smaller, than $length<br><br>
- * 								<b>1</b> - numbers<br>
- * 								<b>2</b> - numbers + letters<br>
- * 								<b>3</b> - numbers + letters in different registers<br>
- * 								<b>4</b> - numbers + letters in different registers + special symbol<br>
- * 								<b>5</b> - numbers + letters in different registers + special symbols (more than one)
+ * @param    int $length
+ * @param    int $strength In range [1..5], but it must be smaller, than $length<br><br>
+ *                         <b>1</b> - numbers<br>
+ *                         <b>2</b> - numbers + letters<br>
+ *                         <b>3</b> - numbers + letters in different registers<br>
+ *                         <b>4</b> - numbers + letters in different registers + special symbol<br>
+ *                         <b>5</b> - numbers + letters in different registers + special symbols (more than one)
  *
- * @return	string
+ * @return    string
  */
 function password_generate ($length = 10, $strength = 5) {
 	static $special = [
@@ -1003,52 +1038,53 @@ function password_generate ($length = 10, $strength = 5) {
 	];
 	static $small, $capital;
 	if ($length < 4) {
-		$length		= 4;
+		$length = 4;
 	}
 	if ($strength < 1) {
-		$strength	= 1;
+		$strength = 1;
 	} elseif ($strength > $length) {
-		$strength	= $length;
+		$strength = $length;
 	}
 	if ($strength > 5) {
-		$strength	= 5;
+		$strength = 5;
 	}
 	if (!isset($small)) {
-		$small		= range('a', 'z');
+		$small = range('a', 'z');
 	}
 	if (!isset($capital)) {
-		$capital	= range('A', 'Z');
+		$capital = range('A', 'Z');
 	}
-	$password	= [];
-	$symbols	= range(0, 9);
+	$password = [];
+	$symbols  = range(0, 9);
 	if ($strength > 5) {
-		$strength	= 5;
+		$strength = 5;
 	}
 	if ($strength > $length) {
-		$strength	= $length;
+		$strength = $length;
 	}
 	if ($strength > 3) {
-		$symbols	= array_merge($symbols, $special);
+		$symbols = array_merge($symbols, $special);
 	}
 	if ($strength > 2) {
-		$symbols	= array_merge($symbols, $capital);
+		$symbols = array_merge($symbols, $capital);
 	}
 	if ($strength > 1) {
-		$symbols	= array_merge($symbols, $small);
+		$symbols = array_merge($symbols, $small);
 	}
-	$size		= count($symbols)-1;
+	$size = count($symbols) - 1;
 	while (true) {
 		for ($i = 0; $i < $length; ++$i) {
-			$password[]	= $symbols[mt_rand(0, $size)];
+			$password[] = $symbols[mt_rand(0, $size)];
 		}
 		shuffle($password);
 		if (password_check(implode('', $password)) == $strength) {
 			return implode('', $password);
 		}
-		$password	= [];
+		$password = [];
 	}
 	return '';
 }
+
 /**
  * Bitwise XOR operation for 2 strings
  *
@@ -1058,31 +1094,33 @@ function password_generate ($length = 10, $strength = 5) {
  * @return string
  */
 function xor_string ($string1, $string2) {
-	$len1	= mb_strlen($string1);
-	$len2	= mb_strlen($string2);
+	$len1 = mb_strlen($string1);
+	$len2 = mb_strlen($string2);
 	if ($len2 > $len1) {
 		list($string1, $string2, $len1, $len2) = [$string2, $string1, $len2, $len1];
 	}
 	for ($i = 0; $i < $len1; ++$i) {
-		$pos = $i % $len2;
+		$pos         = $i % $len2;
 		$string1[$i] = chr(ord($string1[$i]) ^ ord($string2[$pos]));
 	}
 	return $string1;
 }
+
 /**
  * Checks whether string is an md5 hash
  *
- * @param string	$string
+ * @param string $string
  *
  * @return bool
  */
 function is_md5 ($string) {
 	return is_string($string) && preg_match('/^[0-9a-z]{32}$/', $string);
 }
+
 /**
  * Checks associativity of array
  *
- * @param array	$array	Array to be checked
+ * @param array $array Array to be checked
  *
  * @return bool
  */
@@ -1092,16 +1130,17 @@ function is_array_assoc ($array) {
 	}
 	$count = count($array);
 	for ($i = 0; $i < $count; ++$i) {
-		if (!isset($array[$i])) {
+		if (!array_key_exists($i, $array)) {
 			return true;
 		}
 	}
 	return false;
 }
+
 /**
  * Checks whether array is indexed or not
  *
- * @param array	$array	Array to be checked
+ * @param array $array Array to be checked
  *
  * @return bool
  */
@@ -1111,10 +1150,11 @@ function is_array_indexed ($array) {
 	}
 	return !is_array_assoc($array);
 }
+
 /**
  * Works like <b>array_flip()</b> function, but is used when every item of array is not a string, but may be also array
  *
- * @param array			$array	At least one item must be array, some other items may be strings (or numbers)
+ * @param array $array At least one item must be array, some other items may be strings (or numbers)
  *
  * @return array|bool
  */
@@ -1122,16 +1162,16 @@ function array_flip_3d ($array) {
 	if (!is_array($array)) {
 		return false;
 	}
-	$result	= [];
-	$size	= 0;
+	$result = [];
+	$size   = 0;
 	foreach ($array as $values) {
-		$size	= max($size, count((array)$values));
+		$size = max($size, count((array)$values));
 	}
 	unset($values);
 	foreach ($array as $key => $values) {
 		for ($i = 0; $i < $size; ++$i) {
 			if (is_array($values)) {
-				if (isset($values[$i])) {
+				if (array_key_exists($i, $values)) {
 					$result[$i][$key] = $values[$i];
 				}
 			} else {
@@ -1141,6 +1181,7 @@ function array_flip_3d ($array) {
 	}
 	return $result;
 }
+
 /**
  * Truncates text
  *
@@ -1150,15 +1191,16 @@ function array_flip_3d ($array) {
  *
  * @license Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
- * @param string	$text			String to truncate
- * @param int		$length			Length of returned string, including ellipsis
- * @param string	$ending			Ending to be appended to the trimmed string
- * @param bool		$exact			If <b>false</b>, $text will not be cut mid-word
- * @param bool		$considerHtml	If <b>true</b>, HTML tags would be handled correctly
- * @return string					Trimmed string
+ * @param string $text         String to truncate
+ * @param int    $length       Length of returned string, including ellipsis
+ * @param string $ending       Ending to be appended to the trimmed string
+ * @param bool   $exact        If <b>false</b>, $text will not be cut mid-word
+ * @param bool   $considerHtml If <b>true</b>, HTML tags would be handled correctly
+ *
+ * @return string Truncated string
  */
 function truncate ($text, $length = 1024, $ending = '...', $exact = false, $considerHtml = true) {
-	$open_tags	= [];
+	$open_tags = [];
 	if ($considerHtml) {
 		// if the plain text is shorter than the maximum length, return the whole text
 		if (strlen(preg_replace('/<.*?>/', '', $text)) <= $length) {
@@ -1166,8 +1208,8 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
 		}
 		// splits all html-tags to scanable lines
 		preg_match_all('/(<.+?>)?([^<>]*)/s', $text, $lines, PREG_SET_ORDER);
-		$total_length	= mb_strlen($ending);
-		$truncate		= '';
+		$total_length = mb_strlen($ending);
+		$truncate     = '';
 		foreach ($lines as $line_matchings) {
 			// if there is any html-tag in this line, handle it and add it (uncounted) to the output
 			if (!empty($line_matchings[1])) {
@@ -1193,7 +1235,7 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
 			$content_length = mb_strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $line_matchings[2]));
 			if ($total_length + $content_length > $length) {
 				// the number of characters which are left
-				$left = $length - $total_length;
+				$left            = $length - $total_length;
 				$entities_length = 0;
 				// search for html entities
 				if (preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', $line_matchings[2], $entities, PREG_OFFSET_CAPTURE)) {
@@ -1212,11 +1254,11 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
 				// maximum length is reached, so get off the loop
 				break;
 			} else {
-				$truncate		.= $line_matchings[2];
-				$total_length	+= $content_length;
+				$truncate .= $line_matchings[2];
+				$total_length += $content_length;
 			}
 			// if the maximum length is reached, get off the loop
-			if($total_length >= $length) {
+			if ($total_length >= $length) {
 				break;
 			}
 		}
@@ -1238,7 +1280,7 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
 	}
 	// add the defined ending to the text
 	$truncate .= $ending;
-	if($considerHtml) {
+	if ($considerHtml) {
 		// close all unclosed html-tags
 		foreach ($open_tags as $tag) {
 			$truncate .= "</$tag>";
@@ -1246,33 +1288,36 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
 	}
 	return $truncate;
 }
+
 /**
  * Search for links inside html attributes
  *
- * @param string	$text
+ * @param string $text
  *
- * @return string[]			Array of found links or empty array otherwise
+ * @return string[] Array of found links or empty array otherwise
  */
 function find_links ($text) {
 	preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $text, $links);
 	return $links[1] ?: [];
 }
+
 /**
  * Prepare string to use as url path
  *
- * @param string	$text
+ * @param string $text
  *
  * @return string
  */
 function path ($text) {
-	$text	= preg_replace('/[\s\(\)\/\\#?]+/', '_', $text);
-	$text	= preg_replace('/_+/', '_', $text);
+	$text = preg_replace('/[\s\(\)\/\\#?]+/', '_', $text);
+	$text = preg_replace('/_+/', '_', $text);
 	return trim($text, '_');
 }
+
 /**
  * Prepare string to use in keywords meta tag
  *
- * @param string	$text
+ * @param string $text
  *
  * @return string
  */
@@ -1287,42 +1332,46 @@ function keywords ($text) {
 		)
 	);
 }
+
 /**
  * Prepare string to use in description meta tag
  *
- * @param string	$text
+ * @param string $text
  *
  * @return string
  */
 function description ($text) {
-	return trim(str_replace(
-		[
-			"\r\n",
-			"\n",
-			"\r",
-			'&nbsp;',
-			'"'
-		],
-		[
-			' ',
-			' ',
-			' ',
-			' ',
-			'&quot;'
-		],
-		truncate(
-			strip_tags($text),
-			512,
-			'...',
-			false,
-			false
+	return trim(
+		str_replace(
+			[
+				"\r\n",
+				"\n",
+				"\r",
+				'&nbsp;',
+				'"'
+			],
+			[
+				' ',
+				' ',
+				' ',
+				' ',
+				'&quot;'
+			],
+			truncate(
+				strip_tags($text),
+				512,
+				'...',
+				false,
+				false
+			)
 		)
-	));
+	);
 }
+
 /**
  * Returns of direct output of given function
  *
- * @param callable	$callback
+ * @param callable $callback
  *
  * @return string
  */
@@ -1331,22 +1380,24 @@ function ob_wrapper ($callback) {
 	$callback();
 	return ob_get_clean();
 }
+
 /**
  * Uppercase the first character of each word in a string.
  *
  * Works with utf8, before processing string will be transformed to lowercase, and then to ucwords.
  *
- * @param string	$str
+ * @param string $str
  *
  * @return string
  */
 function mb_ucwords ($str) {
 	return mb_convert_case($str, MB_CASE_TITLE);
 }
+
 /**
  * Convert input to int type. Accepts arrays.
  *
- * @param mixed|mixed[]	$in
+ * @param mixed|mixed[] $in
  *
  * @return int|int[]
  */
@@ -1361,10 +1412,11 @@ function _int ($in) {
 	}
 	return (int)$in;
 }
+
 /**
  * Convert input to float type. Accepts arrays.
  *
- * @param mixed|mixed[]	$in
+ * @param mixed|mixed[] $in
  *
  * @return float|float[]
  */
@@ -1379,10 +1431,11 @@ function _float ($in) {
 	}
 	return (float)$in;
 }
+
 /**
  * Convert input to string type. Accepts arrays.
  *
- * @param mixed|mixed[]	$in
+ * @param mixed|mixed[] $in
  *
  * @return string|string[]
  */
@@ -1397,10 +1450,11 @@ function _string ($in) {
 	}
 	return (string)$in;
 }
+
 /**
  * Convert input to array type. Accepts arrays.
  *
- * @param mixed|mixed[]	$in
+ * @param mixed|mixed[] $in
  *
  * @return array|array[]
  */
@@ -1415,6 +1469,7 @@ function _array ($in) {
 	}
 	return (array)$in;
 }
+
 /**
  * Fallback for function from PHP7
  */
@@ -1427,6 +1482,6 @@ if (!function_exists('random_bytes')) {
 	 * @return string
 	 */
 	function random_bytes ($length) {
-		return openssl_random_pseudo_bytes ($length);
+		return openssl_random_pseudo_bytes($length);
 	}
 }
