@@ -10,9 +10,16 @@ html {
 }
 
 #body {
-	padding : .5em;
+	display           : flex;
+	display           : -ms-flexbox;
+	display           : -webkit-flex;
+	flex-wrap         : wrap;
+	-ms-flex-wrap     : wrap;
+	-webkit-flex-wrap : wrap;
+	padding           : .5em;
 
 	> aside {
+		box-sizing    : border-box;
 		padding-right : 1em;
 		width         : 25em;
 	}
