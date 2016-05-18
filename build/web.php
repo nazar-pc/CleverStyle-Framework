@@ -32,13 +32,13 @@ if ($mode == 'core') {
 }
 ?>
 <!doctype html>
-<title>CleverStyle CMS Builder</title>
+<title>CleverStyle Framework Builder</title>
 <meta charset="utf-8">
-<link href="/build/includes/style.css" rel="stylesheet">
-<script src="/build/includes/functions.js"></script>
+<link href="build/includes/style.css" rel="stylesheet">
+<script src="build/includes/functions.js"></script>
 <header>
-	<img alt="" src="/build/includes/logo.png">
-	<h1>CleverStyle CMS Builder</h1>
+	<img alt="CleverStyle Framework" src="includes/img/logo.svg" height="128" title="CleverStyle Framework">
+	<h1>Builder</h1>
 </header>
 <section>
 	<?=$content?>

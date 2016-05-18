@@ -1,23 +1,40 @@
-[![Download CleverStyle CMS](https://img.shields.io/sourceforge/dt/cleverstyle-cms.svg?label=Downloads)](https://sourceforge.net/projects/cleverstyle-cms/files/)
+[![Download CleverStyle Framework](https://img.shields.io/sourceforge/dt/cleverstyle-cms.svg?label=Downloads)](https://sourceforge.net/projects/cleverstyle-cms/files/)
 [![Try Docker demo](https://img.shields.io/docker/pulls/nazarpc/cleverstyle-cms.svg?label=Docker demo pulls)](https://registry.hub.docker.com/u/nazarpc/cleverstyle-cms/)
 [![SensioLabsInsight](https://img.shields.io/sensiolabs/i/eacdd55b-4a0e-4429-add5-e6a01adb12af.svg?label=SLInsight)](https://insight.sensiolabs.com/projects/eacdd55b-4a0e-4429-add5-e6a01adb12af)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/nazar-pc/CleverStyle-CMS.svg?label=Scrutinizer)](https://scrutinizer-ci.com/g/nazar-pc/CleverStyle-CMS/)
 [![Build Status](https://img.shields.io/travis/nazar-pc/CleverStyle-CMS/master.svg?label=Travis CI)](https://travis-ci.org/nazar-pc/CleverStyle-CMS)
 [![Join the chat at https://gitter.im/nazar-pc/CleverStyle-CMS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nazar-pc/CleverStyle-CMS)
-# What is this?
 
-CleverStyle CMS is simple, scalable, and fast content management framework (CMF).
+![CleverStyle Framework](/includes/img/logo.svg?raw=true)
 
-System is free, Open Source and is distributed under MIT license, see [license.txt](https://github.com/nazar-pc/CleverStyle-CMS/blob/master/license.txt)
+CleverStyle Framework is simple, scalable, and fast and secure full-stack PHP framework.
 
-Installation builds of core and components can be found on [downloads page](/docs/Download-installation-packages.md).
+It is free, Open Source and is distributed under MIT license, see [license.txt](/license.txt)
 
-Author – Nazar Mokrynskyi <nazar@mokrynskyi.com>
+[Installation instructions](/docs/installation/Installation.md), [documentation](/docs), [video tutorials for developers](https://www.youtube.com/watch?v=GVXHeCVbO_c&list=PLVUA3QJ02XIiKEzpD4dxoCENgzzJyNEnH).
 
-Copyright (c) 2011-2016, Nazar Mokrynskyi
+# Key features
+
+* Components
+ * Modules - for displaying main page content
+ * Plugins - do not have dedicated pages and provide additional functionality
+ * Blocks - are placed on around the page for displaying additional information
+* Events - ability to capture, respond or even override behavior of different aspects of the system without changing system itself
+* Users, groups and permissions for granular access to functionality
+* Localization and internationalization (both interface and content)
+* CSS, JavaScript and HTML processing with intelligent, high-performance and completely automatic minification, compression and caching
+* HTTP/2 Server Push (via preload) works automatically
+* Visual themes to personalize appearance
+* Multiple Databases and mirrors awareness
+* Multiple static content storages awareness
+* Caching everything that makes sense to put into cache
+* RESTful API and CLI interfaces
+* First-class WebComponents support (Polymer)
+* First-class AMD support (RequireJS)
+* First-class Composer, Bower and NPM support
 
 # Philosophy
-There are thousands of other CMS and CMF, that is true, but this one is different from most of them because of ideas that lies in development.
+There are thousands of other CMS and Frameworks, it is true, but this one is different from most of them because of ideas that drives its development.
 
 ### Small and simple
 Really simple.
@@ -43,7 +60,7 @@ Performance is critical.
 
 Providing superior performance of system core is a key for the best possible performance of end product.
 
-Out of the box CleverStyle CMS can render simple web page in just under 2ms. When installing standard Http server module, changing cache to APCu/Memcached and running it under HHVM you fall under 1ms for generating simple page or API response. All without additional system tweaks.
+Out of the box CleverStyle Framework can render simple web page in just under 2ms. When installing standard Http server module, changing cache to APCu/Memcached and running it under HHVM you fall under 1ms for generating simple page or API response. All without additional system tweaks.
 
 ### Convention over configuration
 Zero configuration whenever it is possible.
@@ -59,26 +76,6 @@ This means that you can install component, use it for some time and remove compl
 
 This results in constant and predictable performance, efficient storage usage (no forgotten files, cache items, configs and stuff like this) and full control over state of the system.
 
-# Key features
-
-* Components
- * Modules - for displaying main page content
- * Plugins - do not have dedicated pages and provide additional functionality
- * Blocks - are placed on around the page for displaying additional information
-* Events - ability to capture, respond or even override behavior of different aspects of the system without changing system itself
-* Users, groups and permissions for granular access to functionality
-* Localization and internationalization (both interface and content)
-* CSS, JavaScript and HTML processing with intelligent, high-performance and completely automatic minification, compression and caching
-* HTTP/2 Server Push (via preload) works automatically
-* Visual themes to personalize appearance
-* Multiple Databases and mirrors awareness
-* Multiple static content storages awareness
-* Caching everything that makes sense to put into cache
-* RESTful API and CLI interfaces
-* First-class WebComponents support (Polymer)
-* First-class AMD support (RequireJS)
-* First-class Composer, Bower and NPM support
-
 # Components
 Some components are developed in parallel with core in this repository
 
@@ -87,7 +84,7 @@ Some components are developed in parallel with core in this repository
  * **Blockchain payment** (payment method using Bitcoin as cryptocurrency and API of blockchain.info)
  * **Blogs** (simple blogging functionality)
  * **Comments** (adds comments functionality to other modules)
- * **Composer** ([Composer](https://github.com/composer/composer) integration into CleverStyle CMS, allows to specify composer dependencies in meta.json that will be installed automatically)
+ * **Composer** ([Composer](https://github.com/composer/composer) integration into CleverStyle Framework, allows to specify composer dependencies in meta.json that will be installed automatically)
  * **Content** (simple content functionality. May be used by other components or stand-alone)
  * **Cron** (provides GUI for crontab, scheduled tasks)
  * **Deferred tasks** (Deferred tasks allows other components to create tasks, that can be executed not immediately, but little bit later)
@@ -107,12 +104,12 @@ Some components are developed in parallel with core in this repository
 #### Plugins
 
  * **Composer assets** (Bower and NPM packages support through Composer)
- * **Fotorama** (integration of [Fotorama](https://github.com/artpolikarpov/fotorama) jQuery gallery into CleverStyle CMS)
+ * **Fotorama** (integration of [Fotorama](https://github.com/artpolikarpov/fotorama) jQuery gallery into CleverStyle Framework)
  * **Json_ld** (simplifies some parts of JSON-LD generation)
  * **Old IE** (brings frontend polyfills and hacks to provide support for older IE versions (10 currently))
- * **Picturefill** (integration of [Picturefill](https://github.com/scottjehl/picturefill) polyfill into CleverStyle CMS)
- * **Prism** (integration of [Prism](http://prismjs.com/index.html) syntax highlighter into CleverStyle CMS)
- * **SimpleImage** (integration of [SimpleImage](https://github.com/claviska/SimpleImage) class into CleverStyle CMS)
+ * **Picturefill** (integration of [Picturefill](https://github.com/scottjehl/picturefill) polyfill into CleverStyle Framework)
+ * **Prism** (integration of [Prism](http://prismjs.com/index.html) syntax highlighter into CleverStyle Framework)
+ * **SimpleImage** (integration of [SimpleImage](https://github.com/claviska/SimpleImage) class into CleverStyle Framework)
  * **Tags** (currently contains single trait, is used by other components in order to avoid code duplication)
  * **TinyMCE** (integration of [TinyMCE](https://github.com/tinymce/tinymce) WYSIWYG Editor for providing simpler content editing)
 
@@ -140,7 +137,7 @@ Some components are developed in parallel with core in this repository
 
 # How to try?
 
-It is possible to try latest git version of CleverStyle CMS without even installing it using [Docker](https://www.docker.com/), just type in terminal:
+It is possible to try latest git version of CleverStyle Framework without even installing it using [Docker](https://www.docker.com/), just type in terminal:
 ```bash
 $ docker run --rm -p 8888:8888 nazarpc/cleverstyle-cms
 ```
@@ -152,10 +149,5 @@ If you want to play with live system - attach volume to container:
 ```bash
 $ docker run --rm -p 8888:8888 -v /some_dir:/web nazarpc/cleverstyle-cms
 ```
-Now in `/some_dir` you'll have source code of CleverStyle CMS from container which you can edit as you like and it will reflect on demo.
+Now in `/some_dir` you'll have source code of CleverStyle Framework from container which you can edit as you like and it will reflect on demo.
 
-# How to install?
-
-[Read simple instructions in our documentation](/docs/Installation.md)
-
-# [Video tutorials for developers](https://www.youtube.com/watch?v=GVXHeCVbO_c&list=PLVUA3QJ02XIiKEzpD4dxoCENgzzJyNEnH)

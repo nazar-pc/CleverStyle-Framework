@@ -17,19 +17,14 @@ class Controller {
 	 */
 	static function index ($Request) {
 		$Page = Page::instance();
-		switch (@$Request->route_path[2]) {
-			case 'phpinfo':
-				$Page->interface = false;
-				$Page->Content   = ob_wrapper(
-					function () {
-						phpinfo();
-					}
-				);
-				return;
-			case 'readme.html':
-				$Page->interface = false;
-				$Page->Content   = file_get_contents(DIR.'/readme.html');
-				return;
+		if ($Request->route_path(2) == 'phpinfo') {
+			$Page->interface = false;
+			$Page->Content   = ob_wrapper(
+				function () {
+					phpinfo();
+				}
+			);
+			return;
 		}
 		$Page->title('%1$s');
 		$Page->title('%2$s');

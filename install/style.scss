@@ -1,0 +1,127 @@
+/**
+ * @package    CleverStyle CMS
+ * @subpackage Installer
+ * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright  Copyright (c) 2011-2016, Nazar Mokrynskyi
+ * @license    MIT License, see license.txt
+ */
+* {
+	font-family : sans-serif;
+	font-size   : 16px;
+}
+
+body {
+	background-color : #b9b9b9;
+	margin           : 0;
+	padding          : 0;
+}
+
+header {
+	background-color : #d7d7d7;
+	border-bottom    : 5px #666 solid;
+	padding          : 10px;
+
+	svg {
+		display : inline;
+		height  : 128px;
+		width   : auto;
+	}
+
+	h1 {
+		display        : inline-block;
+		font-size      : 72px;
+		font-weight    : 100;
+		line-height    : 128px;
+		margin         : 0 -10px 0 0;
+		vertical-align : top;
+	}
+}
+
+section {
+	background-color : #d7d7d7;
+	border           : 1px #666 solid;
+	margin           : 100px 0 0 50%;
+	padding          : 15px 10px 45px 15px;
+	position         : relative;
+	width            : 520px;
+
+	nav {
+		label {
+			background-color : #666;
+			color            : #aaa;
+			cursor           : pointer;
+			display          : inline-block;
+			height           : 30px;
+			line-height      : 30px;
+			position         : relative;
+			padding          : 0 30px;
+
+			&:nth-of-type(1) {
+				margin-right : -10px;
+			}
+
+			&:nth-of-type(2)::before {
+				background-color  : #d7d7d7;
+				content           : "";
+				height            : 30px;
+				position          : absolute;
+				left              : 0;
+				-moz-transform    : skewX(-20deg);
+				-webkit-transform : skewX(-20deg);
+				transform         : skewX(-20deg);
+				width             : 5px;
+			}
+		}
+
+		:checked + span {
+			color : #ddd;
+		}
+
+		input {
+			display : none;
+		}
+	}
+
+	table {
+		margin-top : 10px;
+
+		input,
+		select {
+			border    : none;
+			font-size : 14px;
+			padding   : 3px;
+			width     : 300px;
+		}
+
+		select {
+			width : 306px;
+		}
+	}
+
+	button {
+		background-color : #666;
+		border           : none;
+		bottom           : 15px;
+		color            : #ddd;
+		cursor           : pointer;
+		padding          : 4px 20px;
+		position         : absolute;
+
+		&.license {
+			left : 15px;
+		}
+
+		&[type=submit] {
+			right : 15px;
+		}
+	}
+
+	.expert {
+		display : none;
+	}
+}
+
+footer {
+	padding    : 20px;
+	text-align : center;
+}

@@ -52,6 +52,7 @@ class Builder {
 			$phar->addFile($file, substr($file, $length));
 		}
 		unset($file);
+		$phar->addFile("$this->root/includes/img/logo.svg", 'logo.svg');
 		/**
 		 * Core files to be included into installation package
 		 */
@@ -87,8 +88,6 @@ class Builder {
 		/**
 		 * Addition of separate files into package
 		 */
-		$phar->addFromString('fs/'.count($core_files), $this->get_readme());
-		$core_files[] = 'readme.html';
 		$phar->addFromString(
 			'languages.json',
 			_json_encode(
@@ -146,7 +145,6 @@ class Builder {
 		 * information about available languages, themes, current version of system
 		 */
 		$phar->addFile("$this->root/install.php", 'install.php');
-		$phar->addFromString('readme.html', $this->get_readme());
 		$phar->addFile("$this->root/license.txt", 'license.txt');
 		$phar->addFile("$this->root/components/modules/System/meta.json", 'meta.json');
 		$phar->setStub(
@@ -252,26 +250,6 @@ STUB
 		);
 		$files[] = "$component_root/fs.json";
 		return true;
-	}
-	/**
-	 * @return string
-	 */
-	protected function get_readme () {
-		return str_replace(
-			[
-				'$version$',
-				'$image$'
-			],
-			[
-				file_get_json("$this->root/components/modules/System/meta.json")['version'],
-				h::img(
-					[
-						'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents("$this->root/install/logo.png"))
-					]
-				)
-			],
-			file_get_contents("$this->root/readme.html")
-		);
 	}
 	/**
 	 * @return string

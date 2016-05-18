@@ -93,12 +93,6 @@ function install_form () {
 				h::{'input[type=password][name=admin_password]'}()
 			)
 		).
-		h::{'button.readme'}(
-			'Readme',
-			[
-				'onclick' => "window.open('readme.html', 'readme', 'location=no')"
-			]
-		).
 		h::{'button.license'}(
 			'License',
 			[
@@ -145,7 +139,7 @@ function install_process () {
 			$_POST['language'],
 			$_POST['admin_email'],
 			$_POST['admin_password'],
-			!isset($_POST['mode']) || $_POST['mode'] ? 1 : 0
+			$_POST['mode'] ? 1 : 0
 		);
 	} catch (\Exception $e) {
 		return $e->getMessage();
@@ -157,38 +151,24 @@ function install_process () {
 	if (!is_writable($installer) || !unlink($installer)) {
 		$warning = "Please, remove installer file $installer for security!\n";
 	}
-	return
-		h::h3(
-			'Congratulations! CleverStyle CMS has been installed successfully!'
-		).
-		h::{'table tr| td'}(
-			[
-				'Your sign in information:',
-				[
-					'colspan' => 2
-				]
-			],
-			[
-				'Login:',
-				$admin_login
-			],
-			[
-				'Password:',
-				$_POST['admin_password']
-			]
-		).
-		h::p(
-			$warning,
-			[
-				'style' => 'color: red;'
-			]
-		).
-		h::button(
-			'Go to website',
-			[
-				'onclick' => "location.href = '/';"
-			]
-		);
+	return <<<HTML
+<h3>Congratulations! CleverStyle Framework has been installed successfully!</h3>
+<table>
+	<tr>
+		<td colspan="2">Your sign in information:</td>
+	</tr>
+	<tr>
+		<td>Login:</td>
+		<td><pre><?=$admin_login?></pre></td>
+	</tr>
+	<tr>
+		<td>Password:</td>
+		<td><pre><?=$_POST[admin_password]?></pre></td>
+	</tr>
+	<p style="color: red"><?=$warning?></p>
+	<button onclick="location.href = '/';">Go to website</button>
+</table>
+HTML;
 }
 
 if (count(explode('/', $_SERVER['REQUEST_URI'])) > 3) {
@@ -198,27 +178,23 @@ if (count(explode('/', $_SERVER['REQUEST_URI'])) > 3) {
 
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
+
+$fs = json_decode(file_get_contents(__DIR__.'/../fs.json'), true);
+require_once __DIR__.'/../fs/'.$fs['core/thirdparty/upf.php'];
+require_once __DIR__.'/../fs/'.$fs['core/functions.php'];
+require_once __DIR__.'/../fs/'.$fs['core/thirdparty/nazarpc/BananaHTML.php'];
+require_once __DIR__.'/../fs/'.$fs['core/classes/h/Base.php'];
+require_once __DIR__.'/../fs/'.$fs['core/classes/h.php'];
+
 $version = file_get_json(__DIR__.'/../meta.json')['version'];
-echo
-	"<!doctype html>\n".
-	h::title("CleverStyle CMS $version Installation").
-	h::meta(
-		[
-			'charset' => 'utf-8'
-		]
-	).
-	h::style(file_get_contents(__DIR__.'/../install/style.css')).
-	h::header(
-		h::img(
-			[
-				'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(__DIR__.'/../install/logo.png'))
-			]
-		).
-		h::h1("CleverStyle CMS $version Installation")
-	).
-	h::section(
-		isset($_POST['site_name']) ? install_process() : install_form()
-	).
-	h::footer(
-		'Copyright (c) 2011-2016, Nazar Mokrynskyi'
-	);
+?>
+<!doctype html>
+<title>CleverStyle Framework <?=$version?> Installation</title>
+<meta charset="utf-8">
+<style><?=file_get_contents(__DIR__.'/style.css')?></style>
+<header>
+	<?=file_get_contents(__DIR__.'/../logo.svg')?>
+	<h1>Installation</h1>
+</header>
+<section><?=isset($_POST['site_name']) ? install_process() : install_form()?></section>
+<footer>Copyright (c) 2011-2016, Nazar Mokrynskyi</footer>
