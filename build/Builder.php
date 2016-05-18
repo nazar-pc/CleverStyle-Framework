@@ -8,7 +8,6 @@
  */
 namespace cs;
 use
-	h,
 	Phar;
 
 class Builder {
