@@ -7,4 +7,4 @@ Steps to create the simplest block:
 5. Select created block in **Block type**, specify block title, click **Save**
 6. Drag block to desired place, click **Save**
 7. Block with content will appear on selected place of web-site
-8. That's it! You have created block for CleverStyle CMS
+8. That's it! You have created block for CleverStyle Framework

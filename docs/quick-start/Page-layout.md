@@ -1,4 +1,4 @@
-Page layout in CleverStyle CMS generally depends on theme which is used, but there are few common elements that may be used in most themes.
+Page layout in CleverStyle Framework generally depends on theme which is used, but there are few common elements that may be used in most themes.
 
 Schematically it can be represented by table.
 

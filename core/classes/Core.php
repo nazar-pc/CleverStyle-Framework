@@ -1,6 +1,6 @@
 <?php
 /**
- * @package   CleverStyle CMS
+ * @package   CleverStyle Framework
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
@@ -62,7 +62,7 @@ class Core {
 			if (PHP_SAPI == 'cli') {
 				echo <<<CONFIG_NOT_FOUND
 Config file not found, is system installed properly?
-How to install CleverStyle CMS: https://github.com/nazar-pc/CleverStyle-CMS/tree/master/docs/installation/Installation.md
+How to install CleverStyle Framework: https://github.com/nazar-pc/CleverStyle-Framework/tree/master/docs/installation/Installation.md
 
 CONFIG_NOT_FOUND;
 			} else {
@@ -70,7 +70,7 @@ CONFIG_NOT_FOUND;
 				<<<CONFIG_NOT_FOUND
 <!doctype html>
 <p>Config file not found, is system installed properly?</p>
-<a href="https://github.com/nazar-pc/CleverStyle-CMS/tree/master/docs/installation/Installation.md">How to install CleverStyle CMS</a>
+<a href="https://github.com/nazar-pc/CleverStyle-Framework/tree/master/docs/installation/Installation.md">How to install CleverStyle Framework</a>
 CONFIG_NOT_FOUND;
 				http_response_code(500);
 			}

@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    CleverStyle CMS
+ * @package    CleverStyle Framework
  * @subpackage Builder
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright  Copyright (c) 2011-2016, Nazar Mokrynskyi
@@ -39,7 +39,7 @@ class Builder {
 	function core ($modules = [], $plugins = [], $themes = [], $suffix = null) {
 		$suffix      = $suffix ? "_$suffix" : '';
 		$version     = file_get_json("$this->root/components/modules/System/meta.json")['version'];
-		$target_file = "$this->target/CleverStyle_CMS_$version$suffix.phar.php";
+		$target_file = "$this->target/CleverStyle_Framework_$version$suffix.phar.php";
 		if (file_exists($target_file)) {
 			unlink($target_file);
 		}
@@ -150,8 +150,8 @@ class Builder {
 			<<<STUB
 <?php
 if (PHP_SAPI == 'cli') {
-	Phar::mapPhar('cleverstyle_cms.phar');
-	include 'phar://cleverstyle_cms.phar/install.php';
+	Phar::mapPhar('cleverstyle_framework.phar');
+	include 'phar://cleverstyle_framework.phar/install.php';
 } else {
 	Phar::webPhar(null, 'install.php');
 }
@@ -159,7 +159,7 @@ __HALT_COMPILER();
 STUB
 		);
 		$phar->stopBuffering();
-		return "Done! CleverStyle CMS $version";
+		return "Done! CleverStyle Framework $version";
 	}
 	/**
 	 * Get array of files

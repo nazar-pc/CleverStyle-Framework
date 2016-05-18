@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    CleverStyle CMS
+ * @package    CleverStyle Framework
  * @subpackage Uploader
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
@@ -93,5 +93,5 @@ exec('openssl enc -d -aes-256-cbc -in id_rsa.enc -out id_rsa -pass env:KEYPASS 2
 chmod(DIR.'/id_rsa', 0600);
 $target_directory = $tag ? "stable/$tag" : 'nightly';
 system(
-	"rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa -o UserKnownHostsFile=/dev/null' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-cms/$target_directory/"
+	"rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa -o UserKnownHostsFile=/dev/null' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-framework/$target_directory/"
 );

@@ -13,7 +13,7 @@
 | `\cs\ExitException`            | primary exception class for situations where it is necessary to stop further request processing with some status code  |
 | `\cs\Group`                    | all work with user groups                                                                                              |
 | `\h`                           | interface for html generation (inherits everything from `h\Base` class)                                                |
-| `\h\Base`                      | inherits basic functionality from `nazarpc\BananaHTML` and customizes it for CleverStyle CMS                           |
+| `\h\Base`                      | inherits basic functionality from `nazarpc\BananaHTML` and customizes it for CleverStyle Framework                           |
 | `\cs\Key`                      | generating/getting/setting/checking of keys, keys may be stored with some attached information                         |
 | `\cs\Language`                 | multilingual user interface                                                                                            |
 | `\cs\Language\Prefix`          | class is used for simplified work with language translations, when using common prefix                                 |

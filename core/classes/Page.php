@@ -1,6 +1,6 @@
 <?php
 /**
- * @package   CleverStyle CMS
+ * @package   CleverStyle Framework
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
@@ -285,7 +285,7 @@ class Page {
 			h::meta(
 				[
 					'name'    => 'generator',
-					'content' => 'CleverStyle CMS by Mokrynskyi Nazar'
+					'content' => 'CleverStyle Framework by Mokrynskyi Nazar'
 				]
 			).
 			h::base(

@@ -1,5 +1,5 @@
 <a name="up" />
-Event - special feature of CleverStyle CMS, that allows to change behaviour of some system processes or react on them.
+Event - special feature of CleverStyle Framework, that allows to change behaviour of some system processes or react on them.
 
 ### [Naming](#naming) [Subscribing](#subscribing) [Unsubscribing](#unsubscribing) [One-time subscribing](#one-time-subscribing) [Dispatching](#dispatching) [System events](#system-events)
 

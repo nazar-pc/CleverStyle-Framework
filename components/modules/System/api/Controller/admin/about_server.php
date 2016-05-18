@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    CleverStyle CMS
+ * @package    CleverStyle Framework
  * @subpackage System module
  * @category   modules
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>

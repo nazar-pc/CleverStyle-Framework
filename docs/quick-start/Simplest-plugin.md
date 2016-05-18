@@ -6,6 +6,6 @@ Steps to create the simplest plugin:
 4. Go to Administration >> Components >> Plugins
 5. Enable plugin
 6. Plugin will start to work on page refreshing or opening any another page
-7. That's it! You have created plugin for CleverStyle CMS
+7. That's it! You have created plugin for CleverStyle Framework
 
 Usually, plugins are used to subscribe to some system events, but you can use them, for example, to collect statistics of visitors. Usage is not limited in any way.

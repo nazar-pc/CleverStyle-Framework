@@ -1,13 +1,13 @@
 <?php
 /**
- * @package    CleverStyle CMS
+ * @package    CleverStyle Framework
  * @subpackage Builder
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright  Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
 if (!Phar::canWrite()) {
-	echo "CleverStyle CMS Builder can't work, set, please, \"phar.readonly=off\" option in \"php.ini\"";
+	echo "CleverStyle Framework Builder can't work, set, please, \"phar.readonly=off\" option in \"php.ini\"";
 	return;
 }
 define('DIR', __DIR__);

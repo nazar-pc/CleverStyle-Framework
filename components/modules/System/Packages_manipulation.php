@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    CleverStyle CMS
+ * @package    CleverStyle Framework
  * @subpackage System module
  * @category   modules
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
@@ -51,7 +51,7 @@ class Packages_manipulation {
 		return copy($file['tmp_name'], $tmp_name) ? $tmp_name : false;
 	}
 	/**
-	 * Generic extraction of files from phar distributive for CleverStyle CMS (components installation)
+	 * Generic extraction of files from phar distributive for CleverStyle Framework (components installation)
 	 *
 	 * @param string $target_directory
 	 * @param string $source_phar Will be removed after extraction
@@ -92,7 +92,7 @@ class Packages_manipulation {
 		return false;
 	}
 	/**
-	 * Generic extraction of files from phar distributive for CleverStyle CMS (system and components update)
+	 * Generic extraction of files from phar distributive for CleverStyle Framework (system and components update)
 	 *
 	 * @param string      $target_directory
 	 * @param string      $source_phar             Will be removed after extraction
@@ -167,7 +167,7 @@ class Packages_manipulation {
 		return true;
 	}
 	/**
-	 * Generic update for CleverStyle CMS (system and components), runs PHP scripts and does DB migrations after extracting of new distributive
+	 * Generic update for CleverStyle Framework (system and components), runs PHP scripts and does DB migrations after extracting of new distributive
 	 *
 	 * @param string     $target_directory
 	 * @param string     $old_version

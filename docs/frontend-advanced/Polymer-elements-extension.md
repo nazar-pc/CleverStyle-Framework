@@ -6,7 +6,7 @@ The main restriction anywhere is that you can only extend elements that are alre
 Though, sometimes you may need to extend existing custom element while preserving original name.
 For instance, you have module with pages build with Polymer elements and want to change that page. But, obviously, you do not want to edit module to keep updating possibility, consequently, you can't change names of custom elements and thus modify them in convenient way.
 
-This is where patched Polymer included in CleverStyle CMS helps. In contrast to extending existing elements you can extend element itself (kind of that actually).
+This is where patched Polymer included in CleverStyle Framework helps. In contrast to extending existing elements you can extend element itself (kind of that actually).
 
 Example (JS extension):
 ```html

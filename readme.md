@@ -1,13 +1,13 @@
-[![Download CleverStyle Framework](https://img.shields.io/sourceforge/dt/cleverstyle-cms.svg?label=Downloads)](https://sourceforge.net/projects/cleverstyle-cms/files/)
-[![Try Docker demo](https://img.shields.io/docker/pulls/nazarpc/cleverstyle-cms.svg?label=Docker demo pulls)](https://registry.hub.docker.com/u/nazarpc/cleverstyle-cms/)
+[![Download CleverStyle Framework](https://img.shields.io/sourceforge/dt/cleverstyle-framework.svg?label=Downloads)](https://sourceforge.net/projects/cleverstyle-framework/files/)
+[![Try Docker demo](https://img.shields.io/docker/pulls/nazarpc/cleverstyle-framework.svg?label=Docker demo pulls)](https://registry.hub.docker.com/u/nazarpc/cleverstyle-framework/)
 [![SensioLabsInsight](https://img.shields.io/sensiolabs/i/eacdd55b-4a0e-4429-add5-e6a01adb12af.svg?label=SLInsight)](https://insight.sensiolabs.com/projects/eacdd55b-4a0e-4429-add5-e6a01adb12af)
-[![Scrutinizer](https://img.shields.io/scrutinizer/g/nazar-pc/CleverStyle-CMS.svg?label=Scrutinizer)](https://scrutinizer-ci.com/g/nazar-pc/CleverStyle-CMS/)
-[![Build Status](https://img.shields.io/travis/nazar-pc/CleverStyle-CMS/master.svg?label=Travis CI)](https://travis-ci.org/nazar-pc/CleverStyle-CMS)
-[![Join the chat at https://gitter.im/nazar-pc/CleverStyle-CMS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nazar-pc/CleverStyle-CMS)
+[![Scrutinizer](https://img.shields.io/scrutinizer/g/nazar-pc/CleverStyle-Framework.svg?label=Scrutinizer)](https://scrutinizer-ci.com/g/nazar-pc/CleverStyle-Framework/)
+[![Build Status](https://img.shields.io/travis/nazar-pc/CleverStyle-Framework/master.svg?label=Travis CI)](https://travis-ci.org/nazar-pc/CleverStyle-Framework)
+[![Join the chat at https://gitter.im/nazar-pc/CleverStyle-Framework](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nazar-pc/CleverStyle-Framework)
 
 ![CleverStyle Framework](/includes/img/logo.svg?raw=true)
 
-CleverStyle Framework is simple, scalable, and fast and secure full-stack PHP framework.
+CleverStyle Framework is simple, scalable, fast and secure full-stack PHP framework.
 
 It is free, Open Source and is distributed under MIT license, see [license.txt](/license.txt)
 
@@ -40,8 +40,6 @@ There are thousands of other CMS and Frameworks, it is true, but this one is dif
 Really simple.
 
 System provides only essential minimum of abstractions to make things working while leaving freedom for developer. This ensures that system itself is easy to understand, use and develop for.
-
-System core doesn't contain any useful end-user functionality, so despite historical name this is a framework, not typical CMS.
 
 ### Standalone
 System contains everything necessary inside in order to ease setup and to be independent from external tools services.
@@ -139,7 +137,7 @@ Some components are developed in parallel with core in this repository
 
 It is possible to try latest git version of CleverStyle Framework without even installing it using [Docker](https://www.docker.com/), just type in terminal:
 ```bash
-$ docker run --rm -p 8888:8888 nazarpc/cleverstyle-cms
+$ docker run --rm -p 8888:8888 nazarpc/cleverstyle-framework
 ```
 And go to `http://localhost:8888`, sign in using login `admin` and password `1111`.
 
@@ -147,7 +145,7 @@ And go to `http://localhost:8888`, sign in using login `admin` and password `111
 
 If you want to play with live system - attach volume to container:
 ```bash
-$ docker run --rm -p 8888:8888 -v /some_dir:/web nazarpc/cleverstyle-cms
+$ docker run --rm -p 8888:8888 -v /some_dir:/web nazarpc/cleverstyle-framework
 ```
 Now in `/some_dir` you'll have source code of CleverStyle Framework from container which you can edit as you like and it will reflect on demo.
 

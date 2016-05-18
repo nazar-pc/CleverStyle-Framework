@@ -1,6 +1,6 @@
 You can create own installation package with desired set of components, themes and probably some tweaks.
 
-To do that, you can use installed CleverStyle CMS or even non-installed.
+To do that, you can use installed CleverStyle Framework or even non-installed.
 
 1a\. If you have installed system - just copy to the root directory of your website next files/folders from this repository:
  * **build**
@@ -20,9 +20,9 @@ To do that, you can use installed CleverStyle CMS or even non-installed.
 ```
 Than go to **http\://my.website/build.php**.
 
-On this page you can make installer of CleverStyle CMS. There are several possible modes:
-* Core: creates installer of CleverStyle CMS; if no modules and/or plugins selected - it will be only core, but you can also create installer with built in components (several items can be selected) \*
-* Module: creation of module installer; obtained package is used to install module in administration panel of CleverStyle CMS
+On this page you can make installer of CleverStyle Framework. There are several possible modes:
+* Core: creates installer of CleverStyle Framework; if no modules and/or plugins selected - it will be only core, but you can also create installer with built in components (several items can be selected) \*
+* Module: creation of module installer; obtained package is used to install module in administration panel of CleverStyle Framework
 * Plugin: the same as module, but for plugins
 
 Select desired mode and click **Build**.

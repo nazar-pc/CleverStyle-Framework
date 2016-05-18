@@ -140,7 +140,7 @@ Clean cache by deleting all items
 <a name="abstract-with-namespace-class" />
 ###[Up](#) \cs\Cache\\_Abstract_with_namespace class
 
-This is an abstract class that extends `\cs\Cache\_Abstract`. It exists to provide simplified integration of cache engines without native namespaces support (required by CleverStyle CMS), but which have incrementing support (currently APC and Memcached engines are using this class).
+This is an abstract class that extends `\cs\Cache\_Abstract`. It exists to provide simplified integration of cache engines without native namespaces support (required by CleverStyle Framework), but which have incrementing support (currently APC and Memcached engines are using this class).
 
 Class implements methods `get()`, `set()`, `del()` and `clean()` from ``\cs\Cache\_Abstract`` and requires to implement following methods instead:
 * available_internal()

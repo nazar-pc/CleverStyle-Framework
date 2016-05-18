@@ -6,7 +6,7 @@ Components dependencies are specified in `meta.json` file of [module](/docs/Modu
     "version"      : "0.105.2+build-118",
     "description"  : "Adds blogging functionality. Comments module is required for comments functionality, Plupload or similar module is required for files uploading functionality.",
     "author"       : "Nazar Mokrynskyi",
-    "website"      : "cleverstyle.org/cms",
+    "website"      : "cleverstyle.org/Framework",
     "license"      : "MIT License",
     "db_support"   : [
         "MySQLi"

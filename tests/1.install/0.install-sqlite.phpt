@@ -12,7 +12,7 @@ $arguments = '-sn Web-site -su http://cscms.travis -dh storage/sqlite.db -dn "" 
 include __DIR__.'/_install.php';
 ?>
 --EXPECT--
-Congratulations! CleverStyle CMS has been installed successfully!
+Congratulations! CleverStyle Framework has been installed successfully!
 
 Login: admin
 Password: 1111

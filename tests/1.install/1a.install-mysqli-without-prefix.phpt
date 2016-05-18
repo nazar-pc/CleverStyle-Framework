@@ -16,7 +16,7 @@ include __DIR__.'/_install.php';
 include __DIR__.'/../_clean.php';
 ?>
 --EXPECT--
-Congratulations! CleverStyle CMS has been installed successfully!
+Congratulations! CleverStyle Framework has been installed successfully!
 
 Login: admin
 Password: 1111

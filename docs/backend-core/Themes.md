@@ -10,9 +10,9 @@ Also theme might have `meta.json` just like modules and plugins (but much simple
 	"package"     : "DarkEnergy",
 	"category"    : "themes",
 	"version"     : "1.6.2+build-21",
-	"description" : "Dark responsive theme for CleverStyle CMS",
+	"description" : "Dark responsive theme for CleverStyle Framework",
 	"author"      : "Nazar Mokrynskyi",
-	"website"     : "cleverstyle.org/cms",
+	"website"     : "cleverstyle.org/Framework",
 	"license"     : "MIT License"
 }
 ```

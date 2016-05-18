@@ -13,7 +13,7 @@ $host = explode('/', $host, 2)[0];
  */
 $_SERVER = [
 	'HTTP_HOST'              => $host,
-	'HTTP_USER_AGENT'        => 'CleverStyle CMS WebSockets module',
+	'HTTP_USER_AGENT'        => 'CleverStyle Framework WebSockets module',
 	'SERVER_NAME'            => explode(':', $host)[0],
 	'REMOTE_ADDR'            => '127.0.0.1',
 	'SERVER_PROTOCOL'        => 'HTTP/1.1',

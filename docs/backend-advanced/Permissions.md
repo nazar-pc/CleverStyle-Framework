@@ -1,4 +1,4 @@
-Permissions in CleverStyle CMS are used on every page even if you do not specify this explicitly:)
+Permissions in CleverStyle Framework are used on every page even if you do not specify this explicitly:)
 
 There are two main ways to use permissions:
 * for restricting access to specific pages or sections of website

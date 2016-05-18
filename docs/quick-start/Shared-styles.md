@@ -1,4 +1,4 @@
-CleverStyle CMS doesn't enforce any styling by default at all. This means developers have complete freedom to choose styling they want and do not need to fight with defaults.
+CleverStyle Framework doesn't enforce any styling by default at all. This means developers have complete freedom to choose styling they want and do not need to fight with defaults.
 
 However, some defaults are actually present and can be explicitly used if necessary with granular control over what is actually used and where.
 

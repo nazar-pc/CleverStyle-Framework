@@ -7,7 +7,7 @@ Steps to create the simplest module:
 5. Install module
 6. Enable module
 7. Click on module name, appeared in main menu
-8. That's it! You have created module for CleverStyle CMS
+8. That's it! You have created module for CleverStyle Framework
 
 Note: if you want to create module with php file, output should be done in next way:
 ```php

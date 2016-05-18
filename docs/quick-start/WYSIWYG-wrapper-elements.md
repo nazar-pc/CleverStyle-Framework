@@ -1,4 +1,4 @@
-In CleverStyle CMS WYSIWYG editor is optional and provided by third party component. However, interface for that is defined and doesn't depend on exact component used.
+In CleverStyle Framework WYSIWYG editor is optional and provided by third party component. However, interface for that is defined and doesn't depend on exact component used.
 
 There are 4 wrapper elements that convert underlying `textarea` or other block element into WYSIWYG editor:
 * `cs-editor`

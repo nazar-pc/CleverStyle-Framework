@@ -1,4 +1,4 @@
-Testing in CleverStyle CMS is done using slightly modified dialect of PHPT tests. These tests are very simple to read and write, they are used in PHP development itself.
+Testing in CleverStyle Framework is done using slightly modified dialect of PHPT tests. These tests are very simple to read and write, they are used in PHP development itself.
 
 However, in your custom project you can use any other testing tool as well.
 
@@ -32,7 +32,7 @@ Also you can look at `tests` directory for already existing tests to see how the
 When you're ready - either choose existing directory within `tests` directory or create new one and put new `*.phpt` test file there.
 
 ### Environment
-Since CleverStyle CMS have high coupling level most of times you'll need some basic environment for your tests, and there is already such.
+Since CleverStyle Framework have high coupling level most of times you'll need some basic environment for your tests, and there is already such.
 
 To get basic system environment (all the system functions, classes autoloader) you just need to include `tests/bootstrap.php` file.
 

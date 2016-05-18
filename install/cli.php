@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    CleverStyle CMS
+ * @package    CleverStyle Framework
  * @subpackage Installer
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
@@ -91,7 +91,7 @@ for ($i = 1; $i < $argc; $i += 2) {
 	}
 }
 if ($interactive) {
-	echo "CleverStyle CMS installer, interactive mode\n";
+	echo "CleverStyle Framework installer, interactive mode\n";
 	$required_parameters = [
 		'site_name'      => 'Site name',
 		'site_url'       => 'Site URL',
@@ -122,8 +122,8 @@ if (
 	)
 ) {
 	echo <<<HELP
-CleverStyle CMS installer
-Installer is used for installation of CleverStyle CMS and built-in components from distributive.
+CleverStyle Framework installer
+Installer is used for installation of CleverStyle Framework and built-in components from distributive.
 Usage: php $argv[0]
          --site_name <site_name>
          --site_url <site_url>
@@ -212,7 +212,7 @@ if (!is_writable($installer) || !unlink($installer)) {
 	$warning = "Please, remove installer file $installer for security!\n";
 }
 echo <<<SUCCESS
-Congratulations! CleverStyle CMS has been installed successfully!
+Congratulations! CleverStyle Framework has been installed successfully!
 $warning
 Login: $admin_login
 Password: $options[admin_password]

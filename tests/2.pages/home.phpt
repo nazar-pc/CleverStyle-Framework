@@ -10,9 +10,9 @@ echo Response::instance()->body;
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
 	<title>Web-site | Home</title>
 	<meta charset="utf-8">
-	<meta content="CleverStyle CMS by Mokrynskyi Nazar" name="generator">
+	<meta content="CleverStyle Framework by Mokrynskyi Nazar" name="generator">
 	<base href="http://cscms.travis/">
-	<link href="/themes/CleverStyle/img/favicon.ico" rel="shortcut icon">
+	<link href="/favicon.ico" rel="shortcut icon">
 	<script class="cs-config" target="cs" type="application/json">{"base_url":"http:\/\/cscms.travis","current_base_url":"http:\/\/cscms.travis\/System","public_key":"%s","module":"System","in_admin":0,"is_admin":0,"is_user":0,"is_guest":1,"password_min_length":4,"password_min_strength":%d,"debug":0,"route":[],"route_path":["blank"],"route_ids":[]}</script>
 	<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet" shim-shadowdom>
 	<meta content="Web-site | Home" property="og:title">
@@ -58,7 +58,7 @@ echo Response::instance()->body;
 			Page generated in %f s; %d queries to DB in %f s; memory consumption %f MiB (peak %f MiB)
 		</div>
 		<div>
-			© Powered by <a target="_blank" href="http://cleverstyle.org/cms" title="CleverStyle CMS">CleverStyle CMS</a>
+			© Powered by <a target="_blank" href="http://cleverstyle.org/Framework" title="CleverStyle Framework">CleverStyle Framework</a>
 		</div>
 	</footer>
 	<script src="/storage/pcache/webcomponents.js?%s"></script>

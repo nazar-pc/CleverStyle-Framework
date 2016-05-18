@@ -1,8 +1,8 @@
-[RequireJS](https://github.com/jrburke/requirejs) is bundled in CleverStyle CMS out of the box.
+[RequireJS](https://github.com/jrburke/requirejs) is bundled in CleverStyle Framework out of the box.
 
 All other third-party libraries bundled with system like jQuery or jsSHA are also available as AMD modules through RequireJS.
 
-Besides [Bower & NPM](/docs/Bower-and-NPM.md) integration, RequireJS can be used with CleverStyle CMS components.
+Besides [Bower & NPM](/docs/Bower-and-NPM.md) integration, RequireJS can be used with CleverStyle Framework components.
 
 For instance, you have module or plugin called `Experiment` and AMD module in `includes/js/some-module.js`, then this module can be conveniently consumed as:
 

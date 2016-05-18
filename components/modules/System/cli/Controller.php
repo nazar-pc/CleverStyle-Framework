@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    CleverStyle CMS
+ * @package    CleverStyle Framework
  * @subpackage System module
  * @category   modules
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
@@ -17,7 +17,7 @@ class Controller {
 	static function __help () {
 		$version = file_get_json(__DIR__.'/../meta.json')['version'];
 		return <<<HELP
-%gCleverStyle CMS%n version %y$version%n, CLI interface%n
+%gCleverStyle Framework%n version %y$version%n, CLI interface%n
 
 %yUsage:%n
   [method:]path [arguments]

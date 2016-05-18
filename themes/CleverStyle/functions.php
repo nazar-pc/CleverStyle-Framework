@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    CleverStyle CMS
+ * @package    CleverStyle Framework
  * @subpackage CleverStyle theme
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright  Copyright (c) 2014-2016, Nazar Mokrynskyi
@@ -108,7 +108,7 @@ function get_footer () {
 			'<!--memory usage-->',
 			'<!--peak memory usage-->'
 		),
-		'© Powered by <a target="_blank" href="http://cleverstyle.org/cms" title="CleverStyle CMS">CleverStyle CMS</a>'
+		'© Powered by <a target="_blank" href="http://cleverstyle.org/Framework" title="CleverStyle Framework">CleverStyle Framework</a>'
 	);
 }
 

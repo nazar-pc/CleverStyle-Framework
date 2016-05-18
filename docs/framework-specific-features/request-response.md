@@ -1,8 +1,8 @@
-Unlike plain simple PHP code, CLeverStyle CMS provides Request/Response abstractions that developers MUST use to ensure everything will work regardless of environment configuration and system setup.
+Unlike plain simple PHP code, CLeverStyle Framework provides Request/Response abstractions that developers MUST use to ensure everything will work regardless of environment configuration and system setup.
 
 Essential pieces here are [$Request](/docs/backend-system-objects/$Request.md) and [$Response](/docs/backend-system-objects/$Response.md) system objects, they provide interfaces that work with Web/CLI interfaces, support custom request methods (including files uploads) and work with built-in HTTP server when using `Http server` module.
 
-Some common uses of PHP superglobals and functions alongside with their alternatives in CleverStyle CMS are listed below.
+Some common uses of PHP superglobals and functions alongside with their alternatives in CleverStyle Framework are listed below.
 
 #### $_SERVER
 Instead of using `$_SERVER` directly, use properties of `$Request` object. It contains all essential information about request you might need from `$_SERVER`, for instance, you can get request headers using `$Request->headers` property or `$Request->header()` method.

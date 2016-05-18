@@ -1,6 +1,6 @@
 <?php
 /**
- * @package   CleverStyle CMS
+ * @package   CleverStyle Framework
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
@@ -69,7 +69,7 @@ abstract class Base extends BananaHTML {
 		return '';
 	}
 	/**
-	 * CleverStyle CMS-specific processing of attributes
+	 * CleverStyle Framework-specific processing of attributes
 	 *
 	 * @static
 	 *

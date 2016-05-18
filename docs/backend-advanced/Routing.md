@@ -1,4 +1,4 @@
-There are two possible types of routing in CleverStyle CMS (while only one of them can be used at once, they can't be mixed):
+There are two possible types of routing in CleverStyle Framework (while only one of them can be used at once, they can't be mixed):
 * files-based
 * controller-based
 

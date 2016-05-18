@@ -241,9 +241,9 @@ Main description file of module. A little bit extended in comparison with the sa
 	"category"            : "modules",
 	"version"             : "0.171",
 	"update_from_version" : "0.171",
-	"description"         : "Base system module of CleverStyle CMS",
+	"description"         : "Base system module of CleverStyle Framework",
 	"author"              : "Nazar Mokrynskyi",
-	"website"             : "cleverstyle.org/cms",
+	"website"             : "cleverstyle.org/Framework",
 	"license"             : "MIT License",
 	"db"                  : [
 		"keys",

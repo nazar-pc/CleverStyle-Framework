@@ -1,4 +1,4 @@
-This page will describe how to setup development environment for productive work with CleverStyle CMS and contribute back to project.
+This page will describe how to setup development environment for productive work with CleverStyle Framework and contribute back to project.
 
 ### IDE
 You can, of course, use any IDE of your choice, but system is developed under PhpStorm (usually EAP version), so this is recommended IDE that will boost your productivity a lot.
@@ -21,18 +21,18 @@ It is recommended to configure file watchers in PhpStorm (Tools->File Watchers) 
 After this any editing of SCSS, LiveScript and Jade files will automatically compile them to regular CSS, JS and HTML files.
 You are not forced to use these tools, but you'll need them when modifying system core (for your needs or as bug fixes).
 
-### Development edition of CleverStyle CMS
+### Development edition of CleverStyle Framework
 NOTE: this section is relevant for development of system core, you can install regular stable version otherwise
 
 At first fork repository on GitHub to your own account.
 Then prepare virtual host for future website on your local machine.
 When virtual host is ready clone repository from your account to virtual host directory:
 ```
-git clone git@github.com:username/CleverStyle-CMS.git
+git clone git@github.com:username/CleverStyle-Framework.git
 ```
 Then add remote `upstream` repository, so that you'll have quick access to latest upstream code:
 ```
-git remote add upstream git@github.com:nazar-pc/CleverStyle-CMS.git
+git remote add upstream git@github.com:nazar-pc/CleverStyle-Framework.git
 ```
 
 [Now build distributive](/docs/Installer-builder.md)

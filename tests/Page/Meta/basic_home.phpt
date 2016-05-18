@@ -24,14 +24,14 @@ Text::instance_stub([], [
 ]);
 Meta::instance()
 	->article()
-	->article('section', 'CMS')
+	->article('section', 'Framework')
 	->render();
 echo $Page->Head;
 ?>
 --EXPECT--
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
 	<meta content="article" property="og:type">
-	<meta content="CMS" property="article:section">
+	<meta content="Framework" property="article:section">
 	<meta content="http://cscms.travis" property="og:url">
 	<meta content="Web-site" property="og:site_name">
 </head>

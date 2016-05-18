@@ -12,7 +12,7 @@ use
 	cs\User;
 
 /**
- * Class generates array with structure, that is necessary for JSON-LD based on CleverStyle CMS-specific data
+ * Class generates array with structure, that is necessary for JSON-LD based on CleverStyle Framework-specific data
  *
  * Methods names are the same as on <http://schema.org/docs/full.html> except some utility methods which have `snake_case` formatting
  */

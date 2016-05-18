@@ -1,6 +1,6 @@
 <?php
 /**
- * @package    CleverStyle CMS
+ * @package    CleverStyle Framework
  * @subpackage Builder
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
@@ -32,8 +32,8 @@ if (
 	!in_array($mode, ['core', 'module', 'plugin', 'theme'])
 ) {
 	echo <<<HELP
-CleverStyle CMS builder
-Builder is used for creating distributive of the CleverStyle CMS and its components.
+CleverStyle Framework builder
+Builder is used for creating distributive of the CleverStyle Framework and its components.
 Usage: php build.php [-h] [-M <mode>] [-m <module>] [-p <plugin>] [-t <theme>] [-s <suffix>]
   -h
   --help    - This information

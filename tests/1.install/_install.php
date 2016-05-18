@@ -11,7 +11,7 @@ if (is_dir($target)) {
 }
 $version = json_decode(file_get_contents(__DIR__.'/../../components/modules/System/meta.json'), true)['version'];
 (new \cs\Builder($root, $target))->core();
-rename(__DIR__."/../../cscms.travis/CleverStyle_CMS_$version.phar.php", __DIR__.'/../../cscms.travis/distributive.phar.php');
+rename(__DIR__."/../../cscms.travis/CleverStyle_Framework_$version.phar.php", __DIR__.'/../../cscms.travis/distributive.phar.php');
 chdir($target);
 system(PHP_BINARY." distributive.phar.php $arguments -de $_ENV[DB]");
 // Remove php config because its parameters anyway will be declared by custom loader or tests or not used at all

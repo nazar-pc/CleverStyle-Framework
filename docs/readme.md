@@ -1,4 +1,4 @@
-### Welcome to the CleverStyle CMS documentation!
+### Welcome to the CleverStyle Framework documentation!
 Here you can find all useful information:
 * How to use
 * How to customize
@@ -50,7 +50,7 @@ Here you can find all useful information:
 * [Shared styles](/docs/quick-start/Shared-styles.md)
 * [WYSIWYG wrapper elements](/docs/quick-start/WYSIWYG-wrapper-elements.md)
 
-### CleverStyle CMS-specific features [Backend] [dev]
+### CleverStyle Framework-specific features [Backend] [dev]
 * [exit/die](/docs/framework-specific-features/exit-die.md)
 * [Request/Response](/docs/framework-specific-features/request-response.md)
 
@@ -73,7 +73,7 @@ Here you can find all useful information:
 * [Bower & NPM](/docs/frontend-advanced/Bower-and-NPM.md)
 
 ### System objects [Backend] [dev]
-Global system objects provides almost all functionality of CleverStyle CMS. Shortly they were described in [classes section](/docs/Classes.md). Here you can see, how to use them in practice.
+Global system objects provides almost all functionality of CleverStyle Framework. Shortly they were described in [classes section](/docs/Classes.md). Here you can see, how to use them in practice.
 * [$App](/docs/backend-system-objects/$App.md)
  * [Methods](/docs/backend-system-objects/$App.md#methods)
  * [Properties](/docs/backend-system-objects/$App.md#properties)

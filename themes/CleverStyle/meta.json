@@ -1,8 +1,8 @@
 {
 	"package"				: "CleverStyle",
 	"category"				: "themes",
-	"description"			: "Stock theme for CleverStyle CMS",
+	"description"			: "Stock theme for CleverStyle Framework",
 	"author"				: "Nazar Mokrynskyi",
-	"website"				: "cleverstyle.org/cms",
+	"website"				: "cleverstyle.org/Framework",
 	"license"				: "MIT License"
 }

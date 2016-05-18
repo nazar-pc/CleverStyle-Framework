@@ -1,4 +1,4 @@
-CleverStyle CMS doesn't have any CSS/UI framework bundled with it, since they are often not flexible enough and cause significant overhead.
+CleverStyle Framework doesn't have any CSS/UI framework bundled with it, since they are often not flexible enough and cause significant overhead.
 
 Instead, system comes with CleverStyle Widgets, which is set of useful custom elements that work nicely with Shadow DOM, ready for convenient data bindings and doesn't enforce any appearance by default (namely, almost no styling by default, just support for many [CSS mixins](https://www.polymer-project.org/1.0/docs/devguide/styling.html.md#custom-css-mixins), so you can style them the way you need).
 

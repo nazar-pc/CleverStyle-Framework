@@ -1,6 +1,6 @@
 Before getting into details here, make sure you are familiar with [Web Components](http://webcomponents.org/) in general, [Polymer](https://www.polymer-project.org/) itself and with [behaviors](https://www.polymer-project.org/1.0/docs/devguide/behaviors.html.md) in particular.
 
-Since CleverStyle CMS uses custom elements heavily, it also provides some convenient behaviors for elements building out of the box:
+Since CleverStyle Framework uses custom elements heavily, it also provides some convenient behaviors for elements building out of the box:
 * cs.Polymer.behaviors.cs
 * cs.Polymer.behaviors.Language
 

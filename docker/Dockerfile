@@ -32,13 +32,13 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 		wget && \
 	rm -rf /var/lib/apt/lists/* && \
 
-# Download git master version of CleverStyle CMS
+# Download git master version of CleverStyle Framework
 
 	cd /tmp && \
-	wget https://github.com/nazar-pc/CleverStyle-CMS/archive/master.tar.gz && \
+	wget https://github.com/nazar-pc/CleverStyle-Framework/archive/master.tar.gz && \
 	tar -xf master.tar.gz && \
 	rm master.tar.gz && \
-	cd CleverStyle-CMS-master && \
+	cd CleverStyle-Framework-master && \
 
 # Get list of available modules, plugins and themes
 
@@ -63,17 +63,17 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 	mkdir /web && \
 	mv *.phar.php /web/dist.phar.php && \
 	cd /web && \
-	rm -rf /tmp/CleverStyle-CMS-master && \
+	rm -rf /tmp/CleverStyle-Framework-master && \
 
 # Run MySQL server, create database
 
 	service mysql start && \
 	mysql -uroot -p$MYSQL_PASSWORD -e 'CREATE DATABASE `cscms`;' && \
 
-# Install CleverStyle CMS
+# Install CleverStyle Framework
 
 	php dist.phar.php \
-		--site_name      "CleverStyle CMS Demo (not for production, admin:1111)" \
+		--site_name      "CleverStyle Framework Demo (not for production, admin:1111)" \
 		--site_url       http://localhost:8888 \
 		--db_name        cscms \
 		--db_user        root \
