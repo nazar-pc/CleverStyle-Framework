@@ -1,9 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="128px" height="128px" viewBox="0 0 128 128" enable-background="new 0 0 128 128" xml:space="preserve">
-<rect fill="#C5C5C5" width="128" height="128"/>
-<path fill="#FFFFFF" d="M77.972,77.053c8.887-4.896,14.91-14.351,14.91-25.215c0-15.891-12.882-28.773-28.772-28.773
-	c-15.891,0-28.773,12.882-28.773,28.773c0,10.772,5.923,20.156,14.687,25.086c-17.8,6.838-31.501,26.545-35.053,51.076h97.73
-	C109.169,103.619,95.612,84.006,77.972,77.053z"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><path fill="#C5C5C5" d="M0 0h128v128H0z"/><circle fill="#fff" cx="64" cy="52" r="29"/><path fill="#fff" d="M15 128c12-71 86-71 98 0H15z"/></svg>
