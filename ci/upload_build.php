@@ -10,7 +10,7 @@ if (substr(PHP_VERSION, 0, 3) !== '5.6' || getenv('DB') != 'MySQLi') {
 	echo "Distributive is uploaded only under PHP 5.6 with DB=MySQLi\n";
 	return;
 }
-define('DIR', __DIR__);
+define('DIR', __DIR__.'/..');
 
 /**
  * Check whether current commit is newest in master branch
@@ -90,7 +90,7 @@ foreach (get_files_list(DIR.'/dist', false, 'f', true) as $file) {
 }
 
 exec('openssl enc -d -aes-256-cbc -in id_rsa.enc -out id_rsa -pass env:KEYPASS 2>/dev/null');
-chmod(DIR.'/id_rsa', 0600);
+chmod(__DIR__.'/id_rsa', 0600);
 $target_directory = $tag ? "stable/$tag" : 'nightly';
 system(
 	"rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa -o UserKnownHostsFile=/dev/null' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-framework/$target_directory/"

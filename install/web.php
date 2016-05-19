@@ -171,6 +171,9 @@ function install_process () {
 HTML;
 }
 
+date_default_timezone_set('UTC');
+require_once __DIR__.'/Installer.php';
+
 if (count(explode('/', $_SERVER['REQUEST_URI'])) > 3) {
 	echo 'Installation into subdirectory is not supported!';
 	return;

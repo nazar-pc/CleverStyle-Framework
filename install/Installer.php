@@ -127,7 +127,7 @@ CONFIG;
 		if (file_exists("$target/config/main.json")) {
 			throw new RuntimeException('"config/main.json" file already present! Installation aborted.');
 		}
-		if (!file_exists("$source/install/DB/$db_engine.sql")) {
+		if (!file_exists("$source/DB/$db_engine.sql")) {
 			throw new RuntimeException("Can't find system tables structure for selected database engine! Installation aborted.");
 		}
 	}
@@ -258,7 +258,7 @@ CONFIG;
 	 */
 	protected static function initialize_db_structure ($cdb, $source, $db_engine) {
 		$query = array_filter(
-			explode(';', file_get_contents("$source/install/DB/$db_engine.sql")),
+			explode(';', file_get_contents("$source/DB/$db_engine.sql")),
 			'trim'
 		);
 		if (!$cdb->q($query)) {

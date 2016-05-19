@@ -47,8 +47,8 @@ class Builder {
 		unset($target_file);
 		$phar->startBuffering();
 		$length = strlen("$this->root/");
-		foreach (get_files_list("$this->root/install", false, 'f', true, true) as $file) {
-			$phar->addFile($file, substr($file, $length));
+		foreach (get_files_list("$this->root/install", false, 'f', '', true) as $file) {
+			$phar->addFile("$this->root/install/$file", $file);
 		}
 		unset($file);
 		$phar->addFile("$this->root/includes/img/logo.svg", 'logo.svg');
@@ -143,17 +143,22 @@ class Builder {
 		 * Addition of supplementary files, that are needed directly for installation process: installer with GUI interface, readme, license, some additional
 		 * information about available languages, themes, current version of system
 		 */
-		$phar->addFile("$this->root/install.php", 'install.php');
 		$phar->addFile("$this->root/license.txt", 'license.txt');
 		$phar->addFile("$this->root/components/modules/System/meta.json", 'meta.json');
 		$phar->setStub(
+		/** @lang PHP */
 			<<<STUB
 <?php
+if (version_compare(PHP_VERSION, '5.6', '<')) {
+	echo 'CleverStyle Framework require PHP 5.6 or higher';
+	return;
+}
+
 if (PHP_SAPI == 'cli') {
 	Phar::mapPhar('cleverstyle_framework.phar');
-	include 'phar://cleverstyle_framework.phar/install.php';
+	include 'phar://cleverstyle_framework.phar/cli.php';
 } else {
-	Phar::webPhar(null, 'install.php');
+	Phar::webPhar(null, 'web.php');
 }
 __HALT_COMPILER();
 STUB

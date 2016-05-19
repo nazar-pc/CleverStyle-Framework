@@ -6,6 +6,9 @@
  * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
+date_default_timezone_set('UTC');
+require_once __DIR__.'/Installer.php';
+
 $help        = false;
 $interactive = false;
 /**
