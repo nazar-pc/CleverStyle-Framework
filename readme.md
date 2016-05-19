@@ -113,7 +113,6 @@ Some components are developed in parallel with core in this repository
 #### Themes
 
  * **DarkEnergy** (Dark theme used on CleverStyle.org)
- * **Tenebris** (Another dark theme designed by Dmitry Kirsanov)
 
 # Requirements:
 
