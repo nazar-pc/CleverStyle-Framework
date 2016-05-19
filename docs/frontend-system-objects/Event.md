@@ -3,7 +3,7 @@
 Event = window.cs.Event;
 ```
 
-Object is the similar to [$Event](/docs/backend-system-classes/$Event.md) object on backend, see [examples](/docs/quick-start/Events.md).
+Object is the similar to [$Event](/docs/backend-system-objects/$Event.md) object on backend, see [examples](/docs/quick-start/Events.md).
 
 ### [Methods](#methods)
 

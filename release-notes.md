@@ -125,7 +125,7 @@ New features:
 * `\cs\Language::init()` and `::url_language()` methods added
 * `\cs\User::get_session()` refactored to `::get_session_id()` which much better explains what function actually do
 * Possibility to attach volume to Docker container with demo
-* Triggers are now Events, corresponding class `Event` [added](/docs/backend-system-classes/$Event.md), `Trigger` still exists for backward compatibility, but uses `Event` under the hood (transition is simple - `Trigger::register() -> Event::on()`, `Trigger::run() -> Event::fire()`, also `Event` have some new functionality with methods `::off()` and `::once()`, `events.php` is used now instead `trigger.php` which is deprecated now
+* Triggers are now Events, corresponding class `Event` [added](/docs/backend-system-objects/$Event.md), `Trigger` still exists for backward compatibility, but uses `Event` under the hood (transition is simple - `Trigger::register() -> Event::on()`, `Trigger::run() -> Event::fire()`, also `Event` have some new functionality with methods `::off()` and `::once()`, `events.php` is used now instead `trigger.php` which is deprecated now
 * `cs.Event` object added on frontend similar to `cs\Event` on backend with the same methods
 
 Updates:
