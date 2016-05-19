@@ -11,6 +11,7 @@ if (substr(PHP_VERSION, 0, 3) !== '5.6' || getenv('DB') != 'MySQLi') {
 	return;
 }
 define('DIR', __DIR__.'/..');
+chdir(__DIR__);
 
 /**
  * Check whether current commit is newest in master branch
