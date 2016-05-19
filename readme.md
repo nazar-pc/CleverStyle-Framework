@@ -121,7 +121,7 @@ Some components are developed in parallel with core in this repository
 * Apache2 with modules:
  * REQUIRED: rewrite, headers
  * OPTIONAL: expires
-* or Nginx ([config sample](/docs/Nginx-config-sample.md))
+* or Nginx ([config sample](/docs/installation/Nginx-config-sample.md))
 * PHP 5.6+ with libraries:
  * REQUIRED: cURL, XML, mbstring
  * OPTIONAL: APCu, Memcached

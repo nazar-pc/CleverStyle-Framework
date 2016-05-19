@@ -13,7 +13,7 @@ For example:
 * Fill several fields and click **Install**
 * That's it! You have installed CleverStyle Framework
 
-If you are using Nginx - here is [Nginx config sample](/docs/Nginx-config-sample.md) with necessary configuration for installation and usage.
+If you are using Nginx - here is [Nginx config sample](/docs/installation/Nginx-config-sample.md) with necessary configuration for installation and usage.
 
 ### CLI way
 Alternative way to install CleverStyle Framework is by using command line.
