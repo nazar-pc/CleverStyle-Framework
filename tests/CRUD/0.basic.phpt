@@ -2,15 +2,15 @@
 <?php
 namespace cs;
 include __DIR__.'/../bootstrap.php';
-class CRUD_test {
+class CRUD_basic {
 	use
 		CRUD;
 	protected $table      = '[prefix]crud_test_basic';
 	protected $data_model = [
-		'id'            => 'int:1',
-		'title'         => 'text',
-		'description'   => 'html',
-		'data'          => 'json',
+		'id'           => 'int:1',
+		'title'        => 'text',
+		'description'  => 'html',
+		'data'         => 'json',
 		'joined_table' => [
 			'data_model' => [
 				'id'    => 'int:1',
@@ -29,8 +29,8 @@ class CRUD_test {
 			)
 		);
 
+		var_dump('create #1');
 		var_dump(
-			'create #1',
 			$this->create(
 				'Title 1',
 				'Description 1',
@@ -38,8 +38,8 @@ class CRUD_test {
 				[1, 2, 3]
 			)
 		);
+		var_dump('create #2');
 		var_dump(
-			'create #2',
 			$this->create(
 				[
 					'Title 2',
@@ -49,8 +49,8 @@ class CRUD_test {
 				]
 			)
 		);
+		var_dump('create #3');
 		var_dump(
-			'create #3',
 			$this->create(
 				3,
 				'Title 3',
@@ -59,8 +59,8 @@ class CRUD_test {
 				[]
 			)
 		);
+		var_dump('create #4');
 		var_dump(
-			'create #4',
 			$this->create(
 				4,
 				'Title 4',
@@ -70,44 +70,31 @@ class CRUD_test {
 			)
 		);
 
-		var_dump(
-			'read #1',
-			$data_1 = $this->read(1)
-		);
-		var_dump(
-			'read #2',
-			$data_2 = $this->read(2)
-		);
-		var_dump('read #3', $this->read([1, 2]));
+		var_dump('read #1');
+		var_dump($data_1 = $this->read(1));
+		var_dump('read #2');
+		var_dump($data_2 = $this->read(2));
+		var_dump('read #3');
+		var_dump($this->read([1, 2]));
 
 		$data_1['title'] .= '+';
-		var_dump(
-			'update #1',
-			$this->update($data_1),
-			$this->read(1)
-		);
+		var_dump('update #1');
+		var_dump($this->update($data_1));
+		var_dump($this->read(1));
 		$data_2['title'] .= '+';
-		var_dump(
-			'update #2',
-			$this->update(array_values($data_2)),
-			$data_2 = $this->read(2)
-		);
+		var_dump('update #2');
+		var_dump($this->update(array_values($data_2)));
+		var_dump($data_2 = $this->read(2));
 		$data_2['title'] .= '-';
-		var_dump(
-			'update #3',
-			$this->update(...array_values($data_2)),
-			$this->read(2)
-		);
-		var_dump(
-			'delete #1',
-			$this->delete(1),
-			$this->read(1)
-		);
-		var_dump(
-			'delete #2',
-			$this->delete([2, 3]),
-			$this->read([2, 3, 4])
-		);
+		var_dump('update #3');
+		var_dump($this->update(...array_values($data_2)));
+		var_dump($this->read(2));
+		var_dump('delete #1');
+		var_dump($this->delete(1));
+		var_dump($this->read(1));
+		var_dump('delete #2');
+		var_dump($this->delete([2, 3]));
+		var_dump($this->read([2, 3, 4]));
 
 		$this->db_prime()->q(
 			array_filter(
@@ -118,7 +105,7 @@ class CRUD_test {
 	}
 }
 
-(new CRUD_test)->test();
+(new CRUD_basic)->test();
 ?>
 --EXPECT--
 string(9) "create #1"

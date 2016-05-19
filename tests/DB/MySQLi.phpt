@@ -146,6 +146,7 @@ $db->transaction(function ($db) {
 	$db->q('DELETE FROM `test` WHERE `id` = 2');
 });
 var_dump('transaction for deletion: commit', $db->qfs("SELECT `id` FROM `test` WHERE `id` = 2"));
+$db->q('DROP TABLE `test`');
 ?>
 --EXPECT--
 string(10) "single row"
