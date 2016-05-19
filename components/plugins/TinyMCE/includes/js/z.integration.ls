@@ -5,6 +5,7 @@
  * @copyright Copyright (c) 2012-2016, Nazar Mokrynskyi
  * @license   GNU Lesser General Public License 2.1, see license.txt
  */
+tinymce.Env.experimentalShadowDom				= true
 tinymce.ui.Control.prototype.getContainerElm	= -> document.children[0]
 tinymce.baseURL									= '/components/plugins/TinyMCE/includes/js'
 uploader_callback								= undefined

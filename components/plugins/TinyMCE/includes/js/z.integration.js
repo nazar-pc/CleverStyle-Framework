@@ -8,6 +8,7 @@
  */
 (function(){
   var uploader_callback, button, uploader, base_config, x$;
+  tinymce.Env.experimentalShadowDom = true;
   tinymce.ui.Control.prototype.getContainerElm = function(){
     return document.children[0];
   };
