@@ -36,22 +36,18 @@ trait Includes {
 		Collecting,
 		RequireJS;
 	protected $extension_to_as = [
-		'jpeg'  => 'image',
-		'jpe'   => 'image',
-		'jpg'   => 'image',
-		'gif'   => 'image',
-		'png'   => 'image',
-		'svg'   => 'image',
-		'svgz'  => 'image',
-		'ttf'   => 'font',
-		'ttc'   => 'font',
-		'otf'   => 'font',
-		'woff'  => 'font',
-		'woff2' => 'font',
-		'eot'   => 'font',
-		'css'   => 'style',
-		'js'    => 'script',
-		'html'  => 'document'
+		'jpeg' => 'image',
+		'jpe'  => 'image',
+		'jpg'  => 'image',
+		'gif'  => 'image',
+		'png'  => 'image',
+		'svg'  => 'image',
+		'svgz' => 'image',
+		'woff' => 'font',
+		//'woff2' => 'font',
+		'css'  => 'style',
+		'js'   => 'script',
+		'html' => 'document'
 	];
 	/**
 	 * @var array

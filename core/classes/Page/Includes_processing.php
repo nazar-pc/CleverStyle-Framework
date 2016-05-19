@@ -21,19 +21,16 @@ class Includes_processing {
 	 */
 	const MAX_EMBEDDING_SIZE = 4096;
 	protected static $extension_to_mime = [
-		'jpeg'  => 'image/jpg',
-		'jpe'   => 'image/jpg',
-		'jpg'   => 'image/jpg',
-		'gif'   => 'image/gif',
-		'png'   => 'image/png',
-		'svg'   => 'image/svg+xml',
-		'svgz'  => 'image/svg+xml',
-		'ttf'   => 'application/font-ttf',
-		'ttc'   => 'application/font-ttf',
-		'otf'   => 'application/font-otf',
-		'woff'  => 'application/font-woff',
-		'woff2' => 'application/font-woff2',
-		'eot'   => 'application/vnd.ms-fontobject'
+		'jpeg' => 'image/jpg',
+		'jpe'  => 'image/jpg',
+		'jpg'  => 'image/jpg',
+		'gif'  => 'image/gif',
+		'png'  => 'image/png',
+		'svg'  => 'image/svg+xml',
+		'svgz' => 'image/svg+xml',
+		'woff' => 'application/font-woff',
+		//'woff2' => 'application/font-woff2',
+		'css'  => 'text/css'
 	];
 	/**
 	 * Analyses file for images, fonts and css links and include they content into single resulting css file.
@@ -100,25 +97,22 @@ class Includes_processing {
 				if (!static::is_relative_path_and_exists($link, $dir)) {
 					return $match[0];
 				}
-				$content = file_get_contents("$dir/$link");
-				if (filesize("$dir/$link") > static::MAX_EMBEDDING_SIZE) {
+				$content   = file_get_contents("$dir/$link");
+				$extension = file_extension($link);
+				if (!isset(static::$extension_to_mime[$extension]) || filesize("$dir/$link") > static::MAX_EMBEDDING_SIZE) {
 					$path_relatively_to_the_root = str_replace(getcwd(), '', realpath("$dir/$link"));
 					$path_relatively_to_the_root .= '?'.substr(md5($content), 0, 5);
 					$not_embedded_resources[] = $path_relatively_to_the_root;
 					return str_replace($match[1], "'".str_replace("'", "\\'", $path_relatively_to_the_root)."'", $match[0]);
 				}
-				$mime_type = 'text/html';
-				$extension = file_extension($link);
-				if (isset(static::$extension_to_mime[$extension])) {
-					$mime_type = static::$extension_to_mime[$extension];
-				} elseif ($extension == 'css') {
-					$mime_type = 'text/css';
+				if ($extension == 'css') {
 					/**
 					 * For recursive includes processing, if CSS file includes others CSS files
 					 */
 					$content = static::css($content, $link, $not_embedded_resources);
 				}
-				$content = base64_encode($content);
+				$mime_type = static::$extension_to_mime[$extension];
+				$content   = base64_encode($content);
 				return str_replace($match[1], "data:$mime_type;charset=utf-8;base64,$content", $match[0]);
 			},
 			$data
