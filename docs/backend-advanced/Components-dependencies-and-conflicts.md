@@ -1,4 +1,4 @@
-Components dependencies are specified in `meta.json` file of [module](/docs/Module-architecture.md#metajson) or [plugin](/docs/Plugin-architecture.md#metajson), for instance:
+Components dependencies are specified in `meta.json` file of [module](/docs/quick-start/Module-architecture.md#metajson) or [plugin](/docs/quick-start/Plugin-architecture.md#metajson), for instance:
 ```json
 {
     "package"      : "Blogs",
@@ -73,7 +73,7 @@ Reduced example:
 ```
 In this example `Main_module_patch` component extends `Main_module`, technically behavior is the same as in case if `Main_module` have optional dependency on `Main_module_patch` with only difference that you don't have to specify any dependencies in `Main_module`.
 
-This is especially handy for [Polymer elements extension](/docs/Polymer-elements-extension.md), when there can be any custom components that extend other (see below section **JS/CSS/HTML inclusion**). Because you have such flexible dependency you can extend components multiple times without having any conflicts between components.
+This is especially handy for [Polymer elements extension](/docs/frontend-advanced/Polymer-elements-extension.md), when there can be any custom components that extend other (see below section **JS/CSS/HTML inclusion**). Because you have such flexible dependency you can extend components multiple times without having any conflicts between components.
 
 Also, you can extend not only by component name, but also by functionality, just like with direct dependencies.
 

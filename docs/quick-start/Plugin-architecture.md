@@ -126,7 +126,7 @@ Other possible properties are:
 * optional
 * conflict
 
-[Read about dependencies and conflicts](/docs/Components-dependencies-and-conflicts.md)
+[Read about dependencies and conflicts](/docs/backend-advanced/Components-dependencies-and-conflicts.md)
 
 ##### require
 Specifies plugins and/or modules, that are needed for plugin workability. Format of parameter the same as for *conflict*.
@@ -135,4 +135,4 @@ Specifies plugins and/or modules, that are needed for plugin workability. Format
 Readme file with extended description of plugin and some other additional information.
 
 #### events.php
-This file is included on every page, even when plugin is not enabled. It is used mainly for [events subscribing](/docs/Events.md#wiki-subscribing), but also may be used for other purposes.
+This file is included on every page, even when plugin is not enabled. It is used mainly for [events subscribing](/docs/quick-start/Events.md#wiki-subscribing), but also may be used for other purposes.

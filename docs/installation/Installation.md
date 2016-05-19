@@ -1,6 +1,6 @@
 To install CleverStyle Framework you have to have installation package, which has extension **\*.phar.php**.
 
-Latest build of installer may be found on [downloads page](/docs/Download-installation-packages.md) of this repository or you can [prepare your own](/docs/Installer-builder.md) installation package.
+Latest build of installer may be found on [downloads page](/docs/installation/Download-installation-packages.md) of this repository or you can [prepare your own](/docs/installation/Installer-builder.md) installation package.
 
 ### GUI way
 Put installer to the root directory of future website. And open this file from web browser.

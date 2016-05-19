@@ -73,7 +73,7 @@ Here you can find all useful information:
 * [Bower & NPM](/docs/frontend-advanced/Bower-and-NPM.md)
 
 ### System objects [Backend] [dev]
-Global system objects provides almost all functionality of CleverStyle Framework. Shortly they were described in [classes section](/docs/Classes.md). Here you can see, how to use them in practice.
+Global system objects provides almost all functionality of CleverStyle Framework. Shortly they were described in [classes section](/docs/backend-core/Classes.md). Here you can see, how to use them in practice.
 * [$App](/docs/backend-system-objects/$App.md)
  * [Methods](/docs/backend-system-objects/$App.md#methods)
  * [Properties](/docs/backend-system-objects/$App.md#properties)
@@ -140,8 +140,6 @@ Global system objects provides almost all functionality of CleverStyle Framework
  * [\cs\Storage\\_Abstract class](/docs/backend-system-objects/$Storage.md#abstract-class)
 * [$Text](/docs/backend-system-objects/$Text.md)
  * [Methods](/docs/backend-system-objects/$Text.md#methods)
-* [$Trigger](/docs/backend-system-objects/$Trigger.md)
- * [Methods](/docs/backend-system-objects/$Trigger.md#methods)
 * [$User](/docs/backend-system-objects/$User.md)
  * [Methods](/docs/backend-system-objects/$User.md#methods)
  * [Properties](/docs/backend-system-objects/$User.md#properties)

@@ -148,7 +148,7 @@ This allows to provide custom, more complex processing of input data.
 #### `ml:` prefix and `$this->data_model_ml_group`
 It is possible to prefix `text` and `html` types with `ml:` to specify that this field is multilingual.
 
-In such case this field will be automatically by `cs\Text` (about [cs\Text class](/docs/$Text.md)).
+In such case this field will be automatically by `cs\Text` (about [cs\Text class](/docs/backend-system-classes/$Text.md)).
 
 To work with this prefix `$this->data_model_ml_group` protected property should be created.
 
@@ -158,7 +158,7 @@ Multilingual group and label are composed in such way:
 
 All this multilingual operations works on all methods (creation, reading, updating and deletion) of this trait.
 
-`[prefix]texts` and `[prefix]texts_data` tables are assumed to be present in the same DB returned by `$this->cdb()` method (about `$this->cdb()` in [cs\DB\Accessor trait](/docs/$db.md#accessor-trait)).
+`[prefix]texts` and `[prefix]texts_data` tables are assumed to be present in the same DB returned by `$this->cdb()` method (about `$this->cdb()` in [cs\DB\Accessor trait](/docs/backend-system-classes/$db.md#accessor-trait)).
 
 #### Joined tables
 This is more difficult type, but much more powerful as well.

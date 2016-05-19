@@ -1,6 +1,6 @@
 As for now - there are only one type of templates - for blocks.
 
-Template is used to customize view of [blocks components](/docs/Blocks.md).
+Template is used to customize view of [blocks components](/docs/backend-components/Blocks.md).
 
 All templates are located in directory **templates/blocks**, and have names **block.{template_name}.html** or **block.{template_name}.php**
 

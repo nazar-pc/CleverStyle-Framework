@@ -20,7 +20,7 @@ This type of routing is very simple.
 
 Independently on path `working_dir/index.php` file will be included if exists. If page URL doesn't have any `path` - this will be the only file included.
 
-If `path` is present then additionally `working_dir/path.php` file will be included (may not exist if there is `sub_path` in `index.json` ([about index.json](/docs/Module-architecture.md#adminindexjson)).
+If `path` is present then additionally `working_dir/path.php` file will be included (may not exist if there is `sub_path` in `index.json` ([about index.json](/docs/quick-start/Module-architecture.md#adminindexjson)).
 
 If `sub_path` is present then additionally `working_dir/path/sub_path.php` file will be included.
 

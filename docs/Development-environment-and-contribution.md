@@ -35,9 +35,9 @@ Then add remote `upstream` repository, so that you'll have quick access to lates
 git remote add upstream git@github.com:nazar-pc/CleverStyle-Framework.git
 ```
 
-[Now build distributive](/docs/Installer-builder.md)
+[Now build distributive](/docs/installation/Installer-builder.md)
 
-[Now install system](/docs/Installation.md) to the same directory
+[Now install system](/docs/installation/Installation.md) to the same directory
 
 Afterwards run:
 ```

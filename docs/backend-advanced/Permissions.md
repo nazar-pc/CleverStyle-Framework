@@ -5,7 +5,7 @@ There are two main ways to use permissions:
 * more precise atomic permissions for specific actions
 
 ### Permissions for pages and sections
-In generic form page URL looks like `admin|api/Module_name/path/sub_path/more` ([Routing](/docs/Routing.md)).
+In generic form page URL looks like `admin|api/Module_name/path/sub_path/more` ([Routing](/docs/backend-advanced/Routing.md)).
 Every permission is a combination of *group* and *label* properties, this fits very well on page URL.
 In this case we split generic URL into two parts:
 * `admin|api/Module_name` corresponds to *group*
@@ -22,7 +22,7 @@ For instance, if we want to deny any user to administer `Blogs` module - we just
 It is always possible to restrict access to specific pages, moreover, module doesn't need to do anything, this feature is supported by system core out of the box.
 
 ### Permissions for specific actions
-Any module, however, may define its own permissions at installation or any other time, and use them explicitly to check access to specific actions using system object [$Permission](/docs/$Permission.md).
+Any module, however, may define its own permissions at installation or any other time, and use them explicitly to check access to specific actions using system object [$Permission](/docs/backend-system-classes/$Permission.md).
 In this case it is completely up to module author how to choose *group* and *label*, however, the same default access rules as for pages still applies (meaning if *group* starts with `admin/` or `api/Module/admin` access will be denied by default).
 
 ### Inheritance

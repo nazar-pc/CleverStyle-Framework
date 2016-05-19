@@ -78,4 +78,4 @@ Example (DOM module override):
 </dom-module>
 ```
 
-You can leverage power of [Reverse dependencies](/docs/Components-dependencies-and-conflicts.md#reverse-dependencies) to patch page elements of other components.
+You can leverage power of [Reverse dependencies](/docs/backend-advanced/Components-dependencies-and-conflicts.md#reverse-dependencies) to patch page elements of other components.
