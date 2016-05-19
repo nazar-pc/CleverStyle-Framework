@@ -10,17 +10,17 @@ if (substr(PHP_VERSION, 0, 3) !== '5.6' || getenv('DB') != 'MySQLi') {
 	echo "Distributive is uploaded only under PHP 5.6 with DB=MySQLi\n";
 	return;
 }
-define('DIR', __DIR__.'/..');
 chdir(__DIR__);
+define('ROOT', __DIR__.'/..');
 
 /**
  * Check whether current commit is newest in master branch
  */
 $on_master = in_array(
-	trim(file_get_contents(DIR.'/.git/HEAD')),
+	trim(file_get_contents(ROOT.'/.git/HEAD')),
 	[
 		'ref: refs/heads/master',
-		trim(@file_get_contents(DIR.'/.git/refs/heads/master'))
+		trim(@file_get_contents(ROOT.'/.git/refs/heads/master'))
 	]
 );
 /**
@@ -38,32 +38,32 @@ if ($tag && !preg_match('/^\d+\.\d+\.\d+\+build-\d+$/', $tag)) {
 echo "Building packages...\n";
 ob_start();
 
-require_once DIR.'/build/Builder.php';
-require_once DIR.'/core/thirdparty/nazarpc/BananaHTML.php';
-require_once DIR.'/core/classes/h/Base.php';
-require_once DIR.'/core/classes/h.php';
-require_once DIR.'/core/thirdparty/upf.php';
-require_once DIR.'/core/functions.php';
+require_once ROOT.'/build/Builder.php';
+require_once ROOT.'/core/thirdparty/nazarpc/BananaHTML.php';
+require_once ROOT.'/core/classes/h/Base.php';
+require_once ROOT.'/core/classes/h.php';
+require_once ROOT.'/core/thirdparty/upf.php';
+require_once ROOT.'/core/functions.php';
 
 $modules = array_values(
 	array_filter(
-		get_files_list(DIR.'/components/modules', false, 'd'),
+		get_files_list(ROOT.'/components/modules', false, 'd'),
 		function ($module) {
 			return $module != 'System';
 		}
 	)
 );
-$plugins = get_files_list(DIR.'/components/plugins', false, 'd');
+$plugins = get_files_list(ROOT.'/components/plugins', false, 'd');
 $themes  = array_values(
 	array_filter(
-		get_files_list(DIR.'/themes', false, 'd'),
+		get_files_list(ROOT.'/themes', false, 'd'),
 		function ($theme) {
 			return $theme != 'CleverStyle';
 		}
 	)
 );
 
-$Builder = new cs\Builder(DIR, DIR.'/dist');
+$Builder = new cs\Builder(ROOT, 'dist');
 $Builder->core([], [], [], 'Core');
 $Builder->core($modules, $plugins, $themes, 'Full');
 foreach ($modules as $module) {
@@ -86,12 +86,12 @@ echo "Building finished, uploading to SourceForge...\n";
 
 exec('openssl enc -d -aes-256-cbc -in gpg.asc.enc -out gpg.asc -pass env:KEYPASS 2>/dev/null');
 exec('gpg --import gpg.asc');
-foreach (get_files_list(DIR.'/dist', false, 'f', true) as $file) {
+foreach (get_files_list('dist', false, 'f', true) as $file) {
 	exec("echo \$KEYPASS | gpg -abs --passphrase-fd 0 $file");
 }
 
 exec('openssl enc -d -aes-256-cbc -in id_rsa.enc -out id_rsa -pass env:KEYPASS 2>/dev/null');
-chmod(__DIR__.'/id_rsa', 0600);
+chmod('id_rsa', 0600);
 $target_directory = $tag ? "stable/$tag" : 'nightly';
 system(
 	"rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa -o UserKnownHostsFile=/dev/null' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-framework/$target_directory/"
