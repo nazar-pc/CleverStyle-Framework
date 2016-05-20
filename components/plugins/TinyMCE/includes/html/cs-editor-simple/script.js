@@ -10,6 +10,6 @@
   Polymer({
     is: 'cs-editor-simple',
     behaviors: [Polymer.cs.behaviors.TinyMCE.editor],
-    editor_config: tinymce.editor_config_simple
+    editor_config: 'editor_config_simple'
   });
 }).call(this);

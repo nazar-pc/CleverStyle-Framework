@@ -8,5 +8,5 @@
 Polymer(
 	is				: 'cs-editor'
 	behaviors		: [Polymer.cs.behaviors.TinyMCE.editor]
-	editor_config	: tinymce.editor_config_full
+	editor_config	: 'editor_config_full'
 )

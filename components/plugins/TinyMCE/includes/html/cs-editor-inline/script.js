@@ -10,6 +10,6 @@
   Polymer({
     is: 'cs-editor-inline',
     behaviors: [Polymer.cs.behaviors.TinyMCE.editor],
-    editor_config: tinymce.editor_config_inline
+    editor_config: 'editor_config_inline'
   });
 }).call(this);
