@@ -20,6 +20,10 @@
       }
     },
     ready: function(){
+      var ref$;
+      if ((ref$ = this.querySelector('textarea')) != null) {
+        ref$.hidden = true;
+      }
       cs.ui.ready.then(bind$(this, '_initialize_editor'));
     },
     _initialize_editor: function(){

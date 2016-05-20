@@ -14,6 +14,7 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 			observer	: '_value_changed'
 			type		: String
 	ready : !->
+		@querySelector('textarea')?.hidden = true
 		# Hack: we need to wait until all Web Components are loaded
 		cs.ui.ready.then(@~_initialize_editor)
 	_initialize_editor : !->
