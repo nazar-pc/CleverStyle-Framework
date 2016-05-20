@@ -4,13 +4,19 @@
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-if document.body.hasAttribute('unresolved')
-	document.body.setAttribute('unresolved-transition', '')
+addEventListener('DOMContentLoaded', !->
+	if document.body.hasAttribute('unresolved')
+		document.body.setAttribute('unresolved-transition', '')
+)
 document.addEventListener('WebComponentsReady', !->
 	# Since we may use some CSS variables and mixins, lets update styles to make sure we didn't leave any styles not applied
 	Polymer.updateStyles()
+	if document.body.hasAttribute('cs-unresolved')
+		document.body.setAttribute('cs-unresolved-transition', '')
+		document.body.removeAttribute('cs-unresolved')
 	setTimeout (!->
 		document.body.removeAttribute('unresolved-transition')
+		document.body.removeAttribute('cs-unresolved-transition')
 	), 250
 )
 if !window.WebComponents?.flags

@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var normalize_properties;
-  Polymer.Base._registerFeatures_original = Polymer.Base._registerFeatures;
+  var registerFeatures_original, normalize_properties;
+  registerFeatures_original = Polymer.Base._registerFeatures;
   normalize_properties = function(properties){
     var property, value, type;
     if (properties) {
@@ -47,7 +47,7 @@
           normalize_properties(behavior.properties);
         });
       }
-      this._registerFeatures_original();
+      registerFeatures_original.call(this);
     }
   });
 }).call(this);

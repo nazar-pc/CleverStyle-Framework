@@ -87,8 +87,8 @@ trait Includes {
 	 */
 	protected $pcache_basename_path;
 	protected function init_includes () {
-		$this->core_html            = ['path' => [], 'plain' => ''];
-		$this->core_js              = ['path' => [], 'plain' => ''];
+		$this->core_html            = ['path' => []]; // No plain HTML in core
+		$this->core_js              = ['path' => []]; // No plain JS in core
 		$this->core_css             = ['path' => [], 'plain' => ''];
 		$this->core_config          = '';
 		$this->html                 = ['path' => [], 'plain' => ''];
@@ -494,7 +494,7 @@ trait Includes {
 	protected function add_includes_on_page_manually_added ($Config) {
 		$configs = $this->core_config.$this->config;
 		/** @noinspection NestedTernaryOperatorInspection */
-		$styles =
+		$styles       =
 			array_reduce(
 				array_merge($this->core_css['path'], $this->css['path']),
 				function ($content, $href) {
@@ -502,7 +502,6 @@ trait Includes {
 				}
 			).
 			h::style($this->core_css['plain'].$this->css['plain'] ?: false);
-		/** @noinspection NestedTernaryOperatorInspection */
 		$scripts      =
 			array_reduce(
 				array_merge($this->core_js['path'], $this->js['path']),
@@ -510,7 +509,7 @@ trait Includes {
 					return "$content<script src=\"/$src\"></script>\n";
 				}
 			).
-			h::script($this->core_js['plain'].$this->js['plain'] ?: false);
+			h::script($this->js['plain'] ?: false);
 		$html_imports =
 			array_reduce(
 				array_merge($this->core_html['path'], $this->html['path']),
@@ -518,7 +517,7 @@ trait Includes {
 					return "$content<link href=\"/$href\" rel=\"import\">\n";
 				}
 			).
-			$this->core_html['plain'].$this->html['plain'];
+			$this->html['plain'];
 		$this->Head .= $configs.$styles;
 		if ($Config->core['put_js_after_body']) {
 			$this->post_Body .= $scripts.$html_imports;

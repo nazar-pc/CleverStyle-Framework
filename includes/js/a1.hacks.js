@@ -7,13 +7,20 @@
  */
 (function(){
   var ref$, value, date;
-  if (document.body.hasAttribute('unresolved')) {
-    document.body.setAttribute('unresolved-transition', '');
-  }
+  addEventListener('DOMContentLoaded', function(){
+    if (document.body.hasAttribute('unresolved')) {
+      document.body.setAttribute('unresolved-transition', '');
+    }
+  });
   document.addEventListener('WebComponentsReady', function(){
     Polymer.updateStyles();
+    if (document.body.hasAttribute('cs-unresolved')) {
+      document.body.setAttribute('cs-unresolved-transition', '');
+      document.body.removeAttribute('cs-unresolved');
+    }
     setTimeout(function(){
       document.body.removeAttribute('unresolved-transition');
+      document.body.removeAttribute('cs-unresolved-transition');
     }, 250);
   });
   if (!((ref$ = window.WebComponents) != null && ref$.flags)) {

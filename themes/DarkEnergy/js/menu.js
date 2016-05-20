@@ -7,11 +7,13 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  document.querySelector('.cs-mobile-menu').addEventListener('click', function(){
-    if (this.hasAttribute('show')) {
-      this.removeAttribute('show');
-    } else {
-      this.setAttribute('show', '');
-    }
+  cs.ui.ready.then(function(){
+    document.querySelector('.cs-mobile-menu').addEventListener('click', function(){
+      if (this.hasAttribute('show')) {
+        this.removeAttribute('show');
+      } else {
+        this.setAttribute('show', '');
+      }
+    });
   });
 }).call(this);
