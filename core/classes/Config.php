@@ -121,6 +121,7 @@ class Config {
 		foreach ($config as $part => $value) {
 			$this->$part = $value;
 		}
+		$this->core += file_get_json(MODULES.'/System/core_settings_defaults.json');
 		return $this->apply_internal(false);
 	}
 	/**
@@ -178,9 +179,10 @@ class Config {
 		if ($this->cancel_available()) {
 			unset($this->core['cache_not_saved']);
 		}
-		$core_settings_keys = file_get_json(MODULES.'/System/core_settings_keys.json');
+		$core_settings_defaults = file_get_json(MODULES.'/System/core_settings_defaults.json');
+		$this->core += $core_settings_defaults;
 		foreach ($this->core as $key => $value) {
-			if (!in_array($key, $core_settings_keys)) {
+			if (!isset($core_settings_defaults[$key])) {
 				unset($this->core[$key]);
 			}
 		}
