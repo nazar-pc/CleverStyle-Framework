@@ -370,7 +370,7 @@ Examples:
 </select>
 <select is="cs-select" selected="{{user_data.language}}" size="5">
     <template is="dom-repeat" items="[[languages]]" as="language">
-        <option value="[[language.clanguage]]" selected="[[equal(language.clanguage, user_data.language)]]">[[language.description]]</option>
+        <option value="[[language.clanguage]]">[[language.description]]</option>
     </template>
 </select>
 ```

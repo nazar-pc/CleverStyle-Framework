@@ -27,11 +27,11 @@ dom-module#cs-system-admin-users-edit-user-form
 			label [[L.language]]
 			select(is="cs-select" selected="{{user_data.language}}" size="5")
 				template(is="dom-repeat" items="[[languages]]" as="language")
-					option(value="[[language.clanguage]]" selected="[[equal(language.clanguage, user_data.language)]]") [[language.description]]
+					option(value="[[language.clanguage]]") [[language.description]]
 			label [[L.timezone]]
 			select(is="cs-select" selected="{{user_data.timezone}}" size="7")
 				template(is="dom-repeat" items="[[timezones]]" as="timezone")
-					option(value="[[timezone.timezone]]" selected="[[equal(timezone.timezone, user_data.timezone)]]") [[timezone.description]]
+					option(value="[[timezone.timezone]]") [[timezone.description]]
 			label [[L.status]]
 			nav(is="cs-nav-button-group")
 				label(is="cs-label-button" value="{{user_data.status}}")

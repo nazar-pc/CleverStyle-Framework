@@ -14,7 +14,7 @@ dom-module#cs-shop-cart
 				div
 					select(is="cs-select" selected="{{shipping_type}}")
 						template(is="dom-repeat" items="[[shipping_types]]" as="type")
-							option(value="[[type.id]]" selected="[[equal(type.id, shipping_type)]]") [[type.title]]
+							option(value="[[type.id]]") [[type.title]]
 					= ' '
 					| ([[shipping_cost_formatted]])
 				.cs-margin-bottom(hidden="[[!shipping_type_details.description]]") [[shipping_type_details.description]]

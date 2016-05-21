@@ -73,7 +73,7 @@ Polymer.cs.behaviors.cs-select = [
 				selected.push(option.value)
 		)
 		if !@multiple
-			selected	= selected[0] || undefined
+			selected	= selected[0]
 		@set('selected', selected)
 	_selected_changed : (selected) !->
 		if selected == undefined

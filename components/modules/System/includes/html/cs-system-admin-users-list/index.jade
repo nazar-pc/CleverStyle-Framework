@@ -18,7 +18,7 @@ dom-module#cs-system-admin-users-list
 				= ' '
 				select(is="cs-select" compact selected="{{search_mode}}")
 					template(is="dom-repeat" items="[[search_modes]]" as="mode")
-						option(value="[[mode]]" selected="[[equal(mode, search_mode)]]") [[mode]]
+						option(value="[[mode]]") [[mode]]
 				= ' '
 				input(is="cs-input-text" value="{{search_text}}" placeholder="[[L.search_text]]" type="text")
 				= ' '

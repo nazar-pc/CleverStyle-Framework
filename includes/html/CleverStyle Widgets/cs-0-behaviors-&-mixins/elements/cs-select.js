@@ -84,7 +84,7 @@
           return selected.push(option.value);
         });
         if (!this.multiple) {
-          selected = selected[0] || undefined;
+          selected = selected[0];
         }
         this.set('selected', selected);
       },
