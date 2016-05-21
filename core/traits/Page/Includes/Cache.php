@@ -91,7 +91,7 @@ trait Cache {
 	 * @param bool     $vulcanization          Whether to put combined files separately or to make includes built-in (vulcanization)
 	 * @param string[] $not_embedded_resources Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because of CSP
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	protected function cache_compressed_includes_files_single ($extension, $target_file_path, $files, $vulcanization, &$not_embedded_resources) {
 		$content = '';
@@ -123,13 +123,12 @@ trait Cache {
 				 *
 				 * @return string
 				 */
-				$callback = function ($content, $file) use ($target_file_path, $vulcanization, &$not_embedded_resources) {
-					$base_target_file_path = "$target_file_path-".basename($file).'+'.substr(md5($file), 0, 5);
+				$callback = function ($content, $file) use (&$not_embedded_resources) {
 					return $content.Includes_processing::html(
 						file_get_contents($file),
 						$file,
-						$base_target_file_path,
-						$vulcanization,
+						'',
+						true,
 						$not_embedded_resources
 					);
 				};
@@ -150,6 +149,11 @@ trait Cache {
 				}
 		}
 		/** @noinspection PhpUndefinedVariableInspection */
-		return array_reduce($files, $callback, $content);
+		$content = array_reduce($files, $callback, $content);
+		if ($extension == 'html') {
+			$file_path = "$target_file_path-$extension";
+			$content   = Includes_processing::html($content, $file_path, $file_path, $vulcanization);
+		}
+		return $content;
 	}
 }

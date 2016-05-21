@@ -237,7 +237,7 @@ class Includes_processing {
 		$scripts_to_replace = [];
 		$dir                = dirname($file);
 		foreach ($scripts[1] as $index => $script) {
-			$script = explode('>', $script);
+			$script = explode('>', $script, 2);
 			if (preg_match('/src\s*=\s*[\'"](.*)[\'"]/Uims', $script[0], $url)) {
 				$url = $url[1];
 				if (!static::is_relative_path_and_exists($url, $dir)) {
@@ -246,6 +246,7 @@ class Includes_processing {
 				$scripts_to_replace[] = $scripts[0][$index];
 				$scripts_content .= file_get_contents("$dir/$url").";\n";
 			} else {
+				$scripts_to_replace[] = $scripts[0][$index];
 				$scripts_content .= "$script[1];\n";
 			}
 		}
@@ -253,8 +254,10 @@ class Includes_processing {
 		if (!$scripts_to_replace) {
 			return;
 		}
+		// Remove all scripts
+		$data = str_replace($scripts_to_replace, '', $data);
 		/**
-		 * If there is destination - put contents into the file, and put link to it, otherwise put minified content back
+		 * If vulcanization is not used - put contents into separate file, and put link to it, otherwise put minified content back
 		 */
 		if (!$vulcanization) {
 			/**
@@ -267,23 +270,13 @@ class Includes_processing {
 				LOCK_EX | FILE_BINARY
 			);
 			$base_target_file_name = basename($base_target_file_path);
-			// Replace first script with combined file
-			$data                     = str_replace(
-				$scripts_to_replace[0],
-				"<script src=\"$base_target_file_name.js?$content_md5\"></script>",
-				$data
-			);
+			// Add script with combined content file to the end
+			$data .= "<script src=\"$base_target_file_name.js?$content_md5\"></script>";
 			$not_embedded_resources[] = "$base_target_file_name.js?$content_md5";
 		} else {
-			// Replace first script with combined content
-			$data = str_replace(
-				$scripts_to_replace[0],
-				"<script>$scripts_content</script>",
-				$data
-			);
+			// Add combined content inline script to the end
+			$data .= "<script>$scripts_content</script>";
 		}
-		// Remove the rest of scripts
-		$data = str_replace($scripts_to_replace, '', $data);
 	}
 	/**
 	 * @param string   $data                   Content of processed file
@@ -300,7 +293,6 @@ class Includes_processing {
 		if (!preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles)) {
 			return;
 		}
-		$styles_content              = '';
 		$imports_content             = '';
 		$links_and_styles_to_replace = [];
 		$dir                         = dirname($file);
@@ -330,20 +322,25 @@ class Includes_processing {
 			 */
 			$css_import = $import && preg_match('/type\s*=\s*[\'"]css[\'"]/Uim', $link);
 			$stylesheet = preg_match('/rel\s*=\s*[\'"]stylesheet[\'"]/Uim', $link);
-			/**
-			 * If content is link to CSS file
-			 */
+			// TODO: Polymer only supports `style[is=custom-style]`, but no `link`-based counterpart, so we can't provide CSP-compatibility for CSS anyway
 			if ($css_import || $stylesheet) {
-				$links_and_styles_to_replace[] = $links_and_styles[0][$index];
-				$styles_content .= static::css(
+				/**
+				 * If content is link to CSS file
+				 */
+				$css  = static::css(
 					file_get_contents("$dir/$url"),
 					"$dir/$url",
 					$not_embedded_resources
 				);
+				$data = str_replace(
+					$links_and_styles[0][$index],
+					"<style>$css</style>",
+					$data
+				);
+			} elseif ($import) {
 				/**
 				 * If content is HTML import
 				 */
-			} elseif ($import) {
 				$links_and_styles_to_replace[] = $links_and_styles[0][$index];
 				$imports_content .= static::html(
 					file_get_contents("$dir/$url"),
@@ -357,39 +354,7 @@ class Includes_processing {
 		if (!$links_and_styles_to_replace) {
 			return;
 		}
-		/**
-		 * If there is destination - put contents into the file, and put link to it, otherwise put minified content back
-		 */
-		if (!$vulcanization) {
-			/**
-			 * md5 to distinguish modifications of the files
-			 */
-			$content_md5 = substr(md5($styles_content), 0, 5);
-			file_put_contents(
-				"$base_target_file_path.css",
-				gzencode($styles_content, 9),
-				LOCK_EX | FILE_BINARY
-			);
-			$base_target_file_name = basename($base_target_file_path);
-			// Replace first link or style with combined file
-			$data                     = str_replace(
-				$links_and_styles_to_replace[0],
-				"<link rel=\"import\" type=\"css\" href=\"$base_target_file_name.css?$content_md5\">",
-				$data
-			);
-			$not_embedded_resources[] = "$base_target_file_name.css?$content_md5";
-		} else {
-			// Replace first `<template>` with combined content
-			$data = preg_replace(
-				'/<template>/',
-				"$0<style>$styles_content</style>",
-				$data,
-				1
-			);
-		}
-		// Remove the rest of links and styles
-		$data = str_replace($links_and_styles_to_replace, '', $data);
-		// Add imports to the end of file
+		// Add imports to the end
 		$data .= $imports_content;
 	}
 	/**
