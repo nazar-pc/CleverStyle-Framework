@@ -106,9 +106,9 @@ class Builder {
 		 * Fixation of system files list (without components files), it is needed for future system updating
 		 */
 		$phar->addFromString(
-			'fs/'.count($core_files),
+			'fs.json',
 			_json_encode(
-				array_values(
+				array_flip(
 					array_diff(
 						$core_files,
 						_substr($components_files, $length)
@@ -116,7 +116,6 @@ class Builder {
 				)
 			)
 		);
-		$core_files[] = 'core/fs.json';
 		unset($components_files, $length);
 		/**
 		 * Addition of files, that are needed only for installation
@@ -133,7 +132,7 @@ class Builder {
 		 * Flip array to have direct access to files by name during extracting and installation, and fixing of files list for installation
 		 */
 		$phar->addFromString(
-			'fs.json',
+			'fs_installer.json',
 			_json_encode(
 				array_flip($core_files)
 			)

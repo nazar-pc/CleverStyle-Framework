@@ -137,7 +137,7 @@ CONFIG;
 	 * @return array[]
 	 */
 	protected static function initialize_filesystem ($source) {
-		$file_index_map = json_decode(file_get_contents("$source/fs.json"), true);
+		$file_index_map = json_decode(file_get_contents("$source/fs_installer.json"), true);
 		/**
 		 * Special autoloader for installer
 		 */
@@ -199,6 +199,7 @@ CONFIG;
 				throw new RuntimeException("Can't extract system files from the archive, creating file $target/$file_path failed! Installation aborted.");
 			}
 		}
+		file_put_json("$target/core/fs.json", array_keys(file_get_json("$source/fs.json")));
 		if (
 			(
 				!@mkdir("$target/storage", 0770) && !is_dir("$target/storage")
