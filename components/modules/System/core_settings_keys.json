@@ -8,6 +8,7 @@
 	"title_delimiter",
 	"title_reverse",
 	"cache_compress_js_css",
+	"frontend_load_optimization",
 	"vulcanization",
 	"put_js_after_body",
 	"theme",

@@ -21,14 +21,15 @@ trait optimization {
 	static function admin_optimization_get_settings () {
 		$Config = Config::instance();
 		return [
-			'cache_compress_js_css' => $Config->core['cache_compress_js_css'],
-			'vulcanization'         => $Config->core['vulcanization'],
-			'put_js_after_body'     => $Config->core['put_js_after_body'],
-			'inserts_limit'         => $Config->core['inserts_limit'],
-			'update_ratio'          => $Config->core['update_ratio'],
-			'cache_state'           => Cache::instance()->cache_state(),
-			'simple_admin_mode'     => $Config->core['simple_admin_mode'],
-			'applied'               => $Config->cancel_available()
+			'cache_compress_js_css'      => $Config->core['cache_compress_js_css'],
+			'frontend_load_optimization' => $Config->core['frontend_load_optimization'],
+			'vulcanization'              => $Config->core['vulcanization'],
+			'put_js_after_body'          => $Config->core['put_js_after_body'],
+			'inserts_limit'              => $Config->core['inserts_limit'],
+			'update_ratio'               => $Config->core['update_ratio'],
+			'cache_state'                => Cache::instance()->cache_state(),
+			'simple_admin_mode'          => $Config->core['simple_admin_mode'],
+			'applied'                    => $Config->cancel_available()
 		];
 	}
 	/**
@@ -86,16 +87,17 @@ trait optimization {
 	 * @throws ExitException
 	 */
 	protected static function admin_optimization_settings_common ($Request) {
-		$data = $Request->data('cache_compress_js_css', 'vulcanization', 'put_js_after_body', 'inserts_limit', 'update_ratio');
+		$data = $Request->data('cache_compress_js_css', 'frontend_load_optimization', 'vulcanization', 'put_js_after_body', 'inserts_limit', 'update_ratio');
 		if (!$data) {
 			throw new ExitException(400);
 		}
-		$Config                                = Config::instance();
-		$Config->core['cache_compress_js_css'] = (int)(bool)$data['cache_compress_js_css'];
-		$Config->core['vulcanization']         = (int)(bool)$data['vulcanization'];
-		$Config->core['put_js_after_body']     = (int)(bool)$data['put_js_after_body'];
-		$Config->core['inserts_limit']         = (int)$data['inserts_limit'];
-		$Config->core['update_ratio']          = (int)$data['update_ratio'];
+		$Config                                     = Config::instance();
+		$Config->core['cache_compress_js_css']      = (int)(bool)$data['cache_compress_js_css'];
+		$Config->core['frontend_load_optimization'] = (int)(bool)$data['frontend_load_optimization'];
+		$Config->core['vulcanization']              = (int)(bool)$data['vulcanization'];
+		$Config->core['put_js_after_body']          = (int)(bool)$data['put_js_after_body'];
+		$Config->core['inserts_limit']              = (int)$data['inserts_limit'];
+		$Config->core['update_ratio']               = (int)$data['update_ratio'];
 	}
 	/**
 	 * Save optimization settings

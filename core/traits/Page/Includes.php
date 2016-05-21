@@ -251,7 +251,6 @@ trait Includes {
 		if ($Config->core['cache_compress_js_css'] && !($Request->admin_path && isset($Request->query['debug']))) {
 			$this->webcomponents_polyfill($Request, true);
 			list($includes, $preload) = $this->get_includes_and_preload_resource_for_page_with_compression($Config, $Request);
-			$this->add_preload($preload);
 		} else {
 			$this->webcomponents_polyfill($Request, false);
 			/**
@@ -260,11 +259,12 @@ trait Includes {
 			$this->config_internal(Language::instance(), 'cs.Language', true);
 			$this->config_internal($this->get_requirejs_paths(), 'requirejs.paths', true);
 			$includes = $this->get_includes_for_page_without_compression($Config, $Request);
+			$preload  = [];
 		}
 		$this->css_internal($includes['css'], 'file', true);
 		$this->js_internal($includes['js'], 'file', true);
 		$this->html_internal($includes['html'], 'file', true);
-		$this->add_includes_on_page_manually_added($Config);
+		$this->add_includes_on_page_manually_added($Config, $preload);
 		return $this;
 	}
 	/**
@@ -334,18 +334,6 @@ trait Includes {
 		}
 	}
 	/**
-	 * @param string[] $preload
-	 */
-	protected function add_preload ($preload) {
-		$Response = Response::instance();
-		foreach ($preload as $resource) {
-			$extension = explode('?', file_extension($resource))[0];
-			$as        = $this->extension_to_as[$extension];
-			$resource  = str_replace(' ', '%20', $resource);
-			$Response->header('Link', "<$resource>; rel=preload; as=$as'", false);
-		}
-	}
-	/**
 	 * @param Config  $Config
 	 * @param Request $Request
 	 *
@@ -355,6 +343,22 @@ trait Includes {
 		/**
 		 * Rebuilding HTML, JS and CSS cache if necessary
 		 */
+		$this->rebuild_cache($Config);
+		list($dependencies, $compressed_includes_map, $not_embedded_resources_map) = file_get_json("$this->pcache_basename_path.json");
+		$includes = $this->get_normalized_includes($dependencies, $compressed_includes_map, $Request);
+		$preload  = [];
+		foreach (array_merge(...array_values($includes)) as $path) {
+			$preload[] = ["/$path"];
+			if (isset($not_embedded_resources_map[$path])) {
+				$preload[] = $not_embedded_resources_map[$path];
+			}
+		}
+		return [$includes, array_merge(...$preload)];
+	}
+	/**
+	 * @param Config $Config
+	 */
+	protected function rebuild_cache ($Config) {
 		if (!file_exists("$this->pcache_basename_path.json")) {
 			list($dependencies, $includes_map) = $this->get_includes_dependencies_and_map($Config);
 			$compressed_includes_map    = [];
@@ -370,17 +374,21 @@ trait Includes {
 			unset($includes_map, $filename_prefix, $local_includes);
 			file_put_json("$this->pcache_basename_path.json", [$dependencies, $compressed_includes_map, array_filter($not_embedded_resources_map)]);
 			Event::instance()->fire('System/Page/rebuild_cache');
+			$this->rebuild_cache_optimized();
 		}
-		list($dependencies, $compressed_includes_map, $not_embedded_resources_map) = file_get_json("$this->pcache_basename_path.json");
-		$includes = $this->get_normalized_includes($dependencies, $compressed_includes_map, $Request);
-		$preload  = [];
-		foreach (array_merge(...array_values($includes)) as $path) {
-			$preload[] = ["/$path"];
-			if (isset($not_embedded_resources_map[$path])) {
-				$preload[] = $not_embedded_resources_map[$path];
+	}
+	protected function rebuild_cache_optimized () {
+		list(, $compressed_includes_map, $preload_source) = file_get_json("$this->pcache_basename_path.json");
+		$preload = [array_values($compressed_includes_map['System'])];
+		foreach ($compressed_includes_map['System'] as $path) {
+			if (isset($preload_source[$path])) {
+				$preload[] = $preload_source[$path];
 			}
 		}
-		return [$includes, array_merge(...$preload)];
+		unset($compressed_includes_map['System']);
+		$optimized_includes = array_flip(array_merge(...array_values(array_map('array_values', $compressed_includes_map))));
+		$preload            = array_merge(...$preload);
+		file_put_json("$this->pcache_basename_path.optimized.json", [$optimized_includes, $preload]);
 	}
 	/**
 	 * @param array      $dependencies
@@ -489,12 +497,12 @@ trait Includes {
 		return $includes;
 	}
 	/**
-	 * @param Config $Config
+	 * @param Config   $Config
+	 * @param string[] $preload
 	 */
-	protected function add_includes_on_page_manually_added ($Config) {
-		$configs = $this->core_config.$this->config;
+	protected function add_includes_on_page_manually_added ($Config, $preload) {
 		/** @noinspection NestedTernaryOperatorInspection */
-		$styles       =
+		$this->Head .=
 			array_reduce(
 				array_merge($this->core_css['path'], $this->css['path']),
 				function ($content, $href) {
@@ -502,6 +510,19 @@ trait Includes {
 				}
 			).
 			h::style($this->core_css['plain'].$this->css['plain'] ?: false);
+		if ($Config->core['cache_compress_js_css'] && $Config->core['frontend_load_optimization']) {
+			$this->add_includes_on_page_manually_added_frontend_load_optimization($Config);
+		} else {
+			$this->add_includes_on_page_manually_added_normal($Config, $preload);
+		}
+	}
+	/**
+	 * @param Config   $Config
+	 * @param string[] $preload
+	 */
+	protected function add_includes_on_page_manually_added_normal ($Config, $preload) {
+		$this->add_preload($preload);
+		$configs      = $this->core_config.$this->config;
 		$scripts      =
 			array_reduce(
 				array_merge($this->core_js['path'], $this->js['path']),
@@ -518,7 +539,57 @@ trait Includes {
 				}
 			).
 			$this->html['plain'];
-		$this->Head .= $configs.$styles;
+		$this->Head .= $configs;
+		if ($Config->core['put_js_after_body']) {
+			$this->post_Body .= $scripts.$html_imports;
+		} else {
+			$this->Head .= $scripts.$html_imports;
+		}
+	}
+	/**
+	 * @param string[] $preload
+	 */
+	protected function add_preload ($preload) {
+		$Response = Response::instance();
+		foreach ($preload as $resource) {
+			$extension = explode('?', file_extension($resource))[0];
+			$as        = $this->extension_to_as[$extension];
+			$resource  = str_replace(' ', '%20', $resource);
+			$Response->header('Link', "<$resource>; rel=preload; as=$as'", false);
+		}
+	}
+	/**
+	 * @param Config $Config
+	 */
+	protected function add_includes_on_page_manually_added_frontend_load_optimization ($Config) {
+		list($optimized_includes, $preload) = file_get_json("$this->pcache_basename_path.optimized.json");
+		$this->add_preload($preload);
+		$system_scripts    = '';
+		$optimized_scripts = [];
+		$system_imports    = '';
+		$optimized_imports = [];
+		foreach (array_merge($this->core_js['path'], $this->js['path']) as $script) {
+			if (isset($optimized_includes[$script])) {
+				$optimized_scripts[] = $script;
+			} else {
+				$system_scripts .= "<script src=\"/$script\"></script>\n";
+			}
+		}
+		foreach (array_merge($this->core_html['path'], $this->html['path']) as $import) {
+			if (isset($optimized_includes[$import])) {
+				$optimized_imports[] = $import;
+			} else {
+				$system_imports .= "<link href=\"/$import\" rel=\"import\">\n";
+			}
+		}
+		$scripts      = h::script($this->js['plain'] ?: false);
+		$html_imports = $this->html['plain'];
+		$this->config([$optimized_scripts, $optimized_imports], 'cs.optimized_includes');
+		$configs = $this->core_config.$this->config;
+		$this->Head .=
+			$configs.
+			$system_scripts.
+			$system_imports;
 		if ($Config->core['put_js_after_body']) {
 			$this->post_Body .= $scripts.$html_imports;
 		} else {

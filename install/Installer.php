@@ -289,6 +289,7 @@ CONFIG;
 			'title_delimiter'                   => ' | ',
 			'title_reverse'                     => 0,
 			'cache_compress_js_css'             => 1,
+			'frontend_load_optimization'        => 1,
 			'vulcanization'                     => 1,
 			'put_js_after_body'                 => 1,
 			'theme'                             => 'CleverStyle',
