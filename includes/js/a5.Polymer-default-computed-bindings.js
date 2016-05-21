@@ -6,6 +6,10 @@
  * @license   MIT License, see license.txt
  */
 (function(){
+  var normalize_bool;
+  normalize_bool = function(value){
+    return value && value !== '0';
+  };
   Polymer.Base._addFeature({
     'if': function(condition, then_, otherwise, prefix, postfix){
       otherwise == null && (otherwise = '');
@@ -21,17 +25,17 @@
     },
     and: function(x, y, z){
       return !!Array.prototype.slice.call(arguments).reduce(function(x, y){
-        return x && y;
+        return x && normalize_bool(y);
       });
     },
     or: function(x, y, z){
       return !!Array.prototype.slice.call(arguments).reduce(function(x, y){
-        return x || y;
+        return x || normalize_bool(y);
       });
     },
     xor: function(x, y, z){
       return Array.prototype.slice.call(arguments).reduce(function(x, y){
-        return !x !== !y;
+        return !x !== !normalize_bool(y);
       });
     },
     equal: function(a, b, strict){

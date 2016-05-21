@@ -4,6 +4,8 @@
  * @copyright Copyright (c) 2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
+normalize_bool = (value) ->
+	value && value != '0'
 # Some default computed bindings methods
 Polymer.Base._addFeature(
 	# if(condition, then [, otherwise [, prefix [, postfix]]])
@@ -20,15 +22,15 @@ Polymer.Base._addFeature(
 
 	# and(x, y [, z [,...]])
 	and : (x, y, z) ->
-		!!Array.prototype.slice.call(arguments).reduce (x, y) -> x && y
+		!!Array.prototype.slice.call(arguments).reduce (x, y) -> x && normalize_bool(y)
 
 	# or(x, y [, z [,...]])
 	or : (x, y, z) ->
-		!!Array.prototype.slice.call(arguments).reduce (x, y) -> x || y
+		!!Array.prototype.slice.call(arguments).reduce (x, y) -> x || normalize_bool(y)
 
 	# xor(x, y [, z [,...]])
 	xor : (x, y, z) ->
-		Array.prototype.slice.call(arguments).reduce (x, y) -> !x != !y
+		Array.prototype.slice.call(arguments).reduce (x, y) -> !x != !normalize_bool(y)
 
 	# equal(a, b, strict = false)
 	equal : (a, b, strict) ->

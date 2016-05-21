@@ -589,11 +589,8 @@ trait Includes {
 		$this->Head .=
 			$configs.
 			$system_scripts.
-			$system_imports;
-		if ($Config->core['put_js_after_body']) {
-			$this->post_Body .= $scripts.$html_imports;
-		} else {
-			$this->Head .= $scripts.$html_imports;
-		}
+			$system_imports.
+			$scripts.
+			$html_imports;
 	}
 }
