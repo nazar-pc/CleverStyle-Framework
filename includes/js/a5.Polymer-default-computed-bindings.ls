@@ -22,15 +22,15 @@ Polymer.Base._addFeature(
 
 	# and(x, y [, z [,...]])
 	and : (x, y, z) ->
-		!!Array.prototype.slice.call(arguments).reduce (x, y) -> x && normalize_bool(y)
+		!!Array.prototype.slice.call(arguments).reduce (x, y) -> normalize_bool(x) && normalize_bool(y)
 
 	# or(x, y [, z [,...]])
 	or : (x, y, z) ->
-		!!Array.prototype.slice.call(arguments).reduce (x, y) -> x || normalize_bool(y)
+		!!Array.prototype.slice.call(arguments).reduce (x, y) -> normalize_bool(x) || normalize_bool(y)
 
 	# xor(x, y [, z [,...]])
 	xor : (x, y, z) ->
-		Array.prototype.slice.call(arguments).reduce (x, y) -> !x != !normalize_bool(y)
+		Array.prototype.slice.call(arguments).reduce (x, y) -> !normalize_bool(x) != !normalize_bool(y)
 
 	# equal(a, b, strict = false)
 	equal : (a, b, strict) ->

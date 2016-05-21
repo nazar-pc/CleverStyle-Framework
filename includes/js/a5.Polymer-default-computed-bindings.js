@@ -25,17 +25,17 @@
     },
     and: function(x, y, z){
       return !!Array.prototype.slice.call(arguments).reduce(function(x, y){
-        return x && normalize_bool(y);
+        return normalize_bool(x) && normalize_bool(y);
       });
     },
     or: function(x, y, z){
       return !!Array.prototype.slice.call(arguments).reduce(function(x, y){
-        return x || normalize_bool(y);
+        return normalize_bool(x) || normalize_bool(y);
       });
     },
     xor: function(x, y, z){
       return Array.prototype.slice.call(arguments).reduce(function(x, y){
-        return !x !== !normalize_bool(y);
+        return !normalize_bool(x) !== !normalize_bool(y);
       });
     },
     equal: function(a, b, strict){
