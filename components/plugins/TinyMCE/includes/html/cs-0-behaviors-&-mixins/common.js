@@ -10,19 +10,14 @@
   var load_promise, load_tinymce, ref$;
   load_promise = null;
   load_tinymce = function(){
-    var ajax;
-    if (window.tinymce) {
-      return Promise.resolve();
-    }
     if (load_promise) {
       return load_promise;
     }
-    ajax = $.ajax({
+    return load_promise = $.ajax({
       url: '/components/plugins/TinyMCE/includes/js/tinymce.min.js',
       dataType: 'script',
       cache: true
-    });
-    return load_promise = ajax.then(function(){
+    }).then(function(){
       var uploader_callback, button, uploader, base_config, x$;
       uploader_callback = undefined;
       button = document.createElement('button');
