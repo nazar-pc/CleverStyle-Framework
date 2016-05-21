@@ -9,5 +9,5 @@
 namespace cs;
 
 $Config = Config::instance();
-$Config->core['frontend_load_optimization'];
+$Config->core['frontend_load_optimization'] = 1;
 $Config->save();
