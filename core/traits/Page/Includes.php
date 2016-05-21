@@ -511,7 +511,7 @@ trait Includes {
 			).
 			h::style($this->core_css['plain'].$this->css['plain'] ?: false);
 		if ($Config->core['cache_compress_js_css'] && $Config->core['frontend_load_optimization']) {
-			$this->add_includes_on_page_manually_added_frontend_load_optimization($Config);
+			$this->add_includes_on_page_manually_added_frontend_load_optimization();
 		} else {
 			$this->add_includes_on_page_manually_added_normal($Config, $preload);
 		}
@@ -558,10 +558,7 @@ trait Includes {
 			$Response->header('Link', "<$resource>; rel=preload; as=$as'", false);
 		}
 	}
-	/**
-	 * @param Config $Config
-	 */
-	protected function add_includes_on_page_manually_added_frontend_load_optimization ($Config) {
+	protected function add_includes_on_page_manually_added_frontend_load_optimization () {
 		list($optimized_includes, $preload) = file_get_json("$this->pcache_basename_path.optimized.json");
 		$this->add_preload($preload);
 		$system_scripts    = '';
