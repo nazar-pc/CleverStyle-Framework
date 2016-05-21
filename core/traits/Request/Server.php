@@ -102,8 +102,8 @@ trait Server {
 		$this->cli          = @$server['CLI'] === true;
 		$this->method       = strtoupper($server['REQUEST_METHOD']);
 		$this->host         = $this->host($server);
-		$this->scheme       = $this->secure ? 'https' : 'http';
 		$this->secure       = $this->secure($server);
+		$this->scheme       = $this->secure ? 'https' : 'http';
 		$this->protocol     = $server['SERVER_PROTOCOL'];
 		$this->query_string = $server['QUERY_STRING'];
 		$this->uri          = null_byte_filter(urldecode($server['REQUEST_URI'])) ?: '/';
