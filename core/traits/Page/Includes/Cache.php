@@ -7,10 +7,46 @@
  */
 namespace cs\Page\Includes;
 use
+	cs\Event,
 	cs\Language,
 	cs\Page\Includes_processing;
 
 trait Cache {
+	/**
+	 * @param \cs\Config $Config
+	 */
+	protected function rebuild_cache ($Config) {
+		if (!file_exists("$this->pcache_basename_path.json")) {
+			list($dependencies, $includes_map) = $this->get_includes_dependencies_and_map($Config);
+			$compressed_includes_map    = [];
+			$not_embedded_resources_map = [];
+			foreach ($includes_map as $filename_prefix => $local_includes) {
+				$compressed_includes_map[$filename_prefix] = $this->cache_compressed_includes_files(
+					"$this->pcache_basename_path:".str_replace('/', '+', $filename_prefix),
+					$local_includes,
+					$Config->core['vulcanization'],
+					$not_embedded_resources_map
+				);
+			}
+			unset($includes_map, $filename_prefix, $local_includes);
+			file_put_json("$this->pcache_basename_path.json", [$dependencies, $compressed_includes_map, array_filter($not_embedded_resources_map)]);
+			Event::instance()->fire('System/Page/rebuild_cache');
+			$this->rebuild_cache_optimized();
+		}
+	}
+	protected function rebuild_cache_optimized () {
+		list(, $compressed_includes_map, $preload_source) = file_get_json("$this->pcache_basename_path.json");
+		$preload = [array_values($compressed_includes_map['System'])];
+		foreach ($compressed_includes_map['System'] as $path) {
+			if (isset($preload_source[$path])) {
+				$preload[] = $preload_source[$path];
+			}
+		}
+		unset($compressed_includes_map['System']);
+		$optimized_includes = array_flip(array_merge(...array_values(array_map('array_values', $compressed_includes_map))));
+		$preload            = array_merge(...$preload);
+		file_put_json("$this->pcache_basename_path.optimized.json", [$optimized_includes, $preload]);
+	}
 	/**
 	 * Creates cached version of given HTML, JS and CSS files.
 	 * Resulting files names consist of `$filename_prefix` and extension.
