@@ -332,9 +332,9 @@ class Includes_processing {
 					"$dir/$url",
 					$not_embedded_resources
 				);
-				$data = str_replace(
-					$links_and_styles[0][$index],
-					"<style>$css</style>",
+				$data = preg_replace(
+					'/'.$links_and_styles[0][$index].'.*<template>/Uims',
+					"<template><style>$css</style>",
 					$data
 				);
 			} elseif ($import) {
