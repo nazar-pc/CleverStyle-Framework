@@ -1,5 +1,10 @@
 Allow From All
+<ifModule mod_expires.c>
+	ExpiresActive On
+	ExpiresDefault "access plus 1 year"
+</ifModule>
 <ifModule mod_headers.c>
+	Header set Cache-Control "max-age=946080000, public"
 	Header always append X-Frame-Options DENY
 	Header set Content-Type application/octet-stream
 </ifModule>

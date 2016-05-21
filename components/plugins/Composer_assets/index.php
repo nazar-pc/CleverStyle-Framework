@@ -133,19 +133,20 @@ Event::instance()
 		'Composer/updated',
 		function () {
 			// Allow public access to assets
-			$htaccess_contents = 'Allow From All
-<ifModule mod_headers.c>
-	Header always append X-Frame-Options DENY
-	Header set Content-Type application/octet-stream
-</ifModule>
+			$htaccess_contents = /** @lang ApacheConfig */
+				<<<HTACCESS
+Allow From All
 <ifModule mod_expires.c>
 	ExpiresActive On
 	ExpiresDefault "access plus 1 month"
 </ifModule>
 <ifModule mod_headers.c>
 	Header set Cache-Control "max-age=2592000, public"
+	Header always append X-Frame-Options DENY
+	Header set Content-Type application/octet-stream
 </ifModule>
-';
+
+HTACCESS;
 			if (is_dir(STORAGE.'/Composer/vendor/bower-asset')) {
 				file_put_contents(STORAGE.'/Composer/vendor/bower-asset/.htaccess', $htaccess_contents);
 			}

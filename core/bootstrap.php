@@ -60,12 +60,19 @@ defined('ENT_DISALLOWED') || define('ENT_DISALLOWED', 128);
 if (!is_dir(PUBLIC_STORAGE)) {
 	/** @noinspection MkdirRaceConditionInspection */
 	@mkdir(PUBLIC_STORAGE, 0775, true);
+}
+if (!file_exists(PUBLIC_STORAGE.'/.htaccess')) {
 	file_put_contents(
 		PUBLIC_STORAGE.'/.htaccess',
 		/** @lang ApacheConfig */
 		<<<HTACCESS
 Allow From All
+<ifModule mod_expires.c>
+	ExpiresActive On
+	ExpiresDefault "access plus 1 year"
+</ifModule>
 <ifModule mod_headers.c>
+	Header set Cache-Control "max-age=946080000, public"
 	Header always append X-Frame-Options DENY
 	Header set Content-Type application/octet-stream
 </ifModule>
@@ -80,6 +87,8 @@ if (!is_dir(CACHE)) {
 if (!is_dir(PUBLIC_CACHE)) {
 	/** @noinspection MkdirRaceConditionInspection */
 	@mkdir(PUBLIC_CACHE, 0770);
+}
+if (!file_exists(PUBLIC_CACHE.'/.htaccess')) {
 	file_put_contents(
 		PUBLIC_CACHE.'/.htaccess',
 		/** @lang ApacheConfig */
@@ -108,6 +117,8 @@ if (!is_dir(LOGS)) {
 if (!is_dir(TEMP)) {
 	/** @noinspection MkdirRaceConditionInspection */
 	@mkdir(TEMP, 0775);
+}
+if (!file_exists(TEMP.'/.htaccess')) {
 	file_put_contents(
 		TEMP.'/.htaccess',
 		/** @lang ApacheConfig */
