@@ -22,7 +22,7 @@ class SQLite extends _Abstract {
 	function __construct ($database, $user = '', $password = '', $host = '', $charset = '', $prefix = '') {
 		$start = microtime(true);
 		try {
-			$this->instance        = @new \SQLite3($host);
+			$this->instance        = new \SQLite3($host);
 			$this->database        = $database;
 			$this->connected       = true;
 			$this->connecting_time = microtime(true) - $start;

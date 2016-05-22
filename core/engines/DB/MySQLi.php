@@ -20,7 +20,7 @@ class MySQLi extends _Abstract {
 		 * Parsing of $host variable, detecting port and persistent connection
 		 */
 		list($host, $port) = $this->get_host_and_port($host);
-		$this->instance = @new \MySQLi($host, $user, $password, $database, $port);
+		$this->instance = new \MySQLi($host, $user, $password, $database, $port);
 		if (!is_object($this->instance) || $this->instance->connect_errno) {
 			return;
 		}
@@ -74,14 +74,14 @@ class MySQLi extends _Abstract {
 		if (!$query) {
 			return false;
 		}
-		$result = @$this->instance->query($query);
+		$result = $this->instance->query($query);
 		// In case of MySQL Client error - try to fix everything, but only once
 		if (
 			!$result &&
 			$this->instance->errno >= 2000 &&
 			$this->instance->ping()
 		) {
-			$result = @$this->instance->query($query);
+			$result = $this->instance->query($query);
 		}
 		return $result;
 	}
