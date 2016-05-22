@@ -465,6 +465,7 @@ trait Includes {
 	 * @param string[] $preload
 	 */
 	protected function add_includes_on_page_manually_added ($Config, $preload) {
+		/** @noinspection NestedTernaryOperatorInspection */
 		$this->Head .=
 			array_reduce(
 				array_merge($this->core_css['path'], $this->css['path']),
@@ -472,7 +473,7 @@ trait Includes {
 					return "$content<link href=\"/$href\" rel=\"stylesheet\" shim-shadowdom>\n";
 				}
 			).
-			h::style($this->core_css['plain'] ?: false);
+			h::style($this->css['plain'] ?: false);
 		if ($Config->core['cache_compress_js_css'] && $Config->core['frontend_load_optimization']) {
 			$this->add_includes_on_page_manually_added_frontend_load_optimization();
 		} else {
