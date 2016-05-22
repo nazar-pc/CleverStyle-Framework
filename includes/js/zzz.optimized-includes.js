@@ -6,6 +6,9 @@
  * @license   MIT License, see license.txt
  */
 (function(){
+  if (!cs.optimized_includes) {
+    return;
+  }
   new Promise(function(resolve){
     var content_loaded;
     content_loaded = function(){
@@ -24,13 +27,18 @@
       addEventListener('DOMContentLoaded', content_loaded);
     }
   }).then(function(){
-    var promise, load_script, load_import, preload, i$, ref$, ref1$, len$, script, ref2$, import_;
+    var promise, load_script, load_import, preload, i$, ref$, len$, script, import_;
     promise = Promise.resolve();
     load_script = function(){
-      return $.ajax({
-        url: this,
-        dataType: 'script',
-        cache: true
+      var this$ = this;
+      return new Promise(function(resolve, reject){
+        var x$, script;
+        x$ = script = document.createElement("script");
+        x$.async = true;
+        x$.src = this$;
+        x$.onload = resolve;
+        x$.onerror = reject;
+        document.head.appendChild(script);
       });
     };
     load_import = function(){
@@ -44,15 +52,18 @@
       x$.href = href;
       document.head.appendChild(preload);
     };
-    for (i$ = 0, len$ = (ref$ = ((ref1$ = cs.optimized_includes) != null ? ref1$[0] : void 8) || []).length; i$ < len$; ++i$) {
+    for (i$ = 0, len$ = (ref$ = cs.optimized_includes[0]).length; i$ < len$; ++i$) {
       script = ref$[i$];
       preload('script', "/" + script);
       promise = promise.then(load_script.bind("/" + script));
     }
-    for (i$ = 0, len$ = (ref$ = ((ref2$ = cs.optimized_includes) != null ? ref2$[1] : void 8) || []).length; i$ < len$; ++i$) {
+    for (i$ = 0, len$ = (ref$ = cs.optimized_includes[1]).length; i$ < len$; ++i$) {
       import_ = ref$[i$];
       preload('document', "/" + import_);
       promise = promise.then(load_import.bind("/" + import_));
     }
+    cs.ui.ready = cs.ui.ready.then(function(){
+      return promise;
+    });
   });
 }).call(this);

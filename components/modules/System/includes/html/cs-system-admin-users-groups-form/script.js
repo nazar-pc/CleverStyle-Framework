@@ -40,20 +40,23 @@
       });
     },
     _init_sortable: function(){
-      var $shadowRoot, $group, this$ = this;
+      var $shadowRoot, $group;
       $shadowRoot = $(this.shadowRoot);
       if ($shadowRoot.find('#user-groups > div:not(:first)').length < this.user_groups.length || $shadowRoot.find('#other-groups > div:not(:first)').length < this.other_groups.length) {
         setTimeout(this._init_sortable.bind(this), 100);
         return;
       }
       $group = $shadowRoot.find('#user-groups, #other-groups');
-      $group.sortable({
-        connectWith: 'user-groups-list',
-        items: 'div:not(:first)',
-        placeholder: '<div class="cs-block-primary">'
-      }).on('sortupdate', function(){
-        $(this$.$['user-groups']).children('div:not(:first)').removeClass('cs-block-warning cs-text-warning').addClass('cs-block-success cs-text-success');
-        $(this$.$['other-groups']).children('div:not(:first)').removeClass('cs-block-success cs-text-success').addClass('cs-block-warning cs-text-warning');
+      require(['html5sortable'], function(){
+        var this$ = this;
+        $group.sortable({
+          connectWith: 'user-groups-list',
+          items: 'div:not(:first)',
+          placeholder: '<div class="cs-block-primary">'
+        }).on('sortupdate', function(){
+          $(this$.$['user-groups']).children('div:not(:first)').removeClass('cs-block-warning cs-text-warning').addClass('cs-block-success cs-text-success');
+          $(this$.$['other-groups']).children('div:not(:first)').removeClass('cs-block-success cs-text-success').addClass('cs-block-warning cs-text-warning');
+        });
       });
     },
     save: function(){

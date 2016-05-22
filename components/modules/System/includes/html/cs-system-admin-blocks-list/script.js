@@ -28,33 +28,35 @@
         return;
       }
       $group = $shadowRoot.find('[group]');
-      $group.sortable({
-        connectWith: 'blocks-list',
-        items: 'div:not(:first)',
-        placeholder: '<div class="cs-block-primary">'
-      }).on('sortupdate', function(){
-        var get_indexes, order;
-        get_indexes = function(it){
-          return $group.filter("[group=" + it + "]").children('div:not(:first)').map(function(){
-            return this.index;
-          }).get();
-        };
-        order = {
-          top: get_indexes('top'),
-          left: get_indexes('left'),
-          floating: get_indexes('floating'),
-          right: get_indexes('right'),
-          bottom: get_indexes('bottom')
-        };
-        $.ajax({
-          url: 'api/System/admin/blocks',
-          type: 'update_order',
-          data: {
-            order: order
-          },
-          success: function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
-          }
+      require(['html5sortable'], function(){
+        $group.sortable({
+          connectWith: 'blocks-list',
+          items: 'div:not(:first)',
+          placeholder: '<div class="cs-block-primary">'
+        }).on('sortupdate', function(){
+          var get_indexes, order;
+          get_indexes = function(it){
+            return $group.filter("[group=" + it + "]").children('div:not(:first)').map(function(){
+              return this.index;
+            }).get();
+          };
+          order = {
+            top: get_indexes('top'),
+            left: get_indexes('left'),
+            floating: get_indexes('floating'),
+            right: get_indexes('right'),
+            bottom: get_indexes('bottom')
+          };
+          $.ajax({
+            url: 'api/System/admin/blocks',
+            type: 'update_order',
+            data: {
+              order: order
+            },
+            success: function(){
+              cs.ui.notify(L.changes_saved, 'success', 5);
+            }
+          });
         });
       });
     },

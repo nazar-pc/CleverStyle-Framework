@@ -9,9 +9,6 @@
   define('jquery', function(){
     return jQuery;
   });
-  define('htm5sortable', function(){
-    return sortable;
-  });
   define('sprintf-js', function(){
     return {
       sprintf: sprintf,
@@ -22,7 +19,8 @@
     baseUrl: '/',
     paths: {
       jssha: 'includes/js/modules/jsSHA-2.1.0',
-      autosize: 'includes/js/modules/autosize.min'
+      autosize: 'includes/js/modules/autosize.min',
+      html5sortable: 'includes/js/modules/html5sortable.min.0.2.8'
     }
   });
 }).call(this);

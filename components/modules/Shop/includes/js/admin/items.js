@@ -149,11 +149,12 @@
             images.push($(this).attr('href'));
           });
           modal.find('[name=images]').val(JSON.stringify(images));
-          images_container.sortable('destroy');
-          images_container.sortable({
-            forcePlaceholderSize: true,
-            placeholder: '<button is="cs-button" icon="map-pin" style="vertical-align: top">'
-          }).on('sortupdate', modal.update_images);
+          require(['html5sortable'], function(){
+            images_container.sortable('destroy').sortable({
+              forcePlaceholderSize: true,
+              placeholder: '<button is="cs-button" icon="map-pin" style="vertical-align: top">'
+            }).on('sortupdate', modal.update_images);
+          });
         };
         modal.add_images = function(images){
           images.forEach(function(image){
@@ -193,11 +194,12 @@
         });
         videos_container = modal.find('.videos');
         modal.update_videos = function(){
-          videos_container.sortable('destroy');
-          videos_container.sortable({
-            handle: '.handle',
-            forcePlaceholderSize: true
-          }).on('sortupdate', modal.update_videos);
+          require(['html5sortable'], function(){
+            videos_container.sortable('destroy').sortable({
+              handle: '.handle',
+              forcePlaceholderSize: true
+            }).on('sortupdate', modal.update_videos);
+          });
         };
         modal.add_videos = function(videos){
           videos.forEach(function(video){
