@@ -6,12 +6,20 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var ref$, value, date;
-  addEventListener('DOMContentLoaded', function(){
+  var content_loaded, ref$, value, date;
+  content_loaded = function(){
     if (document.body.hasAttribute('unresolved')) {
       document.body.setAttribute('unresolved-transition', '');
     }
-  });
+  };
+  switch (document.readyState) {
+  case 'complete':
+  case 'interactive':
+    content_loaded();
+    break;
+  default:
+    addEventListener('DOMContentLoaded', content_loaded);
+  }
   document.addEventListener('WebComponentsReady', function(){
     Polymer.updateStyles();
     if (document.body.hasAttribute('cs-unresolved')) {

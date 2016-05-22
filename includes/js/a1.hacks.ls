@@ -4,10 +4,12 @@
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-addEventListener('DOMContentLoaded', !->
+content_loaded	= !->
 	if document.body.hasAttribute('unresolved')
 		document.body.setAttribute('unresolved-transition', '')
-)
+switch document.readyState
+| 'complete', 'interactive'	=> content_loaded()
+| otherwise					=> addEventListener('DOMContentLoaded', content_loaded)
 document.addEventListener('WebComponentsReady', !->
 	# Since we may use some CSS variables and mixins, lets update styles to make sure we didn't leave any styles not applied
 	Polymer.updateStyles()

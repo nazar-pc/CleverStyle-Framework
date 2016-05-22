@@ -4,7 +4,16 @@
  * @copyright Copyright (c) 2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-cs.ui.ready.then !->
+(new Promise (resolve) !->
+	content_loaded	= !->
+		# Wait for last import to load, which is usually faster than document load event
+		imports	= document.querySelectorAll('link[rel=import]:not([async]')
+		imports[imports.length - 1].addEventListener('load', resolve)
+	switch document.readyState
+	| 'complete'	=> resolve()
+	| 'interactive'	=> content_loaded()
+	| otherwise		=> addEventListener('DOMContentLoaded', content_loaded)
+).then !->
 	promise		= Promise.resolve()
 	load_script	= ->
 		$.ajax(

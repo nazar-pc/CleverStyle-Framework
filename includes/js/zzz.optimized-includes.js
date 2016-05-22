@@ -6,7 +6,24 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  cs.ui.ready.then(function(){
+  new Promise(function(resolve){
+    var content_loaded;
+    content_loaded = function(){
+      var imports;
+      imports = document.querySelectorAll('link[rel=import]:not([async]');
+      imports[imports.length - 1].addEventListener('load', resolve);
+    };
+    switch (document.readyState) {
+    case 'complete':
+      resolve();
+      break;
+    case 'interactive':
+      content_loaded();
+      break;
+    default:
+      addEventListener('DOMContentLoaded', content_loaded);
+    }
+  }).then(function(){
     var promise, load_script, load_import, preload, i$, ref$, ref1$, len$, script, ref2$, import_;
     promise = Promise.resolve();
     load_script = function(){
