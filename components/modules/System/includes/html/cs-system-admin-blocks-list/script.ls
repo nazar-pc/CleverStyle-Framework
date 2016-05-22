@@ -23,32 +23,31 @@ Polymer(
 			setTimeout(@_init_sortable.bind(@), 100)
 			return
 		$group	= $shadowRoot.find('[group]')
-		require(['html5sortable'], !->
-			$group
-				.sortable(
-					connectWith	: 'blocks-list'
-					items		: 'div:not(:first)',
-					placeholder	: '<div class="cs-block-primary">'
+		<-! require(['html5sortable'])
+		$group
+			.sortable(
+				connectWith	: 'blocks-list'
+				items		: 'div:not(:first)',
+				placeholder	: '<div class="cs-block-primary">'
+			)
+			.on('sortupdate', !->
+				get_indexes	= ->
+					$group.filter("[group=#it]").children('div:not(:first)').map(-> @index).get()
+				order	=
+					top			: get_indexes('top')
+					left		: get_indexes('left')
+					floating	: get_indexes('floating')
+					right		: get_indexes('right')
+					bottom		: get_indexes('bottom')
+				$.ajax(
+					url		: 'api/System/admin/blocks'
+					type	: 'update_order'
+					data	:
+						order	: order
+					success	: !->
+						cs.ui.notify(L.changes_saved, 'success', 5)
 				)
-				.on('sortupdate', !->
-					get_indexes	= ->
-						$group.filter("[group=#it]").children('div:not(:first)').map(-> @index).get()
-					order	=
-						top			: get_indexes('top')
-						left		: get_indexes('left')
-						floating	: get_indexes('floating')
-						right		: get_indexes('right')
-						bottom		: get_indexes('bottom')
-					$.ajax(
-						url		: 'api/System/admin/blocks'
-						type	: 'update_order'
-						data	:
-							order	: order
-						success	: !->
-							cs.ui.notify(L.changes_saved, 'success', 5)
-					)
-				)
-		)
+			)
 	_status_class : (active) ->
 		if active ~= 1 then 'cs-block-success cs-text-success' else 'cs-block-warning cs-text-warning'
 	_reload : !->

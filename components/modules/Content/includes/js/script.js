@@ -10,7 +10,7 @@
   if (!cs.is_admin) {
     return;
   }
-  $(function(){
+  cs.ui.ready.then(function(){
     var L;
     L = cs.Language('content_');
     $('body').on('click', '.cs-content-add', function(){

@@ -41,18 +41,17 @@ Polymer(
 			setTimeout(@_init_sortable.bind(@), 100)
 			return
 		$group	= $shadowRoot.find('#user-groups, #other-groups')
-		require(['html5sortable'], !->
-			$group
-				.sortable(
-					connectWith	: 'user-groups-list'
-					items		: 'div:not(:first)',
-					placeholder	: '<div class="cs-block-primary">'
-				)
-				.on('sortupdate', !~>
-					$(@$['user-groups']).children('div:not(:first)').removeClass('cs-block-warning cs-text-warning').addClass('cs-block-success cs-text-success')
-					$(@$['other-groups']).children('div:not(:first)').removeClass('cs-block-success cs-text-success').addClass('cs-block-warning cs-text-warning')
-				)
-		)
+		<-! require(['html5sortable'])
+		$group
+			.sortable(
+				connectWith	: 'user-groups-list'
+				items		: 'div:not(:first)',
+				placeholder	: '<div class="cs-block-primary">'
+			)
+			.on('sortupdate', !~>
+				$(@$['user-groups']).children('div:not(:first)').removeClass('cs-block-warning cs-text-warning').addClass('cs-block-success cs-text-success')
+				$(@$['other-groups']).children('div:not(:first)').removeClass('cs-block-success cs-text-success').addClass('cs-block-warning cs-text-warning')
+			)
 	save : !->
 		$.ajax(
 			url		: "api/System/admin/users/#{@user}/groups"

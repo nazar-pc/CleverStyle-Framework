@@ -78,7 +78,7 @@ trait Cache {
 			unset($resource);
 			$file_path = "$target_file_path.$extension";
 			file_put_contents($file_path, gzencode($content, 9), LOCK_EX | FILE_BINARY);
-			$relative_path                              = 'storage/pcache/'.basename($file_path).'?'.substr(md5($content), 0, 5);
+			$relative_path                              = '/storage/pcache/'.basename($file_path).'?'.substr(md5($content), 0, 5);
 			$local_includes[$extension]                 = $relative_path;
 			$not_embedded_resources_map[$relative_path] = $not_embedded_resources;
 		}

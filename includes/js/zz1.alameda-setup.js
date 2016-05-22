@@ -6,15 +6,6 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  define('jquery', function(){
-    return jQuery;
-  });
-  define('sprintf-js', function(){
-    return {
-      sprintf: sprintf,
-      vsprintf: vsprintf
-    };
-  });
   requirejs.config({
     baseUrl: '/',
     paths: {
@@ -22,5 +13,22 @@
       autosize: 'includes/js/modules/autosize.min',
       html5sortable: 'includes/js/modules/html5sortable.min.0.2.8'
     }
+  });
+  if (window.$) {
+    define('jquery', function(){
+      return $;
+    });
+  } else {
+    requirejs.config({
+      paths: {
+        jquery: 'includes/js/jquery/jquery'
+      }
+    });
+  }
+  define('sprintf-js', function(){
+    return {
+      sprintf: sprintf,
+      vsprintf: vsprintf
+    };
   });
 }).call(this);

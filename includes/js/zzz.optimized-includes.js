@@ -6,10 +6,34 @@
  * @license   MIT License, see license.txt
  */
 (function(){
+  var configure_jquery_ajax, original_ready;
+  configure_jquery_ajax = function(){
+    $.ajaxSetup({
+      contents: {
+        script: false
+      },
+      success: function(result, status, xhr){
+        if (this['success_' + xhr.status]) {
+          this['success_' + xhr.status].apply(this, arguments);
+        }
+      },
+      error: function(xhr){
+        if (this['error_' + xhr.status]) {
+          this['error_' + xhr.status].apply(this, arguments);
+        } else {
+          cs.ui.notify(xhr.responseText
+            ? JSON.parse(xhr.responseText).error_description
+            : cs.Language.system_profile_server_connection_error, 'warning', 5);
+        }
+      }
+    });
+  };
   if (!cs.optimized_includes) {
+    configure_jquery_ajax();
     return;
   }
-  new Promise(function(resolve){
+  original_ready = cs.ui.ready;
+  cs.ui.ready = new Promise(function(resolve){
     var content_loaded;
     content_loaded = function(){
       var imports;
@@ -27,8 +51,7 @@
       addEventListener('DOMContentLoaded', content_loaded);
     }
   }).then(function(){
-    var promise, load_script, load_import, preload, i$, ref$, len$, script, import_;
-    promise = Promise.resolve();
+    var load_script, load_import, preload, promise, i$, ref$, len$, script, import_;
     load_script = function(){
       var this$ = this;
       return new Promise(function(resolve, reject){
@@ -52,18 +75,23 @@
       x$.href = href;
       document.head.appendChild(preload);
     };
+    promise = require(['jquery']).then(function(arg$){
+      window.$ = arg$[0];
+      window.jQuery = $;
+      configure_jquery_ajax();
+    });
     for (i$ = 0, len$ = (ref$ = cs.optimized_includes[0]).length; i$ < len$; ++i$) {
       script = ref$[i$];
-      preload('script', "/" + script);
-      promise = promise.then(load_script.bind("/" + script));
+      preload('script', script);
+      promise = promise.then(load_script.bind(script));
     }
     for (i$ = 0, len$ = (ref$ = cs.optimized_includes[1]).length; i$ < len$; ++i$) {
       import_ = ref$[i$];
-      preload('document', "/" + import_);
-      promise = promise.then(load_import.bind("/" + import_));
+      preload('document', import_);
+      promise = promise.then(load_import.bind(import_));
     }
-    cs.ui.ready = cs.ui.ready.then(function(){
-      return promise;
+    return promise.then(function(){
+      return original_ready;
     });
   });
 }).call(this);

@@ -155,18 +155,17 @@ $ !->
 				modal.find('[name=images]').val(
 					JSON.stringify(images)
 				)
-				require(['html5sortable'], !->
-					images_container
-						.sortable('destroy')
-						.sortable(
-							forcePlaceholderSize	: true
-							placeholder				: '<button is="cs-button" icon="map-pin" style="vertical-align: top">'
-						)
-						.on(
-							'sortupdate'
-							modal.update_images
-						)
-				)
+				<-! require(['html5sortable'])
+				images_container
+					.sortable('destroy')
+					.sortable(
+						forcePlaceholderSize	: true
+						placeholder				: '<button is="cs-button" icon="map-pin" style="vertical-align: top">'
+					)
+					.on(
+						'sortupdate'
+						modal.update_images
+					)
 			modal.add_images	= (images) !->
 				images.forEach (image) !->
 					images_container.append("""<a href="#{image}" target="_blank" style="display: inline-block; padding: .5em; width: 150px">
@@ -204,18 +203,17 @@ $ !->
 			)
 			videos_container	= modal.find('.videos')
 			modal.update_videos	= !->
-				require(['html5sortable'], !->
-					videos_container
-						.sortable('destroy')
-						.sortable(
-							handle					: '.handle'
-							forcePlaceholderSize	: true
-						)
-						.on(
-							'sortupdate'
-							modal.update_videos
-						)
-				)
+				<-! require(['html5sortable'])
+				videos_container
+					.sortable('destroy')
+					.sortable(
+						handle					: '.handle'
+						forcePlaceholderSize	: true
+					)
+					.on(
+						'sortupdate'
+						modal.update_videos
+					)
 			modal.add_videos	= (videos) !->
 				videos.forEach (video) !->
 					videos_container.append("""<p>

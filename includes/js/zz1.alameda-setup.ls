@@ -4,10 +4,6 @@
  * @copyright Copyright (c) 2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-# First of all let's define bundled libraries so that they can be used as AMD modules
-define('jquery', -> jQuery)
-define('sprintf-js', -> {sprintf, vsprintf})
-# jsSHA loaded on demand only
 requirejs.config(
 	baseUrl	: '/'
 	paths	:
@@ -15,3 +11,12 @@ requirejs.config(
 		autosize		: 'includes/js/modules/autosize.min'
 		html5sortable	: 'includes/js/modules/html5sortable.min.0.2.8'
 )
+# Now let's define bundled libraries so that they can be used as AMD modules
+if window.$
+	define('jquery', -> $)
+else
+	requirejs.config(
+		paths	:
+			jquery	: 'includes/js/jquery/jquery'
+	)
+define('sprintf-js', -> {sprintf, vsprintf})

@@ -247,7 +247,7 @@ trait Includes {
 		/**
 		 * If CSS and JavaScript compression enabled
 		 */
-		if ($Config->core['cache_compress_js_css'] && !($Request->admin_path && isset($Request->query['debug']))) {
+		if ($this->page_compression_usage($Config, $Request)) {
 			$this->webcomponents_polyfill($Request, true);
 			list($includes, $preload) = $this->get_includes_and_preload_resource_for_page_with_compression($Config, $Request);
 		} else {
@@ -263,8 +263,17 @@ trait Includes {
 		$this->css_internal($includes['css'], 'file', true);
 		$this->js_internal($includes['js'], 'file', true);
 		$this->html_internal($includes['html'], 'file', true);
-		$this->add_includes_on_page_manually_added($Config, $preload);
+		$this->add_includes_on_page_manually_added($Config, $Request, $preload);
 		return $this;
+	}
+	/**
+	 * @param Config  $Config
+	 * @param Request $Request
+	 *
+	 * @return bool
+	 */
+	protected function page_compression_usage ($Config, $Request) {
+		return $Config->core['cache_compress_js_css'] && !($Request->admin_path && isset($Request->query['debug']));
 	}
 	/**
 	 * Add JS polyfills for IE/Edge
@@ -318,16 +327,16 @@ trait Includes {
 		if ($Request->cookie('shadow_dom') == 1) {
 			return;
 		}
-		$file = 'includes/js/WebComponents-polyfill/webcomponents-custom.min.js';
+		$file = '/includes/js/WebComponents-polyfill/webcomponents-custom.min.js';
 		if ($with_compression) {
 			$compressed_file = PUBLIC_CACHE.'/webcomponents.js';
 			if (!file_exists($compressed_file)) {
-				$content = file_get_contents(DIR."/$file");
+				$content = file_get_contents(DIR."$file");
 				file_put_contents($compressed_file, gzencode($content, 9), LOCK_EX | FILE_BINARY);
 				file_put_contents("$compressed_file.hash", substr(md5($content), 0, 5));
 			}
 			$hash = file_get_contents("$compressed_file.hash");
-			$this->js_internal("storage/pcache/webcomponents.js?$hash", 'file', true);
+			$this->js_internal("/storage/pcache/webcomponents.js?$hash", 'file', true);
 		} else {
 			$this->js_internal($file, 'file', true);
 		}
@@ -347,7 +356,7 @@ trait Includes {
 		$includes = $this->get_normalized_includes($dependencies, $compressed_includes_map, $Request);
 		$preload  = [];
 		foreach (array_merge(...array_values($includes)) as $path) {
-			$preload[] = ["/$path"];
+			$preload[] = [$path];
 			if (isset($not_embedded_resources_map[$path])) {
 				$preload[] = $not_embedded_resources_map[$path];
 			}
@@ -437,7 +446,7 @@ trait Includes {
 	 * @return string[]|string[][]
 	 */
 	protected function absolute_path_to_relative ($path) {
-		return _substr($path, strlen(DIR) + 1);
+		return _substr($path, strlen(DIR));
 	}
 	/**
 	 * @param string[][] $includes
@@ -462,19 +471,20 @@ trait Includes {
 	}
 	/**
 	 * @param Config   $Config
+	 * @param Request  $Request
 	 * @param string[] $preload
 	 */
-	protected function add_includes_on_page_manually_added ($Config, $preload) {
+	protected function add_includes_on_page_manually_added ($Config, $Request, $preload) {
 		/** @noinspection NestedTernaryOperatorInspection */
 		$this->Head .=
 			array_reduce(
 				array_merge($this->core_css['path'], $this->css['path']),
 				function ($content, $href) {
-					return "$content<link href=\"/$href\" rel=\"stylesheet\" shim-shadowdom>\n";
+					return "$content<link href=\"$href\" rel=\"stylesheet\" shim-shadowdom>\n";
 				}
 			).
 			h::style($this->css['plain'] ?: false);
-		if ($Config->core['cache_compress_js_css'] && $Config->core['frontend_load_optimization']) {
+		if ($this->page_compression_usage($Config, $Request) && $Config->core['frontend_load_optimization']) {
 			$this->add_includes_on_page_manually_added_frontend_load_optimization($Config);
 		} else {
 			$this->add_includes_on_page_manually_added_normal($Config, $preload);
@@ -485,13 +495,16 @@ trait Includes {
 	 * @param string[] $preload
 	 */
 	protected function add_includes_on_page_manually_added_normal ($Config, $preload) {
+		// Hack: jQuery is kind of special; it is only loaded directly in normal mode, during frontend load optimization it is loaded asynchronously in frontend
+		$jquery    = '/includes/js/jquery/jquery.js';
+		$preload[] = $jquery;
 		$this->add_preload($preload);
 		$configs      = $this->core_config.$this->config;
 		$scripts      =
 			array_reduce(
-				array_merge($this->core_js['path'], $this->js['path']),
+				array_merge([$jquery], $this->core_js['path'], $this->js['path']),
 				function ($content, $src) {
-					return "$content<script src=\"/$src\"></script>\n";
+					return "$content<script src=\"$src\"></script>\n";
 				}
 			).
 			h::script($this->js['plain'] ?: false);
@@ -499,7 +512,7 @@ trait Includes {
 			array_reduce(
 				array_merge($this->core_html['path'], $this->html['path']),
 				function ($content, $href) {
-					return "$content<link href=\"/$href\" rel=\"import\">\n";
+					return "$content<link href=\"$href\" rel=\"import\">\n";
 				}
 			).
 			$this->html['plain'];
@@ -544,14 +557,14 @@ trait Includes {
 			if (isset($optimized_includes[$script])) {
 				$optimized_scripts[] = $script;
 			} else {
-				$system_scripts .= "<script src=\"/$script\"></script>\n";
+				$system_scripts .= "<script src=\"$script\"></script>\n";
 			}
 		}
 		foreach (array_merge($this->core_html['path'], $this->html['path']) as $import) {
 			if (isset($optimized_includes[$import])) {
 				$optimized_imports[] = $import;
 			} else {
-				$system_imports .= "<link href=\"/$import\" rel=\"import\">\n";
+				$system_imports .= "<link href=\"$import\" rel=\"import\">\n";
 			}
 		}
 		$scripts      = h::script($this->js['plain'] ?: false);
