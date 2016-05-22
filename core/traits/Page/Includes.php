@@ -524,7 +524,15 @@ trait Includes {
 	}
 	protected function add_includes_on_page_manually_added_frontend_load_optimization () {
 		list($optimized_includes, $preload) = file_get_json("$this->pcache_basename_path.optimized.json");
-		$this->add_preload($preload);
+		$this->add_preload(
+			array_unique(
+				array_merge(
+					$preload,
+					$this->core_css['path'],
+					$this->css['path']
+				)
+			)
+		);
 		$system_scripts    = '';
 		$optimized_scripts = [];
 		$system_imports    = '';
