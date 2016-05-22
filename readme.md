@@ -125,7 +125,7 @@ Some components are developed in parallel with core in this repository
 * PHP 5.6+ with libraries:
  * REQUIRED: cURL, XML, mbstring
  * OPTIONAL: APCu, Memcached
-* or HHVM 3.3.2+ LTS or HHVM 3.4.1+
+* or HHVM 3.14+
 * MySQL 5.6+
 * or MariaDB 10.0.5+
 * or PostgreSQL 9.5+
