@@ -475,7 +475,7 @@ trait Includes {
 			).
 			h::style($this->css['plain'] ?: false);
 		if ($Config->core['cache_compress_js_css'] && $Config->core['frontend_load_optimization']) {
-			$this->add_includes_on_page_manually_added_frontend_load_optimization();
+			$this->add_includes_on_page_manually_added_frontend_load_optimization($Config);
 		} else {
 			$this->add_includes_on_page_manually_added_normal($Config, $preload);
 		}
@@ -522,7 +522,10 @@ trait Includes {
 			$Response->header('Link', "<$resource>; rel=preload; as=$as'", false);
 		}
 	}
-	protected function add_includes_on_page_manually_added_frontend_load_optimization () {
+	/**
+	 * @param Config $Config
+	 */
+	protected function add_includes_on_page_manually_added_frontend_load_optimization ($Config) {
 		list($optimized_includes, $preload) = file_get_json("$this->pcache_basename_path.optimized.json");
 		$this->add_preload(
 			array_unique(
@@ -554,12 +557,11 @@ trait Includes {
 		$scripts      = h::script($this->js['plain'] ?: false);
 		$html_imports = $this->html['plain'];
 		$this->config([$optimized_scripts, $optimized_imports], 'cs.optimized_includes');
-		$configs = $this->core_config.$this->config;
-		$this->Head .=
-			$configs.
-			$system_scripts.
-			$system_imports.
-			$scripts.
-			$html_imports;
+		$this->Head .= $this->core_config.$this->config;
+		if ($Config->core['put_js_after_body']) {
+			$this->post_Body .= $system_scripts.$system_imports.$scripts.$html_imports;
+		} else {
+			$this->Head .= $system_scripts.$system_imports.$scripts.$html_imports;
+		}
 	}
 }

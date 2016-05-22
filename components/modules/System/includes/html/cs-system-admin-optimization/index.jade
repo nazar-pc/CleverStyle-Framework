@@ -6,7 +6,7 @@ dom-module#cs-system-admin-optimization
 			+on-off-switcher("cache_compress_js_css")
 			+on-off-switcher("frontend_load_optimization", "equal(settings.cache_compress_js_css, 0)")
 			+on-off-switcher("vulcanization")
-			+on-off-switcher("put_js_after_body", "and(settings.cache_compress_js_css, settings.frontend_load_optimization)")
+			+on-off-switcher("put_js_after_body")
 			+input("inserts_limit", "simple_admin_mode", "number")
 			+input("update_ratio", "simple_admin_mode", "number")
 			p
