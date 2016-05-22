@@ -16,9 +16,6 @@ echo Response::instance()->body;
 	<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet" shim-shadowdom>
 	<script class="cs-config" target="cs" type="application/json">{"base_url":"http:\/\/cscms.travis","current_base_url":"http:\/\/cscms.travis\/System","public_key":"%s","module":"System","in_admin":0,"is_admin":0,"is_user":0,"is_guest":1,"password_min_length":4,"password_min_strength":%d,"debug":0,"route":[],"route_path":["blank"],"route_ids":[]}</script>
 	<script class="cs-config" target="cs.optimized_includes" type="application/json">[[],[]]</script>
-	<script src="/storage/pcache/webcomponents.js?%s"></script>
-	<script src="/storage/pcache/CleverStyle_en:System.js?%s"></script>
-	<link href="/storage/pcache/CleverStyle_en:System.html?%s" rel="import">
 	<meta content="Web-site | Home" property="og:title">
 	<meta content="http://cscms.travis" property="og:url">
 	<meta content="Web-site" property="og:site_name">
@@ -65,5 +62,8 @@ echo Response::instance()->body;
 			© Powered by <a target="_blank" href="http://cleverstyle.org/Framework" title="CleverStyle Framework">CleverStyle Framework</a>
 		</div>
 	</footer>
+	<script src="/storage/pcache/webcomponents.js?%s"></script>
+	<script src="/storage/pcache/CleverStyle_en:System.js?%s"></script>
+	<link href="/storage/pcache/CleverStyle_en:System.html?%s" rel="import">
 
 </body>
