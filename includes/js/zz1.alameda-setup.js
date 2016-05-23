@@ -12,7 +12,8 @@
       jssha: 'includes/js/modules/jsSHA-2.1.0',
       autosize: 'includes/js/modules/autosize.min',
       html5sortable: 'includes/js/modules/html5sortable.min.0.2.8'
-    }
+    },
+    waitSeconds: 60
   });
   if (window.$) {
     define('jquery', function(){
