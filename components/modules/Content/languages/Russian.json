@@ -1,7 +1,7 @@
 {
 	"Content"  : "Контент",
 	"content_" : {
-		"content_key"        : "Ключ",
+		"key"                : "Ключ",
 		"title"              : "Название",
 		"type"               : "Тип",
 		"content"            : "Контент",

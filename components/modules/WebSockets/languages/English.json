@@ -6,7 +6,7 @@
 		"listen_port"           : "Listen port",
 		"listen_port_info"      : "Port where WebSockets server will listen for incoming connection. Should not be taking by anything else, otherwise server will not start",
 		"listen_on"             : "Listen on",
-		"listen_on_info"        : "Address on which server will listen for incoming connections. Since usually some reverse proxy stands шn front (like Nginx) it is better to choose 127.0.0.1",
+		"listen_on_info"        : "Address on which server will listen for incoming connections. Since usually some reverse proxy stands in front (like Nginx) it is better to choose 127.0.0.1",
 		"dns_server"            : "DNS server",
 		"dns_server_info"       : "IP of DNS server that will be used for resolving of IP of master WebSockets server from its domain name",
 		"server_is_running"     : "WebSockets server is running",
