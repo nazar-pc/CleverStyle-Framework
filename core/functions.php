@@ -58,6 +58,7 @@ spl_autoload_register(
 			file_put_json(CACHE.'/classes/autoload', $cache);
 			return (bool)$cache[$class];
 		}
+		file_put_json(CACHE.'/classes/autoload', $cache);
 		// Processing components aliases
 		if (strpos($namespace, 'modules') === 0 || strpos($namespace, 'plugins') === 0) {
 			$Config      = Config::instance();
