@@ -1,0 +1,63 @@
+/**
+ * @package    CleverStyle Framework
+ * @subpackage CleverStyle theme
+ * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
+ * @license    MIT License, see license.txt
+ */
+
+html,
+body {
+	color       : #444;
+	font-family : 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size   : 13px;
+	margin      : 0;
+}
+
+a:not([is]) {
+	color           : inherit;
+	cursor          : pointer;
+	text-decoration : none;
+}
+
+.cs-text-lead {
+	font-size : 1.4rem;
+}
+
+h1 {
+	font-size   : 2.5714rem;
+	line-height : 1.1666em;
+}
+
+h2 {
+	font-size   : 1.7143rem;
+	line-height : 1.25em;
+}
+
+h3 {
+	font-size   : 1.2857rem;
+	line-height : 1.3333em;
+}
+
+h4 {
+	font-size   : 1.1429rem;
+	line-height : 1.4286em;
+}
+
+h5,
+h6 {
+	font-size : 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family   : 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-weight   : normal;
+	margin-bottom : 2rem;
+	margin-top    : 0;
+}
+
+hr {
+	border     : 0;
+	border-top : .1rem solid currentColor;
+	opacity    : .15;
+}

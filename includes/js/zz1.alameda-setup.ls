@@ -18,6 +18,6 @@ if window.$
 else
 	requirejs.config(
 		paths	:
-			jquery	: 'includes/js/jquery/jquery'
+			jquery	: 'includes/js/jquery/jquery-3.0.0-pre'
 	)
 define('sprintf-js', -> {sprintf, vsprintf})

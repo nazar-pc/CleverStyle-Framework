@@ -496,7 +496,7 @@ trait Includes {
 	 */
 	protected function add_includes_on_page_manually_added_normal ($Config, $preload) {
 		// Hack: jQuery is kind of special; it is only loaded directly in normal mode, during frontend load optimization it is loaded asynchronously in frontend
-		$jquery    = '/includes/js/jquery/jquery.js';
+		$jquery    = '/includes/js/jquery/jquery-3.0.0-pre.js';
 		$preload[] = $jquery;
 		$this->add_preload($preload);
 		$configs      = $this->core_config.$this->config;

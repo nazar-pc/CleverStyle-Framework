@@ -14,13 +14,13 @@ body[unresolved] {
 }
 
 body[cs-unresolved-transition] :unresolved,
-body[cs-unresolved-transition] [is]:not(cs-resolved) {
+body[cs-unresolved-transition] [is]:not([cs-resolved]) {
 	transition  : opacity ease-in .1s !important;
 	will-change : opacity;
 }
 
 body[cs-unresolved] :unresolved,
-body[cs-unresolved] [is]:not(cs-resolved) {
+body[cs-unresolved] [is]:not([cs-resolved]) {
 	cursor  : wait;
 	opacity : 0;
 }

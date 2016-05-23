@@ -11,6 +11,15 @@ RewriteBase /
 <FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|svg|svgz|ttc|ttf|otf|woff|woff2|eot)$">
 	RewriteEngine Off
 </FilesMatch>
+<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|svg|svgz|ttc|ttf|otf|woff|woff2|eot|html)$">
+	<ifModule mod_expires.c>
+		ExpiresActive On
+		ExpiresDefault "access plus 1 month"
+	</ifModule>
+	<ifModule mod_headers.c>
+		Header set Cache-Control "max-age=2592000, public"
+	</ifModule>
+</FilesMatch>
 <Files license.txt>
 	RewriteEngine Off
 </Files>
