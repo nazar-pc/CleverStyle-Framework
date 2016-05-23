@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var body, html, this$ = this;
+  var body, html;
   body = document.body;
   html = document.documentElement;
   Polymer.cs.behaviors.csSectionModal = [
@@ -29,9 +29,12 @@
         'overlay.tap': '_overlay_tap'
       },
       _esc_handler: function(e){
-        if (e.keyCode === 27 && !this$.manualClose) {
-          this$.close();
+        if (e.keyCode === 27 && !this.manualClose) {
+          this.close();
         }
+      },
+      ready: function(){
+        this._esc_handler = this._esc_handler.bind(this);
       },
       attached: function(){
         var ref$;
@@ -66,7 +69,7 @@
         Polymer.dom.flush();
         body.modalOpened = body.modalOpened || 0;
         if (this.opened) {
-          document.addEventListener('keydown', bind$(this, '_esc_handler'));
+          document.addEventListener('keydown', this._esc_handler);
           if (this.content) {
             this.innerHTML = this.content;
             this.content = null;
@@ -78,7 +81,7 @@
             this$.setAttribute('opened', '');
           }, 100);
         } else {
-          document.removeEventListener('keydown', bind$(this, '_esc_handler'));
+          document.removeEventListener('keydown', this._esc_handler);
           --body.modalOpened;
           this.fire('close');
           this.removeAttribute('opened');
@@ -101,7 +104,4 @@
       }
     }
   ];
-  function bind$(obj, key, target){
-    return function(){ return (target || obj)[key].apply(obj, arguments) };
-  }
 }).call(this);

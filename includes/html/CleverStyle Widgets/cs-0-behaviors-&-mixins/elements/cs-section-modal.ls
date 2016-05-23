@@ -21,9 +21,11 @@ Polymer.cs.behaviors.cs-section-modal	= [
 	listeners	:
 		transitionend	: '_transitionend'
 		'overlay.tap'	: '_overlay_tap'
-	_esc_handler : (e) !~>
+	_esc_handler : (e) !->
 		if e.keyCode == 27 && !@manualClose # Esc
 			@close()
+	ready : !->
+		@_esc_handler = @_esc_handler.bind(@)
 	attached : !->
 		if @previousElementSibling?.tagName == 'BUTTON' && !@previousElementSibling.action
 			@previousElementSibling.action	= 'open'
@@ -46,7 +48,7 @@ Polymer.cs.behaviors.cs-section-modal	= [
 		Polymer.dom.flush()
 		body.modalOpened = body.modalOpened || 0
 		if @opened
-			document.addEventListener('keydown', @~_esc_handler)
+			document.addEventListener('keydown', @_esc_handler)
 			# Actually insert content only when needed
 			if @content
 				@innerHTML	= @content
@@ -59,7 +61,7 @@ Polymer.cs.behaviors.cs-section-modal	= [
 				@setAttribute('opened', '')
 			), 100
 		else
-			document.removeEventListener('keydown', @~_esc_handler)
+			document.removeEventListener('keydown', @_esc_handler)
 			--body.modalOpened
 			@fire('close')
 			@removeAttribute('opened')
