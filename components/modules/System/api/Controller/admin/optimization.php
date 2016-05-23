@@ -120,8 +120,6 @@ trait optimization {
 	 * @throws ExitException
 	 */
 	static function admin_optimization_cancel_settings () {
-		if (!Config::instance()->cancel()) {
-			throw new ExitException(500);
-		}
+		Config::instance()->cancel();
 	}
 }

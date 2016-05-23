@@ -6,7 +6,6 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L	= cs.Language('system_admin_users_')
 Polymer(
 	'is'		: 'cs-system-admin-users-edit-user-form'
 	behaviors	: [
@@ -32,7 +31,7 @@ Polymer(
 			languages_list	= []
 			languages_list.push(
 				clanguage	: ''
-				description	: L.system_default
+				description	: @L.system_default
 			)
 			for language in languages
 				languages_list.push(
@@ -42,7 +41,7 @@ Polymer(
 			timezones_list	= []
 			timezones_list.push(
 				timezone	: ''
-				description	: L.system_default
+				description	: @L.system_default
 			)
 			for description, timezone of timezones
 				timezones_list.push(
@@ -93,7 +92,7 @@ Polymer(
 			type	: 'patch'
 			data	:
 				user	: @user_data
-			success	: !->
-				cs.ui.notify(L.changes_saved, 'success', 5)
+			success	: !~>
+				cs.ui.notify(@L.changes_saved, 'success', 5)
 		)
 )

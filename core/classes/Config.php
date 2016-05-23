@@ -104,8 +104,6 @@ class Config {
 	/**
 	 * Reloading of settings cache
 	 *
-	 * @return bool
-	 *
 	 * @throws ExitException
 	 */
 	protected function load_configuration () {
@@ -122,7 +120,8 @@ class Config {
 			$this->$part = $value;
 		}
 		$this->core += file_get_json(MODULES.'/System/core_settings_defaults.json');
-		return $this->apply_internal(false);
+		date_default_timezone_set($this->core['timezone']);
+		$this->fill_mirrors();
 	}
 	/**
 	 * Applying settings without saving changes into db
@@ -202,13 +201,11 @@ class Config {
 	/**
 	 * Canceling of applied settings
 	 *
-	 * @return bool
-	 *
 	 * @throws ExitException
 	 */
 	function cancel () {
 		Cache::instance()->del('config');
-		return $this->load_configuration();
+		$this->load_configuration();
 	}
 	/**
 	 * Get base url of current mirror including language suffix

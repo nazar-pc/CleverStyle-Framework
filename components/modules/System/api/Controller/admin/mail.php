@@ -115,8 +115,6 @@ trait mail {
 	 * @throws ExitException
 	 */
 	static function admin_mail_cancel_settings () {
-		if (!Config::instance()->cancel()) {
-			throw new ExitException(500);
-		}
+		Config::instance()->cancel();
 	}
 }

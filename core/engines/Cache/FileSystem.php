@@ -42,6 +42,7 @@ class FileSystem extends _Abstract {
 			strpos($path_in_filesystem, CACHE) !== 0 ||
 			!is_file($path_in_filesystem)
 		) {
+			file_put_contents(DIR.'/test', var_export([$path_in_filesystem, CACHE, strpos($path_in_filesystem, CACHE) !== 0, !is_file($path_in_filesystem)], true), FILE_APPEND);
 			return false;
 		}
 		$cache = file_get_contents($path_in_filesystem);
@@ -78,22 +79,22 @@ class FileSystem extends _Abstract {
 	 * @inheritdoc
 	 */
 	function del ($item) {
+		file_put_contents(DIR.'/test', "Deleted $item\n".print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true), FILE_APPEND);
 		$path_in_filesystem = $this->get_absolute_path($item);
 		if (strpos($path_in_filesystem, CACHE) !== 0) {
 			return false;
-		}
-		if (!file_exists($path_in_filesystem)) {
-			return true;
 		}
 		if (is_dir($path_in_filesystem)) {
 			/**
 			 * Rename to random name in order to immediately invalidate nested elements, actual deletion done right after this
 			 */
 			$new_path = $path_in_filesystem.md5(random_bytes(1000));
-			rename($path_in_filesystem, $new_path);
-			return rmdir_recursive($new_path);
+			/**
+			 * Sometimes concurrent deletion might happen, so we need to silent error and actually remove directory only when renaming was successful
+			 */
+			return @rename($path_in_filesystem, $new_path) ? rmdir_recursive($new_path) : !is_dir($path_in_filesystem);
 		}
-		return @unlink($path_in_filesystem);
+		return file_exists($path_in_filesystem) ? @unlink($path_in_filesystem) : true;
 	}
 	/**
 	 * @inheritdoc

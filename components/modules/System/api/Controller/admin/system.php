@@ -78,8 +78,6 @@ trait system {
 	 * @throws ExitException
 	 */
 	static function admin_system_cancel_settings () {
-		if (!Config::instance()->cancel()) {
-			throw new ExitException(500);
-		}
+		Config::instance()->cancel();
 	}
 }

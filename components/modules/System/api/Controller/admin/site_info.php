@@ -91,8 +91,6 @@ trait site_info {
 	 * @throws ExitException
 	 */
 	static function admin_site_info_cancel_settings () {
-		if (!Config::instance()->cancel()) {
-			throw new ExitException(500);
-		}
+		Config::instance()->cancel();
 	}
 }

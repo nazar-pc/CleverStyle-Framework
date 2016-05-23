@@ -33,7 +33,7 @@ Similar to base_url(), but returns URL of main mirror, not current.
 #### apply() : bool
 Is used for applying of system configuration without its saving. This is helpful sometimes, because in case, if changes broke your system - you can clean cache even manually, and restore site workability.
 
-#### cancel() : bool
+#### cancel()
 Is used in pair with apply() to cancel applied changes.
 
 #### save() : bool

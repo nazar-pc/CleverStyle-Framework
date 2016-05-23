@@ -98,8 +98,6 @@ trait general {
 	 * @throws ExitException
 	 */
 	static function admin_users_general_cancel_settings () {
-		if (!Config::instance()->cancel()) {
-			throw new ExitException(500);
-		}
+		Config::instance()->cancel();
 	}
 }
