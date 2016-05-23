@@ -14,7 +14,6 @@ $Config = Config::instance();
 $L      = Language::instance();
 $Page   = Page::instance();
 $User   = User::instance();
-$Page->css('components/modules/Feedback/includes/css/general.css');
 $Page->content(
 	h::{'form[is=cs-form]'}(
 		h::{'section.cs-feedback-form article'}(
