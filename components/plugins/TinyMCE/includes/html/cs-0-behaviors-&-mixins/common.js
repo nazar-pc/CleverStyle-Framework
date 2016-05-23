@@ -22,13 +22,19 @@
       uploader_callback = undefined;
       button = document.createElement('button');
       uploader = typeof cs.file_upload == 'function' ? cs.file_upload(button, function(files){
-        tinymce.uploader_dialog.close();
+        var ref$;
+        if ((ref$ = tinymce.uploader_dialog) != null) {
+          ref$.close();
+        }
         if (files.length) {
           uploader_callback(files[0]);
         }
         uploader_callback = undefined;
       }, function(error){
-        tinymce.uploader_dialog.close();
+        var ref$;
+        if ((ref$ = tinymce.uploader_dialog) != null) {
+          ref$.close();
+        }
         cs.ui.notify(error, 'error');
       }, function(file){
         var progress;

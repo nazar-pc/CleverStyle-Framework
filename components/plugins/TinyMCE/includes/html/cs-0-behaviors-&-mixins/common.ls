@@ -21,12 +21,12 @@ load_tinymce	= ->
 			uploader			= cs.file_upload?(
 				button
 				(files) !->
-					tinymce.uploader_dialog.close()
+					tinymce.uploader_dialog?.close()
 					if files.length
 						uploader_callback(files[0])
 					uploader_callback := undefined
 				(error) !->
-					tinymce.uploader_dialog.close()
+					tinymce.uploader_dialog?.close()
 					cs.ui.notify(error, 'error')
 				(file) !->
 					if !tinymce.uploader_dialog
