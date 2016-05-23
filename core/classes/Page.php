@@ -618,7 +618,7 @@ class Page {
 			 * Processing of replacing in content
 			 */
 			/** @noinspection NestedTernaryOperatorInspection */
-			$Response->body = $this->process_replacing($this->Content ?: ($Request->api_path ? 'null' : ''));
+			$Response->body = $this->process_replacing(strlen($this->Content) ? $this->Content : ($Request->api_path ? 'null' : ''));
 		} else {
 			Event::instance()->fire('System/Page/render/before');
 			/**
