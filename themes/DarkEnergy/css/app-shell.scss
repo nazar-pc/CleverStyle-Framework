@@ -15,9 +15,12 @@ body {
 }
 
 a:not([is]) {
-	color           : inherit;
 	cursor          : pointer;
 	text-decoration : none;
+
+	&:not([class]) {
+		color : #47adff !important;
+	}
 }
 
 h1 {
