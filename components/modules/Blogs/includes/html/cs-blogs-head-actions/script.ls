@@ -11,7 +11,12 @@ Polymer(
 		cs.Polymer.behaviors.Language('blogs_')
 	]
 	properties	:
-		settings		: Object
+		settings		: {
+			type	: Object
+			value	: {
+				admin	: false
+			}
+		}
 		can_write_post	: false
 	ready : !->
 		$.ajax(
