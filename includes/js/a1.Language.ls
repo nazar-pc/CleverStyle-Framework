@@ -5,7 +5,8 @@
  * @license   MIT License, see license.txt
  */
 # Object with translations, also might be called as function with prefix
-cs.Language = class Language
+translations	= cs.Language
+cs.Language		= class Language
 	::	= @
 	(prefix) ~>
 		prefix_length = prefix.length
@@ -16,7 +17,7 @@ cs.Language = class Language
 		@[key].toString()
 	format		: (key, ...args) ->
 		@[key](...args)
-	for let key, translation of cs.Language
+	for let key of cs.Language
 		::[key]				= ->
-			vsprintf(translation, [...&])
-		::[key].toString	= -> translation
+			vsprintf(translations[key], [...&])
+		::[key].toString	= -> translations[key]

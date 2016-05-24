@@ -6,7 +6,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var Language, slice$ = [].slice;
+  var translations, Language, slice$ = [].slice;
+  translations = cs.Language;
   cs.Language = Language = (function(){
     Language.displayName = 'Language';
     var prototype, i$, ref$, constructor = Language;
@@ -30,15 +31,15 @@
       return this[key].apply(this, args);
     };
     for (i$ in ref$ = cs.Language) {
-      (fn$.call(Language, i$, ref$[i$]));
+      (fn$.call(Language, i$));
     }
     return Language;
-    function fn$(key, translation){
+    function fn$(key){
       prototype[key] = function(){
-        return vsprintf(translation, slice$.call(arguments));
+        return vsprintf(translations[key], slice$.call(arguments));
       };
       prototype[key].toString = function(){
-        return translation;
+        return translations[key];
       };
     }
   }());
