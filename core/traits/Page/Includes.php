@@ -399,7 +399,8 @@ trait Includes {
 		$dependencies_includes = array_values($dependencies_includes);
 		// Flatten array on higher level
 		$dependencies_includes = array_merge(...$dependencies_includes);
-		return _array(array_merge_recursive($system_includes, ...$dependencies_includes, ...$includes));
+		// Hack: 2 array_merge_recursive() just to be compatible with HHVM, simplify when https://github.com/facebook/hhvm/issues/7087 is resolved
+		return _array(array_merge_recursive(array_merge_recursive($system_includes, ...$dependencies_includes), ...$includes));
 	}
 	/**
 	 * @param array   $dependencies
