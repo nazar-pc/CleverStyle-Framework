@@ -32,6 +32,7 @@ trait Cache {
 			file_put_json("$this->pcache_basename_path.json", [$dependencies, $compressed_includes_map, array_filter($not_embedded_resources_map)]);
 			Event::instance()->fire('System/Page/rebuild_cache');
 			$this->rebuild_cache_optimized();
+			$this->rebuild_cache_other();
 		}
 	}
 	protected function rebuild_cache_optimized () {
@@ -46,6 +47,14 @@ trait Cache {
 		$optimized_includes = array_flip(array_merge(...array_values(array_map('array_values', $compressed_includes_map))));
 		$preload            = array_merge(...$preload);
 		file_put_json("$this->pcache_basename_path.optimized.json", [$optimized_includes, $preload]);
+	}
+	protected function rebuild_cache_other () {
+		$webcomponents_js = file_get_contents(DIR.'/includes/js/WebComponents-polyfill/webcomponents-custom.min.js');
+		file_put_contents(PUBLIC_CACHE.'/webcomponents.js', gzencode($webcomponents_js, 9), LOCK_EX | FILE_BINARY);
+		file_put_contents(PUBLIC_CACHE.'/webcomponents.js.hash', substr(md5($webcomponents_js), 0, 5), LOCK_EX | FILE_BINARY);
+		$jquery = file_get_contents(DIR.'/includes/js/jquery/jquery-3.0.0-pre.js');
+		file_put_contents(PUBLIC_CACHE.'/jquery.js', gzencode($jquery, 9), LOCK_EX | FILE_BINARY);
+		file_put_contents(PUBLIC_CACHE.'/jquery.js.hash', substr(md5($jquery), 0, 5), LOCK_EX | FILE_BINARY);
 	}
 	/**
 	 * Creates cached version of given HTML, JS and CSS files.

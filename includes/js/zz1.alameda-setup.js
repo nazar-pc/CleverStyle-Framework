@@ -22,7 +22,7 @@
   } else {
     requirejs.config({
       paths: {
-        jquery: 'includes/js/jquery/jquery-3.0.0-pre'
+        jquery: cs.optimized_includes[0].shift()
       }
     });
   }

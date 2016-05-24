@@ -13,11 +13,12 @@ requirejs.config(
 	waitSeconds	: 60
 )
 # Now let's define bundled libraries so that they can be used as AMD modules
+# TODO: In future we'll load jQuery as AMD module only and this thing will not be needed
 if window.$
 	define('jquery', -> $)
 else
 	requirejs.config(
 		paths	:
-			jquery	: 'includes/js/jquery/jquery-3.0.0-pre'
+			jquery	: cs.optimized_includes[0].shift()
 	)
 define('sprintf-js', -> {sprintf, vsprintf})

@@ -327,18 +327,11 @@ trait Includes {
 		if ($Request->cookie('shadow_dom') == 1) {
 			return;
 		}
-		$file = '/includes/js/WebComponents-polyfill/webcomponents-custom.min.js';
 		if ($with_compression) {
-			$compressed_file = PUBLIC_CACHE.'/webcomponents.js';
-			if (!file_exists($compressed_file)) {
-				$content = file_get_contents(DIR."$file");
-				file_put_contents($compressed_file, gzencode($content, 9), LOCK_EX | FILE_BINARY);
-				file_put_contents("$compressed_file.hash", substr(md5($content), 0, 5));
-			}
-			$hash = file_get_contents("$compressed_file.hash");
+			$hash = file_get_contents(PUBLIC_CACHE.'/webcomponents.js.hash');
 			$this->js_internal("/storage/pcache/webcomponents.js?$hash", 'file', true);
 		} else {
-			$this->js_internal($file, 'file', true);
+			$this->js_internal('/includes/js/WebComponents-polyfill/webcomponents-custom.min.js', 'file', true);
 		}
 	}
 	/**
@@ -487,16 +480,16 @@ trait Includes {
 		if ($this->page_compression_usage($Config, $Request) && $Config->core['frontend_load_optimization']) {
 			$this->add_includes_on_page_manually_added_frontend_load_optimization($Config);
 		} else {
-			$this->add_includes_on_page_manually_added_normal($Config, $preload);
+			$this->add_includes_on_page_manually_added_normal($Config, $Request, $preload);
 		}
 	}
 	/**
 	 * @param Config   $Config
+	 * @param Request  $Request
 	 * @param string[] $preload
 	 */
-	protected function add_includes_on_page_manually_added_normal ($Config, $preload) {
-		// Hack: jQuery is kind of special; it is only loaded directly in normal mode, during frontend load optimization it is loaded asynchronously in frontend
-		$jquery    = '/includes/js/jquery/jquery-3.0.0-pre.js';
+	protected function add_includes_on_page_manually_added_normal ($Config, $Request, $preload) {
+		$jquery    = $this->jquery($this->page_compression_usage($Config, $Request));
 		$preload[] = $jquery;
 		$this->add_preload($preload);
 		$configs      = $this->core_config.$this->config;
@@ -521,6 +514,22 @@ trait Includes {
 			$this->post_Body .= $scripts.$html_imports;
 		} else {
 			$this->Head .= $scripts.$html_imports;
+		}
+	}
+	/**
+	 * Hack: jQuery is kind of special; it is only loaded directly in normal mode, during frontend load optimization it is loaded asynchronously in frontend
+	 * TODO: In future we'll load jQuery as AMD module only and this thing will not be needed
+	 *
+	 * @param bool $with_compression
+	 *
+	 * @return string
+	 */
+	protected function jquery ($with_compression) {
+		if ($with_compression) {
+			$hash = file_get_contents(PUBLIC_CACHE.'/jquery.js.hash');
+			return "/storage/pcache/jquery.js?$hash";
+		} else {
+			return '/includes/js/jquery/jquery-3.0.0-pre.js';
 		}
 	}
 	/**
@@ -550,7 +559,7 @@ trait Includes {
 			)
 		);
 		$system_scripts    = '';
-		$optimized_scripts = [];
+		$optimized_scripts = [$this->jquery(true)];
 		$system_imports    = '';
 		$optimized_imports = [];
 		foreach (array_merge($this->core_js['path'], $this->js['path']) as $script) {
