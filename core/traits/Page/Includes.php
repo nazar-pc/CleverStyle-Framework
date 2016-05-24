@@ -248,8 +248,12 @@ trait Includes {
 		 * If CSS and JavaScript compression enabled
 		 */
 		if ($this->page_compression_usage($Config, $Request)) {
+			/**
+			 * Rebuilding HTML, JS and CSS cache if necessary
+			 */
+			$this->rebuild_cache($Config);
 			$this->webcomponents_polyfill($Request, true);
-			list($includes, $preload) = $this->get_includes_and_preload_resource_for_page_with_compression($Config, $Request);
+			list($includes, $preload) = $this->get_includes_and_preload_resource_for_page_with_compression($Request);
 		} else {
 			$this->webcomponents_polyfill($Request, false);
 			/**
@@ -335,16 +339,11 @@ trait Includes {
 		}
 	}
 	/**
-	 * @param Config  $Config
 	 * @param Request $Request
 	 *
 	 * @return array[]
 	 */
-	protected function get_includes_and_preload_resource_for_page_with_compression ($Config, $Request) {
-		/**
-		 * Rebuilding HTML, JS and CSS cache if necessary
-		 */
-		$this->rebuild_cache($Config);
+	protected function get_includes_and_preload_resource_for_page_with_compression ($Request) {
 		list($dependencies, $compressed_includes_map, $not_embedded_resources_map) = file_get_json("$this->pcache_basename_path.json");
 		$includes = $this->get_normalized_includes($dependencies, $compressed_includes_map, $Request);
 		$preload  = [];
