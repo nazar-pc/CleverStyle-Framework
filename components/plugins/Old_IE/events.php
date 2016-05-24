@@ -18,7 +18,7 @@ Event::instance()->on(
 			in_array('Old_IE', Config::instance()->components['plugins'])
 		) {
 			Page::instance()->Head .=
-				h::{'link[rel=stylesheet][shim-shadowdom]'}(['href' => 'components/plugins/Old_IE/includes/css/hidden.css']).
+				h::{'link[rel=stylesheet][shim-shadowdom]'}(['href' => 'components/plugins/Old_IE/includes/css/normalize.css']).
 				h::script(['src' => 'components/plugins/Old_IE/includes/js/a.WeakMap.js']).
 				h::script(['src' => 'components/plugins/Old_IE/includes/js/b.MutationObserver.js']);
 		}
