@@ -9,12 +9,12 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 	add-apt-repository 'deb http://ams2.mirrors.digitalocean.com/mariadb/repo/10.1/ubuntu trusty main' && \
 	# Hack, otherwise add-apt-repository crashes
 	export LANG=C.UTF-8 && \
-	add-apt-repository -y ppa:ondrej/php5-5.6 && \
+	add-apt-repository -y ppa:ondrej/php && \
 
 # Update packages list, upgrade installed packages
 
 	apt-get update && \
-	apt-get -y upgrade && \
+	apt-get -y dist-upgrade && \
 
 # Generate password for MySQL
 
@@ -28,7 +28,7 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 	apt-get install -y --no-install-recommends \
 		mariadb-server \
 		nginx \
-		php5-cli php5-curl php5-gd php5-fpm php5-mysql \
+		php5.6-cli php5.6-curl php5.6-gd php5.6-fpm php5.6-mbstring php5.6-mysql php5.6-xml \
 		wget && \
 	rm -rf /var/lib/apt/lists/* && \
 
@@ -52,7 +52,7 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 
 # Allow to build phar archives
 
-	sed -i 's/;phar.readonly = On/phar.readonly = Off/g' /etc/php5/cli/php.ini && \
+	sed -i 's/;phar.readonly = On/phar.readonly = Off/g' /etc/php/5.6/cli/php.ini && \
 
 # Build distributive with all available modules, plugins and themes
 
