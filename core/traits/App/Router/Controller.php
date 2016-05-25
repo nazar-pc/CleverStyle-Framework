@@ -121,9 +121,7 @@ trait Controller {
 	 * @return string[]
 	 */
 	protected function controller_router_available_methods_to_flat_structure ($structure, $prefix = '') {
-		/**
-		 * Hack: first key in order to avoid warning when `$flat_structure` is empty at `return`
-		 */
+		// First key in order to avoid warning when `$flat_structure` is empty at `return`
 		$flat_structure = [[]];
 		foreach ($structure as $path => $nested_structure) {
 			if (!is_array($nested_structure)) {
