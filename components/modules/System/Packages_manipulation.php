@@ -74,11 +74,7 @@ class Packages_manipulation {
 					) {
 						return false;
 					}
-					/**
-					 * TODO: copy() + file_exists() is a hack for HHVM, when bug fixed upstream (copying of empty files) this should be simplified
-					 */
-					copy("$tmp_dir/fs/$index", "$target_directory/$file");
-					return file_exists("$target_directory/$file");
+					return copy("$tmp_dir/fs/$index", "$target_directory/$file");
 				},
 				$fs,
 				array_keys($fs)
@@ -123,11 +119,7 @@ class Packages_manipulation {
 					) {
 						return false;
 					}
-					/**
-					 * TODO: copy() + file_exists() is a hack for HHVM, when bug fixed upstream (copying of empty files) this should be simplified
-					 */
-					copy("$tmp_dir/fs/$index", "$target_directory/$file");
-					return file_exists("$target_directory/$file");
+					return copy("$tmp_dir/fs/$index", "$target_directory/$file");
 				},
 				$fs,
 				array_keys($fs)

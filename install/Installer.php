@@ -191,11 +191,7 @@ CONFIG;
 			if (!@mkdir($dir, 0770, true) && !is_dir($dir)) {
 				throw new RuntimeException("Can't extract system files from the archive, creating directory $dir failed! Installation aborted.");
 			}
-			/**
-			 * TODO: copy() + file_exists() is a hack for HHVM, when bug fixed upstream (copying of empty files) this should be simplified
-			 */
-			copy("$source/fs/$file_index", "$target/$file_path");
-			if (!file_exists("$target/$file_path")) {
+			if (!copy("$source/fs/$file_index", "$target/$file_path")) {
 				throw new RuntimeException("Can't extract system files from the archive, creating file $target/$file_path failed! Installation aborted.");
 			}
 		}
