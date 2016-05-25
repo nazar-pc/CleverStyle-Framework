@@ -5,8 +5,9 @@
  * @license   MIT License, see license.txt
  */
 # Chain of promises is used to show/hide notifications sequentially, variable contains always latest promise in chain and is constantly updated
-promise		= Promise.resolve()
-Polymer.cs.behaviors.cs-notify = [
+# We'll start doing something only when Web Components are ready
+promise							= new Promise(Polymer.cs.behaviors.ready._when_ready)
+Polymer.cs.behaviors.cs-notify	= [
 	Polymer.cs.behaviors.ready
 	Polymer.cs.behaviors.this
 	properties	:
@@ -41,7 +42,6 @@ Polymer.cs.behaviors.cs-notify = [
 			type				: Boolean
 	listeners	:
 		'content.tap'	: '_tap'
-		transitionend	: '_transitionend'
 	attached : !->
 		@last_node = @parentNode
 		if @parentNode.tagName != 'HTML'
@@ -49,53 +49,45 @@ Polymer.cs.behaviors.cs-notify = [
 			return
 		if !@bottom && !@top
 			@top	= true
-		# Hack for the case when notification is present in original page source code, so we need to wait until all Web Components are loaded
-		@_when_ready(@~_schedule_show)
-	_schedule_show : !->
-		promise := promise.then ~>
-			new Promise (resolve) !~>
-				@resolve = resolve
-				@_show()
-	_schedule_hide : !->
-		promise := promise.then ~>
-			new Promise (resolve) !~>
-				@resolve = resolve
-				@_hide()
+		setTimeout(@~_show)
 	_tap : (e) !->
 		if e.target == @$.content || e.target == @$.icon
-			@_schedule_hide()
-	_transitionend : !->
-		@resolve?()
-		if !@show
-			@parentNode?.removeChild(@)
-			return
-		if @timeout
-			setTimeout(@~_schedule_hide, @timeout * 1000)
-			@timeout = 0
+			@_hide()
 	_show : !->
-		if @content
-			@innerHTML = @content
-		@_for_similar (child) !~>
-			interesting_margin	= if @top then 'marginTop' else 'marginBottom'
-			if (
-				child != @ &&
-				parseFloat(child.style[interesting_margin] || 0) >= parseFloat(@style[interesting_margin] || 0)
-			)
-				child._shift()
-		@_initialized	= true
-		@show			= true
-		@fire('show')
+		promise := promise.then ~>
+			if @content
+				@innerHTML = @content
+			@_for_similar (child) !~>
+				interesting_margin	= if @top then 'marginTop' else 'marginBottom'
+				if (
+					child != @ &&
+					parseFloat(child.style[interesting_margin] || 0) >= parseFloat(@style[interesting_margin] || 0)
+				)
+					child._shift()
+			@_initialized	= true
+			@show			= true
+			@fire('show')
+			new Promise (resolve) !~>
+				setTimeout (!~>
+					if @timeout
+						setTimeout(@~_hide, @timeout * 1000)
+					resolve()
+				), @_transition_duration()
 	_hide : !->
-		if !@show
-			return
-		@show				= false
-		interesting_margin	= if @top then 'marginTop' else 'marginBottom'
-		@_for_similar (child) !~>
-			if (
-				parseFloat(child.style[interesting_margin] || 0) > parseFloat(@style[interesting_margin] || 0)
-			)
-				child._unshift()
-		@fire('hide')
+		promise := promise.then ~>
+			@show				= false
+			interesting_margin	= if @top then 'marginTop' else 'marginBottom'
+			@_for_similar (child) !~>
+				if (
+					parseFloat(child.style[interesting_margin] || 0) > parseFloat(@style[interesting_margin] || 0)
+				)
+					child._unshift()
+			@fire('hide')
+			new Promise (resolve) !~>
+				setTimeout (!~>
+					@parentNode?.removeChild(@)
+					resolve()
+				), @_transition_duration()
 	_for_similar : (callback) !->
 		tagName	= @tagName
 		bottom	= @bottom
@@ -124,4 +116,10 @@ Polymer.cs.behaviors.cs-notify = [
 			@style.marginTop = parseFloat(style.marginTop) - parseFloat(style.height) + 'px'
 		else
 			@style.marginBottom = parseFloat(style.marginBottom) - parseFloat(style.height) + 'px'
+	_transition_duration : ->
+		transition-duration = getComputedStyle(@).transition-duration
+		if transition-duration.substr(-2) == 'ms'
+			parseFloat(transition-duration)
+		else
+			transition-duration	= parseFloat(transition-duration) * 1000
 ]

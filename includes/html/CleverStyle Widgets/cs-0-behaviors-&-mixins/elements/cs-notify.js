@@ -7,7 +7,7 @@
  */
 (function(){
   var promise;
-  promise = Promise.resolve();
+  promise = new Promise(Polymer.cs.behaviors.ready._when_ready);
   Polymer.cs.behaviors.csNotify = [
     Polymer.cs.behaviors.ready, Polymer.cs.behaviors['this'], {
       properties: {
@@ -51,8 +51,7 @@
         }
       },
       listeners: {
-        'content.tap': '_tap',
-        transitionend: '_transitionend'
+        'content.tap': '_tap'
       },
       attached: function(){
         this.last_node = this.parentNode;
@@ -63,76 +62,61 @@
         if (!this.bottom && !this.top) {
           this.top = true;
         }
-        this._when_ready(bind$(this, '_schedule_show'));
-      },
-      _schedule_show: function(){
-        var this$ = this;
-        promise = promise.then(function(){
-          return new Promise(function(resolve){
-            this$.resolve = resolve;
-            this$._show();
-          });
-        });
-      },
-      _schedule_hide: function(){
-        var this$ = this;
-        promise = promise.then(function(){
-          return new Promise(function(resolve){
-            this$.resolve = resolve;
-            this$._hide();
-          });
-        });
+        setTimeout(bind$(this, '_show'));
       },
       _tap: function(e){
         if (e.target === this.$.content || e.target === this.$.icon) {
-          this._schedule_hide();
-        }
-      },
-      _transitionend: function(){
-        var ref$;
-        if (typeof this.resolve == 'function') {
-          this.resolve();
-        }
-        if (!this.show) {
-          if ((ref$ = this.parentNode) != null) {
-            ref$.removeChild(this);
-          }
-          return;
-        }
-        if (this.timeout) {
-          setTimeout(bind$(this, '_schedule_hide'), this.timeout * 1000);
-          this.timeout = 0;
+          this._hide();
         }
       },
       _show: function(){
         var this$ = this;
-        if (this.content) {
-          this.innerHTML = this.content;
-        }
-        this._for_similar(function(child){
-          var interesting_margin;
-          interesting_margin = this$.top ? 'marginTop' : 'marginBottom';
-          if (child !== this$ && parseFloat(child.style[interesting_margin] || 0) >= parseFloat(this$.style[interesting_margin] || 0)) {
-            child._shift();
+        promise = promise.then(function(){
+          if (this$.content) {
+            this$.innerHTML = this$.content;
           }
+          this$._for_similar(function(child){
+            var interesting_margin;
+            interesting_margin = this$.top ? 'marginTop' : 'marginBottom';
+            if (child !== this$ && parseFloat(child.style[interesting_margin] || 0) >= parseFloat(this$.style[interesting_margin] || 0)) {
+              child._shift();
+            }
+          });
+          this$._initialized = true;
+          this$.show = true;
+          this$.fire('show');
+          return new Promise(function(resolve){
+            setTimeout(function(){
+              if (this$.timeout) {
+                setTimeout(bind$(this$, '_hide'), this$.timeout * 1000);
+              }
+              resolve();
+            }, this$._transition_duration());
+          });
         });
-        this._initialized = true;
-        this.show = true;
-        this.fire('show');
       },
       _hide: function(){
-        var interesting_margin, this$ = this;
-        if (!this.show) {
-          return;
-        }
-        this.show = false;
-        interesting_margin = this.top ? 'marginTop' : 'marginBottom';
-        this._for_similar(function(child){
-          if (parseFloat(child.style[interesting_margin] || 0) > parseFloat(this$.style[interesting_margin] || 0)) {
-            child._unshift();
-          }
+        var this$ = this;
+        promise = promise.then(function(){
+          var interesting_margin;
+          this$.show = false;
+          interesting_margin = this$.top ? 'marginTop' : 'marginBottom';
+          this$._for_similar(function(child){
+            if (parseFloat(child.style[interesting_margin] || 0) > parseFloat(this$.style[interesting_margin] || 0)) {
+              child._unshift();
+            }
+          });
+          this$.fire('hide');
+          return new Promise(function(resolve){
+            setTimeout(function(){
+              var ref$;
+              if ((ref$ = this$.parentNode) != null) {
+                ref$.removeChild(this$);
+              }
+              resolve();
+            }, this$._transition_duration());
+          });
         });
-        this.fire('hide');
       },
       _for_similar: function(callback){
         var tagName, bottom, left, right, top, i$, ref$, len$, child;
@@ -164,6 +148,15 @@
           this.style.marginTop = parseFloat(style.marginTop) - parseFloat(style.height) + 'px';
         } else {
           this.style.marginBottom = parseFloat(style.marginBottom) - parseFloat(style.height) + 'px';
+        }
+      },
+      _transition_duration: function(){
+        var transitionDuration;
+        transitionDuration = getComputedStyle(this).transitionDuration;
+        if (transitionDuration.substr(-2) === 'ms') {
+          return parseFloat(transitionDuration);
+        } else {
+          return transitionDuration = parseFloat(transitionDuration) * 1000;
         }
       }
     }
