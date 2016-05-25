@@ -106,7 +106,7 @@ class Packages_dependencies {
 		 * Do not compare component with itself
 		 */
 		if (self::check_dependencies_are_the_same($meta, $component_meta)) {
-			if (version_compare($meta['version'], $component_meta['version'], '<')) {
+			if (version_compare($meta['version'], $component_meta['version'], '<=')) {
 				$dependencies['update_older'] = [
 					'from' => $component_meta['version'],
 					'to'   => $meta['version']
