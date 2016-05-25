@@ -53,7 +53,7 @@ class Includes_processing {
 		/**
 		 * Remove unnecessary spaces
 		 */
-		$data = preg_replace('/\s*([,;>{}\(])\s*/', '$1', $data);
+		$data = preg_replace('/\s*([,;>{}(])\s*/', '$1', $data);
 		$data = preg_replace('/\s+/', ' ', $data);
 		/**
 		 * Return spaces required in media queries
@@ -71,7 +71,7 @@ class Includes_processing {
 		 * Minify rgb colors declarations
 		 */
 		$data = preg_replace_callback(
-			'/rgb\(([0-9,\.]+)\)/i',
+			'/rgb\(([0-9,.]+)\)/i',
 			function ($rgb) {
 				$rgb = explode(',', $rgb[1]);
 				return
@@ -102,7 +102,9 @@ class Includes_processing {
 				if (!isset(static::$extension_to_mime[$extension]) || filesize("$dir/$link") > static::MAX_EMBEDDING_SIZE) {
 					$path_relatively_to_the_root = str_replace(getcwd(), '', realpath("$dir/$link"));
 					$path_relatively_to_the_root .= '?'.substr(md5($content), 0, 5);
-					$not_embedded_resources[] = $path_relatively_to_the_root;
+					if (strpos($match[1], '?') === false) {
+						$not_embedded_resources[] = $path_relatively_to_the_root;
+					}
 					return str_replace($match[1], "'".str_replace("'", "\\'", $path_relatively_to_the_root)."'", $match[0]);
 				}
 				if ($extension == 'css') {
@@ -138,7 +140,8 @@ class Includes_processing {
 		/**
 		 * Set of symbols that are safe to be concatenated without new line with anything else
 		 */
-		$regexp = '[:;,.+\-*\/{}?><^\'"\[\]=&\(]';
+		$regexp = /** @lang PhpRegExp */
+			'[:;,.+\-*/{}?><^\'"\[\]=&(]';
 		foreach ($data as $index => &$d) {
 			$next_line = isset($data[$index + 1]) ? trim($data[$index + 1]) : '';
 			/**

@@ -542,6 +542,13 @@ trait Includes {
 			$as        = $this->extension_to_as[$extension];
 			$resource  = str_replace(' ', '%20', $resource);
 			$Response->header('Link', "<$resource>; rel=preload; as=$as'", false);
+			$this->link(
+				[
+					'rel'  => 'preload',
+					'href' => $resource,
+					'as'   => $as
+				]
+			);
 		}
 	}
 	/**

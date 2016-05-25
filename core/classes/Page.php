@@ -267,6 +267,10 @@ class Page {
 		$this->Title = $Config->core['title_reverse'] ? array_reverse($this->Title) : $this->Title;
 		$this->Title = implode($Config->core['title_delimiter'] ?: '|', $this->Title);
 		/**
+		 * Addition of CSS, JavaScript and Web Components includes
+		 */
+		$this->add_includes_on_page();
+		/**
 		 * Forming <head> content
 		 */
 		$this->Head =
@@ -301,10 +305,6 @@ class Page {
 				]
 			).
 			h::link(array_values($this->link) ?: false);
-		/**
-		 * Addition of CSS, JavaScript and Web Components includes
-		 */
-		$this->add_includes_on_page();
 		/**
 		 * Generation of Open Graph protocol information
 		 */
