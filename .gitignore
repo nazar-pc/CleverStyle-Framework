@@ -2,5 +2,8 @@
 config/main.json
 # Do not commit files from storage directory
 storage/*/*
-# Except .htaccess, which should be commited
+# Except .htaccess, which should be committed
 !storage/*/.htaccess
+# Exclude backups, they are just for investigations in case when update failed
+fs_backup.json
+meta_backup.json
