@@ -14,7 +14,7 @@ When *Cache and compress JavaScript, CSS and HTML* option is enabled in system a
 * Everything will be compressed with Gzip and placed in `/storage/pcache`
 
 During this process files are combined into logical bundles while taking into account dependencies between components.
-All necessary dependencies structures and information about bundled files are cached in `/strorage/pcache` in JSON files and CSS/JS/HTML.
+All necessary dependencies structures and information about bundled files are cached in `/strorage/pcache` in JSON files.
 
 #### Vulcanization
 If vulcanization is enabled, then CSS and JS will be left inlined in HTML files, otherwise they will be placed into separate files in order to be CSP-compatible.
