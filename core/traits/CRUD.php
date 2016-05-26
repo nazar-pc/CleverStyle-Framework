@@ -30,7 +30,13 @@ trait CRUD {
 		if (count($arguments) == 1 && !is_array(array_values($this->data_model)[1])) {
 			$arguments = $arguments[0];
 		}
-		return $this->create_internal($this->table, $this->data_model, $arguments);
+		/** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+		$this->db_prime()->transaction(
+			function () use (&$id, $arguments) {
+				$id = $this->create_internal($this->table, $this->data_model, $arguments);
+			}
+		);
+		return $id;
 	}
 	/**
 	 * Create item
@@ -150,7 +156,13 @@ trait CRUD {
 	 * @return array|false
 	 */
 	protected function read ($id) {
-		return $this->read_internal($this->table, $this->data_model, $id);
+		/** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+		$this->db()->transaction(
+			function () use (&$result, $id) {
+				$result = $this->read_internal($this->table, $this->data_model, $id);
+			}
+		);
+		return $result;
 	}
 	/**
 	 * Read item
@@ -293,7 +305,13 @@ trait CRUD {
 		if (count($arguments) == 1) {
 			$arguments = $arguments[0];
 		}
-		return $this->update_internal($this->table, $this->data_model, $arguments);
+		/** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+		$this->db_prime()->transaction(
+			function () use (&$result, $arguments) {
+				$result = $this->update_internal($this->table, $this->data_model, $arguments);;
+			}
+		);
+		return $result;
 	}
 	/**
 	 * Update item
@@ -348,7 +366,13 @@ trait CRUD {
 	 * @return bool
 	 */
 	protected function delete ($id) {
-		return $this->delete_internal($this->table, $this->data_model, $id);
+		/** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+		$this->db_prime()->transaction(
+			function () use (&$result, $id) {
+				$result = $this->delete_internal($this->table, $this->data_model, $id);
+			}
+		);
+		return $result;
 	}
 	/**
 	 * Delete item
