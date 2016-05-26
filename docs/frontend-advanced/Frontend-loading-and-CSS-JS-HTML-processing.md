@@ -1,7 +1,8 @@
 Frontend loading in CleverStyle Framework might occur in different ways.
+
 Depending on system configuration sources minification, combining, vulcanization, preloading and other useful features might happen to your CSS/JavaScript/HTML under the hood.
 
-# Caching, minification and combining
+#### Caching, minification and combining
 When *Cache and compress JavaScript, CSS and HTML* option is enabled in system administration, following will happen under the hood:
 * CSS and HTML files will be analyzed
 * small (under 4 KiB) files like images and fonts will be embedded into resulting CSS
@@ -15,11 +16,11 @@ When *Cache and compress JavaScript, CSS and HTML* option is enabled in system a
 During this process files are combined into logical bundles while taking into account dependencies between components.
 All necessary dependencies structures and information about bundled files are cached in `/strorage/pcache` in JSON files and CSS/JS/HTML.
 
-# Vulcanization
+#### Vulcanization
 If vulcanization is enabled, then CSS and JS will be left inlined in HTML files, otherwise they will be placed into separate files in order to be CSP-compatible.
 NOTE: CSS is always inlined currently, this is because Polymer only supports `style[is=custom-style]`, but no `link`-based counterpart.
 
-# Frontend loading
+#### Frontend loading
 CleverStyle Framework uses dependencies between components to load files in following order:
 * system files from `/includes/{css|js|html}`
 * theme files from `/themes/{theme_name}/{css|js|html}`
@@ -27,13 +28,13 @@ CleverStyle Framework uses dependencies between components to load files in foll
 * files from all dependencies of current module (preserving order between dependencies themselves if any as well)
 * module files from `/components/modules/{module_name}/{css|js|html}`
 
-# Optimized frontend loading
+#### Optimized frontend loading
 In this mode system files, theme files and globally used files of components are loaded first and when they finish loading completely the rest of files are loaded afterwards.
 This typically increases speed of initial page load.
 
 This feature is only available when caching is used.
 
-# Preloading
+#### Preloading
 System automatically generates `Link: rel=preload` headers that are typically used for HTTP2 Server Push, additionally corresponding `link[rel=preload]` tags are generated.
 This feature takes into account optimized frontend loading and if used will only use files that are loaded initially.
 
