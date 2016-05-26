@@ -168,8 +168,8 @@ class Includes_processing {
 				$d &&
 				$next_line &&
 				!$comment &&
-				!preg_match("/$regexp\$/", $d) &&
-				!preg_match("/^$regexp/", $next_line)
+				!preg_match("#$regexp\$#", $d) &&
+				!preg_match("#^$regexp#", $next_line)
 			) {
 				$d .= "\n";
 			}
