@@ -308,7 +308,7 @@ trait CRUD {
 		/** @noinspection ExceptionsAnnotatingAndHandlingInspection */
 		$this->db_prime()->transaction(
 			function () use (&$result, $arguments) {
-				$result = $this->update_internal($this->table, $this->data_model, $arguments);;
+				$result = $this->update_internal($this->table, $this->data_model, $arguments);
 			}
 		);
 		return $result;
