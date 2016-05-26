@@ -352,7 +352,7 @@ class Page {
 		if ($file) {
 			return str_replace(THEMES, 'themes', $file);
 		}
-		return 'favicon.ico';
+		return str_replace(DIR.'/', '', file_exists_with_extension(DIR."/favicon", ['png', 'ico']));
 	}
 	/**
 	 * @param string $property

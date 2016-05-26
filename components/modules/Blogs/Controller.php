@@ -166,7 +166,7 @@ class Controller {
 		$Posts   = Posts::instance();
 		$rc      = $Request->route;
 		$post_id = (int)mb_substr($rc[1], mb_strrpos($rc[1], ':') + 1);
-		$post = $Posts->get_as_json_ld($post_id);
+		$post    = $Posts->get_as_json_ld($post_id);
 		if (
 			!$post ||
 			(
@@ -500,12 +500,10 @@ class Controller {
 	 * @return string
 	 */
 	protected static function get_favicon_path ($theme) {
-		$theme_favicon = "$theme/img/favicon";
-		if (file_exists(THEMES."/$theme_favicon.png")) {
-			return "$theme_favicon.png";
-		} elseif (file_exists(THEMES."/$theme_favicon.ico")) {
-			return "$theme_favicon.ico";
+		$file = file_exists_with_extension(THEMES."/$theme/img/favicon", ['png', 'ico']);
+		if ($file) {
+			return str_replace(THEMES, 'themes', $file);
 		}
-		return 'favicon.ico';
+		return str_replace(DIR.'/', '', file_exists_with_extension(DIR."/favicon", ['png', 'ico']));
 	}
 }
