@@ -111,7 +111,7 @@ trait plugins {
 		) {
 			throw new ExitException(Language::prefix('system_admin_modules_')->this_is_not_plugin_installer_file, 400);
 		}
-		return Packages_dependencies::get_dependencies($new_meta);
+		return Packages_dependencies::get_dependencies($new_meta, true);
 	}
 	protected static function get_plugins_list () {
 		$Config       = Config::instance();

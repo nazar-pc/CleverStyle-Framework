@@ -19,11 +19,12 @@ class Packages_dependencies {
 	/**
 	 * Check dependencies for new component (during installation/updating/enabling)
 	 *
-	 * @param array $meta `meta.json` contents of target component
+	 * @param array $meta   `meta.json` contents of target component
+	 * @param bool  $update Is this for updating component to newer version (`$meta` will correspond to the version that components is going to be updated to)
 	 *
 	 * @return array
 	 */
-	static function get_dependencies ($meta) {
+	static function get_dependencies ($meta, $update = false) {
 		/**
 		 * No `meta.json` - nothing to check, allow it
 		 */
@@ -54,7 +55,7 @@ class Packages_dependencies {
 			if (file_exists(MODULES."/$module/meta.json")) {
 				$module_meta = file_get_json(MODULES."/$module/meta.json");
 			}
-			self::common_checks($dependencies, $meta, $module_meta);
+			self::common_checks($dependencies, $meta, $module_meta, $update);
 		}
 		unset($module, $module_meta);
 		/**
@@ -72,7 +73,7 @@ class Packages_dependencies {
 			if (file_exists(PLUGINS."/$plugin/meta.json")) {
 				$plugin_meta = file_get_json(PLUGINS."/$plugin/meta.json");
 			}
-			self::common_checks($dependencies, $meta, $plugin_meta);
+			self::common_checks($dependencies, $meta, $plugin_meta, $update);
 		}
 		unset($plugin, $plugin_meta);
 		/**
@@ -97,8 +98,9 @@ class Packages_dependencies {
 	 * @param array $dependencies
 	 * @param array $meta
 	 * @param array $component_meta
+	 * @param bool  $update
 	 */
-	protected static function common_checks (&$dependencies, &$meta, $component_meta) {
+	protected static function common_checks (&$dependencies, &$meta, $component_meta, $update) {
 		$component_meta = self::normalize_meta($component_meta);
 		$package        = $component_meta['package'];
 		$category       = $component_meta['category'];
@@ -106,10 +108,19 @@ class Packages_dependencies {
 		 * Do not compare component with itself
 		 */
 		if (self::check_dependencies_are_the_same($meta, $component_meta)) {
-			if (version_compare($meta['version'], $component_meta['version'], '<=')) {
-				$dependencies['update_older'] = [
-					'from' => $component_meta['version'],
-					'to'   => $meta['version']
+			if (version_compare($meta['version'], $component_meta['version'], '<')) {
+				$dependencies['update_older'][$meta['category']] = [
+					[
+						'from' => $component_meta['version'],
+						'to'   => $meta['version']
+					]
+				];
+				return;
+			} elseif ($update && $meta['version'] == $component_meta['version']) {
+				$dependencies['update_same'][$meta['category']] = [
+					[
+						'version' => $meta['version']
+					]
 				];
 				return;
 			}

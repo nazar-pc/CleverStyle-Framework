@@ -16,6 +16,10 @@
 	@apply (--cs-link-button);
 }
 
+:host([hidden]) {
+	display : none;
+}
+
 #content {
 	align-items             : center;
 	-ms-flex-align          : center;

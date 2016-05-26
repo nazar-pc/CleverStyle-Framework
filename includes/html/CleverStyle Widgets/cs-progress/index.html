@@ -14,6 +14,10 @@
 		@apply (--cs-progress);
 	}
 
+	html /deep/ progress[is=cs-progress][hidden] {
+		display : none;
+	}
+
 	html /deep/ progress[is=cs-progress][full-width] {
 		width : 100%;
 	}

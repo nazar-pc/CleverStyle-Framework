@@ -16,6 +16,10 @@
 	@apply (--cs-nav-tabs);
 }
 
+:host([hidden]) {
+	display : none;
+}
+
 ::content > :not(template) {
 	& {
 		@apply (--cs-nav-tabs-tab);

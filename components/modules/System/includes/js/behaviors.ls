@@ -189,7 +189,14 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 										| 'modules'	=> (if component == 'System' then 'modules_update_system_impossible_older_version' else 'modules_update_module_impossible_older_version')
 										| 'plugins'	=> 'plugins_update_plugin_impossible_older_version'
 										| 'themes'	=> 'appearance_update_theme_impossible_older_version'
-									L[translation_key](detail.from, detail.to)
+									L[translation_key](component, detail.from, detail.to)
+								case 'update_same'
+									translation_key =
+										switch category
+										| 'modules'	=> (if component == 'System' then 'modules_update_system_impossible_same_version' else 'modules_update_module_impossible_same_version')
+										| 'plugins'	=> 'plugins_update_plugin_impossible_same_version'
+										| 'themes'	=> 'appearance_update_theme_impossible_same_version'
+									L[translation_key](component, detail.version)
 								case 'provide'
 									translation_key =
 										if category == 'modules'

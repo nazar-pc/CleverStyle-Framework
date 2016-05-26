@@ -14,6 +14,10 @@
 	@apply (--cs-icon);
 }
 
+:host([hidden]) {
+	display : none;
+}
+
 .fa {
 	vertical-align : middle;
 }
@@ -24,9 +28,4 @@
 
 .fa-stack {
 	font-size : .5em;
-}
-
-:host([hidden]),
-[hidden] {
-	display : none;
 }

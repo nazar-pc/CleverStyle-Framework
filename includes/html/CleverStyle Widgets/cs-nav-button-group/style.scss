@@ -13,6 +13,10 @@
 	@apply (--cs-nav-button-group);
 }
 
+:host([hidden]) {
+	display : none;
+}
+
 #content {
 	display : flex;
 	display : -ms-flexbox;

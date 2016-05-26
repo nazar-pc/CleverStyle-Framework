@@ -19,6 +19,10 @@
 	}
 }
 
+:host([hidden]) {
+	display : none;
+}
+
 ::content input {
 	// Just `display: none` is not working here, because it will break focus support
 	height    : 0;

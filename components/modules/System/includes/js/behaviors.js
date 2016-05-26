@@ -254,7 +254,24 @@
                 return 'appearance_update_theme_impossible_older_version';
               }
             }());
-            return L[translation_key](detail.from, detail.to);
+            return L[translation_key](component, detail.from, detail.to);
+          case 'update_same':
+            translation_key = (function(){
+              switch (category) {
+              case 'modules':
+                if (component === 'System') {
+                  return 'modules_update_system_impossible_same_version';
+                } else {
+                  return 'modules_update_module_impossible_same_version';
+                }
+                break;
+              case 'plugins':
+                return 'plugins_update_plugin_impossible_same_version';
+              case 'themes':
+                return 'appearance_update_theme_impossible_same_version';
+              }
+            }());
+            return L[translation_key](component, detail.version);
           case 'provide':
             translation_key = category === 'modules' ? 'module_already_provides_functionality' : 'plugin_already_provides_functionality';
             return L[translation_key](detail.name, detail.features.join('", "'));
