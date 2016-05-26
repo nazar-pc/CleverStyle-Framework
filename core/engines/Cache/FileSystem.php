@@ -42,7 +42,6 @@ class FileSystem extends _Abstract {
 			strpos($path_in_filesystem, CACHE) !== 0 ||
 			!is_file($path_in_filesystem)
 		) {
-			file_put_contents(DIR.'/test', var_export([$path_in_filesystem, CACHE, strpos($path_in_filesystem, CACHE) !== 0, !is_file($path_in_filesystem)], true), FILE_APPEND);
 			return false;
 		}
 		$cache = file_get_contents($path_in_filesystem);
@@ -79,7 +78,6 @@ class FileSystem extends _Abstract {
 	 * @inheritdoc
 	 */
 	function del ($item) {
-		file_put_contents(DIR.'/test', "Deleted $item\n".print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true), FILE_APPEND);
 		$path_in_filesystem = $this->get_absolute_path($item);
 		if (strpos($path_in_filesystem, CACHE) !== 0) {
 			return false;
