@@ -200,6 +200,7 @@ class Response {
 	}
 	protected function output_default_web () {
 		foreach ($this->headers ?: [] as $header => $value) {
+			$header = ucwords($header, '-');
 			foreach ($value as $v) {
 				header("$header: $v", false);
 			}
