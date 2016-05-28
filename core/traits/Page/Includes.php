@@ -8,7 +8,6 @@
 namespace cs\Page;
 use
 	cs\App,
-	cs\Core,
 	cs\Config,
 	cs\Language,
 	cs\Request,
@@ -297,11 +296,8 @@ trait Includes {
 		$User   = User::instance();
 		$this->config_internal(
 			[
-				'public_key'            => Core::instance()->public_key,
-				'is_admin'              => (int)$User->admin(),
-				'password_min_length'   => (int)$Config->core['password_min_length'],
-				'password_min_strength' => (int)$Config->core['password_min_strength'],
-				'debug'                 => (int)DEBUG
+				'is_admin' => (int)$User->admin(),
+				'debug'    => (int)DEBUG
 			],
 			'cs',
 			true

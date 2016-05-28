@@ -10,6 +10,7 @@
 namespace cs\modules\System\api\Controller;
 use
 	cs\Config,
+	cs\Core,
 	cs\ExitException,
 	cs\Language,
 	cs\Mail,
@@ -320,5 +321,13 @@ trait profile {
 	static function profile_contacts_get () {
 		$User = User::instance();
 		return $User->get_contacts();
+	}
+	static function profile___configuration () {
+		$Config = Config::instance();
+		return [
+			'public_key'            => Core::instance()->public_key,
+			'password_min_length'   => (int)$Config->core['password_min_length'],
+			'password_min_strength' => (int)$Config->core['password_min_strength']
+		];
 	}
 }

@@ -13,7 +13,7 @@ echo Response::instance()->body;
 	<meta content="CleverStyle Framework by Mokrynskyi Nazar" name="generator">
 	<base href="http://cscms.travis/">
 	<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet" shim-shadowdom>
-	<script class="cs-config" target="cs" type="application/json">{"public_key":"%s","is_admin":0,"password_min_length":4,"password_min_strength":%d,"debug":0}</script>
+	<script class="cs-config" target="cs" type="application/json">{"is_admin":0,"debug":0}</script>
 	<script class="cs-config" target="cs.optimized_includes" type="application/json">[["\/storage\/pcache\/jquery.js?%s"],[]]</script>
 	<link href="/favicon.ico" rel="shortcut icon">
 	<meta content="Web-site | Home" property="og:title">

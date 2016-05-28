@@ -36,13 +36,17 @@ cs.sign_in = (login, password) !->
 	jssha <-! require(['jssha'], _)
 	$.ajax(
 		url		: 'api/System/profile'
-		data	:
-			login		: cs.hash(jssha, 'sha224', login)
-			password	: cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', password) + cs.public_key)
-		type	: 'sign_in'
-		success	: !->
-			location.reload()
-	)
+		type	: 'configuration'
+	).then (configuration) !->
+		$.ajax(
+			url		: 'api/System/profile'
+			data	:
+				login		: cs.hash(jssha, 'sha224', login)
+				password	: cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', password) + configuration.public_key)
+			type	: 'sign_in'
+			success	: !->
+				location.reload()
+		)
 /**
  * Sign out
  */
@@ -111,28 +115,32 @@ cs.change_password = (current_password, new_password, success, error) !->
 	else if current_password == new_password
 		cs.ui.alert(L.current_new_password_equal)
 		return
-	else if String(new_password).length < cs.password_min_length
-		cs.ui.alert(L.password_too_short)
-		return
-	else if cs.password_check(new_password) < cs.password_min_strength
-		cs.ui.alert(L.password_too_easy)
-		return
-	jssha <-! require(['jssha'], _)
-	current_password	= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + cs.public_key)
-	new_password		= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + cs.public_key)
 	$.ajax(
 		url		: 'api/System/profile'
-		data	:
-			current_password	: current_password
-			new_password		: new_password
-		type	: 'change_password'
-		success	: (result) !->
-			if success
-				success()
-			else
-				cs.ui.alert(L.password_changed_successfully)
-		error	: error || $.ajaxSettings.error
-	)
+		type	: 'configuration'
+	).then (configuration) !->
+		if String(new_password).length < configuration.password_min_length
+			cs.ui.alert(L.password_too_short)
+			return
+		else if cs.password_check(new_password) < configuration.password_min_strength
+			cs.ui.alert(L.password_too_easy)
+			return
+		jssha <-! require(['jssha'], _)
+		current_password	= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + configuration.public_key)
+		new_password		= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + configuration.public_key)
+		$.ajax(
+			url		: 'api/System/profile'
+			data	:
+				current_password	: current_password
+				new_password		: new_password
+			type	: 'change_password'
+			success	: (result) !->
+				if success
+					success()
+				else
+					cs.ui.alert(L.password_changed_successfully)
+			error	: error || $.ajaxSettings.error
+		)
 /**
  * Check password strength
  *
