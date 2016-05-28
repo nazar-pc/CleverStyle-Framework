@@ -1,6 +1,11 @@
 <?php
 namespace cs;
-Page::instance()->Head .= '<meta name="viewport" content="width=device-width, initial-scale=1">';
+Page::instance()->Head .= /** @lang HTML */
+	<<<HTML
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" type="text/css">
+
+HTML;
 ?><!doctype html>
 <!--pre_Html--><!--head-->
 <body cs-unresolved>
