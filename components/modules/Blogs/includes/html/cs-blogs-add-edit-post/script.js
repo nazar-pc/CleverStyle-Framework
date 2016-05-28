@@ -38,11 +38,7 @@
           }, $.getJSON('api/Blogs/sections'), $.ajax({
           url: 'api/Blogs',
           type: 'get_settings'
-        }), cs.is_user
-          ? $.getJSON('api/System/profile')
-          : {
-            id: 1
-          }
+        }), $.getJSON('api/System/profile')
       ]).then(function(arg$){
         var sections, settings, profile;
         this$.post = arg$[0], sections = arg$[1], settings = arg$[2], profile = arg$[3];

@@ -24,13 +24,7 @@
     },
     reload: function(){
       var this$ = this;
-      Promise.all([
-        $.getJSON('api/Comments?module=' + this.module + '&item=' + this.item), cs.is_user
-          ? $.getJSON('api/System/profile')
-          : {
-            id: 1
-          }
-      ]).then(function(arg$){
+      Promise.all([$.getJSON('api/Comments?module=' + this.module + '&item=' + this.item), $.getJSON('api/System/profile')]).then(function(arg$){
         var comments, profile, id_index_map, i$, len$, index, comment, normalized_comments;
         comments = arg$[0], profile = arg$[1];
         id_index_map = {};

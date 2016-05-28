@@ -23,11 +23,11 @@ dom-module#cs-shop-cart
 				label(hidden="[[!equal(shipping_type_details.phone_needed, 1)]]") [[L.shipping_phone]]
 				input(is="cs-input-text" type="text" value="{{phone}}")
 				label(hidden="[[!equal(shipping_type_details.address_needed, 1)]]") [[L.shipping_address]]
-				textarea(is="cs-textarea" autosize value="{{address}}")
+				textarea(is="cs-textarea" autosize value="{{address}}" hidden="[[!equal(shipping_type_details.address_needed, 1)]]")
 				label [[L.comment]]
 				textarea(is="cs-textarea" autosize value="{{comment}}")
 				label(hidden="[[equal(payment_methods.length, 1)]]") [[L.payment_method]]
-				select(is="cs-select" selected="{{payment_method}}")
+				select(is="cs-select" selected="{{payment_method}}" hidden="[[equal(payment_methods.length, 1)]]")
 					template(is="dom-repeat" items="[[payment_methods]]" as="details")
 						option(value="[[details.method]]") [[details.title]]
 				#payment_method_description.cs-margin-bottom

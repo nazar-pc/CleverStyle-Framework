@@ -24,7 +24,7 @@ Polymer(
 	reload : !->
 		Promise.all([
 			$.getJSON('api/Comments?module=' + @module + '&item=' + @item)
-			if cs.is_user then $.getJSON('api/System/profile') else {id : 1}
+			$.getJSON('api/System/profile')
 		]).then ([comments, profile]) !~>
 			id_index_map = {}
 			for comment, index in comments

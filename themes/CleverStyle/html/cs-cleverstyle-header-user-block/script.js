@@ -14,12 +14,8 @@
     behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
     properties: {
       avatar: String,
-      guest: Boolean,
-      username: String,
-      login: String
-    },
-    ready: function(){
-      this.guest = !!cs.is_guest;
+      guest: false,
+      username: String
     },
     _sign_in: function(){
       cs.ui.simple_modal("<cs-system-sign-in/>");

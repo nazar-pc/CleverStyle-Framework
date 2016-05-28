@@ -24,11 +24,7 @@
         $.ajax({
           url: 'api/Blogs',
           type: 'get_settings'
-        }), cs.is_user
-          ? $.getJSON('api/System/profile')
-          : {
-            id: 1
-          }
+        }), $.getJSON('api/System/profile')
       ]).then(function(arg$){
         var profile;
         this$.settings = arg$[0], profile = arg$[1];

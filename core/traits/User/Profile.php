@@ -278,16 +278,16 @@ trait Profile {
 	 * @return string
 	 */
 	function avatar ($size = null, $user = false) {
-		$user   = (int)$user ?: $this->id;
-		$avatar = $this->get('avatar', $user);
-		$Config = Config::instance();
+		$user         = (int)$user ?: $this->id;
+		$avatar       = $this->get('avatar', $user);
+		$Config       = Config::instance();
+		$guest_avatar = $Config->core_url().'/includes/img/guest.svg';
 		if (!$avatar && $this->id != User::GUEST_ID && $Config->core['gravatar_support']) {
-			$email_hash     = md5($this->get('email', $user));
-			$default_avatar = urlencode($Config->core_url().'/includes/img/guest.svg');
-			$avatar         = "https://www.gravatar.com/avatar/$email_hash?d=mm&s=$size&d=$default_avatar";
+			$email_hash = md5($this->get('email', $user));
+			$avatar     = "https://www.gravatar.com/avatar/$email_hash?d=mm&s=$size&d=".urlencode($guest_avatar);
 		}
 		if (!$avatar) {
-			$avatar = '/includes/img/guest.svg';
+			$avatar = $guest_avatar;
 		}
 		return h::prepare_url($avatar, true);
 	}

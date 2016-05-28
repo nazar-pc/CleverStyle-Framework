@@ -18,10 +18,7 @@ use
 
 trait profile {
 	static function profile___get () {
-		$User = User::instance();
-		if ($User->guest()) {
-			throw new ExitException(403);
-		}
+		$User         = User::instance();
 		$fields       = [
 			'id',
 			'login',
@@ -32,6 +29,10 @@ trait profile {
 		];
 		$result       = $User->get($fields, $User->id);
 		$result['id'] = (int)$result['id'];
+		if ($User->guest()) {
+			$result['username'] = Language::instance()->system_profile_guest;
+			$result['avatar']   = $User->avatar();
+		}
 		return $result;
 	}
 	/**

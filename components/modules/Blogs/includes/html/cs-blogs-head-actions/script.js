@@ -7,6 +7,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
+  var GUEST_ID;
+  GUEST_ID = 1;
   Polymer({
     'is': 'cs-blogs-head-actions',
     behaviors: [cs.Polymer.behaviors.Language('blogs_')],
@@ -21,13 +23,15 @@
     },
     ready: function(){
       var this$ = this;
-      $.ajax({
-        url: 'api/Blogs',
-        type: 'get_settings',
-        success: function(settings){
-          this$.settings = settings;
-          this$.can_write_post = cs.is_user && (this$.settings.admin || !settings.new_posts_only_from_admins);
-        }
+      Promise.all([
+        $.ajax({
+          url: 'api/Blogs',
+          type: 'get_settings'
+        }), $.getJSON('api/System/profile')
+      ]).then(function(arg$){
+        var profile;
+        this$.settings = arg$[0], profile = arg$[1];
+        this$.can_write_post = profile.id !== GUEST_ID && (this$.settings.admin || !settings.new_posts_only_from_admins);
       });
     }
   });

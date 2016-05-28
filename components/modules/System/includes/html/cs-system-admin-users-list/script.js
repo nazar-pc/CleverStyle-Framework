@@ -8,12 +8,12 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L, STATUS_ACTIVE, STATUS_INACTIVE, GUEST_ID, ROOT_ID;
-  L = cs.Language('system_admin_users_');
+  var STATUS_ACTIVE, STATUS_INACTIVE, GUEST_ID, ROOT_ID, L;
   STATUS_ACTIVE = 1;
   STATUS_INACTIVE = 0;
   GUEST_ID = 1;
   ROOT_ID = 2;
+  L = cs.Language('system_admin_users_');
   Polymer({
     'is': 'cs-system-admin-users-list',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_users_')],

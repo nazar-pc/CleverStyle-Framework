@@ -14,14 +14,18 @@ use
 	cs\User,
 	h;
 include_once __DIR__.'/functions.php';
-$main_menu	= h::nav(
+$main_menu  = h::nav(
 	implode('', get_main_menu())
 );
-$submenu	= Request::instance()->admin_path ? Menu::instance()->get_menu() : '';
-$User		= User::instance();
-$avatar		= $User->avatar();
-$username	= $User->username();
-$login		= $User->login;
+$submenu    = Request::instance()->admin_path ? Menu::instance()->get_menu() : '';
+$User       = User::instance();
+$user_block = h::cs_cleverstyle_header_user_block(
+	[
+		'avatar'   => $User->avatar(),
+		'username' => $User->username(),
+		'guest'    => $User->guest()
+	]
+);
 ?><!doctype html>
 <!--pre_Html--><!--head-->
 <body cs-unresolved>
@@ -30,7 +34,7 @@ $login		= $User->login;
 		<div>
 			<a href="/" class="cs-text-lead"><?=get_core_ml_text('name')?></a>
 			<?=level($main_menu, 3)?>
-			<cs-cleverstyle-header-user-block avatar="<?=$avatar?>" username="<?=h::prepare_attr_value($username)?>" login="<?=h::prepare_attr_value($login)?>"></cs-cleverstyle-header-user-block>
+			<?=$user_block?>
 		</div>
 		<hr>
 		<?=level($submenu, 2)?>

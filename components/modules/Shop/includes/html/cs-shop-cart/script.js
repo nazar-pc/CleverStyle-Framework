@@ -7,7 +7,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var DEFAULT_IMAGE, L, shop, cart, params, method, details;
+  var GUEST_ID, DEFAULT_IMAGE, L, shop, cart, params, method, details, slice$ = [].slice;
+  GUEST_ID = 1;
   DEFAULT_IMAGE = '/components/modules/Shop/includes/img/no-image.svg';
   L = cs.Language('shop_');
   shop = cs.shop;
@@ -62,7 +63,7 @@
         }
         return results$;
       }()),
-      registration_required: !cs.is_user && !shop.settings.allow_guests_orders
+      registration_required: Boolean
     },
     ready: function(){
       var this$ = this;
@@ -81,20 +82,21 @@
             }, data);
           });
         }
-      }.call(this))).then(function(items){
-        this$.items = items;
-      });
-      if (!this.shipping_username && cs.is_user) {
-        $.getJSON('api/System/profile', function(data){
+      }.call(this)).concat([$.getJSON('api/System/profile')])).then(function(arg$){
+        var i$, profile, is_user;
+        this$.items = 0 < (i$ = arg$.length - 1) ? slice$.call(arg$, 0, i$) : (i$ = 0, []), profile = arg$[i$];
+        is_user = profile.id !== GUEST_ID;
+        this$.registration_required = !shop.settings.allow_guests_orders && !is_user;
+        if (!this$.shipping_username && is_user) {
           this$.shipping_username = data.username || data.login;
-        });
-      }
+        }
+      });
     },
     shipping_type_changed: function(shipping_type_selected){
       var this$ = this;
       params.shipping_type = shipping_type_selected;
       shop.shipping_types.forEach(function(shipping_type){
-        if (shipping_type.id === shipping_type_selected) {
+        if (shipping_type.id == shipping_type_selected) {
           this$.set('shipping_type_details', shipping_type);
           this$.set('shipping_cost_formatted', sprintf(shop.settings.price_formatting, shipping_type.price));
           return false;

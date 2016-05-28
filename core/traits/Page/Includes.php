@@ -293,16 +293,12 @@ trait Includes {
 		);
 	}
 	protected function add_system_configs () {
-		$Config  = Config::instance();
-		$Request = Request::instance();
-		$User    = User::instance();
+		$Config = Config::instance();
+		$User   = User::instance();
 		$this->config_internal(
 			[
 				'public_key'            => Core::instance()->public_key,
-				'in_admin'              => (int)$Request->admin_path,
 				'is_admin'              => (int)$User->admin(),
-				'is_user'               => (int)$User->user(),
-				'is_guest'              => (int)$User->guest(),
 				'password_min_length'   => (int)$Config->core['password_min_length'],
 				'password_min_strength' => (int)$Config->core['password_min_strength'],
 				'debug'                 => (int)DEBUG

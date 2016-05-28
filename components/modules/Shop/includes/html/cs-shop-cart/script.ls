@@ -5,7 +5,8 @@
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-const DEFAULT_IMAGE = '/components/modules/Shop/includes/img/no-image.svg'
+const GUEST_ID		= 1
+const DEFAULT_IMAGE	= '/components/modules/Shop/includes/img/no-image.svg'
 L		= cs.Language('shop_')
 shop	= cs.shop
 cart	= shop.cart
@@ -50,25 +51,26 @@ Polymer(
 			for method, details of shop.payment_methods
 				details.method	= method
 				details
-		registration_required	: !cs.is_user && !shop.settings.allow_guests_orders
+		registration_required	: Boolean
 	ready						: !->
 		@payment_method	= @payment_methods[0].method
-		Promise.all(
-			for let item_id, units of cart.get_all()
+		Promise.all([
+			...for let item_id, units of cart.get_all()
 				$.getJSON("api/Shop/items/#item_id").then (data) ->
 					{
 						units	: units
 						image	: data.images[0] || DEFAULT_IMAGE
 					} <<<< data
-		).then (@items) !~>
-		if !@shipping_username && cs.is_user
-			$.getJSON('api/System/profile', (data) !~>
+			$.getJSON('api/System/profile')
+		]).then ([...@items, profile]) !~>
+			is_user					= profile.id != GUEST_ID
+			@registration_required	= !shop.settings.allow_guests_orders && !is_user
+			if !@shipping_username && is_user
 				@shipping_username = data.username || data.login
-			)
 	shipping_type_changed		: (shipping_type_selected) !->
 		params.shipping_type	= shipping_type_selected
 		shop.shipping_types.forEach (shipping_type) !~>
-			if shipping_type.id == shipping_type_selected
+			if shipping_type.id ~= shipping_type_selected
 				@set('shipping_type_details', shipping_type)
 				@set('shipping_cost_formatted', sprintf(shop.settings.price_formatting, shipping_type.price))
 				return false

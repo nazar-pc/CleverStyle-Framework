@@ -6,11 +6,11 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L				= cs.Language('system_admin_users_')
-STATUS_ACTIVE	= 1
-STATUS_INACTIVE	= 0
-GUEST_ID		= 1
-ROOT_ID			= 2
+const STATUS_ACTIVE		= 1
+const STATUS_INACTIVE	= 0
+const GUEST_ID			= 1
+const ROOT_ID			= 2
+L	= cs.Language('system_admin_users_')
 Polymer(
 	'is'		: 'cs-system-admin-users-list'
 	behaviors	: [

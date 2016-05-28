@@ -13,7 +13,7 @@ echo Response::instance()->body;
 	<meta content="CleverStyle Framework by Mokrynskyi Nazar" name="generator">
 	<base href="http://cscms.travis/">
 	<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet" shim-shadowdom>
-	<script class="cs-config" target="cs" type="application/json">{"public_key":"%s","in_admin":0,"is_admin":0,"is_user":0,"is_guest":1,"password_min_length":4,"password_min_strength":%d,"debug":0}</script>
+	<script class="cs-config" target="cs" type="application/json">{"public_key":"%s","is_admin":0,"password_min_length":4,"password_min_strength":%d,"debug":0}</script>
 	<script class="cs-config" target="cs.optimized_includes" type="application/json">[["\/storage\/pcache\/jquery.js?%s"],[]]</script>
 	<link href="/favicon.ico" rel="shortcut icon">
 	<meta content="Web-site | Home" property="og:title">
@@ -30,7 +30,7 @@ echo Response::instance()->body;
 			<nav>
 				<a href="/">Home</a>
 			</nav>
-			<cs-cleverstyle-header-user-block avatar="/includes/img/guest.svg" username="Guest" login="guest"></cs-cleverstyle-header-user-block>
+			<cs-cleverstyle-header-user-block avatar="http://cscms.travis/includes/img/guest.svg" guest username="Guest"></cs-cleverstyle-header-user-block>
 		</div>
 		<hr>
 		%w

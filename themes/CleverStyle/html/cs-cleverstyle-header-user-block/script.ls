@@ -13,11 +13,8 @@ Polymer(
 	]
 	properties	:
 		avatar		: String
-		guest		: Boolean
+		guest		: false
 		username	: String
-		login		: String
-	ready : !->
-		@guest	= !!cs.is_guest
 	_sign_in : !->
 		cs.ui.simple_modal("<cs-system-sign-in/>")
 	_registration : !->

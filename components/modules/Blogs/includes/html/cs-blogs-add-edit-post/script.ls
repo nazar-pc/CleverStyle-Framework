@@ -37,7 +37,7 @@ Polymer(
 				url		: 'api/Blogs'
 				type	: 'get_settings'
 			)
-			if cs.is_user then $.getJSON('api/System/profile') else {id : 1}
+			$.getJSON('api/System/profile')
 		]).then ([@post, sections, settings, profile]) !~>
 			@original_title				= @post.title
 			@$.title.textContent		= @post.title
