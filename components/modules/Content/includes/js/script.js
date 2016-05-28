@@ -7,11 +7,14 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  if (!cs.is_admin) {
-    return;
-  }
-  cs.ui.ready.then(function(){
-    var L;
+  Promise.all([
+    $.ajax({
+      url: 'api/Content',
+      type: 'is_admin'
+    }), cs.ui.ready
+  ]).then(function(arg$){
+    var is_admin, L;
+    is_admin = arg$[0];
     L = cs.Language('content_');
     $('body').on('click', '.cs-content-add', function(){
       var modal_body, key, title, content, type;

@@ -1,7 +1,7 @@
 {
 	"package"             : "Content",
 	"category"            : "modules",
-	"version"             : "1.25.1+build-61",
+	"version"             : "1.26.0+build-62",
 	"description"         : "Simple content functionality. May be used by other components or stand-alone.",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/Framework",

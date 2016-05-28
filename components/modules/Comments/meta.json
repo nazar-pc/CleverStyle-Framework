@@ -1,7 +1,7 @@
 {
 	"package"             : "Comments",
 	"category"            : "modules",
-	"version"             : "2.12.0+build-85",
+	"version"             : "2.13.0+build-86",
 	"description"         : "Adds comments functionality to other modules",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/Framework",

@@ -294,14 +294,6 @@ trait Includes {
 	protected function add_system_configs () {
 		$Config = Config::instance();
 		$User   = User::instance();
-		$this->config_internal(
-			[
-				'is_admin' => (int)$User->admin(),
-				'debug'    => (int)DEBUG
-			],
-			'cs',
-			true
-		);
 		if ($User->admin()) {
 			$this->config_internal((int)$Config->core['simple_admin_mode'], 'cs.simple_admin_mode', true);
 		}

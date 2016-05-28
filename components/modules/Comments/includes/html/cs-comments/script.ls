@@ -25,12 +25,16 @@ Polymer(
 		Promise.all([
 			$.getJSON('api/Comments?module=' + @module + '&item=' + @item)
 			$.getJSON('api/System/profile')
-		]).then ([comments, profile]) !~>
+			$.ajax(
+				url		: 'api/Comments'
+				type	: 'is_admin'
+			)
+		]).then ([comments, profile, is_admin]) !~>
 			id_index_map = {}
 			for comment, index in comments
 				id_index_map[comment.id] = index
-				comment.children = []
-				comment.can_edit = cs.is_admin || comment.user == profile.id
+				comment.children	= []
+				comment.can_edit	= is_admin || comment.user == profile.id
 				comment.scroll_to	= @anchor == 'comment_' + comment.id
 			normalized_comments = []
 			for comment, index in comments

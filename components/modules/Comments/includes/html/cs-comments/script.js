@@ -24,16 +24,21 @@
     },
     reload: function(){
       var this$ = this;
-      Promise.all([$.getJSON('api/Comments?module=' + this.module + '&item=' + this.item), $.getJSON('api/System/profile')]).then(function(arg$){
-        var comments, profile, id_index_map, i$, len$, index, comment, normalized_comments;
-        comments = arg$[0], profile = arg$[1];
+      Promise.all([
+        $.getJSON('api/Comments?module=' + this.module + '&item=' + this.item), $.getJSON('api/System/profile'), $.ajax({
+          url: 'api/Comments',
+          type: 'is_admin'
+        })
+      ]).then(function(arg$){
+        var comments, profile, is_admin, id_index_map, i$, len$, index, comment, normalized_comments;
+        comments = arg$[0], profile = arg$[1], is_admin = arg$[2];
         id_index_map = {};
         for (i$ = 0, len$ = comments.length; i$ < len$; ++i$) {
           index = i$;
           comment = comments[i$];
           id_index_map[comment.id] = index;
           comment.children = [];
-          comment.can_edit = cs.is_admin || comment.user === profile.id;
+          comment.can_edit = is_admin || comment.user === profile.id;
           comment.scroll_to = this$.anchor === 'comment_' + comment.id;
         }
         normalized_comments = [];

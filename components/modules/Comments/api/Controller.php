@@ -183,4 +183,10 @@ class Controller {
 			throw new ExitException(Language::prefix('comments_')->comment_deleting_server_error, 500);
 		}
 	}
+	/**
+	 * @return bool
+	 */
+	static function index_is_admin () {
+		return (bool)User::instance()->admin();
+	}
 }
