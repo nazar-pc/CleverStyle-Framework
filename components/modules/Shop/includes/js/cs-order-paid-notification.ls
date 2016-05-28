@@ -5,8 +5,11 @@
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-$ !->
-	if cs.route[0] == 'orders_' && location.search
+Polymer(
+	is	: 'cs-order-paid-notification'
+	created : !->
+		if !location.search
+			return
 		L		= cs.Language('shop_')
 		query	= location.search.substr(1).split('&')
 		query.forEach (q) !->
@@ -22,3 +25,4 @@ $ !->
 						L.paid_error_notification(q[1])
 						'error'
 					)
+)

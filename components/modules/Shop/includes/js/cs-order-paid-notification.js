@@ -7,9 +7,13 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  $(function(){
-    var L, query;
-    if (cs.route[0] === 'orders_' && location.search) {
+  Polymer({
+    is: 'cs-order-paid-notification',
+    created: function(){
+      var L, query;
+      if (!location.search) {
+        return;
+      }
       L = cs.Language('shop_');
       query = location.search.substr(1).split('&');
       query.forEach(function(q){

@@ -293,26 +293,19 @@ trait Includes {
 		);
 	}
 	protected function add_system_configs () {
-		$Config         = Config::instance();
-		$Request        = Request::instance();
-		$User           = User::instance();
-		$current_module = $Request->current_module;
+		$Config  = Config::instance();
+		$Request = Request::instance();
+		$User    = User::instance();
 		$this->config_internal(
 			[
-				'base_url'              => $Config->base_url(),
-				'current_base_url'      => $Config->base_url().'/'.($Request->admin_path ? 'admin/' : '').$current_module,
 				'public_key'            => Core::instance()->public_key,
-				'module'                => $current_module,
 				'in_admin'              => (int)$Request->admin_path,
 				'is_admin'              => (int)$User->admin(),
 				'is_user'               => (int)$User->user(),
 				'is_guest'              => (int)$User->guest(),
 				'password_min_length'   => (int)$Config->core['password_min_length'],
 				'password_min_strength' => (int)$Config->core['password_min_strength'],
-				'debug'                 => (int)DEBUG,
-				'route'                 => $Request->route,
-				'route_path'            => $Request->route_path,
-				'route_ids'             => $Request->route_ids
+				'debug'                 => (int)DEBUG
 			],
 			'cs',
 			true

@@ -21,7 +21,7 @@ Polymer(
 		paid				: Boolean
 	ready : !->
 		@show_pay_now				= !@paid && @payment_method != 'shop:cash'
-		@order_number				= sprintf('' + Lorder_number, @order_id)
+		@order_number				= sprintf('' + L.order_number, @order_id)
 		@order_status				= @querySelector('#order_status').textContent
 		@shipping_type				= @querySelector('#shipping_type').textContent
 		@shipping_cost_formatted	= sprintf(cs.shop.settings.price_formatting, @shipping_cost)

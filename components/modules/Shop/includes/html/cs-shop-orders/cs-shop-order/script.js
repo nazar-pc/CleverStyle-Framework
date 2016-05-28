@@ -24,7 +24,7 @@
     ready: function(){
       var total_price, discount, ref$, ref1$, ref2$;
       this.show_pay_now = !this.paid && this.payment_method !== 'shop:cash';
-      this.order_number = sprintf('' + Lorder_number, this.order_id);
+      this.order_number = sprintf('' + L.order_number, this.order_id);
       this.order_status = this.querySelector('#order_status').textContent;
       this.shipping_type = this.querySelector('#shipping_type').textContent;
       this.shipping_cost_formatted = sprintf(cs.shop.settings.price_formatting, this.shipping_cost);

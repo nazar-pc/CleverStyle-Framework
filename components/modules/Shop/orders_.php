@@ -57,6 +57,7 @@ $items_path  = path($L->items);
 $orders_path = path($L->orders);
 $Page->title($L->orders);
 $Page->content(
+	h::cs_order_paid_notification().
 	h::cs_shop_orders(
 		h::h1($L->your_orders).
 		h::{'#orders cs-shop-order'}(
