@@ -19,10 +19,9 @@ trait security {
 	static function admin_security_get_settings () {
 		$Config = Config::instance();
 		return [
-			'key_expire'        => $Config->core['key_expire'],
-			'gravatar_support'  => $Config->core['gravatar_support'],
-			'simple_admin_mode' => $Config->core['simple_admin_mode'],
-			'applied'           => $Config->cancel_available()
+			'key_expire'       => $Config->core['key_expire'],
+			'gravatar_support' => $Config->core['gravatar_support'],
+			'applied'          => $Config->cancel_available()
 		];
 	}
 	/**

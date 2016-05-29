@@ -351,22 +351,23 @@
           type: String
         },
         settings: Object,
-        simple_admin_mode: {
-          computed: '_simple_admin_mode(settings.simple_admin_mode)',
-          type: Boolean
-        }
-      },
-      _simple_admin_mode: function(simple_admin_mode){
-        return simple_admin_mode == 1;
+        simple_admin_mode: Boolean
       },
       _reload_settings: function(){
         var this$ = this;
-        $.ajax({
-          url: this.settings_api_url,
-          type: 'get_settings',
-          success: function(settings){
-            this$.set('settings', settings);
-          }
+        Promise.all([
+          $.ajax({
+            url: this.settings_api_url,
+            type: 'get_settings'
+          }), $.ajax({
+            url: 'api/System/admin/system',
+            type: 'get_settings'
+          })
+        ]).then(function(arg$){
+          var settings, system_settings;
+          settings = arg$[0], system_settings = arg$[1];
+          this$.simple_admin_mode = system_settings.simple_admin_mode === 1;
+          this$.set('settings', settings);
         });
       },
       _apply: function(){

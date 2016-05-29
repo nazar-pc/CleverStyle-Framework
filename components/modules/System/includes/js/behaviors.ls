@@ -266,18 +266,20 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				observer	: '_reload_settings'
 				type		: String
 			settings			: Object
-			simple_admin_mode	:
-				computed	: '_simple_admin_mode(settings.simple_admin_mode)'
-				type		: Boolean
-		_simple_admin_mode : (simple_admin_mode) ->
-			simple_admin_mode ~= 1
+			simple_admin_mode	: Boolean
 		_reload_settings : !->
-			$.ajax(
-				url		: @settings_api_url
-				type	: 'get_settings'
-				success	: (settings) !~>
-					@set('settings', settings)
-			)
+			Promise.all([
+				$.ajax(
+					url		: @settings_api_url
+					type	: 'get_settings'
+				)
+				$.ajax(
+					url		: 'api/System/admin/system'
+					type	: 'get_settings'
+				)
+			]).then ([settings, system_settings]) !~>
+				@simple_admin_mode	= system_settings.simple_admin_mode == 1
+				@set('settings', settings)
 		_apply : !->
 			$.ajax(
 				url		: @settings_api_url

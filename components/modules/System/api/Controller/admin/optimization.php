@@ -28,7 +28,6 @@ trait optimization {
 			'inserts_limit'              => $Config->core['inserts_limit'],
 			'update_ratio'               => $Config->core['update_ratio'],
 			'cache_state'                => Cache::instance()->cache_state(),
-			'simple_admin_mode'          => $Config->core['simple_admin_mode'],
 			'applied'                    => $Config->cancel_available()
 		];
 	}
