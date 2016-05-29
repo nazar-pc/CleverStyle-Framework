@@ -1,11 +1,7 @@
 Before getting into details here, make sure you are familiar with [Web Components](http://webcomponents.org/) in general, [Polymer](https://www.polymer-project.org/) itself and with [behaviors](https://www.polymer-project.org/1.0/docs/devguide/behaviors.html.md) in particular.
 
 Since CleverStyle Framework uses custom elements heavily, it also provides some convenient behaviors for elements building out of the box:
-* cs.Polymer.behaviors.cs
 * cs.Polymer.behaviors.Language
-
-#### cs.Polymer.behaviors.cs
-Access to whole `window.cs` inside Polymer element (useful for using configuration in data bindings)
 
 #### cs.Polymer.behaviors.Language
 Powerful behavior to provide multilingual features for custom elements.
