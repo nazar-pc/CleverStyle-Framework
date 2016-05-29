@@ -31,9 +31,14 @@
     },
     reload: function(){
       var this$ = this;
-      Promise.all([$.getJSON('api/System/admin/modules'), $.getJSON('api/System/admin/modules/default')]).then(function(arg$){
-        var modules, default_module;
-        modules = arg$[0], default_module = arg$[1];
+      Promise.all([
+        $.getJSON('api/System/admin/modules'), $.getJSON('api/System/admin/modules/default'), $.ajax({
+          url: 'api/System/admin/system',
+          type: 'get_settings'
+        })
+      ]).then(function(arg$){
+        var modules, default_module, settings;
+        modules = arg$[0], default_module = arg$[1], settings = arg$[2];
         this$.default_module = default_module;
         modules.forEach(function(module){
           var active_switch_local, enabled, installed;
@@ -48,8 +53,8 @@
           installed = module.active != -1;
           module.can_disable = enabled && module.name !== 'System';
           module.administration = module.has_admin_section && installed;
-          module.db_settings = !cs.simple_admin_mode && installed && module.meta && module.meta.db;
-          module.storage_settings = !cs.simple_admin_mode && installed && module.meta && module.meta.storage;
+          module.db_settings = !settings.simple_admin_mode && installed && module.meta && module.meta.db;
+          module.storage_settings = !settings.simple_admin_mode && installed && module.meta && module.meta.storage;
           module.can_be_set_as_default = enabled && module.name !== default_module && module.has_user_section;
           (function(){
             var i$, ref$, len$, prop, ref1$, tag;
@@ -152,14 +157,19 @@
       var module, meta, this$ = this;
       module = e.model.module.name;
       meta = e.model.module.meta;
-      Promise.all([$.getJSON("api/System/admin/modules/" + module + "/dependencies"), $.getJSON('api/System/admin/databases'), $.getJSON('api/System/admin/storages')]).then(function(arg$){
-        var dependencies, databases, storages, message, message_more, form, modal;
-        dependencies = arg$[0], databases = arg$[1], storages = arg$[2];
+      Promise.all([
+        $.getJSON("api/System/admin/modules/" + module + "/dependencies"), $.getJSON('api/System/admin/databases'), $.getJSON('api/System/admin/storages'), $.ajax({
+          url: 'api/System/admin/system',
+          type: 'get_settings'
+        })
+      ]).then(function(arg$){
+        var dependencies, databases, storages, settings, message, message_more, form, modal;
+        dependencies = arg$[0], databases = arg$[1], storages = arg$[2], settings = arg$[3];
         message = '';
         message_more = '';
         if (Object.keys(dependencies).length) {
           message = this$._compose_dependencies_message(module, dependencies);
-          if (cs.simple_admin_mode) {
+          if (settings.simple_admin_mode) {
             cs.ui.notify(message, 'error', 5);
             return;
           }
@@ -167,7 +177,7 @@
         if (meta && meta.optional) {
           message_more += '<p class="cs-text-success cs-block-success">' + L.system_admin_for_complete_feature_set(meta.optional.join(', ')) + '</p>';
         }
-        form = meta ? this$._databases_storages_form(meta, databases, storages) : '';
+        form = meta ? this$._databases_storages_form(meta, databases, storages, settings) : '';
         modal = cs.ui.confirm("<h3>" + L.installation_of_module(module) + "</h3>\n" + message + "\n" + message_more + "\n" + form, function(){
           cs.Event.fire('admin/System/components/modules/install/before', {
             name: module
@@ -192,11 +202,11 @@
         modal.cancel.primary = !modal.ok.primary;
       });
     },
-    _databases_storages_form: function(meta, databases, storages){
+    _databases_storages_form: function(meta, databases, storages, settings){
       var content, i$, ref$, len$, db_name, db_options, db, storage_name, storage_options, storage;
       content = '';
       if (meta.db && databases.length) {
-        if (cs.simple_admin_mode) {
+        if (settings.simple_admin_mode) {
           for (i$ = 0, len$ = (ref$ = meta.db).length; i$ < len$; ++i$) {
             db_name = ref$[i$];
             content += "<input type=\"hidden\" name=\"db[" + db_name + "]\" value=\"0\">";
@@ -217,7 +227,7 @@
         }
       }
       if (meta.storage && storages.length) {
-        if (cs.simple_admin_mode) {
+        if (settings.simple_admin_mode) {
           for (i$ = 0, len$ = (ref$ = meta.storage).length; i$ < len$; ++i$) {
             storage_name = ref$[i$];
             content += "<input type=\"hidden\" name=\"storage[" + storage_name + "]\" value=\"0\">";
@@ -237,7 +247,7 @@
           }
         }
       }
-      if (cs.simple_admin_mode) {
+      if (settings.simple_admin_mode) {
         return "<form>" + content + "</form>";
       } else {
         return "<form>\n	<table class=\"cs-table\">\n		" + content + "\n	</table>\n</form>";
@@ -353,10 +363,15 @@
       var module, meta, this$ = this;
       module = e.model.module.name;
       meta = e.model.module.meta;
-      Promise.all([$.getJSON('api/System/admin/databases'), $.getJSON("api/System/admin/modules/" + module + "/db")]).then(function(arg$){
-        var databases, databases_mapping, form, modal, db_name, index;
-        databases = arg$[0], databases_mapping = arg$[1];
-        form = meta ? this$._databases_storages_form(meta, databases, []) : '';
+      Promise.all([
+        $.getJSON('api/System/admin/databases'), $.getJSON("api/System/admin/modules/" + module + "/db"), $.ajax({
+          url: 'api/System/admin/system',
+          type: 'get_settings'
+        })
+      ]).then(function(arg$){
+        var databases, databases_mapping, settings, form, modal, db_name, index;
+        databases = arg$[0], databases_mapping = arg$[1], settings = arg$[2];
+        form = meta ? this$._databases_storages_form(meta, databases, [], settings) : '';
         modal = cs.ui.confirm("<h3>" + L.db_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n" + form, function(){
           $.ajax({
             url: "api/System/admin/modules/" + module + "/db",
@@ -377,10 +392,15 @@
       var module, meta, this$ = this;
       module = e.model.module.name;
       meta = e.model.module.meta;
-      Promise.all([$.getJSON('api/System/admin/storages'), $.getJSON("api/System/admin/modules/" + module + "/storage")]).then(function(arg$){
-        var storages, storages_mapping, form, modal, storage_name, index;
-        storages = arg$[0], storages_mapping = arg$[1];
-        form = meta ? this$._databases_storages_form(meta, [], storages) : '';
+      Promise.all([
+        $.getJSON('api/System/admin/storages'), $.getJSON("api/System/admin/modules/" + module + "/storage"), $.ajax({
+          url: 'api/System/admin/system',
+          type: 'get_settings'
+        })
+      ]).then(function(arg$){
+        var storages, storages_mapping, settings, form, modal, storage_name, index;
+        storages = arg$[0], storages_mapping = arg$[1], settings = arg$[2];
+        form = meta ? this$._databases_storages_form(meta, [], storages, settings) : '';
         modal = cs.ui.confirm("<h3>" + L.storage_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n" + form, function(){
           $.ajax({
             url: "api/System/admin/modules/" + module + "/storage",

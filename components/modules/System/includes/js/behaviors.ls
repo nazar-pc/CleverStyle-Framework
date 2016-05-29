@@ -12,146 +12,164 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 		# Module/plugin enabling
 		_enable_component : (component, component_type, meta) !->
 			category		= component_type + 's'
-			dependencies	<~! $.getJSON("api/System/admin/#category/#component/dependencies", _)
-			# During enabling we don't care about those since module should be already installed
-			delete dependencies.db_support
-			delete dependencies.storage_support
-			translation_key	= if component_type == 'module' then 'modules_enabling_of_module' else 'plugins_enabling_of_plugin'
-			title			= "<h3>#{L[translation_key](component)}</h3>"
-			message			= ''
-			message_more	= ''
-			if Object.keys(dependencies).length
-				message	= @_compose_dependencies_message(component, dependencies)
-				if cs.simple_admin_mode
-					cs.ui.notify(message, 'error', 5)
-					return
-			if meta && meta.optional
-				message_more	+= '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>'
-			modal	= cs.ui.confirm(
-				"#title#message#message_more"
-				!~>
-					cs.Event.fire(
-						"admin/System/components/#category/enable/before"
-						name	: component
-					).then !~>
-						$.ajax(
-							url		: "api/System/admin/#category/#component"
-							type	: 'enable'
-							success	: !~>
-								@reload()
-								cs.ui.notify(L.changes_saved, 'success', 5)
-								cs.Event.fire(
-									"admin/System/components/#category/enable/after"
-									name	: component
-								)
-						)
-			)
-			modal.ok.innerHTML		= L[if !message then 'enable' else 'force_enable_not_recommended']
-			modal.ok.primary		= !message
-			modal.cancel.primary	= !modal.ok.primary
-			$(modal).find('p:not([class])').addClass('cs-text-error cs-block-error')
+			Promise.all([
+				$.getJSON("api/System/admin/#category/#component/dependencies")
+				$.ajax(
+					url		: 'api/System/admin/system'
+					type	: 'get_settings'
+				)
+			]).then ([dependencies, settings]) !~>
+				# During enabling we don't care about those since module should be already installed
+				delete dependencies.db_support
+				delete dependencies.storage_support
+				translation_key	= if component_type == 'module' then 'modules_enabling_of_module' else 'plugins_enabling_of_plugin'
+				title			= "<h3>#{L[translation_key](component)}</h3>"
+				message			= ''
+				message_more	= ''
+				if Object.keys(dependencies).length
+					message	= @_compose_dependencies_message(component, dependencies)
+					if settings.simple_admin_mode
+						cs.ui.notify(message, 'error', 5)
+						return
+				if meta && meta.optional
+					message_more	+= '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>'
+				modal	= cs.ui.confirm(
+					"#title#message#message_more"
+					!~>
+						cs.Event.fire(
+							"admin/System/components/#category/enable/before"
+							name	: component
+						).then !~>
+							$.ajax(
+								url		: "api/System/admin/#category/#component"
+								type	: 'enable'
+								success	: !~>
+									@reload()
+									cs.ui.notify(L.changes_saved, 'success', 5)
+									cs.Event.fire(
+										"admin/System/components/#category/enable/after"
+										name	: component
+									)
+							)
+				)
+				modal.ok.innerHTML		= L[if !message then 'enable' else 'force_enable_not_recommended']
+				modal.ok.primary		= !message
+				modal.cancel.primary	= !modal.ok.primary
+				$(modal).find('p:not([class])').addClass('cs-text-error cs-block-error')
 		# Module/plugin disabling
 		_disable_component : (component, component_type) !->
 			category			= component_type + 's'
-			dependent_packages	<~! $.getJSON("api/System/admin/#category/#component/dependent_packages", _)
-			translation_key		= if component_type == 'module' then 'modules_disabling_of_module' else 'plugins_disabling_of_plugin'
-			title				= "<h3>#{L[translation_key](component)}</h3>"
-			message				= ''
-			if Object.keys(dependent_packages).length
-				for type, packages of dependent_packages
-					translation_key = if type == 'modules' then 'this_package_is_used_by_module' else 'this_package_is_used_by_plugin'
-					for _package in packages
-						message += "<p>#{L[translation_key](_package)}</p>"
-				message += "<p>#{L.dependencies_not_satisfied}</p>"
-				if cs.simple_admin_mode
-					cs.ui.notify(message, 'error', 5)
-					return
-			modal	= cs.ui.confirm(
-				"#title#message"
-				!~>
-					cs.Event.fire(
-						"admin/System/components/#category/disable/before"
-						name	: component
-					).then !~>
-						$.ajax(
-							url		: "api/System/admin/#category/#component"
-							type	: 'disable'
-							success	: !~>
-								@reload()
-								cs.ui.notify(L.changes_saved, 'success', 5)
-								cs.Event.fire(
-									"admin/System/components/#category/disable/after"
-									name	: component
-								)
-						)
-			)
-			modal.ok.innerHTML		= L[if !message then 'disable' else 'force_disable_not_recommended']
-			modal.ok.primary		= !message
-			modal.cancel.primary	= !modal.ok.primary
-			$(modal).find('p').addClass('cs-text-error cs-block-error')
+			Promise.all([
+				$.getJSON("api/System/admin/#category/#component/dependent_packages")
+				$.ajax(
+					url		: 'api/System/admin/system'
+					type	: 'get_settings'
+				)
+			]).then ([dependent_packages, settings]) !~>
+				translation_key		= if component_type == 'module' then 'modules_disabling_of_module' else 'plugins_disabling_of_plugin'
+				title				= "<h3>#{L[translation_key](component)}</h3>"
+				message				= ''
+				if Object.keys(dependent_packages).length
+					for type, packages of dependent_packages
+						translation_key = if type == 'modules' then 'this_package_is_used_by_module' else 'this_package_is_used_by_plugin'
+						for _package in packages
+							message += "<p>#{L[translation_key](_package)}</p>"
+					message += "<p>#{L.dependencies_not_satisfied}</p>"
+					if settings.simple_admin_mode
+						cs.ui.notify(message, 'error', 5)
+						return
+				modal	= cs.ui.confirm(
+					"#title#message"
+					!~>
+						cs.Event.fire(
+							"admin/System/components/#category/disable/before"
+							name	: component
+						).then !~>
+							$.ajax(
+								url		: "api/System/admin/#category/#component"
+								type	: 'disable'
+								success	: !~>
+									@reload()
+									cs.ui.notify(L.changes_saved, 'success', 5)
+									cs.Event.fire(
+										"admin/System/components/#category/disable/after"
+										name	: component
+									)
+							)
+				)
+				modal.ok.innerHTML		= L[if !message then 'disable' else 'force_disable_not_recommended']
+				modal.ok.primary		= !message
+				modal.cancel.primary	= !modal.ok.primary
+				$(modal).find('p').addClass('cs-text-error cs-block-error')
 		# Module/plugin/theme update
 		_update_component : (existing_meta, new_meta) !->
 			component		= new_meta.package
 			category		= new_meta.category
-			dependencies	<~! $.getJSON("api/System/admin/#category/#component/update_dependencies", _)
-			# During update we don't care about those since module should be already installed
-			delete dependencies.db_support
-			delete dependencies.storage_support
-			translation_key	=
-				switch category
-				| 'modules'	=> (if component == 'System' then 'modules_updating_of_system' else 'modules_updating_of_module')
-				| 'plugins'	=> 'plugins_updating_of_plugin'
-				| 'themes'	=> 'appearance_updating_theme'
-			title			= "<h3>#{L[translation_key](component)}</h3>"
-			message			= ''
-			if component == 'System'
-				message_more	= '<p class>' + L.modules_update_system(existing_meta.version, new_meta.version) + '</p>'
-			else
+			Promise.all([
+				$.getJSON("api/System/admin/#category/#component/update_dependencies")
+				$.ajax(
+					url		: 'api/System/admin/system'
+					type	: 'get_settings'
+				)
+			]).then ([dependencies, settings]) !~>
+				# During update we don't care about those since module should be already installed
+				delete dependencies.db_support
+				delete dependencies.storage_support
 				translation_key	=
 					switch category
-					| 'modules'	=> 'modules_update_module'
-					| 'plugins'	=> 'plugins_update_plugin'
-					| 'themes'	=> 'appearance_update_theme'
-				message_more	= '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>'
-			if Object.keys(dependencies).length
-				message	= @_compose_dependencies_message(component, dependencies)
-				if cs.simple_admin_mode
-					cs.ui.notify(message, 'error', 5)
-					return
-			if new_meta.optional
-				message_more	+= '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(new_meta.optional.join(', ')) + '</p>'
-			modal	= cs.ui.confirm(
-				"#title#message#message_more"
-				!~>
-					event_promise	=
-						if component == 'System'
-							cs.Event.fire('admin/System/components/modules/update_system/before')
-						else
-							cs.Event.fire(
-								"admin/System/components/#category/update/before"
-								name	: component
+					| 'modules'	=> (if component == 'System' then 'modules_updating_of_system' else 'modules_updating_of_module')
+					| 'plugins'	=> 'plugins_updating_of_plugin'
+					| 'themes'	=> 'appearance_updating_theme'
+				title			= "<h3>#{L[translation_key](component)}</h3>"
+				message			= ''
+				if component == 'System'
+					message_more	= '<p class>' + L.modules_update_system(existing_meta.version, new_meta.version) + '</p>'
+				else
+					translation_key	=
+						switch category
+						| 'modules'	=> 'modules_update_module'
+						| 'plugins'	=> 'plugins_update_plugin'
+						| 'themes'	=> 'appearance_update_theme'
+					message_more	= '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>'
+				if Object.keys(dependencies).length
+					message	= @_compose_dependencies_message(component, dependencies)
+					if settings.simple_admin_mode
+						cs.ui.notify(message, 'error', 5)
+						return
+				if new_meta.optional
+					message_more	+= '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(new_meta.optional.join(', ')) + '</p>'
+				modal	= cs.ui.confirm(
+					"#title#message#message_more"
+					!~>
+						event_promise	=
+							if component == 'System'
+								cs.Event.fire('admin/System/components/modules/update_system/before')
+							else
+								cs.Event.fire(
+									"admin/System/components/#category/update/before"
+									name	: component
+								)
+						event_promise.then !~>
+							$.ajax(
+								url		: "api/System/admin/#category/#component"
+								type	: 'update'
+								success	: !~>
+									cs.ui.notify(L.changes_saved, 'success', 5)
+									if component == 'System'
+										cs.Event.fire('admin/System/components/modules/update_system/after').then !->
+											location.reload()
+									else
+										cs.Event.fire(
+											"admin/System/components/#category/update/after"
+											name	: component
+										).then !->
+											location.reload()
 							)
-					event_promise.then !~>
-						$.ajax(
-							url		: "api/System/admin/#category/#component"
-							type	: 'update'
-							success	: !~>
-								cs.ui.notify(L.changes_saved, 'success', 5)
-								if component == 'System'
-									cs.Event.fire('admin/System/components/modules/update_system/after').then !->
-										location.reload()
-								else
-									cs.Event.fire(
-										"admin/System/components/#category/update/after"
-										name	: component
-									).then !->
-										location.reload()
-						)
-			)
-			modal.ok.innerHTML		= L[if !message then 'yes' else 'force_update_not_recommended']
-			modal.ok.primary		= !message
-			modal.cancel.primary	= !modal.ok.primary
-			$(modal).find('p:not([class])').addClass('cs-text-error cs-block-error')
+				)
+				modal.ok.innerHTML		= L[if !message then 'yes' else 'force_update_not_recommended']
+				modal.ok.primary		= !message
+				modal.cancel.primary	= !modal.ok.primary
+				$(modal).find('p:not([class])').addClass('cs-text-error cs-block-error')
 		# Module/plugin/theme complete removal
 		_remove_completely_component : (component, category) !->
 			translation_key		=

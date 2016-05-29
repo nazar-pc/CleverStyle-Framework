@@ -236,10 +236,6 @@ trait Includes {
 		 * Base name for cache files
 		 */
 		$this->pcache_basename_path = PUBLIC_CACHE.'/'.$this->theme.'_'.Language::instance()->clang;
-		/**
-		 * Some JS configs required by system
-		 */
-		$this->add_system_configs();
 		// TODO: I hope some day we'll get rid of this sh*t :(
 		$this->ie_edge();
 		$Request = Request::instance();
@@ -290,13 +286,6 @@ trait Includes {
 			'file',
 			true
 		);
-	}
-	protected function add_system_configs () {
-		$Config = Config::instance();
-		$User   = User::instance();
-		if ($User->admin()) {
-			$this->config_internal((int)$Config->core['simple_admin_mode'], 'cs.simple_admin_mode', true);
-		}
 	}
 	/**
 	 * Hack: Add WebComponents Polyfill for browsers without native Shadow DOM support

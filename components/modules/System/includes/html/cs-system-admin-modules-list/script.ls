@@ -27,7 +27,11 @@ Polymer(
 		Promise.all([
 			$.getJSON('api/System/admin/modules')
 			$.getJSON('api/System/admin/modules/default')
-		]).then ([modules, default_module]) !~>
+			$.ajax(
+				url		: 'api/System/admin/system'
+				type	: 'get_settings'
+			)
+		]).then ([modules, default_module, settings]) !~>
 			@default_module	= default_module
 			modules.forEach (module) !->
 				active_switch_local		= active_switch.bind(module)
@@ -51,8 +55,8 @@ Polymer(
 				installed						= module.active !~= -1
 				module.can_disable				= enabled && module.name != 'System'
 				module.administration			= module.has_admin_section && installed
-				module.db_settings				= !cs.simple_admin_mode && installed && module.meta && module.meta.db
-				module.storage_settings			= !cs.simple_admin_mode && installed && module.meta && module.meta.storage
+				module.db_settings				= !settings.simple_admin_mode && installed && module.meta && module.meta.db
+				module.storage_settings			= !settings.simple_admin_mode && installed && module.meta && module.meta.storage
 				module.can_be_set_as_default	= enabled && module.name != default_module && module.has_user_section
 				do !->
 					for prop in ['api', 'license', 'readme']
@@ -141,17 +145,21 @@ Polymer(
 			$.getJSON("api/System/admin/modules/#module/dependencies")
 			$.getJSON('api/System/admin/databases')
 			$.getJSON('api/System/admin/storages')
-		]).then ([dependencies, databases, storages]) !~>
+			$.ajax(
+				url		: 'api/System/admin/system'
+				type	: 'get_settings'
+			)
+		]).then ([dependencies, databases, storages, settings]) !~>
 			message			= ''
 			message_more	= ''
 			if Object.keys(dependencies).length
 				message	= @_compose_dependencies_message(module, dependencies)
-				if cs.simple_admin_mode
+				if settings.simple_admin_mode
 					cs.ui.notify(message, 'error', 5)
 					return
 			if meta && meta.optional
 				message_more	+= '<p class="cs-text-success cs-block-success">' + L.system_admin_for_complete_feature_set(meta.optional.join(', ')) + '</p>'
-			form	= if meta then @_databases_storages_form(meta, databases, storages) else ''
+			form	= if meta then @_databases_storages_form(meta, databases, storages, settings) else ''
 			modal	= cs.ui.confirm(
 				"""<h3>#{L.installation_of_module(module)}</h3>
 				#message
@@ -178,10 +186,10 @@ Polymer(
 			modal.ok.innerHTML		= L[if !message then 'install' else 'force_install_not_recommended']
 			modal.ok.primary		= !message
 			modal.cancel.primary	= !modal.ok.primary
-	_databases_storages_form : (meta, databases, storages) ->
+	_databases_storages_form : (meta, databases, storages, settings) ->
 		content	= ''
 		if meta.db && databases.length
-			if cs.simple_admin_mode
+			if settings.simple_admin_mode
 				for db_name in meta.db
 					content	+= """<input type="hidden" name="db[#db_name]" value="0">"""
 			else
@@ -207,7 +215,7 @@ Polymer(
 						</td>
 					</tr>"""
 		if meta.storage && storages.length
-			if cs.simple_admin_mode
+			if settings.simple_admin_mode
 				for storage_name in meta.storage
 					content	+= """<input type="hidden" name="storage[#storage_name]" value="0">"""
 			else
@@ -232,7 +240,7 @@ Polymer(
 							<select is="cs-select" name="storage[#storage_name]">#storage_options</select>
 						</td>
 					</tr>"""
-		if cs.simple_admin_mode
+		if settings.simple_admin_mode
 			"<form>#content</form>"
 		else
 			"""<form>
@@ -338,8 +346,12 @@ Polymer(
 		Promise.all([
 			$.getJSON('api/System/admin/databases')
 			$.getJSON("api/System/admin/modules/#module/db")
-		]).then ([databases, databases_mapping]) !~>
-			form	= if meta then @_databases_storages_form(meta, databases, []) else ''
+			$.ajax(
+				url		: 'api/System/admin/system'
+				type	: 'get_settings'
+			)
+		]).then ([databases, databases_mapping, settings]) !~>
+			form	= if meta then @_databases_storages_form(meta, databases, [], settings) else ''
 			modal	= cs.ui.confirm(
 				"""<h3>#{L.db_settings_for_module(module)}</h3>
 				<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
@@ -361,8 +373,12 @@ Polymer(
 		Promise.all([
 			$.getJSON('api/System/admin/storages')
 			$.getJSON("api/System/admin/modules/#module/storage")
-		]).then ([storages, storages_mapping]) !~>
-			form	= if meta then @_databases_storages_form(meta, [], storages) else ''
+			$.ajax(
+				url		: 'api/System/admin/system'
+				type	: 'get_settings'
+			)
+		]).then ([storages, storages_mapping, settings]) !~>
+			form	= if meta then @_databases_storages_form(meta, [], storages, settings) else ''
 			modal	= cs.ui.confirm(
 				"""<h3>#{L.storage_settings_for_module(module)}</h3>
 				<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>

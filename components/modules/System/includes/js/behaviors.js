@@ -15,8 +15,14 @@
       _enable_component: function(component, component_type, meta){
         var category, this$ = this;
         category = component_type + 's';
-        $.getJSON("api/System/admin/" + category + "/" + component + "/dependencies", function(dependencies){
-          var translation_key, title, message, message_more, modal;
+        Promise.all([
+          $.getJSON("api/System/admin/" + category + "/" + component + "/dependencies"), $.ajax({
+            url: 'api/System/admin/system',
+            type: 'get_settings'
+          })
+        ]).then(function(arg$){
+          var dependencies, settings, translation_key, title, message, message_more, modal;
+          dependencies = arg$[0], settings = arg$[1];
           delete dependencies.db_support;
           delete dependencies.storage_support;
           translation_key = component_type === 'module' ? 'modules_enabling_of_module' : 'plugins_enabling_of_plugin';
@@ -25,7 +31,7 @@
           message_more = '';
           if (Object.keys(dependencies).length) {
             message = this$._compose_dependencies_message(component, dependencies);
-            if (cs.simple_admin_mode) {
+            if (settings.simple_admin_mode) {
               cs.ui.notify(message, 'error', 5);
               return;
             }
@@ -59,8 +65,14 @@
       _disable_component: function(component, component_type){
         var category, this$ = this;
         category = component_type + 's';
-        $.getJSON("api/System/admin/" + category + "/" + component + "/dependent_packages", function(dependent_packages){
-          var translation_key, title, message, type, packages, i$, len$, _package, modal;
+        Promise.all([
+          $.getJSON("api/System/admin/" + category + "/" + component + "/dependent_packages"), $.ajax({
+            url: 'api/System/admin/system',
+            type: 'get_settings'
+          })
+        ]).then(function(arg$){
+          var dependent_packages, settings, translation_key, title, message, type, packages, i$, len$, _package, modal;
+          dependent_packages = arg$[0], settings = arg$[1];
           translation_key = component_type === 'module' ? 'modules_disabling_of_module' : 'plugins_disabling_of_plugin';
           title = "<h3>" + L[translation_key](component) + "</h3>";
           message = '';
@@ -74,7 +86,7 @@
               }
             }
             message += "<p>" + L.dependencies_not_satisfied + "</p>";
-            if (cs.simple_admin_mode) {
+            if (settings.simple_admin_mode) {
               cs.ui.notify(message, 'error', 5);
               return;
             }
@@ -106,8 +118,14 @@
         var component, category, this$ = this;
         component = new_meta['package'];
         category = new_meta.category;
-        $.getJSON("api/System/admin/" + category + "/" + component + "/update_dependencies", function(dependencies){
-          var translation_key, title, message, message_more, modal;
+        Promise.all([
+          $.getJSON("api/System/admin/" + category + "/" + component + "/update_dependencies"), $.ajax({
+            url: 'api/System/admin/system',
+            type: 'get_settings'
+          })
+        ]).then(function(arg$){
+          var dependencies, settings, translation_key, title, message, message_more, modal;
+          dependencies = arg$[0], settings = arg$[1];
           delete dependencies.db_support;
           delete dependencies.storage_support;
           translation_key = (function(){
@@ -144,7 +162,7 @@
           }
           if (Object.keys(dependencies).length) {
             message = this$._compose_dependencies_message(component, dependencies);
-            if (cs.simple_admin_mode) {
+            if (settings.simple_admin_mode) {
               cs.ui.notify(message, 'error', 5);
               return;
             }
