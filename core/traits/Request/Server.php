@@ -204,11 +204,12 @@ trait Server {
 	/**
 	 * Get header by name
 	 *
-	 * @param string $name
+	 * @param string $name Case-insensitive
 	 *
 	 * @return string Header content if exists or empty string otherwise
 	 */
 	function header ($name) {
+		$name = strtolower($name);
 		return isset($this->headers[$name]) ? $this->headers[$name] : '';
 	}
 }
