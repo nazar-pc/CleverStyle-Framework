@@ -4,17 +4,16 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-L	= cs.Language('system_profile_')
 Polymer(
 	'is'		: 'cs-system-user-settings'
 	behaviors	: [
-		cs.Polymer.behaviors.cs
 		cs.Polymer.behaviors.Language('system_profile_')
 	]
 	properties	:
 		languages	: Array
 		timezones	: Array
 		user_data	: Object
+		can_upload	: 'file_upload' of cs
 	ready : !->
 		Promise.all([
 			$.getJSON('api/System/languages')
@@ -24,7 +23,7 @@ Polymer(
 			languages_list	= []
 			languages_list.push(
 				clanguage	: ''
-				description	: L.system_default
+				description	: @L.system_default
 			)
 			for language in languages
 				languages_list.push(
@@ -34,7 +33,7 @@ Polymer(
 			timezones_list	= []
 			timezones_list.push(
 				timezone	: ''
-				description	: L.system_default
+				description	: @L.system_default
 			)
 			for description, timezone of timezones
 				timezones_list.push(
@@ -56,7 +55,7 @@ Polymer(
 			url		: 'api/System/profile'
 			type	: 'patch'
 			data	: @user_data
-			success	: !->
-				cs.ui.notify(L.changes_saved, 'success', 5)
+			success	: !~>
+				cs.ui.notify(@L.changes_saved, 'success', 5)
 		)
 )

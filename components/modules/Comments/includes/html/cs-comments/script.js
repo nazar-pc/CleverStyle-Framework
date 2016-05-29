@@ -7,15 +7,18 @@
  * @license   MIT License, see license.txt
  */
 (function(){
+  var GUEST_ID;
+  GUEST_ID = 1;
   Polymer({
     'is': 'cs-comments',
-    behaviors: [cs.Polymer.behaviors.cs, cs.Polymer.behaviors.Language('comments_')],
+    behaviors: [cs.Polymer.behaviors.Language('comments_')],
     properties: {
       module: String,
       item: Number,
       comments: Array,
       _this: Object,
-      text: ''
+      text: '',
+      is_user: Boolean
     },
     ready: function(){
       this.anchor = location.hash.substr(1);
@@ -30,15 +33,18 @@
           type: 'is_admin'
         })
       ]).then(function(arg$){
-        var comments, profile, is_admin, id_index_map, i$, len$, index, comment, normalized_comments;
+        var comments, profile, is_admin, id_index_map, is_user, i$, len$, index, comment, normalized_comments;
         comments = arg$[0], profile = arg$[1], is_admin = arg$[2];
         id_index_map = {};
+        is_user = profile.id !== GUEST_ID;
+        this$.is_user = is_user;
         for (i$ = 0, len$ = comments.length; i$ < len$; ++i$) {
           index = i$;
           comment = comments[i$];
           id_index_map[comment.id] = index;
           comment.children = [];
           comment.can_edit = is_admin || comment.user === profile.id;
+          comment.can_reply = is_user;
           comment.scroll_to = this$.anchor === 'comment_' + comment.id;
         }
         normalized_comments = [];

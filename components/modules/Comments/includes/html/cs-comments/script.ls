@@ -5,10 +5,10 @@
  * @copyright Copyright (c) 2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
+const GUEST_ID	= 1
 Polymer(
 	'is'		: 'cs-comments'
 	behaviors	: [
-		cs.Polymer.behaviors.cs
 		cs.Polymer.behaviors.Language('comments_')
 	]
 	properties	:
@@ -17,6 +17,7 @@ Polymer(
 		comments	: Array
 		_this		: Object
 		text		: ''
+		is_user		: Boolean
 	ready : !->
 		@anchor	= location.hash.substr(1)
 		@_this	= @
@@ -30,11 +31,14 @@ Polymer(
 				type	: 'is_admin'
 			)
 		]).then ([comments, profile, is_admin]) !~>
-			id_index_map = {}
+			id_index_map	= {}
+			is_user			= profile.id != GUEST_ID
+			@is_user		= is_user
 			for comment, index in comments
 				id_index_map[comment.id] = index
 				comment.children	= []
 				comment.can_edit	= is_admin || comment.user == profile.id
+				comment.can_reply	= is_user
 				comment.scroll_to	= @anchor == 'comment_' + comment.id
 			normalized_comments = []
 			for comment, index in comments

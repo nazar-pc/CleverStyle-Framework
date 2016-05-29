@@ -9,7 +9,7 @@
 (function(){
   Polymer({
     'is': 'cs-comments-comment',
-    behaviors: [cs.Polymer.behaviors.cs, cs.Polymer.behaviors.Language('comments_')],
+    behaviors: [cs.Polymer.behaviors.Language('comments_')],
     properties: {
       comment: Object,
       parentComment: Object,
@@ -82,6 +82,9 @@
       this.editing = false;
     },
     _reply: function(){
+      if (!this.comment.can_reply) {
+        return;
+      }
       this.set('reply', {
         parent: this.comment.id,
         module: this.comment.module,

@@ -9,7 +9,6 @@
 Polymer(
 	'is'		: 'cs-system-admin-users-edit-user-form'
 	behaviors	: [
-		cs.Polymer.behaviors.cs
 		cs.Polymer.behaviors.Language('system_admin_users_')
 	]
 	properties	:
@@ -22,6 +21,7 @@ Polymer(
 		block_until	:
 			observer	: '_block_until'
 			type		: String
+		can_upload	: 'file_upload' of cs
 	ready : !->
 		Promise.all([
 			$.getJSON('api/System/languages')

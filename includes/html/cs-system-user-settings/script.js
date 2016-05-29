@@ -6,15 +6,14 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language('system_profile_');
   Polymer({
     'is': 'cs-system-user-settings',
-    behaviors: [cs.Polymer.behaviors.cs, cs.Polymer.behaviors.Language('system_profile_')],
+    behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
     properties: {
       languages: Array,
       timezones: Array,
-      user_data: Object
+      user_data: Object,
+      can_upload: 'file_upload' in cs
     },
     ready: function(){
       var this$ = this;
@@ -24,7 +23,7 @@
         languages_list = [];
         languages_list.push({
           clanguage: '',
-          description: L.system_default
+          description: this$.L.system_default
         });
         for (i$ = 0, len$ = languages.length; i$ < len$; ++i$) {
           language = languages[i$];
@@ -36,7 +35,7 @@
         timezones_list = [];
         timezones_list.push({
           timezone: '',
-          description: L.system_default
+          description: this$.L.system_default
         });
         for (description in timezones) {
           timezone = timezones[description];
@@ -58,13 +57,14 @@
       }
     },
     _save: function(e){
+      var this$ = this;
       e.preventDefault();
       $.ajax({
         url: 'api/System/profile',
         type: 'patch',
         data: this.user_data,
         success: function(){
-          cs.ui.notify(L.changes_saved, 'success', 5);
+          cs.ui.notify(this$.L.changes_saved, 'success', 5);
         }
       });
     }

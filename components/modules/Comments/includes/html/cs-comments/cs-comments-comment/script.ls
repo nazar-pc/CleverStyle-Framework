@@ -8,7 +8,6 @@
 Polymer(
 	'is'		: 'cs-comments-comment'
 	behaviors	: [
-		cs.Polymer.behaviors.cs
 		cs.Polymer.behaviors.Language('comments_')
 	]
 	properties	:
@@ -64,6 +63,8 @@ Polymer(
 	_cancel_edit : !->
 		@editing	= false
 	_reply : !->
+		if !@comment.can_reply
+			return
 		@set(
 			'reply'
 			parent	: @comment.id

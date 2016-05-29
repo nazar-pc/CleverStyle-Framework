@@ -10,14 +10,6 @@
    * Simplified access to translations in Polymer elements
    */
   (cs.Polymer || (cs.Polymer = {})).behaviors = {
-    cs: {
-      properties: {
-        cs: {
-          type: Object,
-          value: cs
-        }
-      }
-    },
     Language: (function(){
       Language.displayName = 'Language';
       var prototype, create_property, constructor = Language;

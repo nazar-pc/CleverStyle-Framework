@@ -8,12 +8,6 @@
  * Simplified access to translations in Polymer elements
  */
 cs.{}Polymer.behaviors =
-	# Access to whole `window.cs` inside Polymer element (useful for using configuration in data bindings)
-	cs :
-		properties	:
-			cs	:
-				type	: Object
-				value	: cs
 	# This will add `Language` property (and its short alias `L`) alongside with `__()` method which can be used for formatted translations
 	# Also might be called as function with prefix
 	Language : class

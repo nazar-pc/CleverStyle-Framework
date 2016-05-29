@@ -6,11 +6,11 @@ dom-module#cs-comments
 			p [[L.no_comments_yet]]
 		template(is="dom-repeat" items="[[comments]]")
 			cs-comments-comment(comment="[[item]]" id="comment_[[item.id]]" parent-comment="[[_this]]" parent$="[[and(item.children.length)]]")
-		template(is="dom-if" if="[[and(cs.is_user)]]")
+		template(is="dom-if" if="[[is_user]]")
 			p [[L.add_comment]]:
 			cs-editor-simple(value="{{text}}")
 				textarea(is="cs-textarea" autosize value="{{text}}")
 			p
 				button(is="cs-button" type="button" on-tap="_send") [[L.send_comment]]
-		p(hidden="[[and(cs.is_user)]]") [[L.register_for_comments_sending]]
+		p(hidden="[[is_user]]") [[L.register_for_comments_sending]]
 	script(src="script.js")

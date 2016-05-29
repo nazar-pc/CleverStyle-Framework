@@ -10,7 +10,7 @@
 (function(){
   Polymer({
     'is': 'cs-system-admin-users-edit-user-form',
-    behaviors: [cs.Polymer.behaviors.cs, cs.Polymer.behaviors.Language('system_admin_users_')],
+    behaviors: [cs.Polymer.behaviors.Language('system_admin_users_')],
     properties: {
       user_id: -1,
       user_data: {
@@ -22,7 +22,8 @@
       block_until: {
         observer: '_block_until',
         type: String
-      }
+      },
+      can_upload: 'file_upload' in cs
     },
     ready: function(){
       var this$ = this;
