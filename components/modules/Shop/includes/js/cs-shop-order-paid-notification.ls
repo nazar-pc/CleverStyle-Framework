@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	is	: 'cs-order-paid-notification'
+	is	: 'cs-shop-order-paid-notification'
 	created : !->
 		if !location.search
 			return

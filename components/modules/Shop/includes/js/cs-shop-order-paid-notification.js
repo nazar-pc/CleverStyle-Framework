@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    is: 'cs-order-paid-notification',
+    is: 'cs-shop-order-paid-notification',
     created: function(){
       var L, query;
       if (!location.search) {
