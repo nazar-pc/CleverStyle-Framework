@@ -14,11 +14,16 @@
     if (load_promise) {
       return load_promise;
     }
-    return load_promise = $.ajax({
-      url: '/components/plugins/TinyMCE/includes/js/tinymce.min.js',
-      dataType: 'script',
-      cache: true
-    }).then(function(){
+    load_promise = new Promise(function(resolve, reject){
+      var x$, script;
+      x$ = script = document.createElement("script");
+      x$.async = true;
+      x$.src = '/components/plugins/TinyMCE/includes/js/tinymce.min.js';
+      x$.onload = resolve;
+      x$.onerror = reject;
+      document.head.appendChild(script);
+    });
+    return load_promise = load_promise.then(function(){
       var uploader_callback, button, uploader, base_config, x$;
       uploader_callback = undefined;
       button = document.createElement('button');
@@ -169,11 +174,11 @@
       clearTimeout(change_timeout);
       change_timeout = setTimeout(function(){
         var event;
-        editor.save();
-        this$.value = editor.getContent();
+        this$._tinymce_editor.save();
+        this$.value = this$._tinymce_editor.getContent();
         event = document.createEvent('Event');
         event.initEvent('change', false, true);
-        editor.getElement().dispatchEvent(event);
+        this$._tinymce_editor.getElement().dispatchEvent(event);
       }, 100);
     },
     _value_changed: function(){
