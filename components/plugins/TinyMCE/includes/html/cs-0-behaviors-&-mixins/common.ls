@@ -6,6 +6,7 @@
  * @license   GNU Lesser General Public License 2.1, see license.txt
  */
 load_promise	= null
+change_timeout	= null
 load_tinymce	= ->
 	if load_promise
 		return load_promise
@@ -83,7 +84,8 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 			type		: String
 		loaded	: false
 	ready : !->
-		@querySelector('textarea')?.hidden = true
+		@querySelector('textarea')?.hidden	= true
+		@_editor_change_callback			= @_editor_change_callback.bind(@)
 		# Hack: we need to wait until all Web Components are loaded
 		Promise.all([load_tinymce(), cs.ui.ready]).then(@~_initialize_editor)
 	_initialize_editor : !->
@@ -119,7 +121,7 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 					editor.on('remove', !->
 						target.focus = target._original_focus
 					)
-					@_editor_change_callback_init(editor)
+					@_tinymce_editor.on('change', @_editor_change_callback)
 			} <<<< tinymce[@editor_config]
 		)
 	detached : !->
@@ -139,17 +141,15 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 			(node) !~>
 				@scopeSubtree(node, true)
 		)
-	_editor_change_callback_init : (editor) !->
-		editor.once('change', !~>
-			@_editor_change_callback(editor)
-		)
 	_editor_change_callback : (editor) !->
-		editor.save()
-		@value	= editor.getContent()
-		event	= document.createEvent('Event')
-		event.initEvent('change', false, true)
-		editor.getElement().dispatchEvent(event)
-		@_editor_change_callback_init(editor)
+		clearTimeout(change_timeout)
+		change_timeout	= setTimeout (!~>
+			editor.save()
+			@value	= editor.getContent()
+			event	= document.createEvent('Event')
+			event.initEvent('change', false, true)
+			editor.getElement().dispatchEvent(event)
+		), 100
 	_value_changed : !->
 		if @_tinymce_editor && @value != @_tinymce_editor.getContent()
 			@_tinymce_editor.setContent(@value || '')

@@ -7,8 +7,9 @@
  * @license   GNU Lesser General Public License 2.1, see license.txt
  */
 (function(){
-  var load_promise, load_tinymce, ref$;
+  var load_promise, change_timeout, load_tinymce, ref$;
   load_promise = null;
+  change_timeout = null;
   load_tinymce = function(){
     if (load_promise) {
       return load_promise;
@@ -106,6 +107,7 @@
       if ((ref$ = this.querySelector('textarea')) != null) {
         ref$.hidden = true;
       }
+      this._editor_change_callback = this._editor_change_callback.bind(this);
       Promise.all([load_tinymce(), cs.ui.ready]).then(bind$(this, '_initialize_editor'));
     },
     _initialize_editor: function(){
@@ -139,7 +141,7 @@
           editor.on('remove', function(){
             target.focus = target._original_focus;
           });
-          this$._editor_change_callback_init(editor);
+          this$._tinymce_editor.on('change', this$._editor_change_callback);
         }
       }, tinymce[this.editor_config]));
     },
@@ -162,20 +164,17 @@
         this$.scopeSubtree(node, true);
       });
     },
-    _editor_change_callback_init: function(editor){
-      var this$ = this;
-      editor.once('change', function(){
-        this$._editor_change_callback(editor);
-      });
-    },
     _editor_change_callback: function(editor){
-      var event;
-      editor.save();
-      this.value = editor.getContent();
-      event = document.createEvent('Event');
-      event.initEvent('change', false, true);
-      editor.getElement().dispatchEvent(event);
-      this._editor_change_callback_init(editor);
+      var change_timeout, this$ = this;
+      clearTimeout(change_timeout);
+      change_timeout = setTimeout(function(){
+        var event;
+        editor.save();
+        this$.value = editor.getContent();
+        event = document.createEvent('Event');
+        event.initEvent('change', false, true);
+        editor.getElement().dispatchEvent(event);
+      }, 100);
     },
     _value_changed: function(){
       if (this._tinymce_editor && this.value !== this._tinymce_editor.getContent()) {
