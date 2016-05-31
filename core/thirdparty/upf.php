@@ -1342,27 +1342,19 @@ function keywords ($text) {
  */
 function description ($text) {
 	return trim(
-		str_replace(
-			[
-				"\r\n",
-				"\n",
-				"\r",
-				'&nbsp;',
-				'"'
-			],
-			[
-				' ',
-				' ',
-				' ',
-				' ',
-				'&quot;'
-			],
-			truncate(
-				strip_tags($text),
-				512,
-				'...',
-				false,
-				false
+		preg_replace(
+			'/(\s|(&nbsp;))+/',
+			' ',
+			str_replace(
+				'"',
+				'&quot;',
+				truncate(
+					strip_tags(str_replace('>', ">\n", $text)),
+					512,
+					'...',
+					false,
+					false
+				)
 			)
 		)
 	);
