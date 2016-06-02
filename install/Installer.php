@@ -165,9 +165,7 @@ CONFIG;
 					return true;
 				}
 				return false;
-			},
-			true,
-			true
+			}
 		);
 		require_once "$source/fs/".$file_index_map['core/thirdparty/upf.php'];
 		require_once "$source/fs/".$file_index_map['core/functions.php'];

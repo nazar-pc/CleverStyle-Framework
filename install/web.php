@@ -147,7 +147,7 @@ function install_process () {
 	$admin_login = strstr($_POST['admin_email'], '@', true);
 	$warning     = false;
 	// Removing of installer file
-	$installer = getcwd().'/'.basename(__DIR__.'/..');
+	$installer = getcwd().'/'.basename(__DIR__);
 	if (!is_writable($installer) || !unlink($installer)) {
 		$warning = "Please, remove installer file $installer for security!\n";
 	}
@@ -159,13 +159,13 @@ function install_process () {
 	</tr>
 	<tr>
 		<td>Login:</td>
-		<td><pre><?=$admin_login?></pre></td>
+		<td><pre>$admin_login</pre></td>
 	</tr>
 	<tr>
 		<td>Password:</td>
-		<td><pre><?=$_POST[admin_password]?></pre></td>
+		<td><pre>$_POST[admin_password]</pre></td>
 	</tr>
-	<p style="color: red"><?=$warning?></p>
+	<p style="color: red">$warning</p>
 	<button onclick="location.href = '/';">Go to website</button>
 </table>
 HTML;
