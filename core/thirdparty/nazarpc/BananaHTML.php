@@ -730,14 +730,14 @@ class BananaHTML {
 		if ($fast_render) {
 			return $fast_render;
 		}
-		$selector = static::parse_nesting_selector(trim($selector));
+		$selector = explode(' ', trim($selector), 2);
 		/**
 		 * Analysis of called tag. If nested tags presented
 		 */
-		if (is_array($selector)) {
+		if (isset($selector[1])) {
 			return static::handle_nested_selectors($selector, $data);
 		}
-		return static::__callStatic_internal($selector, $data);
+		return static::__callStatic_internal($selector[0], $data);
 	}
 	/**
 	 * Trying to render faster, many practical use cases fit here, so overhead should worth it
@@ -871,33 +871,6 @@ class BananaHTML {
 			return static::process_inserts($tag, $in, $attributes);
 		}
 		return static::render_tag($tag, $in, $attributes);
-	}
-	/**
-	 * Analyze CSS selector for nester tags
-	 *
-	 * @param array|string $in
-	 * @param int          $offset
-	 *
-	 * @return string Returns array of strings if nesting selector detected, unchanged input string otherwise
-	 */
-	protected static function parse_nesting_selector ($in, $offset = 0) {
-		$space_position = strpos($in, ' ', $offset);
-		if ($space_position === false) {
-			return $in;
-		}
-		$next_space = strpos($in, ' ', $space_position + 1);
-		$attr_close = strpos($in, ']', $space_position);
-		if (
-			$next_space === false ||
-			$attr_close === false ||
-			$next_space > $attr_close
-		) {
-			return [
-				substr($in, 0, $space_position),
-				substr($in, $space_position + 1)
-			];
-		}
-		return static::parse_nesting_selector($in, $space_position + 1);
 	}
 	/**
 	 * @param string[] $selector
