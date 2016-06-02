@@ -47,16 +47,17 @@ spl_autoload_register(
 		 * Try to load classes from different places. If not found in one place - try in another.
 		 */
 		if (
-			_require_once($file = DIR."/core/classes/$namespace/$class_name.php", false) ||    //Core classes
-			_require_once($file = DIR."/core/thirdparty/$namespace/$class_name.php", false) || //Third party classes
-			_require_once($file = DIR."/core/traits/$namespace/$class_name.php", false) ||     //Core traits
-			_require_once($file = ENGINES."/$namespace/$class_name.php", false) ||             //Core engines
-			_require_once($file = MODULES."/../$namespace/$class_name.php", false) ||          //Classes in modules
-			_require_once($file = PLUGINS."/../$namespace/$class_name.php", false)             //Classes in plugins
+			file_exists($file = DIR."/core/classes/$namespace/$class_name.php") ||    //Core classes
+			file_exists($file = DIR."/core/thirdparty/$namespace/$class_name.php") || //Third party classes
+			file_exists($file = DIR."/core/traits/$namespace/$class_name.php") ||     //Core traits
+			file_exists($file = ENGINES."/$namespace/$class_name.php") ||             //Core engines
+			file_exists($file = MODULES."/../$namespace/$class_name.php") ||          //Classes in modules
+			file_exists($file = PLUGINS."/../$namespace/$class_name.php")             //Classes in plugins
 		) {
 			$cache[$class] = realpath($file);
 			file_put_json(CACHE.'/classes/autoload', $cache);
-			return (bool)$cache[$class];
+			require_once $file;
+			return true;
 		}
 		file_put_json(CACHE.'/classes/autoload', $cache);
 		// Processing components aliases
