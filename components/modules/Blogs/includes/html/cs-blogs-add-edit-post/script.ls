@@ -40,7 +40,8 @@ Polymer(
 			$.getJSON('api/System/profile')
 		]).then ([@post, sections, settings, profile]) !~>
 			@original_title				= @post.title
-			@$.title.textContent		= @post.title
+			if @post.title
+				@$.title.textContent		= @post.title
 			@local_tags					= @post.tags.join(', ')
 			@sections					= @_prepare_sections(sections)
 			settings.multiple_sections	= settings.max_sections > 1

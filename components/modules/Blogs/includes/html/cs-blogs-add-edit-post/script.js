@@ -43,7 +43,9 @@
         var sections, settings, profile;
         this$.post = arg$[0], sections = arg$[1], settings = arg$[2], profile = arg$[3];
         this$.original_title = this$.post.title;
-        this$.$.title.textContent = this$.post.title;
+        if (this$.post.title) {
+          this$.$.title.textContent = this$.post.title;
+        }
         this$.local_tags = this$.post.tags.join(', ');
         this$.sections = this$._prepare_sections(sections);
         settings.multiple_sections = settings.max_sections > 1;
