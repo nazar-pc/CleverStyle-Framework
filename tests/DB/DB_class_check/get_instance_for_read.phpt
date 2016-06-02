@@ -7,7 +7,7 @@ var_dump(DB::instance()->db(0));
 ?>
 --EXPECTF--
 string(34) "Fake engine called with arguments:"
-array(6) {
+array(5) {
   [0]=>
   string(8) "database"
   [1]=>
@@ -17,8 +17,6 @@ array(6) {
   [3]=>
   string(9) "localhost"
   [4]=>
-  string(4) "utf8"
-  [5]=>
   string(10) "__prefix__"
 }
 string(19) "Connection: succeed"

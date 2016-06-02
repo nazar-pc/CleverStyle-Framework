@@ -7,7 +7,7 @@ if (getenv('DB') != 'SQLite') {
 --FILE--
 <?php
 include __DIR__.'/../bootstrap.php';
-$db = new \cs\DB\SQLite('', '', '', __DIR__.'/../../cscms.travis/storage/sqlite.db', '', 'xyz_');
+$db = new \cs\DB\SQLite('', '', '', __DIR__.'/../../cscms.travis/storage/sqlite.db', 'xyz_');
 /**
  * @var \cs\DB\_Abstract $db
  */

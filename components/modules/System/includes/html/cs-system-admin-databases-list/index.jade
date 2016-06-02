@@ -13,7 +13,6 @@ dom-module#cs-system-admin-databases-list
 				th [[L.db_prefix]]
 				th [[L.db_name]]
 				th [[L.db_user]]
-				th [[L.db_charset]]
 			template(is="dom-repeat" items="[[databases]]" as="database" id="databases_list")
 				tr(class$="[[if(index, '', 'cs-text-bold')]]")
 					td.cs-text-left
@@ -28,7 +27,6 @@ dom-module#cs-system-admin-databases-list
 					td [[database.prefix]]
 					td [[database.name]]
 					td [[if(index, database.user, '*****')]]
-					td [[database.charset]]
 				template(is="dom-repeat" items="[[database.mirrors]]" as="mirror")
 					tr
 						td.cs-text-right
@@ -40,7 +38,6 @@ dom-module#cs-system-admin-databases-list
 						td [[mirror.prefix]]
 						td [[mirror.name]]
 						td [[mirror.user]]
-						td [[mirror.charset]]
 		p
 			a(is="cs-link-button" on-tap="_add") [[L.add_database]]
 		form.cs-text-center(is="cs-form")

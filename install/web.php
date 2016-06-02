@@ -65,10 +65,6 @@ function install_form () {
 					]
 				)
 			).
-			h::{'tr.expert td'}(
-				'Database charset:',
-				h::{'input[name=db_charset][value=utf8mb4]'}()
-			).
 			h::{'tr td'}(
 				'Timezone:',
 				h::{'select[name=timezone][size=7][selected=UTC]'}(
@@ -135,7 +131,6 @@ function install_process () {
 			$_POST['db_user'],
 			$_POST['db_password'],
 			$_POST['db_prefix'],
-			$_POST['db_charset'],
 			$_POST['language'],
 			$_POST['admin_email'],
 			$_POST['admin_password'],

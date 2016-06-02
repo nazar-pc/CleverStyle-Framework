@@ -35,10 +35,6 @@ dom-module#cs-system-admin-databases-form
 				[[L.db_password]]
 				cs-tooltip
 			input(is="cs-input-text" type="text" value="{{database.password}}")
-			label(tooltip="[[L.db_charset_info]]")
-				[[L.db_charset]]
-				cs-tooltip
-			input(is="cs-input-text" type="text" value="{{database.charset}}")
 			div
 				button(is="cs-button" type="button" primary on-tap="_save" disabled="[[!and(database.host, database.type)]]") [[L.save]]
 				button(is="cs-button" type="button" on-tap="_test_connection" icon="signal" disabled="[[!and(database.host, database.type)]]") [[L.test_connection]]

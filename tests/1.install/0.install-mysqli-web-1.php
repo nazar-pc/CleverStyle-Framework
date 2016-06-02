@@ -17,7 +17,6 @@ $_POST   = [
 	'db_user'        => 'travis',
 	'db_password'    => '',
 	'db_prefix'      => 'xyz_',
-	'db_charset'     => 'utf8mb4',
 	'language'       => 'English',
 	'admin_email'    => 'admin@cscms.travis',
 	'admin_password' => '1111',

@@ -25,7 +25,6 @@ class Installer {
 	"db_user"			: "@db_user",
 	"db_password"		: "@db_password",
 	"db_prefix"			: "@db_prefix",
-	"db_charset"		: "@db_charset",
 //Settings of main Storage
 	"storage_type"		: "Local",
 	"storage_url"		: "",
@@ -56,7 +55,6 @@ CONFIG;
 	 * @param string $db_user
 	 * @param string $db_password
 	 * @param string $db_prefix
-	 * @param string $db_charset
 	 * @param string $language
 	 * @param string $admin_email
 	 * @param string $admin_password
@@ -76,7 +74,6 @@ CONFIG;
 		$db_user,
 		$db_password,
 		$db_prefix,
-		$db_charset,
 		$language,
 		$admin_email,
 		$admin_password,
@@ -99,7 +96,6 @@ CONFIG;
 			$db_user,
 			$db_password,
 			$db_prefix,
-			$db_charset,
 			$language,
 			$public_key
 		);
@@ -107,7 +103,7 @@ CONFIG;
 		 * @var \cs\DB\_Abstract $cdb
 		 */
 		$cdb = "cs\\DB\\$db_engine";
-		$cdb = new $cdb($db_name, $db_user, $db_password, $db_host, $db_charset, $db_prefix);
+		$cdb = new $cdb($db_name, $db_user, $db_password, $db_host, $db_prefix);
 		if (!is_object($cdb) || !$cdb->connected()) {
 			throw new RuntimeException("Can't connect to database! Installation aborted.");
 		}
@@ -213,7 +209,6 @@ CONFIG;
 	 * @param string $db_user
 	 * @param string $db_password
 	 * @param string $db_prefix
-	 * @param string $db_charset
 	 * @param string $language
 	 * @param string $public_key
 	 *
@@ -229,14 +224,13 @@ CONFIG;
 		$db_user,
 		$db_password,
 		$db_prefix,
-		$db_charset,
 		$language,
 		$public_key
 	) {
 		$db_password = str_replace('"', '\\"', $db_password);
 		$config      = str_replace(
-			['@domain', '@timezone', '@db_host', '@db_type', '@db_name', '@db_user', '@db_password', '@db_prefix', '@db_charset', '@language', '@public_key'],
-			[$domain, $timezone, $db_host, $db_engine, $db_name, $db_user, $db_password, $db_prefix, $db_charset, $language, $public_key],
+			['@domain', '@timezone', '@db_host', '@db_type', '@db_name', '@db_user', '@db_password', '@db_prefix', '@language', '@public_key'],
+			[$domain, $timezone, $db_host, $db_engine, $db_name, $db_user, $db_password, $db_prefix, $language, $public_key],
 			self::MAIN_CONFIG_STUB
 		);
 		if (!file_put_contents("$target/config/main.json", $config)) {

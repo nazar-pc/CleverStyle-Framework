@@ -135,7 +135,6 @@ Property, that stores configuration of databases, except the main database, para
 				"name"     : "CleverStyle",
 				"user"     : "CleverStyle",
 				"password" : "1111",
-				"charset"  : "utf8",
 				"mirrors"  : []
 			}
 		]
@@ -148,7 +147,6 @@ Property, that stores configuration of databases, except the main database, para
 		"name"     : "CS3",
 		"user"     : "CS3",
 		"password" : "CS3",
-		"charset"  : "utf8",
 		"mirror"   : "-1"
 	},
 	"3" : {
@@ -161,7 +159,6 @@ Property, that stores configuration of databases, except the main database, para
 				"name"     : "CS2-mirror",
 				"user"     : "CS2-mirror",
 				"password" : "CS2-mirror",
-				"charset"  : "utf8",
 				"mirrors"  : []
 			},
 			{
@@ -172,7 +169,6 @@ Property, that stores configuration of databases, except the main database, para
 				"name"     : "CS2-mirror2",
 				"user"     : "CS2-mirror2",
 				"password" : "CS2-mirror2",
-				"charset"  : "utf8",
 				"mirrors"  : []
 			}
 		],
@@ -181,8 +177,7 @@ Property, that stores configuration of databases, except the main database, para
 		"prefix"   : "prefix_",
 		"name"     : "CS2",
 		"user"     : "CS2",
-		"password" : "CS2",
-		"charset"  : "utf8"
+		"password" : "CS2"
 	}
 }
 ```

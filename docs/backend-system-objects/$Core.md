@@ -47,7 +47,6 @@ $Core->parameter = 'value';
 * db_user
 * db_password
 * db_prefix
-* db_charset
 * storage_type
 * storage_url
 * storage_host

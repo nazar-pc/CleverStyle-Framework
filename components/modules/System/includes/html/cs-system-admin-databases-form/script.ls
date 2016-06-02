@@ -27,7 +27,6 @@ Polymer(
 				name		: ''
 				user		: ''
 				password	: ''
-				charset		: ''
 		engines			: Array
 	ready : !->
 		Promise.all([
@@ -74,7 +73,6 @@ Polymer(
 				name		: @database.name
 				user		: @database.user
 				password	: @database.password
-				charset		: @database.charset
 			success	: !->
 				cs.ui.notify(L.changes_saved, 'success', 5)
 		)

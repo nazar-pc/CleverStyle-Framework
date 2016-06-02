@@ -15,13 +15,12 @@ $interactive = false;
  * @var array $options
  */
 $options = [
-	'db_engine'  => 'MySQLi',
-	'db_host'    => 'localhost',
-	'db_prefix'  => substr(md5(function_exists('random_bytes') ? random_bytes(1000) : openssl_random_pseudo_bytes(1000)), 0, 5).'_',
-	'db_charset' => 'utf8',
-	'timezone'   => 'UTC',
-	'language'   => 'English',
-	'mode'       => 1
+	'db_engine' => 'MySQLi',
+	'db_host'   => 'localhost',
+	'db_prefix' => substr(md5(function_exists('random_bytes') ? random_bytes(1000) : openssl_random_pseudo_bytes(1000)), 0, 5).'_',
+	'timezone'  => 'UTC',
+	'language'  => 'English',
+	'mode'      => 1
 ];
 
 for ($i = 1; $i < $argc; $i += 2) {
@@ -62,10 +61,6 @@ for ($i = 1; $i < $argc; $i += 2) {
 		case '-dr':
 		case '--db_prefix':
 			$options['db_prefix'] = $value;
-			break;
-		case '-dc':
-		case '--db_charset':
-			$options['db_charset'] = $value;
 			break;
 		case '-t':
 		case '--timezone':
@@ -140,7 +135,6 @@ Usage: php $argv[0]
          [--db_engine <db_engine>]
          [--db_host <db_host>]
          [--db_prefix <db_prefix>]
-         [--db_charset <db_charset>]
          [--timezone <timezone>]
          [--language <language>]
   -h
@@ -163,8 +157,6 @@ Usage: php $argv[0]
   --db_password    - Database password
   -dr
   --db_prefix      - Is used for prefixing all tables names
-  -dc
-  --db_charset     - Database charset
   -t
   --timezone       - Timezone, check http://php.net/manual/en/suffixtimezones.php for possible values
   -l
@@ -197,7 +189,6 @@ try {
 		$options['db_user'],
 		$options['db_password'],
 		$options['db_prefix'],
-		$options['db_charset'],
 		$options['language'],
 		$options['admin_email'],
 		$options['admin_password'],

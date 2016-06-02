@@ -14,7 +14,7 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8mb4', $prefix = '') {
+	function __construct ($database, $user = '', $password = '', $host = 'localhost', $prefix = '') {
 		$start = microtime(true);
 		/**
 		 * Parsing of $host variable, detecting port and persistent connection
@@ -26,10 +26,10 @@ class MySQLi extends _Abstract {
 		}
 		$this->database = $database;
 		/**
-		 * Changing DB charset
+		 * Changing DB charset if necessary
 		 */
-		if ($charset && $charset != $this->instance->character_set_name()) {
-			$this->instance->set_charset($charset);
+		if ($this->instance->character_set_name() != 'utf8mb4') {
+			$this->instance->set_charset('utf8mb4');
 		}
 		$this->connected       = true;
 		$this->connecting_time = microtime(true) - $start;

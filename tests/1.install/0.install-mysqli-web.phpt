@@ -81,12 +81,6 @@ include __DIR__.'/../_clean.php';
 				<input name="db_prefix" type="text" value="%s_">
 			</td>
 		</tr>
-		<tr class="expert">
-			<td>Database charset:</td>
-			<td>
-				<input name="db_charset" type="text" value="utf8mb4">
-			</td>
-		</tr>
 		<tr>
 			<td>Timezone:</td>
 			<td>

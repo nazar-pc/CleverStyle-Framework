@@ -27,8 +27,7 @@
           prefix: '',
           name: '',
           user: '',
-          password: '',
-          charset: ''
+          password: ''
         }
       },
       engines: Array
@@ -74,8 +73,7 @@
           prefix: this.database.prefix,
           name: this.database.name,
           user: this.database.user,
-          password: this.database.password,
-          charset: this.database.charset
+          password: this.database.password
         },
         success: function(){
           cs.ui.notify(L.changes_saved, 'success', 5);

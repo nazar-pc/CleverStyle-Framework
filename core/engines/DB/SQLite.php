@@ -16,10 +16,9 @@ class SQLite extends _Abstract {
 	 * @param string $user     Ignored for SQLite
 	 * @param string $password Ignored for SQLite
 	 * @param string $host     Path to database file, relatively to website root or absolute
-	 * @param string $charset  Ignored for SQLite
 	 * @param string $prefix
 	 */
-	function __construct ($database, $user = '', $password = '', $host = '', $charset = '', $prefix = '') {
+	function __construct ($database, $user = '', $password = '', $host = '', $prefix = '') {
 		$start = microtime(true);
 		try {
 			$this->instance        = new \SQLite3($host);

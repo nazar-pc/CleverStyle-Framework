@@ -7,7 +7,7 @@ if (getenv('DB') && getenv('DB') != 'PostgreSQL') {
 --FILE--
 <?php
 include __DIR__.'/../bootstrap.php';
-$db = new \cs\DB\PostgreSQL('travis', 'postgres', '', '127.0.0.1', 'UTF8', 'xyz_');
+$db = new \cs\DB\PostgreSQL('travis', 'postgres', '', '127.0.0.1', 'xyz_');
 if (!$db->connected()) {
 	die('Connection failed:(');
 }

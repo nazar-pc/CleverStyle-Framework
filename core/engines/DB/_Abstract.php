@@ -76,10 +76,9 @@ abstract class _Abstract {
 	 * @param string $user
 	 * @param string $password
 	 * @param string $host
-	 * @param string $charset
 	 * @param string $prefix
 	 */
-	abstract function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8', $prefix = '');
+	abstract function __construct ($database, $user = '', $password = '', $host = 'localhost', $prefix = '');
 	/**
 	 * Query
 	 *

@@ -18,13 +18,13 @@ class PostgreSQL extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'UTF8', $prefix = '') {
+	function __construct ($database, $user = '', $password = '', $host = 'localhost', $prefix = '') {
 		$start = microtime(true);
 		/**
 		 * Parsing of $host variable, detecting port and persistent connection
 		 */
 		list($host, $port, $persistent) = $this->get_host_port_and_persistent($host);
-		$connection_string = "host=$host port=$port dbname=$database user=$user password=$password options='--client_encoding=$charset'";
+		$connection_string = "host=$host port=$port dbname=$database user=$user password=$password options='--client_encoding=UTF8'";
 		$this->handler     = $persistent ? pg_connect($connection_string) : pg_pconnect($connection_string);
 		if (!is_resource($this->handler)) {
 			return;

@@ -24,7 +24,6 @@ Config::instance_stub(
 						'name'     => 'database',
 						'user'     => 'user',
 						'password' => 'db 0, mirror',
-						'charset'  => 'utf8',
 						'prefix'   => '__prefix0__'
 					]
 				]
@@ -37,7 +36,6 @@ Config::instance_stub(
 						'name'     => 'database',
 						'user'     => 'user',
 						'password' => 'db 2, mirror',
-						'charset'  => 'utf8',
 						'prefix'   => '__prefix2__'
 					]
 				]
@@ -52,7 +50,6 @@ Core::instance_stub(
 		'db_name'     => 'database',
 		'db_user'     => 'user',
 		'db_password' => 'db 0',
-		'db_charset'  => 'utf8',
 		'db_prefix'   => '__prefix__'
 	]
 );

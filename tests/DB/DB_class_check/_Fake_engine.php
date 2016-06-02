@@ -9,7 +9,7 @@
 namespace cs\DB;
 class Fake extends _Abstract {
 	static $connected_fake;
-	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8', $prefix = '') {
+	function __construct ($database, $user = '', $password = '', $host = 'localhost', $prefix = '') {
 		var_dump('Fake engine called with arguments:');
 		var_dump(func_get_args());
 		$connected_fake  = self::$connected_fake;

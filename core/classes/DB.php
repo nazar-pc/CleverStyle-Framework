@@ -208,7 +208,6 @@ class DB {
 			$database_settings['user'],
 			$database_settings['password'],
 			$database_settings['host'],
-			$database_settings['charset'],
 			$database_settings['prefix']
 		);
 		$connection_name = ($database_id == 0 ? "Core DB ($Core->db_type)" : $database_id)."/$database_settings[host]/$database_settings[type]";
@@ -260,7 +259,6 @@ class DB {
 					'user'     => $Core->db_user,
 					'password' => $Core->db_password,
 					'host'     => $Core->db_host,
-					'charset'  => $Core->db_charset,
 					'prefix'   => $Core->db_prefix
 				];
 			} else {

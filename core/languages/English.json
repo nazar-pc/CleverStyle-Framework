@@ -165,8 +165,6 @@
 				"db_user_info"        : "Enter the name of the user who has necessary permissions to the database (for the mirror may be enough rights to read)",
 				"db_password"         : "Password of DB user",
 				"db_password_info"    : "Enter the password for the user that has access permissions to the database",
-				"db_charset"          : "Charset of the database",
-				"db_charset_info"     : "Enter the charset of the database",
 				"mirror"              : "Mirror",
 				"separate_db"         : "Separate DB",
 				"db_balance"          : "Balancing the load on the database",

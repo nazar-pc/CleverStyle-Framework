@@ -30,7 +30,6 @@ trait databases {
 				'prefix'  => $Core->db_prefix,
 				'name'    => $Core->db_name,
 				'user'    => '',
-				'charset' => $Core->db_charset,
 				'mirrors' => []
 			]
 		);
@@ -53,7 +52,7 @@ trait databases {
 	 * @throws ExitException
 	 */
 	static function admin_databases_patch ($Request) {
-		$data = $Request->data('host', 'type', 'prefix', 'name', 'user', 'password', 'charset');
+		$data = $Request->data('host', 'type', 'prefix', 'name', 'user', 'password');
 		if (!$data || !in_array($data['type'], static::admin_databases_get_engines())) {
 			throw new ExitException(400);
 		}
@@ -87,7 +86,7 @@ trait databases {
 	 * @throws ExitException
 	 */
 	static function admin_databases_post ($Request) {
-		$data = $Request->data('mirror', 'host', 'type', 'prefix', 'name', 'user', 'password', 'charset');
+		$data = $Request->data('mirror', 'host', 'type', 'prefix', 'name', 'user', 'password');
 		if (!$data || !in_array($data['type'], static::admin_databases_get_engines())) {
 			throw new ExitException(400);
 		}
@@ -179,7 +178,7 @@ trait databases {
 	 * @throws ExitException
 	 */
 	static function admin_databases_test ($Request) {
-		$data    = $Request->data('type', 'name', 'user', 'password', 'host', 'charset');
+		$data    = $Request->data('type', 'name', 'user', 'password', 'host');
 		$engines = static::admin_databases_get_engines();
 		if (!$data || !in_array($data['type'], $engines, true)) {
 			throw new ExitException(400);
@@ -188,7 +187,7 @@ trait databases {
 		/**
 		 * @var \cs\DB\_Abstract $connection
 		 */
-		$connection = new $engine_class($data['name'], $data['user'], $data['password'], $data['host'], $data['charset']);
+		$connection = new $engine_class($data['name'], $data['user'], $data['password'], $data['host']);
 		if (!$connection->connected()) {
 			throw new ExitException(500);
 		}
