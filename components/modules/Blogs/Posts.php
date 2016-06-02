@@ -377,7 +377,7 @@ class Posts {
 			return false;
 		}
 		$sections = array_intersect(
-			array_column(Sections::instance()->get_all(), 'id'),
+			array_merge([0], array_column(Sections::instance()->get_all(), 'id')),
 			$sections
 		);
 		$sections = array_values($sections);

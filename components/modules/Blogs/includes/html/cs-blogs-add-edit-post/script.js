@@ -33,7 +33,7 @@
             title: '',
             path: '',
             content: '',
-            sections: [],
+            sections: [0],
             tags: []
           }, $.getJSON('api/Blogs/sections'), $.ajax({
           url: 'api/Blogs',

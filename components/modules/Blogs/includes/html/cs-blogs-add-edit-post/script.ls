@@ -29,7 +29,7 @@ Polymer(
 				title		: ''
 				path		: ''
 				content		: ''
-				sections	: []
+				sections	: [0]
 				tags		: []
 			}
 			$.getJSON('api/Blogs/sections')
@@ -41,7 +41,7 @@ Polymer(
 		]).then ([@post, sections, settings, profile]) !~>
 			@original_title				= @post.title
 			if @post.title
-				@$.title.textContent		= @post.title
+				@$.title.textContent	= @post.title
 			@local_tags					= @post.tags.join(', ')
 			@sections					= @_prepare_sections(sections)
 			settings.multiple_sections	= settings.max_sections > 1

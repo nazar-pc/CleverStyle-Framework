@@ -17,7 +17,7 @@
 		"preview"                            : "Preview",
 		"page_number"                        : "Page %s",
 		"for_registered_users_only"          : "For registered users only",
-		"post_adding_error"                  : "An error occurred during post adding",
+		"post_addition_error"                : "An error occurred during post addition",
 		"publish"                            : "Publish",
 		"section"                            : "Section",
 		"tag"                                : "Tag",

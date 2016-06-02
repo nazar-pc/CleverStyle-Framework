@@ -78,7 +78,7 @@ class Controller {
 		$Posts = Posts::instance();
 		$id    = $Posts->add($data['title'], $data['path'], $data['content'], $data['sections'], $data['tags'], $data['mode'] == 'draft');
 		if (!$id) {
-			throw new ExitException($L->post_adding_error, 500);
+			throw new ExitException($L->post_addition_error, 500);
 		}
 		$Response->code = 201;
 		return [
@@ -194,6 +194,9 @@ class Controller {
 			throw new ExitException(403);
 		}
 		$data = $Request->data('title', 'sections', 'content', 'tags');
+		if (!$data) {
+			throw new ExitException(400);
+		}
 		$data += [
 			'id'   => 0,
 			'path' => path($Request->data('path') ?: $data['title']),
