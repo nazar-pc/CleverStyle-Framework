@@ -78,9 +78,9 @@ class Comments {
 			return $id;
 		}
 		$comment                   = $this->get($id);
-		$profile                   = User::instance()->get(['username', 'avatar'], $comment['user']);
-		$comment['username']       = $profile['username'];
-		$comment['avatar']         = $profile['avatar'];
+		$User                      = User::instance();
+		$comment['username']       = $User->username($comment['user']);
+		$comment['avatar']         = $User->avatar(null, $comment['user']);
 		$comment['date_formatted'] = date(Language::instance()->_datetime, $comment['date']);
 		$comment['time_formatted'] = date(Language::instance()->_datetime, $comment['date']);
 		return $comment;
