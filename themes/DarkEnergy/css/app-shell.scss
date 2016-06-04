@@ -15,12 +15,9 @@ body {
 }
 
 a:not([is]) {
+	color           : #47adff;
 	cursor          : pointer;
 	text-decoration : none;
-
-	&:not([class]) {
-		color : #47adff !important;
-	}
 }
 
 h1 {

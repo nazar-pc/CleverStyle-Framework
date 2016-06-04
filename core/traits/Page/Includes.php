@@ -247,10 +247,10 @@ trait Includes {
 			 * Rebuilding HTML, JS and CSS cache if necessary
 			 */
 			$this->rebuild_cache($Config);
-			$this->webcomponents_polyfill($Request, true);
+			$this->webcomponents_polyfill($Request, $Config, true);
 			list($includes, $preload) = $this->get_includes_and_preload_resource_for_page_with_compression($Request);
 		} else {
-			$this->webcomponents_polyfill($Request, false);
+			$this->webcomponents_polyfill($Request, $Config, false);
 			/**
 			 * Language translation is added explicitly only when compression is disabled, otherwise it will be in compressed JS file
 			 */
@@ -291,17 +291,29 @@ trait Includes {
 	 * Hack: Add WebComponents Polyfill for browsers without native Shadow DOM support
 	 *
 	 * @param Request $Request
+	 * @param Config  $Config
 	 * @param bool    $with_compression
 	 */
-	protected function webcomponents_polyfill ($Request, $with_compression) {
+	protected function webcomponents_polyfill ($Request, $Config, $with_compression) {
 		if ($Request->cookie('shadow_dom') == 1) {
 			return;
 		}
 		if ($with_compression) {
 			$hash = file_get_contents(PUBLIC_CACHE.'/webcomponents.js.hash');
-			$this->js_internal("/storage/pcache/webcomponents.js?$hash", 'file', true);
+			$this->add_script_imports_to_document($Config, "<script src=\"/storage/pcache/webcomponents.js?$hash\"></script>\n");
 		} else {
-			$this->js_internal('/includes/js/WebComponents-polyfill/webcomponents-custom.min.js', 'file', true);
+			$this->add_script_imports_to_document($Config, "<script src=\"/includes/js/WebComponents-polyfill/webcomponents-custom.min.js\"></script>\n");
+		}
+	}
+	/**
+	 * @param Config $Config
+	 * @param string $content
+	 */
+	protected function add_script_imports_to_document ($Config, $content) {
+		if ($Config->core['put_js_after_body']) {
+			$this->post_Body .= $content;
+		} else {
+			$this->Head .= $content;
 		}
 	}
 	/**
@@ -476,11 +488,7 @@ trait Includes {
 			).
 			$this->html['plain'];
 		$this->Head .= $configs;
-		if ($Config->core['put_js_after_body']) {
-			$this->post_Body .= $scripts.$html_imports;
-		} else {
-			$this->Head .= $scripts.$html_imports;
-		}
+		$this->add_script_imports_to_document($Config, $scripts.$html_imports);
 	}
 	/**
 	 * Hack: jQuery is kind of special; it is only loaded directly in normal mode, during frontend load optimization it is loaded asynchronously in frontend
@@ -546,10 +554,6 @@ trait Includes {
 		$html_imports = $this->html['plain'];
 		$this->config([$optimized_scripts, $optimized_imports], 'cs.optimized_includes');
 		$this->Head .= $this->core_config.$this->config;
-		if ($Config->core['put_js_after_body']) {
-			$this->post_Body .= $system_scripts.$system_imports.$scripts.$html_imports;
-		} else {
-			$this->Head .= $system_scripts.$system_imports.$scripts.$html_imports;
-		}
+		$this->add_script_imports_to_document($Config, $system_scripts.$system_imports.$scripts.$html_imports);
 	}
 }

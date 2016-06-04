@@ -12,7 +12,7 @@ echo Response::instance()->body;
 	<meta charset="utf-8">
 	<meta content="CleverStyle Framework by Mokrynskyi Nazar" name="generator">
 	<base href="http://cscms.travis/">
-	<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet" shim-shadowdom>
+	<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet">
 	<script class="cs-config" target="cs.optimized_includes" type="application/json">[["\/storage\/pcache\/jquery.js?%s"],[]]</script>
 	<link href="/favicon.ico" rel="shortcut icon">
 	<meta content="Web-site | Home" property="og:title">
