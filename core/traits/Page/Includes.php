@@ -451,7 +451,7 @@ trait Includes {
 			array_reduce(
 				array_merge($this->core_css['path'], $this->css['path']),
 				function ($content, $href) {
-					return "$content<link href=\"$href\" rel=\"stylesheet\" shim-shadowdom>\n";
+					return "$content<link href=\"$href\" rel=\"stylesheet\">\n";
 				}
 			).
 			h::style($this->css['plain'] ?: false);
