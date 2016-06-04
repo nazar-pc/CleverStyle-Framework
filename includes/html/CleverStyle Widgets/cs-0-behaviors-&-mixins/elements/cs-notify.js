@@ -125,9 +125,9 @@
         left = this.left;
         right = this.right;
         top = this.top;
-        for (i$ = 0, len$ = (ref$ = this.parentNode.children).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = document.querySelector('html').children).length; i$ < len$; ++i$) {
           child = ref$[i$];
-          if (child.show && child.tagName === tagName && child.bottom === bottom && child.left === left && child.right === right && child.top === top) {
+          if (child !== this && child.is === this.is && child.show && child.tagName === tagName && child.bottom === bottom && child.left === left && child.right === right && child.top === top) {
             callback(child);
           }
         }

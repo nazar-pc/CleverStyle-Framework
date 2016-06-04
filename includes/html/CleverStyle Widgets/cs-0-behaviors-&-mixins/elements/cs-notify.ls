@@ -94,8 +94,10 @@ Polymer.cs.behaviors.cs-notify	= [
 		left	= @left
 		right	= @right
 		top		= @top
-		for child in @parentNode.children
+		for child in document.querySelector('html').children
 			if (
+				child != @ &&
+				child.is == @is &&
 				child.show &&
 				child.tagName == tagName &&
 				child.bottom == bottom &&
