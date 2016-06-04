@@ -323,6 +323,10 @@
         for (i$ = 0, len$ = (ref$ = this$.modules).length; i$ < len$; ++i$) {
           module = ref$[i$];
           if (module.name === meta['package']) {
+            if (meta.version === module.meta.version) {
+              cs.ui.notify(L.update_module_impossible_same_version(meta['package'], meta.version), 'warning', 5);
+              return;
+            }
             this$._update_component(module.meta, meta);
             return;
           }

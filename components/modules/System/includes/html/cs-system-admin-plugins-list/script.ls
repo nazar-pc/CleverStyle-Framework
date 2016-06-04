@@ -89,6 +89,9 @@ Polymer(
 			# Looking for already present plugin
 			for plugin in @plugins
 				if plugin.name == meta.package
+					if meta.version == plugin.meta.version
+						cs.ui.notify(L.update_plugin_impossible_same_version(meta.package, meta.version), 'warning', 5)
+						return
 					@_update_component(plugin.meta, meta)
 					return
 			# If plugin is not present yet - lest just extract it

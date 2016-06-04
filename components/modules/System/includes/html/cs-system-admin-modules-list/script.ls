@@ -314,6 +314,9 @@ Polymer(
 			# Looking for already present module
 			for module in @modules
 				if module.name == meta.package
+					if meta.version == module.meta.version
+						cs.ui.notify(L.update_module_impossible_same_version(meta.package, meta.version), 'warning', 5)
+						return
 					@_update_component(module.meta, meta)
 					return
 			# If module is not present yet - lest just extract it

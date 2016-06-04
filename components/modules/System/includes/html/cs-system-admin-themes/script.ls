@@ -79,6 +79,9 @@ Polymer(
 			# Looking for already present theme
 			for theme in @themes
 				if theme.name == meta.package
+					if meta.version == theme.meta.version
+						cs.ui.notify(@L.update_theme_impossible_same_version(meta.package, meta.version), 'warning', 5)
+						return
 					@_update_component(theme.meta, meta)
 					return
 			# If theme is not present yet - lest just extract it

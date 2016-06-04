@@ -111,6 +111,10 @@
         for (i$ = 0, len$ = (ref$ = this$.plugins).length; i$ < len$; ++i$) {
           plugin = ref$[i$];
           if (plugin.name === meta['package']) {
+            if (meta.version === plugin.meta.version) {
+              cs.ui.notify(L.update_plugin_impossible_same_version(meta['package'], meta.version), 'warning', 5);
+              return;
+            }
             this$._update_component(plugin.meta, meta);
             return;
           }

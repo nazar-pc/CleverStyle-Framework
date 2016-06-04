@@ -95,6 +95,10 @@
         for (i$ = 0, len$ = (ref$ = this$.themes).length; i$ < len$; ++i$) {
           theme = ref$[i$];
           if (theme.name === meta['package']) {
+            if (meta.version === theme.meta.version) {
+              cs.ui.notify(this$.L.update_theme_impossible_same_version(meta['package'], meta.version), 'warning', 5);
+              return;
+            }
             this$._update_component(theme.meta, meta);
             return;
           }
