@@ -19,6 +19,9 @@ document.addEventListener('WebComponentsReady', !->
 	setTimeout (!->
 		document.body.removeAttribute('unresolved-transition')
 		document.body.removeAttribute('cs-unresolved-transition')
+		if !window.WebComponents?.flags
+			# Hack: Under native Shadow DOM in Chromium it sometimes happens that Polymer styles are not properly applied, let's try to enforce this once again after a second
+			setTimeout(Polymer.updateStyles, 1000)
 	), 250
 )
 if !window.WebComponents?.flags

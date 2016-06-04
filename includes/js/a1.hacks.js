@@ -27,8 +27,12 @@
       document.body.removeAttribute('cs-unresolved');
     }
     setTimeout(function(){
+      var ref$;
       document.body.removeAttribute('unresolved-transition');
       document.body.removeAttribute('cs-unresolved-transition');
+      if (!((ref$ = window.WebComponents) != null && ref$.flags)) {
+        setTimeout(Polymer.updateStyles, 1000);
+      }
     }, 250);
   });
   if (!((ref$ = window.WebComponents) != null && ref$.flags)) {
