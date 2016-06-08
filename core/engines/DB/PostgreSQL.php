@@ -128,19 +128,6 @@ class PostgreSQL extends _Abstract {
 		return $this->q_internal(implode(';', $query));
 	}
 	/**
-	 * @deprecated
-	 * @todo remove after 4.x release
-	 *
-	 * @inheritdoc
-	 */
-	function n ($query_result) {
-		if (is_resource($query_result)) {
-			return pg_num_rows($query_result);
-		} else {
-			return false;
-		}
-	}
-	/**
 	 * @inheritdoc
 	 *
 	 * @param false|resource $query_result

@@ -96,19 +96,6 @@ class MySQLi extends _Abstract {
 		return $result;
 	}
 	/**
-	 * @deprecated
-	 * @todo remove after 4.x release
-	 *
-	 * @inheritdoc
-	 */
-	function n ($query_result) {
-		if (is_object($query_result)) {
-			return $query_result->num_rows;
-		} else {
-			return false;
-		}
-	}
-	/**
 	 * @inheritdoc
 	 *
 	 * @param false|\mysqli_result $query_result

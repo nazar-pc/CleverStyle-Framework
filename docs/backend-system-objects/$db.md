@@ -131,17 +131,17 @@ $query = $db->qf(
 #### qfa (...$query : string[]) : array[]|false
 Query, Fetch, Array
 
-Short for `::f(::q(), false, true, false)`, arguments are exactly the same as in `::q()`
+Short for `::f(::q(), false, true)`, arguments are exactly the same as in `::q()`
 
 #### qfs (...$query : string[]) : false|int|string
 Query, Fetch, Single
 
-Short for `::f(::q(), true, false, false)`, arguments are exactly the same as in `::q()`
+Short for `::f(::q(), true)`, arguments are exactly the same as in `::q()`
 
 #### qfas (...$query : string[]) : false|int[]|string[]
 Query, Fetch, Array, Single
 
-Short for `::f(::q(), true, true, false)`, arguments are exactly the same as in `::q()`
+Short for `::f(::q(), true, true)`, arguments are exactly the same as in `::q()`
 
 #### id() : int
 Returns id of last inserted row

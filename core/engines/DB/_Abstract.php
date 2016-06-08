@@ -177,22 +177,6 @@ abstract class _Abstract {
 		return $result;
 	}
 	/**
-	 * Asynchronous, Query
-	 *
-	 * Asynchronous SQL request into DB (if is not supported - ordinary request will me executed).
-	 * Result of execution can't be obtained, so, use it, for example, for deleting some non-critical data
-	 *
-	 * @deprecated
-	 * @todo remove after 4.x release
-	 *
-	 * @param mixed $arguments
-	 *
-	 * @return false|object|resource
-	 */
-	function aq (...$arguments) {
-		return $this->q(...$arguments);
-	}
-	/**
 	 * SQL request to DB
 	 *
 	 * @abstract
@@ -213,21 +197,6 @@ abstract class _Abstract {
 	 */
 	abstract protected function q_multi_internal ($query);
 	/**
-	 * Number
-	 *
-	 * Getting number of selected rows
-	 *
-	 * @deprecated
-	 * @todo remove after 4.x release
-	 *
-	 * @abstract
-	 *
-	 * @param object|resource $query_result
-	 *
-	 * @return false|int
-	 */
-	abstract function n ($query_result);
-	/**
 	 * Fetch
 	 *
 	 * Fetch a result row as an associative array
@@ -243,54 +212,6 @@ abstract class _Abstract {
 	 */
 	abstract function f ($query_result, $single_column = false, $array = false, $indexed = false);
 	/**
-	 * Fetch, Array
-	 *
-	 * Similar to ::f() method, with parameter <b>$array</b> = true
-	 *
-	 * @deprecated
-	 * @todo remove after 4.x release
-	 *
-	 * @param false|object|resource $query_result
-	 * @param bool                  $single_column If <b>true</b> function will return not array with one element, but directly its value
-	 * @param bool                  $indexed       If <b>false</b> - associative array will be returned
-	 *
-	 * @return array[]|false
-	 */
-	function fa ($query_result, $single_column = false, $indexed = false) {
-		return $this->f($query_result, $single_column, true, $indexed);
-	}
-	/**
-	 * Fetch, Single
-	 *
-	 * Similar to ::f() method, with parameter <b>$single_column</b> = true
-	 *
-	 * @deprecated
-	 * @todo remove after 4.x release
-	 *
-	 * @param false|object|resource $query_result
-	 * @param bool                  $array If <b>true</b> returns array of associative arrays of all fetched rows
-	 *
-	 * @return false|int|int[]|string|string[]
-	 */
-	function fs ($query_result, $array = false) {
-		return $this->f($query_result, true, $array);
-	}
-	/**
-	 * Fetch, Array, Single
-	 *
-	 * Combination of ::fa() and ::fs() methods
-	 *
-	 * @deprecated
-	 * @todo remove after 4.x release
-	 *
-	 * @param false|object|resource $query_result
-	 *
-	 * @return false|int[]|string[]
-	 */
-	function fas ($query_result) {
-		return $this->fa($query_result, true);
-	}
-	/**
 	 * Query, Fetch
 	 *
 	 * Short for `::f(::q())`, arguments are exactly the same as in `::q()`
@@ -300,82 +221,42 @@ abstract class _Abstract {
 	 * @return array|false
 	 */
 	function qf (...$query) {
-		// TODO: simplify code below
-		$single_column = false;
-		$array         = false;
-		$indexed       = false;
-		if (count($query) > 1 && is_bool($query[1])) {
-			$single_column = $query[1];
-			if (isset($query[2])) {
-				$array = $query[2];
-			}
-			if (isset($query[3])) {
-				$indexed = $query[3];
-			}
-			$query = $query[0];
-		} elseif (count($query) == 1 && is_array($query[0])) {
-			$query = $query[0];
-		}
-		return $this->f($this->q(...$query), $single_column, $array, $indexed);
+		return $this->f($this->q(...$query));
 	}
 	/**
 	 * Query, Fetch, Array
 	 *
-	 * Short for `::f(::q(), false, true, false)`, arguments are exactly the same as in `::q()`
+	 * Short for `::f(::q(), false, true)`, arguments are exactly the same as in `::q()`
 	 *
 	 * @param string[] $query
 	 *
 	 * @return array[]|false
 	 */
 	function qfa (...$query) {
-		// TODO: simplify code below
-		$single_column = false;
-		$indexed       = false;
-		if (count($query) > 1 && is_bool($query[1])) {
-			$single_column = $query[1];
-			if (isset($query[2])) {
-				$indexed = $query[2];
-			}
-			$query = $query[0];
-		} elseif (count($query) == 1 && is_array($query[0])) {
-			$query = $query[0];
-		}
-		return $this->f($this->q(...$query), $single_column, true, $indexed);
+		return $this->f($this->q(...$query), false, true);
 	}
 	/**
 	 * Query, Fetch, Single
 	 *
-	 * Short for `::f(::q(), true, false, false)`, arguments are exactly the same as in `::q()`
+	 * Short for `::f(::q(), true)`, arguments are exactly the same as in `::q()`
 	 *
 	 * @param string[] $query
 	 *
 	 * @return false|int|string
 	 */
 	function qfs (...$query) {
-		// TODO: simplify code below
-		$array = false;
-		if (count($query) == 2 && is_bool($query[1])) {
-			$array = $query[1];
-			$query = $query[0];
-		} elseif (count($query) == 1 && is_array($query[0])) {
-			$query = $query[0];
-		}
-		return $this->f($this->q(...$query), true, $array);
+		return $this->f($this->q(...$query), true);
 	}
 	/**
 	 * Query, Fetch, Array, Single
 	 *
-	 * Short for `::f(::q(), true, true, false)`, arguments are exactly the same as in `::q()`
+	 * Short for `::f(::q(), true, true)`, arguments are exactly the same as in `::q()`
 	 *
 	 * @param string[] $query
 	 *
 	 * @return false|int[]|string[]
 	 */
 	function qfas (...$query) {
-		// TODO: simplify code below
-		if (count($query) == 1 && is_array($query[0])) {
-			$query = $query[0];
-		}
 		return $this->f($this->q(...$query), true, true);
 	}
 	/**

@@ -60,28 +60,6 @@ class SQLite extends _Abstract {
 		return $result;
 	}
 	/**
-	 * @deprecated
-	 * @todo remove after 4.x release
-	 *
-	 * @inheritdoc
-	 */
-	function n ($query_result) {
-		if (is_object($query_result)) {
-			/**
-			 * @var \SQLite3Result $query_result
-			 */
-			$n = 0;
-			$query_result->reset();
-			while ($query_result->fetchArray()) {
-				++$n;
-			}
-			$query_result->reset();
-			return $n;
-		} else {
-			return false;
-		}
-	}
-	/**
 	 * @inheritdoc
 	 *
 	 * @param false|\SQLite3Result $query_result
