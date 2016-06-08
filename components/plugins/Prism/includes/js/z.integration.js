@@ -7,6 +7,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
+  Prism.plugins.autoloader.languages_path = '/components/plugins/Prism/includes/js/components/';
   Prism.highlightAll = function(async, callback){
     var elements, i$, len$, element;
     elements = document.querySelectorAll('html /deep/ code[class*="language-"], html /deep/ [class*="language-"] code, html /deep/ code[class*="lang-"], html /deep/ [class*="lang-"] code');
