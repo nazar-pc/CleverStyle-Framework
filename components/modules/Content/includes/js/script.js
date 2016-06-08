@@ -11,7 +11,8 @@
     Promise.all([
       $.ajax({
         url: 'api/Content',
-        type: 'is_admin'
+        type: 'is_admin',
+        error_404: function(){}
       }), cs.ui.ready
     ]).then(function(arg$){
       var is_admin, L;
@@ -128,7 +129,7 @@
           clearTimeout(mousemove_timeout);
         });
       })();
-    });
+    })['catch'](function(){});
   });
   function bind$(obj, key, target){
     return function(){ return (target || obj)[key].apply(obj, arguments) };
