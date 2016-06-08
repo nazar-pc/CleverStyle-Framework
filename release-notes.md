@@ -3,7 +3,6 @@
 First release after more than 4 years of development.
 [Installation instructions](/docs/installation/Installation.md)
 Feel free to report bugs if any, feature requests and questions, they are highly appreciated!
-![logo mono](https://cloud.githubusercontent.com/assets/928965/5197643/de7aa1aa-7545-11e4-89a1-696b9ddfdba6.jpg)
 
 # 1.1.3+build-757: New stable release 1.1.3
 
@@ -1649,3 +1648,376 @@ Possible partial compatibility breaking (very unlikely, but still possible):
 * Partially breaking change: translation files renamed to latin names
 
 Latest builds on [SourceForge downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
+
+# 4.78.5+build-2225: HTTP/2 Server Push, PostgreSQL support, docs with sources
+
+First of all, project was renamed from CleverStyle CMS to CleverStyle Framework, which better describes this project.
+
+This release introduces initial CLI support with few methods and components supporting it, more methods in system core and components expected in land future releases.
+
+PostgreSQL in new database engine supported in system core out of the box in addition to already supported MySQLi and SQLite.
+
+HTTP/2 Server Push and preload support added on system level, which alongside with another new feature `Frontend loading optimization` greatly improves first paint, especially on mobile devices with slow network.
+
+A lot of performance tweaks were made both on backend (especially for Http server) and frontend (especially smaller Polymer build, less JS libraries loaded unconditionally).
+
+Major refactoring happened to Blogs module, Comments and Disqus modules were hugely refactored and their integration now works very differently than it was before.
+
+Documentation was moved to the same repository as source code, this makes updates easier and allows documentation versioning.
+
+This is the first release of 4.x series, so it brings some BC-breaks, deprecations that will be removed in next 4.x release as well as all functionality declared as deprecated in any previous release.
+
+PHP 5.6+ is now required (PHP 7 recommended) or HHVM 3.14+
+
+WARNING: update to this version WILL remove `config/main.php`, `.htaccess`, `favicon.ico` and `.gitignore` files on update, make sure to have backup and restore them manually right after update.
+
+Security fixes:
+* None
+
+New components:
+* None
+
+New features:
+* Added support for returning value from controllers: value that is different than `null` will be passed to `cs\Page::json()` for API calls and to `::content()` for other calls
+* `cs\CRUD` trait now will cast numbers to, basically, numbers (instead of leaving them as strings, which is what we get from database)
+* Support for CLI interface added:
+  * arguments parsing
+  * routing
+  * output
+  * exit codes (400..510, all modulo 256)
+  * `wp-cli/php-cli-tools` bundled with system as primary CLI output tool
+  * support for `./cli cli:*` calls for printing available paths and methods
+  * support for `help:` command on System module and few CLI paths/methods
+* Register all events from the beginning unconditionally (this will cause some performance overhead during regular operating, but will increase performance under Http server)
+* Added transactions support using new method `cs\DB\_Abstract::transaction()`
+* `cs\CRUD::create()` and `::update()` now supports arguments to be passed directly instead of being passed as single argument in form of an array
+* Convenient methods `cs\Cache::prefix()` and `cs\Language::prefix()` that are just wrappers around corresponding classes
+* Homegrown PHPT Tests runner added with support for modified PHPT tests format, colored output and overall much simpler
+* Preload support (via `Link: rel=preload` header) added, current includes to preload elements, this is typically used for automatic HTTP2 Server Push
+* Added support for classes aliases: if package `Bar` provides functionality `Foo`, then class `cs\modules\Bar\Bar` is also available as `cs\modules\Foo\Bar`
+* `cs\Installer` class created, used in modern installer
+* Support for `cs\custom` classes for controller-based routing
+* New backend events:
+  * System/App/execute_router/before
+  * System/App/execute_router/after
+  * `` (replaced with ``)
+* `cs.ui.ready` property with promise added, allows to conveniently run stuff when Web Components are ready
+* PostgreSQL support added to system core
+* Documentation added to `docs` subdirectory and will now be updated more actively as code changes within the same repository
+* CleverStyle CMS > CleverStyle Framework
+* Alternative `cs-unresolved` method supported for dealing with FOUC
+* New feature `Frontend loading optimization`, it should help reaching faster initial page loads
+
+Updates:
+* Composer updated to latest stable version
+* New upstream version of Font Awesome
+* New upstream version of TinyMCE (with more patches)
+* New upstream version of WebComponents.js
+* Fresh git build of jQuery 3.x (very likely to be the final 3.0.0)
+* New upstream version of Promise polyfill
+* New upstream version of PHPMailer
+* New upstream version of jsSHA
+* New upstream version of UPF
+* Alameda replaces original RequireJS as smaller, RequireJS-compatible alternative that works in IE10+ which is absolutely fine for us
+* Imported changes from upstream normalized.css, moved IE10-specific hacks to Old IE plugin, Android 4.x-specific normalizations removed
+* Even smaller Polymer build based on 1.5.0 with more Shady DOM-specific stuff removed, processed with Google Closure Compiler, source branch: https://github.com/nazar-pc/polymer/tree/no-shady-dom
+* New upstream version of BananaHTML
+* New upstream version of Prism
+
+Fixes and small improvements:
+* System:
+  * Fix for `cs\Storage\Local::source_by_url()` method
+  * `move_uploaded_file()` changed to `copy()`, since files might be abstracted from default PHP representation and therefore it will not be possible to move them
+  * TinyMCE: Fixed TinyMCE integration (files uploading) and corresponding readme section in Uploader module
+  * Build demo image with PHP 5.6
+  * Even more convenient way to get arguments in `cs\Request::data()` and `::query()` methods, `::route()`, `::route_path()` and `::route_ids()` methods added
+  * Forbid administrator to access contacts of other users
+  * Some normalization of profile-specific APIs
+  * Return `null` instead of `false` in some places, `null` is better compatible with some cases
+  * System doesn't use superglobals directly except when intentionally need them
+  * Fix for multipart body parsing and small refactoring
+  * Added support for AJAX responses with specific status code using callbacks like `success_201` for convenience
+  * Registration API returns status code 201 or 202 instead of string to indicate whether registration confirmation is needed or not
+  * Annotated properties that are available through magic methods
+  * Small tweak in order to avoid uncontrolled growing of memory consumption
+  * Fix for showing error when system config not found (taking into account SAPI)
+  * Tiny fix for `cs-select` element
+  * Fix for TinyMCE integration, changes of `value` property on `cs-editor*` elements was not notified to the outside
+  * Small fix for `selected` property change on `cs-select` element
+  * Migrating to more convenient database interfaces
+  * Fixes for `cs\CRUD_helper` trait when working with joined tables
+  * Allow specify certain language for joined tables instead of using current one in `cs\CRUD_helpers` trait
+  * Events caching that might potentially boost performance under Http server
+  * Major fix for getting available request methods for controller routing
+  * Removed unnecessary item from `index.json`
+  * Very old unused file dropped
+  * Show system's help message when executing `./cli` without arguments
+  * CLI help for optimization commands, small simplification
+  * Readme updated to better describe project purpose and features
+  * Small fix for situation when error happens during `\cs\Request` initialization and `\cs\Response` was not initialized yet
+  * Small fixes for SQLite database engine
+  * Added test for installation with SQLite database
+  * Added tests for SQLite database engine
+  * Cache also failed autoloader results to decrease overhead caused by additional autoloaders (like Composer)
+  * `cs\Permissions` class simplification using `cs\CRUD_helpers` trait
+  * Casting `id` value in `cs\CRUD_helpers::search()`
+  * Run all tests with both MySQLi and SQLite database engines separately (excluding database-specific tests when needed)
+  * Added tests for nested transactions
+  * Simplifications using modern features of `cs\CRUD` trait
+  * Added checks in `cs\CRUD::update()` and `::delete()` to ensure item actually exists before doing something on it
+  * Disallow search engines to scan files of modules, plugins and themes as well as uploaded files
+  * Since now cache will not be disabled in debug mode (BlackHole engine exists for this purpose)
+  * BlackHole cache engine tests added
+  * Use simplified cache and language interface in system core
+  * Few traits decoupled from `cs\App\Router`
+  * Part of `cs\Page\Includes` decoupled into separate trait
+  * It is not likely that modules, plugins, themes or even any other files will be located somewhere other that default paths and dropping absolute path of root will give incorrect relative path; which means that we can simplify certain things
+  * Small tweaks and fixes for incorrect translation prefixes used which caused errors on submission of some forms and prevented showing success message
+  * Changed structure of naming of cached includes to such that will always have common prefix
+  * We can do even better - store not hashes, but actual map of includes with hashes
+  * Be ready that something might modify cached includes in `System/Page/rebuild_cache` event
+  * 2 more traits decoupled from `cs\Page\Includes`
+  * Clean public cache when applying or saving any changes of optimization settings (vulcanization option change didn't trigger public cache cleaning, so lets do it always)
+  * `cs\User\Data` trait split into 2 traits
+  * `cs\modules\System\Packages_dependencies` class added (decoupled from `cs\modules\System\Packages_manipulation`)
+  * Use implicit flush for efficient output of large content
+  * Side effects removed from `cs\Core`
+  * Refactored and centralized cache tests
+  * Fix for FileSystem cache engine returned integer instead of boolean on set
+  * Extended cache test suite with testing get with callback and namespaced keys
+  * Fix for correction of relative paths in CSS when path contains whitespace
+  * Use predefined array instead of switch/case for determining type by extension
+  * Elimination of tab symbol usage in header comments
+  * CoffeeScript > LiveScript
+  * Make modal opening smooth
+  * Improved builder UX
+  * Refactoring of `cs\Singleton\Base`
+  * Always show tooltips
+  * Return integer instead of string with digits from `cs\CRUD_helpers::search()` when `total_count` is specified
+  * Return numeric user id from API
+  * Fix for handling components dependencies and functionalities when processing includes
+  * Added support for `$_SERVER['REQUEST_SCHEME']`
+  * Simplified `get_timezones_list()`, there is no big reason to cache timezones list
+  * `-m` and `--mode` options added to CLI mode of installation
+  * CLI and Web installation methods separated completely and both use `cs\Installer` to make actual system installation
+  * Simplifications in pagination rendering
+  * Translations fixes
+  * Fix JS minifier when dealing with `</script>` inside of JS code and with vulcanization enabled
+  * Fix for recursive dependencies includes priority was not preserved
+  * Unified handling of `WebComponentsReady` event by all CleverStyle Widgets elements
+  * Small fix for filling `cs\Config::$mirrors` property
+  * Using `cs\CRUD` trait in `cs\Config` and some additional simplifications
+  * Simplify includes handling by avoiding unnecessary replacing characters back and forth
+  * Fix for error when numeric `$database` argument passed to `cs\Text` class methods
+  * Set `X-UA-Compatible` as header
+  * Multiple small adjustments to follow SQL standards closely and improve compatibility with other RDBMSs
+  * Corrected DB primary keys set during installation for MySQLi and SQLite engines
+  * Do not use `LIMIT` on `DELETE` in SQL queries
+  * Unlock SQLite to affect total build success
+  * Fix for supported languages in `meta.json` files
+  * Module disabling operation extracted into separate method to allow its execution during module upgrade (otherwise it is not possible to upgrade current default module)
+  * Do not cache events files paths, under Http server events handlers themselves will be cached
+  * Do not remove directories during upgrade when ether files or directories are present, not just files
+  * Clear internal caches of PHP during upgrade to avoid unexpected errors which should not happen normally
+  * Add XML and mbstring extensions to the list of required
+  * Handle the case when nothing was selected in Web UI of builder
+  * Added basic tests for `cs\CRUD` trait
+  * Fix for multi query in MySQLi DB engine
+  * Fix for incorrect query when joined table doesn't contain any records in `cs\CRUD` trait
+  * Fix for `null` argument during `cs\CRUD::create()` call caused error
+  * Fix for potential infinite loop in `cs\CRUD::read_joined_table()`
+  * Docs update
+  * Small formatting tweaks to SQL scripts used during installation
+  * SQLite version requirement increased to 3.7.11+ due to the need for multiple inserts support
+  * `readme.html` removed
+  * Project's own logo landed
+  * `readme.md` restructuring
+  * Web installer fixes and UI improvements
+  * Small changes in about server administration page
+  * Favicons removed from themes
+  * 3 times smaller guest icon (it was tiny already, but why not?:))
+  * Updated logo image, removed image with docker pulls count
+  * Tenebris theme removed from readme, since it is not available in repository anymore
+  * Slightly cleaned root directory and modified installer
+  * Advanced CRUD tests added
+  * Small fix in `cs\CRUD` trait
+  * Fix for `text_md5` column was not set in `cs\Text` class
+  * Never embed or preload fonts other than woff (woff2 will be used in future when browsers support will be better) because they are quite big, typically not critical and preloading new fonts types together is a waste of bandwidth
+  * Fix for unresolved handling when JS inserted into `<head>`
+  * Themes now use `cs-unresolved` attribute instead of `unresolved`, since it works better with `Frontend loading optimization`, which is enabled by default
+  * Tweak default computed bindings for Polymer, so that `'0'` will be treated as `false`
+  * 2-pass, more efficient HTML minification
+  * Dropped CSS CSP-compatibility, since it wasn't complete anyway because Polymer only supports `style[is=custom-style]`, but no `link`-based counterpart
+  * Fix for registered user getting system default language instead of automatically detected if not specified something explicitly
+  * Fix in `cs-select` when currently selected value is falsy
+  * Simplifications in `select[is=cs-select]` usage, some operations are simply redundant
+  * Clean public cache on theme update
+  * Store not only the keys, but also default values of `cs\Core::$core`
+  * Normalize core installer's package internals with internals of components counterparts, so that system updating doesn't override certain files it shouldn't override
+  * Set expiration headers for uploaded files
+  * Fix for HTTPS detection
+  * Add all CSS to frontend load optimized server push
+  * Raise HHVM requirement to 3.14+ (which is not release yet); version might be lowered if required fixes backported to earlier releases
+  * No errors suppressing when working with DB
+  * html5sortable plugin moved to AMD modules, since it is only used in few cases
+  * Small improvements in storing cached includes paths - now they are all prefixed with `/`
+  * App shell for CleverStyle theme
+  * Improved caching expiration for files outside of `storage/pcache`
+  * Fix for closing modal by pressing Esc
+  * Fix for returning `0` from API results, `null` being returned
+  * Better handle concurrent deletion in FileSystem cache engine
+  * Fix for configuration loading that caused performance issues
+  * `cs\Config::cancel()` doesn't return any value anymore, just throws an exception if something goes wrong
+  * https://github.com/Polymer/polymer/pull/3678 applied on top of minified Polymer to fix issue with `Polymer.cs.behaviors.value` behavior
+  * Tiny UI performance tweak
+  * Small tweak for `cs.Language`
+  * Hack for HHVM compatibility until https://github.com/facebook/hhvm/issues/7087 is resolved
+  * Few hacks removed since patches to HHVM bugs were upstreamed and we already require version that will include those fixes
+  * Reduced complexity of `cs-notify`
+  * Also transition duration in `cs-notify` is now determined imperatively instead of relying on `transitionend` event which had random bugs from time to time
+  * Do not allow to upgrade system and components to the same version that already installed
+  * Typo fix and small update to root `.gitignore`
+  * Use modern ppa for PHP in Docker image instead of deprecated one
+  * Do not preload stuff from CSS that have `?` in URL
+  * Call includes addition before `Page::$Head` generation so that preload links might be generated in usual way
+  * Added support for `favicon.png` in root directory with higher priority in addition to `favicon.ico`
+  * Use transactions in `cs\CRUD` trait
+  * Fix for enabling/update messages during dependencies check
+  * Fix for CleverStyle Widgets, some widgets were able to override `[hidden]` attribute effect with own styles
+  * To make things a bit nicer let's make headers names starting with capital letter
+  * Added temporary workaround for Chromium that doesn't understand that preloaded JS file is utf-8 without BOM
+  * `api/System/profile` is now allowed to be called by guest
+  * Do not return `simple_admin_mode` in each admin API response, but rather use `api/System/admin/system`
+  * Lowercase headers names for convenience in `cs\Request::header()` method
+  * Fix for tricky bug in autoloader that caused caching `false` for classes, which are actually present
+  * Allow overriding/extension of built-in system style modules
+  * Fix error happened inside of jQuery, caused by jQuery being included after WebComponents.js polyfill in Firefox
+  * Show notification during updating components that are not installed/used, but have the same version as such to which they are supposed to be updated
+  * Small fix for `cs-notify`
+* Blogs:
+  * Blogs module switched to controller-based routing, no other changes made
+  * Move Blogs API into controller
+  * Posts addition/editing/deletion on frontend through API
+  * Migration to LiveScript
+  * Small UI fixes
+  * Render preview as native post element, no logic duplication
+  * Added public method for converting post array into JSON-LD structure
+  * Do not force setting close tab handler during preview
+  * Joined CRUD tables used to simplify posts manipulation
+  * Simplification using CRUD trait
+  * Simplify searches with `cs\CRUD_helpers` trait
+  * All administration settings are now on frontend through API
+  * Get settings through API instead of setting them as attributes on elements
+  * `cs\modules\Blogs\Sections::get_structure()` usage was eliminated and method was removed
+  * Fix for posts list rendering in Firefox
+  * Comments count is not returned anymore by Blogs module API
+  * Fix for post addition when there are no custom sections
+* Comments:
+  * Rewriting how comments work (simpler interfaces, utilizing new features of system core, events format changed)
+  * Simplifying Comments class using `cs\CRUD_helpers` trait and new features from system core
+  * Comment's API moved from files to Controller
+  * Comments rendering/posting/editing/deletion on frontend through API using Web Components
+  * `cs-comments` element is now used directly to insert comments block on frontend
+  * `cs-comments-count` element for unified displaying of comments number
+  * Using comments settings from API instead of though attributes in Blogs module
+  * Added possibility for other modules to fire event that will cause removal of comments associated with some item
+  * Small fix for Comments module, where cursor didn't show that reply is available, but click still worked
+  * Improve username and avatar getting
+* Composer:
+  * Added CLI interface in Composer module
+  * New event `Composer/update_progress` added
+  * Do not use superglobals in Composer module
+  * Composer modules switched to Controller-based routing
+  * `nazar-pc/stream-slicer` added to Composer packages already included in system core
+* Content:
+  * Tiny fix in Content module, it wasn't prepared to optimized frontend loading
+  * Tiny fix in Content module, it wasn't prepared for being disabled
+* Composer assets:
+  * Composer assets fails nicely if `fxp/composer-asset-plugin` package not installed
+  * Optimize dependencies structure and assets packages naming to avoid potential conflicts
+* DarkEnergy:
+  * Remove big logo from theme - nothing to do there
+  * Simpler CSS layout in DarkEnergy theme
+  * Basic app shell for DarkEnergy theme
+  * Use Google Fonts API for loading Open Sans font, it will be much more efficient than doing it in the way it is now, and making it efficiently ourselves it pretty complex topic
+  * Do not use custom fonts in DarkEnergy theme when user agent advertises data saving
+* Disqus:
+  * Include Disqus's module JS only on those pages where needed
+  * Script migrated to LiveScript
+* Feedback:
+  * Small fix for Feedback module, including CSS directly is not needed for a long time now
+* Http server:
+  * Remove from CLI help optional argument which is not supported for some time already
+  * Small refactoring, avoid creating objects all the time
+  * Log generic errors in Http server module
+* Photo gallery:
+  * Fix for Photo gallery not working, since jQuery ready event is not fired after Web Components are ready anymore
+  * Tiny simplification in Photo gallery module
+* Prism:
+  * Prism integration fixes - wait for Web Components to initialize before initializing itself
+  * Languages now loaded though autoloader plugin
+* Shop:
+  * Stop using already removed `hide.uk.modal` event
+* TinyMCE:
+  * Fix for duplicated `change` event capturing on each real change
+  * Fix for editor when it is initialized before all Web Components are ready (for some reason, which is very difficult to debug, change events are not fired by TinyMCE in this case)
+  * Use empty string instead of `undefined` to prevent error within TinyMCE
+  * TinyMCE silently moved basic Shadow DOM events support under experimental flag
+  * Fix for resize handle under Shadow DOM added to TinyMCE
+  * Small tweak to TinyMCE (do not show textarea inside of editor element)
+  * TinyMCE plugin reworked so that huge TinyMCE library is only loaded when instance of editor is used
+  * Fix for files uploading integration with TinyMCE
+  * Add small delay to not update content too often in TinyMCE which causes performance issues, especially during quick typing
+  * Small fix on top of minified TinyMCE in order to allow links insertion when having inline editor (though, link insertion position is not correct yet:()
+* Uploader:
+  * Do not use superglobals in Uploader module
+
+Deprecations (will be dropped right after release):
+* Bunch of database-related methods in `cs\DB\_Abstract` deprecated as not very useful:
+  * `::aq()`
+  * `::n()`
+  * `::fa()`
+  * `::fs()`
+  * `::fas()`
+* `cs\DB\_Abstract::q*()` methods don't accept usual boolean arguments, but accepts array of arguments as `::q()` method
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* `$condition` argument removed from `cs\Permissions::get()` since it was not actually used and just complicates code
+* Dropped undocumented `indexed` key from `cs\CRUD` trait as never used
+* Partially breaking change, `cs\Page\Includes_processing::htmL()` method accepts slightly different arguments
+* jQuery is only loaded after all main JS and HTML files are loaded (and components that are loaded globally should be aware of this)
+* Stop supporting custom charsets for databases, always use proper UTF8 depending on database engine
+
+Dropped backward compatibility:
+* All deprecated functionality was dropped
+* Dropped update support from System versions older than previous release, the same for all components
+* HTTP storage engine removed since it was not ever used and thus not tested, better not offer it at all
+* `POST api/System/user/*` endpoints moved to restful `* api/System/profile`
+* Dropped unused frontend functions:
+  * `cs.xor_string()`
+  * `cs.prepare_attr_value()`
+* Dropped support for `=>` in dependencies (use regular `>=` instead)
+* `config/main.php` MUST be present
+* `DEBUG` constant MUST be defined in `config/main.php`
+* `DOMAIN` constant removed (use `Core::$domain` instead)
+* Drop support for `prepare.php` in modules and themes as redundant
+* Remove global properties on frontend:
+  * `cs.base_url`
+  * `cs.current_base_url`
+  * `cs.module`
+  * `cs.route`
+  * `cs.route_path`
+  * `cs.route_ids`
+  * `cs.in_admin`
+  * `cs.is_user`
+  * `cs.is_guest`
+  * `cs.public_key`
+  * `cs.password_min_length`
+  * `cs.password_min_strength`
+  * `cs.is_admin`
+  * `cs.debug`
+  * `cs.simple_admin_mode`
+* Behavior `cs.Polymer.behaviors.cs` removed from system
+* Stop applying `shim-shadowdom` attribute to all styles automatically
+
+Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
