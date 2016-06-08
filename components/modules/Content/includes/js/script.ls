@@ -5,6 +5,7 @@
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
+($) <-! require(['jquery'])
 Promise.all([
 	$.ajax(
 		url		: 'api/Content'
