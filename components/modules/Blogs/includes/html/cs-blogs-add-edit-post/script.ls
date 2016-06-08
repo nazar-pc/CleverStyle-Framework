@@ -83,8 +83,8 @@ Polymer(
 			url			: 'api/Blogs/posts'
 			data		: @post
 			type		: 'preview'
-			dataType	: 'text'
 			success	: (result) !~>
+				result					= JSON.stringify(result)
 				@$.preview.innerHTML	= """
 				<article is="cs-blogs-post" preview>
 					<script type="application/ld+json">#result</script>

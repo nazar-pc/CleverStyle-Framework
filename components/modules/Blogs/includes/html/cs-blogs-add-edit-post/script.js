@@ -100,8 +100,8 @@
         url: 'api/Blogs/posts',
         data: this.post,
         type: 'preview',
-        dataType: 'text',
         success: function(result){
+          result = JSON.stringify(result);
           this$.$.preview.innerHTML = "<article is=\"cs-blogs-post\" preview>\n	<script type=\"application/ld+json\">" + result + "</script>\n</article>";
           $('html, body').stop().animate({
             scrollTop: this$.$.preview.offsetTop
