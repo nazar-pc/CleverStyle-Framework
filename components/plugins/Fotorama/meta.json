@@ -1,14 +1,14 @@
 {
 	"package"     : "Fotorama",
 	"category"    : "plugins",
-	"version"     : "4.6.4-cs6",
+	"version"     : "4.6.4-cs7",
 	"description" : "A simple, stunning, powerful jQuery gallery. Integration into CleverStyle Framework.",
 	"author"      : "Artem Polikarpov",
 	"website"     : "fotorama.io",
 	"license"     : "MIT License",
 	"provide"     : "fotorama",
 	"require"     : [
-		"System>=3.212",
+		"System>=4.78",
 		"System<5.0"
 	]
 }
