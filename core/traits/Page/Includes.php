@@ -503,7 +503,7 @@ trait Includes {
 			$hash = file_get_contents(PUBLIC_CACHE.'/jquery.js.hash');
 			return "/storage/pcache/jquery.js?$hash";
 		} else {
-			return '/includes/js/jquery/jquery-3.0.0-pre.js';
+			return '/includes/js/jquery/jquery-3.0.0.js';
 		}
 	}
 	/**
