@@ -19,7 +19,7 @@ configure_jquery_ajax	= !->
 					if xhr.responseText
 						JSON.parse(xhr.responseText).error_description
 					else
-						cs.Language.system_profile_server_connection_error
+						cs.Language.system_server_connection_error
 					'warning'
 					5
 				)

@@ -14,7 +14,7 @@
 	// System
 	"System"           : "System",
 	"system_"          : {
-		"time_"     : {
+		"time_"                   : {
 			"seconds" : "seconds",
 			"minutes" : "minutes",
 			"hours"   : "hours",
@@ -22,15 +22,15 @@
 			"months"  : "months",
 			"years"   : "years"
 		},
-		"filesize_" : {
+		"filesize_"               : {
 			"TiB"   : "TiB",
 			"GiB"   : "GiB",
 			"MiB"   : "MiB",
 			"KiB"   : "KiB",
 			"Bytes" : "Bytes"
 		},
-		"home"      : "Home",
-		"admin_"    : {
+		"home"                    : "Home",
+		"admin_"                  : {
 			"administration"                        : "Administration",
 			"components"                            : "Components",
 			"general"                               : "General",
@@ -40,7 +40,7 @@
 			"for_complete_feature_set"              : "For complete feature set %s packages or functionalities must be installed and enabled",
 			"force_enable_not_recommended"          : "Force enabling (not recommended)",
 			"force_disable_not_recommended"         : "Force disabling (not recommended)",
-			"force_update_not_recommended"             : "Force update (not recommended)",
+			"force_update_not_recommended"          : "Force update (not recommended)",
 			"this_package_is_used_by_module"        : "This package is used by module %s",
 			"this_package_is_used_by_plugin"        : "This package is used by plugin %s",
 			"dependencies_not_satisfied"            : "Dependencies are not satisfied",
@@ -521,7 +521,7 @@
 				"registration_confirmation_time_info"    : "If during specified time (in days) account is not confirmed - it will be removed"
 			}
 		},
-		"profile_"  : {
+		"profile_"                : {
 			"hello"                         : "Hello, %s!",
 			"guest"                         : "Guest",
 			"sign_in"                       : "Sign in",
@@ -566,7 +566,6 @@
 			"upload_avatar"                 : "Upload avatar",
 			"login_or_email"                : "Login or e-mail",
 			"password"                      : "Password",
-			"server_connection_error"       : "Connection to the server failed. Check your internet connection and try again.",
 			"general_settings"              : "General settings",
 			"change_password"               : "Change password",
 			"password_changing"             : "Password changing",
@@ -602,7 +601,8 @@
 			"save"                          : "Save",
 			"changes_saved"                 : "Changes saved",
 			"system_default"                : "Default in system"
-		}
+		},
+		"server_connection_error" : "Connection to the server failed. Check your internet connection and try again."
 	},
 	"l_"               : {
 		"January"   : "January",

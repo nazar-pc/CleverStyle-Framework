@@ -15,7 +15,7 @@
 	// System
 	"System"           : "Система",
 	"system_"          : {
-		"time_"     : {
+		"time_"                   : {
 			"seconds" : "секунд",
 			"minutes" : "хвилин",
 			"hours"   : "годин",
@@ -23,15 +23,15 @@
 			"months"  : "місяців",
 			"years"   : "років"
 		},
-		"filesize_" : {
+		"filesize_"               : {
 			"TiB"   : "ТіБ",
 			"GiB"   : "ГіБ",
 			"MiB"   : "МіБ",
 			"KiB"   : "КіБ",
 			"Bytes" : "Байт"
 		},
-		"home"      : "Головна",
-		"admin_"    : {
+		"home"                    : "Головна",
+		"admin_"                  : {
 			"administration"                        : "Адміністрування",
 			"components"                            : "Компоненти",
 			"general"                               : "Загальні",
@@ -522,7 +522,7 @@
 				"registration_confirmation_time_info"    : "Якщо протягом зазначеного часу (у днях) аккаунт не буде підтверджений - він буде видалений"
 			}
 		},
-		"profile_"  : {
+		"profile_"                : {
 			"hello"                         : "Привіт, %s!",
 			"guest"                         : "Гість",
 			"sign_in"                       : "Увійти",
@@ -567,7 +567,6 @@
 			"upload_avatar"                 : "Вивантажити аватар",
 			"login_or_email"                : "Логін або e-mail",
 			"password"                      : "Пароль",
-			"server_connection_error"       : "З'єднання з сервером невдале. Перевірте підключення до інтернету і спробуйте знову.",
 			"general_settings"              : "Загальні налаштування",
 			"change_password"               : "Змінити пароль",
 			"password_changing"             : "Зміна паролю",
@@ -603,7 +602,8 @@
 			"save"                          : "Зберегти",
 			"changes_saved"                 : "Зміни збережені",
 			"system_default"                : "За замовчуванням в системі"
-		}
+		},
+		"server_connection_error" : "З'єднання з сервером невдале. Перевірте підключення до інтернету і спробуйте знову."
 	},
 	"l_"               : {
 		"January"   : "Січня",

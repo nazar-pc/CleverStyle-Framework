@@ -14,7 +14,7 @@
 	// System
 	"System"           : "Система",
 	"system_"          : {
-		"time_"     : {
+		"time_"                   : {
 			"seconds" : "секунд",
 			"minutes" : "минут",
 			"hours"   : "часов",
@@ -22,15 +22,15 @@
 			"months"  : "месяцев",
 			"years"   : "лет"
 		},
-		"filesize_" : {
+		"filesize_"               : {
 			"TiB"   : "ТиБ",
 			"GiB"   : "ГиБ",
 			"MiB"   : "МиБ",
 			"KiB"   : "КиБ",
 			"Bytes" : "Байт"
 		},
-		"home"      : "Главная",
-		"admin_"    : {
+		"home"                    : "Главная",
+		"admin_"                  : {
 			"administration"                        : "Администрирование",
 			"components"                            : "Компоненты",
 			"general"                               : "Общие",
@@ -521,7 +521,7 @@
 				"registration_confirmation_time_info"    : "Если в течении указанного времени (в днях) аккаунт не будет подтвержден - он будет удален"
 			}
 		},
-		"profile_"  : {
+		"profile_"                : {
 			"hello"                         : "Здравствуйте, %s!",
 			"guest"                         : "Гость",
 			"sign_in"                       : "Войти",
@@ -566,7 +566,6 @@
 			"upload_avatar"                 : "Выгрузить аватар",
 			"login_or_email"                : "Логин или e-mail",
 			"password"                      : "Пароль",
-			"server_connection_error"       : "Соединение с сервером неудачно. Проверьте подключение к интернету и попробуйте снова.",
 			"general_settings"              : "Общие настройки",
 			"change_password"               : "Сменить пароль",
 			"password_changing"             : "Смена пароля",
@@ -602,7 +601,8 @@
 			"save"                          : "Сохранить",
 			"changes_saved"                 : "Изменения сохранены",
 			"system_default"                : "По-умолчанию в системе"
-		}
+		},
+		"server_connection_error" : "Соединение с сервером неудачно. Проверьте подключение к интернету и попробуйте снова."
 	},
 	"l_"               : {
 		"January"   : "Января",
