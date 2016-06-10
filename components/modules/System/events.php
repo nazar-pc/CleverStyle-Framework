@@ -18,6 +18,7 @@ Event::instance()
 	->on(
 		'System/Session/init/after',
 		function () {
+			$Config  = Config::instance();
 			$Session = Session::instance();
 			$user_id = $Session->get_user();
 			/**
@@ -29,8 +30,7 @@ Event::instance()
 				if ($timezone && date_default_timezone_get() != $timezone) {
 					date_default_timezone_set($timezone);
 				}
-				$Config = Config::instance();
-				$L      = Language::instance();
+				$L = Language::instance();
 				/**
 				 * Change language if configuration is multilingual and this is not page with localized url
 				 */
@@ -43,10 +43,12 @@ Event::instance()
 			/**
 			 * Security check
 			 */
-			if ($Request->header('x-requested-with') !== 'XMLHttpRequest' && !$Request->data('session') != $Session->get_id()) {
-				foreach (array_keys($Request->data) as $key) {
-					unset($Request->data[$key]);
-				}
+			if (
+				$Request->header('x-requested-with') !== 'XMLHttpRequest' &&
+				!$Request->data('session') != $Session->get_id() &&
+				$Request->header('origin') != $Config->core_url()
+			) {
+				$Request->data = [];
 			}
 		}
 	)
