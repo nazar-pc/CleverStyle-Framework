@@ -24,18 +24,10 @@ Polymer(
 		modal = cs.ui.simple_modal("""
 			<progress is="cs-progress" infinite></progress>
 		""")
-		$.ajax(
-			url		: @settings_api_url
-			type	: method
-			data	:
-				path_prefix	: @path_prefix
-			success	: !->
-				modal.innerHTML = """
-					<p class="cs-block-success cs-text-success">#{L.done}</p>
-				"""
-			error	: !->
-				modal.innerHTML = """
-					<p class="cs-block-error cs-text-error">#{L.error}</p>
-				"""
-		)
+		cs.api("#method " + @settings_api_url, {@path_prefix})
+			.then !->
+				modal.innerHTML = """<p class="cs-block-success cs-text-success">#{L.done}</p>"""
+			.catch (o) !->
+				clearTimeout(o.timeout)
+				modal.innerHTML = """<p class="cs-block-error cs-text-error">#{L.error}</p>"""
 )

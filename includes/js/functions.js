@@ -33,10 +33,16 @@
         }
       };
       xhr.onerror = function(){
-        cs.ui.notify(this.responseText
-          ? JSON.parse(this.responseText).error_description
-          : cs.Language.system_server_connection_error, 'warning', 5);
-        reject();
+        var timeout;
+        timeout = setTimeout(function(){
+          return cs.ui.notify(this.responseText
+            ? JSON.parse(this.responseText).error_description
+            : L.system_server_connection_error, 'warning', 5);
+        });
+        reject({
+          timeout: timeout,
+          xhr: xhr
+        });
       };
       xhr.onabort = xhr.onerror;
       if (method.toLowerCase() === 'get' && data) {
@@ -101,36 +107,22 @@
   cs.sign_in = function(login, password){
     login = String(login).toLowerCase();
     password = String(password);
-    require(['jssha'], function(jssha){
-      $.ajax({
-        url: 'api/System/profile',
-        type: 'configuration'
-      }).then(function(configuration){
-        $.ajax({
-          url: 'api/System/profile',
-          data: {
-            login: cs.hash(jssha, 'sha224', login),
-            password: cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', password) + configuration.public_key)
-          },
-          type: 'sign_in',
-          success: function(){
-            location.reload();
-          }
-        });
+    Promise.all([require(['jssha']), cs.api('configuration api/System/profile')]).then(function(arg$){
+      var jssha, configuration;
+      jssha = arg$[0][0], configuration = arg$[1];
+      login = cs.hash(jssha, 'sha224', login);
+      password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', password) + configuration.public_key);
+      return cs.api('sign_in api/System/profile', {
+        login: login,
+        password: password
       });
-    });
+    }).then(bind$(location, 'reload'));
   };
   /**
    * Sign out
    */
   cs.sign_out = function(){
-    $.ajax({
-      url: 'api/System/profile',
-      type: 'sign_out',
-      success: function(){
-        location.reload();
-      }
-    });
+    cs.api('sign_out api/System/profile').then(bind$(location, 'reload'));
   };
   /**
    * Registration in the system
@@ -138,24 +130,36 @@
    * @param {string} email
    */
   cs.registration = function(email){
+    var xhr;
     if (!email) {
       cs.ui.alert(L.registration_please_type_your_email);
       return;
     }
     email = String(email).toLowerCase();
-    $.ajax({
-      url: 'api/System/profile',
-      data: {
-        email: email
-      },
-      type: 'registration',
-      success_201: function(){
+    xhr = new XMLHttpRequest();
+    xhr.onload = function(){
+      switch (this.status) {
+      case 201:
         cs.ui.simple_modal('<div>' + L.registration_success + '</div>');
-      },
-      success_202: function(){
+        break;
+      case 202:
         cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>');
+        break;
+      default:
+        this.onerror();
       }
-    });
+    };
+    xhr.onerror = function(){
+      cs.ui.notify(this.responseText
+        ? JSON.parse(this.responseText).error_description
+        : L.system_server_connection_error, 'warning', 5);
+    };
+    xhr.onabort = xhr.onerror;
+    xhr.open('registration'.toUpperCase(), 'api/System/profile');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+      email: email
+    }));
   };
   /**
    * Password restoring
@@ -168,19 +172,15 @@
       return;
     }
     email = String(email).toLowerCase();
-    require(['jssha'], function(jssha){
-      $.ajax({
-        url: 'api/System/profile',
-        data: {
-          email: cs.hash(jssha, 'sha224', email)
-        },
-        type: 'restore_password',
-        success: function(result){
-          if (result === 'OK') {
-            cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>');
-          }
-        }
+    require(['jssha']).then(function(arg$){
+      var jssha;
+      jssha = arg$[0];
+      email = cs.hash(jssha, 'sha224', email);
+      return cs.api('restore_password api/System/profile', {
+        email: email
       });
+    }).then(function(){
+      cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>');
     });
   };
   /**
@@ -202,10 +202,9 @@
       cs.ui.alert(L.current_new_password_equal);
       return;
     }
-    $.ajax({
-      url: 'api/System/profile',
-      type: 'configuration'
-    }).then(function(configuration){
+    Promise.all([require(['jssha']), cs.api('configuration api/System/profile')]).then(function(arg$){
+      var jssha, configuration;
+      jssha = arg$[0][0], configuration = arg$[1];
       if (String(new_password).length < configuration.password_min_length) {
         cs.ui.alert(L.password_too_short);
         return;
@@ -213,27 +212,23 @@
         cs.ui.alert(L.password_too_easy);
         return;
       }
-      require(['jssha'], function(jssha){
-        var current_password, new_password;
-        current_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + configuration.public_key);
-        new_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + configuration.public_key);
-        $.ajax({
-          url: 'api/System/profile',
-          data: {
-            current_password: current_password,
-            new_password: new_password
-          },
-          type: 'change_password',
-          success: function(result){
-            if (success) {
-              success();
-            } else {
-              cs.ui.alert(L.password_changed_successfully);
-            }
-          },
-          error: error || $.ajaxSettings.error
-        });
+      current_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + configuration.public_key);
+      new_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + configuration.public_key);
+      return cs.api('change_password api/System/profile', {
+        current_password: current_password,
+        new_password: new_password
       });
+    }).then(function(){
+      if (success) {
+        success();
+      } else {
+        cs.ui.alert(L.password_changed_successfully);
+      }
+    })['catch'](function(o){
+      if (error) {
+        clearTimeout(o.timeout);
+        error();
+      }
     });
   };
   /**
@@ -438,4 +433,7 @@
       setTimeout(resolve);
     }
   });
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

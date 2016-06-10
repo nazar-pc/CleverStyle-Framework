@@ -145,7 +145,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 										"admin/System/components/#category/update/after"
 										name	: component
 									)
-							.then !-> location.reload()
+							.then(location~reload)
 				)
 				modal.ok.innerHTML		= L[if !message then 'yes' else 'force_update_not_recommended']
 				modal.ok.primary		= !message

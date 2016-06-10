@@ -26,18 +26,13 @@
     _clean_cache_common: function(method){
       var modal;
       modal = cs.ui.simple_modal("<progress is=\"cs-progress\" infinite></progress>");
-      $.ajax({
-        url: this.settings_api_url,
-        type: method,
-        data: {
-          path_prefix: this.path_prefix
-        },
-        success: function(){
-          modal.innerHTML = "<p class=\"cs-block-success cs-text-success\">" + L.done + "</p>";
-        },
-        error: function(){
-          modal.innerHTML = "<p class=\"cs-block-error cs-text-error\">" + L.error + "</p>";
-        }
+      cs.api((method + " ") + this.settings_api_url, {
+        path_prefix: this.path_prefix
+      }).then(function(){
+        modal.innerHTML = "<p class=\"cs-block-success cs-text-success\">" + L.done + "</p>";
+      })['catch'](function(o){
+        clearTimeout(o.timeout);
+        modal.innerHTML = "<p class=\"cs-block-error cs-text-error\">" + L.error + "</p>";
       });
     }
   });

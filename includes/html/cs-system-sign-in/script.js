@@ -15,7 +15,7 @@
       cs.Event.fire('cs-system-sign-in', this);
     },
     attached: function(){
-      this.$.login.focus();
+      setTimeout(bind$(this.$.login, 'focus'));
     },
     _sign_in: function(e){
       e.preventDefault();
@@ -25,4 +25,7 @@
       cs.ui.simple_modal("<cs-system-restore-password-form/>");
     }
   });
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

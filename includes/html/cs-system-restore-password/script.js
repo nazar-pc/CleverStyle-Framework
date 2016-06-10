@@ -12,11 +12,14 @@
     'is': 'cs-system-restore-password',
     behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
     attached: function(){
-      this.$.login.focus();
+      setTimeout(bind$(this.$.login, 'focus'));
     },
     _restore_password: function(e){
       e.preventDefault();
       cs.restore_password(this.$.login.value);
     }
   });
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

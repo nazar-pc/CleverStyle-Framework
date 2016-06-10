@@ -13,7 +13,7 @@ Polymer(
 	ready : !->
 		cs.Event.fire('cs-system-sign-in', @)
 	attached : !->
-		@$.login.focus()
+		setTimeout(@$.login~focus)
 	_sign_in : (e) !->
 		e.preventDefault()
 		cs.sign_in(@$.login.value, @$.password.value)

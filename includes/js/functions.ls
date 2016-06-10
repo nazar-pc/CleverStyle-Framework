@@ -25,15 +25,17 @@ cs.api = (method_path, data) ->
 			else
 				resolve(JSON.parse(@responseText))
 		xhr.onerror	= !->
-			cs.ui.notify(
-				if @responseText
-					JSON.parse(@responseText).error_description
-				else
-					cs.Language.system_server_connection_error
-				'warning'
-				5
+			timeout	= setTimeout(->
+				cs.ui.notify(
+					if @responseText
+						JSON.parse(@responseText).error_description
+					else
+						L.system_server_connection_error
+					'warning'
+					5
+				)
 			)
-			reject()
+			reject({timeout, xhr})
 		xhr.onabort	= xhr.onerror
 		if method.toLowerCase() == 'get' && data
 			path += '?' + (
@@ -78,30 +80,20 @@ cs.hash = (jssha, algo, data) ->
 cs.sign_in = (login, password) !->
 	login		= String(login).toLowerCase()
 	password	= String(password)
-	jssha <-! require(['jssha'], _)
-	$.ajax(
-		url		: 'api/System/profile'
-		type	: 'configuration'
-	).then (configuration) !->
-		$.ajax(
-			url		: 'api/System/profile'
-			data	:
-				login		: cs.hash(jssha, 'sha224', login)
-				password	: cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', password) + configuration.public_key)
-			type	: 'sign_in'
-			success	: !->
-				location.reload()
-		)
+	Promise.all([
+		require(['jssha'])
+		cs.api('configuration api/System/profile')
+	])
+		.then ([[jssha], configuration]) ->
+			login		:= cs.hash(jssha, 'sha224', login)
+			password	:= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', password) + configuration.public_key)
+			cs.api('sign_in api/System/profile', {login, password})
+		.then(location~reload)
 /**
  * Sign out
  */
 cs.sign_out = !->
-	$.ajax(
-		url		: 'api/System/profile'
-		type	: 'sign_out'
-		success	: !->
-			location.reload()
-	)
+	cs.api('sign_out api/System/profile').then(location~reload)
 /**
  * Registration in the system
  *
@@ -111,17 +103,26 @@ cs.registration = (email) !->
 	if !email
 		cs.ui.alert(L.registration_please_type_your_email)
 		return
-	email	= String(email).toLowerCase()
-	$.ajax(
-		url			: 'api/System/profile'
-		data		:
-			email: email
-		type		: 'registration'
-		success_201	: !->
-			cs.ui.simple_modal('<div>' + L.registration_success + '</div>')
-		success_202	: !->
-			cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>')
-	)
+	email		= String(email).toLowerCase()
+	xhr			= new XMLHttpRequest()
+	xhr.onload	= !->
+		switch @status
+		| 201		=> cs.ui.simple_modal('<div>' + L.registration_success + '</div>')
+		| 202		=> cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>')
+		| otherwise	=> @onerror()
+	xhr.onerror	= !->
+		cs.ui.notify(
+			if @responseText
+				JSON.parse(@responseText).error_description
+			else
+				L.system_server_connection_error
+			'warning'
+			5
+		)
+	xhr.onabort	= xhr.onerror
+	xhr.open('registration'.toUpperCase(), 'api/System/profile')
+	xhr.setRequestHeader('Content-Type', 'application/json')
+	xhr.send(JSON.stringify({email}))
 /**
  * Password restoring
  *
@@ -132,16 +133,12 @@ cs.restore_password = (email) !->
 		cs.ui.alert(L.restore_password_please_type_your_email)
 		return
 	email	= String(email).toLowerCase()
-	jssha <-! require(['jssha'], _)
-	$.ajax(
-		url		: 'api/System/profile'
-		data	:
-			email: cs.hash(jssha, 'sha224', email)
-		type	: 'restore_password'
-		success	: (result) !->
-			if result == 'OK'
-				cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>')
-	)
+	require(['jssha'])
+		.then ([jssha]) ->
+			email := cs.hash(jssha, 'sha224', email)
+			cs.api('restore_password api/System/profile', {email})
+		.then !->
+			cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>')
 /**
  * Password changing
  *
@@ -160,32 +157,29 @@ cs.change_password = (current_password, new_password, success, error) !->
 	else if current_password == new_password
 		cs.ui.alert(L.current_new_password_equal)
 		return
-	$.ajax(
-		url		: 'api/System/profile'
-		type	: 'configuration'
-	).then (configuration) !->
-		if String(new_password).length < configuration.password_min_length
-			cs.ui.alert(L.password_too_short)
-			return
-		else if cs.password_check(new_password) < configuration.password_min_strength
-			cs.ui.alert(L.password_too_easy)
-			return
-		jssha <-! require(['jssha'], _)
-		current_password	= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + configuration.public_key)
-		new_password		= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + configuration.public_key)
-		$.ajax(
-			url		: 'api/System/profile'
-			data	:
-				current_password	: current_password
-				new_password		: new_password
-			type	: 'change_password'
-			success	: (result) !->
-				if success
-					success()
-				else
-					cs.ui.alert(L.password_changed_successfully)
-			error	: error || $.ajaxSettings.error
-		)
+	Promise.all([
+		require(['jssha'])
+		cs.api('configuration api/System/profile')
+	])
+		.then ([[jssha], configuration]) ->
+			if String(new_password).length < configuration.password_min_length
+				cs.ui.alert(L.password_too_short)
+				return
+			else if cs.password_check(new_password) < configuration.password_min_strength
+				cs.ui.alert(L.password_too_easy)
+				return
+			current_password	:= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + configuration.public_key)
+			new_password		:= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + configuration.public_key)
+			cs.api('change_password api/System/profile', {current_password, new_password})
+		.then !->
+			if success
+				success()
+			else
+				cs.ui.alert(L.password_changed_successfully)
+		.catch (o) !->
+			if error
+				clearTimeout(o.timeout)
+				error()
 /**
  * Check password strength
  *

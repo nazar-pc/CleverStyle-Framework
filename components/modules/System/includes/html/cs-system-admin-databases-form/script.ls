@@ -70,17 +70,14 @@ Polymer(
 			<h3 class="cs-text-center">#{L.test_connection}</h3>
 			<progress is="cs-progress" infinite></progress>
 		</div>"""))
-		$.ajax(
-			url		: 'api/System/admin/databases'
-			data	: @database
-			type	: 'test'
-			success	: (result) !->
+		cs.api('test api/System/admin/databases', @database)
+			.then !->
 				$modal
 					.find('progress')
 					.replaceWith("""<p class="cs-text-center cs-block-success cs-text-success" style=text-transform:capitalize;">#{L.success}</p>""")
-			error	: !->
+			.catch (o) !->
+				clearTimeout(o.timeout)
 				$modal
 					.find('progress')
 					.replaceWith("""<p class="cs-text-center cs-block-error cs-text-error" style=text-transform:capitalize;">#{L.failed}</p>""")
-		)
 )

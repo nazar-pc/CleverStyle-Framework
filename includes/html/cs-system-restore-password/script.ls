@@ -11,7 +11,7 @@ Polymer(
 		cs.Polymer.behaviors.Language('system_profile_')
 	]
 	attached : !->
-		@$.login.focus()
+		setTimeout(@$.login~focus)
 	_restore_password : (e) !->
 		e.preventDefault()
 		cs.restore_password(@$.login.value)

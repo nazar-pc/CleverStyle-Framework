@@ -28,14 +28,10 @@ Polymer(
 	_test_email : !->
 		email = prompt('Email')
 		if email
-			$.ajax(
-				url		: 'api/System/admin/mail'
-				data	:
-					email	: email
-				type	: 'send_test_email'
-				success	: ->
-					alert(L.done)
-				error	: ->
-					alert(L.test_email_sending_failed)
-			)
+			cs.api('send_test_email api/System/admin/mail', {email})
+				.then !->
+					cs.ui.simple_modal("""<p class="cs-text-center cs-block-success cs-text-success">#{L.done}</p>""")
+				.catch (o) !->
+					clearTimeout(o.timeout)
+					cs.ui.simple_modal("""<p class="cs-text-center cs-block-error cs-text-error">#{L.test_email_sending_failed}</p>""")
 )

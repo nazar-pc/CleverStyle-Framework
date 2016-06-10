@@ -163,9 +163,7 @@
                   name: component
                 });
               }
-            }).then(function(){
-              location.reload();
-            });
+            }).then(bind$(location, 'reload'));
           });
           modal.ok.innerHTML = L[!message ? 'yes' : 'force_update_not_recommended'];
           modal.ok.primary = !message;
@@ -341,4 +339,7 @@
       }
     }
   };
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);
