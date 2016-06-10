@@ -19,7 +19,7 @@
     },
     reload: function(){
       var this$ = this;
-      Promise.all([$.getJSON('api/System/admin/themes'), $.getJSON('api/System/admin/themes/current')]).then(function(arg$){
+      cs.api(['get api/System/admin/themes', 'get api/System/admin/themes/current']).then(function(arg$){
         var themes, current_theme;
         themes = arg$[0], current_theme = arg$[1];
         this$.current_theme = current_theme;
@@ -57,19 +57,14 @@
       cs.Event.fire('admin/System/components/themes/current/before', {
         name: this.current_theme
       }).then(function(){
-        $.ajax({
-          url: 'api/System/admin/themes/current',
-          type: 'put',
-          data: {
-            theme: this$.current_theme
-          },
-          success: function(){
-            cs.ui.notify(this$.L.changes_saved, 'success', 5);
-            this$.reload();
-            cs.Event.fire('admin/System/components/themes/current/after', {
-              name: this$.current_theme
-            });
-          }
+        cs.api('put api/System/admin/themes/current', {
+          theme: this$.current_theme
+        }).then(function(){
+          cs.ui.notify(this$.L.changes_saved, 'success', 5);
+          this$.reload();
+          cs.Event.fire('admin/System/components/themes/current/after', {
+            name: this$.current_theme
+          });
         });
       });
     },
@@ -108,13 +103,9 @@
     },
     _extract: function(meta){
       var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/themes',
-        type: 'extract',
-        success: function(){
-          this$.reload();
-          cs.ui.notify(this$.L.changes_saved, 'success', 5);
-        }
+      cs.api('extract api/System/admin/themes').then(function(){
+        this$.reload();
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
     }
   });

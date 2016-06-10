@@ -16,9 +16,8 @@ Polymer(
 		settings_api_url	: 'api/System/admin/site_info'
 		timezones			: Array
 	ready : !->
-		timezones <~! $.getJSON('api/System/timezones', _)
-		@timezones	=
-			for description, timezone of timezones
-				timezone	: timezone
-				description	: description
+		cs.api('get api/System/timezones').then (timezones) !~>
+			@timezones	=
+				for description, timezone of timezones
+					{timezone, description}
 )

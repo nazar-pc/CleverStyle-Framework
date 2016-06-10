@@ -21,7 +21,7 @@
     },
     _reload: function(){
       var this$ = this;
-      Promise.all([$.getJSON('api/System/admin/groups'), $.getJSON("api/System/admin/users/" + this.user + "/groups")]).then(function(arg$){
+      cs.api(['get api/System/admin/groups', "get api/System/admin/users/" + this.user + "/groups"]).then(function(arg$){
         var groups, user_groups_ids, user_groups, other_groups, group;
         groups = arg$[0], user_groups_ids = arg$[1];
         user_groups = [];
@@ -60,18 +60,14 @@
       });
     },
     save: function(){
-      var this$ = this;
-      $.ajax({
-        url: "api/System/admin/users/" + this.user + "/groups",
-        data: {
-          groups: $(this.$['user-groups']).children('div:not(:first)').map(function(){
-            return this.group;
-          }).get()
-        },
-        type: 'put',
-        success: function(){
-          cs.ui.notify(this$.L.changes_saved, 'success', 5);
-        }
+      var groups, this$ = this;
+      groups = $(this.$['user-groups']).children('div:not(:first)').map(function(){
+        return this.group;
+      }).get();
+      cs.api("put api/System/admin/users/" + this.user + "/groups", {
+        groups: groups
+      }).then(function(){
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
     }
   });

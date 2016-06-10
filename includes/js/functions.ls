@@ -6,6 +6,51 @@
  */
 L = cs.Language('system_profile_')
 /**
+ * Simple function for XHR requests to API wrapped in promise
+ *
+ * @param {string} method_path Whitespace-separated method and path for API call
+ * @param {object} data Data to be passed with request
+ *
+ * @return {Promise}
+ */
+cs.api = (method_path, data) ->
+	if method_path instanceof Array
+		return Promise.all(method_path.map(cs.api))
+	[method, path] = method_path.split(/\s+/, 2)
+	new Promise (resolve, reject) !->
+		xhr			= new XMLHttpRequest()
+		xhr.onload	= !->
+			if @status >= 400
+				@onerror()
+			else
+				resolve(JSON.parse(@responseText))
+		xhr.onerror	= !->
+			cs.ui.notify(
+				if @responseText
+					JSON.parse(@responseText).error_description
+				else
+					cs.Language.system_server_connection_error
+				'warning'
+				5
+			)
+			reject()
+		xhr.onabort	= xhr.onerror
+		if method.toLowerCase() == 'get' && data
+			path += '?' + (
+				for param, value of data
+					encodeURIComponent(param) + '=' + encodeURIComponent(value)
+			).join('&')
+		xhr.open(method.toUpperCase(), path)
+		if data instanceof HTMLFormElement
+			xhr.send(new FormData(data))
+		else if data instanceof FormData
+			xhr.send(data)
+		else if data
+			xhr.setRequestHeader('Content-Type', 'application/json')
+			xhr.send(JSON.stringify(data))
+		else
+			xhr.send()
+/**
  * Supports algorithms sha1, sha224, sha256, sha384, sha512
  *
  * @param {object} jssha jsSHA object

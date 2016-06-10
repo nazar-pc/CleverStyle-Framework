@@ -19,23 +19,20 @@
     ready: function(){
       var this$ = this;
       if (this.group_id) {
-        $.getJSON('api/System/admin/groups/' + this.group_id, function(arg$){
+        cs.api('get api/System/admin/groups/' + this.group_id).then(function(arg$){
           this$.group_title = arg$.title, this$.group_description = arg$.description;
         });
       }
     },
     save: function(){
-      var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/groups' + (this.group_id ? '/' + this.group_id : ''),
-        type: this.group_id ? 'put' : 'post',
-        data: {
-          title: this.group_title,
-          description: this.group_description
-        },
-        success: function(){
-          cs.ui.notify(this$.L.changes_saved, 'success', 5);
-        }
+      var method, suffix, this$ = this;
+      method = this.group_id ? 'put' : 'post';
+      suffix = this.group_id ? '/' + this.group_id : '';
+      cs.api(method + " api/System/admin/groups" + suffix, {
+        title: this.group_title,
+        description: this.group_description
+      }).then(function(){
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
     }
   });

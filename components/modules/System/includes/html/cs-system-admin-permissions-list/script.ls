@@ -18,9 +18,9 @@ Polymer(
 	ready				: !->
 		@reload()
 	reload				: !->
-		Promise.all([
-			$.getJSON('api/System/admin/blocks')
-			$.getJSON('api/System/admin/permissions')
+		cs.api([
+			'get api/System/admin/blocks'
+			'get api/System/admin/permissions'
 		]).then ([blocks, permissions]) !~>
 			block_index_to_title	= {}
 			blocks.forEach (block) ->
@@ -57,12 +57,8 @@ Polymer(
 				<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
 			"""
 			!~>
-				$.ajax(
-					url		: 'api/System/admin/permissions/' + permission.id
-					type	: 'delete'
-					success	: !~>
-						cs.ui.notify(L.changes_saved, 'success', 5)
-						@splice('permissions', e.model.index, 1)
-				)
+				cs.api('delete api/System/admin/permissions/' + permission.id).then !~>
+					cs.ui.notify(L.changes_saved, 'success', 5)
+					@splice('permissions', e.model.index, 1)
 		)
 )

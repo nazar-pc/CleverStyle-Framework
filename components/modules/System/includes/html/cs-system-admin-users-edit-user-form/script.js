@@ -27,7 +27,7 @@
     },
     ready: function(){
       var this$ = this;
-      Promise.all([$.getJSON('api/System/languages'), $.getJSON('api/System/timezones'), $.getJSON('api/System/admin/users/' + this.user_id)]).then(function(arg$){
+      cs.api(['get api/System/languages', 'get api/System/timezones', 'get api/System/admin/users/' + this.user_id]).then(function(arg$){
         var languages, timezones, data, languages_list, i$, len$, language, timezones_list, description, timezone, block_until;
         languages = arg$[0], timezones = arg$[1], data = arg$[2];
         languages_list = [];
@@ -106,15 +106,10 @@
     },
     save: function(){
       var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/users/' + this.user_id,
-        type: 'patch',
-        data: {
-          user: this.user_data
-        },
-        success: function(){
-          cs.ui.notify(this$.L.changes_saved, 'success', 5);
-        }
+      cs.api('patch api/System/admin/users/' + this.user_id, {
+        user: this.user_data
+      }).then(function(){
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
     }
   });

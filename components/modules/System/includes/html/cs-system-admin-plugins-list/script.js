@@ -26,7 +26,7 @@
     },
     reload: function(){
       var this$ = this;
-      $.getJSON('api/System/admin/plugins', function(plugins){
+      cs.api('get api/System/admin/plugins').then(function(plugins){
         plugins.forEach(function(plugin){
           var active_switch_local;
           active_switch_local = active_switch.bind(plugin);
@@ -119,18 +119,10 @@
             return;
           }
         }
-        this$._extract(meta);
-      });
-    },
-    _extract: function(meta){
-      var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/plugins',
-        type: 'extract',
-        success: function(){
+        cs.api('extract api/System/admin/plugins').then(function(){
           cs.ui.notify(L.changes_saved, 'success', 5);
           location.reload();
-        }
+        });
       });
     }
   });

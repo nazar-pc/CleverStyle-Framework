@@ -52,20 +52,16 @@ Polymer(
 		'search_again(search_column, search_mode, search_limit, _initialized)'
 	]
 	ready : !->
-		$.ajax(
-			url		: 'api/System/admin/users'
-			type	: 'search_options'
-			success	: (search_options) !~>
-				search_columns	= []
-				for column in search_options.columns
-					search_columns.push(
-						name		: column
-						selected	: @columns.indexOf(column) != -1
-					)
-				@search_columns	= search_columns
-				@all_columns	= search_options.columns
-				@search_modes	= search_options.modes
-		)
+		cs.api('search_options api/System/admin/users').then (search_options) !~>
+			search_columns	= []
+			for column in search_options.columns
+				search_columns.push(
+					name		: column
+					selected	: @columns.indexOf(column) != -1
+				)
+			@search_columns	= search_columns
+			@all_columns	= search_options.columns
+			@search_modes	= search_options.modes
 	search : !->
 		if @searching || @_initialized == undefined
 			return
@@ -73,23 +69,18 @@ Polymer(
 		searching_timeout	= setTimeout (!~>
 			@searching_loader	= true
 		), 200
-		$.ajax(
-			url			: 'api/System/admin/users'
-			type		: 'search'
-			data		:
-				column	: @search_column
-				mode	: @search_mode
-				text	: @search_text
-				page	: @search_page
-				limit	: @search_limit
-			complete	: (jqXHR, textStatus) !~>
+		cs.api(
+			'search api/System/admin/users'
+			column	: @search_column
+			mode	: @search_mode
+			text	: @search_text
+			page	: @search_page
+			limit	: @search_limit
+		)
+			.then (data) !~>
 				clearTimeout(searching_timeout)
 				@searching			= false
 				@searching_loader	= false
-				if !textStatus
-					@set('users', [])
-					@users_count	= 0
-			success		: (data) !~>
 				@users_count	= data.count
 				if !data.count
 					@set('users', [])
@@ -120,7 +111,12 @@ Polymer(
 						user.type		= L[type]
 						user.type_info	= L[type + '_info']
 				@set('users', data.users)
-		)
+			.catch !~>
+				clearTimeout(searching_timeout)
+				@searching			= false
+				@searching_loader	= false
+				@set('users', [])
+				@users_count	= 0
 	toggle_search_column : (e) !->
 		index			= e.model.index
 		column			= @search_columns[index]

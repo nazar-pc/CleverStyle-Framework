@@ -24,13 +24,10 @@ Polymer(
 	ready : !->
 		@reload()
 	reload : !->
-		Promise.all([
-			$.getJSON('api/System/admin/modules')
-			$.getJSON('api/System/admin/modules/default')
-			$.ajax(
-				url		: 'api/System/admin/system'
-				type	: 'get_settings'
-			)
+		cs.api([
+			'get			api/System/admin/modules'
+			'get			api/System/admin/modules/default'
+			'get_settings	api/System/admin/system'
 		]).then ([modules, default_module, settings]) !~>
 			@default_module	= default_module
 			modules.forEach (module) !->
@@ -96,20 +93,15 @@ Polymer(
 		cs.Event.fire(
 			'admin/System/components/modules/default/before'
 			name	: module
-		).then !~>
-			$.ajax(
-				url		: 'api/System/admin/modules/default'
-				type	: 'put'
-				data	:
-					module	: module
-				success	: !~>
-					@reload()
-					cs.ui.notify(L.changes_saved, 'success', 5)
-					cs.Event.fire(
-						'admin/System/components/modules/default/after'
-						name	: module
-					)
-			)
+		)
+			.then -> cs.api('put api/System/admin/modules/default', {module})
+			.then !~>
+				@reload()
+				cs.ui.notify(L.changes_saved, 'success', 5)
+				cs.Event.fire(
+					'admin/System/components/modules/default/after'
+					name	: module
+				)
 	/**
 	 * Provides next events:
 	 *  admin/System/components/modules/enable/before
@@ -141,14 +133,11 @@ Polymer(
 	_install : (e) !->
 		module	= e.model.module.name
 		meta	= e.model.module.meta
-		Promise.all([
-			$.getJSON("api/System/admin/modules/#module/dependencies")
-			$.getJSON('api/System/admin/databases')
-			$.getJSON('api/System/admin/storages')
-			$.ajax(
-				url		: 'api/System/admin/system'
-				type	: 'get_settings'
-			)
+		cs.api([
+			"get			api/System/admin/modules/#module/dependencies"
+			'get			api/System/admin/databases'
+			'get			api/System/admin/storages'
+			'get_settings	api/System/admin/system'
 		]).then ([dependencies, databases, storages, settings]) !~>
 			message			= ''
 			message_more	= ''
@@ -169,19 +158,16 @@ Polymer(
 					cs.Event.fire(
 						'admin/System/components/modules/install/before'
 						name	: module
-					).then !~>
-						$.ajax(
-							url			: "api/System/admin/modules/#module"
-							data		: $(modal.querySelector('form')).serialize()
-							type		: 'install'
-							success		: !~>
-								cs.ui.notify(L.changes_saved, 'success', 5)
-								cs.Event.fire(
-									'admin/System/components/modules/install/after'
-									name	: module
-								).then !->
-									location.reload()
-						)
+					)
+						.then -> cs.api("install api/System/admin/modules/#module", modal.querySelector('form'))
+						.then ->
+							cs.ui.notify(L.changes_saved, 'success', 5)
+							cs.Event.fire(
+								'admin/System/components/modules/install/after'
+								name	: module
+							)
+						.then !->
+							location.reload()
 			)
 			modal.ok.innerHTML		= L[if !message then 'install' else 'force_install_not_recommended']
 			modal.ok.primary		= !message
@@ -280,18 +266,15 @@ Polymer(
 				cs.Event.fire(
 					'admin/System/components/modules/uninstall/before'
 					name	: module
-				).then !~>
-					$.ajax(
-						url		: "api/System/admin/modules/#module"
-						type	: 'uninstall'
-						success	: !~>
-							@reload()
-							cs.ui.notify(L.changes_saved, 'success', 5)
-							cs.Event.fire(
-								'admin/System/components/modules/uninstall/after'
-								name	: module
-							)
-					)
+				)
+					.then -> cs.api("uninstall api/System/admin/modules/#module")
+					.then !~>
+						@reload()
+						cs.ui.notify(L.changes_saved, 'success', 5)
+						cs.Event.fire(
+							'admin/System/components/modules/uninstall/after'
+							name	: module
+						)
 		)
 		modal.ok.innerHTML		= L.uninstall
 		modal.ok.primary		= false
@@ -319,14 +302,10 @@ Polymer(
 						return
 					@_update_component(module.meta, meta)
 					return
-			# If module is not present yet - lest just extract it
-			$.ajax(
-				url		: 'api/System/admin/modules'
-				type	: 'extract'
-				success	: !~>
-					cs.ui.notify(L.changes_saved, 'success', 5)
-					location.reload()
-			)
+			# If module is not present yet - lets just extract it
+			cs.api('extract api/System/admin/modules').then !->
+				cs.ui.notify(L.changes_saved, 'success', 5)
+				location.reload()
 	/**
 	 * Provides next events:
 	 *  admin/System/components/modules/update_system/before
@@ -346,13 +325,10 @@ Polymer(
 	_db_settings : (e) !->
 		module	= e.model.module.name
 		meta	= e.model.module.meta
-		Promise.all([
-			$.getJSON('api/System/admin/databases')
-			$.getJSON("api/System/admin/modules/#module/db")
-			$.ajax(
-				url		: 'api/System/admin/system'
-				type	: 'get_settings'
-			)
+		cs.api([
+			'get			api/System/admin/databases'
+			"get			api/System/admin/modules/#module/db"
+			'get_settings	api/System/admin/system'
 		]).then ([databases, databases_mapping, settings]) !~>
 			form	= if meta then @_databases_storages_form(meta, databases, [], settings) else ''
 			modal	= cs.ui.confirm(
@@ -360,26 +336,18 @@ Polymer(
 				<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
 				#form"""
 				!~>
-					$.ajax(
-						url			: "api/System/admin/modules/#module/db"
-						data		: $(modal.querySelector('form')).serialize()
-						type		: 'put'
-						success		: !->
-							cs.ui.notify(L.changes_saved, 'success', 5)
-					)
+					cs.api("put api/System/admin/modules/#module/db", modal.querySelector('form')).then !->
+						cs.ui.notify(L.changes_saved, 'success', 5)
 			)
 			for db_name, index of databases_mapping
 				modal.querySelector("[name='db[#db_name]']").selected = index
 	_storage_settings : (e) !->
 		module	= e.model.module.name
 		meta	= e.model.module.meta
-		Promise.all([
-			$.getJSON('api/System/admin/storages')
-			$.getJSON("api/System/admin/modules/#module/storage")
-			$.ajax(
-				url		: 'api/System/admin/system'
-				type	: 'get_settings'
-			)
+		cs.api([
+			'get			api/System/admin/storages'
+			"get			api/System/admin/modules/#module/storage"
+			'get_settings	api/System/admin/system'
 		]).then ([storages, storages_mapping, settings]) !~>
 			form	= if meta then @_databases_storages_form(meta, [], storages, settings) else ''
 			modal	= cs.ui.confirm(
@@ -387,22 +355,13 @@ Polymer(
 				<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
 				#form"""
 				!~>
-					$.ajax(
-						url			: "api/System/admin/modules/#module/storage"
-						data		: $(modal.querySelector('form')).serialize()
-						type		: 'put'
-						success		: !->
-							cs.ui.notify(L.changes_saved, 'success', 5)
-					)
+					cs.api("put api/System/admin/modules/#module/storage", modal.querySelector('form')).then !->
+						cs.ui.notify(L.changes_saved, 'success', 5)
 			)
 			for storage_name, index of storages_mapping
 				modal.querySelector("[name='storage[#storage_name]']").selected = index
 	_update_modules_list : !->
-		$.ajax(
-			url		: 'api/System/admin/modules'
-			type	: 'update_list'
-			success	: !~>
-				cs.ui.notify(L.changes_saved, 'success', 5)
-				@reload()
-			)
+		cs.api('update_list api/System/admin/modules').then !~>
+			cs.ui.notify(L.changes_saved, 'success', 5)
+			@reload()
 )

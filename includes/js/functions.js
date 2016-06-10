@@ -9,6 +9,60 @@
   var L, x$, slice$ = [].slice;
   L = cs.Language('system_profile_');
   /**
+   * Simple function for XHR requests to API wrapped in promise
+   *
+   * @param {string} method_path Whitespace-separated method and path for API call
+   * @param {object} data Data to be passed with request
+   *
+   * @return {Promise}
+   */
+  cs.api = function(method_path, data){
+    var ref$, method, path;
+    if (method_path instanceof Array) {
+      return Promise.all(method_path.map(cs.api));
+    }
+    ref$ = method_path.split(/\s+/, 2), method = ref$[0], path = ref$[1];
+    return new Promise(function(resolve, reject){
+      var xhr, param, value;
+      xhr = new XMLHttpRequest();
+      xhr.onload = function(){
+        if (this.status >= 400) {
+          this.onerror();
+        } else {
+          resolve(JSON.parse(this.responseText));
+        }
+      };
+      xhr.onerror = function(){
+        cs.ui.notify(this.responseText
+          ? JSON.parse(this.responseText).error_description
+          : cs.Language.system_server_connection_error, 'warning', 5);
+        reject();
+      };
+      xhr.onabort = xhr.onerror;
+      if (method.toLowerCase() === 'get' && data) {
+        path += '?' + (function(){
+          var ref$, results$ = [];
+          for (param in ref$ = data) {
+            value = ref$[param];
+            results$.push(encodeURIComponent(param) + '=' + encodeURIComponent(value));
+          }
+          return results$;
+        }()).join('&');
+      }
+      xhr.open(method.toUpperCase(), path);
+      if (data instanceof HTMLFormElement) {
+        xhr.send(new FormData(data));
+      } else if (data instanceof FormData) {
+        xhr.send(data);
+      } else if (data) {
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(data));
+      } else {
+        xhr.send();
+      }
+    });
+  };
+  /**
    * Supports algorithms sha1, sha224, sha256, sha384, sha512
    *
    * @param {object} jssha jsSHA object

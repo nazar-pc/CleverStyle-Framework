@@ -15,12 +15,7 @@
       _enable_component: function(component, component_type, meta){
         var category, this$ = this;
         category = component_type + 's';
-        Promise.all([
-          $.getJSON("api/System/admin/" + category + "/" + component + "/dependencies"), $.ajax({
-            url: 'api/System/admin/system',
-            type: 'get_settings'
-          })
-        ]).then(function(arg$){
+        cs.api(["get			api/System/admin/" + category + "/" + component + "/dependencies", 'get_settings	api/System/admin/system']).then(function(arg$){
           var dependencies, settings, translation_key, title, message, message_more, modal;
           dependencies = arg$[0], settings = arg$[1];
           delete dependencies.db_support;
@@ -43,16 +38,12 @@
             cs.Event.fire("admin/System/components/" + category + "/enable/before", {
               name: component
             }).then(function(){
-              $.ajax({
-                url: "api/System/admin/" + category + "/" + component,
-                type: 'enable',
-                success: function(){
-                  this$.reload();
-                  cs.ui.notify(L.changes_saved, 'success', 5);
-                  cs.Event.fire("admin/System/components/" + category + "/enable/after", {
-                    name: component
-                  });
-                }
+              return cs.api("enable api/System/admin/" + category + "/" + component);
+            }).then(function(){
+              this$.reload();
+              cs.ui.notify(L.changes_saved, 'success', 5);
+              cs.Event.fire("admin/System/components/" + category + "/enable/after", {
+                name: component
               });
             });
           });
@@ -65,12 +56,7 @@
       _disable_component: function(component, component_type){
         var category, this$ = this;
         category = component_type + 's';
-        Promise.all([
-          $.getJSON("api/System/admin/" + category + "/" + component + "/dependent_packages"), $.ajax({
-            url: 'api/System/admin/system',
-            type: 'get_settings'
-          })
-        ]).then(function(arg$){
+        cs.api(["get			api/System/admin/" + category + "/" + component + "/dependent_packages", 'get_settings	api/System/admin/system']).then(function(arg$){
           var dependent_packages, settings, translation_key, title, message, type, packages, i$, len$, _package, modal;
           dependent_packages = arg$[0], settings = arg$[1];
           translation_key = component_type === 'module' ? 'modules_disabling_of_module' : 'plugins_disabling_of_plugin';
@@ -95,16 +81,12 @@
             cs.Event.fire("admin/System/components/" + category + "/disable/before", {
               name: component
             }).then(function(){
-              $.ajax({
-                url: "api/System/admin/" + category + "/" + component,
-                type: 'disable',
-                success: function(){
-                  this$.reload();
-                  cs.ui.notify(L.changes_saved, 'success', 5);
-                  cs.Event.fire("admin/System/components/" + category + "/disable/after", {
-                    name: component
-                  });
-                }
+              return cs.api("disable api/System/admin/" + category + "/" + component);
+            }).then(function(){
+              this$.reload();
+              cs.ui.notify(L.changes_saved, 'success', 5);
+              cs.Event.fire("admin/System/components/" + category + "/disable/after", {
+                name: component
               });
             });
           });
@@ -118,12 +100,7 @@
         var component, category, this$ = this;
         component = new_meta['package'];
         category = new_meta.category;
-        Promise.all([
-          $.getJSON("api/System/admin/" + category + "/" + component + "/update_dependencies"), $.ajax({
-            url: 'api/System/admin/system',
-            type: 'get_settings'
-          })
-        ]).then(function(arg$){
+        cs.api(["get			api/System/admin/" + category + "/" + component + "/update_dependencies", 'get_settings	api/System/admin/system']).then(function(arg$){
           var dependencies, settings, translation_key, title, message, message_more, modal;
           dependencies = arg$[0], settings = arg$[1];
           delete dependencies.db_support;
@@ -171,31 +148,23 @@
             message_more += '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(new_meta.optional.join(', ')) + '</p>';
           }
           modal = cs.ui.confirm(title + "" + message + message_more, function(){
-            var event_promise;
-            event_promise = component === 'System'
+            (component === 'System'
               ? cs.Event.fire('admin/System/components/modules/update_system/before')
               : cs.Event.fire("admin/System/components/" + category + "/update/before", {
                 name: component
-              });
-            event_promise.then(function(){
-              $.ajax({
-                url: "api/System/admin/" + category + "/" + component,
-                type: 'update',
-                success: function(){
-                  cs.ui.notify(L.changes_saved, 'success', 5);
-                  if (component === 'System') {
-                    cs.Event.fire('admin/System/components/modules/update_system/after').then(function(){
-                      location.reload();
-                    });
-                  } else {
-                    cs.Event.fire("admin/System/components/" + category + "/update/after", {
-                      name: component
-                    }).then(function(){
-                      location.reload();
-                    });
-                  }
-                }
-              });
+              })).then(function(){
+              return cs.api("update api/System/admin/" + category + "/" + component);
+            }).then(function(){
+              cs.ui.notify(L.changes_saved, 'success', 5);
+              if (component === 'System') {
+                return cs.Event.fire('admin/System/components/modules/update_system/after');
+              } else {
+                return cs.Event.fire("admin/System/components/" + category + "/update/after", {
+                  name: component
+                });
+              }
+            }).then(function(){
+              location.reload();
             });
           });
           modal.ok.innerHTML = L[!message ? 'yes' : 'force_update_not_recommended'];
@@ -217,13 +186,9 @@
           }
         }());
         cs.ui.confirm(L[translation_key](component), function(){
-          $.ajax({
-            url: "api/System/admin/" + category + "/" + component,
-            type: 'delete',
-            success: function(){
-              this$.reload();
-              cs.ui.notify(L.changes_saved, 'success', 5);
-            }
+          cs.api("delete api/System/admin/" + category + "/" + component).then(function(){
+            this$.reload();
+            cs.ui.notify(L.changes_saved, 'success', 5);
           });
         });
       },
@@ -325,23 +290,14 @@
       }
     },
     upload: {
-      _upload_package: function(file_input, progress){
+      _upload_package: function(file_input){
         var form_data;
         if (!file_input.files.length) {
           throw new Error('file should be selected');
         }
         form_data = new FormData;
         form_data.append('file', file_input.files[0]);
-        return $.ajax({
-          url: 'api/System/admin/upload',
-          type: 'post',
-          data: form_data,
-          xhrFields: {
-            onprogress: progress || function(){}
-          },
-          processData: false,
-          contentType: false
-        });
+        return cs.api('post api/System/admin/upload', form_data);
       }
     },
     settings: {
@@ -355,15 +311,7 @@
       },
       _reload_settings: function(){
         var this$ = this;
-        Promise.all([
-          $.ajax({
-            url: this.settings_api_url,
-            type: 'get_settings'
-          }), $.ajax({
-            url: 'api/System/admin/system',
-            type: 'get_settings'
-          })
-        ]).then(function(arg$){
+        cs.api(['get_settings ' + this.settings_api_url, 'get_settings api/System/admin/system']).then(function(arg$){
           var settings, system_settings;
           settings = arg$[0], system_settings = arg$[1];
           this$.simple_admin_mode = system_settings.simple_admin_mode === 1;
@@ -372,40 +320,23 @@
       },
       _apply: function(){
         var this$ = this;
-        $.ajax({
-          url: this.settings_api_url,
-          type: 'apply_settings',
-          data: this.settings,
-          success: function(){
-            this$._reload_settings();
-            cs.ui.notify(L.changes_applied, 'warning', 5);
-          },
-          error: function(){
-            cs.ui.notify(L.changes_apply_error, 'error', 5);
-          }
+        cs.api('apply_settings ' + this.settings_api_url, this.settings).then(function(){
+          this$._reload_settings();
+          cs.ui.notify(L.changes_applied, 'warning', 5);
         });
       },
       _save: function(){
         var this$ = this;
-        $.ajax({
-          url: this.settings_api_url,
-          type: 'save_settings',
-          data: this.settings,
-          success: function(){
-            this$._reload_settings();
-            cs.ui.notify(L.changes_saved, 'success', 5);
-          }
+        cs.api('save_settings ' + this.settings_api_url, this.settings).then(function(){
+          this$._reload_settings();
+          cs.ui.notify(L.changes_saved, 'success', 5);
         });
       },
       _cancel: function(){
         var this$ = this;
-        $.ajax({
-          url: this.settings_api_url,
-          type: 'cancel_settings',
-          success: function(){
-            this$._reload_settings();
-            cs.ui.notify(L.changes_canceled, 'success', 5);
-          }
+        cs.api('cancel_settings ' + this.settings_api_url).then(function(){
+          this$._reload_settings();
+          cs.ui.notify(L.changes_canceled, 'success', 5);
         });
       }
     }

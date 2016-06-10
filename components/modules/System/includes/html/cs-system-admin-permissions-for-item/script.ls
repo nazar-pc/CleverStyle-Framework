@@ -20,56 +20,38 @@ Polymer(
 		groups		: Array
 	ready : !->
 		Promise.all([
-			$.getJSON(
-				'api/System/admin/permissions/for_item'
-				group	: @group
-				label	: @label
-			)
-			$.getJSON('api/System/admin/groups')
-		]).then ([permissions, groups]) !~>
-			@permissions	= permissions
-			@groups			= groups
+			cs.api('get api/System/admin/permissions/for_item', {@group, @label})
+			cs.api('get api/System/admin/groups')
+		]).then ([@permissions, @groups]) !~>
 			if !Object.keys(@permissions.users).length
 				return
-			$.getJSON(
-				'api/System/admin/users'
-				{
-					ids	: (for user of @permissions.users then user).join(',')
-				}
-				(users) !~>
-					@set('users', users)
-			)
+			ids = (for user of @permissions.users then user).join(',')
+			cs.api('get api/System/admin/users', {ids}).then (users) !~>
+				@set('users', users)
 		$shadowRoot	= $(@shadowRoot)
 		$(@$.form).submit -> false
 		$search		= $(@$.search)
 		$search
 			.keyup (event) !~>
-				text	= $search.val()
-				# Only handle Enter button and if there is some text
-				if event.which != 13 || !text
+				search	= $search.val()
+				# Only handle Enter button and if there is some search text
+				if event.which != 13 || !search
 					return
 				$shadowRoot.find('tr.changed')
 					.removeClass('changed')
 					.clone()
 					.appendTo(@$.users)
 				@set('found_users', [])
-				$.getJSON(
-					'api/System/admin/users'
-					search	: text
-					(found_users) !~>
-						found_users	= found_users.filter (user) ~>
-							# Ignore already shown users in search results
-							!$shadowRoot.find("[name='users[#{user}]']").length
-						if !found_users.length
-							cs.ui.notify('404 Not Found', 'warning', 5)
-							return
-						$.getJSON(
-							'api/System/admin/users'
-							ids	: found_users.join(',')
-							(users) !~>
-								@set('found_users', users)
-						)
-				)
+				cs.api('get api/System/admin/users', {search}).then (found_users) !~>
+					found_users	= found_users.filter (user) ~>
+						# Ignore already shown users in search results
+						!$shadowRoot.find("[name='users[#{user}]']").length
+					if !found_users.length
+						cs.ui.notify('404 Not Found', 'warning', 5)
+						return
+					ids = found_users.join(',')
+					cs.api('get api/System/admin/users', {ids}).then (users) !~>
+						@set('found_users', users)
 			.keydown (event) !->
 				# Only handle Enter button
 				event.which != 13
@@ -80,13 +62,8 @@ Polymer(
 				$(@).closest('tr').addClass('changed')
 		)
 	save : !->
-		$.ajax(
-			url		: 'api/System/admin/permissions/for_item'
-			data	: $(@$.form).serialize() + '&label=' + @label + '&group=' + @group
-			type	: 'post'
-			success	: !~>
-				cs.ui.notify(@L.changes_saved, 'success', 5)
-		)
+		cs.api('post api/System/admin/permissions/for_item', @$.form).then !~>
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 	invert : (e) !->
 		$(e.currentTarget).closest('div')
 			.find(':radio:not(:checked)[value!=-1]')

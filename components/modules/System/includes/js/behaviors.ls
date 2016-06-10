@@ -12,12 +12,9 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 		# Module/plugin enabling
 		_enable_component : (component, component_type, meta) !->
 			category		= component_type + 's'
-			Promise.all([
-				$.getJSON("api/System/admin/#category/#component/dependencies")
-				$.ajax(
-					url		: 'api/System/admin/system'
-					type	: 'get_settings'
-				)
+			cs.api([
+				"get			api/System/admin/#category/#component/dependencies"
+				'get_settings	api/System/admin/system'
 			]).then ([dependencies, settings]) !~>
 				# During enabling we don't care about those since module should be already installed
 				delete dependencies.db_support
@@ -39,18 +36,15 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 						cs.Event.fire(
 							"admin/System/components/#category/enable/before"
 							name	: component
-						).then !~>
-							$.ajax(
-								url		: "api/System/admin/#category/#component"
-								type	: 'enable'
-								success	: !~>
-									@reload()
-									cs.ui.notify(L.changes_saved, 'success', 5)
-									cs.Event.fire(
-										"admin/System/components/#category/enable/after"
-										name	: component
-									)
-							)
+						)
+							.then -> cs.api("enable api/System/admin/#category/#component")
+							.then !~>
+								@reload()
+								cs.ui.notify(L.changes_saved, 'success', 5)
+								cs.Event.fire(
+									"admin/System/components/#category/enable/after"
+									name	: component
+								)
 				)
 				modal.ok.innerHTML		= L[if !message then 'enable' else 'force_enable_not_recommended']
 				modal.ok.primary		= !message
@@ -59,12 +53,9 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 		# Module/plugin disabling
 		_disable_component : (component, component_type) !->
 			category			= component_type + 's'
-			Promise.all([
-				$.getJSON("api/System/admin/#category/#component/dependent_packages")
-				$.ajax(
-					url		: 'api/System/admin/system'
-					type	: 'get_settings'
-				)
+			cs.api([
+				"get			api/System/admin/#category/#component/dependent_packages"
+				'get_settings	api/System/admin/system'
 			]).then ([dependent_packages, settings]) !~>
 				translation_key		= if component_type == 'module' then 'modules_disabling_of_module' else 'plugins_disabling_of_plugin'
 				title				= "<h3>#{L[translation_key](component)}</h3>"
@@ -84,18 +75,15 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 						cs.Event.fire(
 							"admin/System/components/#category/disable/before"
 							name	: component
-						).then !~>
-							$.ajax(
-								url		: "api/System/admin/#category/#component"
-								type	: 'disable'
-								success	: !~>
-									@reload()
-									cs.ui.notify(L.changes_saved, 'success', 5)
-									cs.Event.fire(
-										"admin/System/components/#category/disable/after"
-										name	: component
-									)
-							)
+						)
+							.then -> cs.api("disable api/System/admin/#category/#component")
+							.then !~>
+								@reload()
+								cs.ui.notify(L.changes_saved, 'success', 5)
+								cs.Event.fire(
+									"admin/System/components/#category/disable/after"
+									name	: component
+								)
 				)
 				modal.ok.innerHTML		= L[if !message then 'disable' else 'force_disable_not_recommended']
 				modal.ok.primary		= !message
@@ -105,12 +93,9 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 		_update_component : (existing_meta, new_meta) !->
 			component		= new_meta.package
 			category		= new_meta.category
-			Promise.all([
-				$.getJSON("api/System/admin/#category/#component/update_dependencies")
-				$.ajax(
-					url		: 'api/System/admin/system'
-					type	: 'get_settings'
-				)
+			cs.api([
+				"get			api/System/admin/#category/#component/update_dependencies"
+				'get_settings	api/System/admin/system'
 			]).then ([dependencies, settings]) !~>
 				# During update we don't care about those since module should be already installed
 				delete dependencies.db_support
@@ -141,7 +126,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				modal	= cs.ui.confirm(
 					"#title#message#message_more"
 					!~>
-						event_promise	=
+						(
 							if component == 'System'
 								cs.Event.fire('admin/System/components/modules/update_system/before')
 							else
@@ -149,22 +134,18 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 									"admin/System/components/#category/update/before"
 									name	: component
 								)
-						event_promise.then !~>
-							$.ajax(
-								url		: "api/System/admin/#category/#component"
-								type	: 'update'
-								success	: !~>
-									cs.ui.notify(L.changes_saved, 'success', 5)
-									if component == 'System'
-										cs.Event.fire('admin/System/components/modules/update_system/after').then !->
-											location.reload()
-									else
-										cs.Event.fire(
-											"admin/System/components/#category/update/after"
-											name	: component
-										).then !->
-											location.reload()
-							)
+						)
+							.then -> cs.api("update api/System/admin/#category/#component")
+							.then ->
+								cs.ui.notify(L.changes_saved, 'success', 5)
+								if component == 'System'
+									cs.Event.fire('admin/System/components/modules/update_system/after')
+								else
+									cs.Event.fire(
+										"admin/System/components/#category/update/after"
+										name	: component
+									)
+							.then !-> location.reload()
 				)
 				modal.ok.innerHTML		= L[if !message then 'yes' else 'force_update_not_recommended']
 				modal.ok.primary		= !message
@@ -178,13 +159,9 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				| 'plugins'	=> 'plugins_completely_remove_plugin'
 				| 'themes'	=> 'appearance_completely_remove_theme'
 			<~! cs.ui.confirm(L[translation_key](component), _)
-			$.ajax(
-				url		: "api/System/admin/#category/#component"
-				type	: 'delete'
-				success	: !~>
-					@reload()
-					cs.ui.notify(L.changes_saved, 'success', 5)
-			)
+			cs.api("delete api/System/admin/#category/#component").then !~>
+				@reload()
+				cs.ui.notify(L.changes_saved, 'success', 5)
 		# Compose HTML representation of dependencies details
 		_compose_dependencies_message : (component, dependencies) ->
 			message = ''
@@ -246,20 +223,12 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 			"""#message<p class="cs-block-error cs-text-error">#{L.dependencies_not_satisfied}</p>"""
 	upload :
 		# Generic package uploading, jqXHR object will be returned
-		_upload_package : (file_input, progress) ->
+		_upload_package : (file_input) ->
 			if !file_input.files.length
 				throw new Error('file should be selected')
 			form_data	= new FormData
 			form_data.append('file', file_input.files[0])
-			$.ajax(
-				url			: 'api/System/admin/upload'
-				type		: 'post'
-				data		: form_data
-				xhrFields	:
-					onprogress	: progress || !->
-				processData	: false
-				contentType	: false
-			)
+			cs.api('post api/System/admin/upload', form_data)
 	settings :
 		properties	:
 			settings_api_url	:
@@ -268,43 +237,21 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 			settings			: Object
 			simple_admin_mode	: Boolean
 		_reload_settings : !->
-			Promise.all([
-				$.ajax(
-					url		: @settings_api_url
-					type	: 'get_settings'
-				)
-				$.ajax(
-					url		: 'api/System/admin/system'
-					type	: 'get_settings'
-				)
+			cs.api([
+				'get_settings ' + @settings_api_url
+				'get_settings api/System/admin/system'
 			]).then ([settings, system_settings]) !~>
 				@simple_admin_mode	= system_settings.simple_admin_mode == 1
 				@set('settings', settings)
 		_apply : !->
-			$.ajax(
-				url		: @settings_api_url
-				type	: 'apply_settings'
-				data	: @settings
-				success	: !~>
-					@_reload_settings()
-					cs.ui.notify(L.changes_applied, 'warning', 5)
-				error	: !->
-					cs.ui.notify(L.changes_apply_error, 'error', 5)
-			)
+			cs.api('apply_settings ' + @settings_api_url, @settings).then !~>
+				@_reload_settings()
+				cs.ui.notify(L.changes_applied, 'warning', 5)
 		_save : !->
-			$.ajax(
-				url		: @settings_api_url
-				type	: 'save_settings'
-				data	: @settings
-				success	: !~>
-					@_reload_settings()
-					cs.ui.notify(L.changes_saved, 'success', 5)
-			)
+			cs.api('save_settings ' + @settings_api_url, @settings).then  !~>
+				@_reload_settings()
+				cs.ui.notify(L.changes_saved, 'success', 5)
 		_cancel : !->
-			$.ajax(
-				url		: @settings_api_url
-				type	: 'cancel_settings'
-				success	: !~>
-					@_reload_settings()
-					cs.ui.notify(L.changes_canceled, 'success', 5)
-			)
+			cs.api('cancel_settings ' + @settings_api_url).then !~>
+				@_reload_settings()
+				cs.ui.notify(L.changes_canceled, 'success', 5)

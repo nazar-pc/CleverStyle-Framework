@@ -17,15 +17,14 @@ Polymer(
 		group_description	: ''
 	ready : !->
 		if @group_id
-			{title : @group_title, description : @group_description} <~! $.getJSON('api/System/admin/groups/' + @group_id, _)
+			cs.api('get api/System/admin/groups/' + @group_id).then ({title : @group_title, description : @group_description}) !~>
 	save : !->
-		$.ajax(
-			url		: 'api/System/admin/groups' + (if @group_id then '/' + @group_id else '')
-			type	: if @group_id then 'put' else 'post'
-			data	:
-				title		: @group_title
-				description	: @group_description
-			success	: !~>
-				cs.ui.notify(@L.changes_saved, 'success', 5)
-		)
+		method	= if @group_id then 'put' else 'post'
+		suffix	= if @group_id then '/' + @group_id else ''
+		cs.api(
+			"#method api/System/admin/groups#suffix"
+			title		: @group_title
+			description	: @group_description
+		).then !~>
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 )

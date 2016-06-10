@@ -15,10 +15,10 @@ Polymer(
 		user_data	: Object
 		can_upload	: 'file_upload' of cs
 	ready : !->
-		Promise.all([
-			$.getJSON('api/System/languages')
-			$.getJSON('api/System/timezones')
-			$.getJSON('api/System/profile')
+		cs.api([
+			'get api/System/languages'
+			'get api/System/timezones'
+			'get api/System/profile'
 		]).then ([languages, timezones, user_data]) !~>
 			languages_list	= []
 			languages_list.push(
@@ -51,11 +51,6 @@ Polymer(
 		)
 	_save : (e) !->
 		e.preventDefault()
-		$.ajax(
-			url		: 'api/System/profile'
-			type	: 'patch'
-			data	: @user_data
-			success	: !~>
-				cs.ui.notify(@L.changes_saved, 'success', 5)
-		)
+		cs.api('patch api/System/profile', @user_data).then !~>
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 )

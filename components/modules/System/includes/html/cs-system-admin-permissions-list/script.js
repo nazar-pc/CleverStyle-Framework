@@ -22,7 +22,7 @@
     },
     reload: function(){
       var this$ = this;
-      Promise.all([$.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions')]).then(function(arg$){
+      cs.api(['get api/System/admin/blocks', 'get api/System/admin/permissions']).then(function(arg$){
         var blocks, permissions, block_index_to_title, permissions_list, group, labels, label, id;
         blocks = arg$[0], permissions = arg$[1];
         block_index_to_title = {};
@@ -58,13 +58,9 @@
       var permission, this$ = this;
       permission = e.model.permission;
       cs.ui.confirm("<h3>" + L.sure_delete_permission(permission.group + '/' + permission.label) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>", function(){
-        $.ajax({
-          url: 'api/System/admin/permissions/' + permission.id,
-          type: 'delete',
-          success: function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
-            this$.splice('permissions', e.model.index, 1);
-          }
+        cs.api('delete api/System/admin/permissions/' + permission.id).then(function(){
+          cs.ui.notify(L.changes_saved, 'success', 5);
+          this$.splice('permissions', e.model.index, 1);
         });
       });
     }

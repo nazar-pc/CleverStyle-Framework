@@ -31,12 +31,7 @@
     },
     reload: function(){
       var this$ = this;
-      Promise.all([
-        $.getJSON('api/System/admin/modules'), $.getJSON('api/System/admin/modules/default'), $.ajax({
-          url: 'api/System/admin/system',
-          type: 'get_settings'
-        })
-      ]).then(function(arg$){
+      cs.api(['get			api/System/admin/modules', 'get			api/System/admin/modules/default', 'get_settings	api/System/admin/system']).then(function(arg$){
         var modules, default_module, settings;
         modules = arg$[0], default_module = arg$[1], settings = arg$[2];
         this$.default_module = default_module;
@@ -107,19 +102,14 @@
       cs.Event.fire('admin/System/components/modules/default/before', {
         name: module
       }).then(function(){
-        $.ajax({
-          url: 'api/System/admin/modules/default',
-          type: 'put',
-          data: {
-            module: module
-          },
-          success: function(){
-            this$.reload();
-            cs.ui.notify(L.changes_saved, 'success', 5);
-            cs.Event.fire('admin/System/components/modules/default/after', {
-              name: module
-            });
-          }
+        return cs.api('put api/System/admin/modules/default', {
+          module: module
+        });
+      }).then(function(){
+        this$.reload();
+        cs.ui.notify(L.changes_saved, 'success', 5);
+        cs.Event.fire('admin/System/components/modules/default/after', {
+          name: module
         });
       });
     }
@@ -157,12 +147,7 @@
       var module, meta, this$ = this;
       module = e.model.module.name;
       meta = e.model.module.meta;
-      Promise.all([
-        $.getJSON("api/System/admin/modules/" + module + "/dependencies"), $.getJSON('api/System/admin/databases'), $.getJSON('api/System/admin/storages'), $.ajax({
-          url: 'api/System/admin/system',
-          type: 'get_settings'
-        })
-      ]).then(function(arg$){
+      cs.api(["get			api/System/admin/modules/" + module + "/dependencies", 'get			api/System/admin/databases', 'get			api/System/admin/storages', 'get_settings	api/System/admin/system']).then(function(arg$){
         var dependencies, databases, storages, settings, message, message_more, form, modal;
         dependencies = arg$[0], databases = arg$[1], storages = arg$[2], settings = arg$[3];
         message = '';
@@ -182,19 +167,14 @@
           cs.Event.fire('admin/System/components/modules/install/before', {
             name: module
           }).then(function(){
-            $.ajax({
-              url: "api/System/admin/modules/" + module,
-              data: $(modal.querySelector('form')).serialize(),
-              type: 'install',
-              success: function(){
-                cs.ui.notify(L.changes_saved, 'success', 5);
-                cs.Event.fire('admin/System/components/modules/install/after', {
-                  name: module
-                }).then(function(){
-                  location.reload();
-                });
-              }
+            return cs.api("install api/System/admin/modules/" + module, modal.querySelector('form'));
+          }).then(function(){
+            cs.ui.notify(L.changes_saved, 'success', 5);
+            return cs.Event.fire('admin/System/components/modules/install/after', {
+              name: module
             });
+          }).then(function(){
+            location.reload();
           });
         });
         modal.ok.innerHTML = L[!message ? 'install' : 'force_install_not_recommended'];
@@ -284,16 +264,12 @@
         cs.Event.fire('admin/System/components/modules/uninstall/before', {
           name: module
         }).then(function(){
-          $.ajax({
-            url: "api/System/admin/modules/" + module,
-            type: 'uninstall',
-            success: function(){
-              this$.reload();
-              cs.ui.notify(L.changes_saved, 'success', 5);
-              cs.Event.fire('admin/System/components/modules/uninstall/after', {
-                name: module
-              });
-            }
+          return cs.api("uninstall api/System/admin/modules/" + module);
+        }).then(function(){
+          this$.reload();
+          cs.ui.notify(L.changes_saved, 'success', 5);
+          cs.Event.fire('admin/System/components/modules/uninstall/after', {
+            name: module
           });
         });
       });
@@ -331,13 +307,9 @@
             return;
           }
         }
-        $.ajax({
-          url: 'api/System/admin/modules',
-          type: 'extract',
-          success: function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
-            location.reload();
-          }
+        cs.api('extract api/System/admin/modules').then(function(){
+          cs.ui.notify(L.changes_saved, 'success', 5);
+          location.reload();
         });
       });
     }
@@ -367,23 +339,13 @@
       var module, meta, this$ = this;
       module = e.model.module.name;
       meta = e.model.module.meta;
-      Promise.all([
-        $.getJSON('api/System/admin/databases'), $.getJSON("api/System/admin/modules/" + module + "/db"), $.ajax({
-          url: 'api/System/admin/system',
-          type: 'get_settings'
-        })
-      ]).then(function(arg$){
+      cs.api(['get			api/System/admin/databases', "get			api/System/admin/modules/" + module + "/db", 'get_settings	api/System/admin/system']).then(function(arg$){
         var databases, databases_mapping, settings, form, modal, db_name, index;
         databases = arg$[0], databases_mapping = arg$[1], settings = arg$[2];
         form = meta ? this$._databases_storages_form(meta, databases, [], settings) : '';
         modal = cs.ui.confirm("<h3>" + L.db_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n" + form, function(){
-          $.ajax({
-            url: "api/System/admin/modules/" + module + "/db",
-            data: $(modal.querySelector('form')).serialize(),
-            type: 'put',
-            success: function(){
-              cs.ui.notify(L.changes_saved, 'success', 5);
-            }
+          cs.api("put api/System/admin/modules/" + module + "/db", modal.querySelector('form')).then(function(){
+            cs.ui.notify(L.changes_saved, 'success', 5);
           });
         });
         for (db_name in databases_mapping) {
@@ -396,23 +358,13 @@
       var module, meta, this$ = this;
       module = e.model.module.name;
       meta = e.model.module.meta;
-      Promise.all([
-        $.getJSON('api/System/admin/storages'), $.getJSON("api/System/admin/modules/" + module + "/storage"), $.ajax({
-          url: 'api/System/admin/system',
-          type: 'get_settings'
-        })
-      ]).then(function(arg$){
+      cs.api(['get			api/System/admin/storages', "get			api/System/admin/modules/" + module + "/storage", 'get_settings	api/System/admin/system']).then(function(arg$){
         var storages, storages_mapping, settings, form, modal, storage_name, index;
         storages = arg$[0], storages_mapping = arg$[1], settings = arg$[2];
         form = meta ? this$._databases_storages_form(meta, [], storages, settings) : '';
         modal = cs.ui.confirm("<h3>" + L.storage_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n" + form, function(){
-          $.ajax({
-            url: "api/System/admin/modules/" + module + "/storage",
-            data: $(modal.querySelector('form')).serialize(),
-            type: 'put',
-            success: function(){
-              cs.ui.notify(L.changes_saved, 'success', 5);
-            }
+          cs.api("put api/System/admin/modules/" + module + "/storage", modal.querySelector('form')).then(function(){
+            cs.ui.notify(L.changes_saved, 'success', 5);
           });
         });
         for (storage_name in storages_mapping) {
@@ -423,13 +375,9 @@
     },
     _update_modules_list: function(){
       var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/modules',
-        type: 'update_list',
-        success: function(){
-          cs.ui.notify(L.changes_saved, 'success', 5);
-          this$.reload();
-        }
+      cs.api('update_list api/System/admin/modules').then(function(){
+        cs.ui.notify(L.changes_saved, 'success', 5);
+        this$.reload();
       });
     }
   });

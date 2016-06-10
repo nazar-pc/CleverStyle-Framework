@@ -14,5 +14,5 @@ Polymer(
 	properties	:
 		server_config	: Object
 	ready : !->
-		@server_config <~! $.getJSON('api/System/admin/about_server', _)
+		cs.api('get api/System/admin/about_server').then (@server_config) !~>
 )

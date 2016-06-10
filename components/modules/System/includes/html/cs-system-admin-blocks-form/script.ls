@@ -20,41 +20,33 @@ Polymer(
 		'_type_change(block.type)'
 	]
 	ready : !->
-		Promise.all([
-			$.ajax(
-				url		: 'api/System/admin/blocks'
-				type	: 'types'
-			)
-			$.ajax(
-				url		: 'api/System/admin/blocks'
-				type	: 'templates'
-			)
-		]).then ([@types, @templates]) ~>
-		if @index
-			block <~! $.getJSON('api/System/admin/blocks/' + @index, _)
-			block.type		= block.type || @types[0]
-			block.template	= block.template || @templates[0]
-			if block.active == void
-				block.active	= 1
-			else
-				block.active	= parseInt(block.active)
-			@block	= block
-		else
-			@block	=
-				active	: 1
-				content	: ''
-				type	: 'html'
-				expire	:
-					state	: 0
+		cs.api([
+			'types		api/System/admin/blocks'
+			'templates	api/System/admin/blocks'
+		])
+			.then ([@types, @templates]) ~>
+				if @index
+					cs.api('get api/System/admin/blocks/' + @index).then (block) ~>
+						block.type		= block.type || @types[0]
+						block.template	= block.template || @templates[0]
+						if block.active == undefined
+							block.active	= 1
+						else
+							block.active	= parseInt(block.active)
+						block
+				else
+					active	: 1
+					content	: ''
+					type	: 'html'
+					expire	:
+						state	: 0
+			.then (@block) !~>
 	_type_change : (type) !->
 		$(@shadowRoot).find('.html, .raw_html').prop('hidden', true).filter('.' + type).prop('hidden', false)
 	_save : !->
 		index	= @index
-		$.ajax(
-			url		: 'api/System/admin/blocks' + (if index then "/#index" else '')
-			type	: if index then 'put' else 'post'
-			data	: @block
-			success	: !~>
-				cs.ui.notify(@L.changes_saved, 'success', 5)
-		)
+		method	= if index then 'put' else 'post'
+		suffix	= if index then "/#index" else ''
+		cs.api("#method api/System/admin/blocks#suffix", @block).then !~>
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 )

@@ -18,7 +18,7 @@
     },
     reload: function(){
       var this$ = this;
-      $.getJSON('api/System/admin/storages', function(storages){
+      cs.api('get api/System/admin/storages').then(function(storages){
         this$.set('storages', storages);
       });
     },
@@ -43,13 +43,9 @@
       storage = e.model.storage || storage_model.storage;
       name = storage.host + '/' + storage.connection;
       cs.ui.confirm(L.sure_to_delete(name), function(){
-        $.ajax({
-          url: 'api/System/admin/storages/' + storage.index,
-          type: 'delete',
-          success: function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
-            this$.reload();
-          }
+        cs.api('delete api/System/admin/storages/' + storage.index).then(function(){
+          cs.ui.notify(L.changes_saved, 'success', 5);
+          this$.reload();
         });
       });
     }

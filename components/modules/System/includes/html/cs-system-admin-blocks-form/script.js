@@ -20,52 +20,43 @@
     observers: ['_type_change(block.type)'],
     ready: function(){
       var this$ = this;
-      Promise.all([
-        $.ajax({
-          url: 'api/System/admin/blocks',
-          type: 'types'
-        }), $.ajax({
-          url: 'api/System/admin/blocks',
-          type: 'templates'
-        })
-      ]).then(function(arg$){
+      cs.api(['types		api/System/admin/blocks', 'templates	api/System/admin/blocks']).then(function(arg$){
         this$.types = arg$[0], this$.templates = arg$[1];
+        if (this$.index) {
+          return cs.api('get api/System/admin/blocks/' + this$.index).then(function(block){
+            block.type = block.type || this$.types[0];
+            block.template = block.template || this$.templates[0];
+            if (block.active === undefined) {
+              block.active = 1;
+            } else {
+              block.active = parseInt(block.active);
+            }
+            return block;
+          });
+        } else {
+          return {
+            active: 1,
+            content: '',
+            type: 'html',
+            expire: {
+              state: 0
+            }
+          };
+        }
+      }).then(function(block){
+        this$.block = block;
       });
-      if (this.index) {
-        $.getJSON('api/System/admin/blocks/' + this.index, function(block){
-          block.type = block.type || this$.types[0];
-          block.template = block.template || this$.templates[0];
-          if (block.active === void 8) {
-            block.active = 1;
-          } else {
-            block.active = parseInt(block.active);
-          }
-          this$.block = block;
-        });
-      } else {
-        this.block = {
-          active: 1,
-          content: '',
-          type: 'html',
-          expire: {
-            state: 0
-          }
-        };
-      }
     },
     _type_change: function(type){
       $(this.shadowRoot).find('.html, .raw_html').prop('hidden', true).filter('.' + type).prop('hidden', false);
     },
     _save: function(){
-      var index, this$ = this;
+      var index, method, suffix, this$ = this;
       index = this.index;
-      $.ajax({
-        url: 'api/System/admin/blocks' + (index ? "/" + index : ''),
-        type: index ? 'put' : 'post',
-        data: this.block,
-        success: function(){
-          cs.ui.notify(this$.L.changes_saved, 'success', 5);
-        }
+      method = index ? 'put' : 'post';
+      suffix = index ? "/" + index : '';
+      cs.api(method + " api/System/admin/blocks" + suffix, this.block).then(function(){
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
     }
   });

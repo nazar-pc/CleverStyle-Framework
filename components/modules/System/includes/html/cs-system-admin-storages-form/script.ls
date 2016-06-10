@@ -26,37 +26,23 @@ Polymer(
 				password	: ''
 		engines			: Array
 	ready : !->
-		Promise.all([
-			$.getJSON('api/System/admin/storages')
-			$.ajax(
-				url		: 'api/System/admin/storages'
-				type	: 'engines'
-			)
+		cs.api([
+			'get		api/System/admin/storages'
+			'engines	api/System/admin/storages'
 		]).then ([@storages, @engines]) !~>
 			if !@add
 				@storages.forEach (storage) !~>
 					if @storage-index ~= storage.index
 						@set('storage', storage)
 	_save	: !->
-		$.ajax(
-			url		:
-				'api/System/admin/storages' +
-				(
-					if !@add
-						'/' + @storage-index
-					else
-						''
-				)
-			type	: if @add then 'post' else 'patch'
-			data	:
-				url			: @storage.url
-				host		: @storage.host
-				connection	: @storage.connection
-				user		: @storage.user
-				password	: @storage.password
-			success	: !->
-				cs.ui.notify(L.changes_saved, 'success', 5)
-		)
+		method	= if @add then 'post' else 'patch'
+		suffix	=
+			if !@add
+				'/' + @storage-index
+			else
+				''
+		cs.api("#method api/System/admin/storages#suffix", @storage).then !->
+			cs.ui.notify(L.changes_saved, 'success', 5)
 	_test_connection : (e) !->
 		$modal	= $(cs.ui.simple_modal("""<div>
 			<h3 class="cs-text-center">#{L.test_connection}</h3>

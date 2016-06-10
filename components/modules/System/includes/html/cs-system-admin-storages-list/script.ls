@@ -15,8 +15,8 @@ Polymer(
 	ready : !->
 		@reload()
 	reload : !->
-		storages <~! $.getJSON('api/System/admin/storages', _)
-		@set('storages', storages)
+		cs.api('get api/System/admin/storages').then (storages) !~>
+			@set('storages', storages)
 	_add : !->
 		$(cs.ui.simple_modal("""
 			<h3>#{L.adding_of_storage}</h3>
@@ -43,12 +43,8 @@ Polymer(
 		cs.ui.confirm(
 			L.sure_to_delete(name)
 			!~>
-				$.ajax(
-					url		: 'api/System/admin/storages/' + storage.index
-					type	: 'delete'
-					success	: !~>
-						cs.ui.notify(L.changes_saved, 'success', 5)
-						@reload()
-				)
+				cs.api('delete api/System/admin/storages/' + storage.index).then !~>
+					cs.ui.notify(L.changes_saved, 'success', 5)
+					@reload()
 		)
 )

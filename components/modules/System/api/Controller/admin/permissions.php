@@ -97,7 +97,7 @@ trait permissions {
 	 * @throws ExitException
 	 */
 	static function admin_permissions_for_item_get ($Request) {
-		$data = $Request->data('group', 'label');
+		$data = $Request->query('group', 'label');
 		if (!$data) {
 			throw new ExitException(400);
 		}

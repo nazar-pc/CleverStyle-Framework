@@ -23,7 +23,7 @@
     },
     reload: function(){
       var this$ = this;
-      $.getJSON('api/System/admin/groups', function(groups){
+      cs.api('get api/System/admin/groups').then(function(groups){
         groups.forEach(function(group){
           group.allow_to_delete = group.id != ADMIN_GROUP_ID && group.id != USER_GROUP_ID;
         });
@@ -42,13 +42,9 @@
       var group, this$ = this;
       group = e.model.group;
       cs.ui.confirm("<h3>" + L.sure_delete_group(group.title) + "</h3>", function(){
-        $.ajax({
-          url: 'api/System/admin/groups/' + group.id,
-          type: 'delete',
-          success: function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
-            this$.splice('groups', e.model.index, 1);
-          }
+        cs.api('delete api/System/admin/groups/' + group.id).then(function(){
+          cs.ui.notify(L.changes_saved, 'success', 5);
+          this$.splice('groups', e.model.index, 1);
         });
       });
     },

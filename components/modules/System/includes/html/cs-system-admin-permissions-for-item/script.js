@@ -22,27 +22,26 @@
     ready: function(){
       var $shadowRoot, $search, this$ = this;
       Promise.all([
-        $.getJSON('api/System/admin/permissions/for_item', {
+        cs.api('get api/System/admin/permissions/for_item', {
           group: this.group,
           label: this.label
-        }), $.getJSON('api/System/admin/groups')
+        }), cs.api('get api/System/admin/groups')
       ]).then(function(arg$){
-        var permissions, groups, user;
-        permissions = arg$[0], groups = arg$[1];
-        this$.permissions = permissions;
-        this$.groups = groups;
+        var ids, user;
+        this$.permissions = arg$[0], this$.groups = arg$[1];
         if (!Object.keys(this$.permissions.users).length) {
           return;
         }
-        $.getJSON('api/System/admin/users', {
-          ids: (function(){
-            var results$ = [];
-            for (user in this.permissions.users) {
-              results$.push(user);
-            }
-            return results$;
-          }.call(this$)).join(',')
-        }, function(users){
+        ids = (function(){
+          var results$ = [];
+          for (user in this.permissions.users) {
+            results$.push(user);
+          }
+          return results$;
+        }.call(this$)).join(',');
+        cs.api('get api/System/admin/users', {
+          ids: ids
+        }).then(function(users){
           this$.set('users', users);
         });
       });
@@ -52,16 +51,17 @@
       });
       $search = $(this.$.search);
       $search.keyup(function(event){
-        var text;
-        text = $search.val();
-        if (event.which !== 13 || !text) {
+        var search;
+        search = $search.val();
+        if (event.which !== 13 || !search) {
           return;
         }
         $shadowRoot.find('tr.changed').removeClass('changed').clone().appendTo(this$.$.users);
         this$.set('found_users', []);
-        $.getJSON('api/System/admin/users', {
-          search: text
-        }, function(found_users){
+        cs.api('get api/System/admin/users', {
+          search: search
+        }).then(function(found_users){
+          var ids;
           found_users = found_users.filter(function(user){
             return !$shadowRoot.find("[name='users[" + user + "]']").length;
           });
@@ -69,9 +69,10 @@
             cs.ui.notify('404 Not Found', 'warning', 5);
             return;
           }
-          $.getJSON('api/System/admin/users', {
-            ids: found_users.join(',')
-          }, function(users){
+          ids = found_users.join(',');
+          cs.api('get api/System/admin/users', {
+            ids: ids
+          }).then(function(users){
             this$.set('found_users', users);
           });
         });
@@ -84,13 +85,8 @@
     },
     save: function(){
       var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/permissions/for_item',
-        data: $(this.$.form).serialize() + '&label=' + this.label + '&group=' + this.group,
-        type: 'post',
-        success: function(){
-          cs.ui.notify(this$.L.changes_saved, 'success', 5);
-        }
+      cs.api('post api/System/admin/permissions/for_item', this.$.form).then(function(){
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
     },
     invert: function(e){

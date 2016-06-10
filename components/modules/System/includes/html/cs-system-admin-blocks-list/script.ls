@@ -39,30 +39,24 @@ Polymer(
 					floating	: get_indexes('floating')
 					right		: get_indexes('right')
 					bottom		: get_indexes('bottom')
-				$.ajax(
-					url		: 'api/System/admin/blocks'
-					type	: 'update_order'
-					data	:
-						order	: order
-					success	: !->
-						cs.ui.notify(L.changes_saved, 'success', 5)
-				)
+				cs.api('update_order api/System/admin/blocks', {order}).then !->
+					cs.ui.notify(L.changes_saved, 'success', 5)
 			)
 	_status_class : (active) ->
 		if active ~= 1 then 'cs-block-success cs-text-success' else 'cs-block-warning cs-text-warning'
 	_reload : !->
-		blocks <~! $.getJSON('api/System/admin/blocks', _)
-		@blocks_count	= blocks.length
-		blocks_grouped	=
-			top			: []
-			left		: []
-			floating	: []
-			right		: []
-			bottom		: []
-		for block, index in blocks
-			blocks_grouped[block.position].push(block)
-		@set('blocks', blocks_grouped)
-		@_init_sortable()
+		cs.api('get api/System/admin/blocks').then (blocks) !~>
+			@blocks_count	= blocks.length
+			blocks_grouped	=
+				top			: []
+				left		: []
+				floating	: []
+				right		: []
+				bottom		: []
+			for block, index in blocks
+				blocks_grouped[block.position].push(block)
+			@set('blocks', blocks_grouped)
+			@_init_sortable()
 	_block_permissions : (e) !->
 		title	= L.permissions_for_block(e.model.item.title)
 		cs.ui.simple_modal("""
@@ -89,12 +83,8 @@ Polymer(
 		cs.ui.confirm(
 			"<h3>#title</h3>"
 			!~>
-				$.ajax(
-					url		: 'api/System/admin/blocks/' + e.model.item.index
-					type	: 'delete'
-					success	: !~>
-						cs.ui.notify(L.changes_saved, 'success', 5)
-						@_reload()
-				)
+				cs.api('delete api/System/admin/blocks/' + e.model.item.index).then !~>
+					cs.ui.notify(L.changes_saved, 'success', 5)
+					@_reload()
 		)
 )

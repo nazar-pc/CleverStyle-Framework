@@ -19,23 +19,20 @@
     ready: function(){
       var this$ = this;
       if (this.permission_id) {
-        $.getJSON('api/System/admin/permissions/' + this.permission_id, function(arg$){
+        cs.api('get api/System/admin/permissions/' + this.permission_id).then(function(arg$){
           this$.group = arg$.group, this$.label = arg$.label;
         });
       }
     },
     save: function(){
-      var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/permissions' + (this.permission_id ? '/' + this.permission_id : ''),
-        type: this.permission_id ? 'put' : 'post',
-        data: {
-          group: this.group,
-          label: this.label
-        },
-        success: function(){
-          cs.ui.notify(this$.L.changes_saved, 'success', 5);
-        }
+      var method, suffix, this$ = this;
+      method = this.permission_id ? 'put' : 'post';
+      suffix = this.permission_id ? '/' + this.permission_id : '';
+      cs.api(method + " api/System/admin/permissions " + suffix, {
+        group: this.group,
+        label: this.label
+      }).then(function(){
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
     }
   });

@@ -17,7 +17,7 @@
     },
     ready: function(){
       var this$ = this;
-      $.getJSON('api/System/timezones', function(timezones){
+      cs.api('get api/System/timezones').then(function(timezones){
         var res$, description, timezone;
         res$ = [];
         for (description in timezones) {

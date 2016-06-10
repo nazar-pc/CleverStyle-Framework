@@ -16,7 +16,7 @@
     },
     ready: function(){
       var this$ = this;
-      $.getJSON('api/System/admin/about_server', function(server_config){
+      cs.api('get api/System/admin/about_server').then(function(server_config){
         this$.server_config = server_config;
       });
     }

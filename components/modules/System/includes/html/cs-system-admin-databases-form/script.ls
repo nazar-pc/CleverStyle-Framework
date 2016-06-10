@@ -29,12 +29,9 @@ Polymer(
 				password	: ''
 		engines			: Array
 	ready : !->
-		Promise.all([
-			$.getJSON('api/System/admin/databases')
-			$.ajax(
-				url		: 'api/System/admin/databases'
-				type	: 'engines'
-			)
+		cs.api([
+			'get		api/System/admin/databases'
+			'engines	api/System/admin/databases'
 		]).then ([@databases, @engines]) !~>
 			if @add
 				if !isNaN(@database-index)
@@ -49,33 +46,20 @@ Polymer(
 								if @mirror-index ~= mirror.index
 									@set('database', mirror)
 	_save	: !->
-		$.ajax(
-			url		:
-				'api/System/admin/databases' +
+		method	= if @add then 'post' else 'patch'
+		suffix	=
+			if !isNaN(@database-index)
+				'/' + @database-index +
 				(
-					if !isNaN(@database-index)
-						'/' + @database-index +
-						(
-							if !isNaN(@mirror-index)
-								'/' + @mirror-index
-							else
-								''
-						)
+					if !isNaN(@mirror-index)
+						'/' + @mirror-index
 					else
 						''
 				)
-			type	: if @add then 'post' else 'patch'
-			data	:
-				mirror		: @database.mirror
-				host		: @database.host
-				type		: @database.type
-				prefix		: @database.prefix
-				name		: @database.name
-				user		: @database.user
-				password	: @database.password
-			success	: !->
-				cs.ui.notify(L.changes_saved, 'success', 5)
-		)
+			else
+				''
+		cs.api("#method api/System/admin/databases#suffix", @database).then !->
+			cs.ui.notify(L.changes_saved, 'success', 5)
 	_db_name : (index, host, name) ->
 		if index
 			"#host/#name"

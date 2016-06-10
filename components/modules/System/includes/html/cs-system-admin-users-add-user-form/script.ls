@@ -15,14 +15,8 @@ Polymer(
 	properties	:
 		email	: ''
 	save : !->
-		$.ajax(
-			url		: 'api/System/admin/users'
-			type	: 'post'
-			data	:
-				email	: @email
-			success	: (result) !->
-				cs.ui.alert("""
-					<p class="cs-block-success cs-text-success">#{L.user_was_added(result.login, result.password)}</p>
-				""")
-		)
+		cs.api('post api/System/admin/users', {@email}).then (result) !->
+			cs.ui.alert("""
+				<p class="cs-block-success cs-text-success">#{L.user_was_added(result.login, result.password)}</p>
+			""")
 )

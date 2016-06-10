@@ -31,12 +31,7 @@
     },
     ready: function(){
       var this$ = this;
-      Promise.all([
-        $.getJSON('api/System/admin/storages'), $.ajax({
-          url: 'api/System/admin/storages',
-          type: 'engines'
-        })
-      ]).then(function(arg$){
+      cs.api(['get		api/System/admin/storages', 'engines	api/System/admin/storages']).then(function(arg$){
         this$.storages = arg$[0], this$.engines = arg$[1];
         if (!this$.add) {
           this$.storages.forEach(function(storage){
@@ -48,19 +43,11 @@
       });
     },
     _save: function(){
-      $.ajax({
-        url: 'api/System/admin/storages' + (!this.add ? '/' + this.storageIndex : ''),
-        type: this.add ? 'post' : 'patch',
-        data: {
-          url: this.storage.url,
-          host: this.storage.host,
-          connection: this.storage.connection,
-          user: this.storage.user,
-          password: this.storage.password
-        },
-        success: function(){
-          cs.ui.notify(L.changes_saved, 'success', 5);
-        }
+      var method, suffix;
+      method = this.add ? 'post' : 'patch';
+      suffix = !this.add ? '/' + this.storageIndex : '';
+      cs.api(method + " api/System/admin/storages" + suffix, this.storage).then(function(){
+        cs.ui.notify(L.changes_saved, 'success', 5);
       });
     },
     _test_connection: function(e){

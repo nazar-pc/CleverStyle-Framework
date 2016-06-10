@@ -18,9 +18,9 @@ Polymer(
 	ready : !->
 		@_reload()
 	_reload : !->
-		Promise.all([
-			$.getJSON('api/System/admin/groups')
-			$.getJSON("api/System/admin/users/#{@user}/groups")
+		cs.api([
+			'get api/System/admin/groups'
+			"get api/System/admin/users/#{@user}/groups"
 		]).then ([groups, user_groups_ids]) !~>
 			user_groups		= []
 			other_groups	= []
@@ -53,12 +53,7 @@ Polymer(
 				$(@$['other-groups']).children('div:not(:first)').removeClass('cs-block-success cs-text-success').addClass('cs-block-warning cs-text-warning')
 			)
 	save : !->
-		$.ajax(
-			url		: "api/System/admin/users/#{@user}/groups"
-			data	:
-				groups	: $(@$['user-groups']).children('div:not(:first)').map(-> @group).get()
-			type	: 'put'
-			success	: !~>
-				cs.ui.notify(@L.changes_saved, 'success', 5)
-		)
+		groups = $(@$['user-groups']).children('div:not(:first)').map(-> @group).get()
+		cs.api("put api/System/admin/users/#{@user}/groups", {groups}).then !~>
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 )

@@ -18,9 +18,9 @@ Polymer(
 	ready : !->
 		@reload()
 	reload : !->
-		Promise.all([
-			$.getJSON('api/System/admin/themes')
-			$.getJSON('api/System/admin/themes/current')
+		cs.api([
+			'get api/System/admin/themes'
+			'get api/System/admin/themes/current'
 		]).then ([themes, current_theme]) !~>
 			@current_theme	= current_theme
 			themes.forEach (theme) !~>
@@ -48,19 +48,13 @@ Polymer(
 			'admin/System/components/themes/current/before'
 			name	: @current_theme
 		).then !~>
-			$.ajax(
-				url		: 'api/System/admin/themes/current'
-				type	: 'put'
-				data	:
-					theme	: @current_theme
-				success	: !~>
-					cs.ui.notify(@L.changes_saved, 'success', 5)
-					@reload()
-					cs.Event.fire(
-						'admin/System/components/themes/current/after'
-						name	: @current_theme
-					)
-			)
+			cs.api('put api/System/admin/themes/current', {theme : @current_theme}).then !~>
+				cs.ui.notify(@L.changes_saved, 'success', 5)
+				@reload()
+				cs.Event.fire(
+					'admin/System/components/themes/current/after'
+					name	: @current_theme
+				)
 	_remove_completely : (e) !->
 		@_remove_completely_component(e.model.theme.name, 'themes')
 	/**
@@ -84,14 +78,10 @@ Polymer(
 						return
 					@_update_component(theme.meta, meta)
 					return
-			# If theme is not present yet - lest just extract it
+			# If theme is not present yet - lets just extract it
 			@_extract(meta)
 	_extract : (meta) !->
-		$.ajax(
-			url		: 'api/System/admin/themes'
-			type	: 'extract'
-			success	: !~>
-				@reload()
-				cs.ui.notify(@L.changes_saved, 'success', 5)
-		)
+		cs.api('extract api/System/admin/themes').then !~>
+			@reload()
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 )

@@ -58,5 +58,7 @@ dom-module#cs-system-admin-permissions-for-item
 					table#search-results.cs-table.cs-margin-top(right-left)
 						template(is="dom-repeat" items="[[found_users]]" as="user")
 							+user-row
+			input(type="hidden" name="label" value="[[label]]")
+			input(type="hidden" name="group" value="[[group]]")
 		button(is="cs-button" on-tap="save" type="button") [[L.save]]
 	script(src="script.js")

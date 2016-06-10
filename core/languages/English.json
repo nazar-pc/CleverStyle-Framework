@@ -35,7 +35,6 @@
 			"components"                            : "Components",
 			"general"                               : "General",
 			"changes_applied"                       : "Changes applied (check and if necessary, save or cancel)",
-			"changes_apply_error"                   : "Unable to apply changes",
 			"changes_canceled"                      : "Changes canceled",
 			"for_complete_feature_set"              : "For complete feature set %s packages or functionalities must be installed and enabled",
 			"force_enable_not_recommended"          : "Force enabling (not recommended)",

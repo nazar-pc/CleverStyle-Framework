@@ -21,7 +21,7 @@
     },
     reload: function(){
       var this$ = this;
-      $.getJSON('api/System/admin/databases', function(databases){
+      cs.api('get api/System/admin/databases').then(function(databases){
         this$.set('databases', databases);
       });
     },
@@ -68,13 +68,11 @@
       mirror = e.model.mirror;
       name = this._database_name(database, mirror);
       cs.ui.confirm(L.sure_to_delete(name), function(){
-        $.ajax({
-          url: 'api/System/admin/databases/' + database.index + (mirror ? '/' + mirror.index : ''),
-          type: 'delete',
-          success: function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
-            this$.reload();
-          }
+        var suffix;
+        suffix = mirror ? '/' + mirror.index : '';
+        cs.api('delete api/System/admin/databases/' + database.index + suffix).then(function(){
+          cs.ui.notify(L.changes_saved, 'success', 5);
+          this$.reload();
         });
       });
     }

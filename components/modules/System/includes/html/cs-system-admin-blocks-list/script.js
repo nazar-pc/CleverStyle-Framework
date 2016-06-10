@@ -47,15 +47,10 @@
             right: get_indexes('right'),
             bottom: get_indexes('bottom')
           };
-          $.ajax({
-            url: 'api/System/admin/blocks',
-            type: 'update_order',
-            data: {
-              order: order
-            },
-            success: function(){
-              cs.ui.notify(L.changes_saved, 'success', 5);
-            }
+          cs.api('update_order api/System/admin/blocks', {
+            order: order
+          }).then(function(){
+            cs.ui.notify(L.changes_saved, 'success', 5);
           });
         });
       });
@@ -69,7 +64,7 @@
     },
     _reload: function(){
       var this$ = this;
-      $.getJSON('api/System/admin/blocks', function(blocks){
+      cs.api('get api/System/admin/blocks').then(function(blocks){
         var blocks_grouped, i$, len$, index, block;
         this$.blocks_count = blocks.length;
         blocks_grouped = {
@@ -110,13 +105,9 @@
       var title, this$ = this;
       title = L.sure_to_delete_block(e.model.item.title);
       cs.ui.confirm("<h3>" + title + "</h3>", function(){
-        $.ajax({
-          url: 'api/System/admin/blocks/' + e.model.item.index,
-          type: 'delete',
-          success: function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
-            this$._reload();
-          }
+        cs.api('delete api/System/admin/blocks/' + e.model.item.index).then(function(){
+          cs.ui.notify(L.changes_saved, 'success', 5);
+          this$._reload();
         });
       });
     }

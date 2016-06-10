@@ -23,10 +23,10 @@ Polymer(
 			type		: String
 		can_upload	: 'file_upload' of cs
 	ready : !->
-		Promise.all([
-			$.getJSON('api/System/languages')
-			$.getJSON('api/System/timezones')
-			$.getJSON('api/System/admin/users/' + @user_id)
+		cs.api([
+			'get api/System/languages'
+			'get api/System/timezones'
+			'get api/System/admin/users/' + @user_id
 		]).then ([languages, timezones, data]) !~>
 			languages_list	= []
 			languages_list.push(
@@ -75,7 +75,7 @@ Polymer(
 		else
 			password.type	= 'password'
 			lock.icon		= 'lock'
-	_block_until	: !->
+	_block_until : !->
 		block_until	= @block_until
 		date		= new Date
 		date.setFullYear(block_until.substr(0, 4))
@@ -86,13 +86,7 @@ Polymer(
 		date.setSeconds(0)
 		date.setMilliseconds(0)
 		@set('user_data.block_until', date.getTime() / 1000)
-	save			: !->
-		$.ajax(
-			url		: 'api/System/admin/users/' + @user_id
-			type	: 'patch'
-			data	:
-				user	: @user_data
-			success	: !~>
-				cs.ui.notify(@L.changes_saved, 'success', 5)
-		)
+	save : !->
+		cs.api('patch api/System/admin/users/' + @user_id, {user : @user_data}).then !~>
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 )

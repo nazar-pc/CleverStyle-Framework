@@ -20,10 +20,10 @@ Polymer(
 		all_permissions	: Array
 		permissions		: Object
 	ready : !->
-		Promise.all([
-			$.getJSON('api/System/admin/blocks')
-			$.getJSON('api/System/admin/permissions')
-			$.getJSON("api/System/admin/#{@for}s/#{@[@for]}/permissions")
+		cs.api([
+			'get api/System/admin/blocks'
+			'get api/System/admin/permissions'
+			"get api/System/admin/#{@for}s/#{@[@for]}/permissions"
 		]).then ([blocks, all_permissions, permissions]) !~>
 			block_index_to_title	= {}
 			blocks.forEach (block) ->
@@ -38,13 +38,8 @@ Polymer(
 							description	: if group == 'Block' then block_index_to_title[label] else ''
 			@permissions		= permissions
 	save : !->
-		$.ajax(
-			url		: "api/System/admin/#{@for}s/#{@[@for]}/permissions"
-			data	: $(@$.form).serialize()
-			type	: 'put'
-			success	: !~>
-				cs.ui.notify(@L.changes_saved, 'success', 5)
-		)
+		cs.api("put api/System/admin/#{@for}s/#{@[@for]}/permissions", @$.form).then !~>
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 	invert : (e) !->
 		$(e.currentTarget).closest('div')
 			.find(':radio:not(:checked)[value!=-1]')

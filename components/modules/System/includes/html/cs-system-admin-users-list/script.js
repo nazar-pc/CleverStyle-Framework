@@ -52,23 +52,19 @@
     observers: ['search_again(search_column, search_mode, search_limit, _initialized)'],
     ready: function(){
       var this$ = this;
-      $.ajax({
-        url: 'api/System/admin/users',
-        type: 'search_options',
-        success: function(search_options){
-          var search_columns, i$, ref$, len$, column;
-          search_columns = [];
-          for (i$ = 0, len$ = (ref$ = search_options.columns).length; i$ < len$; ++i$) {
-            column = ref$[i$];
-            search_columns.push({
-              name: column,
-              selected: this$.columns.indexOf(column) !== -1
-            });
-          }
-          this$.search_columns = search_columns;
-          this$.all_columns = search_options.columns;
-          this$.search_modes = search_options.modes;
+      cs.api('search_options api/System/admin/users').then(function(search_options){
+        var search_columns, i$, ref$, len$, column;
+        search_columns = [];
+        for (i$ = 0, len$ = (ref$ = search_options.columns).length; i$ < len$; ++i$) {
+          column = ref$[i$];
+          search_columns.push({
+            name: column,
+            selected: this$.columns.indexOf(column) !== -1
+          });
         }
+        this$.search_columns = search_columns;
+        this$.all_columns = search_options.columns;
+        this$.search_modes = search_options.modes;
       });
     },
     search: function(){
@@ -80,70 +76,65 @@
       searching_timeout = setTimeout(function(){
         this$.searching_loader = true;
       }, 200);
-      $.ajax({
-        url: 'api/System/admin/users',
-        type: 'search',
-        data: {
-          column: this.search_column,
-          mode: this.search_mode,
-          text: this.search_text,
-          page: this.search_page,
-          limit: this.search_limit
-        },
-        complete: function(jqXHR, textStatus){
-          clearTimeout(searching_timeout);
-          this$.searching = false;
-          this$.searching_loader = false;
-          if (!textStatus) {
-            this$.set('users', []);
-            this$.users_count = 0;
-          }
-        },
-        success: function(data){
-          this$.users_count = data.count;
-          if (!data.count) {
-            this$.set('users', []);
-            return;
-          }
-          data.users.forEach(function(user){
-            var res$, i$, ref$, len$, column;
-            user['class'] = (function(){
-              switch (parseInt(user.status)) {
-              case STATUS_ACTIVE:
-                return 'cs-block-success cs-text-success';
-              case STATUS_INACTIVE:
-                return 'cs-block-warning cs-text-warning';
-              default:
-                return '';
-              }
-            }());
-            user.is_guest = user.id == GUEST_ID;
-            user.is_root = user.id == ROOT_ID;
-            res$ = [];
-            for (i$ = 0, len$ = (ref$ = this$.columns).length; i$ < len$; ++i$) {
-              column = ref$[i$];
-              res$.push(fn$());
-            }
-            user.columns = res$;
-            (function(){
-              var type;
-              type = user.is_root || user.is_admin
-                ? 'admin'
-                : user.is_user ? 'user' : 'guest';
-              user.type = L[type];
-              return user.type_info = L[type + '_info'];
-            })();
-            function fn$(value){
-              value == null && (value = user[column]);
-              if (value instanceof Array) {
-                return value.join(', ');
-              } else {
-                return value;
-              }
-            }
-          });
-          this$.set('users', data.users);
+      cs.api('search api/System/admin/users', {
+        column: this.search_column,
+        mode: this.search_mode,
+        text: this.search_text,
+        page: this.search_page,
+        limit: this.search_limit
+      }).then(function(data){
+        clearTimeout(searching_timeout);
+        this$.searching = false;
+        this$.searching_loader = false;
+        this$.users_count = data.count;
+        if (!data.count) {
+          this$.set('users', []);
+          return;
         }
+        data.users.forEach(function(user){
+          var res$, i$, ref$, len$, column;
+          user['class'] = (function(){
+            switch (parseInt(user.status)) {
+            case STATUS_ACTIVE:
+              return 'cs-block-success cs-text-success';
+            case STATUS_INACTIVE:
+              return 'cs-block-warning cs-text-warning';
+            default:
+              return '';
+            }
+          }());
+          user.is_guest = user.id == GUEST_ID;
+          user.is_root = user.id == ROOT_ID;
+          res$ = [];
+          for (i$ = 0, len$ = (ref$ = this$.columns).length; i$ < len$; ++i$) {
+            column = ref$[i$];
+            res$.push(fn$());
+          }
+          user.columns = res$;
+          (function(){
+            var type;
+            type = user.is_root || user.is_admin
+              ? 'admin'
+              : user.is_user ? 'user' : 'guest';
+            user.type = L[type];
+            return user.type_info = L[type + '_info'];
+          })();
+          function fn$(value){
+            value == null && (value = user[column]);
+            if (value instanceof Array) {
+              return value.join(', ');
+            } else {
+              return value;
+            }
+          }
+        });
+        this$.set('users', data.users);
+      })['catch'](function(){
+        clearTimeout(searching_timeout);
+        this$.searching = false;
+        this$.searching_loader = false;
+        this$.set('users', []);
+        this$.users_count = 0;
       });
     },
     toggle_search_column: function(e){

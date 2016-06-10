@@ -17,15 +17,10 @@ Polymer(
 		label			: ''
 	ready : !->
 		if @permission_id
-			{group : @group, label : @label} <~! $.getJSON('api/System/admin/permissions/' + @permission_id, _)
+			cs.api('get api/System/admin/permissions/' + @permission_id).then ({group : @group, label : @label}) !~>
 	save : !->
-		$.ajax(
-			url		: 'api/System/admin/permissions' + (if @permission_id then '/' + @permission_id else '')
-			type	: if @permission_id then 'put' else 'post'
-			data	:
-				group	: @group
-				label	: @label
-			success	: !~>
-				cs.ui.notify(@L.changes_saved, 'success', 5)
-		)
+		method	= if @permission_id then 'put' else 'post'
+		suffix	= if @permission_id then '/' + @permission_id else ''
+		cs.api("#method api/System/admin/permissions #suffix", {@group, @label}).then !~>
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 )
