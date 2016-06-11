@@ -7,6 +7,7 @@
  */
 L = cs.Language('blockchain_payment_')
 Polymer(
+	is			: 'cs-blockchain-payment-pay'
 	properties	:
 		description		: ''
 		address			: ''
