@@ -96,11 +96,17 @@ trait blocks {
 		$db_id      = $Config->module('System')->db('texts');
 		$Permission = Permission::instance();
 		$Text       = Text::instance();
-		$found      = static::get_block_by_index($index);
+		$found      = false;
+		foreach ($Config->components['blocks'] as $i => $block) {
+			if ($block['index'] == $index) {
+				unset($Config->components['blocks'][$i]);
+				$found = $i;
+				break;
+			}
+		}
 		if ($found === false) {
 			throw new ExitException(404);
 		}
-		unset($Config->components['blocks'][$found]);
 		$block_permission = $Permission->get(null, 'Block', $index);
 		if ($block_permission) {
 			$Permission->del($block_permission[0]['id']);
