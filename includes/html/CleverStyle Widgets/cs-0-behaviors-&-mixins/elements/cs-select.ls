@@ -19,6 +19,8 @@ Polymer.cs.behaviors.cs-select = [
 			observer	: '_selected_changed'
 			type		: Object
 	ready : !->
+		if @selected == undefined
+			@selected = @value
 		# We need to scroll because of possible changed height of `option`, so that `option[selected]` will not be visible
 		@_when_ready(@~_scroll_to_selected)
 		# Hack to work nicely with `dom-repeat`-created options inside
@@ -93,4 +95,5 @@ Polymer.cs.behaviors.cs-select = [
 						selected.indexOf(option.value) != -1
 					)
 		)
+		@fire('selected')
 ]

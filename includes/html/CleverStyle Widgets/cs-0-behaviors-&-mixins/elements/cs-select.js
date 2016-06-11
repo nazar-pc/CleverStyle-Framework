@@ -20,6 +20,9 @@
       },
       ready: function(){
         var timeout, callback, this$ = this;
+        if (this.selected === undefined) {
+          this.selected = this.value;
+        }
         this._when_ready(bind$(this, '_scroll_to_selected'));
         timeout = null;
         callback = function(){
@@ -98,6 +101,7 @@
         Array.prototype.forEach.call(this.querySelectorAll('option'), function(option){
           return option.selected = selected === option.value || (selected instanceof Array && selected.indexOf(option.value) !== -1);
         });
+        this.fire('selected');
       }
     }
   ];
