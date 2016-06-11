@@ -16,7 +16,7 @@ open_modal	= (action, package_name, category, force = false) ->
 					return
 			force	:= if force then 'force' else ''
 			modal	:= cs.ui.simple_modal("""<cs-composer action="#action" package="#package_name" category="#category" #force/>""")
-			$(modal).on('close', !->
+			modal.addEventListener('close', !->
 				cs.Event.fire('admin/Composer/canceled')
 			)
 			new Promise (resolve) !->
@@ -44,5 +44,6 @@ cs.Event
 	.on('admin/System/components/plugins/update/after', (data) ->
 		open_modal('update', data.name, 'plugins')
 	)
-$('.cs-composer-admin-force-update').click !->
+document.querySelector('.cs-composer-admin-force-update')?.addEventListener('click', !->
 	open_modal('install', 'Composer', 'modules', true)
+)

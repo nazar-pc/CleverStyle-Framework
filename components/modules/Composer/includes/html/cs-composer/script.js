@@ -44,7 +44,7 @@
           }
         }());
         if (result.description) {
-          $(this$.$.result).show().html(result.description);
+          this$.$.result.innerHTML = result.description;
           this$._restore_scroll_position();
         }
         if (!result.code) {
@@ -62,7 +62,7 @@
           return;
         }
         this$._save_scroll_position();
-        $(this$.$.result).show().html(data);
+        this$.$.result.innerHTML = data;
         this$._restore_scroll_position();
         setTimeout(bind$(this$, '_update_progress'), 1000);
       });

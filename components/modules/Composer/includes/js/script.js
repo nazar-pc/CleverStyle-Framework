@@ -7,7 +7,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var modal, open_modal;
+  var modal, open_modal, ref$;
   modal = null;
   open_modal = function(action, package_name, category, force){
     force == null && (force = false);
@@ -24,7 +24,7 @@
       }
       force = force ? 'force' : '';
       modal = cs.ui.simple_modal("<cs-composer action=\"" + action + "\" package=\"" + package_name + "\" category=\"" + category + "\" " + force + "/>");
-      $(modal).on('close', function(){
+      modal.addEventListener('close', function(){
         cs.Event.fire('admin/Composer/canceled');
       });
       return new Promise(function(resolve){
@@ -50,7 +50,9 @@
   }).on('admin/System/components/plugins/update/after', function(data){
     return open_modal('update', data.name, 'plugins');
   });
-  $('.cs-composer-admin-force-update').click(function(){
-    open_modal('install', 'Composer', 'modules', true);
-  });
+  if ((ref$ = document.querySelector('.cs-composer-admin-force-update')) != null) {
+    ref$.addEventListener('click', function(){
+      open_modal('install', 'Composer', 'modules', true);
+    });
+  }
 }).call(this);

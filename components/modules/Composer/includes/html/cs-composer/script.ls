@@ -35,9 +35,7 @@ Polymer(
 				| 1 => L.update_failed
 				| 2 => L.dependencies_conflict
 			if result.description
-				$(@$.result)
-					.show()
-					.html(result.description)
+				@$.result.innerHTML	= result.description
 				@_restore_scroll_position()
 			if !result.code
 				setTimeout (!->
@@ -49,9 +47,7 @@ Polymer(
 			if @status || @canceled
 				return
 			@_save_scroll_position()
-			$(@$.result)
-				.show()
-				.html(data)
+			@$.result.innerHTML	= data
 			@_restore_scroll_position()
 			setTimeout(@~_update_progress, 1000)
 	_save_scroll_position : !->
