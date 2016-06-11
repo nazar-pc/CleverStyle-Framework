@@ -30,9 +30,8 @@ Polymer(
 		if @comment.scroll_to
 			setTimeout(@~_scroll_to, 300)
 	_scroll_to : !->
-		$('html, body').stop().animate(
-			scrollTop	: @offsetTop
-		)
+		# TODO: Add nice scroll without jQuery and much code:)
+		document.querySelector('html').scrollTop	= @offsetTop
 	_scroll_to_parent : !->
 		@parent-comment._scroll_to()
 	_date : (date, date_formatted, time_formatted) ->

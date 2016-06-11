@@ -36,9 +36,7 @@
       }
     },
     _scroll_to: function(){
-      $('html, body').stop().animate({
-        scrollTop: this.offsetTop
-      });
+      document.querySelector('html').scrollTop = this.offsetTop;
     },
     _scroll_to_parent: function(){
       this.parentComment._scroll_to();
