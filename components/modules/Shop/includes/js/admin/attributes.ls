@@ -42,9 +42,9 @@ $ ->
 							title          : $modal.find('[name=title]').val()
 							title_internal : $modal.find('[name=title_internal]').val()
 							value          : value
-						cs.api('post api/Shop/admin/attributes', data).then !->
-							alert(L.added_successfully)
-							location.reload()
+						cs.api('post api/Shop/admin/attributes', data)
+							.then -> cs.ui.alert(L.added_successfully)
+							.then(location~reload)
 						return false
 					)
 					.on('change', '[name=type]', !->
@@ -76,9 +76,9 @@ $ ->
 							title          : $modal.find('[name=title]').val()
 							title_internal : $modal.find('[name=title_internal]').val()
 							value          : value
-						cs.api("put api/Shop/admin/attributes/#id", data).then !->
-							alert(L.edited_successfully)
-							location.reload()
+						cs.api("put api/Shop/admin/attributes/#id", data)
+							.then -> cs.ui.alert(L.edited_successfully)
+							.then(location~reload)
 						return false
 					)
 					.on('change', '[name=type]', !->
@@ -96,8 +96,8 @@ $ ->
 		)
 		.on('mousedown', '.cs-shop-attribute-delete', !->
 			id = $(@).data('id')
-			if confirm(L.sure_want_to_delete)
-				cs.api("delete api/Shop/admin/attributes/#id").then !->
-					alert(L.deleted_successfully)
-					location.reload()
+			cs.ui.confirm(L.sure_want_to_delete)
+				.then -> cs.api("delete api/Shop/admin/attributes/#id")
+				.then -> cs.ui.alert(L.deleted_successfully)
+				.then(location~reload)
 		)

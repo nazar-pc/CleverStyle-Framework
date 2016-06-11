@@ -310,9 +310,9 @@ $ !->
 				modal = make_modal(attributes, categories, L.item_addition, L.add)
 				modal.find("[name=category]").change()
 				modal.find('form').submit ->
-					cs.api('post api/Shop/admin/items', @).then !->
-						alert(L.added_successfully)
-						location.reload()
+					cs.api('post api/Shop/admin/items', @)
+						.then -> cs.ui.alert(L.added_successfully)
+						.then(location~reload)
 					false
 		)
 		.on('mousedown', '.cs-shop-item-edit', !->
@@ -324,17 +324,17 @@ $ !->
 			]).then ([attributes, categories, item]) !->
 				modal = make_modal(attributes, categories, L.item_edition, L.edit)
 				modal.find('form').submit ->
-					cs.api("put api/Shop/admin/items/#id", @).then !->
-						alert(L.edited_successfully)
-						location.reload()
+					cs.api("put api/Shop/admin/items/#id", @)
+						.then -> cs.ui.alert(L.edited_successfully)
+						.then(location~reload)
 					false
 				modal.item_data	= item
 				modal.find("[name=category]").val(item.category).change()
 		)
 		.on('mousedown', '.cs-shop-item-delete', !->
 			id = $(@).data('id')
-			if confirm(L.sure_want_to_delete)
-				cs.api("delete api/Shop/admin/items/#id").then !->
-					alert(L.deleted_successfully)
-					location.reload()
+			cs.ui.confirm(L.sure_want_to_delete)
+				.then -> cs.api("delete api/Shop/admin/items/#id")
+				.then -> cs.ui.alert(L.deleted_successfully)
+				.then(location~reload)
 		)

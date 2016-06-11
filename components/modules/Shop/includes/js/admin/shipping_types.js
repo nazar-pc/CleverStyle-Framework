@@ -18,9 +18,8 @@
       $modal = make_modal(L.shipping_type_addition, L.add);
       $modal.find('form').submit(function(){
         cs.api('post api/Shop/admin/shipping_types', this).then(function(){
-          alert(L.added_successfully);
-          location.reload();
-        });
+          return cs.ui.alert(L.added_successfully);
+        }).then(bind$(location, 'reload'));
         return false;
       });
     }).on('mousedown', '.cs-shop-shipping-type-edit', function(){
@@ -31,9 +30,8 @@
         $modal = make_modal(L.shipping_type_edition, L.edit);
         $modal.find('form').submit(function(){
           cs.api("put api/Shop/admin/shipping_types/" + id, this).then(function(){
-            alert(L.edited_successfully);
-            location.reload();
-          });
+            return cs.ui.alert(L.edited_successfully);
+          }).then(bind$(location, 'reload'));
           return false;
         });
         $modal.find('[name=title]').val(shipping_type.title);
@@ -45,12 +43,14 @@
     }).on('mousedown', '.cs-shop-shipping-type-delete', function(){
       var id;
       id = $(this).data('id');
-      if (confirm(L.sure_want_to_delete)) {
-        cs.api("delete api/Shop/admin/shipping_types/" + id).then(function(){
-          alert(L.deleted_successfully);
-          location.reload();
-        });
-      }
+      cs.ui.confirm(L.sure_want_to_delete).then(function(){
+        return cs.api("delete api/Shop/admin/shipping_types/" + id);
+      }).then(function(){
+        return cs.ui.alert(L.deleted_successfully);
+      }).then(bind$(location, 'reload'));
     });
   });
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

@@ -62,18 +62,17 @@
       }
     },
     _delete: function(e){
-      var database_model, database, mirror, name, this$ = this;
+      var database_model, database, mirror, name, suffix, this$ = this;
       database_model = this.$.databases_list.modelForElement(e.target);
       database = e.model.database || database_model.database;
       mirror = e.model.mirror;
       name = this._database_name(database, mirror);
-      cs.ui.confirm(L.sure_to_delete(name), function(){
-        var suffix;
-        suffix = mirror ? '/' + mirror.index : '';
-        cs.api('delete api/System/admin/databases/' + database.index + suffix).then(function(){
-          cs.ui.notify(L.changes_saved, 'success', 5);
-          this$.reload();
-        });
+      suffix = mirror ? '/' + mirror.index : '';
+      cs.ui.confirm(L.sure_to_delete(name)).then(function(){
+        return cs.api('delete api/System/admin/databases/' + database.index + suffix);
+      }).then(function(){
+        cs.ui.notify(L.changes_saved, 'success', 5);
+        this$.reload();
       });
     }
   });

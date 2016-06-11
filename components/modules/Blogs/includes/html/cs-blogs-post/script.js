@@ -36,11 +36,11 @@
     },
     _delete: function(){
       var this$ = this;
-      cs.ui.confirm(this.L.sure_to_delete_post(this.jsonld.title), function(){
-        cs.api('delete api/Blogs/posts/' + this$.jsonld.id).then(function(result){
-          this$._remove_close_tab_handler();
-          location.href = 'Blogs';
-        });
+      cs.ui.confirm(this.L.sure_to_delete_post(this.jsonld.title)).then(function(){
+        return cs.api('delete api/Blogs/posts/' + this$.jsonld.id);
+      }).then(function(result){
+        this$._remove_close_tab_handler();
+        location.href = 'Blogs';
       });
     }
   });

@@ -29,11 +29,9 @@ Polymer(
 			<cs-blogs-admin-sections-add-edit-form id="#{e.model.item.id}"/>
 		""")).on('close', @~_reload_sections)
 	_delete : (e) !->
-		cs.ui.confirm(
-			@L.sure_to_delete_posts_section(e.model.item.title)
-			!~>
-				cs.api('delete api/Blogs/admin/sections/' + e.model.item.id).then !~>
-					cs.ui.notify(@L.changes_saved, 'success', 5)
-					@_reload_sections()
-		)
+		cs.ui.confirm(@L.sure_to_delete_posts_section(e.model.item.title))
+			.then -> cs.api('delete api/Blogs/admin/sections/' + e.model.item.id)
+			.then !~>
+				cs.ui.notify(@L.changes_saved, 'success', 5)
+				@_reload_sections()
 )

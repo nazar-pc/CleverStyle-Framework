@@ -106,13 +106,11 @@ Polymer(
 			@_remove_close_tab_handler()
 			location.href = result.url
 	_delete : !->
-		cs.ui.confirm(
-			L.sure_to_delete_post(@original_title)
-			!~>
-				cs.api('delete api/Blogs/posts/' + @post.id).then (result) !~>
-					@_remove_close_tab_handler()
-					location.href = 'Blogs'
-		)
+		cs.ui.confirm(L.sure_to_delete_post(@original_title))
+			.then ~> cs.api('delete api/Blogs/posts/' + @post.id)
+			.then !~>
+				@_remove_close_tab_handler()
+				location.href = 'Blogs'
 	_cancel : !->
 		@_remove_close_tab_handler()
 		history.go(-1)

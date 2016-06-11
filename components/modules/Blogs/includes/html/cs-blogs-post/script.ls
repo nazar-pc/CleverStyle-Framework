@@ -30,11 +30,9 @@ Polymer(
 	tags_path : (index) ->
 		@jsonld.tags_paths[index]
 	_delete : !->
-		cs.ui.confirm(
-			@L.sure_to_delete_post(@jsonld.title)
-			!~>
-				cs.api('delete api/Blogs/posts/' + @jsonld.id).then (result) !~>
-					@_remove_close_tab_handler()
-					location.href = 'Blogs'
-		)
+		cs.ui.confirm(@L.sure_to_delete_post(@jsonld.title))
+			.then ~> cs.api('delete api/Blogs/posts/' + @jsonld.id)
+			.then (result) !~>
+				@_remove_close_tab_handler()
+				location.href = 'Blogs'
 )

@@ -125,11 +125,11 @@
     },
     _delete: function(){
       var this$ = this;
-      cs.ui.confirm(L.sure_to_delete_post(this.original_title), function(){
-        cs.api('delete api/Blogs/posts/' + this$.post.id).then(function(result){
-          this$._remove_close_tab_handler();
-          location.href = 'Blogs';
-        });
+      cs.ui.confirm(L.sure_to_delete_post(this.original_title)).then(function(){
+        return cs.api('delete api/Blogs/posts/' + this$.post.id);
+      }).then(function(){
+        this$._remove_close_tab_handler();
+        location.href = 'Blogs';
       });
     },
     _cancel: function(){

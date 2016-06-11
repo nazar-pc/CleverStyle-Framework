@@ -43,11 +43,11 @@
     },
     _delete: function(e){
       var this$ = this;
-      cs.ui.confirm(this.L.sure_to_delete_post(e.model.item.title), function(){
-        cs.api('delete api/Blogs/admin/posts/' + e.model.item.id).then(function(){
-          cs.ui.notify(this$.L.changes_saved, 'success', 5);
-          this$._reload_posts();
-        });
+      cs.ui.confirm(this.L.sure_to_delete_post(e.model.item.title)).then(function(){
+        return cs.api('delete api/Blogs/admin/posts/' + e.model.item.id);
+      }).then(function(){
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
+        this$._reload_posts();
       });
     }
   });

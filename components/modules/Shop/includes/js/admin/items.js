@@ -286,9 +286,8 @@
         modal.find("[name=category]").change();
         modal.find('form').submit(function(){
           cs.api('post api/Shop/admin/items', this).then(function(){
-            alert(L.added_successfully);
-            location.reload();
-          });
+            return cs.ui.alert(L.added_successfully);
+          }).then(bind$(location, 'reload'));
           return false;
         });
       });
@@ -301,9 +300,8 @@
         modal = make_modal(attributes, categories, L.item_edition, L.edit);
         modal.find('form').submit(function(){
           cs.api("put api/Shop/admin/items/" + id, this).then(function(){
-            alert(L.edited_successfully);
-            location.reload();
-          });
+            return cs.ui.alert(L.edited_successfully);
+          }).then(bind$(location, 'reload'));
           return false;
         });
         modal.item_data = item;
@@ -312,12 +310,11 @@
     }).on('mousedown', '.cs-shop-item-delete', function(){
       var id;
       id = $(this).data('id');
-      if (confirm(L.sure_want_to_delete)) {
-        cs.api("delete api/Shop/admin/items/" + id).then(function(){
-          alert(L.deleted_successfully);
-          location.reload();
-        });
-      }
+      cs.ui.confirm(L.sure_want_to_delete).then(function(){
+        return cs.api("delete api/Shop/admin/items/" + id);
+      }).then(function(){
+        return cs.ui.alert(L.deleted_successfully);
+      }).then(bind$(location, 'reload'));
     });
   });
   function bind$(obj, key, target){

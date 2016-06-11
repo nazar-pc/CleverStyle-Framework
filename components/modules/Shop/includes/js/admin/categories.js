@@ -110,9 +110,8 @@
         modal = make_modal(attributes, categories, L.category_addition, L.add);
         modal.find('form').submit(function(){
           cs.api('post api/Shop/admin/categories', this).then(function(){
-            alert(L.added_successfully);
-            location.reload();
-          });
+            return cs.ui.alert(L.added_successfully);
+          }).then(bind$(location, 'reload'));
           return false;
         });
       });
@@ -125,9 +124,8 @@
         modal = make_modal(attributes, categories, L.category_edition, L.edit);
         modal.find('form').submit(function(){
           cs.api("put api/Shop/admin/categories/" + id, this).then(function(){
-            alert(L.edited_successfully);
-            location.reload();
-          });
+            return cs.ui.alert(L.edited_successfully);
+          }).then(bind$(location, 'reload'));
           return false;
         });
         modal.find('[name=parent]').val(category.parent);
@@ -144,12 +142,11 @@
     }).on('mousedown', '.cs-shop-category-delete', function(){
       var id;
       id = $(this).data('id');
-      if (confirm(L.sure_want_to_delete_category)) {
-        cs.api("delete api/Shop/admin/categories/" + id).then(function(){
-          alert(L.deleted_successfully);
-          location.reload();
-        });
-      }
+      cs.ui.confirm(L.sure_want_to_delete_category).then(function(){
+        return cs.api("delete api/Shop/admin/categories/" + id);
+      }).then(function(){
+        return cs.ui.alert(L.deleted_successfully);
+      }).then(bind$(location, 'reload'));
     });
   });
   function bind$(obj, key, target){

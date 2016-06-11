@@ -159,9 +159,8 @@
           }).then(function(url){
             return cs.api('put api/Shop/admin/orders/' + url.pop() + '/items', this$);
           }).then(function(){
-            alert(L.added_successfully);
-            location.reload();
-          });
+            return cs.ui.alert(L.added_successfully);
+          }).then(bind$(location, 'reload'));
           return false;
         });
       });
@@ -204,9 +203,8 @@
           cs.api("put api/Shop/admin/orders/" + id, this).then(function(){
             return cs.api("put api/Shop/admin/orders/" + id + "/items", this$);
           }).then(function(){
-            alert(L.edited_successfully);
-            location.reload();
-          });
+            return cs.ui.alert(L.edited_successfully);
+          }).then(bind$(location, 'reload'));
           return false;
         });
         modal.find('.date').html(date).parent().removeAttr('hidden');
@@ -228,12 +226,14 @@
     }).on('mousedown', '.cs-shop-order-delete', function(){
       var id;
       id = $(this).data('id');
-      if (confirm(L.sure_want_to_delete)) {
-        cs.api("delete api/Shop/admin/orders/" + id).then(function(){
-          alert(L.deleted_successfully);
-          location.reload();
-        });
-      }
+      cs.ui.confirm(L.sure_want_to_delete).then(function(){
+        return cs.api("delete api/Shop/admin/orders/" + id);
+      }).then(function(){
+        return cs.ui.alert(L.deleted_successfully);
+      }).then(bind$(location, 'reload'));
     });
   });
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

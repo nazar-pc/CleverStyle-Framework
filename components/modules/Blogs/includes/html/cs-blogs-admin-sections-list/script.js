@@ -32,11 +32,11 @@
     },
     _delete: function(e){
       var this$ = this;
-      cs.ui.confirm(this.L.sure_to_delete_posts_section(e.model.item.title), function(){
-        cs.api('delete api/Blogs/admin/sections/' + e.model.item.id).then(function(){
-          cs.ui.notify(this$.L.changes_saved, 'success', 5);
-          this$._reload_sections();
-        });
+      cs.ui.confirm(this.L.sure_to_delete_posts_section(e.model.item.title)).then(function(){
+        return cs.api('delete api/Blogs/admin/sections/' + e.model.item.id);
+      }).then(function(){
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
+        this$._reload_sections();
       });
     }
   });

@@ -44,9 +44,7 @@ $ !->
 			'click',
 			'.cs-photo-gallery-image-delete'
 			!->
-				cs.ui.confirm(
-					L.sure_to_delete_image
-					!~>
-						cs.api('delete api/Photo_gallery/images/' + $(this).data('image')).then(location~reload)
-				)
+				cs.ui.confirm(L.sure_to_delete_image)
+					.then ~> cs.api('delete api/Photo_gallery/images/' + $(@).data('image'))
+					.then(location~reload)
 		)

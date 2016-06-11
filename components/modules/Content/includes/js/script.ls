@@ -109,10 +109,10 @@ Promise.all([
 				'click'
 				'.cs-content-delete'
 				!->
-					if !confirm("#{L.delete}?")
-						return
 					key = $(@).data('key')
-					cs.api("delete api/Content/#key").then(location~reload)
+					cs.ui.confirm("#{L.delete}?")
+						.then -> cs.api("delete api/Content/#key")
+						.then(location~reload)
 			)
 		do !->
 			mousemove_timeout	= 0

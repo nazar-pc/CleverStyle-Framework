@@ -262,20 +262,21 @@ cs.{}ui
 			content = content.toString()
 		if typeof content == 'string' && content.indexOf('<') == -1
 			content = "<h3>#{content}</h3>"
-		modal	= cs.ui.modal(content)
-			..autoDestroy	= true
-			..manualClose	= true
-		ok		= document.createElement('button', 'cs-button')
-			..innerHTML	= 'OK'
-			..primary	= true
-			..action	= 'close'
-			..bind		= modal
-		modal
-			..ok	= ok
-			..appendChild(ok)
-			..open()
-		ok.focus()
-		modal
+		new Promise (resolve) !->
+			modal	= cs.ui.modal(content)
+				..autoDestroy	= true
+				..manualClose	= true
+			ok		= document.createElement('button', 'cs-button')
+				..innerHTML	= 'OK'
+				..primary	= true
+				..action	= 'close'
+				..bind		= modal
+				..addEventListener('click', resolve)
+			modal
+				..ok	= ok
+				..appendChild(ok)
+				..open()
+			ok.focus()
 	/**
 	 * Confirm modal
 	 *
@@ -298,7 +299,7 @@ cs.{}ui
 			..primary	= true
 			..action	= 'close'
 			..bind		= modal
-			..addEventListener('click', ok_callback)
+			..addEventListener('click', ok_callback || ->)
 		cancel	= document.createElement('button', 'cs-button')
 			..innerHTML	= L.system_admin_cancel
 			..action	= 'close'
@@ -311,7 +312,12 @@ cs.{}ui
 			..appendChild(cancel)
 			..open()
 		ok.focus()
-		modal
+		if ok_callback
+			modal
+		else
+			new Promise (resolve, reject) !->
+				ok.addEventListener('click', resolve)
+				cancel.addEventListener('click', reject)
 	/**
 	 * Notify
 	 *

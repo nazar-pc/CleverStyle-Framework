@@ -40,11 +40,9 @@ Polymer(
 		storage_model	= @$.storages_list.modelForElement(e.target)
 		storage			= e.model.storage || storage_model.storage
 		name			= storage.host + '/' + storage.connection
-		cs.ui.confirm(
-			L.sure_to_delete(name)
-			!~>
-				cs.api('delete api/System/admin/storages/' + storage.index).then !~>
-					cs.ui.notify(L.changes_saved, 'success', 5)
-					@reload()
-		)
+		cs.ui.confirm(L.sure_to_delete(name))
+			.then -> cs.api('delete api/System/admin/storages/' + storage.index)
+			.then !~>
+				cs.ui.notify(L.changes_saved, 'success', 5)
+				@reload()
 )

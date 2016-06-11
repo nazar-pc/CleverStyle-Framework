@@ -36,15 +36,11 @@ Polymer(
 		""")).on('close', @~reload)
 	delete_group : (e) !->
 		group	= e.model.group
-		cs.ui.confirm(
-			"""
-				<h3>#{L.sure_delete_group(group.title)}</h3>
-			"""
-			!~>
-				cs.api('delete api/System/admin/groups/' + group.id).then !~>
-					cs.ui.notify(L.changes_saved, 'success', 5)
-					@splice('groups', e.model.index, 1)
-		)
+		cs.ui.confirm(L.sure_delete_group(group.title))
+			.then -> cs.api('delete api/System/admin/groups/' + group.id)
+			.then !~>
+				cs.ui.notify(L.changes_saved, 'success', 5)
+				@splice('groups', e.model.index, 1)
 	edit_permissions : (e) !->
 		group	= e.model.group
 		title	= L.permissions_for_group(group.title)

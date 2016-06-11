@@ -79,12 +79,9 @@ Polymer(
 			@_reload()
 		)
 	_delete_block : (e) !->
-		title	= L.sure_to_delete_block(e.model.item.title)
-		cs.ui.confirm(
-			"<h3>#title</h3>"
-			!~>
-				cs.api('delete api/System/admin/blocks/' + e.model.item.index).then !~>
-					cs.ui.notify(L.changes_saved, 'success', 5)
-					@_reload()
-		)
+		cs.ui.confirm(L.sure_to_delete_block(e.model.item.title))
+			.then -> cs.api('delete api/System/admin/blocks/' + e.model.item.index)
+			.then !~>
+				cs.ui.notify(L.changes_saved, 'success', 5)
+				@_reload()
 )

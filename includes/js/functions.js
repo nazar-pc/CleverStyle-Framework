@@ -326,27 +326,29 @@
    * @return {HTMLElement}
    */
   x$.alert = function(content){
-    var x$, modal, y$, ok, z$;
     if (content instanceof Function) {
       content = content.toString();
     }
     if (typeof content === 'string' && content.indexOf('<') === -1) {
       content = "<h3>" + content + "</h3>";
     }
-    x$ = modal = cs.ui.modal(content);
-    x$.autoDestroy = true;
-    x$.manualClose = true;
-    y$ = ok = document.createElement('button', 'cs-button');
-    y$.innerHTML = 'OK';
-    y$.primary = true;
-    y$.action = 'close';
-    y$.bind = modal;
-    z$ = modal;
-    z$.ok = ok;
-    z$.appendChild(ok);
-    z$.open();
-    ok.focus();
-    return modal;
+    return new Promise(function(resolve){
+      var x$, modal, y$, ok, z$;
+      x$ = modal = cs.ui.modal(content);
+      x$.autoDestroy = true;
+      x$.manualClose = true;
+      y$ = ok = document.createElement('button', 'cs-button');
+      y$.innerHTML = 'OK';
+      y$.primary = true;
+      y$.action = 'close';
+      y$.bind = modal;
+      y$.addEventListener('click', resolve);
+      z$ = modal;
+      z$.ok = ok;
+      z$.appendChild(ok);
+      z$.open();
+      ok.focus();
+    });
   };
   /**
    * Confirm modal
@@ -373,7 +375,7 @@
     y$.primary = true;
     y$.action = 'close';
     y$.bind = modal;
-    y$.addEventListener('click', ok_callback);
+    y$.addEventListener('click', ok_callback || function(){});
     z$ = cancel = document.createElement('button', 'cs-button');
     z$.innerHTML = L.system_admin_cancel;
     z$.action = 'close';
@@ -386,7 +388,14 @@
     z1$.appendChild(cancel);
     z1$.open();
     ok.focus();
-    return modal;
+    if (ok_callback) {
+      return modal;
+    } else {
+      return new Promise(function(resolve, reject){
+        ok.addEventListener('click', resolve);
+        cancel.addEventListener('click', reject);
+      });
+    }
   };
   /**
    * Notify

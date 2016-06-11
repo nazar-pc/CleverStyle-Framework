@@ -55,16 +55,10 @@ Polymer(
 		database		= e.model.database || database_model.database
 		mirror			= e.model.mirror
 		name			= @_database_name(database, mirror)
-		cs.ui.confirm(
-			L.sure_to_delete(name)
-			!~>
-				suffix	=
-					if mirror
-						'/' + mirror.index
-					else
-						''
-				cs.api('delete api/System/admin/databases/' + database.index + suffix).then !~>
-					cs.ui.notify(L.changes_saved, 'success', 5)
-					@reload()
-		)
+		suffix			= if mirror then '/' + mirror.index else ''
+		cs.ui.confirm(L.sure_to_delete(name))
+			.then -> cs.api('delete api/System/admin/databases/' + database.index + suffix)
+			.then !~>
+				cs.ui.notify(L.changes_saved, 'success', 5)
+				@reload()
 )

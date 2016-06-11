@@ -102,13 +102,12 @@
       });
     },
     _delete_block: function(e){
-      var title, this$ = this;
-      title = L.sure_to_delete_block(e.model.item.title);
-      cs.ui.confirm("<h3>" + title + "</h3>", function(){
-        cs.api('delete api/System/admin/blocks/' + e.model.item.index).then(function(){
-          cs.ui.notify(L.changes_saved, 'success', 5);
-          this$._reload();
-        });
+      var this$ = this;
+      cs.ui.confirm(L.sure_to_delete_block(e.model.item.title)).then(function(){
+        return cs.api('delete api/System/admin/blocks/' + e.model.item.index);
+      }).then(function(){
+        cs.ui.notify(L.changes_saved, 'success', 5);
+        this$._reload();
       });
     }
   });

@@ -133,10 +133,10 @@ $ ->
 			]).then ([attributes, categories]) !->
 				modal = make_modal(attributes, categories, L.category_addition, L.add)
 				modal.find('form').submit ->
-					cs.api('post api/Shop/admin/categories', @).then !->
-						alert(L.added_successfully)
-						location.reload()
-					return false
+					cs.api('post api/Shop/admin/categories', @)
+						.then -> cs.ui.alert(L.added_successfully)
+						.then(location~reload)
+					false
 		)
 		.on('mousedown', '.cs-shop-category-edit', !->
 			id = $(@).data('id')
@@ -147,10 +147,10 @@ $ ->
 			]).then ([attributes, categories, category]) !->
 				modal = make_modal(attributes, categories, L.category_edition, L.edit)
 				modal.find('form').submit ->
-					cs.api("put api/Shop/admin/categories/#id", @).then !->
-						alert(L.edited_successfully)
-						location.reload()
-					return false
+					cs.api("put api/Shop/admin/categories/#id", @)
+						.then -> cs.ui.alert(L.edited_successfully)
+						.then(location~reload)
+					false
 				modal.find('[name=parent]').val(category.parent)
 				modal.find('[name=title]').val(category.title)
 				modal.find('[name=description]').val(category.description)
@@ -163,8 +163,8 @@ $ ->
 		)
 		.on('mousedown', '.cs-shop-category-delete', !->
 			id = $(@).data('id')
-			if confirm(L.sure_want_to_delete_category)
-				cs.api("delete api/Shop/admin/categories/#id").then !->
-					alert(L.deleted_successfully)
-					location.reload()
+			cs.ui.confirm(L.sure_want_to_delete_category)
+				.then -> cs.api("delete api/Shop/admin/categories/#id")
+				.then -> cs.ui.alert(L.deleted_successfully)
+				.then(location~reload)
 		)

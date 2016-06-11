@@ -41,11 +41,11 @@
     delete_group: function(e){
       var group, this$ = this;
       group = e.model.group;
-      cs.ui.confirm("<h3>" + L.sure_delete_group(group.title) + "</h3>", function(){
-        cs.api('delete api/System/admin/groups/' + group.id).then(function(){
-          cs.ui.notify(L.changes_saved, 'success', 5);
-          this$.splice('groups', e.model.index, 1);
-        });
+      cs.ui.confirm(L.sure_delete_group(group.title)).then(function(){
+        return cs.api('delete api/System/admin/groups/' + group.id);
+      }).then(function(){
+        cs.ui.notify(L.changes_saved, 'success', 5);
+        this$.splice('groups', e.model.index, 1);
       });
     },
     edit_permissions: function(e){

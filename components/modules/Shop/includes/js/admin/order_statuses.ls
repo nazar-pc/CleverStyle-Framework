@@ -45,9 +45,9 @@ $ !->
 			cs.api('get api/Shop/admin/order_statuses/types').then (types) !->
 				modal = make_modal(types, L.order_status_addition, L.add)
 				modal.find('form').submit ->
-					cs.api('post api/Shop/admin/order_statuses', @).then !->
-						alert(L.added_successfully)
-						location.reload()
+					cs.api('post api/Shop/admin/order_statuses', @)
+						.then -> cs.ui.alert(L.added_successfully)
+						.then(location~reload)
 					false
 		)
 		.on('mousedown', '.cs-shop-order-status-edit', !->
@@ -58,9 +58,9 @@ $ !->
 			]).then ([types, type]) !->
 				modal = make_modal(types, L.order_status_edition, L.edit)
 				modal.find('form').submit ->
-					cs.api("put api/Shop/admin/order_statuses/#id", @).then !->
-						alert(L.edited_successfully)
-						location.reload()
+					cs.api("put api/Shop/admin/order_statuses/#id", @)
+						.then -> cs.ui.alert(L.edited_successfully)
+						.then(location~reload)
 					false
 				modal.find('[name=title]').val(type.title)
 				modal.find('[name=color]').val(type.color)
@@ -71,8 +71,8 @@ $ !->
 		)
 		.on('mousedown', '.cs-shop-order-status-delete', !->
 			id = $(@).data('id')
-			if confirm(L.sure_want_to_delete)
-				cs.api("delete api/Shop/admin/order_statuses/#id").then !->
-					alert(L.deleted_successfully)
-					location.reload()
+			cs.ui.confirm(L.sure_want_to_delete)
+				.then -> cs.api("delete api/Shop/admin/order_statuses/#id")
+				.then -> cs.ui.alert(L.deleted_successfully)
+				.then(location~reload)
 		)

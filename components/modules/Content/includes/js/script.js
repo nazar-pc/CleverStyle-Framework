@@ -80,11 +80,10 @@
         });
       }).on('click', '.cs-content-delete', function(){
         var key;
-        if (!confirm(L['delete'] + "?")) {
-          return;
-        }
         key = $(this).data('key');
-        cs.api("delete api/Content/" + key).then(bind$(location, 'reload'));
+        cs.ui.confirm(L['delete'] + "?").then(function(){
+          return cs.api("delete api/Content/" + key);
+        }).then(bind$(location, 'reload'));
       });
       (function(){
         var mousemove_timeout, showed_button, show_edit_button;

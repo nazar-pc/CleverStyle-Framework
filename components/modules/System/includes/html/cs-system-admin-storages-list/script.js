@@ -42,11 +42,11 @@
       storage_model = this.$.storages_list.modelForElement(e.target);
       storage = e.model.storage || storage_model.storage;
       name = storage.host + '/' + storage.connection;
-      cs.ui.confirm(L.sure_to_delete(name), function(){
-        cs.api('delete api/System/admin/storages/' + storage.index).then(function(){
-          cs.ui.notify(L.changes_saved, 'success', 5);
-          this$.reload();
-        });
+      cs.ui.confirm(L.sure_to_delete(name)).then(function(){
+        return cs.api('delete api/System/admin/storages/' + storage.index);
+      }).then(function(){
+        cs.ui.notify(L.changes_saved, 'success', 5);
+        this$.reload();
       });
     }
   });

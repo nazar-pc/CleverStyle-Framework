@@ -57,11 +57,11 @@
     delete_permission: function(e){
       var permission, this$ = this;
       permission = e.model.permission;
-      cs.ui.confirm("<h3>" + L.sure_delete_permission(permission.group + '/' + permission.label) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>", function(){
-        cs.api('delete api/System/admin/permissions/' + permission.id).then(function(){
-          cs.ui.notify(L.changes_saved, 'success', 5);
-          this$.splice('permissions', e.model.index, 1);
-        });
+      cs.ui.confirm("<h3>" + L.sure_delete_permission(permission.group + '/' + permission.label) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>").then(function(){
+        return cs.api('delete api/System/admin/permissions/' + permission.id);
+      }).then(function(){
+        cs.ui.notify(L.changes_saved, 'success', 5);
+        this$.splice('permissions', e.model.index, 1);
       });
     }
   });

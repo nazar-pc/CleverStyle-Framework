@@ -49,9 +49,9 @@
       });
       $('body').on('click', '.cs-photo-gallery-image-delete', function(){
         var this$ = this;
-        cs.ui.confirm(L.sure_to_delete_image, function(){
-          cs.api('delete api/Photo_gallery/images/' + $(this$).data('image')).then(bind$(location, 'reload'));
-        });
+        cs.ui.confirm(L.sure_to_delete_image).then(function(){
+          return cs.api('delete api/Photo_gallery/images/' + $(this$).data('image'));
+        }).then(bind$(location, 'reload'));
       });
     }
   });

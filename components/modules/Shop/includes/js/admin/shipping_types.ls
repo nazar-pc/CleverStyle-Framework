@@ -33,9 +33,9 @@ $ !->
 		.on('mousedown', '.cs-shop-shipping-type-add', !->
 			$modal = make_modal(L.shipping_type_addition, L.add)
 			$modal.find('form').submit ->
-				cs.api('post api/Shop/admin/shipping_types', @).then !->
-					alert(L.added_successfully)
-					location.reload()
+				cs.api('post api/Shop/admin/shipping_types', @)
+					.then -> cs.ui.alert(L.added_successfully)
+					.then(location~reload)
 				false
 		)
 		.on('mousedown', '.cs-shop-shipping-type-edit', !->
@@ -43,9 +43,9 @@ $ !->
 			cs.api("get api/Shop/admin/shipping_types/#id").then (shipping_type) !->
 				$modal = make_modal(L.shipping_type_edition, L.edit)
 				$modal.find('form').submit ->
-					cs.api("put api/Shop/admin/shipping_types/#id", @).then !->
-						alert(L.edited_successfully)
-						location.reload()
+					cs.api("put api/Shop/admin/shipping_types/#id", @)
+						.then -> cs.ui.alert(L.edited_successfully)
+						.then(location~reload)
 					false
 				$modal.find('[name=title]').val(shipping_type.title)
 				$modal.find('[name=price]').val(shipping_type.price)
@@ -55,8 +55,8 @@ $ !->
 		)
 		.on('mousedown', '.cs-shop-shipping-type-delete', !->
 			id = $(@).data('id')
-			if confirm(L.sure_want_to_delete)
-				cs.api("delete api/Shop/admin/shipping_types/#id").then !->
-					alert(L.deleted_successfully)
-					location.reload()
+			cs.ui.confirm(L.sure_want_to_delete)
+				.then -> cs.api("delete api/Shop/admin/shipping_types/#id")
+				.then -> cs.ui.alert(L.deleted_successfully)
+				.then(location~reload)
 		)

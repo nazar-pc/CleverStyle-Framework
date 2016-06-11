@@ -8,16 +8,16 @@
  */
 L	= cs.Language('system_admin_permissions_')
 Polymer(
-	'is'				: 'cs-system-admin-permissions-list'
-	behaviors			: [
+	'is'		: 'cs-system-admin-permissions-list'
+	behaviors	: [
 		cs.Polymer.behaviors.Language('system_admin_permissions_')
 	]
-	properties			:
+	properties	:
 		permissions			: []
 		permissions_loaded	: false
-	ready				: !->
+	ready : !->
 		@reload()
-	reload				: !->
+	reload : !->
 		cs.api([
 			'get api/System/admin/blocks'
 			'get api/System/admin/permissions'
@@ -36,29 +36,29 @@ Polymer(
 					)
 			@set('permissions', permissions_list)
 			@permissions_loaded	= true
-	add_permission		: !->
+	add_permission : !->
 		$(cs.ui.simple_modal("""
 			<h3>#{L.adding_permission}</h3>
 			<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
 			<cs-system-admin-permissions-form/>
 		""")).on('close', @~reload)
-	edit_permission		: (e) !->
+	edit_permission : (e) !->
 		permission	= e.model.permission
 		$(cs.ui.simple_modal("""
 			<h3>#{L.editing_permission(permission.group + '/' + permission.label)}</h3>
 			<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
 			<cs-system-admin-permissions-form permission_id="#{permission.id}"/>
 		""")).on('close', @~reload)
-	delete_permission	: (e) !->
+	delete_permission : (e) !->
 		permission	= e.model.permission
 		cs.ui.confirm(
 			"""
 				<h3>#{L.sure_delete_permission(permission.group + '/' + permission.label)}</h3>
 				<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
 			"""
-			!~>
-				cs.api('delete api/System/admin/permissions/' + permission.id).then !~>
-					cs.ui.notify(L.changes_saved, 'success', 5)
-					@splice('permissions', e.model.index, 1)
 		)
+			.then -> cs.api('delete api/System/admin/permissions/' + permission.id)
+			.then !~>
+				cs.ui.notify(L.changes_saved, 'success', 5)
+				@splice('permissions', e.model.index, 1)
 )

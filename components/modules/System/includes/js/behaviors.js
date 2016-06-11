@@ -183,11 +183,11 @@
             return 'appearance_completely_remove_theme';
           }
         }());
-        cs.ui.confirm(L[translation_key](component), function(){
-          cs.api("delete api/System/admin/" + category + "/" + component).then(function(){
-            this$.reload();
-            cs.ui.notify(L.changes_saved, 'success', 5);
-          });
+        cs.ui.confirm(L[translation_key](component)).then(function(){
+          return cs.api("delete api/System/admin/" + category + "/" + component);
+        }).then(function(){
+          this$.reload();
+          cs.ui.notify(L.changes_saved, 'success', 5);
         });
       },
       _compose_dependencies_message: function(component, dependencies){

@@ -101,11 +101,11 @@
     },
     _delete: function(){
       var this$ = this;
-      cs.ui.confirm(this.L.sure_to_delete, function(){
-        cs.api('delete api/Comments/' + this$.comment.id).then(function(){
-          cs.ui.notify(this$.L.deleted, 'success', 5);
-          this$.reload();
-        });
+      cs.ui.confirm(this.L.sure_to_delete).then(function(){
+        return cs.api('delete api/Comments/' + this$.comment.id);
+      }).then(function(){
+        cs.ui.notify(this$.L.deleted, 'success', 5);
+        this$.reload();
       });
     }
   });

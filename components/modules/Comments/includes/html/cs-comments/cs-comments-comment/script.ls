@@ -75,8 +75,9 @@ Polymer(
 	_cancel_reply : !->
 		@replying	= false
 	_delete : !->
-		<~! cs.ui.confirm(@L.sure_to_delete)
-		cs.api('delete api/Comments/' + @comment.id).then !~>
-			cs.ui.notify(@L.deleted, 'success', 5)
-			@reload()
+		cs.ui.confirm(@L.sure_to_delete)
+			.then ~> cs.api('delete api/Comments/' + @comment.id)
+			.then !~>
+				cs.ui.notify(@L.deleted, 'success', 5)
+				@reload()
 )

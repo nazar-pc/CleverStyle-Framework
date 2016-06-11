@@ -158,10 +158,11 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				| 'modules' => 'modules_completely_remove_module'
 				| 'plugins'	=> 'plugins_completely_remove_plugin'
 				| 'themes'	=> 'appearance_completely_remove_theme'
-			<~! cs.ui.confirm(L[translation_key](component), _)
-			cs.api("delete api/System/admin/#category/#component").then !~>
-				@reload()
-				cs.ui.notify(L.changes_saved, 'success', 5)
+			cs.ui.confirm(L[translation_key](component))
+				.then -> cs.api("delete api/System/admin/#category/#component")
+				.then !~>
+					@reload()
+					cs.ui.notify(L.changes_saved, 'success', 5)
 		# Compose HTML representation of dependencies details
 		_compose_dependencies_message : (component, dependencies) ->
 			message = ''

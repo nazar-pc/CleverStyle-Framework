@@ -27,11 +27,9 @@ Polymer(
 					post.sections[index] = @sections[section]
 			@set('posts', posts)
 	_delete : (e) !->
-		cs.ui.confirm(
-			@L.sure_to_delete_post(e.model.item.title)
-			!~>
-				cs.api('delete api/Blogs/admin/posts/' + e.model.item.id).then !~>
-					cs.ui.notify(@L.changes_saved, 'success', 5)
-					@_reload_posts()
-		)
+		cs.ui.confirm(@L.sure_to_delete_post(e.model.item.title))
+			.then -> cs.api('delete api/Blogs/admin/posts/' + e.model.item.id)
+			.then !~>
+				cs.ui.notify(@L.changes_saved, 'success', 5)
+				@_reload_posts()
 )

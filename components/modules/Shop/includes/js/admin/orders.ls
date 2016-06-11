@@ -171,9 +171,8 @@ $ !->
 					cs.api('post api/Shop/admin/orders', @)
 						.then (url) -> url.split('/')
 						.then (url) ~> cs.api('put api/Shop/admin/orders/' + url.pop() + '/items', @)
-						.then !->
-							alert(L.added_successfully)
-							location.reload()
+						.then -> cs.ui.alert(L.added_successfully)
+						.then(location~reload)
 					false
 		)
 		.on('mousedown', '.cs-shop-order-statuses-history', !->
@@ -231,9 +230,8 @@ $ !->
 				modal.find('form').submit ->
 					cs.api("put api/Shop/admin/orders/#id", @)
 						.then ~> cs.api("put api/Shop/admin/orders/#id/items", @)
-						.then !->
-							alert(L.edited_successfully)
-							location.reload()
+						.then -> cs.ui.alert(L.edited_successfully)
+						.then(location~reload)
 					false
 				modal.find('.date').html(date).parent().removeAttr('hidden')
 				modal.find('.username').html(username)
@@ -252,8 +250,8 @@ $ !->
 		)
 		.on('mousedown', '.cs-shop-order-delete', !->
 			id = $(@).data('id')
-			if confirm(L.sure_want_to_delete)
-				cs.api("delete api/Shop/admin/orders/#id").then !->
-					alert(L.deleted_successfully)
-					location.reload()
+			cs.ui.confirm(L.sure_want_to_delete)
+				.then -> cs.api("delete api/Shop/admin/orders/#id")
+				.then -> cs.ui.alert(L.deleted_successfully)
+				.then(location~reload)
 		)

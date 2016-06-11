@@ -37,9 +37,8 @@
             value: value
           };
           cs.api('post api/Shop/admin/attributes', data).then(function(){
-            alert(L.added_successfully);
-            location.reload();
-          });
+            return cs.ui.alert(L.added_successfully);
+          }).then(bind$(location, 'reload'));
           return false;
         }).on('change', '[name=type]', function(){
           var value_container, type;
@@ -70,9 +69,8 @@
             value: value
           };
           cs.api("put api/Shop/admin/attributes/" + id, data).then(function(){
-            alert(L.edited_successfully);
-            location.reload();
-          });
+            return cs.ui.alert(L.edited_successfully);
+          }).then(bind$(location, 'reload'));
           return false;
         }).on('change', '[name=type]', function(){
           var value_container, type;
@@ -92,12 +90,14 @@
     }).on('mousedown', '.cs-shop-attribute-delete', function(){
       var id;
       id = $(this).data('id');
-      if (confirm(L.sure_want_to_delete)) {
-        cs.api("delete api/Shop/admin/attributes/" + id).then(function(){
-          alert(L.deleted_successfully);
-          location.reload();
-        });
-      }
+      cs.ui.confirm(L.sure_want_to_delete).then(function(){
+        return cs.api("delete api/Shop/admin/attributes/" + id);
+      }).then(function(){
+        return cs.ui.alert(L.deleted_successfully);
+      }).then(bind$(location, 'reload'));
     });
   });
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);
