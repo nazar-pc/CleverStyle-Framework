@@ -7,116 +7,153 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  require(['jquery'], function($){
-    Promise.all([
-      cs.api('is_admin api/Content')['catch'](function(o){
-        if (o.xhr.status !== 404) {
-          clearTimeout(o.timeout);
-          return Promise.reject();
+  var html_to_node;
+  html_to_node = function(html){
+    var div;
+    div = document.createElement('div');
+    div.innerHTML = html;
+    return div.firstChild;
+  };
+  Promise.all([
+    cs.api('is_admin api/Content')['catch'](function(o){
+      if (o.xhr.status === 404) {
+        clearTimeout(o.timeout);
+        return Promise.reject();
+      }
+    }), cs.ui.ready
+  ]).then(function(arg$){
+    var is_admin, L, x$;
+    is_admin = arg$[0];
+    L = cs.Language('content_');
+    x$ = document.querySelector('body');
+    x$.addEventListener('click', function(e){
+      var modal_body, key, title, content, type;
+      if (!e.target.matches('.cs-content-add')) {
+        return;
+      }
+      modal_body = html_to_node("<form is=\"cs-form\">\n	<label>" + L.key + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"key\">\n	<label>" + L.title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html cs-margin-bottom\" hidden>\n		<textarea is=\"cs-textarea\" autosize></textarea>\n	</cs-editor>\n	<label>" + L.type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.save + "</button>\n	</div>\n</form>");
+      key = modal_body.querySelector('[name=key]');
+      title = modal_body.querySelector('[name=title]');
+      content = modal_body.querySelector('.text');
+      type = modal_body.querySelector('[name=type]');
+      type.addEventListener('selected', function(){
+        var text, html;
+        if (this.value === 'text') {
+          text = modal_body.querySelector('.text');
+          text.value = content.value;
+          content.hidden = true;
+          content = text;
+          content.hidden = false;
+        } else {
+          html = modal_body.querySelector('.html');
+          html.value = content.value;
+          html.querySelector('textarea').value = content.value;
+          content.hidden = true;
+          content = html;
+          content.hidden = false;
         }
-      }), cs.ui.ready
-    ]).then(function(arg$){
-      var is_admin, L;
-      is_admin = arg$[0];
-      L = cs.Language('content_');
-      $('body').on('click', '.cs-content-add', function(){
-        var modal_body, key, title, content, type;
-        modal_body = $("<form is=\"cs-form\">\n	<label>" + L.key + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"key\">\n	<label>" + L.title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html\">\n		<textarea is=\"cs-textarea\" autosize class=\"cs-margin-bottom\"></textarea>\n	</cs-editor>\n	<label>" + L.type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.save + "</button>\n	</div>\n</form>");
-        modal_body.appendTo(document.body);
-        key = modal_body.find('[name=key]');
-        title = modal_body.find('[name=title]');
-        content = modal_body.find('.text');
-        modal_body.find('.html').hide();
-        type = modal_body.find('[name=type]');
-        type.change(function(){
-          if (type.val() === 'text') {
-            modal_body.find('.html').hide();
-            content = modal_body.find('.text').show().val(content.val());
+      });
+      cs.ui.simple_modal(modal_body);
+      modal_body.querySelector('button').addEventListener('click', function(){
+        var data;
+        data = {
+          key: key.value,
+          title: title.value,
+          content: content.value,
+          type: type.selected
+        };
+        cs.api('post api/Content', data).then(bind$(location, 'reload'));
+      });
+    });
+    x$.addEventListener('click', function(e){
+      var key;
+      if (!e.target.matches('.cs-content-edit')) {
+        return;
+      }
+      key = e.target.dataset.key;
+      cs.api("get api/Content/" + key).then(function(data){
+        var modal_body, x$, title, y$, content, type;
+        modal_body = html_to_node("<form is=\"cs-form\">\n	<label>" + L.key + "</label>\n	<input is=\"cs-input-text\" readonly value=\"" + data.key + "\">\n	<label>" + L.title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html cs-margin-bottom\" hidden>\n		<textarea is=\"cs-textarea\" autosize></textarea>\n	</cs-editor>\n	<label>" + L.type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.save + "</button>\n	</div>\n</form>");
+        x$ = title = modal_body.querySelector('[name=title]');
+        x$.value = data.title;
+        y$ = content = modal_body.querySelector('.text');
+        y$.value = data.content;
+        type = modal_body.querySelector('[name=type]');
+        type.addEventListener('selected', function(){
+          var text, html;
+          if (this.value === 'text') {
+            text = modal_body.querySelector('.text');
+            text.value = content.value;
+            content.hidden = true;
+            content = text;
+            content.hidden = false;
           } else {
-            modal_body.find('.text').hide();
-            content = modal_body.find('.html').val(content.val()).show().children('textarea').val(content.val());
+            html = modal_body.querySelector('.html');
+            html.value = content.value;
+            html.querySelector('textarea').value = content.value;
+            content.hidden = true;
+            content = html;
+            content.hidden = false;
           }
         });
+        type.selected = data.type;
         cs.ui.simple_modal(modal_body);
-        modal_body.find('button').click(function(){
+        modal_body.querySelector('button').addEventListener('click', function(){
           var data;
           data = {
-            key: key.val(),
-            title: title.val(),
-            content: content.val(),
-            type: type.val()
+            title: title.value,
+            content: content.value,
+            type: type.selected
           };
-          cs.api('post api/Content', data).then(bind$(location, 'reload'));
+          cs.api("put api/Content/" + key, data).then(bind$(location, 'reload'));
         });
-      }).on('click', '.cs-content-edit', function(){
-        var key;
-        key = $(this).data('key');
-        cs.api("get api/Content/" + key).then(function(data){
-          var modal_body, title, content, type;
-          modal_body = $("<form is=\"cs-form\">\n	<label>" + L.key + "</label>\n	<input is=\"cs-input-text\" readonly value=\"" + data.key + "\">\n	<label>" + L.title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html\">\n		<textarea is=\"cs-textarea\" autosize class=\"cs-margin-bottom\"></textarea>\n	</cs-editor>\n	<label>" + L.type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.save + "</button>\n	</div>\n</form>");
-          title = modal_body.find('[name=title]').val(data.title);
-          content = modal_body.find('.' + data.type).val(data.content);
-          modal_body.find('.text, .html').not('.' + data.type).hide();
-          type = modal_body.find('[name=type]').val(data.type);
-          type.change(function(){
-            if (type.val() === 'text') {
-              modal_body.find('.html').hide();
-              content = modal_body.find('.text').show().val(content.val());
-            } else {
-              modal_body.find('.text').hide();
-              content = modal_body.find('.html').val(content.val()).show().children('textarea').val(content.val());
-            }
-          });
-          cs.ui.simple_modal(modal_body);
-          modal_body.find('button').click(function(){
-            var data;
-            data = {
-              title: title.val(),
-              content: content.val(),
-              type: type.val()
-            };
-            cs.api("put api/Content/" + key, data).then(bind$(location, 'reload'));
-          });
-        });
-      }).on('click', '.cs-content-delete', function(){
-        var key;
-        key = $(this).data('key');
-        cs.ui.confirm(L['delete'] + "?").then(function(){
-          return cs.api("delete api/Content/" + key);
-        }).then(bind$(location, 'reload'));
       });
-      (function(){
-        var mousemove_timeout, showed_button, show_edit_button;
-        mousemove_timeout = 0;
-        showed_button = false;
-        show_edit_button = function(key, x, y, container){
-          var button;
-          button = $("<button is=\"cs-button\" class=\"cs-content-edit\" data-key=\"" + key + "\">" + L.edit + "</button>").css('position', 'absolute').offset({
-            top: y,
-            left: x
-          }).appendTo(container);
-          container.mouseleave(function(){
-            showed_button = false;
-            button.remove();
-          });
-        };
-        $('body').on('mousemove', '[data-cs-content]', function(e){
-          var $this;
-          if (showed_button) {
-            return;
-          }
-          $this = $(this);
-          clearTimeout(mousemove_timeout);
-          mousemove_timeout = setTimeout(function(){
-            showed_button = true;
-            show_edit_button($this.data('cs-content'), e.pageX, e.pageY, $this);
-          }, 200);
-        }).on('mouseleave', '[data-cs-content]', function(){
-          clearTimeout(mousemove_timeout);
+    });
+    x$.addEventListener('click', function(e){
+      var key;
+      if (!e.target.matches('.cs-content-delete')) {
+        return;
+      }
+      key = e.target.dataset.key;
+      cs.ui.confirm(L['delete'] + "?").then(function(){
+        return cs.api("delete api/Content/" + key);
+      }).then(bind$(location, 'reload'));
+    });
+    (function(){
+      var mousemove_timeout, showed_button, show_edit_button, x$;
+      mousemove_timeout = 0;
+      showed_button = false;
+      show_edit_button = function(key, x, y, container){
+        var button;
+        button = html_to_node("<button is=\"cs-button\" class=\"cs-content-edit\" data-key=\"" + key + "\" style=\"position: absolute; left: " + x + "; top: " + y + ";\">" + L.edit + "</button>");
+        container.appendChild(button);
+        container.addEventListener('mousemove', function(){
+          showed_button = false;
+          button.parentNode.removeChild(button);
         });
-      })();
-    })['catch'](function(){});
-  });
+      };
+      x$ = document.querySelector('body');
+      x$.addEventListener('mousemove', function(e){
+        if (!e.target.matches('[data-cs-content]')) {
+          return;
+        }
+        if (showed_button) {
+          return;
+        }
+        clearTimeout(mousemove_timeout);
+        mousemove_timeout = setTimeout(function(){
+          showed_button = true;
+          show_edit_button(e.target.dataset.csContent, e.pageX, e.pageY, e.target);
+        }, 200);
+      });
+      x$.addEventListener('mousemove', function(e){
+        if (!e.target.matches('[data-cs-content]')) {
+          return;
+        }
+        clearTimeout(mousemove_timeout);
+      });
+    })();
+  })['catch'](function(){});
   function bind$(obj, key, target){
     return function(){ return (target || obj)[key].apply(obj, arguments) };
   }
