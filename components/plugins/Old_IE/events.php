@@ -21,6 +21,7 @@ Event::instance()->on(
 				h::{'link[rel=stylesheet][shim-shadowdom]'}(['href' => 'components/plugins/Old_IE/includes/css/normalize.css']).
 				h::script(['src' => 'components/plugins/Old_IE/includes/js/a.WeakMap.js']).
 				h::script(['src' => 'components/plugins/Old_IE/includes/js/b.MutationObserver.js']);
+				h::script(['src' => 'components/plugins/Old_IE/includes/js/c.dataset.js']);
 		}
 	}
 );
