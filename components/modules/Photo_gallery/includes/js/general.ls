@@ -12,20 +12,14 @@ $ !->
 		cs.file_upload(
 			add_button
 			(files) !->
-				$.ajax(
-					'api/Photo_gallery/images'
-					data	:
-						files	: files
-						gallery	: add_button.data('gallery')
-					type	: 'post'
-					success	: (result) !->
-						if !result.length || !result
-							alert L.images_not_supported
-							return
-						if files.length != result.length
-							alert L.some_images_not_supported
-						location.href	= 'Photo_gallery/edit_images/' + result.join(',')
-				)
+				gallery	= add_button.data('gallery')
+				cs.api('post api/Photo_gallery/images', {files, gallery}).then (result) !->
+					if !result.length || !result
+						alert L.images_not_supported
+						return
+					if files.length != result.length
+						alert L.some_images_not_supported
+					location.href	= 'Photo_gallery/edit_images/' + result.join(',')
 			null
 			null
 			true
@@ -50,10 +44,9 @@ $ !->
 			'click',
 			'.cs-photo-gallery-image-delete'
 			!->
-				if confirm L.sure_to_delete_image
-					$.ajax(
-						'api/Photo_gallery/images/' + $(this).data('image'),
-						type	: 'delete'
-						success	: location~reload
-					)
+				cs.ui.confirm(
+					L.sure_to_delete_image
+					!~>
+						cs.api('delete api/Photo_gallery/images/' + $(this).data('image')).then(location~reload)
+				)
 		)

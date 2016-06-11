@@ -15,12 +15,8 @@ Polymer(
 	ready : !->
 		@_reload_sections()
 	_reload_sections : !->
-		$.ajax(
-			url		: 'api/Blogs/admin/sections'
-			type	: 'get'
-			success	: (sections) !~>
-				@set('sections', sections)
-		)
+		cs.api('get api/Blogs/admin/sections').then (sections) !~>
+			@set('sections', sections)
 	_add : !->
 		$(cs.ui.simple_modal("""
 			<h3>#{@L.addition_of_posts_section}</h3>
@@ -36,12 +32,8 @@ Polymer(
 		cs.ui.confirm(
 			@L.sure_to_delete_posts_section(e.model.item.title)
 			!~>
-				$.ajax(
-					url		: 'api/Blogs/admin/sections/' + e.model.item.id
-					type	: 'delete'
-					success	: !~>
-						cs.ui.notify(@L.changes_saved, 'success', 5)
-						@_reload_sections()
-				)
+				cs.api('delete api/Blogs/admin/sections/' + e.model.item.id).then !~>
+					cs.ui.notify(@L.changes_saved, 'success', 5)
+					@_reload_sections()
 		)
 )

@@ -18,12 +18,8 @@
     },
     _reload_sections: function(){
       var this$ = this;
-      $.ajax({
-        url: 'api/Blogs/admin/sections',
-        type: 'get',
-        success: function(sections){
-          this$.set('sections', sections);
-        }
+      cs.api('get api/Blogs/admin/sections').then(function(sections){
+        this$.set('sections', sections);
       });
     },
     _add: function(){
@@ -37,13 +33,9 @@
     _delete: function(e){
       var this$ = this;
       cs.ui.confirm(this.L.sure_to_delete_posts_section(e.model.item.title), function(){
-        $.ajax({
-          url: 'api/Blogs/admin/sections/' + e.model.item.id,
-          type: 'delete',
-          success: function(){
-            cs.ui.notify(this$.L.changes_saved, 'success', 5);
-            this$._reload_sections();
-          }
+        cs.api('delete api/Blogs/admin/sections/' + e.model.item.id).then(function(){
+          cs.ui.notify(this$.L.changes_saved, 'success', 5);
+          this$._reload_sections();
         });
       });
     }

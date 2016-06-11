@@ -41,12 +41,12 @@ $ ->
 				categories_[key]
 		categories	= categories.join('')
 		modal		= $(cs.ui.simple_modal("""<form>
-			<h3 class="cs-text-center">#{title}</h3>
+			<h3 class="cs-text-center">#title</h3>
 			<p>
 				#{L.parent_category}:
 				<select is="cs-select" name="parent" required>
 					<option value="0">#{L.none}</option>
-					#{categories}
+					#categories
 				</select>
 			</p>
 			<p>
@@ -69,16 +69,16 @@ $ ->
 				<progress is="cs-progress" hidden></progress>
 			</p>
 			<p>
-				#{L.category_attributes}: <select is="cs-select" name="attributes[]" multiple required size="5">#{attributes}</select>
+				#{L.category_attributes}: <select is="cs-select" name="attributes[]" multiple required size="5">#attributes</select>
 			</p>
 			<p>
-				#{L.title_attribute}: <select is="cs-select" name="title_attribute" required>#{attributes}</select>
+				#{L.title_attribute}: <select is="cs-select" name="title_attribute" required>#attributes</select>
 			</p>
 			<p>
 				#{L.description_attribute}:
 				<select is="cs-select" name="description_attribute" required>
 					<option value="0">#{L.none}</option>
-					#{attributes}
+					#attributes
 				</select>
 			</p>
 			<p>
@@ -87,7 +87,7 @@ $ ->
 				<label is="cs-label-button"><input type="radio" name="visible" value="0"> #{L.no}</label>
 			</p>
 			<p>
-				<button is="cs-button" primary type="submit">#{action}</button>
+				<button is="cs-button" primary type="submit">#action</button>
 			</p>
 		</form>"""))
 		modal.set_image	= (image) !->
@@ -127,45 +127,35 @@ $ ->
 		modal
 	$('html')
 		.on('mousedown', '.cs-shop-category-add', !->
-			Promise.all([
-				$.getJSON('api/Shop/admin/attributes')
-				$.getJSON('api/Shop/admin/categories')
+			cs.api([
+				'get api/Shop/admin/attributes'
+				'get api/Shop/admin/categories'
 			]).then ([attributes, categories]) !->
 				modal = make_modal(attributes, categories, L.category_addition, L.add)
 				modal.find('form').submit ->
-					$.ajax(
-						url     : 'api/Shop/admin/categories'
-						type    : 'post'
-						data    : $(@).serialize()
-						success : !->
-							alert(L.added_successfully)
-							location.reload()
-					)
+					cs.api('post api/Shop/admin/categories', @).then !->
+						alert(L.added_successfully)
+						location.reload()
 					return false
 		)
 		.on('mousedown', '.cs-shop-category-edit', !->
 			id = $(@).data('id')
-			Promise.all([
-				$.getJSON('api/Shop/admin/attributes')
-				$.getJSON('api/Shop/admin/categories')
-				$.getJSON("api/Shop/admin/categories/#{id}")
+			cs.api([
+				'get api/Shop/admin/attributes'
+				'get api/Shop/admin/categories'
+				"get api/Shop/admin/categories/#id"
 			]).then ([attributes, categories, category]) !->
 				modal = make_modal(attributes, categories, L.category_edition, L.edit)
 				modal.find('form').submit ->
-					$.ajax(
-						url     : "api/Shop/admin/categories/#{id}"
-						type    : 'put'
-						data    : $(@).serialize()
-						success : !->
-							alert(L.edited_successfully)
-							location.reload()
-					)
+					cs.api("put api/Shop/admin/categories/#id", @).then !->
+						alert(L.edited_successfully)
+						location.reload()
 					return false
 				modal.find('[name=parent]').val(category.parent)
 				modal.find('[name=title]').val(category.title)
 				modal.find('[name=description]').val(category.description)
 				category.attributes.forEach (attribute) !->
-					modal.find("[name='attributes[]'] > [value=#{attribute}]").prop('selected', true)
+					modal.find("[name='attributes[]'] > [value=#attribute]").prop('selected', true)
 				modal.find('[name=title_attribute]').val(category.title_attribute)
 				modal.find('[name=description_attribute]').val(category.description_attribute)
 				modal.set_image(category.image)
@@ -174,11 +164,7 @@ $ ->
 		.on('mousedown', '.cs-shop-category-delete', !->
 			id = $(@).data('id')
 			if confirm(L.sure_want_to_delete_category)
-				$.ajax(
-					url     : "api/Shop/admin/categories/#{id}"
-					type    : 'delete'
-					success : !->
-						alert(L.deleted_successfully)
-						location.reload()
-				)
+				cs.api("delete api/Shop/admin/categories/#id").then !->
+					alert(L.deleted_successfully)
+					location.reload()
 		)

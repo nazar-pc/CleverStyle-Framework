@@ -50,16 +50,10 @@ Polymer(
 		@set('comment.edited_text', @comment.text)
 		@editing	= true
 	_save_edit : !->
-		$.ajax(
-			url		: 'api/Comments/' + @comment.id
-			type	: 'put'
-			data	:
-				text	: @comment.edited_text
-			success	: !~>
-				cs.ui.notify(@L.saved, 'success', 5)
-				@reload()
-				@_cancel_edit()
-		)
+		cs.api('put api/Comments/' + @comment.id, {text : @comment.edited_text}).then !~>
+			cs.ui.notify(@L.saved, 'success', 5)
+			@reload()
+			@_cancel_edit()
 	_cancel_edit : !->
 		@editing	= false
 	_reply : !->
@@ -74,24 +68,15 @@ Polymer(
 		)
 		@replying = true
 	_post_reply : !->
-		$.ajax(
-			url		: 'api/Comments'
-			type	: 'post'
-			data	: @reply
-			success	: !~>
-				cs.ui.notify(@L.reply_posted, 'success', 5)
-				@reload()
-				@_cancel_reply()
-		)
+		cs.api('post api/Comments', @reply).then !~>
+			cs.ui.notify(@L.reply_posted, 'success', 5)
+			@reload()
+			@_cancel_reply()
 	_cancel_reply : !->
 		@replying	= false
 	_delete : !->
 		<~! cs.ui.confirm(@L.sure_to_delete)
-		$.ajax(
-			url		: 'api/Comments/' + @comment.id
-			type	: 'delete'
-			success	: !~>
-				cs.ui.notify(@L.deleted, 'success', 5)
-				@reload()
-		)
+		cs.api('delete api/Comments/' + @comment.id).then !~>
+			cs.ui.notify(@L.deleted, 'success', 5)
+			@reload()
 )

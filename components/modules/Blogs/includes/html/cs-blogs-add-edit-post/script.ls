@@ -25,19 +25,16 @@ Polymer(
 		if !@id
 			@id = false
 		Promise.all([
-			if @id then $.getJSON('api/Blogs/posts/' + @id) else {
+			if @id then cs.api('get api/Blogs/posts/' + @id) else {
 				title		: ''
 				path		: ''
 				content		: ''
 				sections	: [0]
 				tags		: []
 			}
-			$.getJSON('api/Blogs/sections')
-			$.ajax(
-				url		: 'api/Blogs'
-				type	: 'get_settings'
-			)
-			$.getJSON('api/System/profile')
+			cs.api('get				api/Blogs/sections')
+			cs.api('get_settings	api/Blogs')
+			cs.api('get				api/System/profile')
 		]).then ([@post, sections, settings, profile]) !~>
 			@original_title				= @post.title
 			if @post.title
@@ -79,57 +76,42 @@ Polymer(
 		@_prepare()
 		if !close_tab_handler_installed && @_close_tab_handler_installed
 			@_remove_close_tab_handler()
-		$.ajax(
-			url			: 'api/Blogs/posts'
-			data		: @post
-			type		: 'preview'
-			success	: (result) !~>
-				result					= JSON.stringify(result)
-				@$.preview.innerHTML	= """
-				<article is="cs-blogs-post" preview>
-					<script type="application/ld+json">#result</script>
-				</article>
-				"""
-				$('html, body')
-					.stop()
-					.animate(
-						scrollTop	: @$.preview.offsetTop
-						500
-					)
-		)
+		cs.api('preview api/Blogs/posts', @post).then (result) !~>
+			result					= JSON.stringify(result)
+			@$.preview.innerHTML	= """
+			<article is="cs-blogs-post" preview>
+				<script type="application/ld+json">#result</script>
+			</article>
+			"""
+			$('html, body')
+				.stop()
+				.animate(
+					scrollTop	: @$.preview.offsetTop
+					500
+				)
 	_publish : !->
 		@_prepare()
 		@post.mode	= 'publish'
-		$.ajax(
-			url		: 'api/Blogs/posts' + (if @id then '/' + @id else '')
-			data	: @post
-			type	: if @id then 'put' else 'post'
-			success	: (result) !~>
-				@_remove_close_tab_handler()
-				location.href = result.url
-		)
+		method		= if @id then 'put' else 'post'
+		suffix		= if @id then '/' + @id else ''
+		cs.api("#method api/Blogs/posts#suffix", @post).then (result) !~>
+			@_remove_close_tab_handler()
+			location.href = result.url
 	_to_drafts : !->
 		@_prepare()
 		@post.mode	= 'draft'
-		$.ajax(
-			url		: 'api/Blogs/posts' + (if @id then '/' + @id else '')
-			data	: @post
-			type	: if @id then 'put' else 'post'
-			success	: (result) !~>
-				@_remove_close_tab_handler()
-				location.href = result.url
-		)
+		method		= if @id then 'put' else 'post'
+		suffix		= if @id then '/' + @id else ''
+		cs.api("#method api/Blogs/posts#suffix", @post).then (result) !~>
+			@_remove_close_tab_handler()
+			location.href = result.url
 	_delete : !->
 		cs.ui.confirm(
 			L.sure_to_delete_post(@original_title)
 			!~>
-				$.ajax(
-					url		: 'api/Blogs/posts/' + @post.id
-					type	: 'delete'
-					success	: (result) !~>
-						@_remove_close_tab_handler()
-						location.href = 'Blogs'
-				)
+				cs.api('delete api/Blogs/posts/' + @post.id).then (result) !~>
+					@_remove_close_tab_handler()
+					location.href = 'Blogs'
 		)
 	_cancel : !->
 		@_remove_close_tab_handler()

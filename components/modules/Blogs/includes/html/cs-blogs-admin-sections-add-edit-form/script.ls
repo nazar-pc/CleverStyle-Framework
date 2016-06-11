@@ -16,21 +16,18 @@ Polymer(
 		sections		: Array
 	ready : !->
 		Promise.all([
-			if @id then $.getJSON('api/Blogs/admin/sections/' + @id) else {
+			if @id then cs.api('get api/Blogs/admin/sections/' + @id) else {
 				title		: ''
 				path		: ''
 				parent		: 0
 			}
-			$.getJSON('api/Blogs/admin/sections')
+			cs.api('get api/Blogs/admin/sections')
 		]).then ([@section, sections]) !~>
 			@original_title	= @section.title
 			@sections		= sections
 	_save : !->
-		$.ajax(
-			url		: 'api/Blogs/admin/sections' + (if @id then '/' + @id else '')
-			data	: @section
-			type	: if @id then 'put' else 'post'
-			success	: (result) !~>
-				cs.ui.notify(@L.changes_saved, 'success', 5)
-		)
+		method	= if @id then 'put' else 'post'
+		suffix	= if @id then '/' + @id else ''
+		cs.api("#method api/Blogs/admin/sections#suffix", @section).then (result) !~>
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 )

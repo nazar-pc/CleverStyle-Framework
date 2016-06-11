@@ -1,7 +1,7 @@
 {
 	"package"             : "Photo_gallery",
 	"category"            : "modules",
-	"version"             : "1.22.0+build-107",
+	"version"             : "1.23.0+build-108",
 	"description"         : "Simple photo gallery, works standalone and integrates with other components (depends on Fotorama, SimpleImage and Plupload).",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/Framework",
@@ -18,7 +18,7 @@
 	],
 	"provide"             : "photo_gallery",
 	"require"             : [
-		"System>=4.78",
+		"System>=4.82",
 		"System<5.0",
 		"Fotorama>=4.4.9",
 		"SimpleImage",

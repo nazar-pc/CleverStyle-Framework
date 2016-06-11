@@ -13,11 +13,12 @@ Polymer(
 		count	: Number
 	ready : !->
 		item	= @module + '/' + @item
-		$.ajax(
-			url		: 'api/Disqus'
-			type	: 'get_settings'
-			success	: ({shortname}) !~>
-				<~! $.getScript("//#shortname.disqus.com/count-data.js?1=#item")
-				@count	= DISQUSWIDGETS[item]
-		)
+		cs.api('get_settings api/Disqus').then ({shortname}) !~>
+			script	= document.createElement('script')
+				..async		= true
+				..src		= "//#shortname.disqus.com/count-data.js?1=#item"
+				..onload	= !~>
+					@count	= DISQUSWIDGETS[item] || 0
+				..setAttribute('data-timestamp', +new Date())
+			document.head.appendChild(script)
 )

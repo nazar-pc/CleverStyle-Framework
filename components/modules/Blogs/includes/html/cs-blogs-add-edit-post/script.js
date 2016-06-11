@@ -28,17 +28,14 @@
       }
       Promise.all([
         this.id
-          ? $.getJSON('api/Blogs/posts/' + this.id)
+          ? cs.api('get api/Blogs/posts/' + this.id)
           : {
             title: '',
             path: '',
             content: '',
             sections: [0],
             tags: []
-          }, $.getJSON('api/Blogs/sections'), $.ajax({
-          url: 'api/Blogs',
-          type: 'get_settings'
-        }), $.getJSON('api/System/profile')
+          }, cs.api('get				api/Blogs/sections'), cs.api('get_settings	api/Blogs'), cs.api('get				api/System/profile')
       ]).then(function(arg$){
         var sections, settings, profile;
         this$.post = arg$[0], sections = arg$[1], settings = arg$[2], profile = arg$[3];
@@ -96,57 +93,42 @@
       if (!close_tab_handler_installed && this._close_tab_handler_installed) {
         this._remove_close_tab_handler();
       }
-      $.ajax({
-        url: 'api/Blogs/posts',
-        data: this.post,
-        type: 'preview',
-        success: function(result){
-          result = JSON.stringify(result);
-          this$.$.preview.innerHTML = "<article is=\"cs-blogs-post\" preview>\n	<script type=\"application/ld+json\">" + result + "</script>\n</article>";
-          $('html, body').stop().animate({
-            scrollTop: this$.$.preview.offsetTop
-          }, 500);
-        }
+      cs.api('preview api/Blogs/posts', this.post).then(function(result){
+        result = JSON.stringify(result);
+        this$.$.preview.innerHTML = "<article is=\"cs-blogs-post\" preview>\n	<script type=\"application/ld+json\">" + result + "</script>\n</article>";
+        $('html, body').stop().animate({
+          scrollTop: this$.$.preview.offsetTop
+        }, 500);
       });
     },
     _publish: function(){
-      var this$ = this;
+      var method, suffix, this$ = this;
       this._prepare();
       this.post.mode = 'publish';
-      $.ajax({
-        url: 'api/Blogs/posts' + (this.id ? '/' + this.id : ''),
-        data: this.post,
-        type: this.id ? 'put' : 'post',
-        success: function(result){
-          this$._remove_close_tab_handler();
-          location.href = result.url;
-        }
+      method = this.id ? 'put' : 'post';
+      suffix = this.id ? '/' + this.id : '';
+      cs.api(method + " api/Blogs/posts" + suffix, this.post).then(function(result){
+        this$._remove_close_tab_handler();
+        location.href = result.url;
       });
     },
     _to_drafts: function(){
-      var this$ = this;
+      var method, suffix, this$ = this;
       this._prepare();
       this.post.mode = 'draft';
-      $.ajax({
-        url: 'api/Blogs/posts' + (this.id ? '/' + this.id : ''),
-        data: this.post,
-        type: this.id ? 'put' : 'post',
-        success: function(result){
-          this$._remove_close_tab_handler();
-          location.href = result.url;
-        }
+      method = this.id ? 'put' : 'post';
+      suffix = this.id ? '/' + this.id : '';
+      cs.api(method + " api/Blogs/posts" + suffix, this.post).then(function(result){
+        this$._remove_close_tab_handler();
+        location.href = result.url;
       });
     },
     _delete: function(){
       var this$ = this;
       cs.ui.confirm(L.sure_to_delete_post(this.original_title), function(){
-        $.ajax({
-          url: 'api/Blogs/posts/' + this$.post.id,
-          type: 'delete',
-          success: function(result){
-            this$._remove_close_tab_handler();
-            location.href = 'Blogs';
-          }
+        cs.api('delete api/Blogs/posts/' + this$.post.id).then(function(result){
+          this$._remove_close_tab_handler();
+          location.href = 'Blogs';
         });
       });
     },

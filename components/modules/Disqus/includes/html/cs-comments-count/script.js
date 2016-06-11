@@ -17,16 +17,17 @@
     ready: function(){
       var item, this$ = this;
       item = this.module + '/' + this.item;
-      $.ajax({
-        url: 'api/Disqus',
-        type: 'get_settings',
-        success: function(arg$){
-          var shortname;
-          shortname = arg$.shortname;
-          $.getScript("//" + shortname + ".disqus.com/count-data.js?1=" + item, function(){
-            this$.count = DISQUSWIDGETS[item];
-          });
-        }
+      cs.api('get_settings api/Disqus').then(function(arg$){
+        var shortname, x$, script;
+        shortname = arg$.shortname;
+        x$ = script = document.createElement('script');
+        x$.async = true;
+        x$.src = "//" + shortname + ".disqus.com/count-data.js?1=" + item;
+        x$.onload = function(){
+          this$.count = DISQUSWIDGETS[item] || 0;
+        };
+        x$.setAttribute('data-timestamp', +new Date());
+        document.head.appendChild(script);
       });
     }
   });

@@ -7,4 +7,5 @@
  */
 window.DISQUSWIDGETS	=
 	displayCount : (data) !->
-		@[data.counts[0].id] = data.counts[0].comments
+		if data.counts[0]
+			@[data.counts[0].id] = data.counts[0].comments

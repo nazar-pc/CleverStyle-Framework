@@ -104,19 +104,14 @@
       return modal;
     };
     return $('html').on('mousedown', '.cs-shop-category-add', function(){
-      Promise.all([$.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories')]).then(function(arg$){
+      cs.api(['get api/Shop/admin/attributes', 'get api/Shop/admin/categories']).then(function(arg$){
         var attributes, categories, modal;
         attributes = arg$[0], categories = arg$[1];
         modal = make_modal(attributes, categories, L.category_addition, L.add);
         modal.find('form').submit(function(){
-          $.ajax({
-            url: 'api/Shop/admin/categories',
-            type: 'post',
-            data: $(this).serialize(),
-            success: function(){
-              alert(L.added_successfully);
-              location.reload();
-            }
+          cs.api('post api/Shop/admin/categories', this).then(function(){
+            alert(L.added_successfully);
+            location.reload();
           });
           return false;
         });
@@ -124,19 +119,14 @@
     }).on('mousedown', '.cs-shop-category-edit', function(){
       var id;
       id = $(this).data('id');
-      Promise.all([$.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories'), $.getJSON("api/Shop/admin/categories/" + id)]).then(function(arg$){
+      cs.api(['get api/Shop/admin/attributes', 'get api/Shop/admin/categories', "get api/Shop/admin/categories/" + id]).then(function(arg$){
         var attributes, categories, category, modal;
         attributes = arg$[0], categories = arg$[1], category = arg$[2];
         modal = make_modal(attributes, categories, L.category_edition, L.edit);
         modal.find('form').submit(function(){
-          $.ajax({
-            url: "api/Shop/admin/categories/" + id,
-            type: 'put',
-            data: $(this).serialize(),
-            success: function(){
-              alert(L.edited_successfully);
-              location.reload();
-            }
+          cs.api("put api/Shop/admin/categories/" + id, this).then(function(){
+            alert(L.edited_successfully);
+            location.reload();
           });
           return false;
         });
@@ -155,13 +145,9 @@
       var id;
       id = $(this).data('id');
       if (confirm(L.sure_want_to_delete_category)) {
-        $.ajax({
-          url: "api/Shop/admin/categories/" + id,
-          type: 'delete',
-          success: function(){
-            alert(L.deleted_successfully);
-            location.reload();
-          }
+        cs.api("delete api/Shop/admin/categories/" + id).then(function(){
+          alert(L.deleted_successfully);
+          location.reload();
         });
       }
     });

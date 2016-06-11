@@ -22,44 +22,38 @@ Polymer(
 		cs.Event.once('admin/Composer/canceled', !~>
 			@canceled	= true
 		)
-		$.ajax(
-			url		: 'api/Composer'
-			type	: if @action == 'uninstall' then 'delete' else 'post'
-			data	:
-				name		: @package
-				category	: @category
-				force		: @force
-			success	: (result) !~>
-				@_save_scroll_position()
-				@status =
-					switch result.code
-					| 0 => L.updated_successfully
-					| 1 => L.update_failed
-					| 2 => L.dependencies_conflict
-				if result.description
-					$(@$.result)
-						.show()
-						.html(result.description)
-					@_restore_scroll_position()
-				if !result.code
-					setTimeout (!->
-						cs.Event.fire('admin/Composer/updated')
-					), 2000
-		)
-		setTimeout(@~_update_progress, 1000)
-	_update_progress : !->
-		$.getJSON(
-			'api/Composer'
-			(data) !~>
-				if @status || @canceled
-					return
-				@_save_scroll_position()
+		method	= if @action == 'uninstall' then 'delete' else 'post'
+		data	=
+			name		: @package
+			category	: @category
+			force		: @force
+		cs.api("#method api/Composer", data).then (result) !~>
+			@_save_scroll_position()
+			@status =
+				switch result.code
+				| 0 => L.updated_successfully
+				| 1 => L.update_failed
+				| 2 => L.dependencies_conflict
+			if result.description
 				$(@$.result)
 					.show()
-					.html(data)
+					.html(result.description)
 				@_restore_scroll_position()
-				setTimeout(@~_update_progress, 1000)
-		)
+			if !result.code
+				setTimeout (!->
+					cs.Event.fire('admin/Composer/updated')
+				), 2000
+		setTimeout(@~_update_progress, 1000)
+	_update_progress : !->
+		cs.api('get api/Composer').then (data) !~>
+			if @status || @canceled
+				return
+			@_save_scroll_position()
+			$(@$.result)
+				.show()
+				.html(data)
+			@_restore_scroll_position()
+			setTimeout(@~_update_progress, 1000)
 	_save_scroll_position : !->
 		@_scroll_after	= false
 		if @parentElement.$?.content

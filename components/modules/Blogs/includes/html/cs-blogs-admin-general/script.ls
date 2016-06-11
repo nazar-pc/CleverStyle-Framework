@@ -16,19 +16,10 @@ Polymer(
 	ready : !->
 		@_reload_settings()
 	_reload_settings : !->
-		$.ajax(
-			url		: @settings_api_url
-			type	: 'get_settings'
-			success	: (settings) !~>
-				@set('settings', settings)
-		)
+		cs.api('get_settings ' + @settings_api_url).then (settings) !~>
+			@set('settings', settings)
 	_save : !->
-		$.ajax(
-			url		: @settings_api_url
-			type	: 'save_settings'
-			data	: @settings
-			success	: !~>
-				@_reload_settings()
-				cs.ui.notify(@L.changes_saved, 'success', 5)
-		)
+		cs.api('save_settings ' + @settings_api_url, @settings).then !~>
+			@_reload_settings()
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 )

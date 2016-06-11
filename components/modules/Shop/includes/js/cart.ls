@@ -74,14 +74,7 @@ cs.shop.cart	= do ->
 			items	= get_items()
 			if !items
 				return
-			$.ajax(
-				url		: 'api/Shop/cart'
-				data	:
-					items			: items
-					shipping_type	: params.shipping_type
-				type	: 'get'
-				success	: callback
-			)
+			cs.api('get api/Shop/cart', {items, params.shipping_type}).then(callback)
 		get				: get_item
 		add				: add_item
 		set				: set_item

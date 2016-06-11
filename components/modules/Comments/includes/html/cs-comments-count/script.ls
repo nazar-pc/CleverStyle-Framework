@@ -12,5 +12,5 @@ Polymer(
 		item	: Number
 		count	: Number
 	ready : !->
-		@count <~! $.getJSON('api/Comments/count?module=' + @module + '&item=' + @item)
+		cs.api('get api/Comments/count', {@module, @item}).then (@count) !~>
 )

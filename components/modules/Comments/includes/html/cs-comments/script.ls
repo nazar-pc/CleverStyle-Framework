@@ -23,13 +23,10 @@ Polymer(
 		@_this	= @
 		@reload()
 	reload : !->
-		Promise.all([
-			$.getJSON('api/Comments?module=' + @module + '&item=' + @item)
-			$.getJSON('api/System/profile')
-			$.ajax(
-				url		: 'api/Comments'
-				type	: 'is_admin'
-			)
+		cs.api([
+			'get	api/Comments?module=' + @module + '&item=' + @item
+			'get	api/System/profile'
+			'is_admin	api/Comments'
 		]).then ([comments, profile, is_admin]) !~>
 			id_index_map	= {}
 			is_user			= profile.id != GUEST_ID
@@ -51,17 +48,13 @@ Polymer(
 			@set('comments', normalized_comments)
 			delete @anchor
 	_send : !->
-		$.ajax(
-			url		: 'api/Comments'
-			type	: 'post'
-			data	:
-				module	: @module
-				item	: @item
-				text	: @text
-				parent	: 0
-			success	: !~>
-				cs.ui.notify(@L.comment_posted, 'success', 5)
-				@reload()
-				@text	= ''
-		)
+		data =
+			module	: @module
+			item	: @item
+			text	: @text
+			parent	: 0
+		cs.api('post api/Comments', data).then !~>
+			cs.ui.notify(@L.comment_posted, 'success', 5)
+			@reload()
+			@text	= ''
 )

@@ -15,11 +15,7 @@ Polymer(
 		post		: {}
 		settings	: Object
 	ready : !->
-		$.ajax(
-			url		: 'api/Blogs'
-			type	: 'get_settings'
-			success	: (@settings) !~>
-		)
+		cs.api('get_settings api/Blogs').then (@settings) !~>
 	sections_path : (index) ->
 		@post.sections_paths[index]
 )

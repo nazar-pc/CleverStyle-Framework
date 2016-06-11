@@ -20,12 +20,9 @@ Polymer(
 		}
 		can_write_post	: false
 	ready : !->
-		Promise.all([
-			$.ajax(
-				url		: 'api/Blogs'
-				type	: 'get_settings'
-			)
-			$.getJSON('api/System/profile')
+		cs.api([
+			'get_settings	api/Blogs'
+			'get			api/System/profile'
 		]).then ([@settings, profile]) !~>
 			@can_write_post	= profile.id != GUEST_ID && (@settings.admin || !settings.new_posts_only_from_admins)
 )

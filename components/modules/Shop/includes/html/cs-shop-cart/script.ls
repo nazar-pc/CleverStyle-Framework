@@ -56,12 +56,12 @@ Polymer(
 		@payment_method	= @payment_methods[0].method
 		Promise.all([
 			...for let item_id, units of cart.get_all()
-				$.getJSON("api/Shop/items/#item_id").then (data) ->
+				cs.api("get api/Shop/items/#item_id").then (data) ->
 					{
 						units	: units
 						image	: data.images[0] || DEFAULT_IMAGE
 					} <<<< data
-			$.getJSON('api/System/profile')
+			cs.api('get api/System/profile')
 		]).then ([...@items, profile]) !~>
 			is_user					= profile.id != GUEST_ID
 			@registration_required	= !shop.settings.allow_guests_orders && !is_user
@@ -88,42 +88,38 @@ Polymer(
 		if !@shipping_username
 			cs.ui.alert(L.shipping_username_is_required)
 			return
-		$.ajax(
-			url		: 'api/Shop/orders'
-			type	: 'post'
-			data	:
-				shipping_type		: @shipping_type
-				shipping_username	: @shipping_username
-				shipping_phone		: if @shipping_type_details.phone_needed then @phone else ''
-				shipping_address	: if @shipping_type_details.address_needed then @address else ''
-				payment_method		: @payment_method
-				comment				: @comment
-				items				: cart.get_all()
-			success	: (result) !~>
-				cart.clean()
-				if @payment_method == 'shop:cash' # Default payment method (Orders::PAYMENT_METHOD_CASH)
-					$(
-						cs.ui.simple_modal("""
-							<h1 class="cs-text-center">#{L.thanks_for_order}</h1>
-						""")
-					).on('close', !->
-						location.href	= 'Shop/orders_'
-					)
-				else
-					id		= result.split('/').pop()
-					modal	= $(cs.ui.simple_modal("""
+		data	=
+			shipping_type		: @shipping_type
+			shipping_username	: @shipping_username
+			shipping_phone		: if @shipping_type_details.phone_needed then @phone else ''
+			shipping_address	: if @shipping_type_details.address_needed then @address else ''
+			payment_method		: @payment_method
+			comment				: @comment
+			items				: cart.get_all()
+		cs.api('post api/Shop/orders', data).then (result) !~>
+			cart.clean()
+			if @payment_method == 'shop:cash' # Default payment method (Orders::PAYMENT_METHOD_CASH)
+				$(
+					cs.ui.simple_modal("""
 						<h1 class="cs-text-center">#{L.thanks_for_order}</h1>
-						<p class="cs-text-center">
-							<button is="cs-button" primary type="button" class="pay-now">#{L.pay_now}</button>
-							<button is="cs-button" type="button" class="pay-later">#{L.pay_later}</button>
-						</p>
-					""")).on('close', !->
-						location.href	= 'Shop/orders_'
-					)
-					modal.find('.pay-now').click !->
-						location.href	= "Shop/pay/#{id}"
-					modal.find('.pay-later').click !->
-						modal.hide()
-						location.href	= 'Shop/orders_'
-		)
+					""")
+				).on('close', !->
+					location.href	= 'Shop/orders_'
+				)
+			else
+				id		= result.split('/').pop()
+				modal	= $(cs.ui.simple_modal("""
+					<h1 class="cs-text-center">#{L.thanks_for_order}</h1>
+					<p class="cs-text-center">
+						<button is="cs-button" primary type="button" class="pay-now">#{L.pay_now}</button>
+						<button is="cs-button" type="button" class="pay-later">#{L.pay_later}</button>
+					</p>
+				""")).on('close', !->
+					location.href	= 'Shop/orders_'
+				)
+				modal.find('.pay-now').click !->
+					location.href	= "Shop/pay/#{id}"
+				modal.find('.pay-later').click !->
+					modal.hide()
+					location.href	= 'Shop/orders_'
 );

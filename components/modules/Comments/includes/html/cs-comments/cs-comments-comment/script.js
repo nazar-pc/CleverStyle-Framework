@@ -65,17 +65,12 @@
     },
     _save_edit: function(){
       var this$ = this;
-      $.ajax({
-        url: 'api/Comments/' + this.comment.id,
-        type: 'put',
-        data: {
-          text: this.comment.edited_text
-        },
-        success: function(){
-          cs.ui.notify(this$.L.saved, 'success', 5);
-          this$.reload();
-          this$._cancel_edit();
-        }
+      cs.api('put api/Comments/' + this.comment.id, {
+        text: this.comment.edited_text
+      }).then(function(){
+        cs.ui.notify(this$.L.saved, 'success', 5);
+        this$.reload();
+        this$._cancel_edit();
       });
     },
     _cancel_edit: function(){
@@ -95,15 +90,10 @@
     },
     _post_reply: function(){
       var this$ = this;
-      $.ajax({
-        url: 'api/Comments',
-        type: 'post',
-        data: this.reply,
-        success: function(){
-          cs.ui.notify(this$.L.reply_posted, 'success', 5);
-          this$.reload();
-          this$._cancel_reply();
-        }
+      cs.api('post api/Comments', this.reply).then(function(){
+        cs.ui.notify(this$.L.reply_posted, 'success', 5);
+        this$.reload();
+        this$._cancel_reply();
       });
     },
     _cancel_reply: function(){
@@ -112,13 +102,9 @@
     _delete: function(){
       var this$ = this;
       cs.ui.confirm(this.L.sure_to_delete, function(){
-        $.ajax({
-          url: 'api/Comments/' + this$.comment.id,
-          type: 'delete',
-          success: function(){
-            cs.ui.notify(this$.L.deleted, 'success', 5);
-            this$.reload();
-          }
+        cs.api('delete api/Comments/' + this$.comment.id).then(function(){
+          cs.ui.notify(this$.L.deleted, 'success', 5);
+          this$.reload();
         });
       });
     }

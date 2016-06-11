@@ -16,7 +16,10 @@
     },
     ready: function(){
       var this$ = this;
-      $.getJSON('api/Comments/count?module=' + this.module + '&item=' + this.item, function(count){
+      cs.api('get api/Comments/count', {
+        module: this.module,
+        item: this.item
+      }).then(function(count){
         this$.count = count;
       });
     }

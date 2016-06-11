@@ -13,22 +13,20 @@
     add_button = $('.cs-photo-gallery-add-images');
     if (add_button.length) {
       cs.file_upload(add_button, function(files){
-        $.ajax('api/Photo_gallery/images', {
-          data: {
-            files: files,
-            gallery: add_button.data('gallery')
-          },
-          type: 'post',
-          success: function(result){
-            if (!result.length || !result) {
-              alert(L.images_not_supported);
-              return;
-            }
-            if (files.length !== result.length) {
-              alert(L.some_images_not_supported);
-            }
-            location.href = 'Photo_gallery/edit_images/' + result.join(',');
+        var gallery;
+        gallery = add_button.data('gallery');
+        cs.api('post api/Photo_gallery/images', {
+          files: files,
+          gallery: gallery
+        }).then(function(result){
+          if (!result.length || !result) {
+            alert(L.images_not_supported);
+            return;
           }
+          if (files.length !== result.length) {
+            alert(L.some_images_not_supported);
+          }
+          location.href = 'Photo_gallery/edit_images/' + result.join(',');
         });
       }, null, null, true);
     }
@@ -50,12 +48,10 @@
         });
       });
       $('body').on('click', '.cs-photo-gallery-image-delete', function(){
-        if (confirm(L.sure_to_delete_image)) {
-          $.ajax('api/Photo_gallery/images/' + $(this).data('image'), {
-            type: 'delete',
-            success: bind$(location, 'reload')
-          });
-        }
+        var this$ = this;
+        cs.ui.confirm(L.sure_to_delete_image, function(){
+          cs.api('delete api/Photo_gallery/images/' + $(this$).data('image')).then(bind$(location, 'reload'));
+        });
       });
     }
   });

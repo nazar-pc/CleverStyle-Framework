@@ -9,23 +9,22 @@ modal		= null
 open_modal	= (action, package_name, category, force = false) ->
 	if package_name == 'Composer' && !force
 		return
-	(new Promise (resolve, reject) !->
-		modules	<~! $.getJSON('api/System/admin/modules')
-		for module in modules
-			if module.name == 'Composer' && module.active != 1
-				resolve()
-				return
-		force	:= if force then 'force' else ''
-		modal	:= cs.ui.simple_modal("""<cs-composer action="#action" package="#package_name" category="#category" #force/>""")
-		$(modal).on('close', !->
-			cs.Event.fire('admin/Composer/canceled')
-		)
-		cs.Event.once('admin/Composer/updated', !->
-			if !force
-				modal.close()
-			resolve()
-		)
-	)
+	cs.api('get api/System/admin/modules')
+		.then (modules) ->
+			for module in modules
+				if module.name == 'Composer' && module.active != 1
+					return
+			force	:= if force then 'force' else ''
+			modal	:= cs.ui.simple_modal("""<cs-composer action="#action" package="#package_name" category="#category" #force/>""")
+			$(modal).on('close', !->
+				cs.Event.fire('admin/Composer/canceled')
+			)
+			new Promise (resolve) !->
+				cs.Event.once('admin/Composer/updated', !->
+					if !force
+						modal.close()
+					resolve()
+				)
 cs.Event
 	.on('admin/System/components/modules/install/before', (data) ->
 		open_modal('install', data.name, 'modules')

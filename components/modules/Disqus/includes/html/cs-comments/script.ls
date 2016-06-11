@@ -41,14 +41,10 @@ Polymer(
 			return
 		# TODO: __proto__ might be used here, but shitty IE10 doesn't support it
 		Object.getPrototypeOf(@)_loaded	= true
-		$.ajax(
-			url		: 'api/Disqus'
-			type	: 'get_settings'
-			success	: ({shortname}) !~>
-				script	= document.createElement('script')
-					..async	= true
-					..src	= "//#shortname.disqus.com/embed.js"
-					..setAttribute('data-timestamp', +new Date())
-				document.head.appendChild(script)
-		)
+		cs.api('get_settings api/Disqus').then ({shortname}) !~>
+			script	= document.createElement('script')
+				..async	= true
+				..src	= "//#shortname.disqus.com/embed.js"
+				..setAttribute('data-timestamp', +new Date())
+			document.head.appendChild(script)
 )

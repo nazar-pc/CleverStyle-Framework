@@ -27,12 +27,7 @@
     },
     reload: function(){
       var this$ = this;
-      Promise.all([
-        $.getJSON('api/Comments?module=' + this.module + '&item=' + this.item), $.getJSON('api/System/profile'), $.ajax({
-          url: 'api/Comments',
-          type: 'is_admin'
-        })
-      ]).then(function(arg$){
+      cs.api(['get	api/Comments?module=' + this.module + '&item=' + this.item, 'get	api/System/profile', 'is_admin	api/Comments']).then(function(arg$){
         var comments, profile, is_admin, id_index_map, is_user, i$, len$, index, comment, normalized_comments;
         comments = arg$[0], profile = arg$[1], is_admin = arg$[2];
         id_index_map = {};
@@ -67,21 +62,17 @@
       });
     },
     _send: function(){
-      var this$ = this;
-      $.ajax({
-        url: 'api/Comments',
-        type: 'post',
-        data: {
-          module: this.module,
-          item: this.item,
-          text: this.text,
-          parent: 0
-        },
-        success: function(){
-          cs.ui.notify(this$.L.comment_posted, 'success', 5);
-          this$.reload();
-          this$.text = '';
-        }
+      var data, this$ = this;
+      data = {
+        module: this.module,
+        item: this.item,
+        text: this.text,
+        parent: 0
+      };
+      cs.api('post api/Comments', data).then(function(){
+        cs.ui.notify(this$.L.comment_posted, 'success', 5);
+        this$.reload();
+        this$.text = '';
       });
     }
   });

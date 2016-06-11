@@ -9,10 +9,11 @@
 (function(){
   require(['jquery'], function($){
     Promise.all([
-      $.ajax({
-        url: 'api/Content',
-        type: 'is_admin',
-        error_404: function(){}
+      cs.api('is_admin api/Content')['catch'](function(o){
+        if (o.xhr.status !== 404) {
+          clearTimeout(o.timeout);
+          return Promise.reject();
+        }
       }), cs.ui.ready
     ]).then(function(arg$){
       var is_admin, L;
@@ -38,54 +39,44 @@
         });
         cs.ui.simple_modal(modal_body);
         modal_body.find('button').click(function(){
-          $.ajax({
-            url: 'api/Content',
-            data: {
-              key: key.val(),
-              title: title.val(),
-              content: content.val(),
-              type: type.val()
-            },
-            type: 'post',
-            success: bind$(location, 'reload')
-          });
+          var data;
+          data = {
+            key: key.val(),
+            title: title.val(),
+            content: content.val(),
+            type: type.val()
+          };
+          cs.api('post api/Content', data).then(bind$(location, 'reload'));
         });
       }).on('click', '.cs-content-edit', function(){
         var key;
         key = $(this).data('key');
-        $.ajax({
-          url: "api/Content/" + key,
-          type: 'get',
-          success: function(data){
-            var modal_body, title, content, type;
-            modal_body = $("<form is=\"cs-form\">\n	<label>" + L.key + "</label>\n	<input is=\"cs-input-text\" readonly value=\"" + data.key + "\">\n	<label>" + L.title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html\">\n		<textarea is=\"cs-textarea\" autosize class=\"cs-margin-bottom\"></textarea>\n	</cs-editor>\n	<label>" + L.type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.save + "</button>\n	</div>\n</form>");
-            title = modal_body.find('[name=title]').val(data.title);
-            content = modal_body.find('.' + data.type).val(data.content);
-            modal_body.find('.text, .html').not('.' + data.type).hide();
-            type = modal_body.find('[name=type]').val(data.type);
-            type.change(function(){
-              if (type.val() === 'text') {
-                modal_body.find('.html').hide();
-                content = modal_body.find('.text').show().val(content.val());
-              } else {
-                modal_body.find('.text').hide();
-                content = modal_body.find('.html').val(content.val()).show().children('textarea').val(content.val());
-              }
-            });
-            cs.ui.simple_modal(modal_body);
-            modal_body.find('button').click(function(){
-              $.ajax({
-                url: "api/Content/" + key,
-                data: {
-                  title: title.val(),
-                  content: content.val(),
-                  type: type.val()
-                },
-                type: 'put',
-                success: bind$(location, 'reload')
-              });
-            });
-          }
+        cs.api("get api/Content/" + key).then(function(data){
+          var modal_body, title, content, type;
+          modal_body = $("<form is=\"cs-form\">\n	<label>" + L.key + "</label>\n	<input is=\"cs-input-text\" readonly value=\"" + data.key + "\">\n	<label>" + L.title + "</label>\n	<input is=\"cs-input-text\" type=\"text\" name=\"title\">\n	<label>" + L.content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html\">\n		<textarea is=\"cs-textarea\" autosize class=\"cs-margin-bottom\"></textarea>\n	</cs-editor>\n	<label>" + L.type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.save + "</button>\n	</div>\n</form>");
+          title = modal_body.find('[name=title]').val(data.title);
+          content = modal_body.find('.' + data.type).val(data.content);
+          modal_body.find('.text, .html').not('.' + data.type).hide();
+          type = modal_body.find('[name=type]').val(data.type);
+          type.change(function(){
+            if (type.val() === 'text') {
+              modal_body.find('.html').hide();
+              content = modal_body.find('.text').show().val(content.val());
+            } else {
+              modal_body.find('.text').hide();
+              content = modal_body.find('.html').val(content.val()).show().children('textarea').val(content.val());
+            }
+          });
+          cs.ui.simple_modal(modal_body);
+          modal_body.find('button').click(function(){
+            var data;
+            data = {
+              title: title.val(),
+              content: content.val(),
+              type: type.val()
+            };
+            cs.api("put api/Content/" + key, data).then(bind$(location, 'reload'));
+          });
         });
       }).on('click', '.cs-content-delete', function(){
         var key;
@@ -93,11 +84,7 @@
           return;
         }
         key = $(this).data('key');
-        $.ajax({
-          url: "api/Content/" + key,
-          type: 'delete',
-          success: bind$(location, 'reload')
-        });
+        cs.api("delete api/Content/" + key).then(bind$(location, 'reload'));
       });
       (function(){
         var mousemove_timeout, showed_button, show_edit_button;

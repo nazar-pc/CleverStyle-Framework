@@ -17,32 +17,22 @@
       var $modal;
       $modal = make_modal(L.shipping_type_addition, L.add);
       $modal.find('form').submit(function(){
-        $.ajax({
-          url: 'api/Shop/admin/shipping_types',
-          type: 'post',
-          data: $(this).serialize(),
-          success: function(){
-            alert(L.added_successfully);
-            location.reload();
-          }
+        cs.api('post api/Shop/admin/shipping_types', this).then(function(){
+          alert(L.added_successfully);
+          location.reload();
         });
         return false;
       });
     }).on('mousedown', '.cs-shop-shipping-type-edit', function(){
       var id;
       id = $(this).data('id');
-      $.getJSON("api/Shop/admin/shipping_types/" + id, function(shipping_type){
+      cs.api("get api/Shop/admin/shipping_types/" + id).then(function(shipping_type){
         var $modal;
         $modal = make_modal(L.shipping_type_edition, L.edit);
         $modal.find('form').submit(function(){
-          $.ajax({
-            url: "api/Shop/admin/shipping_types/" + id,
-            type: 'put',
-            data: $(this).serialize(),
-            success: function(){
-              alert(L.edited_successfully);
-              location.reload();
-            }
+          cs.api("put api/Shop/admin/shipping_types/" + id, this).then(function(){
+            alert(L.edited_successfully);
+            location.reload();
           });
           return false;
         });
@@ -56,13 +46,9 @@
       var id;
       id = $(this).data('id');
       if (confirm(L.sure_want_to_delete)) {
-        $.ajax({
-          url: "api/Shop/admin/shipping_types/" + id,
-          type: 'delete',
-          success: function(){
-            alert(L.deleted_successfully);
-            location.reload();
-          }
+        cs.api("delete api/Shop/admin/shipping_types/" + id).then(function(){
+          alert(L.deleted_successfully);
+          location.reload();
         });
       }
     });

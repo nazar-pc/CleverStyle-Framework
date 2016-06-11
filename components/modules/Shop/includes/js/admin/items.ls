@@ -41,9 +41,9 @@ $ !->
 				categories_list_[key]
 		categories_list	= categories_list.join('')
 		modal			= $(cs.ui.simple_modal("""<form>
-			<h3 class="cs-text-center">#{title}</h3>
+			<h3 class="cs-text-center">#title</h3>
 			<p>
-				#{L.category}: <select is="cs-select" name="category" required>#{categories_list}</select>
+				#{L.category}: <select is="cs-select" name="category" required>#categories_list</select>
 			</p>
 			<div></div>
 		</form>"""))
@@ -60,7 +60,7 @@ $ !->
 				modal.add_videos(item.videos)
 			if item.attributes
 				for attribute, value of item.attributes
-					modal.find("[name='attributes[#{attribute}]']").val(value)
+					modal.find("[name='attributes[#attribute]']").val(value)
 			if item.tags
 				modal.find('[name=tags]').val(item.tags.join(', '))
 		modal.find('[name=category]').change !->
@@ -88,7 +88,7 @@ $ !->
 					if set_attribute_types.indexOf(attribute.type) != -1
 						values = do ->
 							for value in attribute.value
-								"""<option value="#{value}">#{value}</option>"""
+								"""<option value="#value">#value</option>"""
 						values = values.join('')
 						color	=
 							if attribute.type == color_set_attribute_type
@@ -99,9 +99,9 @@ $ !->
 							#{attribute.title}:
 							<select is="cs-select" name="attributes[#{attribute.id}]">
 								<option value="">#{L.none}</option>
-								#{values}
+								#values
 							</select>
-							#{color}
+							#color
 						</p>"""
 					else if string_attribute_types.indexOf(attribute.type) != -1
 						"""<p>
@@ -139,12 +139,12 @@ $ !->
 					<div class="videos"></div>
 					<button is="cs-button" type="button" class="add-video">#{L.add_video}</button>
 				</p>
-				#{attributes_list}
+				#attributes_list
 				<p>
 					#{L.tags}: <input is="cs-input-text" name="tags" placeholder="shop, high quality, e-commerce">
 				</p>
 				<p>
-					<button is="cs-button" primary type="submit">#{action}</button>
+					<button is="cs-button" primary type="submit">#action</button>
 				</p>
 			""")
 			images_container	= modal.find('.images')
@@ -168,8 +168,8 @@ $ !->
 					)
 			modal.add_images	= (images) !->
 				images.forEach (image) !->
-					images_container.append("""<a href="#{image}" target="_blank" style="display: inline-block; padding: .5em; width: 150px">
-						<img src="#{image}">
+					images_container.append("""<a href="#image" target="_blank" style="display: inline-block; padding: .5em; width: 150px">
+						<img src="#image">
 						<br>
 						<button is="cs-button" force-compact type="button" class="remove-image" style="width: 100%">#{L.remove_image}</button>
 					</a>""")
@@ -303,40 +303,30 @@ $ !->
 		modal
 	$('html')
 		.on('mousedown', '.cs-shop-item-add', !->
-			Promise.all([
-				$.getJSON('api/Shop/admin/attributes')
-				$.getJSON('api/Shop/admin/categories')
+			cs.api([
+				'get api/Shop/admin/attributes'
+				'get api/Shop/admin/categories'
 			]).then ([attributes, categories]) !->
 				modal = make_modal(attributes, categories, L.item_addition, L.add)
 				modal.find("[name=category]").change()
 				modal.find('form').submit ->
-					$.ajax(
-						url     : 'api/Shop/admin/items'
-						type    : 'post'
-						data    : $(@).serialize()
-						success : !->
-							alert(L.added_successfully)
-							location.reload()
-					)
+					cs.api('post api/Shop/admin/items', @).then !->
+						alert(L.added_successfully)
+						location.reload()
 					false
 		)
 		.on('mousedown', '.cs-shop-item-edit', !->
 			id = $(@).data('id')
-			Promise.all([
-				$.getJSON('api/Shop/admin/attributes')
-				$.getJSON('api/Shop/admin/categories')
-				$.getJSON("api/Shop/admin/items/#{id}")
+			cs.api([
+				'get api/Shop/admin/attributes'
+				'get api/Shop/admin/categories'
+				"get api/Shop/admin/items/#id"
 			]).then ([attributes, categories, item]) !->
 				modal = make_modal(attributes, categories, L.item_edition, L.edit)
 				modal.find('form').submit ->
-					$.ajax(
-						url     : "api/Shop/admin/items/#{id}"
-						type    : 'put'
-						data    : $(@).serialize()
-						success : !->
-							alert(L.edited_successfully)
-							location.reload()
-					)
+					cs.api("put api/Shop/admin/items/#id", @).then !->
+						alert(L.edited_successfully)
+						location.reload()
 					false
 				modal.item_data	= item
 				modal.find("[name=category]").val(item.category).change()
@@ -344,11 +334,7 @@ $ !->
 		.on('mousedown', '.cs-shop-item-delete', !->
 			id = $(@).data('id')
 			if confirm(L.sure_want_to_delete)
-				$.ajax(
-					url     : "api/Shop/admin/items/#{id}"
-					type    : 'delete'
-					success : !->
-						alert(L.deleted_successfully)
-						location.reload()
-				)
+				cs.api("delete api/Shop/admin/items/#id").then !->
+					alert(L.deleted_successfully)
+					location.reload()
 		)

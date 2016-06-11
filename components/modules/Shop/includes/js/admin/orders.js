@@ -67,10 +67,13 @@
         var timeout;
         timeout = 0;
         modal.find('[name=user]').keyup(function(){
+          var this$ = this;
           clearTimeout(timeout);
-          timeout = setTimeout($.getJSON('api/System/profiles/' + $(this).val(), function(profile){
-            return modal.find('.username').html(profile.username || profile.login);
-          }), 300);
+          timeout = setTimeout(function(){
+            cs.api('get api/System/profiles/' + $(this$).val()).then(function(profile){
+              modal.find('.username').html(profile.username || profile.login);
+            });
+          }, 300);
         });
       })();
       (function(){
@@ -97,7 +100,7 @@
             items_container.children(':last').find('.title').val(item_data.title);
           };
           if (item.item) {
-            $.getJSON("api/Shop/admin/items/" + item.item, callback);
+            cs.api("get api/Shop/admin/items/" + item.item).then(callback);
           } else {
             callback({
               title: '-',
@@ -112,24 +115,25 @@
           item_price_container = $this.parent().find('.item-price');
           item_price_container.html(item_price_container.data('original-price') * $this.val());
         }).on('keyup', "[name='items[item][]']", function(){
-          var $this, container;
+          var this$ = this;
           clearTimeout(timeout);
-          timeout = setTimeout(($this = $(this), container = $this.parent(), $.ajax({
-            url: 'api/Shop/admin/items/' + $this.val(),
-            type: 'get',
-            success: function(item){
+          timeout = setTimeout(function(){
+            var $this, container;
+            $this = $(this$);
+            container = $this.parent();
+            cs.api('get api/Shop/admin/items/' + $this.val()).then(function(item){
               container.find('.title').val(item.title);
               container.find('.unit-price').html(item.price);
               container.find('.item-price').data('original-price', item.price);
               container.find("[name='items[units][]']").change();
-            },
-            error: function(){
+            })['catch'](function(o){
+              clearTimeout(o.timeout);
               container.find('.title').val('-');
               container.find('.unit-price').html(0);
               container.find('.item-price').data('original-price', 0);
               container.find("[name='items[units][]']").change();
-            }
-          })), 300);
+            });
+          }, 300);
         }).on('click', '.delete-item', function(){
           $(this).parent().remove();
         });
@@ -144,29 +148,19 @@
       });
     };
     $('html').on('mousedown', '.cs-shop-order-add', function(){
-      Promise.all([$.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods')]).then(function(arg$){
+      cs.api(['get api/Shop/admin/shipping_types', 'get api/Shop/admin/order_statuses', 'get api/Shop/payment_methods']).then(function(arg$){
         var shipping_types, order_statuses, payment_methods, modal;
         shipping_types = arg$[0], order_statuses = arg$[1], payment_methods = arg$[2];
         modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_addition, L.add);
         modal.find('form').submit(function(){
-          var data;
-          data = $(this).serialize();
-          $.ajax({
-            url: 'api/Shop/admin/orders',
-            type: 'post',
-            data: data,
-            success: function(url){
-              url = url.split('/');
-              $.ajax({
-                url: 'api/Shop/admin/orders/' + url.pop() + '/items',
-                type: 'put',
-                data: data,
-                success: function(){
-                  alert(L.added_successfully);
-                  location.reload();
-                }
-              });
-            }
+          var this$ = this;
+          cs.api('post api/Shop/admin/orders', this).then(function(url){
+            return url.split('/');
+          }).then(function(url){
+            return cs.api('put api/Shop/admin/orders/' + url.pop() + '/items', this$);
+          }).then(function(){
+            alert(L.added_successfully);
+            location.reload();
           });
           return false;
         });
@@ -174,7 +168,7 @@
     }).on('mousedown', '.cs-shop-order-statuses-history', function(){
       var id;
       id = $(this).data('id');
-      Promise.all([$.getJSON('api/Shop/admin/order_statuses'), $.getJSON("api/Shop/admin/orders/" + id + "/statuses")]).then(function(arg$){
+      cs.api(['get api/Shop/admin/order_statuses', "get api/Shop/admin/orders/" + id + "/statuses"]).then(function(arg$){
         var order_statuses, statuses, content;
         order_statuses = arg$[0], statuses = arg$[1];
         order_statuses = function(){
@@ -201,28 +195,17 @@
       id = $this.data('id');
       username = $this.data('username');
       date = $this.data('date');
-      Promise.all([$.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods'), $.getJSON("api/Shop/admin/orders/" + id), $.getJSON("api/Shop/admin/orders/" + id + "/items")]).then(function(arg$){
+      cs.api(['get api/Shop/admin/shipping_types', 'get api/Shop/admin/order_statuses', 'get api/Shop/payment_methods', "get api/Shop/admin/orders/" + id, "get api/Shop/admin/orders/" + id + "/items"]).then(function(arg$){
         var shipping_types, order_statuses, payment_methods, order, items, modal;
         shipping_types = arg$[0], order_statuses = arg$[1], payment_methods = arg$[2], order = arg$[3], items = arg$[4];
         modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_edition, L.edit);
         modal.find('form').submit(function(){
-          var data;
-          data = $(this).serialize();
-          $.ajax({
-            url: "api/Shop/admin/orders/" + id,
-            type: 'put',
-            data: data,
-            success: function(){
-              $.ajax({
-                url: "api/Shop/admin/orders/" + id + "/items",
-                type: 'put',
-                data: data,
-                success: function(){
-                  alert(L.edited_successfully);
-                  location.reload();
-                }
-              });
-            }
+          var this$ = this;
+          cs.api("put api/Shop/admin/orders/" + id, this).then(function(){
+            return cs.api("put api/Shop/admin/orders/" + id + "/items", this$);
+          }).then(function(){
+            alert(L.edited_successfully);
+            location.reload();
           });
           return false;
         });
@@ -246,13 +229,9 @@
       var id;
       id = $(this).data('id');
       if (confirm(L.sure_want_to_delete)) {
-        $.ajax({
-          url: "api/Shop/admin/orders/" + id,
-          type: 'delete',
-          success: function(){
-            alert(L.deleted_successfully);
-            location.reload();
-          }
+        cs.api("delete api/Shop/admin/orders/" + id).then(function(){
+          alert(L.deleted_successfully);
+          location.reload();
         });
       }
     });

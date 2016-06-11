@@ -75,14 +75,14 @@
         }
         return results$;
         function fn$(item_id, units){
-          return $.getJSON("api/Shop/items/" + item_id).then(function(data){
+          return cs.api("get api/Shop/items/" + item_id).then(function(data){
             return importAll$({
               units: units,
               image: data.images[0] || DEFAULT_IMAGE
             }, data);
           });
         }
-      }.call(this)).concat([$.getJSON('api/System/profile')])).then(function(arg$){
+      }.call(this)).concat([cs.api('get api/System/profile')])).then(function(arg$){
         var i$, profile, is_user;
         this$.items = 0 < (i$ = arg$.length - 1) ? slice$.call(arg$, 0, i$) : (i$ = 0, []), profile = arg$[i$];
         is_user = profile.id !== GUEST_ID;
@@ -119,43 +119,39 @@
       params.comment = this.comment;
     },
     finish_order: function(){
-      var this$ = this;
+      var data, this$ = this;
       if (!this.shipping_username) {
         cs.ui.alert(L.shipping_username_is_required);
         return;
       }
-      $.ajax({
-        url: 'api/Shop/orders',
-        type: 'post',
-        data: {
-          shipping_type: this.shipping_type,
-          shipping_username: this.shipping_username,
-          shipping_phone: this.shipping_type_details.phone_needed ? this.phone : '',
-          shipping_address: this.shipping_type_details.address_needed ? this.address : '',
-          payment_method: this.payment_method,
-          comment: this.comment,
-          items: cart.get_all()
-        },
-        success: function(result){
-          var id, modal;
-          cart.clean();
-          if (this$.payment_method === 'shop:cash') {
-            $(cs.ui.simple_modal("<h1 class=\"cs-text-center\">" + L.thanks_for_order + "</h1>")).on('close', function(){
-              location.href = 'Shop/orders_';
-            });
-          } else {
-            id = result.split('/').pop();
-            modal = $(cs.ui.simple_modal("<h1 class=\"cs-text-center\">" + L.thanks_for_order + "</h1>\n<p class=\"cs-text-center\">\n	<button is=\"cs-button\" primary type=\"button\" class=\"pay-now\">" + L.pay_now + "</button>\n	<button is=\"cs-button\" type=\"button\" class=\"pay-later\">" + L.pay_later + "</button>\n</p>")).on('close', function(){
-              location.href = 'Shop/orders_';
-            });
-            modal.find('.pay-now').click(function(){
-              location.href = "Shop/pay/" + id;
-            });
-            modal.find('.pay-later').click(function(){
-              modal.hide();
-              location.href = 'Shop/orders_';
-            });
-          }
+      data = {
+        shipping_type: this.shipping_type,
+        shipping_username: this.shipping_username,
+        shipping_phone: this.shipping_type_details.phone_needed ? this.phone : '',
+        shipping_address: this.shipping_type_details.address_needed ? this.address : '',
+        payment_method: this.payment_method,
+        comment: this.comment,
+        items: cart.get_all()
+      };
+      cs.api('post api/Shop/orders', data).then(function(result){
+        var id, modal;
+        cart.clean();
+        if (this$.payment_method === 'shop:cash') {
+          $(cs.ui.simple_modal("<h1 class=\"cs-text-center\">" + L.thanks_for_order + "</h1>")).on('close', function(){
+            location.href = 'Shop/orders_';
+          });
+        } else {
+          id = result.split('/').pop();
+          modal = $(cs.ui.simple_modal("<h1 class=\"cs-text-center\">" + L.thanks_for_order + "</h1>\n<p class=\"cs-text-center\">\n	<button is=\"cs-button\" primary type=\"button\" class=\"pay-now\">" + L.pay_now + "</button>\n	<button is=\"cs-button\" type=\"button\" class=\"pay-later\">" + L.pay_later + "</button>\n</p>")).on('close', function(){
+            location.href = 'Shop/orders_';
+          });
+          modal.find('.pay-now').click(function(){
+            location.href = "Shop/pay/" + id;
+          });
+          modal.find('.pay-later').click(function(){
+            modal.hide();
+            location.href = 'Shop/orders_';
+          });
         }
       });
     }

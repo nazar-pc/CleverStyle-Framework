@@ -10,12 +10,12 @@ $ ->
 	set_attribute_types	= [1, 2, 6, 9] # Attributes types that represents sets: TYPE_INT_SET, TYPE_FLOAT_SET, TYPE_STRING_SET, TYPE_COLOR_SET
 	make_modal			= (types, title, action) ->
 		types		= for index, type of types
-			"""<option value="#{index}">#{type}</option>"""
+			"""<option value="#index">#type</option>"""
 		types		= types.join('')
 		cs.ui.simple_modal("""<form is="cs-form">
-			<h3 class="cs-text-center">#{title}</h3>
+			<h3 class="cs-text-center">#title</h3>
 			<label>#{L.attribute_type}</label>
-			<select is="cs-select" name="type" required>#{types}</select>
+			<select is="cs-select" name="type" required>#types</select>
 			<label>#{L.possible_values}</label>
 			<textarea is="cs-textarea" autosize name="value"></textarea>
 			<label>#{L.title}</label>
@@ -23,32 +23,28 @@ $ ->
 			<label>#{L.title_internal}</label>
 			<input is="cs-input-text" name="title_internal" required>
 			<br>
-			<button is="cs-button" primary type="submit">#{action}</button>
+			<button is="cs-button" primary type="submit">#action</button>
 		</form>""")
 	$('html')
 		.on('mousedown', '.cs-shop-attribute-add', !->
-			$.getJSON('api/Shop/admin/attributes/types', (types) !->
+			cs.api('get api/Shop/admin/attributes/types').then (types) !->
 				$modal	= $(make_modal(types, L.attribute_addition, L.add))
 				$modal
 					.on('submit', 'form', !->
-						type = $modal.find('[name=type]').val()
-						value =
+						type	= $modal.find('[name=type]').val()
+						value	=
 							if set_attribute_types.indexOf(parseInt(type)) != -1
 								$modal.find('[name=value]').val().split('\n')
 							else
 								''
-						$.ajax(
-							url     : 'api/Shop/admin/attributes'
-							type    : 'post'
-							data    :
-								type           : type
-								title          : $modal.find('[name=title]').val()
-								title_internal : $modal.find('[name=title_internal]').val()
-								value          : value
-							success : !->
-								alert(L.added_successfully)
-								location.reload()
-						)
+						data	=
+							type           : type
+							title          : $modal.find('[name=title]').val()
+							title_internal : $modal.find('[name=title_internal]').val()
+							value          : value
+						cs.api('post api/Shop/admin/attributes', data).then !->
+							alert(L.added_successfully)
+							location.reload()
 						return false
 					)
 					.on('change', '[name=type]', !->
@@ -59,35 +55,30 @@ $ ->
 						else
 							value_container.hide()
 					)
-			)
 		)
 		.on('mousedown', '.cs-shop-attribute-edit', !->
 			id = $(@).data('id')
-			Promise.all([
-				$.getJSON('api/Shop/admin/attributes/types')
-				$.getJSON("api/Shop/admin/attributes/#{id}")
+			cs.api([
+				'get api/Shop/admin/attributes/types'
+				"get api/Shop/admin/attributes/#id"
 			]).then ([types, attribute]) !->
 				$modal	= $(make_modal(types, L.attribute_edition, L.edit))
 				$modal
 					.on('submit', 'form', !->
-						type = $modal.find('[name=type]').val()
-						value =
+						type	= $modal.find('[name=type]').val()
+						value	=
 							if set_attribute_types.indexOf(parseInt(type)) != -1
 								$modal.find('[name=value]').val().split('\n')
 							else
 								''
-						$.ajax(
-							url     : "api/Shop/admin/attributes/#{id}"
-							type    : 'put'
-							data    :
-								type           : type
-								title          : $modal.find('[name=title]').val()
-								title_internal : $modal.find('[name=title_internal]').val()
-								value          : value
-							success : !->
-								alert(L.edited_successfully)
-								location.reload()
-						)
+						data	=
+							type           : type
+							title          : $modal.find('[name=title]').val()
+							title_internal : $modal.find('[name=title_internal]').val()
+							value          : value
+						cs.api("put api/Shop/admin/attributes/#id", data).then !->
+							alert(L.edited_successfully)
+							location.reload()
 						return false
 					)
 					.on('change', '[name=type]', !->
@@ -106,11 +97,7 @@ $ ->
 		.on('mousedown', '.cs-shop-attribute-delete', !->
 			id = $(@).data('id')
 			if confirm(L.sure_want_to_delete)
-				$.ajax(
-					url     : "api/Shop/admin/attributes/#{id}"
-					type    : 'delete'
-					success : !->
-						alert(L.deleted_successfully)
-						location.reload()
-				)
+				cs.api("delete api/Shop/admin/attributes/#id").then !->
+					alert(L.deleted_successfully)
+					location.reload()
 		)

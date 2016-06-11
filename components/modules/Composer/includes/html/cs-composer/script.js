@@ -21,46 +21,43 @@
       category: String
     },
     ready: function(){
-      var this$ = this;
+      var method, data, this$ = this;
       cs.Event.once('admin/Composer/canceled', function(){
         this$.canceled = true;
       });
-      $.ajax({
-        url: 'api/Composer',
-        type: this.action === 'uninstall' ? 'delete' : 'post',
-        data: {
-          name: this['package'],
-          category: this.category,
-          force: this.force
-        },
-        success: function(result){
-          this$._save_scroll_position();
-          this$.status = (function(){
-            switch (result.code) {
-            case 0:
-              return L.updated_successfully;
-            case 1:
-              return L.update_failed;
-            case 2:
-              return L.dependencies_conflict;
-            }
-          }());
-          if (result.description) {
-            $(this$.$.result).show().html(result.description);
-            this$._restore_scroll_position();
+      method = this.action === 'uninstall' ? 'delete' : 'post';
+      data = {
+        name: this['package'],
+        category: this.category,
+        force: this.force
+      };
+      cs.api(method + " api/Composer", data).then(function(result){
+        this$._save_scroll_position();
+        this$.status = (function(){
+          switch (result.code) {
+          case 0:
+            return L.updated_successfully;
+          case 1:
+            return L.update_failed;
+          case 2:
+            return L.dependencies_conflict;
           }
-          if (!result.code) {
-            setTimeout(function(){
-              cs.Event.fire('admin/Composer/updated');
-            }, 2000);
-          }
+        }());
+        if (result.description) {
+          $(this$.$.result).show().html(result.description);
+          this$._restore_scroll_position();
+        }
+        if (!result.code) {
+          setTimeout(function(){
+            cs.Event.fire('admin/Composer/updated');
+          }, 2000);
         }
       });
       setTimeout(bind$(this, '_update_progress'), 1000);
     },
     _update_progress: function(){
       var this$ = this;
-      $.getJSON('api/Composer', function(data){
+      cs.api('get api/Composer').then(function(data){
         if (this$.status || this$.canceled) {
           return;
         }

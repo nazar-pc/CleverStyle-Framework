@@ -9,7 +9,9 @@
 (function(){
   window.DISQUSWIDGETS = {
     displayCount: function(data){
-      this[data.counts[0].id] = data.counts[0].comments;
+      if (data.counts[0]) {
+        this[data.counts[0].id] = data.counts[0].comments;
+      }
     }
   };
 }).call(this);

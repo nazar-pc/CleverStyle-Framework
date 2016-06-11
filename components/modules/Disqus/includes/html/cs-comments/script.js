@@ -51,18 +51,14 @@
         return;
       }
       Object.getPrototypeOf(this)._loaded = true;
-      $.ajax({
-        url: 'api/Disqus',
-        type: 'get_settings',
-        success: function(arg$){
-          var shortname, x$, script;
-          shortname = arg$.shortname;
-          x$ = script = document.createElement('script');
-          x$.async = true;
-          x$.src = "//" + shortname + ".disqus.com/embed.js";
-          x$.setAttribute('data-timestamp', +new Date());
-          document.head.appendChild(script);
-        }
+      cs.api('get_settings api/Disqus').then(function(arg$){
+        var shortname, x$, script;
+        shortname = arg$.shortname;
+        x$ = script = document.createElement('script');
+        x$.async = true;
+        x$.src = "//" + shortname + ".disqus.com/embed.js";
+        x$.setAttribute('data-timestamp', +new Date());
+        document.head.appendChild(script);
       });
     }
   });

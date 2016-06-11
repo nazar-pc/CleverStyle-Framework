@@ -19,12 +19,12 @@
       var this$ = this;
       Promise.all([
         this.id
-          ? $.getJSON('api/Blogs/admin/sections/' + this.id)
+          ? cs.api('get api/Blogs/admin/sections/' + this.id)
           : {
             title: '',
             path: '',
             parent: 0
-          }, $.getJSON('api/Blogs/admin/sections')
+          }, cs.api('get api/Blogs/admin/sections')
       ]).then(function(arg$){
         var sections;
         this$.section = arg$[0], sections = arg$[1];
@@ -33,14 +33,11 @@
       });
     },
     _save: function(){
-      var this$ = this;
-      $.ajax({
-        url: 'api/Blogs/admin/sections' + (this.id ? '/' + this.id : ''),
-        data: this.section,
-        type: this.id ? 'put' : 'post',
-        success: function(result){
-          cs.ui.notify(this$.L.changes_saved, 'success', 5);
-        }
+      var method, suffix, this$ = this;
+      method = this.id ? 'put' : 'post';
+      suffix = this.id ? '/' + this.id : '';
+      cs.api(method + " api/Blogs/admin/sections" + suffix, this.section).then(function(result){
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
     }
   });

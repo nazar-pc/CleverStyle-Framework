@@ -18,12 +18,9 @@ Polymer(
 		preview			: false
 	ready			: !->
 		@jsonld	= JSON.parse(@children[0].innerHTML)
-		Promise.all([
-			$.ajax(
-				url		: 'api/Blogs'
-				type	: 'get_settings'
-			)
-			$.getJSON('api/System/profile')
+		cs.api([
+			'get_settings	api/Blogs'
+			'get			api/System/profile'
 		]).then ([@settings, profile]) !~>
 			@can_edit		= !@preview && (@settings.admin_edit || @jsonld.user == profile.id)
 			@can_delete		= !@preview && @settings.admin_edit
@@ -36,12 +33,8 @@ Polymer(
 		cs.ui.confirm(
 			@L.sure_to_delete_post(@jsonld.title)
 			!~>
-				$.ajax(
-					url		: 'api/Blogs/posts/' + @jsonld.id
-					type	: 'delete'
-					success	: (result) !~>
-						@_remove_close_tab_handler()
-						location.href = 'Blogs'
-				)
+				cs.api('delete api/Blogs/posts/' + @jsonld.id).then (result) !~>
+					@_remove_close_tab_handler()
+					location.href = 'Blogs'
 		)
 )

@@ -34,19 +34,15 @@
     },
     update_status: function(){
       var this$ = this;
-      $.ajax({
-        url: 'api/Blockchain_payment/' + $(this).data('id'),
-        type: 'get',
-        success: function(data){
-          if (parseInt(data.confirmed)) {
-            location.reload();
-            return;
-          }
-          if (parseInt(data.paid)) {
-            this$.set('progress_text', L.waiting_for_confirmations);
-          }
-          setTimeout(bind$(this$, 'update_status'), 5000);
+      cs.api('get api/Blockchain_payment/' + $(this).data('id')).then(function(data){
+        if (parseInt(data.confirmed)) {
+          location.reload();
+          return;
         }
+        if (parseInt(data.paid)) {
+          this$.set('progress_text', L.waiting_for_confirmations);
+        }
+        setTimeout(bind$(this$, 'update_status'), 5000);
       });
     }
   });

@@ -14,22 +14,20 @@
     if (package_name === 'Composer' && !force) {
       return;
     }
-    return new Promise(function(resolve, reject){
-      var this$ = this;
-      $.getJSON('api/System/admin/modules', function(modules){
-        var i$, len$, module;
-        for (i$ = 0, len$ = modules.length; i$ < len$; ++i$) {
-          module = modules[i$];
-          if (module.name === 'Composer' && module.active !== 1) {
-            resolve();
-            return;
-          }
+    return cs.api('get api/System/admin/modules').then(function(modules){
+      var i$, len$, module;
+      for (i$ = 0, len$ = modules.length; i$ < len$; ++i$) {
+        module = modules[i$];
+        if (module.name === 'Composer' && module.active !== 1) {
+          return;
         }
-        force = force ? 'force' : '';
-        modal = cs.ui.simple_modal("<cs-composer action=\"" + action + "\" package=\"" + package_name + "\" category=\"" + category + "\" " + force + "/>");
-        $(modal).on('close', function(){
-          cs.Event.fire('admin/Composer/canceled');
-        });
+      }
+      force = force ? 'force' : '';
+      modal = cs.ui.simple_modal("<cs-composer action=\"" + action + "\" package=\"" + package_name + "\" category=\"" + category + "\" " + force + "/>");
+      $(modal).on('close', function(){
+        cs.Event.fire('admin/Composer/canceled');
+      });
+      return new Promise(function(resolve){
         cs.Event.once('admin/Composer/updated', function(){
           if (!force) {
             modal.close();

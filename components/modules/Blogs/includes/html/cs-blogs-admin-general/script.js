@@ -19,24 +19,15 @@
     },
     _reload_settings: function(){
       var this$ = this;
-      $.ajax({
-        url: this.settings_api_url,
-        type: 'get_settings',
-        success: function(settings){
-          this$.set('settings', settings);
-        }
+      cs.api('get_settings ' + this.settings_api_url).then(function(settings){
+        this$.set('settings', settings);
       });
     },
     _save: function(){
       var this$ = this;
-      $.ajax({
-        url: this.settings_api_url,
-        type: 'save_settings',
-        data: this.settings,
-        success: function(){
-          this$._reload_settings();
-          cs.ui.notify(this$.L.changes_saved, 'success', 5);
-        }
+      cs.api('save_settings ' + this.settings_api_url, this.settings).then(function(){
+        this$._reload_settings();
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
     }
   });

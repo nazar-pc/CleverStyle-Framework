@@ -29,18 +29,13 @@
       return modal;
     };
     $('html').on('mousedown', '.cs-shop-order-status-add', function(){
-      $.getJSON('api/Shop/admin/order_statuses/types', function(types){
+      cs.api('get api/Shop/admin/order_statuses/types').then(function(types){
         var modal;
         modal = make_modal(types, L.order_status_addition, L.add);
         modal.find('form').submit(function(){
-          $.ajax({
-            url: 'api/Shop/admin/order_statuses',
-            type: 'post',
-            data: $(this).serialize(),
-            success: function(){
-              alert(L.added_successfully);
-              location.reload();
-            }
+          cs.api('post api/Shop/admin/order_statuses', this).then(function(){
+            alert(L.added_successfully);
+            location.reload();
           });
           return false;
         });
@@ -48,19 +43,14 @@
     }).on('mousedown', '.cs-shop-order-status-edit', function(){
       var id;
       id = $(this).data('id');
-      Promise.all([$.getJSON('api/Shop/admin/order_statuses/types'), $.getJSON("api/Shop/admin/order_statuses/" + id)]).then(function(arg$){
+      cs.api(['get api/Shop/admin/order_statuses/types', "get api/Shop/admin/order_statuses/" + id]).then(function(arg$){
         var types, type, modal;
         types = arg$[0], type = arg$[1];
         modal = make_modal(types, L.order_status_edition, L.edit);
         modal.find('form').submit(function(){
-          $.ajax({
-            url: "api/Shop/admin/order_statuses/" + id,
-            type: 'put',
-            data: $(this).serialize(),
-            success: function(){
-              alert(L.edited_successfully);
-              location.reload();
-            }
+          cs.api("put api/Shop/admin/order_statuses/" + id, this).then(function(){
+            alert(L.edited_successfully);
+            location.reload();
           });
           return false;
         });
@@ -75,13 +65,9 @@
       var id;
       id = $(this).data('id');
       if (confirm(L.sure_want_to_delete)) {
-        $.ajax({
-          url: "api/Shop/admin/order_statuses/" + id,
-          type: 'delete',
-          success: function(){
-            alert(L.deleted_successfully);
-            location.reload();
-          }
+        cs.api("delete api/Shop/admin/order_statuses/" + id).then(function(){
+          alert(L.deleted_successfully);
+          location.reload();
         });
       }
     });

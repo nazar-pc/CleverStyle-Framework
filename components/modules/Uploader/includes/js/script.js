@@ -10,23 +10,34 @@
   var L, uploader, files_handler;
   L = cs.Language('uploader_');
   uploader = function(file, progress, state){
-    var form_data;
-    form_data = new FormData;
-    form_data.append('file', file);
-    return state.ajax = $.ajax({
-      url: 'api/Uploader',
-      type: 'post',
-      data: form_data,
-      xhrFields: {
-        onprogress: function(e){
-          if (typeof progress == 'function') {
-            progress(e, file);
-          }
+    return new Promise(function(resolve, reject){
+      var form_data, xhr;
+      form_data = new FormData;
+      form_data.append('file', file);
+      xhr = new XMLHttpRequest();
+      state.xhr = xhr;
+      xhr.onload = function(){
+        var data;
+        data = JSON.parse(this.responseText);
+        if (this.status >= 400) {
+          reject(data);
+        } else {
+          resolve(data);
         }
-      },
-      processData: false,
-      contentType: false,
-      error: function(){}
+      };
+      xhr.onerror = function(){
+        reject({
+          timeout: timeout,
+          xhr: xhr
+        });
+      };
+      xhr.onprogress = function(e){
+        if (typeof progress == 'function') {
+          progress(e, file);
+        }
+      };
+      xhr.open('post'.toUpperCase(), 'api/Uploader');
+      xhr.send(form_data);
     });
   };
   files_handler = function(files, success, error, progress, state){
@@ -40,12 +51,12 @@
       file = files.shift();
       if (file) {
         uploader(file, progress, state).then(function(data){
-          return next_upload(data.url);
+          next_upload(data.url);
         })['catch'](function(e){
           if (error) {
-            error.call(error, L.file_uploading_failed(file.name, e.responseJSON.error_description), e, file);
+            error.call(error, L.file_uploading_failed(file.name, e.error_description), state.xhr, file);
           } else {
-            cs.ui.notify(L.file_uploading_failed(file.name, e.responseJSON.error_description), 'error');
+            cs.ui.notify(L.file_uploading_failed(file.name, e.error_description), 'error');
           }
           next_upload();
         });
@@ -134,12 +145,12 @@
     return {
       stop: function(){
         var ref$;
-        return state != null ? (ref$ = state.ajax) != null ? ref$.abort() : void 8 : void 8;
+        return state != null ? (ref$ = state.xhr) != null ? ref$.abort() : void 8 : void 8;
       },
       destroy: function(){
         var ref$;
         if (state != null) {
-          if ((ref$ = state.ajax) != null) {
+          if ((ref$ = state.xhr) != null) {
             ref$.abort();
           }
         }

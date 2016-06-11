@@ -17,12 +17,8 @@
     },
     ready: function(){
       var this$ = this;
-      $.ajax({
-        url: 'api/Blogs',
-        type: 'get_settings',
-        success: function(settings){
-          this$.settings = settings;
-        }
+      cs.api('get_settings api/Blogs').then(function(settings){
+        this$.settings = settings;
       });
     },
     sections_path: function(index){

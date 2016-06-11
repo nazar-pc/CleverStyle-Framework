@@ -7,19 +7,23 @@
  */
 L			= cs.Language('uploader_')
 uploader	= (file, progress, state) ->
-	form_data	= new FormData
-	form_data.append('file', file)
-	state.ajax = $.ajax(
-		url			: 'api/Uploader'
-		type		: 'post'
-		data		: form_data
-		xhrFields	:
-			onprogress	: (e) !->
-				progress?(e, file)
-		processData	: false
-		contentType	: false
-		error		: ->
-	)
+	new Promise (resolve, reject) !->
+		form_data	= new FormData
+		form_data.append('file', file)
+		xhr				= new XMLHttpRequest()
+		state.xhr		= xhr
+		xhr.onload		= !->
+			data	= JSON.parse(@responseText)
+			if @status >= 400
+				reject(data)
+			else
+				resolve(data)
+		xhr.onerror		= !->
+			reject({timeout, xhr})
+		xhr.onprogress	= (e) !->
+			progress?(e, file)
+		xhr.open('post'.toUpperCase(), 'api/Uploader')
+		xhr.send(form_data)
 files_handler = (files, success, error, progress, state) !->
 	uploaded_files = []
 	next_upload = (uploaded_file) !->
@@ -28,17 +32,14 @@ files_handler = (files, success, error, progress, state) !->
 		file = files.shift()
 		if file
 			uploader(file, progress, state)
-				.then(
-					(data) -> next_upload(data.url)
-				)
-				.catch(
-					(e) !->
-						if error
-							error.call(error, L.file_uploading_failed(file.name, e.responseJSON.error_description), e, file)
-						else
-							cs.ui.notify(L.file_uploading_failed(file.name, e.responseJSON.error_description), 'error')
-						next_upload()
-				)
+				.then (data) !->
+					next_upload(data.url)
+				.catch (e) !->
+					if error
+						error.call(error, L.file_uploading_failed(file.name, e.error_description), state.xhr, file)
+					else
+						cs.ui.notify(L.file_uploading_failed(file.name, e.error_description), 'error')
+					next_upload()
 		else
 			if uploaded_files.length
 				success(uploaded_files)
@@ -113,9 +114,9 @@ cs.file_upload	= (button, success, error, progress, multi, drop_element) ->
 			)
 	{
 		stop	: ->
-			state?.ajax?.abort()
+			state?.xhr?.abort()
 		destroy	: ->
-			state?.ajax?.abort()
+			state?.xhr?.abort()
 			$(button).off('click.cs-uploader')
 			if drop_element
 				$(drop_element)

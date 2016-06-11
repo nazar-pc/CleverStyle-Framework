@@ -25,15 +25,11 @@ Polymer(
 			)
 			@update_status()
 	update_status : !->
-		$.ajax(
-			url		: 'api/Blockchain_payment/' + $(@).data('id')
-			type	: 'get'
-			success	: (data) !~>
-				if parseInt(data.confirmed)
-					location.reload()
-					return
-				if parseInt(data.paid)
-					@set('progress_text', L.waiting_for_confirmations)
-				setTimeout(@~update_status, 5000)
-		)
+		cs.api('get api/Blockchain_payment/' + $(@).data('id')).then (data) !~>
+			if parseInt(data.confirmed)
+				location.reload()
+				return
+			if parseInt(data.paid)
+				@set('progress_text', L.waiting_for_confirmations)
+			setTimeout(@~update_status, 5000)
 );
