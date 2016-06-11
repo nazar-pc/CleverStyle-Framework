@@ -83,6 +83,7 @@ Polymer(
 				<script type="application/ld+json">#result</script>
 			</article>
 			"""
+			# TODO: Add nice scroll without jQuery and much code:)
 			document.querySelector('html').scrollTop	= @$.preview.offsetTop
 	_publish : !->
 		@_prepare()
