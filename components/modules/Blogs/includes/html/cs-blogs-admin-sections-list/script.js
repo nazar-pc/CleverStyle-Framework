@@ -23,12 +23,12 @@
       });
     },
     _add: function(){
-      $(cs.ui.simple_modal("<h3>" + this.L.addition_of_posts_section + "</h3>\n<cs-blogs-admin-sections-add-edit-form/>")).on('close', bind$(this, '_reload_sections'));
+      cs.ui.simple_modal("<h3>" + this.L.addition_of_posts_section + "</h3>\n<cs-blogs-admin-sections-add-edit-form/>").addEventListener('close', bind$(this, '_reload_sections'));
     },
     _edit: function(e){
       var title;
       title = this.L.editing_of_posts_section(e.model.item.title);
-      $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-blogs-admin-sections-add-edit-form id=\"" + e.model.item.id + "\"/>")).on('close', bind$(this, '_reload_sections'));
+      cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-blogs-admin-sections-add-edit-form id=\"" + e.model.item.id + "\"/>").addEventListener('close', bind$(this, '_reload_sections'));
     },
     _delete: function(e){
       var this$ = this;

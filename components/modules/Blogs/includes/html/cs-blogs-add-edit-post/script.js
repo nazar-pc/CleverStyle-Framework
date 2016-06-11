@@ -96,9 +96,7 @@
       cs.api('preview api/Blogs/posts', this.post).then(function(result){
         result = JSON.stringify(result);
         this$.$.preview.innerHTML = "<article is=\"cs-blogs-post\" preview>\n	<script type=\"application/ld+json\">" + result + "</script>\n</article>";
-        $('html, body').stop().animate({
-          scrollTop: this$.$.preview.offsetTop
-        }, 500);
+        document.querySelector('html').scrollTop = this$.$.preview.offsetTop;
       });
     },
     _publish: function(){

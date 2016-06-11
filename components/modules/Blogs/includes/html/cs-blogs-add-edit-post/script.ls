@@ -83,12 +83,7 @@ Polymer(
 				<script type="application/ld+json">#result</script>
 			</article>
 			"""
-			$('html, body')
-				.stop()
-				.animate(
-					scrollTop	: @$.preview.offsetTop
-					500
-				)
+			document.querySelector('html').scrollTop	= @$.preview.offsetTop
 	_publish : !->
 		@_prepare()
 		@post.mode	= 'publish'
