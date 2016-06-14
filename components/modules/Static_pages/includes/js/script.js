@@ -7,23 +7,38 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  $(function(){
-    var title, content;
-    title = $('.cs-static-pages-page-title');
-    if (title.length) {
-      window.onbeforeunload = function(){
-        return true;
-      };
+  var html_to_node, title, content, form;
+  html_to_node = function(html){
+    var div;
+    div = document.createElement('div');
+    div.innerHTML = html;
+    return div.firstChild;
+  };
+  title = document.querySelector('.cs-static-pages-page-title');
+  if (title) {
+    window.onbeforeunload = function(){
+      return true;
+    };
+  }
+  content = document.querySelector('.cs-static-pages-page-content');
+  form = document.querySelector('.cs-static-pages-page-form');
+  if (!form) {
+    return;
+  }
+  while (!form.matches('form')) {
+    form = form.parentElement;
+  }
+  form.addEventListener('submit', function(){
+    var title_input, content_textarea;
+    console.log(this);
+    window.onbeforeunload = null;
+    title_input = html_to_node('<input name="title" hidden>');
+    title_input.value = title.textContent;
+    this.appendChild(title_input);
+    if (!content.matches('textarea')) {
+      content_textarea = html_to_node('<textarea name="content" hidden></textarea>');
+      content_textarea.value = content.innerHTML;
+      this.append(content_textarea);
     }
-    content = $('.cs-static-pages-page-content');
-    $('.cs-static-pages-page-form').parents('form').submit(function(){
-      var form;
-      window.onbeforeunload = null;
-      form = $(this);
-      form.append($('<input name="title" hidden/>').val(title.text()));
-      if (!content.is('textarea')) {
-        form.append($('<textarea name="content" hidden/>').val(content.html()));
-      }
-    });
   });
 }).call(this);
