@@ -54,6 +54,7 @@
           }
           return results$;
         }()).join('&');
+        data = undefined;
       }
       xhr.open(method.toUpperCase(), path);
       if (data instanceof HTMLFormElement) {

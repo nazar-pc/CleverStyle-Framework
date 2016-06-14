@@ -42,6 +42,7 @@ cs.api = (method_path, data) ->
 				for param, value of data
 					encodeURIComponent(param) + '=' + encodeURIComponent(value)
 			).join('&')
+			data := undefined
 		xhr.open(method.toUpperCase(), path)
 		if data instanceof HTMLFormElement
 			xhr.send(new FormData(data))
