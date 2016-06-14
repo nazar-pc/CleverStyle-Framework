@@ -103,6 +103,9 @@
       return inputs;
     },
     _active_changed: function(){
+      if (!this.local_input) {
+        this.local_input = this.querySelector('input');
+      }
       if (this.local_input.checked === this.active) {
         return;
       }
