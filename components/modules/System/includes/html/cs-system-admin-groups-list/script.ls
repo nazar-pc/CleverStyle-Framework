@@ -24,16 +24,16 @@ Polymer(
 				group.allow_to_delete	= group.id !~= ADMIN_GROUP_ID && group.id !~= USER_GROUP_ID
 			@set('groups', groups)
 	add_group : !->
-		$(cs.ui.simple_modal("""
+		cs.ui.simple_modal("""
 			<h3>#{L.group_addition}</h3>
 			<cs-system-admin-groups-form/>
-		""")).on('close', @~reload)
+		""").addEventListener('close', @~reload)
 	edit_group : (e) !->
 		group	= e.model.group
-		$(cs.ui.simple_modal("""
+		cs.ui.simple_modal("""
 			<h3>#{L.editing_group(group.title)}</h3>
 			<cs-system-admin-groups-form group_id="#{group.id}"/>
-		""")).on('close', @~reload)
+		""").addEventListener('close', @~reload)
 	delete_group : (e) !->
 		group	= e.model.group
 		cs.ui.confirm(L.sure_delete_group(group.title))

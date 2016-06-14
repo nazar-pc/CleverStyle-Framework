@@ -16,7 +16,7 @@
         var category, this$ = this;
         category = component_type + 's';
         cs.api(["get			api/System/admin/" + category + "/" + component + "/dependencies", 'get_settings	api/System/admin/system']).then(function(arg$){
-          var dependencies, settings, translation_key, title, message, message_more, modal;
+          var dependencies, settings, translation_key, title, message, message_more, modal, i$, ref$, len$, p;
           dependencies = arg$[0], settings = arg$[1];
           delete dependencies.db_support;
           delete dependencies.storage_support;
@@ -50,14 +50,17 @@
           modal.ok.innerHTML = L[!message ? 'enable' : 'force_enable_not_recommended'];
           modal.ok.primary = !message;
           modal.cancel.primary = !modal.ok.primary;
-          $(modal).find('p:not([class])').addClass('cs-text-error cs-block-error');
+          for (i$ = 0, len$ = (ref$ = modal.querySelectorAll('p:not([class])')).length; i$ < len$; ++i$) {
+            p = ref$[i$];
+            p.classList.add('cs-text-error', 'cs-block-error');
+          }
         });
       },
       _disable_component: function(component, component_type){
         var category, this$ = this;
         category = component_type + 's';
         cs.api(["get			api/System/admin/" + category + "/" + component + "/dependent_packages", 'get_settings	api/System/admin/system']).then(function(arg$){
-          var dependent_packages, settings, translation_key, title, message, type, packages, i$, len$, _package, modal;
+          var dependent_packages, settings, translation_key, title, message, type, packages, i$, len$, _package, modal, ref$, p;
           dependent_packages = arg$[0], settings = arg$[1];
           translation_key = component_type === 'module' ? 'modules_disabling_of_module' : 'plugins_disabling_of_plugin';
           title = "<h3>" + L[translation_key](component) + "</h3>";
@@ -93,7 +96,10 @@
           modal.ok.innerHTML = L[!message ? 'disable' : 'force_disable_not_recommended'];
           modal.ok.primary = !message;
           modal.cancel.primary = !modal.ok.primary;
-          $(modal).find('p').addClass('cs-text-error cs-block-error');
+          for (i$ = 0, len$ = (ref$ = modal.querySelectorAll('p')).length; i$ < len$; ++i$) {
+            p = ref$[i$];
+            p.classList.add('cs-text-error', 'cs-block-error');
+          }
         });
       },
       _update_component: function(existing_meta, new_meta){
@@ -101,7 +107,7 @@
         component = new_meta['package'];
         category = new_meta.category;
         cs.api(["get			api/System/admin/" + category + "/" + component + "/update_dependencies", 'get_settings	api/System/admin/system']).then(function(arg$){
-          var dependencies, settings, translation_key, title, message, message_more, modal;
+          var dependencies, settings, translation_key, title, message, message_more, modal, i$, ref$, len$, p;
           dependencies = arg$[0], settings = arg$[1];
           delete dependencies.db_support;
           delete dependencies.storage_support;
@@ -168,7 +174,10 @@
           modal.ok.innerHTML = L[!message ? 'yes' : 'force_update_not_recommended'];
           modal.ok.primary = !message;
           modal.cancel.primary = !modal.ok.primary;
-          $(modal).find('p:not([class])').addClass('cs-text-error cs-block-error');
+          for (i$ = 0, len$ = (ref$ = modal.querySelectorAll('p:not([class])')).length; i$ < len$; ++i$) {
+            p = ref$[i$];
+            p.classList.add('cs-text-error', 'cs-block-error');
+          }
         });
       },
       _remove_completely_component: function(component, category){

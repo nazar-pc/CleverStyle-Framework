@@ -18,18 +18,18 @@ Polymer(
 	ready : !->
 		@_reload()
 	_init_sortable : !->
+		($, html5sortable) <~! require(['jquery', 'html5sortable'], _)
 		$shadowRoot	= $(@shadowRoot)
-		if $shadowRoot.find('[group] > div:not(:first)').length < @blocks_count
-			setTimeout(@_init_sortable.bind(@), 100)
+		if @blocks_count == undefined || $shadowRoot.find('[group] > div:not(:first)').length < @blocks_count
+			setTimeout(@~_init_sortable, 100)
 			return
 		$group	= $shadowRoot.find('[group]')
-		<-! require(['html5sortable'])
-		$group
-			.sortable(
-				connectWith	: 'blocks-list'
-				items		: 'div:not(:first)',
-				placeholder	: '<div class="cs-block-primary">'
-			)
+		html5sortable(
+			$group.get()
+			connectWith	: 'blocks-list'
+			items		: 'div:not(:first)',
+			placeholder	: '<div class="cs-block-primary">'
+		)
 			.on('sortupdate', !->
 				get_indexes	= ->
 					$group.filter("[group=#it]").children('div:not(:first)').map(-> @index).get()
@@ -64,20 +64,16 @@ Polymer(
 			<cs-system-admin-permissions-for-item label="#{e.model.item.index}" group="Block"/>
 		""")
 	_add_block : !->
-		$(cs.ui.simple_modal("""
+		cs.ui.simple_modal("""
 			<h3>#{L.block_addition}</h3>
 			<cs-system-admin-blocks-form/>
-		""")).on('close', !~>
-			@_reload()
-		)
+		""").addEventListener('close', @~_reload)
 	_edit_block : (e) !->
 		title	= L.editing_block(e.model.item.title)
-		$(cs.ui.simple_modal("""
+		cs.ui.simple_modal("""
 			<h3>#title</h3>
 			<cs-system-admin-blocks-form index="#{e.model.item.index}"/>
-		""")).on('close', !~>
-			@_reload()
-		)
+		""").addEventListener('close', @~_reload)
 	_delete_block : (e) !->
 		cs.ui.confirm(L.sure_to_delete_block(e.model.item.title))
 			.then -> cs.api('delete api/System/admin/blocks/' + e.model.item.index)

@@ -44,18 +44,18 @@ Polymer(
 		cs.api("#method api/System/admin/storages#suffix", @storage).then !->
 			cs.ui.notify(L.changes_saved, 'success', 5)
 	_test_connection : (e) !->
-		$modal	= $(cs.ui.simple_modal("""<div>
+		$modal	= cs.ui.simple_modal("""<div>
 			<h3 class="cs-text-center">#{L.test_connection}</h3>
 			<progress is="cs-progress" infinite></progress>
-		</div>"""))
+		</div>""")
 		cs.api('test api/System/admin/storages', @storage)
 			.then !->
-				$modal
-					.find('progress')
-					.replaceWith("""<p class="cs-text-center cs-block-success cs-text-success" style=text-transform:capitalize;">#{L.success}</p>""")
+				modal.querySelector('progress').outerHTML	= """
+					<p class="cs-text-center cs-block-success cs-text-success" style=text-transform:capitalize;">#{L.success}</p>
+				"""
 			.catch (o) !->
 				clearTimeout(o.timeout)
-				$modal
-					.find('progress')
-					.replaceWith("""<p class="cs-text-center cs-block-error cs-text-error" style=text-transform:capitalize;">#{L.failed}</p>""")
+				modal.querySelector('progress').outerHTML	= """
+					<p class="cs-text-center cs-block-error cs-text-error" style=text-transform:capitalize;">#{L.failed}</p>
+				"""
 )

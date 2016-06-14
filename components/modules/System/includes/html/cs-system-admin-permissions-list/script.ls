@@ -37,18 +37,18 @@ Polymer(
 			@set('permissions', permissions_list)
 			@permissions_loaded	= true
 	add_permission : !->
-		$(cs.ui.simple_modal("""
+		cs.ui.simple_modal("""
 			<h3>#{L.adding_permission}</h3>
 			<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
 			<cs-system-admin-permissions-form/>
-		""")).on('close', @~reload)
+		""").addEventListener('close', @~reload)
 	edit_permission : (e) !->
 		permission	= e.model.permission
-		$(cs.ui.simple_modal("""
+		cs.ui.simple_modal("""
 			<h3>#{L.editing_permission(permission.group + '/' + permission.label)}</h3>
 			<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
 			<cs-system-admin-permissions-form permission_id="#{permission.id}"/>
-		""")).on('close', @~reload)
+		""").addEventListener('close', @~reload)
 	delete_permission : (e) !->
 		permission	= e.model.permission
 		cs.ui.confirm(

@@ -40,16 +40,16 @@
       });
     },
     _init_sortable: function(){
-      var $shadowRoot, $group;
-      $shadowRoot = $(this.shadowRoot);
-      if ($shadowRoot.find('#user-groups > div:not(:first)').length < this.user_groups.length || $shadowRoot.find('#other-groups > div:not(:first)').length < this.other_groups.length) {
-        setTimeout(this._init_sortable.bind(this), 100);
-        return;
-      }
-      $group = $shadowRoot.find('#user-groups, #other-groups');
-      require(['html5sortable'], function(){
-        var this$ = this;
-        $group.sortable({
+      var this$ = this;
+      require(['jquery', 'html5sortable'], function($, html5sortable){
+        var $shadowRoot, $group;
+        $shadowRoot = $(this$.shadowRoot);
+        if ($shadowRoot.find('#user-groups > div:not(:first)').length < this$.user_groups.length || $shadowRoot.find('#other-groups > div:not(:first)').length < this$.other_groups.length) {
+          setTimeout(this$._init_sortable.bind(this$), 100);
+          return;
+        }
+        $group = $shadowRoot.find('#user-groups, #other-groups');
+        html5sortable($group.get(), {
           connectWith: 'user-groups-list',
           items: 'div:not(:first)',
           placeholder: '<div class="cs-block-primary">'
@@ -60,12 +60,19 @@
       });
     },
     save: function(){
-      var groups, this$ = this;
-      groups = $(this.$['user-groups']).children('div:not(:first)').map(function(){
-        return this.group;
-      }).get();
-      cs.api("put api/System/admin/users/" + this.user + "/groups", {
-        groups: groups
+      var this$ = this;
+      require(['jquery']).then(function(arg$){
+        var $;
+        $ = arg$[0];
+        return $(this$.$['user-groups']).children('div:not(:first)').map(function(){
+          return this.group;
+        }).get();
+      }).then(function(arg$){
+        var groups;
+        groups = arg$[0];
+        return cs.api("put api/System/admin/users/" + this$.user + "/groups", {
+          groups: groups
+        });
       }).then(function(){
         cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });

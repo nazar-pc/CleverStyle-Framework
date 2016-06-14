@@ -48,7 +48,10 @@
       });
     },
     _type_change: function(type){
-      $(this.shadowRoot).find('.html, .raw_html').prop('hidden', true).filter('.' + type).prop('hidden', false);
+      var x$;
+      x$ = this.shadowRoot;
+      x$.querySelector('.html').hidden = type !== 'html';
+      x$.querySelector('.raw_html').hidden = type !== 'raw_html';
     },
     _save: function(){
       var index, method, suffix, this$ = this;

@@ -31,12 +31,12 @@
       });
     },
     add_group: function(){
-      $(cs.ui.simple_modal("<h3>" + L.group_addition + "</h3>\n<cs-system-admin-groups-form/>")).on('close', bind$(this, 'reload'));
+      cs.ui.simple_modal("<h3>" + L.group_addition + "</h3>\n<cs-system-admin-groups-form/>").addEventListener('close', bind$(this, 'reload'));
     },
     edit_group: function(e){
       var group;
       group = e.model.group;
-      $(cs.ui.simple_modal("<h3>" + L.editing_group(group.title) + "</h3>\n<cs-system-admin-groups-form group_id=\"" + group.id + "\"/>")).on('close', bind$(this, 'reload'));
+      cs.ui.simple_modal("<h3>" + L.editing_group(group.title) + "</h3>\n<cs-system-admin-groups-form group_id=\"" + group.id + "\"/>").addEventListener('close', bind$(this, 'reload'));
     },
     delete_group: function(e){
       var group, this$ = this;

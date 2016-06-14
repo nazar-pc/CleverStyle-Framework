@@ -23,19 +23,14 @@
       });
     },
     _add: function(){
-      var this$ = this;
-      $(cs.ui.simple_modal("<h3>" + L.adding_of_storage + "</h3>\n<cs-system-admin-storages-form add/>")).on('close', function(){
-        this$.reload();
-      });
+      cs.ui.simple_modal("<h3>" + L.adding_of_storage + "</h3>\n<cs-system-admin-storages-form add/>").addEventListener('close', bind$(this, 'reload'));
     },
     _edit: function(e){
-      var storage_model, storage, name, this$ = this;
+      var storage_model, storage, name;
       storage_model = this.$.storages_list.modelForElement(e.target);
       storage = e.model.storage || storage_model.storage;
       name = storage.host + '/' + storage.connection;
-      $(cs.ui.simple_modal("<h3>" + L.editing_of_storage(name) + "</h3>\n<cs-system-admin-storages-form storage-index=\"" + storage.index + "\"/>")).on('close', function(){
-        this$.reload();
-      });
+      cs.ui.simple_modal("<h3>" + L.editing_of_storage(name) + "</h3>\n<cs-system-admin-storages-form storage-index=\"" + storage.index + "\"/>").addEventListener('close', bind$(this, 'reload'));
     },
     _delete: function(e){
       var storage_model, storage, name, this$ = this;
@@ -50,4 +45,7 @@
       });
     }
   });
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

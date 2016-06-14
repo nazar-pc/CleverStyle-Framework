@@ -175,28 +175,37 @@
       return Math.ceil(users_count / search_limit);
     },
     add_user: function(){
-      $(cs.ui.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>")).on('close', bind$(this, 'search'));
+      cs.ui.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>").addEventListener('close', bind$(this, 'search'));
     },
     edit_user: function(e){
-      var $sender, index, user, title;
-      $sender = $(e.currentTarget);
-      index = $sender.closest('[data-user-index]').data('user-index');
+      var data, index, user, title;
+      data = e.currentTarget.parentElement;
+      while (!data.matches('[data-user-index]')) {
+        data = data.parentElement;
+      }
+      index = data.dataset.userIndex;
       user = this.users[index];
       title = L.editing_of_user_information(user.username || user.login);
-      $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>")).on('close', bind$(this, 'search'));
+      cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>").addEventListener('close', bind$(this, 'search'));
     },
     edit_groups: function(e){
-      var $sender, index, user, title;
-      $sender = $(e.currentTarget);
-      index = $sender.closest('[data-user-index]').data('user-index');
+      var data, index, user, title;
+      data = e.currentTarget.parentElement;
+      while (!data.matches('[data-user-index]')) {
+        data = data.parentElement;
+      }
+      index = data.dataset.userIndex;
       user = this.users[index];
       title = L.user_groups(user.username || user.login);
       cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-groups-form user=\"" + user.id + "\" for=\"user\"/>");
     },
     edit_permissions: function(e){
-      var $sender, index, user, title;
-      $sender = $(e.currentTarget);
-      index = $sender.closest('[data-user-index]').data('user-index');
+      var data, index, user, title;
+      data = e.currentTarget.parentElement;
+      while (!data.matches('[data-user-index]')) {
+        data = data.parentElement;
+      }
+      index = data.dataset.userIndex;
       user = this.users[index];
       title = L.permissions_for_user(user.username || user.login);
       cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for user=\"" + user.id + "\" for=\"user\"/>");

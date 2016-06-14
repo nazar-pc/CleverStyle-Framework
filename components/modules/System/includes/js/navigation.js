@@ -8,62 +8,84 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  $(function(){
-    var url_map, $buttons, $links, title_format, L;
-    url_map = {
-      "admin/System/components/modules": "cs-system-admin-modules-list",
-      "admin/System/components/plugins": "cs-system-admin-plugins-list",
-      "admin/System/components/blocks": "cs-system-admin-blocks-list",
-      "admin/System/components/databases": "cs-system-admin-databases-list",
-      "admin/System/components/storages": "cs-system-admin-storages-list",
-      "admin/System/general/site_info": "cs-system-admin-site-info",
-      "admin/System/general/system": "cs-system-admin-system",
-      "admin/System/general/optimization": "cs-system-admin-optimization",
-      "admin/System/general/appearance": "cs-system-admin-themes",
-      "admin/System/general/languages": "cs-system-admin-languages",
-      "admin/System/general/about_server": "cs-system-admin-about-server",
-      "admin/System/users/general": "cs-system-admin-users-general",
-      "admin/System/users/users": "cs-system-admin-users-list",
-      "admin/System/users/groups": "cs-system-admin-groups-list",
-      "admin/System/users/permissions": "cs-system-admin-permissions-list",
-      "admin/System/users/security": "cs-system-admin-security",
-      "admin/System/users/mail": "cs-system-admin-mail"
-    };
-    $buttons = $('body > header > nav > button');
-    $links = $('body > header > nav a').mousedown(function(e){
-      var href;
-      if (e.which === 1) {
-        e.preventDefault();
-        href = this.getAttribute('href');
-        go(href);
-        history.pushState({}, document.title, href);
-      }
-    }).click(function(e){
-      return e.which !== 1;
-    });
-    title_format = document.title;
-    L = cs.Language('system_admin_');
-    function go(href){
-      var href_splitted;
-      href_splitted = href.split('/');
-      document.title = sprintf(title_format, L[href_splitted[2]], L[href_splitted[3]]);
-      $('#main_content > div').html('<' + url_map[href] + '/>');
-      $links.prop('primary', false);
-      $buttons.prop('primary', false);
-      $links.filter("[href='" + href + "']").prop('primary', true).parent().parent().prev().prop('primary', true);
+  var url_map, buttons, links, i$, len$, link, title_format, L;
+  url_map = {
+    "admin/System/components/modules": "cs-system-admin-modules-list",
+    "admin/System/components/plugins": "cs-system-admin-plugins-list",
+    "admin/System/components/blocks": "cs-system-admin-blocks-list",
+    "admin/System/components/databases": "cs-system-admin-databases-list",
+    "admin/System/components/storages": "cs-system-admin-storages-list",
+    "admin/System/general/site_info": "cs-system-admin-site-info",
+    "admin/System/general/system": "cs-system-admin-system",
+    "admin/System/general/optimization": "cs-system-admin-optimization",
+    "admin/System/general/appearance": "cs-system-admin-themes",
+    "admin/System/general/languages": "cs-system-admin-languages",
+    "admin/System/general/about_server": "cs-system-admin-about-server",
+    "admin/System/users/general": "cs-system-admin-users-general",
+    "admin/System/users/users": "cs-system-admin-users-list",
+    "admin/System/users/groups": "cs-system-admin-groups-list",
+    "admin/System/users/permissions": "cs-system-admin-permissions-list",
+    "admin/System/users/security": "cs-system-admin-security",
+    "admin/System/users/mail": "cs-system-admin-mail"
+  };
+  buttons = document.querySelectorAll('body > header > nav > button');
+  links = document.querySelectorAll('body > header > nav a');
+  for (i$ = 0, len$ = links.length; i$ < len$; ++i$) {
+    link = links[i$];
+    link.addEventListener('mousedown', fn$);
+    link.addEventListener('click', fn1$);
+  }
+  title_format = document.title;
+  L = cs.Language('system_admin_');
+  function go(href){
+    var href_splitted, i$, ref$, len$, button, link;
+    href_splitted = href.split('/');
+    document.title = sprintf(title_format, L[href_splitted[2]], L[href_splitted[3]]);
+    document.querySelector('#main_content > div').innerHTML = '<' + url_map[href] + '/>';
+    for (i$ = 0, len$ = (ref$ = buttons).length; i$ < len$; ++i$) {
+      button = ref$[i$];
+      button.primary = false;
     }
-    function popstate(e){
-      var href;
-      if (location.href.indexOf('admin/System/') !== -1) {
-        go(location.href.match(/admin\/System\/\w+\/\w+/)[0]);
+    for (i$ = 0, len$ = (ref$ = links).length; i$ < len$; ++i$) {
+      link = ref$[i$];
+      if (!link.matches("[href='" + href + "']")) {
+        link.primary = false;
       } else {
-        href = location.href.split('?')[0];
-        if (href === document.baseURI + 'admin' || href === document.baseURI + 'admin/System') {
-          go('admin/System/components/modules');
-        }
+        link.primary = true;
+        link.parentElement.parentElement.previousElementSibling.primary = true;
       }
     }
-    addEventListener('popstate', popstate);
-    popstate();
-  });
+  }
+  function popstate(e){
+    var href;
+    if (location.href.indexOf('admin/System/') !== -1) {
+      go(location.href.match(/admin\/System\/\w+\/\w+/)[0]);
+    } else {
+      href = location.href.split('?')[0];
+      console.log(href);
+      if (href.substr(-1) === '/') {
+        href = href.substr(0, href.length - 1);
+      }
+      if (href === document.baseURI + 'admin' || href === document.baseURI + 'admin/System') {
+        go('admin/System/components/modules');
+      }
+    }
+  }
+  addEventListener('popstate', popstate);
+  popstate();
+  function fn$(e){
+    var href;
+    if (e.which === 1) {
+      e.preventDefault();
+      href = this.getAttribute('href');
+      go(href);
+      history.pushState({}, document.title, href);
+    }
+  }
+  function fn1$(e){
+    if (e.which === 1) {
+      e.preventDefault();
+      return e.stopPropagation();
+    }
+  }
 }).call(this);

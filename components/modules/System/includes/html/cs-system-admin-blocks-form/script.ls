@@ -42,7 +42,9 @@ Polymer(
 						state	: 0
 			.then (@block) !~>
 	_type_change : (type) !->
-		$(@shadowRoot).find('.html, .raw_html').prop('hidden', true).filter('.' + type).prop('hidden', false)
+		@shadowRoot
+			..querySelector('.html').hidden		= type != 'html'
+			..querySelector('.raw_html').hidden	= type != 'raw_html'
 	_save : !->
 		index	= @index
 		method	= if index then 'put' else 'post'

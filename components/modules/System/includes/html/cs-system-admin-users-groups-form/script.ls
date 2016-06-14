@@ -33,6 +33,7 @@ Polymer(
 			@other_groups	= other_groups
 			@_init_sortable()
 	_init_sortable : !->
+		($, html5sortable) <~! require(['jquery', 'html5sortable'], _)
 		$shadowRoot	= $(@shadowRoot)
 		if (
 			$shadowRoot.find('#user-groups > div:not(:first)').length < @user_groups.length ||
@@ -41,19 +42,20 @@ Polymer(
 			setTimeout(@_init_sortable.bind(@), 100)
 			return
 		$group	= $shadowRoot.find('#user-groups, #other-groups')
-		<-! require(['html5sortable'])
-		$group
-			.sortable(
-				connectWith	: 'user-groups-list'
-				items		: 'div:not(:first)',
-				placeholder	: '<div class="cs-block-primary">'
-			)
+		html5sortable(
+			$group.get()
+			connectWith	: 'user-groups-list'
+			items		: 'div:not(:first)',
+			placeholder	: '<div class="cs-block-primary">'
+		)
 			.on('sortupdate', !~>
 				$(@$['user-groups']).children('div:not(:first)').removeClass('cs-block-warning cs-text-warning').addClass('cs-block-success cs-text-success')
 				$(@$['other-groups']).children('div:not(:first)').removeClass('cs-block-success cs-text-success').addClass('cs-block-warning cs-text-warning')
 			)
 	save : !->
-		groups = $(@$['user-groups']).children('div:not(:first)').map(-> @group).get()
-		cs.api("put api/System/admin/users/#{@user}/groups", {groups}).then !~>
-			cs.ui.notify(@L.changes_saved, 'success', 5)
+		require(['jquery'])
+			.then ([$]) ~> $(@$['user-groups']).children('div:not(:first)').map(-> @group).get()
+			.then ([groups]) ~> cs.api("put api/System/admin/users/#{@user}/groups", {groups})
+			.then !~>
+				cs.ui.notify(@L.changes_saved, 'success', 5)
 )

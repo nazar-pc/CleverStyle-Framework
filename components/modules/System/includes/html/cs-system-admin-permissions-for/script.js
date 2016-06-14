@@ -61,13 +61,40 @@
       });
     },
     invert: function(e){
-      $(e.currentTarget).closest('div').find(':radio:not(:checked)[value!=-1]').parent().click();
+      var div, radios, i$, len$, radio;
+      div = e.currentTarget;
+      while (!div.matches('div')) {
+        div = div.parentElement;
+      }
+      radios = Array.prototype.filter.call(div.querySelectorAll("[type=radio]:not([value='-1'])"), function(it){
+        return !it.checked;
+      });
+      for (i$ = 0, len$ = radios.length; i$ < len$; ++i$) {
+        radio = radios[i$];
+        radio.parentElement.click();
+      }
     },
     allow_all: function(e){
-      $(e.currentTarget).closest('div').find(':radio[value=1]').parent().click();
+      var div, i$, ref$, len$, radio;
+      div = e.currentTarget;
+      while (!div.matches('div')) {
+        div = div.parentElement;
+      }
+      for (i$ = 0, len$ = (ref$ = div.querySelectorAll("[type=radio][value='1']")).length; i$ < len$; ++i$) {
+        radio = ref$[i$];
+        radio.parentElement.click();
+      }
     },
     deny_all: function(e){
-      $(e.currentTarget).closest('div').find(':radio[value=0]').parent().click();
+      var div, i$, ref$, len$, radio;
+      div = e.currentTarget;
+      while (!div.matches('div')) {
+        div = div.parentElement;
+      }
+      for (i$ = 0, len$ = (ref$ = div.querySelectorAll("[type=radio][value='0']")).length; i$ < len$; ++i$) {
+        radio = ref$[i$];
+        radio.parentElement.click();
+      }
     },
     permission_state: function(id, expected){
       var permission;

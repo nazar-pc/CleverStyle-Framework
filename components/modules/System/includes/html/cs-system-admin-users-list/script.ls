@@ -139,35 +139,41 @@ Polymer(
 	_search_pages : (users_count, search_limit) ->
 		Math.ceil(users_count / search_limit)
 	add_user : !->
-		$(cs.ui.simple_modal("""
+		cs.ui.simple_modal("""
 			<h3>#{L.adding_a_user}</h3>
 			<cs-system-admin-users-add-user-form/>
-		""")).on('close', @~search)
+		""").addEventListener('close', @~search)
 	edit_user : (e) !->
-		$sender	= $(e.currentTarget)
-		index	= $sender.closest('[data-user-index]').data('user-index')
+		data	= e.currentTarget.parentElement
+		while !data.matches('[data-user-index]')
+			data	= data.parentElement
+		index	= data.dataset.user-index
 		user	= @users[index]
 		title	= L.editing_of_user_information(
 			user.username || user.login
 		)
-		$(cs.ui.simple_modal("""
+		cs.ui.simple_modal("""
 			<h2>#{title}</h2>
 			<cs-system-admin-users-edit-user-form user_id="#{user.id}"/>
-		""")).on('close', @~search)
+		""").addEventListener('close', @~search)
 	edit_groups : (e) !->
-		$sender		= $(e.currentTarget)
-		index		= $sender.closest('[data-user-index]').data('user-index')
-		user		= @users[index]
-		title		= L.user_groups(user.username || user.login)
+		data	= e.currentTarget.parentElement
+		while !data.matches('[data-user-index]')
+			data	= data.parentElement
+		index	= data.dataset.user-index
+		user	= @users[index]
+		title	= L.user_groups(user.username || user.login)
 		cs.ui.simple_modal("""
 			<h2>#{title}</h2>
 			<cs-system-admin-users-groups-form user="#{user.id}" for="user"/>
 		""")
 	edit_permissions : (e) !->
-		$sender		= $(e.currentTarget)
-		index		= $sender.closest('[data-user-index]').data('user-index')
-		user		= @users[index]
-		title		= L.permissions_for_user(
+		data	= e.currentTarget.parentElement
+		while !data.matches('[data-user-index]')
+			data	= data.parentElement
+		index	= data.dataset.user-index
+		user	= @users[index]
+		title	= L.permissions_for_user(
 			user.username || user.login
 		)
 		cs.ui.simple_modal("""

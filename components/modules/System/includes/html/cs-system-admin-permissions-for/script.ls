@@ -41,20 +41,27 @@ Polymer(
 		cs.api("put api/System/admin/#{@for}s/#{@[@for]}/permissions", @$.form).then !~>
 			cs.ui.notify(@L.changes_saved, 'success', 5)
 	invert : (e) !->
-		$(e.currentTarget).closest('div')
-			.find(':radio:not(:checked)[value!=-1]')
-				.parent()
-					.click()
+		div	= e.currentTarget
+		while !div.matches('div')
+			div	= div.parentElement
+		radios = Array::filter.call(
+			div.querySelectorAll("[type=radio]:not([value='-1'])")
+			-> !it.checked
+		)
+		for radio in radios
+			radio.parentElement.click()
 	allow_all : (e) !->
-		$(e.currentTarget).closest('div')
-			.find(':radio[value=1]')
-				.parent()
-					.click()
+		div	= e.currentTarget
+		while !div.matches('div')
+			div	= div.parentElement
+		for radio in div.querySelectorAll("[type=radio][value='1']")
+			radio.parentElement.click()
 	deny_all : (e) !->
-		$(e.currentTarget).closest('div')
-			.find(':radio[value=0]')
-				.parent()
-					.click()
+		div	= e.currentTarget
+		while !div.matches('div')
+			div	= div.parentElement
+		for radio in div.querySelectorAll("[type=radio][value='0']")
+			radio.parentElement.click()
 	permission_state : (id, expected) ->
 		permission	= @permissions[id]
 		permission ~= expected ||

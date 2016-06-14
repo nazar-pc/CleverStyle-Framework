@@ -73,13 +73,13 @@
       }
     },
     _test_connection: function(e){
-      var $modal;
-      $modal = $(cs.ui.simple_modal("<div>\n	<h3 class=\"cs-text-center\">" + L.test_connection + "</h3>\n	<progress is=\"cs-progress\" infinite></progress>\n</div>"));
+      var modal;
+      modal = cs.ui.simple_modal("<div>\n	<h3 class=\"cs-text-center\">" + L.test_connection + "</h3>\n	<progress is=\"cs-progress\" infinite></progress>\n</div>");
       cs.api('test api/System/admin/databases', this.database).then(function(){
-        $modal.find('progress').replaceWith("<p class=\"cs-text-center cs-block-success cs-text-success\" style=text-transform:capitalize;\">" + L.success + "</p>");
+        modal.querySelector('progress').outerHTML = "<p class=\"cs-text-center cs-block-success cs-text-success\" style=text-transform:capitalize;\">" + L.success + "</p>";
       })['catch'](function(o){
         clearTimeout(o.timeout);
-        $modal.find('progress').replaceWith("<p class=\"cs-text-center cs-block-error cs-text-error\" style=text-transform:capitalize;\">" + L.failed + "</p>");
+        modal.querySelector('progress').outerHTML = "<p class=\"cs-text-center cs-block-error cs-text-error\" style=text-transform:capitalize;\">" + L.failed + "</p>";
       });
     }
   });

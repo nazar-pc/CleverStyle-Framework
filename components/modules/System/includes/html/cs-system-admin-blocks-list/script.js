@@ -21,15 +21,16 @@
       this._reload();
     },
     _init_sortable: function(){
-      var $shadowRoot, $group;
-      $shadowRoot = $(this.shadowRoot);
-      if ($shadowRoot.find('[group] > div:not(:first)').length < this.blocks_count) {
-        setTimeout(this._init_sortable.bind(this), 100);
-        return;
-      }
-      $group = $shadowRoot.find('[group]');
-      require(['html5sortable'], function(){
-        $group.sortable({
+      var this$ = this;
+      require(['jquery', 'html5sortable'], function($, html5sortable){
+        var $shadowRoot, $group;
+        $shadowRoot = $(this$.shadowRoot);
+        if (this$.blocks_count === undefined || $shadowRoot.find('[group] > div:not(:first)').length < this$.blocks_count) {
+          setTimeout(bind$(this$, '_init_sortable'), 100);
+          return;
+        }
+        $group = $shadowRoot.find('[group]');
+        html5sortable($group.get(), {
           connectWith: 'blocks-list',
           items: 'div:not(:first)',
           placeholder: '<div class="cs-block-primary">'
@@ -89,17 +90,12 @@
       cs.ui.simple_modal("<h3>" + title + "</h3>\n<cs-system-admin-permissions-for-item label=\"" + e.model.item.index + "\" group=\"Block\"/>");
     },
     _add_block: function(){
-      var this$ = this;
-      $(cs.ui.simple_modal("<h3>" + L.block_addition + "</h3>\n<cs-system-admin-blocks-form/>")).on('close', function(){
-        this$._reload();
-      });
+      cs.ui.simple_modal("<h3>" + L.block_addition + "</h3>\n<cs-system-admin-blocks-form/>").addEventListener('close', bind$(this, '_reload'));
     },
     _edit_block: function(e){
-      var title, this$ = this;
+      var title;
       title = L.editing_block(e.model.item.title);
-      $(cs.ui.simple_modal("<h3>" + title + "</h3>\n<cs-system-admin-blocks-form index=\"" + e.model.item.index + "\"/>")).on('close', function(){
-        this$._reload();
-      });
+      cs.ui.simple_modal("<h3>" + title + "</h3>\n<cs-system-admin-blocks-form index=\"" + e.model.item.index + "\"/>").addEventListener('close', bind$(this, '_reload'));
     },
     _delete_block: function(e){
       var this$ = this;
@@ -111,4 +107,7 @@
       });
     }
   });
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

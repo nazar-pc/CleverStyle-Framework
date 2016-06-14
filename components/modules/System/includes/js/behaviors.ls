@@ -49,7 +49,8 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				modal.ok.innerHTML		= L[if !message then 'enable' else 'force_enable_not_recommended']
 				modal.ok.primary		= !message
 				modal.cancel.primary	= !modal.ok.primary
-				$(modal).find('p:not([class])').addClass('cs-text-error cs-block-error')
+				for p in modal.querySelectorAll('p:not([class])')
+					p.classList.add('cs-text-error', 'cs-block-error')
 		# Module/plugin disabling
 		_disable_component : (component, component_type) !->
 			category			= component_type + 's'
@@ -88,7 +89,8 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				modal.ok.innerHTML		= L[if !message then 'disable' else 'force_disable_not_recommended']
 				modal.ok.primary		= !message
 				modal.cancel.primary	= !modal.ok.primary
-				$(modal).find('p').addClass('cs-text-error cs-block-error')
+				for p in modal.querySelectorAll('p')
+					p.classList.add('cs-text-error', 'cs-block-error')
 		# Module/plugin/theme update
 		_update_component : (existing_meta, new_meta) !->
 			component		= new_meta.package
@@ -150,7 +152,8 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				modal.ok.innerHTML		= L[if !message then 'yes' else 'force_update_not_recommended']
 				modal.ok.primary		= !message
 				modal.cancel.primary	= !modal.ok.primary
-				$(modal).find('p:not([class])').addClass('cs-text-error cs-block-error')
+				for p in modal.querySelectorAll('p:not([class])')
+					p.classList.add('cs-text-error', 'cs-block-error')
 		# Module/plugin/theme complete removal
 		_remove_completely_component : (component, category) !->
 			translation_key		=
