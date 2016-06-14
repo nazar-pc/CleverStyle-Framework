@@ -7,7 +7,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var L, uploader, files_handler;
+  var L, uploader, files_handler, _on, _off;
   L = cs.Language('uploader_');
   uploader = function(file, progress, state){
     return new Promise(function(resolve, reject){
@@ -70,6 +70,20 @@
     };
     next_upload();
   };
+  _on = function(element, event, callback){
+    if (element.addEventListener) {
+      element.addEventListener(event, callback);
+    } else if (element.on) {
+      element.on(event, callback);
+    }
+  };
+  _off = function(element, event, callback){
+    if (element.removeEventListener) {
+      element.removeEventListener(event, callback);
+    } else if (element.off) {
+      element.off(event, callback);
+    }
+  };
   /**
    * Files uploading interface
    *
@@ -83,7 +97,7 @@
    * @return {function}
    */
   cs.file_upload = function(button, success, error, progress, multi, drop_element){
-    var state, local_files_handler, x$, input;
+    var state, local_files_handler, x$, input, click, dragover, drop;
     if (!success) {
       return;
     }
@@ -125,22 +139,26 @@
         local_files_handler(this.files);
       }
     });
-    $(button).on('click.cs-uploader', bind$(input, 'click'));
-    if (drop_element) {
-      $(drop_element).on('dragover.cs-uploader', function(e){
-        e.preventDefault();
-      }).on('drop.cs-uploader', function(e){
-        var files;
-        e.preventDefault();
-        files = e.originalEvent.dataTransfer.files;
-        if (files) {
-          if (multi) {
-            local_files_handler(files);
-          } else {
-            local_files_handler([files[0]]);
-          }
+    click = input.click.bind(input);
+    _on(button, 'click', click);
+    dragover = function(e){
+      e.preventDefault();
+    };
+    drop = function(e){
+      var files;
+      e.preventDefault();
+      files = e.originalEvent.dataTransfer.files;
+      if (files) {
+        if (multi) {
+          local_files_handler(files);
+        } else {
+          local_files_handler([files[0]]);
         }
-      });
+      }
+    };
+    if (drop_element) {
+      _on(drop_element, 'dragover', dragover);
+      _on(drop_element, 'drop', drop);
     }
     return {
       stop: function(){
@@ -154,14 +172,12 @@
             ref$.abort();
           }
         }
-        $(button).off('click.cs-uploader');
+        _off(button, 'click', click);
         if (drop_element) {
-          return $(drop_element).off('dragover.cs-uploader').off('drop.cs-uploader');
+          _off(drop_element, 'dragover', dragover);
+          return _off(drop_element, 'drop', drop);
         }
       }
     };
   };
-  function bind$(obj, key, target){
-    return function(){ return (target || obj)[key].apply(obj, arguments) };
-  }
 }).call(this);
