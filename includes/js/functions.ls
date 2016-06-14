@@ -25,7 +25,7 @@ cs.api = (method_path, data) ->
 			else
 				resolve(JSON.parse(@responseText))
 		xhr.onerror	= !->
-			timeout	= setTimeout(->
+			timeout	= setTimeout(!~>
 				cs.ui.notify(
 					if @responseText
 						JSON.parse(@responseText).error_description

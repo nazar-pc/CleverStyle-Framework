@@ -33,10 +33,10 @@
         }
       };
       xhr.onerror = function(){
-        var timeout;
+        var timeout, this$ = this;
         timeout = setTimeout(function(){
-          return cs.ui.notify(this.responseText
-            ? JSON.parse(this.responseText).error_description
+          cs.ui.notify(this$.responseText
+            ? JSON.parse(this$.responseText).error_description
             : L.system_server_connection_error, 'warning', 5);
         });
         reject({
