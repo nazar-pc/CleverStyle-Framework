@@ -5,6 +5,8 @@
  * @copyright Copyright (c) 2013-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
+$ <-! require(['jquery'], _)
+<-! $
 L			= cs.Language('photo_gallery_')
 add_button	= document.querySelector('.cs-photo-gallery-add-images')
 if add_button
@@ -25,26 +27,25 @@ if add_button
 	)
 images_section	= document.querySelector('.cs-photo-gallery-images')
 if images_section
-	require(['jquery']).then ([$]) !->
-		$('html, body').stop().animate(
-			scrollTop	: $('.cs-photo-gallery-images').offset().top - $(document).height() * 0.1
+	$('html, body').stop().animate(
+		scrollTop	: $('.cs-photo-gallery-images').offset().top - $(document).height() * 0.1
+	)
+	cs.ui.ready.then !->
+		$(images_section).fotorama(
+			allowfullscreen	: 'native'
+			controlsonstart	: false
+			fit				: 'scaledown'
+			height			: '80%'
+			keyboard		: true
+			nav				: 'thumbs'
+			trackpad		: true
+			width			: '100%'
 		)
-		cs.ui.ready.then !->
-			$(images_section).fotorama(
-				allowfullscreen	: 'native'
-				controlsonstart	: false
-				fit				: 'scaledown'
-				height			: '80%'
-				keyboard		: true
-				nav				: 'thumbs'
-				trackpad		: true
-				width			: '100%'
-			)
-		$('body').on(
-			'click',
-			'.cs-photo-gallery-image-delete'
-			!->
-				cs.ui.confirm(L.sure_to_delete_image)
-					.then ~> cs.api('delete api/Photo_gallery/images/' + $(@).data('image'))
-					.then(location~reload)
-		)
+	$('body').on(
+		'click',
+		'.cs-photo-gallery-image-delete'
+		!->
+			cs.ui.confirm(L.sure_to_delete_image)
+				.then ~> cs.api('delete api/Photo_gallery/images/' + $(@).data('image'))
+				.then(location~reload)
+	)
