@@ -7,146 +7,148 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  $(function(){
-    var L, make_modal;
-    L = cs.Language('shop_');
-    make_modal = function(attributes, categories, title, action){
-      var modal;
-      attributes = function(){
-        var attributes_, keys, attribute, ref$, i$, len$, key, results$ = [];
-        attributes_ = {};
-        keys = [];
-        for (attribute in ref$ = attributes) {
-          attribute = ref$[attribute];
-          attributes_[attribute.title_internal] = "<option value=\"" + attribute.id + "\">" + attribute.title_internal + "</option>";
-          keys.push(attribute.title_internal);
-        }
-        keys.sort();
-        for (i$ = 0, len$ = keys.length; i$ < len$; ++i$) {
-          key = keys[i$];
-          results$.push(attributes_[key]);
-        }
-        return results$;
-      }();
-      attributes = attributes.join('');
-      categories = function(){
-        var categories_, category, ref$;
-        categories_ = {};
-        for (category in ref$ = categories) {
-          category = ref$[category];
-          categories_[category.id] = category;
-        }
-        return categories_;
-      }();
-      categories = function(){
-        var categories_, keys, category, ref$, parent_category, i$, len$, key, results$ = [];
-        categories_ = {};
-        keys = ['-'];
-        for (category in ref$ = categories) {
-          category = ref$[category];
-          parent_category = parseInt(category.parent);
-          while (parent_category && parent_category !== category) {
-            parent_category = categories[parent_category];
-            if (parent_category.parent === category.id) {
-              break;
+  require(['jquery'], function($){
+    $(function(){
+      var L, make_modal;
+      L = cs.Language('shop_');
+      make_modal = function(attributes, categories, title, action){
+        var modal;
+        attributes = function(){
+          var attributes_, keys, attribute, ref$, i$, len$, key, results$ = [];
+          attributes_ = {};
+          keys = [];
+          for (attribute in ref$ = attributes) {
+            attribute = ref$[attribute];
+            attributes_[attribute.title_internal] = "<option value=\"" + attribute.id + "\">" + attribute.title_internal + "</option>";
+            keys.push(attribute.title_internal);
+          }
+          keys.sort();
+          for (i$ = 0, len$ = keys.length; i$ < len$; ++i$) {
+            key = keys[i$];
+            results$.push(attributes_[key]);
+          }
+          return results$;
+        }();
+        attributes = attributes.join('');
+        categories = function(){
+          var categories_, category, ref$;
+          categories_ = {};
+          for (category in ref$ = categories) {
+            category = ref$[category];
+            categories_[category.id] = category;
+          }
+          return categories_;
+        }();
+        categories = function(){
+          var categories_, keys, category, ref$, parent_category, i$, len$, key, results$ = [];
+          categories_ = {};
+          keys = ['-'];
+          for (category in ref$ = categories) {
+            category = ref$[category];
+            parent_category = parseInt(category.parent);
+            while (parent_category && parent_category !== category) {
+              parent_category = categories[parent_category];
+              if (parent_category.parent === category.id) {
+                break;
+              }
+              category.title = parent_category.title + ' :: ' + category.title;
+              parent_category = parseInt(parent_category.parent);
             }
-            category.title = parent_category.title + ' :: ' + category.title;
-            parent_category = parseInt(parent_category.parent);
+            categories_[category.title] = "<option value=\"" + category.id + "\">" + category.title + "</option>";
+            keys.push(category.title);
           }
-          categories_[category.title] = "<option value=\"" + category.id + "\">" + category.title + "</option>";
-          keys.push(category.title);
-        }
-        keys.sort();
-        for (i$ = 0, len$ = keys.length; i$ < len$; ++i$) {
-          key = keys[i$];
-          results$.push(categories_[key]);
-        }
-        return results$;
-      }();
-      categories = categories.join('');
-      modal = $(cs.ui.simple_modal("<form>\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<p>\n		" + L.parent_category + ":\n		<select is=\"cs-select\" name=\"parent\" required>\n			<option value=\"0\">" + L.none + "</option>\n			" + categories + "\n		</select>\n	</p>\n	<p>\n		" + L.title + ": <input is=\"cs-input-text\" name=\"title\" required>\n	</p>\n	<p>\n		" + L.description + ": <textarea is=\"cs-textarea\" autosize name=\"description\"></textarea>\n	</p>\n	<p class=\"image\" hidden style=\"width: 150px\">\n		" + L.image + ":\n		<a target=\"_blank\">\n			<img>\n			<br>\n			<button is=\"cs-button\" force-compact type=\"button\" class=\"remove-image\" style=\"width: 100%\">" + L.remove_image + "</button>\n		</a>\n		<input type=\"hidden\" name=\"image\">\n	</p>\n	<p>\n		<button is=\"cs-button\" tight type=\"button\" class=\"set-image\">" + L.set_image + "</button>\n		<progress is=\"cs-progress\" hidden></progress>\n	</p>\n	<p>\n		" + L.category_attributes + ": <select is=\"cs-select\" name=\"attributes[]\" multiple required size=\"5\">" + attributes + "</select>\n	</p>\n	<p>\n		" + L.title_attribute + ": <select is=\"cs-select\" name=\"title_attribute\" required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.description_attribute + ":\n		<select is=\"cs-select\" name=\"description_attribute\" required>\n			<option value=\"0\">" + L.none + "</option>\n			" + attributes + "\n		</select>\n	</p>\n	<p>\n		" + L.visible + ":\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"visible\" value=\"1\" checked> " + L.yes + "</label>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"visible\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n	</p>\n</form>"));
-      modal.set_image = function(image){
-        modal.find('[name=image]').val(image);
-        if (image) {
-          modal.find('.image').removeAttr('hidden').find('a').attr('href', image).find('img').attr('src', image);
-        } else {
-          modal.find('.image').attr('hidden');
-        }
-      };
-      modal.find('.remove-image').click(function(){
-        modal.set_image('');
-      });
-      if (cs.file_upload) {
-        (function(){
-          var progress, uploader;
-          progress = modal.find('.set-image').next()[0];
-          uploader = cs.file_upload(modal.find('.set-image'), function(image){
-            progress.hidden = true;
-            modal.set_image(image[0]);
-          }, function(error){
-            progress.hidden = true;
-            cs.ui.notify(error, 'error');
-          }, function(percents){
-            progress.value = percents;
-            progress.hidden = false;
-          });
-          modal.on('close', bind$(uploader, 'destroy'));
-        })();
-      } else {
-        modal.find('.set-image').click(function(){
-          var image;
-          image = prompt(L.image_url);
+          keys.sort();
+          for (i$ = 0, len$ = keys.length; i$ < len$; ++i$) {
+            key = keys[i$];
+            results$.push(categories_[key]);
+          }
+          return results$;
+        }();
+        categories = categories.join('');
+        modal = $(cs.ui.simple_modal("<form>\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<p>\n		" + L.parent_category + ":\n		<select is=\"cs-select\" name=\"parent\" required>\n			<option value=\"0\">" + L.none + "</option>\n			" + categories + "\n		</select>\n	</p>\n	<p>\n		" + L.title + ": <input is=\"cs-input-text\" name=\"title\" required>\n	</p>\n	<p>\n		" + L.description + ": <textarea is=\"cs-textarea\" autosize name=\"description\"></textarea>\n	</p>\n	<p class=\"image\" hidden style=\"width: 150px\">\n		" + L.image + ":\n		<a target=\"_blank\">\n			<img>\n			<br>\n			<button is=\"cs-button\" force-compact type=\"button\" class=\"remove-image\" style=\"width: 100%\">" + L.remove_image + "</button>\n		</a>\n		<input type=\"hidden\" name=\"image\">\n	</p>\n	<p>\n		<button is=\"cs-button\" tight type=\"button\" class=\"set-image\">" + L.set_image + "</button>\n		<progress is=\"cs-progress\" hidden></progress>\n	</p>\n	<p>\n		" + L.category_attributes + ": <select is=\"cs-select\" name=\"attributes[]\" multiple required size=\"5\">" + attributes + "</select>\n	</p>\n	<p>\n		" + L.title_attribute + ": <select is=\"cs-select\" name=\"title_attribute\" required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.description_attribute + ":\n		<select is=\"cs-select\" name=\"description_attribute\" required>\n			<option value=\"0\">" + L.none + "</option>\n			" + attributes + "\n		</select>\n	</p>\n	<p>\n		" + L.visible + ":\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"visible\" value=\"1\" checked> " + L.yes + "</label>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"visible\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n	</p>\n</form>"));
+        modal.set_image = function(image){
+          modal.find('[name=image]').val(image);
           if (image) {
-            modal.set_image(image);
+            modal.find('.image').removeAttr('hidden').find('a').attr('href', image).find('img').attr('src', image);
+          } else {
+            modal.find('.image').attr('hidden');
           }
+        };
+        modal.find('.remove-image').click(function(){
+          modal.set_image('');
         });
-      }
-      return modal;
-    };
-    return $('html').on('mousedown', '.cs-shop-category-add', function(){
-      cs.api(['get api/Shop/admin/attributes', 'get api/Shop/admin/categories']).then(function(arg$){
-        var attributes, categories, modal;
-        attributes = arg$[0], categories = arg$[1];
-        modal = make_modal(attributes, categories, L.category_addition, L.add);
-        modal.find('form').submit(function(){
-          cs.api('post api/Shop/admin/categories', this).then(function(){
-            return cs.ui.alert(L.added_successfully);
-          }).then(bind$(location, 'reload'));
-          return false;
+        if (cs.file_upload) {
+          (function(){
+            var progress, uploader;
+            progress = modal.find('.set-image').next()[0];
+            uploader = cs.file_upload(modal.find('.set-image'), function(image){
+              progress.hidden = true;
+              modal.set_image(image[0]);
+            }, function(error){
+              progress.hidden = true;
+              cs.ui.notify(error, 'error');
+            }, function(percents){
+              progress.value = percents;
+              progress.hidden = false;
+            });
+            modal.on('close', bind$(uploader, 'destroy'));
+          })();
+        } else {
+          modal.find('.set-image').click(function(){
+            var image;
+            image = prompt(L.image_url);
+            if (image) {
+              modal.set_image(image);
+            }
+          });
+        }
+        return modal;
+      };
+      $('html').on('mousedown', '.cs-shop-category-add', function(){
+        cs.api(['get api/Shop/admin/attributes', 'get api/Shop/admin/categories']).then(function(arg$){
+          var attributes, categories, modal;
+          attributes = arg$[0], categories = arg$[1];
+          modal = make_modal(attributes, categories, L.category_addition, L.add);
+          modal.find('form').submit(function(){
+            cs.api('post api/Shop/admin/categories', this).then(function(){
+              return cs.ui.alert(L.added_successfully);
+            }).then(bind$(location, 'reload'));
+            return false;
+          });
         });
+      }).on('mousedown', '.cs-shop-category-edit', function(){
+        var id;
+        id = $(this).data('id');
+        cs.api(['get api/Shop/admin/attributes', 'get api/Shop/admin/categories', "get api/Shop/admin/categories/" + id]).then(function(arg$){
+          var attributes, categories, category, modal;
+          attributes = arg$[0], categories = arg$[1], category = arg$[2];
+          modal = make_modal(attributes, categories, L.category_edition, L.edit);
+          modal.find('form').submit(function(){
+            cs.api("put api/Shop/admin/categories/" + id, this).then(function(){
+              return cs.ui.alert(L.edited_successfully);
+            }).then(bind$(location, 'reload'));
+            return false;
+          });
+          modal.find('[name=parent]').val(category.parent);
+          modal.find('[name=title]').val(category.title);
+          modal.find('[name=description]').val(category.description);
+          category.attributes.forEach(function(attribute){
+            modal.find("[name='attributes[]'] > [value=" + attribute + "]").prop('selected', true);
+          });
+          modal.find('[name=title_attribute]').val(category.title_attribute);
+          modal.find('[name=description_attribute]').val(category.description_attribute);
+          modal.set_image(category.image);
+          modal.find("[name=visible][value=" + category.visible + "]").prop('checked', true);
+        });
+      }).on('mousedown', '.cs-shop-category-delete', function(){
+        var id;
+        id = $(this).data('id');
+        cs.ui.confirm(L.sure_want_to_delete_category).then(function(){
+          return cs.api("delete api/Shop/admin/categories/" + id);
+        }).then(function(){
+          return cs.ui.alert(L.deleted_successfully);
+        }).then(bind$(location, 'reload'));
       });
-    }).on('mousedown', '.cs-shop-category-edit', function(){
-      var id;
-      id = $(this).data('id');
-      cs.api(['get api/Shop/admin/attributes', 'get api/Shop/admin/categories', "get api/Shop/admin/categories/" + id]).then(function(arg$){
-        var attributes, categories, category, modal;
-        attributes = arg$[0], categories = arg$[1], category = arg$[2];
-        modal = make_modal(attributes, categories, L.category_edition, L.edit);
-        modal.find('form').submit(function(){
-          cs.api("put api/Shop/admin/categories/" + id, this).then(function(){
-            return cs.ui.alert(L.edited_successfully);
-          }).then(bind$(location, 'reload'));
-          return false;
-        });
-        modal.find('[name=parent]').val(category.parent);
-        modal.find('[name=title]').val(category.title);
-        modal.find('[name=description]').val(category.description);
-        category.attributes.forEach(function(attribute){
-          modal.find("[name='attributes[]'] > [value=" + attribute + "]").prop('selected', true);
-        });
-        modal.find('[name=title_attribute]').val(category.title_attribute);
-        modal.find('[name=description_attribute]').val(category.description_attribute);
-        modal.set_image(category.image);
-        modal.find("[name=visible][value=" + category.visible + "]").prop('checked', true);
-      });
-    }).on('mousedown', '.cs-shop-category-delete', function(){
-      var id;
-      id = $(this).data('id');
-      cs.ui.confirm(L.sure_want_to_delete_category).then(function(){
-        return cs.api("delete api/Shop/admin/categories/" + id);
-      }).then(function(){
-        return cs.ui.alert(L.deleted_successfully);
-      }).then(bind$(location, 'reload'));
     });
   });
   function bind$(obj, key, target){

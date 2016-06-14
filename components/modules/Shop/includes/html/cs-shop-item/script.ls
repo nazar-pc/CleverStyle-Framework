@@ -19,33 +19,34 @@ Polymer(
 	ready : !->
 		@set('header_title', @querySelector('h1').textContent)
 		@set('price', sprintf(cs.shop.settings.price_formatting, @price))
-		attributes	= $(@querySelector('#attributes'))
-		if attributes.length
-			@show_attributes	= true
-			attributes
-				.find('table')
-					.addClass('cs-table')
-					.attr('list', '')
-					.find('td:first-of-type')
-						.addClass('cs-text-bold')
-		$(@$.images)
-			.append(
-				$(@querySelectorAll('#videos > a')).each !->
-					$this	= $(@)
-					if $this.children('img')
-						$this.attr('data-video', 'true')
-			)
-			.append(
-				@querySelectorAll('#images > img')
-			)
-			.fotorama(
-				allowfullscreen	: 'native'
-				controlsonstart	: false
-				fit				: 'contain'
-				keyboard		: true
-				nav				: 'thumbs'
-				ratio			: 4/3
-				trackpad		: true
-				width			: '100%'
-			)
+		require(['jquery']).then ([$]) !~>
+			attributes	= $(@querySelector('#attributes'))
+			if attributes.length
+				@show_attributes	= true
+				attributes
+					.find('table')
+						.addClass('cs-table')
+						.attr('list', '')
+						.find('td:first-of-type')
+							.addClass('cs-text-bold')
+			$(@$.images)
+				.append(
+					$(@querySelectorAll('#videos > a')).each !->
+						$this	= $(@)
+						if $this.children('img')
+							$this.attr('data-video', 'true')
+				)
+				.append(
+					@querySelectorAll('#images > img')
+				)
+				.fotorama(
+					allowfullscreen	: 'native'
+					controlsonstart	: false
+					fit				: 'contain'
+					keyboard		: true
+					nav				: 'thumbs'
+					ratio			: 4/3
+					trackpad		: true
+					width			: '100%'
+				)
 )

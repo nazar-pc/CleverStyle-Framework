@@ -99,27 +99,27 @@ Polymer(
 		cs.api('post api/Shop/orders', data).then (result) !~>
 			cart.clean()
 			if @payment_method == 'shop:cash' # Default payment method (Orders::PAYMENT_METHOD_CASH)
-				$(
-					cs.ui.simple_modal("""
-						<h1 class="cs-text-center">#{L.thanks_for_order}</h1>
-					""")
-				).on('close', !->
+				cs.ui.simple_modal("""
+					<h1 class="cs-text-center">#{L.thanks_for_order}</h1>
+				""").addEventListener('close', !->
 					location.href	= 'Shop/orders_'
 				)
 			else
 				id		= result.split('/').pop()
-				modal	= $(cs.ui.simple_modal("""
+				modal	= cs.ui.simple_modal("""
 					<h1 class="cs-text-center">#{L.thanks_for_order}</h1>
 					<p class="cs-text-center">
 						<button is="cs-button" primary type="button" class="pay-now">#{L.pay_now}</button>
 						<button is="cs-button" type="button" class="pay-later">#{L.pay_later}</button>
 					</p>
-				""")).on('close', !->
+				""")
+				modal.addEventListener('close', !->
 					location.href	= 'Shop/orders_'
 				)
-				modal.find('.pay-now').click !->
-					location.href	= "Shop/pay/#{id}"
-				modal.find('.pay-later').click !->
-					modal.hide()
+				modal.querySelector('.pay-now').addEventListener('click', !->
+					location.href	= "Shop/pay/#id"
+				)
+				modal.querySelector('.pay-later').addEventListener('click', !->
 					location.href	= 'Shop/orders_'
+				)
 );

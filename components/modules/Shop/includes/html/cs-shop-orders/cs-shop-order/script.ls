@@ -27,10 +27,10 @@ Polymer(
 		@shipping_cost_formatted	= sprintf(cs.shop.settings.price_formatting, @shipping_cost)
 		total_price					= 0
 		discount					= 0
-		$(@).find('cs-shop-order-item').each !->
+		for item in @querySelectorAll('cs-shop-order-item')
 			# TODO calling properties doesn't work in Firefox for some reason
-			total_price	+= @getAttribute('units') * @getAttribute('unit_price')
-			discount	+= (@getAttribute('units') * @getAttribute('unit_price')) - @getAttribute('price')
+			total_price	+= item.getAttribute('units') * item.getAttribute('unit_price')
+			discount	+= (item.getAttribute('units') * item.getAttribute('unit_price')) - item.getAttribute('price')
 		@total_price_formatted	= sprintf(cs.shop.settings.price_formatting, total_price)
 		@discount_formatted		= if discount then sprintf(cs.shop.settings.price_formatting, discount) else ''
 		@for_payment_formatted	= sprintf(cs.shop.settings.price_formatting, @for_payment)

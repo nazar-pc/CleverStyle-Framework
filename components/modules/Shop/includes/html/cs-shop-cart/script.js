@@ -137,19 +137,19 @@
         var id, modal;
         cart.clean();
         if (this$.payment_method === 'shop:cash') {
-          $(cs.ui.simple_modal("<h1 class=\"cs-text-center\">" + L.thanks_for_order + "</h1>")).on('close', function(){
+          cs.ui.simple_modal("<h1 class=\"cs-text-center\">" + L.thanks_for_order + "</h1>").addEventListener('close', function(){
             location.href = 'Shop/orders_';
           });
         } else {
           id = result.split('/').pop();
-          modal = $(cs.ui.simple_modal("<h1 class=\"cs-text-center\">" + L.thanks_for_order + "</h1>\n<p class=\"cs-text-center\">\n	<button is=\"cs-button\" primary type=\"button\" class=\"pay-now\">" + L.pay_now + "</button>\n	<button is=\"cs-button\" type=\"button\" class=\"pay-later\">" + L.pay_later + "</button>\n</p>")).on('close', function(){
+          modal = cs.ui.simple_modal("<h1 class=\"cs-text-center\">" + L.thanks_for_order + "</h1>\n<p class=\"cs-text-center\">\n	<button is=\"cs-button\" primary type=\"button\" class=\"pay-now\">" + L.pay_now + "</button>\n	<button is=\"cs-button\" type=\"button\" class=\"pay-later\">" + L.pay_later + "</button>\n</p>");
+          modal.addEventListener('close', function(){
             location.href = 'Shop/orders_';
           });
-          modal.find('.pay-now').click(function(){
+          modal.querySelector('.pay-now').addEventListener('click', function(){
             location.href = "Shop/pay/" + id;
           });
-          modal.find('.pay-later').click(function(){
-            modal.hide();
+          modal.querySelector('.pay-later').addEventListener('click', function(){
             location.href = 'Shop/orders_';
           });
         }

@@ -22,7 +22,7 @@
       paid: Boolean
     },
     ready: function(){
-      var total_price, discount, ref$, ref1$, ref2$;
+      var total_price, discount, i$, ref$, len$, item, ref1$, ref2$;
       this.show_pay_now = !this.paid && this.payment_method !== 'shop:cash';
       this.order_number = sprintf('' + L.order_number, this.order_id);
       this.order_status = this.querySelector('#order_status').textContent;
@@ -30,10 +30,11 @@
       this.shipping_cost_formatted = sprintf(cs.shop.settings.price_formatting, this.shipping_cost);
       total_price = 0;
       discount = 0;
-      $(this).find('cs-shop-order-item').each(function(){
-        total_price += this.getAttribute('units') * this.getAttribute('unit_price');
-        discount += this.getAttribute('units') * this.getAttribute('unit_price') - this.getAttribute('price');
-      });
+      for (i$ = 0, len$ = (ref$ = this.querySelectorAll('cs-shop-order-item')).length; i$ < len$; ++i$) {
+        item = ref$[i$];
+        total_price += item.getAttribute('units') * item.getAttribute('unit_price');
+        discount += item.getAttribute('units') * item.getAttribute('unit_price') - item.getAttribute('price');
+      }
       this.total_price_formatted = sprintf(cs.shop.settings.price_formatting, total_price);
       this.discount_formatted = discount ? sprintf(cs.shop.settings.price_formatting, discount) : '';
       this.for_payment_formatted = sprintf(cs.shop.settings.price_formatting, this.for_payment);

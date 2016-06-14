@@ -1,7 +1,7 @@
 {
 	"package"             : "Shop",
 	"category"            : "modules",
-	"version"             : "0.165.0+build-270",
+	"version"             : "0.166.0+build-271",
 	"description"         : "Shop functionality",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/Framework",
@@ -19,8 +19,12 @@
 		"System<5.0",
 		"Tags>=1.0",
 		"Tags<2.0",
-		"fotorama"
+		"fotorama",
+		"composer_assets"
 	],
+	"require_npm"         : {
+		"jquery" : "*"
+	},
 	"optional"            : [
 		"Comments",
 		"Plupload",

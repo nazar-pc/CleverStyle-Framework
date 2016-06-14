@@ -18,29 +18,33 @@
       in_stock: Number
     },
     ready: function(){
-      var attributes;
+      var this$ = this;
       this.set('header_title', this.querySelector('h1').textContent);
       this.set('price', sprintf(cs.shop.settings.price_formatting, this.price));
-      attributes = $(this.querySelector('#attributes'));
-      if (attributes.length) {
-        this.show_attributes = true;
-        attributes.find('table').addClass('cs-table').attr('list', '').find('td:first-of-type').addClass('cs-text-bold');
-      }
-      $(this.$.images).append($(this.querySelectorAll('#videos > a')).each(function(){
-        var $this;
-        $this = $(this);
-        if ($this.children('img')) {
-          $this.attr('data-video', 'true');
+      require(['jquery']).then(function(arg$){
+        var $, attributes;
+        $ = arg$[0];
+        attributes = $(this$.querySelector('#attributes'));
+        if (attributes.length) {
+          this$.show_attributes = true;
+          attributes.find('table').addClass('cs-table').attr('list', '').find('td:first-of-type').addClass('cs-text-bold');
         }
-      })).append(this.querySelectorAll('#images > img')).fotorama({
-        allowfullscreen: 'native',
-        controlsonstart: false,
-        fit: 'contain',
-        keyboard: true,
-        nav: 'thumbs',
-        ratio: 4 / 3,
-        trackpad: true,
-        width: '100%'
+        $(this$.$.images).append($(this$.querySelectorAll('#videos > a')).each(function(){
+          var $this;
+          $this = $(this);
+          if ($this.children('img')) {
+            $this.attr('data-video', 'true');
+          }
+        })).append(this$.querySelectorAll('#images > img')).fotorama({
+          allowfullscreen: 'native',
+          controlsonstart: false,
+          fit: 'contain',
+          keyboard: true,
+          nav: 'thumbs',
+          ratio: 4 / 3,
+          trackpad: true,
+          width: '100%'
+        });
       });
     }
   });

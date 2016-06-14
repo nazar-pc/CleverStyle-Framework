@@ -7,230 +7,232 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  $(function(){
-    var L, make_modal;
-    L = cs.Language('shop_');
-    make_modal = function(shipping_types, order_statuses, payment_methods, title, action){
-      var shipping_types_list, payment_methods_list, res$, method, details, modal;
-      shipping_types = function(){
-        var shipping_types_, shipping_type, ref$;
-        shipping_types_ = {};
-        for (shipping_type in ref$ = shipping_types) {
-          shipping_type = ref$[shipping_type];
-          shipping_types_[shipping_type.id] = shipping_type;
-        }
-        return shipping_types_;
-      }();
-      shipping_types_list = function(){
-        var shipping_types_list_, keys, shipping_type, ref$, i$, len$, key, results$ = [];
-        shipping_types_list_ = {};
-        keys = [];
-        for (shipping_type in ref$ = shipping_types) {
-          shipping_type = ref$[shipping_type];
-          shipping_types_list_[shipping_type.title] = "<option value=\"" + shipping_type.id + "\">" + shipping_type.title + "</option>";
-          keys.push(shipping_type.title);
-        }
-        keys.sort();
-        for (i$ = 0, len$ = keys.length; i$ < len$; ++i$) {
-          key = keys[i$];
-          results$.push(shipping_types_list_[key]);
-        }
-        return results$;
-      }();
-      shipping_types_list = shipping_types_list.join('');
-      order_statuses = function(){
-        var order_statuses_, keys, order_status, ref$, i$, len$, key, results$ = [];
-        order_statuses_ = {};
-        keys = [];
-        for (order_status in ref$ = order_statuses) {
-          order_status = ref$[order_status];
-          order_statuses_[order_status.title] = "<option value=\"" + order_status.id + "\">" + order_status.title + "</option>";
-          keys.push(order_status.title);
-        }
-        keys.sort();
-        for (i$ = 0, len$ = keys.length; i$ < len$; ++i$) {
-          key = keys[i$];
-          results$.push(order_statuses_[key]);
-        }
-        return results$;
-      }();
-      order_statuses = order_statuses.join('');
-      res$ = [];
-      for (method in payment_methods) {
-        details = payment_methods[method];
-        res$.push("<option value=\"" + method + "\">" + details.title + "</option>");
-      }
-      payment_methods_list = res$;
-      payment_methods_list = payment_methods_list.join('');
-      modal = $(cs.ui.simple_modal("<form>\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<p hidden>\n		" + L.datetime + ": <span class=\"date\"></span>\n	</p>\n	<p>\n		" + L.user + ": <span class=\"username\"></span>, id: <input is=\"cs-input-text\" compact name=\"user\" required>\n	</p>\n	<p>\n		<div class=\"items\"></div>\n		<button is=\"cs-button\" class=\"add-item\">" + L.add_item + "</button>\n	</p>\n	<p>\n		" + L.shipping_type + ": <select is=\"cs-select\" name=\"shipping_type\" required>" + shipping_types_list + "</select>\n	</p>\n	<p>\n		" + L.shipping_cost + ": <input is=\"cs-input-text\" name=\"shipping_cost\"> (<span id=\"shipping_cost\"></span>)\n	</p>\n	<p>\n		" + L.shipping_username + ": <input is=\"cs-input-text\" name=\"shipping_username\">\n	</p>\n	<p>\n		" + L.shipping_phone + ": <input is=\"cs-input-text\" name=\"shipping_phone\">\n	</p>\n	<p>\n		" + L.shipping_address + ": <textarea is=\"cs-textarea\" autosize name=\"shipping_address\"></textarea>\n	</p>\n	<p>\n		" + L.payment_method + ": <select is=\"cs-select\" name=\"payment_method\" required>" + payment_methods_list + "</select>\n	</p>\n	<p>\n		" + L.paid + ":\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"paid\" value=\"1\"> " + L.yes + "</label>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"paid\" value=\"0\" checked> " + L.no + "</label>\n	</p>\n	<p>\n		" + L.status + ": <select is=\"cs-select\" name=\"status\" required>" + order_statuses + "</select>\n	</p>\n	<p>\n		" + L.comment + ": <textarea is=\"cs-textarea\" autosize name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n	</p>\n</form>"));
-      (function(){
-        var timeout;
-        timeout = 0;
-        modal.find('[name=user]').keyup(function(){
-          var this$ = this;
-          clearTimeout(timeout);
-          timeout = setTimeout(function(){
-            cs.api('get api/System/profiles/' + $(this$).val()).then(function(profile){
-              modal.find('.username').html(profile.username || profile.login);
-            });
-          }, 300);
-        });
-      })();
-      (function(){
-        var shipping_type_select;
-        shipping_type_select = modal.find('[name=shipping_type]');
-        shipping_type_select.change(function(){
-          var shipping_type;
-          shipping_type = shipping_types[$(this).val()];
-          modal.find('[name=shipping_phone]').parent()[parseInt(shipping_type.phone_needed) ? 'show' : 'hide']();
-          modal.find('[name=shipping_address]').parent()[parseInt(shipping_type.address_needed) ? 'show' : 'hide']();
-          modal.find('#shipping_cost').html(shipping_type.price);
-        });
-        shipping_type_select.change();
-      })();
-      (function(){
-        var items_container, timeout;
-        items_container = modal.find('.items');
-        modal.add_item = function(item){
-          var callback;
-          callback = function(item_data){
-            var total_price;
-            total_price = item_data.price * item.units;
-            items_container.append("<p>\n	" + L.item + ": <input is=\"cs-input-text\" compact value=\"-\" class=\"title\" readonly>\n	id: <input is=\"cs-input-text\" compact name=\"items[item][]\" value=\"" + item.item + "\" required>\n	" + L.unit_price + " <input is=\"cs-input-text\" compact name=\"items[unit_price][]\" value=\"" + item.unit_price + "\" required> (<span class=\"unit-price\">" + item_data.price + "</span>)\n	" + L.units + " <input is=\"cs-input-text\" compact name=\"items[units][]\" value=\"" + item.units + "\" required>\n	" + L.total_price + " <input is=\"cs-input-text\" compact name=\"items[price][]\" value=\"" + item.price + "\" required> (<span class=\"item-price\" data-original-price=\"" + item_data.price + "\">" + total_price + "</span>)\n	<button is=\"cs-button\" icon=\"close\" type=\"button\" class=\"delete-item\"></button>\n</p>");
-            items_container.children(':last').find('.title').val(item_data.title);
-          };
-          if (item.item) {
-            cs.api("get api/Shop/admin/items/" + item.item).then(callback);
-          } else {
-            callback({
-              title: '-',
-              price: 0
-            });
+  require(['jquery'], function($){
+    $(function(){
+      var L, make_modal;
+      L = cs.Language('shop_');
+      make_modal = function(shipping_types, order_statuses, payment_methods, title, action){
+        var shipping_types_list, payment_methods_list, res$, method, details, modal;
+        shipping_types = function(){
+          var shipping_types_, shipping_type, ref$;
+          shipping_types_ = {};
+          for (shipping_type in ref$ = shipping_types) {
+            shipping_type = ref$[shipping_type];
+            shipping_types_[shipping_type.id] = shipping_type;
           }
-        };
-        timeout = 0;
-        items_container.on('keyup change', "[name='items[units][]']", function(){
-          var $this, item_price_container;
-          $this = $(this);
-          item_price_container = $this.parent().find('.item-price');
-          item_price_container.html(item_price_container.data('original-price') * $this.val());
-        }).on('keyup', "[name='items[item][]']", function(){
-          var this$ = this;
-          clearTimeout(timeout);
-          timeout = setTimeout(function(){
-            var $this, container;
-            $this = $(this$);
-            container = $this.parent();
-            cs.api('get api/Shop/admin/items/' + $this.val()).then(function(item){
-              container.find('.title').val(item.title);
-              container.find('.unit-price').html(item.price);
-              container.find('.item-price').data('original-price', item.price);
-              container.find("[name='items[units][]']").change();
-            })['catch'](function(o){
-              clearTimeout(o.timeout);
-              container.find('.title').val('-');
-              container.find('.unit-price').html(0);
-              container.find('.item-price').data('original-price', 0);
-              container.find("[name='items[units][]']").change();
-            });
-          }, 300);
-        }).on('click', '.delete-item', function(){
-          $(this).parent().remove();
-        });
-      })();
-      return modal.on('click', '.add-item', function(){
-        modal.add_item({
-          item: '',
-          unit_price: '',
-          units: '',
-          price: ''
-        });
-      });
-    };
-    $('html').on('mousedown', '.cs-shop-order-add', function(){
-      cs.api(['get api/Shop/admin/shipping_types', 'get api/Shop/admin/order_statuses', 'get api/Shop/payment_methods']).then(function(arg$){
-        var shipping_types, order_statuses, payment_methods, modal;
-        shipping_types = arg$[0], order_statuses = arg$[1], payment_methods = arg$[2];
-        modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_addition, L.add);
-        modal.find('form').submit(function(){
-          var this$ = this;
-          cs.api('post api/Shop/admin/orders', this).then(function(url){
-            return url.split('/');
-          }).then(function(url){
-            return cs.api('put api/Shop/admin/orders/' + url.pop() + '/items', this$);
-          }).then(function(){
-            return cs.ui.alert(L.added_successfully);
-          }).then(bind$(location, 'reload'));
-          return false;
-        });
-      });
-    }).on('mousedown', '.cs-shop-order-statuses-history', function(){
-      var id;
-      id = $(this).data('id');
-      cs.api(['get api/Shop/admin/order_statuses', "get api/Shop/admin/orders/" + id + "/statuses"]).then(function(arg$){
-        var order_statuses, statuses, content;
-        order_statuses = arg$[0], statuses = arg$[1];
-        order_statuses = function(){
-          var result;
-          result = {};
-          order_statuses.forEach(function(status){
-            result[status.id] = status;
-          });
-          return result;
+          return shipping_types_;
         }();
-        content = '';
-        statuses.forEach(function(status){
-          var order_status, color, comment;
-          order_status = order_statuses != null ? order_statuses[status.status] : void 8;
-          color = order_status ? "background: " + order_status.color : '';
-          comment = status.comment ? "<tr style=\"" + color + "\">\n	<td colspan=\"2\" style=\"white-space:pre\">" + status.comment + "</td>\n</tr>" : '';
-          content += "<tr style=\"" + color + "\">\n	<td><cs-icon icon=\"calendar\"></cs-icon> " + status.date_formatted + "</td>\n	<td>" + (order_status != null ? order_status.title : void 8) + "</td>\n</tr>\n" + comment;
+        shipping_types_list = function(){
+          var shipping_types_list_, keys, shipping_type, ref$, i$, len$, key, results$ = [];
+          shipping_types_list_ = {};
+          keys = [];
+          for (shipping_type in ref$ = shipping_types) {
+            shipping_type = ref$[shipping_type];
+            shipping_types_list_[shipping_type.title] = "<option value=\"" + shipping_type.id + "\">" + shipping_type.title + "</option>";
+            keys.push(shipping_type.title);
+          }
+          keys.sort();
+          for (i$ = 0, len$ = keys.length; i$ < len$; ++i$) {
+            key = keys[i$];
+            results$.push(shipping_types_list_[key]);
+          }
+          return results$;
+        }();
+        shipping_types_list = shipping_types_list.join('');
+        order_statuses = function(){
+          var order_statuses_, keys, order_status, ref$, i$, len$, key, results$ = [];
+          order_statuses_ = {};
+          keys = [];
+          for (order_status in ref$ = order_statuses) {
+            order_status = ref$[order_status];
+            order_statuses_[order_status.title] = "<option value=\"" + order_status.id + "\">" + order_status.title + "</option>";
+            keys.push(order_status.title);
+          }
+          keys.sort();
+          for (i$ = 0, len$ = keys.length; i$ < len$; ++i$) {
+            key = keys[i$];
+            results$.push(order_statuses_[key]);
+          }
+          return results$;
+        }();
+        order_statuses = order_statuses.join('');
+        res$ = [];
+        for (method in payment_methods) {
+          details = payment_methods[method];
+          res$.push("<option value=\"" + method + "\">" + details.title + "</option>");
+        }
+        payment_methods_list = res$;
+        payment_methods_list = payment_methods_list.join('');
+        modal = $(cs.ui.simple_modal("<form>\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<p hidden>\n		" + L.datetime + ": <span class=\"date\"></span>\n	</p>\n	<p>\n		" + L.user + ": <span class=\"username\"></span>, id: <input is=\"cs-input-text\" compact name=\"user\" required>\n	</p>\n	<p>\n		<div class=\"items\"></div>\n		<button is=\"cs-button\" class=\"add-item\">" + L.add_item + "</button>\n	</p>\n	<p>\n		" + L.shipping_type + ": <select is=\"cs-select\" name=\"shipping_type\" required>" + shipping_types_list + "</select>\n	</p>\n	<p>\n		" + L.shipping_cost + ": <input is=\"cs-input-text\" name=\"shipping_cost\"> (<span id=\"shipping_cost\"></span>)\n	</p>\n	<p>\n		" + L.shipping_username + ": <input is=\"cs-input-text\" name=\"shipping_username\">\n	</p>\n	<p>\n		" + L.shipping_phone + ": <input is=\"cs-input-text\" name=\"shipping_phone\">\n	</p>\n	<p>\n		" + L.shipping_address + ": <textarea is=\"cs-textarea\" autosize name=\"shipping_address\"></textarea>\n	</p>\n	<p>\n		" + L.payment_method + ": <select is=\"cs-select\" name=\"payment_method\" required>" + payment_methods_list + "</select>\n	</p>\n	<p>\n		" + L.paid + ":\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"paid\" value=\"1\"> " + L.yes + "</label>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"paid\" value=\"0\" checked> " + L.no + "</label>\n	</p>\n	<p>\n		" + L.status + ": <select is=\"cs-select\" name=\"status\" required>" + order_statuses + "</select>\n	</p>\n	<p>\n		" + L.comment + ": <textarea is=\"cs-textarea\" autosize name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n	</p>\n</form>"));
+        (function(){
+          var timeout;
+          timeout = 0;
+          modal.find('[name=user]').keyup(function(){
+            var this$ = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(function(){
+              cs.api('get api/System/profiles/' + $(this$).val()).then(function(profile){
+                modal.find('.username').html(profile.username || profile.login);
+              });
+            }, 300);
+          });
+        })();
+        (function(){
+          var shipping_type_select;
+          shipping_type_select = modal.find('[name=shipping_type]');
+          shipping_type_select.change(function(){
+            var shipping_type;
+            shipping_type = shipping_types[$(this).val()];
+            modal.find('[name=shipping_phone]').parent()[parseInt(shipping_type.phone_needed) ? 'show' : 'hide']();
+            modal.find('[name=shipping_address]').parent()[parseInt(shipping_type.address_needed) ? 'show' : 'hide']();
+            modal.find('#shipping_cost').html(shipping_type.price);
+          });
+          shipping_type_select.change();
+        })();
+        (function(){
+          var items_container, timeout;
+          items_container = modal.find('.items');
+          modal.add_item = function(item){
+            var callback;
+            callback = function(item_data){
+              var total_price;
+              total_price = item_data.price * item.units;
+              items_container.append("<p>\n	" + L.item + ": <input is=\"cs-input-text\" compact value=\"-\" class=\"title\" readonly>\n	id: <input is=\"cs-input-text\" compact name=\"items[item][]\" value=\"" + item.item + "\" required>\n	" + L.unit_price + " <input is=\"cs-input-text\" compact name=\"items[unit_price][]\" value=\"" + item.unit_price + "\" required> (<span class=\"unit-price\">" + item_data.price + "</span>)\n	" + L.units + " <input is=\"cs-input-text\" compact name=\"items[units][]\" value=\"" + item.units + "\" required>\n	" + L.total_price + " <input is=\"cs-input-text\" compact name=\"items[price][]\" value=\"" + item.price + "\" required> (<span class=\"item-price\" data-original-price=\"" + item_data.price + "\">" + total_price + "</span>)\n	<button is=\"cs-button\" icon=\"close\" type=\"button\" class=\"delete-item\"></button>\n</p>");
+              items_container.children(':last').find('.title').val(item_data.title);
+            };
+            if (item.item) {
+              cs.api("get api/Shop/admin/items/" + item.item).then(callback);
+            } else {
+              callback({
+                title: '-',
+                price: 0
+              });
+            }
+          };
+          timeout = 0;
+          items_container.on('keyup change', "[name='items[units][]']", function(){
+            var $this, item_price_container;
+            $this = $(this);
+            item_price_container = $this.parent().find('.item-price');
+            item_price_container.html(item_price_container.data('original-price') * $this.val());
+          }).on('keyup', "[name='items[item][]']", function(){
+            var this$ = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(function(){
+              var $this, container;
+              $this = $(this$);
+              container = $this.parent();
+              cs.api('get api/Shop/admin/items/' + $this.val()).then(function(item){
+                container.find('.title').val(item.title);
+                container.find('.unit-price').html(item.price);
+                container.find('.item-price').data('original-price', item.price);
+                container.find("[name='items[units][]']").change();
+              })['catch'](function(o){
+                clearTimeout(o.timeout);
+                container.find('.title').val('-');
+                container.find('.unit-price').html(0);
+                container.find('.item-price').data('original-price', 0);
+                container.find("[name='items[units][]']").change();
+              });
+            }, 300);
+          }).on('click', '.delete-item', function(){
+            $(this).parent().remove();
+          });
+        })();
+        return modal.on('click', '.add-item', function(){
+          modal.add_item({
+            item: '',
+            unit_price: '',
+            units: '',
+            price: ''
+          });
         });
-        cs.ui.simple_modal("<table class=\"cs-table\" list>" + content + "</table>");
+      };
+      $('html').on('mousedown', '.cs-shop-order-add', function(){
+        cs.api(['get api/Shop/admin/shipping_types', 'get api/Shop/admin/order_statuses', 'get api/Shop/payment_methods']).then(function(arg$){
+          var shipping_types, order_statuses, payment_methods, modal;
+          shipping_types = arg$[0], order_statuses = arg$[1], payment_methods = arg$[2];
+          modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_addition, L.add);
+          modal.find('form').submit(function(){
+            var this$ = this;
+            cs.api('post api/Shop/admin/orders', this).then(function(url){
+              return url.split('/');
+            }).then(function(url){
+              return cs.api('put api/Shop/admin/orders/' + url.pop() + '/items', this$);
+            }).then(function(){
+              return cs.ui.alert(L.added_successfully);
+            }).then(bind$(location, 'reload'));
+            return false;
+          });
+        });
+      }).on('mousedown', '.cs-shop-order-statuses-history', function(){
+        var id;
+        id = $(this).data('id');
+        cs.api(['get api/Shop/admin/order_statuses', "get api/Shop/admin/orders/" + id + "/statuses"]).then(function(arg$){
+          var order_statuses, statuses, content;
+          order_statuses = arg$[0], statuses = arg$[1];
+          order_statuses = function(){
+            var result;
+            result = {};
+            order_statuses.forEach(function(status){
+              result[status.id] = status;
+            });
+            return result;
+          }();
+          content = '';
+          statuses.forEach(function(status){
+            var order_status, color, comment;
+            order_status = order_statuses != null ? order_statuses[status.status] : void 8;
+            color = order_status ? "background: " + order_status.color : '';
+            comment = status.comment ? "<tr style=\"" + color + "\">\n	<td colspan=\"2\" style=\"white-space:pre\">" + status.comment + "</td>\n</tr>" : '';
+            content += "<tr style=\"" + color + "\">\n	<td><cs-icon icon=\"calendar\"></cs-icon> " + status.date_formatted + "</td>\n	<td>" + (order_status != null ? order_status.title : void 8) + "</td>\n</tr>\n" + comment;
+          });
+          cs.ui.simple_modal("<table class=\"cs-table\" list>" + content + "</table>");
+        });
+      }).on('mousedown', '.cs-shop-order-edit', function(){
+        var $this, id, username, date;
+        $this = $(this);
+        id = $this.data('id');
+        username = $this.data('username');
+        date = $this.data('date');
+        cs.api(['get api/Shop/admin/shipping_types', 'get api/Shop/admin/order_statuses', 'get api/Shop/payment_methods', "get api/Shop/admin/orders/" + id, "get api/Shop/admin/orders/" + id + "/items"]).then(function(arg$){
+          var shipping_types, order_statuses, payment_methods, order, items, modal;
+          shipping_types = arg$[0], order_statuses = arg$[1], payment_methods = arg$[2], order = arg$[3], items = arg$[4];
+          modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_edition, L.edit);
+          modal.find('form').submit(function(){
+            var this$ = this;
+            cs.api("put api/Shop/admin/orders/" + id, this).then(function(){
+              return cs.api("put api/Shop/admin/orders/" + id + "/items", this$);
+            }).then(function(){
+              return cs.ui.alert(L.edited_successfully);
+            }).then(bind$(location, 'reload'));
+            return false;
+          });
+          modal.find('.date').html(date).parent().removeAttr('hidden');
+          modal.find('.username').html(username);
+          modal.find('[name=user]').val(order.user);
+          modal.find('[name=shipping_phone]').val(order.shipping_phone);
+          modal.find('[name=shipping_address]').val(order.shipping_address);
+          modal.find('[name=shipping_type]').val(order.shipping_type).change();
+          modal.find('[name=shipping_cost]').val(order.shipping_cost).change();
+          modal.find('[name=shipping_username]').val(order.shipping_username).change();
+          modal.find('[name=payment_method]').val(order.payment_method);
+          modal.find('[name=paid][value=' + (parseInt(order.paid) ? 1 : 0) + ']').prop('checked', true);
+          modal.find('[name=status]').val(order.status);
+          modal.find('[name=comment]').val(order.comment);
+          items.forEach(function(item){
+            modal.add_item(item);
+          });
+        });
+      }).on('mousedown', '.cs-shop-order-delete', function(){
+        var id;
+        id = $(this).data('id');
+        cs.ui.confirm(L.sure_want_to_delete).then(function(){
+          return cs.api("delete api/Shop/admin/orders/" + id);
+        }).then(function(){
+          return cs.ui.alert(L.deleted_successfully);
+        }).then(bind$(location, 'reload'));
       });
-    }).on('mousedown', '.cs-shop-order-edit', function(){
-      var $this, id, username, date;
-      $this = $(this);
-      id = $this.data('id');
-      username = $this.data('username');
-      date = $this.data('date');
-      cs.api(['get api/Shop/admin/shipping_types', 'get api/Shop/admin/order_statuses', 'get api/Shop/payment_methods', "get api/Shop/admin/orders/" + id, "get api/Shop/admin/orders/" + id + "/items"]).then(function(arg$){
-        var shipping_types, order_statuses, payment_methods, order, items, modal;
-        shipping_types = arg$[0], order_statuses = arg$[1], payment_methods = arg$[2], order = arg$[3], items = arg$[4];
-        modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_edition, L.edit);
-        modal.find('form').submit(function(){
-          var this$ = this;
-          cs.api("put api/Shop/admin/orders/" + id, this).then(function(){
-            return cs.api("put api/Shop/admin/orders/" + id + "/items", this$);
-          }).then(function(){
-            return cs.ui.alert(L.edited_successfully);
-          }).then(bind$(location, 'reload'));
-          return false;
-        });
-        modal.find('.date').html(date).parent().removeAttr('hidden');
-        modal.find('.username').html(username);
-        modal.find('[name=user]').val(order.user);
-        modal.find('[name=shipping_phone]').val(order.shipping_phone);
-        modal.find('[name=shipping_address]').val(order.shipping_address);
-        modal.find('[name=shipping_type]').val(order.shipping_type).change();
-        modal.find('[name=shipping_cost]').val(order.shipping_cost).change();
-        modal.find('[name=shipping_username]').val(order.shipping_username).change();
-        modal.find('[name=payment_method]').val(order.payment_method);
-        modal.find('[name=paid][value=' + (parseInt(order.paid) ? 1 : 0) + ']').prop('checked', true);
-        modal.find('[name=status]').val(order.status);
-        modal.find('[name=comment]').val(order.comment);
-        items.forEach(function(item){
-          modal.add_item(item);
-        });
-      });
-    }).on('mousedown', '.cs-shop-order-delete', function(){
-      var id;
-      id = $(this).data('id');
-      cs.ui.confirm(L.sure_want_to_delete).then(function(){
-        return cs.api("delete api/Shop/admin/orders/" + id);
-      }).then(function(){
-        return cs.ui.alert(L.deleted_successfully);
-      }).then(bind$(location, 'reload'));
     });
   });
   function bind$(obj, key, target){
