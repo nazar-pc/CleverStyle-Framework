@@ -26,8 +26,6 @@ Polymer(
 		config = !->
 			@page.identifier	= instance.module + '/' + instance.item
 			@callbacks.onReady.push(ready_callback)
-			# Hack: Disable this experiment, otherwise Disqus will fail by putting `document` into `window.getComputedStyle()` call under Shadow DOM polyfill
-			@experiment.enable_scroll_container = !window.WebComponents?.flags
 		if window.DISQUS
 			DISQUS.reset(
 				reload	: true

@@ -31,10 +31,8 @@
         }
       };
       config = function(){
-        var ref$;
         this.page.identifier = instance.module + '/' + instance.item;
         this.callbacks.onReady.push(ready_callback);
-        this.experiment.enable_scroll_container = !((ref$ = window.WebComponents) != null && ref$.flags);
       };
       if (window.DISQUS) {
         DISQUS.reset({
