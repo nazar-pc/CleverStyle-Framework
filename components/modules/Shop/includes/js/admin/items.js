@@ -144,17 +144,18 @@
           $this.parent().next().html("<p>\n	" + L.price + ": <input is=\"cs-input-text\" name=\"price\" type=\"number\" value=\"0\" required>\n</p>\n<p>\n	" + L.in_stock + ": <input is=\"cs-input-text\" name=\"in_stock\" type=\"number\" value=\"1\" step=\"1\">\n</p>\n<p>\n	" + L.available_soon + ":\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"soon\" value=\"1\"> " + L.yes + "</label>\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"soon\" value=\"0\" checked> " + L.no + "</label>\n</p>\n<p>\n	" + L.listed + ":\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"listed\" value=\"1\" checked> " + L.yes + "</label>\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"listed\" value=\"0\"> " + L.no + "</label>\n</p>\n<p>\n	<span class=\"images\" style=\"display: block\"></span>\n	<button is=\"cs-button\" tight type=\"button\" class=\"add-images\">" + L.add_images + "</button>\n	<progress is=\"cs-progress\" hidden></progress>\n	<input type=\"hidden\" name=\"images\">\n</p>\n<p>\n	<div class=\"videos\"></div>\n	<button is=\"cs-button\" type=\"button\" class=\"add-video\">" + L.add_video + "</button>\n</p>\n" + attributes_list + "\n<p>\n	" + L.tags + ": <input is=\"cs-input-text\" name=\"tags\" placeholder=\"shop, high quality, e-commerce\">\n</p>\n<p>\n	<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n</p>");
           images_container = modal.find('.images');
           modal.update_images = function(){
-            var images;
+            var images, this$ = this;
             images = [];
             images_container.find('a').each(function(){
               images.push($(this).attr('href'));
             });
             modal.find('[name=images]').val(JSON.stringify(images));
-            require(['html5sortable'], function(){
-              images_container.sortable('destroy').sortable({
+            require(['html5sortable-no-jquery'], function(html5sortable){
+              html5sortable(images_container.get(), 'destroy');
+              html5sortable(images_container.get(), {
                 forcePlaceholderSize: true,
                 placeholder: '<button is="cs-button" icon="map-pin" style="vertical-align: top">'
-              }).on('sortupdate', modal.update_images);
+              })[0].addEventListener('sortupdate', modal.update_images);
             });
           };
           modal.add_images = function(images){
@@ -195,11 +196,13 @@
           });
           videos_container = modal.find('.videos');
           modal.update_videos = function(){
-            require(['html5sortable'], function(){
-              videos_container.sortable('destroy').sortable({
+            var this$ = this;
+            require(['html5sortable-no-jquery'], function(html5sortable){
+              html5sortable(videos_container.get(), 'destroy');
+              html5sortable(videos_container.get(), {
                 handle: '.handle',
                 forcePlaceholderSize: true
-              }).on('sortupdate', modal.update_videos);
+              })[0].addEventListener('sortupdate', modal.update_videos);
             });
           };
           modal.add_videos = function(videos){

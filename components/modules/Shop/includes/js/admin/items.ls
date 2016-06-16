@@ -156,14 +156,14 @@ make_modal = (attributes, categories, title, action) ->
 			modal.find('[name=images]').val(
 				JSON.stringify(images)
 			)
-			<-! require(['html5sortable'])
-			images_container
-				.sortable('destroy')
-				.sortable(
-					forcePlaceholderSize	: true
-					placeholder				: '<button is="cs-button" icon="map-pin" style="vertical-align: top">'
-				)
-				.on(
+			html5sortable <~! require(['html5sortable-no-jquery'], _)
+			html5sortable(images_container.get(), 'destroy')
+			html5sortable(
+				images_container.get()
+				forcePlaceholderSize	: true
+				placeholder				: '<button is="cs-button" icon="map-pin" style="vertical-align: top">'
+			)[0]
+				.addEventListener(
 					'sortupdate'
 					modal.update_images
 				)
@@ -204,14 +204,14 @@ make_modal = (attributes, categories, title, action) ->
 		)
 		videos_container	= modal.find('.videos')
 		modal.update_videos	= !->
-			<-! require(['html5sortable'])
-			videos_container
-				.sortable('destroy')
-				.sortable(
-					handle					: '.handle'
-					forcePlaceholderSize	: true
-				)
-				.on(
+			html5sortable <~! require(['html5sortable-no-jquery'], _)
+			html5sortable(videos_container.get(), 'destroy')
+			html5sortable(
+				videos_container.get()
+				handle					: '.handle'
+				forcePlaceholderSize	: true
+			)[0]
+				.addEventListener(
 					'sortupdate'
 					modal.update_videos
 				)
