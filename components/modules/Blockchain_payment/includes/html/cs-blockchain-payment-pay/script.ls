@@ -13,20 +13,20 @@ Polymer(
 		address			: ''
 		amount			: Number
 		progress_text	:
-			type	: string
+			type	: String
 			value	: L.waiting_for_payment
 	ready : !->
-		$ !~>
-			@set('description', JSON.parse(@description))
-			@set('text', L.scan_or_transfer(@amount, @address))
-			$(@$.qr).qrcode(
-				height	: 512
-				text	: 'bitcoin:' + @address + '?amount=' + @amount
-				width	: 512
-			)
-			@update_status()
+		@set('description', JSON.parse(@description))
+		@set('text', L.scan_or_transfer(@amount, @address))
+		new QRCode(
+			@$.qr
+			height	: 512
+			text	: 'bitcoin:' + @address + '?amount=' + @amount
+			width	: 512
+		)
+		@update_status()
 	update_status : !->
-		cs.api('get api/Blockchain_payment/' + $(@).data('id')).then (data) !~>
+		cs.api('get api/Blockchain_payment/' + @.dataset.id).then (data) !~>
 			if parseInt(data.confirmed)
 				location.reload()
 				return

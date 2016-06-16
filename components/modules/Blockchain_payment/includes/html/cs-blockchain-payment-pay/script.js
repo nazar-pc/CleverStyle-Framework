@@ -16,26 +16,23 @@
       address: '',
       amount: Number,
       progress_text: {
-        type: string,
+        type: String,
         value: L.waiting_for_payment
       }
     },
     ready: function(){
-      var this$ = this;
-      $(function(){
-        this$.set('description', JSON.parse(this$.description));
-        this$.set('text', L.scan_or_transfer(this$.amount, this$.address));
-        $(this$.$.qr).qrcode({
-          height: 512,
-          text: 'bitcoin:' + this$.address + '?amount=' + this$.amount,
-          width: 512
-        });
-        this$.update_status();
+      this.set('description', JSON.parse(this.description));
+      this.set('text', L.scan_or_transfer(this.amount, this.address));
+      new QRCode(this.$.qr, {
+        height: 512,
+        text: 'bitcoin:' + this.address + '?amount=' + this.amount,
+        width: 512
       });
+      this.update_status();
     },
     update_status: function(){
       var this$ = this;
-      cs.api('get api/Blockchain_payment/' + $(this).data('id')).then(function(data){
+      cs.api('get api/Blockchain_payment/' + this.dataset.id).then(function(data){
         if (parseInt(data.confirmed)) {
           location.reload();
           return;
