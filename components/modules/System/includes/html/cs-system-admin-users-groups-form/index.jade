@@ -6,13 +6,13 @@ dom-module#cs-system-admin-users-groups-form
 			#user-groups
 				.cs-block-primary.cs-text-primary [[L.selected_groups]]
 				template(is="dom-repeat" items="[[user_groups]]")
-					.cs-block-success.cs-text-success(group="[[item.id]]" tooltip="[[item.desciption]]")
+					.cs-block-success.cs-text-success(group="[[item.id]]" tooltip="[[item.description]]")
 						[[item.title]]
 						cs-tooltip
 			#other-groups
 				.cs-block-primary.cs-text-primary [[L.other_groups]]
 				template(is="dom-repeat" items="[[other_groups]]")
-					.cs-block-warning.cs-text-warning(group="[[item.id]]" tooltip="[[item.desciption]]")
+					.cs-block-warning.cs-text-warning(group="[[item.id]]" tooltip="[[item.description]]")
 						[[item.title]]
 						cs-tooltip
 		button(is="cs-button" primary on-tap="save" type="button") [[L.save]]

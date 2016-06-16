@@ -33,29 +33,34 @@ Polymer(
 			@other_groups	= other_groups
 			@_init_sortable()
 	_init_sortable : !->
-		($, html5sortable) <~! require(['jquery', 'html5sortable'], _)
-		$shadowRoot	= $(@shadowRoot)
+		html5sortable <~! require(['html5sortable-no-jquery'], _)
 		if (
-			$shadowRoot.find('#user-groups > div:not(:first)').length < @user_groups.length ||
-			$shadowRoot.find('#other-groups > div:not(:first)').length < @other_groups.length
+			@shadowRoot.querySelectorAll('#user-groups > div:not(:first-child)').length < @user_groups.length ||
+			@shadowRoot.querySelectorAll('#other-groups > div:not(:first-child)').length < @other_groups.length
 		)
 			setTimeout(@_init_sortable.bind(@), 100)
 			return
-		$group	= $shadowRoot.find('#user-groups, #other-groups')
 		html5sortable(
-			$group.get()
+			@shadowRoot.querySelectorAll('#user-groups, #other-groups')
 			connectWith	: 'user-groups-list'
-			items		: 'div:not(:first)',
+			items		: 'div:not(:first-child)',
 			placeholder	: '<div class="cs-block-primary">'
-		)
-			.on('sortupdate', !~>
-				$(@$['user-groups']).children('div:not(:first)').removeClass('cs-block-warning cs-text-warning').addClass('cs-block-success cs-text-success')
-				$(@$['other-groups']).children('div:not(:first)').removeClass('cs-block-success cs-text-success').addClass('cs-block-warning cs-text-warning')
+		)[0]
+			.addEventListener('sortupdate', !~>
+				for element in @shadowRoot.querySelectorAll('#user-groups > div:not(:first-child)')
+					element.classList
+						..remove('cs-block-warning', 'cs-text-warning')
+						..add('cs-block-success', 'cs-text-success')
+				for element in @shadowRoot.querySelectorAll('#other-groups > div:not(:first-child)')
+					element.classList
+						..remove('cs-block-success', 'cs-text-success')
+						..add('cs-block-warning', 'cs-text-warning')
 			)
 	save : !->
-		require(['jquery'])
-			.then ([$]) ~> $(@$['user-groups']).children('div:not(:first)').map(-> @group).get()
-			.then ([groups]) ~> cs.api("put api/System/admin/users/#{@user}/groups", {groups})
-			.then !~>
-				cs.ui.notify(@L.changes_saved, 'success', 5)
+		groups = [].map.call(
+			@shadowRoot.querySelectorAll('#user-groups > div:not(:first-child)')
+			-> it.group
+		)
+		cs.api("put api/System/admin/users/#{@user}/groups", {groups}).then !~>
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 )

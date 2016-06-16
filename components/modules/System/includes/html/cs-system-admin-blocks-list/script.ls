@@ -18,21 +18,23 @@ Polymer(
 	ready : !->
 		@_reload()
 	_init_sortable : !->
-		($, html5sortable) <~! require(['jquery', 'html5sortable'], _)
-		$shadowRoot	= $(@shadowRoot)
-		if @blocks_count == undefined || $shadowRoot.find('[group] > div:not(:first)').length < @blocks_count
+		html5sortable <~! require(['html5sortable-no-jquery'], _)
+		if @blocks_count == undefined || @shadowRoot.querySelectorAll('[group] > div:not(:first-child)').length < @blocks_count
 			setTimeout(@~_init_sortable, 100)
 			return
-		$group	= $shadowRoot.find('[group]')
+		group	= @shadowRoot.querySelectorAll('[group]')
 		html5sortable(
-			$group.get()
+			@shadowRoot.querySelectorAll('[group]')
 			connectWith	: 'blocks-list'
-			items		: 'div:not(:first)',
-			placeholder	: '<div class="cs-block-primary">'
-		)
-			.on('sortupdate', !->
-				get_indexes	= ->
-					$group.filter("[group=#it]").children('div:not(:first)').map(-> @index).get()
+			items		: 'div:not(:first-child)',
+			placeholder	: '<div class="cs-block-primary"/>'
+		)[0]
+			.addEventListener('sortupdate', !~>
+				get_indexes	= (group) ~>
+					[].map.call(
+						@shadowRoot.querySelectorAll("[group=#group] > div:not(:first-child)")
+						-> it.index
+					)
 				order	=
 					top			: get_indexes('top')
 					left		: get_indexes('left')

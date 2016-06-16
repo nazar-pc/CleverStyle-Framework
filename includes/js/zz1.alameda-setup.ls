@@ -7,9 +7,10 @@
 requirejs.config(
 	baseUrl		: '/'
 	paths		:
-		jssha			: 'includes/js/modules/jsSHA-2.1.0'
-		autosize		: 'includes/js/modules/autosize.min'
-		html5sortable	: 'includes/js/modules/html5sortable.min.0.2.8'
+		jssha						: 'includes/js/modules/jsSHA-2.1.0'
+		autosize					: 'includes/js/modules/autosize.min'
+		html5sortable				: 'includes/js/modules/html5sortable.min.0.2.8'
+		'html5sortable-no-jquery'	: 'includes/js/modules/html5sortable-no-jquery'
 	waitSeconds	: 60
 )
 # Now let's define bundled libraries so that they can be used as AMD modules

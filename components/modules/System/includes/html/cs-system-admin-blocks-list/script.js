@@ -22,24 +22,23 @@
     },
     _init_sortable: function(){
       var this$ = this;
-      require(['jquery', 'html5sortable'], function($, html5sortable){
-        var $shadowRoot, $group;
-        $shadowRoot = $(this$.shadowRoot);
-        if (this$.blocks_count === undefined || $shadowRoot.find('[group] > div:not(:first)').length < this$.blocks_count) {
+      require(['html5sortable-no-jquery'], function(html5sortable){
+        var group;
+        if (this$.blocks_count === undefined || this$.shadowRoot.querySelectorAll('[group] > div:not(:first-child)').length < this$.blocks_count) {
           setTimeout(bind$(this$, '_init_sortable'), 100);
           return;
         }
-        $group = $shadowRoot.find('[group]');
-        html5sortable($group.get(), {
+        group = this$.shadowRoot.querySelectorAll('[group]');
+        html5sortable(this$.shadowRoot.querySelectorAll('[group]'), {
           connectWith: 'blocks-list',
-          items: 'div:not(:first)',
-          placeholder: '<div class="cs-block-primary">'
-        }).on('sortupdate', function(){
+          items: 'div:not(:first-child)',
+          placeholder: '<div class="cs-block-primary"/>'
+        })[0].addEventListener('sortupdate', function(){
           var get_indexes, order;
-          get_indexes = function(it){
-            return $group.filter("[group=" + it + "]").children('div:not(:first)').map(function(){
-              return this.index;
-            }).get();
+          get_indexes = function(group){
+            return [].map.call(this$.shadowRoot.querySelectorAll("[group=" + group + "] > div:not(:first-child)"), function(it){
+              return it.index;
+            });
           };
           order = {
             top: get_indexes('top'),

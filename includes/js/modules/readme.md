@@ -1,0 +1,1 @@
+`html5sortable-no-jquery` is custom fork based on `html5sortable`, but without jQuery dependency and can be found here: https://github.com/nazar-pc/html5sortable/tree/without-jquery (upstream PR: https://github.com/voidberg/html5sortable/pull/204)

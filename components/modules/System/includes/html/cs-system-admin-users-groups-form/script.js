@@ -41,38 +41,39 @@
     },
     _init_sortable: function(){
       var this$ = this;
-      require(['jquery', 'html5sortable'], function($, html5sortable){
-        var $shadowRoot, $group;
-        $shadowRoot = $(this$.shadowRoot);
-        if ($shadowRoot.find('#user-groups > div:not(:first)').length < this$.user_groups.length || $shadowRoot.find('#other-groups > div:not(:first)').length < this$.other_groups.length) {
+      require(['html5sortable-no-jquery'], function(html5sortable){
+        if (this$.shadowRoot.querySelectorAll('#user-groups > div:not(:first-child)').length < this$.user_groups.length || this$.shadowRoot.querySelectorAll('#other-groups > div:not(:first-child)').length < this$.other_groups.length) {
           setTimeout(this$._init_sortable.bind(this$), 100);
           return;
         }
-        $group = $shadowRoot.find('#user-groups, #other-groups');
-        html5sortable($group.get(), {
+        html5sortable(this$.shadowRoot.querySelectorAll('#user-groups, #other-groups'), {
           connectWith: 'user-groups-list',
-          items: 'div:not(:first)',
+          items: 'div:not(:first-child)',
           placeholder: '<div class="cs-block-primary">'
-        }).on('sortupdate', function(){
-          $(this$.$['user-groups']).children('div:not(:first)').removeClass('cs-block-warning cs-text-warning').addClass('cs-block-success cs-text-success');
-          $(this$.$['other-groups']).children('div:not(:first)').removeClass('cs-block-success cs-text-success').addClass('cs-block-warning cs-text-warning');
+        })[0].addEventListener('sortupdate', function(){
+          var i$, ref$, len$, element, x$, y$;
+          for (i$ = 0, len$ = (ref$ = this$.shadowRoot.querySelectorAll('#user-groups > div:not(:first-child)')).length; i$ < len$; ++i$) {
+            element = ref$[i$];
+            x$ = element.classList;
+            x$.remove('cs-block-warning', 'cs-text-warning');
+            x$.add('cs-block-success', 'cs-text-success');
+          }
+          for (i$ = 0, len$ = (ref$ = this$.shadowRoot.querySelectorAll('#other-groups > div:not(:first-child)')).length; i$ < len$; ++i$) {
+            element = ref$[i$];
+            y$ = element.classList;
+            y$.remove('cs-block-success', 'cs-text-success');
+            y$.add('cs-block-warning', 'cs-text-warning');
+          }
         });
       });
     },
     save: function(){
-      var this$ = this;
-      require(['jquery']).then(function(arg$){
-        var $;
-        $ = arg$[0];
-        return $(this$.$['user-groups']).children('div:not(:first)').map(function(){
-          return this.group;
-        }).get();
-      }).then(function(arg$){
-        var groups;
-        groups = arg$[0];
-        return cs.api("put api/System/admin/users/" + this$.user + "/groups", {
-          groups: groups
-        });
+      var groups, this$ = this;
+      groups = [].map.call(this.shadowRoot.querySelectorAll('#user-groups > div:not(:first-child)'), function(it){
+        return it.group;
+      });
+      cs.api("put api/System/admin/users/" + this.user + "/groups", {
+        groups: groups
       }).then(function(){
         cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
