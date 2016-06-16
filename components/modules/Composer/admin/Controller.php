@@ -25,7 +25,7 @@ class Controller {
 				h::pre(
 					ansispan(file_get_contents(DIR.'/storage/Composer/last_execution.log')),
 					[
-						'style' => 'background: #1a1a1a'
+						'style' => 'background: #1a1a1a; overflow: auto'
 					]
 				)
 			);
