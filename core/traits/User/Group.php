@@ -52,11 +52,13 @@ trait Group {
 		return $this->cache->get(
 			"groups/$user",
 			function () use ($user) {
-				return $this->db()->qfas(
-					"SELECT `group`
-					FROM `[prefix]users_groups`
-					WHERE `id` = '$user'
-					ORDER BY `priority` DESC"
+				return _int(
+					$this->db()->qfas(
+						"SELECT `group`
+						FROM `[prefix]users_groups`
+						WHERE `id` = '$user'
+						ORDER BY `priority` DESC"
+					) ?: []
 				);
 			}
 		);
