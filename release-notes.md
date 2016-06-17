@@ -2021,3 +2021,86 @@ Dropped backward compatibility:
 * Stop applying `shim-shadowdom` attribute to all styles automatically
 
 Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
+
+# 4.85.0+build-2240: Less jQuery, less plugins
+
+This release contains incremental improvements and bug fixes over last major release with 2 important changes.
+
+The first significant change is that jQuery is not used by system core and many components, it is still around, but will be removed in 5.x, so it is time to explicitly define dependency on jQuery NPM package and use it as AMD module exclusively.
+
+The seconds change is deprecation of plugins in favor of using modules only. Plugins were always simpler version of modules and didn't bring any substantial benefit, while added a lot of complexity.
+While migrating from plugins to modules you might want to disable simple administration mode temporarily (Administration > General > System :: Simple mode of administration) and ignore dependency conflicts while you disable/remove plugin and install/enable corresponding module.
+
+Security fixes:
+* None
+
+New components:
+* None
+
+New features:
+* System doesn't use jQuery anymore
+* `cs.api` function added on frontend for convenient calls to API without dependency on jQuery
+* `cs.ui.alert()` now returns promise
+* `cs.ui.confirm()` also returns promise if `ok_callback` was not specified
+* Standalone version of html5sortable added alongside with previously available
+* All existing plugins converted into modules, since plugins are deprecated
+
+Updates:
+* Stable version of jQuery 3.0
+
+Fixes and small improvements:
+* System:
+  * Added check for `origin` header
+  * Small fix for getting permission for API
+  * Fixed focus in sign in and password restoration modals
+  * Fix for password changing on frontend
+  * Fix for block deletion
+  * Set `selected` property on `cs-select` during initialization from `value` property
+  * Small fix for labels, when `active` property is set before element is attached to DOM
+  * Fix for incorrect error message during failed API request on frontend
+  * Support trailing slashes in administration pages
+  * Return numeric user's groups ids
+  * Fix jQuery version in packages, since `*` causes problems
+* Blockchain payment
+  * Small important fix for Blockchain payment module
+  * Use NPM package with jQuery-independent QR code generator
+* Blogs:
+  * Stop using jQuery in Blogs module
+* Comments:
+  * Stop using jQuery in Comments module
+* Composer:
+  * Stop using jQuery in Composer module
+* Content:
+  * Stop using jQuery in Content module
+* Disqus:
+  * Disqus conflict with Shadow DOM polyfill was resolved, so hack is not needed anymore
+* Feedback:
+* Fotorama
+  * Added AMD support to fotorama
+  * Fotorama plugin now depends on `Composer assets` and NPM package jQuery
+* Old IE
+  * Dataset polyfill added to Old IE plugin
+* Photo gallery:
+  * Photo gallery consumes jQuery only as AMD module, declares dependency on corresponding NPM package and `Composer assets` plugin
+* Shop:
+  * Shop consumes jQuery only as AMD module, declares dependency on corresponding NPM package and `Composer assets` plugin
+  * Shop module uses jQuery-free html5sortable from latest system version
+* Static pages
+  * Stop using jQuery in Static pages module
+* TinyMCE:
+  * Specify `display:` on editor elements
+* Uploader:
+  * Stop using jQuery in Uploader module (but still support jQuery objects if passed as argument)
+
+Deprecations:
+* jQuery is now deprecated in system core, but is still around till 5.x
+* Plugins are deprecated, but still fully supported and will be removed in 5.x
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* Partially breaking change: second argument in `cs.file_upload()`'s `error` callback is now regular XHR object, rather than jqXHR
+
+Dropped backward compatibility:
+* All features that were deprecated in last release and kept for smooth upgrade were removed
+* Removed possibility to upgrade from older versions than latest release
+
+Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
