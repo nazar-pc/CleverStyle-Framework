@@ -8,27 +8,27 @@ For this purposes CleverStyle Framework provides few convenient methods and prop
 * `cs.ui.notify()`
 * `cs.ui.ready`
 
-#### cs.ui.modal(content : {HTMLElement}|{jQuery}|{String}) : HTMLElement
+#### cs.ui.modal(content : HTMLElement|jQuery|String) : HTMLElement
 Generic interface for creating modal from string or element as its content.
 Modal element will be attached to `document.documentElement` and returned.
 
-#### cs.ui.simple_modal(content : {HTMLElement}|{jQuery}|{String}) : HTMLElement
+#### cs.ui.simple_modal(content : HTMLElement|jQuery|String) : HTMLElement
 Even simpler interface for creating modal from string or element as its content.
 Modal will be opened right after creation and destroyed when closed.
 Modal element will be attached to `document.documentElement` and returned.
 
-#### cs.ui.alert(content : {HTMLElement}|{jQuery}|{String}) : HTMLElement
+#### cs.ui.alert(content : HTMLElement|jQuery|String) : Promise
 Interface for creating modal from string or element as its content specifically for replacing default `window.alert()` method.
 Modal will be opened right after creation and destroyed when closed, also will have "OK" button which is focused automatically.
 Modal element will be attached to `document.documentElement` and returned.
 
-#### cs.ui.confirm(content : {HTMLElement}|{jQuery}|{String}, ok_callback : {Function} [, cancel_callback : {Function}]) : HTMLElement
+#### cs.ui.confirm(content : HTMLElement|jQuery|String, ok_callback : Function [, cancel_callback : Function]) : HTMLElement|Promise
 Interface for creating modal from string or element as its content specifically for replacing default `window.confirm()` method.
 Modal will be opened right after creation and destroyed when closed, also will have "OK" and "Cancel" buttons, "OK" is focused automatically.
 Depending on button clicked `ok_callback` or `cancel_callback` will be called.
-Modal element will be attached to `document.documentElement` and returned.
+Modal element will be attached to `document.documentElement` and returned (if `ok_callback` not specified, `Promise` will be returned instead).
 
-#### cs.ui.notify(content : {HTMLElement}|{jQuery}|{String} [, delay : {Number}][, type : {String}]]) : HTMLElement
+#### cs.ui.notify(content : HTMLElement|jQuery|String [, delay : Number][, type : String]]) : HTMLElement
 Interface for creating notifications from string or element as its content.
 `delay` and `type` arguments are both optional and can go in any order.
 `delay` is number in seconds after which notification will be closed automatically (assumed 0 by default, namely shown until closed manually).

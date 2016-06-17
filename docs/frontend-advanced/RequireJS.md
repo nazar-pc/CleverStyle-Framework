@@ -1,4 +1,4 @@
-[RequireJS](https://github.com/jrburke/requirejs) is bundled in CleverStyle Framework out of the box.
+[Alameda](https://github.com/requirejs/alameda) (modern RequireJS-compatible library) is bundled in CleverStyle Framework out of the box.
 
 All other third-party libraries bundled with system like jQuery or jsSHA are also available as AMD modules through RequireJS.
 

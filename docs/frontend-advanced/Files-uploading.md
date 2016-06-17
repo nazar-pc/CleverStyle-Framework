@@ -8,7 +8,7 @@ All arguments are optional!
 
 * `button` - DOM element or jQuery object, clicking on which files selection dialog will appear
 * `success` - callback that will be called after successful uploading of all files, accepts one argument `files` with array of absolute urls of all uploaded files
-* `error` - callback that will be called if error occurred in Plupload, accepts 3 arguments `error`, `jqXHR`, `file` with error text, jqXHR object and file object being uploaded
+* `error` - callback that will be called if error occurred in Plupload, accepts 3 arguments `error`, `xhr`, `file` with error text, xhr object and file object being uploaded
 * `progress` - callback that will be called when file uploading progress changes, accepts 9 arguments `percent`, `size`, `uploaded_size`, `name`, `total_percent`, `total_size`, `total_uploaded`, `current_file`, `total_files` current progress in percents, total file size, size of uploaded part, file name, total percents, size and uploaded size (useful when multiple files being uploaded) and currently uploading file number and total number of files to be uploaded
 * `multi` - allows to enable multiple files selection (defaults to `false`)
 * `drop_element` - if specified - it will be possible to drop files on that element for uploading (defaults to `button`, first argument)

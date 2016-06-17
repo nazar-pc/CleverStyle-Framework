@@ -44,6 +44,7 @@ Preloading feature is smart enough to preload images and fonts from within CSS f
 System includes few third-party libraries that are available as AMD modules, they can be found in [/includes/js/modules](/includes/js/modules) directory.
 Also Polymer, Alameda and sprintf.js are always present unconditionally.
 
+### jQuery in system core is deprecated, declare NPM dependency explicitly and use it only as AMD module
 jQuery is a bit tricky. It is also loaded unconditionally, but since it is quite large and is not required on initial stages of frontend loading, if optimized frontend loading is used its loading will be delayed.
 If you need jQuery on earlier stages, make sure that you call it as AMD module, this way everything will work as you would expect.
 
