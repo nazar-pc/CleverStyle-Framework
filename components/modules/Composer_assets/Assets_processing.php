@@ -1,12 +1,12 @@
 <?php
 /**
  * @package   Composer assets
- * @category  plugins
+ * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-namespace cs\plugins\Composer_assets;
+namespace cs\modules\Composer_assets;
 use
 	cs\Config,
 	Exception,

@@ -1,6 +1,6 @@
 {
 	"package"          : "Composer_assets",
-	"category"         : "plugins",
+	"category"         : "modules",
 	"version"          : "1.11.0+build-37",
 	"description"      : "Bower and NPM packages support through Composer using fxp/composer-asset-plugin for assets management, oyejorge/less.php for LESS compilation and leafo/scssphp for SCSS",
 	"author"           : "Nazar Mokrynskyi",
