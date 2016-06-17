@@ -1,6 +1,6 @@
 {
 	"package"             : "Json_ld",
-	"category"            : "plugins",
+	"category"            : "modules",
 	"version"             : "0.6.0+build-11",
 	"description"         : "Useful tools for simplifying generating of JSON-LD snippets",
 	"author"              : "Nazar Mokrynskyi",
