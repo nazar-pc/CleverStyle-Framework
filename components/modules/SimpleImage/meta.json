@@ -1,7 +1,7 @@
 {
 	"package"     : "SimpleImage",
-	"category"    : "plugins",
-	"version"     : "2.5.3-cs37",
+	"category"    : "modules",
+	"version"     : "2.5.3-cs38",
 	"description" : "A PHP class that simplifies working with images. Integration into CleverStyle Framework.",
 	"author"      : "Cory LaViska",
 	"website"     : "www.abeautifulsite.net",

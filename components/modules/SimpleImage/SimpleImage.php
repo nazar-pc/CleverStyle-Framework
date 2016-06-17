@@ -7,7 +7,7 @@
  * @license		This software is dual-licensed under the GNU General Public License and the MIT License
  * @copyright	A Beautiful Site, LLC.
  */
-namespace	cs\plugins\SimpleImage;
+namespace	cs\modules\SimpleImage;
 require_once __DIR__.'/abeautifulsite/SimpleImage.php';
 /**
  * Class SimpleImage

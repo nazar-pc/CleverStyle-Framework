@@ -17,7 +17,7 @@ use
 	cs\User,
 	cs\DB\Accessor,
 	cs\Singleton,
-	cs\plugins\SimpleImage\SimpleImage,
+	cs\modules\SimpleImage\SimpleImage,
 	Exception;
 
 /**
