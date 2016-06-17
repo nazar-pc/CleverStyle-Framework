@@ -10,7 +10,7 @@ namespace cs\modules\Shop;
 use
 	cs\Cache\Prefix,
 	cs\Config,
-	cs\plugins\Tags\Tags as Tags_trait,
+	cs\modules\Tags\Tags as Tags_trait,
 	cs\Singleton;
 
 /**

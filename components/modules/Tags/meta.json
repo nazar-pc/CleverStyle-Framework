@@ -1,7 +1,7 @@
 {
 	"package"     : "Tags",
-	"category"    : "plugins",
-	"version"     : "1.5.0+build-6",
+	"category"    : "modules",
+	"version"     : "2.0.0+build-7",
 	"description" : "Contains trait that is used for Tags creation and search by other modules",
 	"author"      : "Nazar Mokrynskyi",
 	"website"     : "cleverstyle.org/Framework",
