@@ -15,8 +15,7 @@ It is free, Open Source and is distributed under MIT license, see [license.txt](
 # Key features
 
 * Components
- * Modules - for displaying main page content
- * Plugins - do not have dedicated pages and provide additional functionality
+ * Modules - major component type
  * Blocks - are placed on around the page for displaying additional information
 * Events - ability to capture, respond or even override behavior of different aspects of the system without changing system itself
 * Users, groups and permissions for granular access to functionality
@@ -82,33 +81,30 @@ Some components are developed in parallel with core in this repository
  * **Blogs** (simple blogging functionality)
  * **Comments** (adds comments functionality to other modules)
  * **Composer** ([Composer](https://github.com/composer/composer) integration into CleverStyle Framework, allows to specify composer dependencies in meta.json that will be installed automatically)
+ * **Composer assets** (Bower and NPM packages support through Composer)
  * **Content** (simple content functionality. May be used by other components or stand-alone)
  * **Cron** (provides GUI for crontab, scheduled tasks)
  * **Deferred tasks** (Deferred tasks allows other components to create tasks, that can be executed not immediately, but little bit later)
  * **Disqus** (Integration of Disqus commenting service, adds comments functionality to other modules)
  * **Feedback** (simple feedback module, sends message to admin's email)
+ * **Fotorama** (integration of [Fotorama](https://github.com/artpolikarpov/fotorama) jQuery gallery into CleverStyle Framework)
  * **Http server** (Http server based on [React](https://github.com/reactphp/react), potentially consumes less memory and works much faster that mod-php5 and php-fpm (and even pure HHVM too))
  * **HybridAuth** (integration of [HybridAuth](https://github.com/hybridauth/hybridauth) library for integration with social networks and other services)
+ * **Json_ld** (simplifies some parts of JSON-LD generation)
  * **OAuth2** (provides realization of OAuth 2 authorization protocol (server side))
+ * **Old IE** (brings frontend polyfills and hacks to provide support for older IE versions (10 currently))
  * **Photo gallery** (simple photo gallery module, powered by Fotorama, Plupload and SimpleImage components)
+ * **Picturefill** (integration of [Picturefill](https://github.com/scottjehl/picturefill) polyfill into CleverStyle Framework)
  * **Polls** (provides polls functionality to other modules)
+ * **Prism** (integration of [Prism](http://prismjs.com/index.html) syntax highlighter into CleverStyle Framework)
  * **Service Worker cache** (uses Service Worker to cache requests to static assets like CSS/JS/HTML/fonts/images to improve subsequent page loads, especially on bad internet connection)
  * **Shop** (provides simple, but highly extensible and customizable shopping functionality)
- * **Static pages** (allows to create static pages like About page or pages without interface, for example for site owner verification)
- * **Uploader** (provides files uploading functionality to other modules)
- * **WebSockets** (support for WebSockets connections utilizing [React](https://github.com/reactphp/react) and [Ratchet](https://github.com/ratchetphp/Ratchet))
-
-#### Plugins
-
- * **Composer assets** (Bower and NPM packages support through Composer)
- * **Fotorama** (integration of [Fotorama](https://github.com/artpolikarpov/fotorama) jQuery gallery into CleverStyle Framework)
- * **Json_ld** (simplifies some parts of JSON-LD generation)
- * **Old IE** (brings frontend polyfills and hacks to provide support for older IE versions (10 currently))
- * **Picturefill** (integration of [Picturefill](https://github.com/scottjehl/picturefill) polyfill into CleverStyle Framework)
- * **Prism** (integration of [Prism](http://prismjs.com/index.html) syntax highlighter into CleverStyle Framework)
  * **SimpleImage** (integration of [SimpleImage](https://github.com/claviska/SimpleImage) class into CleverStyle Framework)
+ * **Static pages** (allows to create static pages like About page or pages without interface, for example for site owner verification)
  * **Tags** (currently contains single trait, is used by other components in order to avoid code duplication)
  * **TinyMCE** (integration of [TinyMCE](https://github.com/tinymce/tinymce) WYSIWYG Editor for providing simpler content editing)
+ * **Uploader** (provides files uploading functionality to other modules)
+ * **WebSockets** (support for WebSockets connections utilizing [React](https://github.com/reactphp/react) and [Ratchet](https://github.com/ratchetphp/Ratchet))
 
 #### Themes
 
