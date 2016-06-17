@@ -1,11 +1,11 @@
 /**
  * @package   Prism
- * @category  plugins
+ * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-Prism.plugins.autoloader.languages_path = '/components/plugins/Prism/includes/js/components/'
+Prism.plugins.autoloader.languages_path = '/components/modules/Prism/includes/js/components/'
 Prism.highlightAll = (async, callback) !->
 	elements = document.querySelectorAll('html /deep/ code[class*="language-"], html /deep/ [class*="language-"] code, html /deep/ code[class*="lang-"], html /deep/ [class*="lang-"] code')
 	for element in elements
