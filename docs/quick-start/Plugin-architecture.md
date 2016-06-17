@@ -1,3 +1,5 @@
+### WARNING: Plugins are deprecated, use modules instead
+
 Every described below element is optional, even empty directory in **components/plugins** will be considered as plugin. You are free to use only features you need.
 
 ### File system structure of plugin

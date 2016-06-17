@@ -1,3 +1,5 @@
+### WARNING: Plugins are deprecated, use modules instead
+
 Plugins are used for so-called "hidden work". They are executed on every page, but may have no visual representation.
 
 For example, plugin can provide web site statistic, or add WYSIWYG HTML editor to text areas on pages.

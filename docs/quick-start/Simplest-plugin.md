@@ -1,3 +1,5 @@
+### WARNING: Plugins are deprecated, use modules instead
+
 Steps to create the simplest plugin:
 
 1. Create plugin subdirectory in **components/plugins**
