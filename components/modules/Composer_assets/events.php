@@ -27,6 +27,9 @@ Event::instance()
 	->on(
 		'System/Request/routing_replace',
 		function () {
+			if (!Config::instance()->module('Composer_assets')->enabled()) {
+				return;
+			}
 			$Request = Request::instance();
 			if (
 				$Request->method == 'GET' &&
