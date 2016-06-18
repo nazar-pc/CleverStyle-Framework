@@ -30,3 +30,7 @@ register_shutdown_function(
 		exec("rm -rf ".escapeshellarg($tmp));
 	}
 );
+
+if (!defined('DEBUG')) {
+	define('DEBUG', false);
+}
