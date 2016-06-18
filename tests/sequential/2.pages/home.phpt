@@ -58,7 +58,7 @@ echo Response::instance()->body;
 			Page generated in %f s; %d queries to DB in %f s; memory consumption %f MiB (peak %f MiB)
 		</div>
 		<div>
-			© Powered by <a target="_blank" href="http://cleverstyle.org/Framework" title="CleverStyle Framework">CleverStyle Framework</a>
+			© Powered by <a target="_blank" href="https://cleverstyle.org/Framework" title="CleverStyle Framework">CleverStyle Framework</a>
 		</div>
 	</footer>
 	<script src="/storage/pcache/webcomponents.js?%s"></script>

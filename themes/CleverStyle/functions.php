@@ -108,7 +108,7 @@ function get_footer () {
 			'<!--memory usage-->',
 			'<!--peak memory usage-->'
 		),
-		'© Powered by <a target="_blank" href="http://cleverstyle.org/Framework" title="CleverStyle Framework">CleverStyle Framework</a>'
+		'© Powered by <a target="_blank" href="https://cleverstyle.org/Framework" title="CleverStyle Framework">CleverStyle Framework</a>'
 	);
 }
 
