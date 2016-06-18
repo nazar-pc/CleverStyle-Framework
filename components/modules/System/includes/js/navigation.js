@@ -62,7 +62,6 @@
       go(location.href.match(/admin\/System\/\w+\/\w+/)[0]);
     } else {
       href = location.href.split('?')[0];
-      console.log(href);
       if (href.substr(-1) === '/') {
         href = href.substr(0, href.length - 1);
       }

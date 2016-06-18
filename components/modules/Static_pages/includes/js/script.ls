@@ -19,7 +19,6 @@ if !form
 while !form.matches('form')
 	form	= form.parentElement
 form.addEventListener('submit', !->
-	console.log @
 	window.onbeforeunload	= null
 	title_input				= html_to_node('<input name="title" hidden>')
 	title_input.value		= title.textContent

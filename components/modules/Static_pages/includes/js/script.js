@@ -30,7 +30,6 @@
   }
   form.addEventListener('submit', function(){
     var title_input, content_textarea;
-    console.log(this);
     window.onbeforeunload = null;
     title_input = html_to_node('<input name="title" hidden>');
     title_input.value = title.textContent;

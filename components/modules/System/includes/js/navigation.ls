@@ -67,7 +67,6 @@ L				= cs.Language('system_admin_')
 		)
 	else
 		href = location.href.split('?')[0]
-		console.log href
 		if href.substr(-1) == '/'
 			href = href.substr(0, href.length - 1)
 		if href == document.baseURI + 'admin' || href == document.baseURI + 'admin/System'
