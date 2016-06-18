@@ -20,13 +20,16 @@ class Event {
 	/**
 	 * @var callable[][]
 	 */
-	protected $callbacks;
+	protected $callbacks = [];
 	/**
 	 * @var callable[][]
 	 */
 	protected $callbacks_cache;
 	protected function init () {
-		$this->callbacks = [];
+		/** @noinspection PhpUndefinedFieldInspection */
+		if ($this->__request_id > 1) {
+			$this->callbacks = [];
+		}
 	}
 	/**
 	 * Add event handler
