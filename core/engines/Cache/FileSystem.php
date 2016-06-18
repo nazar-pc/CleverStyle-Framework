@@ -45,7 +45,7 @@ class FileSystem extends _Abstract {
 			return false;
 		}
 		$cache = file_get_contents($path_in_filesystem);
-		$cache = @_json_decode($cache);
+		$cache = _json_decode($cache);
 		if ($cache !== false) {
 			return $cache;
 		}
@@ -60,10 +60,11 @@ class FileSystem extends _Abstract {
 		if (strpos($path_in_filesystem, CACHE) !== 0) {
 			return false;
 		}
-		$data = @_json_encode($data);
+		$data = _json_encode($data);
 		if (mb_strpos($item, '/') !== false) {
 			$path = mb_substr($item, 0, mb_strrpos($item, '/'));
 			if (!is_dir(CACHE."/$path")) {
+				/** @noinspection MkdirRaceConditionInspection */
 				@mkdir(CACHE."/$path", 0770, true);
 			}
 			unset($path);
