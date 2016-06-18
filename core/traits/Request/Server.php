@@ -107,6 +107,9 @@ trait Server {
 		$this->protocol     = $server['SERVER_PROTOCOL'];
 		$this->query_string = $server['QUERY_STRING'];
 		$this->uri          = null_byte_filter(urldecode($server['REQUEST_URI'])) ?: '/';
+		if (strpos($this->uri, '/index.php') === 0) {
+			$this->uri = substr($this->uri, 10);
+		}
 		$this->path         = explode('?', $this->uri, 2)[0];
 		$this->remote_addr  = $server['REMOTE_ADDR'];
 		$this->ip           = $this->ip($server);
