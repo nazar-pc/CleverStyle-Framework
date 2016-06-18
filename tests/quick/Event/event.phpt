@@ -1,7 +1,7 @@
 --FILE--
 <?php
 namespace cs;
-include __DIR__.'/../../bootstrap.php';
+include __DIR__.'/../../unit.php';
 $Event = Event::instance();
 $Event->on('event/empty_return', function () {
 	return;

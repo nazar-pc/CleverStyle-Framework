@@ -1,6 +1,6 @@
 --FILE--
 <?php
-include __DIR__.'/../../bootstrap.php';
+include __DIR__.'/../../unit.php';
 require DIR.'/core/thirdparty/PHPMailer.php';
 if (method_exists('PHPMailer', '__construct')) {
 	die('__construct() method should be removed from PHPMailer class');
