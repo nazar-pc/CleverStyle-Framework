@@ -15,7 +15,7 @@ use
 	cs\User,
 	cs\CRUD_helpers,
 	cs\Singleton,
-	cs\plugins\Json_ld\Json_ld;
+	cs\modules\Json_ld\Json_ld;
 
 /**
  * @method static $this instance($check = false)
