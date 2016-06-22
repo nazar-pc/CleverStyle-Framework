@@ -15,7 +15,8 @@
       can_edit: false,
       can_delete: false,
       show_comments: false,
-      preview: false
+      preview: false,
+      url_prefix: location.pathname.indexOf('/' + cs.Language.clang) === 0 ? '/' + cs.Language.clang : ''
     },
     ready: function(){
       var this$ = this;

@@ -16,6 +16,7 @@ Polymer(
 		can_delete		: false
 		show_comments	: false
 		preview			: false
+		url_prefix		: if location.pathname.indexOf('/' + cs.Language.clang) == 0 then '/' + cs.Language.clang else ''
 	ready			: !->
 		@jsonld	= JSON.parse(@children[0].innerHTML)
 		cs.api([
