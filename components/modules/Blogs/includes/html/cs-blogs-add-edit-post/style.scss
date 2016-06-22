@@ -8,6 +8,10 @@
 td {
 	vertical-align : top !important;
 
+	cs-editor-inline {
+		display : block;
+	}
+
 	[contenteditable] {
 		outline : #333 dotted 1px;
 	}
