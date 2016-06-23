@@ -19,3 +19,22 @@ function do_request () {
 		}
 	}
 }
+
+/**
+ * Create temporary directory and return path to it
+ *
+ * Directory will be removed after script execution
+ *
+ * @return string
+ */
+function make_tmp_dir () {
+	$tmp = __DIR__.'/'.uniqid('.tmp', true);
+	/** @noinspection MkdirRaceConditionInspection */
+	@mkdir($tmp);
+	register_shutdown_function(
+		function () use ($tmp) {
+			exec("rm -rf ".escapeshellarg($tmp));
+		}
+	);
+	return $tmp;
+}

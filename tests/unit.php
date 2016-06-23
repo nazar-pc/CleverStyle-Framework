@@ -11,11 +11,9 @@ namespace cs;
 require_once __DIR__.'/../core/traits/Singleton/Base.php';
 require_once __DIR__.'/Singleton.php';
 require_once __DIR__.'/Mock_object.php';
+require_once __DIR__.'/functions.php';
 
-$tmp = __DIR__.'/'.uniqid('.tmp', true);
-/** @noinspection MkdirRaceConditionInspection */
-@mkdir($tmp);
-define('CACHE', $tmp);
+define('CACHE', make_tmp_dir());
 /** @noinspection RealpathOnRelativePathsInspection */
 define('DIR', realpath(__DIR__.'/..'));
 define('ENGINES', DIR.'/core/engines');
@@ -24,12 +22,6 @@ define('PLUGINS', DIR.'/components/plugins');
 
 require_once __DIR__.'/../core/thirdparty/upf.php';
 require_once __DIR__.'/../core/functions.php';
-
-register_shutdown_function(
-	function () use ($tmp) {
-		exec("rm -rf ".escapeshellarg($tmp));
-	}
-);
 
 if (!defined('DEBUG')) {
 	define('DEBUG', false);
