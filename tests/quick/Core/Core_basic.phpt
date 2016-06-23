@@ -2,16 +2,13 @@
 <?php
 namespace cs;
 include __DIR__.'/../../unit.php';
-class Core_test extends Core {
-	/**
-	 * @return self
-	 */
-	static function test_init () {
-		$config_directory = make_tmp_dir();
-		file_put_contents(
-			"$config_directory/main.json",
-			/** @lang JSON */
-			<<<JSON
+define('DIR', make_tmp_dir());
+/** @noinspection MkdirRaceConditionInspection */
+@mkdir(DIR.'/config');
+file_put_contents(
+	DIR.'/config/main.json',
+	/** @lang JSON */
+	<<<JSON
 {
 	//Domain of main mirror
 	"domain"			: "cscms.travis",
@@ -41,20 +38,25 @@ class Core_test extends Core {
 	"public_key"		: "cscms.travis.public_key"
 }
 JSON
-		);
-		file_put_contents(
-			"$config_directory/main.php",
-			/** @lang PHP */
-			<<<PHP
+);
+file_put_contents(
+	DIR.'/config/main.php',
+	/** @lang PHP */
+	<<<PHP
 <?php
 \$Core = cs\Core_test::instance();
 \$Core->language = 'Alternative language';
 \$Core->custom_property = 'Custom property';
 \$Core->set('custom_property2', 'Custom property');
 PHP
-		);
-		$Core                   = new self;
-		$Core->config_directory = $config_directory;
+);
+
+class Core_test extends Core {
+	/**
+	 * @return self
+	 */
+	static function test_init () {
+		$Core = new self;
 		self::instance_replace($Core);
 		return $Core;
 	}
@@ -70,8 +72,8 @@ PHP
 
 		$Core = self::test_init();
 		var_dump('override config from PHP (failed)');
-		require_once "$Core->config_directory/main.php";
 		$Core->construct();
+		$Core->language = 'Language changed after';
 		var_dump($Core->config);
 
 		var_dump('get existing property');
@@ -167,7 +169,7 @@ array(20) {
   string(15) "Custom property"
 }
 string(33) "override config from PHP (failed)"
-array(18) {
+array(20) {
   ["domain"]=>
   string(12) "cscms.travis"
   ["timezone"]=>
@@ -195,7 +197,7 @@ array(18) {
   ["storage_password"]=>
   string(21) "cscms.travis.password"
   ["language"]=>
-  string(21) "cscms.travis.language"
+  string(20) "Alternative language"
   ["cache_engine"]=>
   string(18) "cscms.travis.cache"
   ["memcache_host"]=>
@@ -204,10 +206,14 @@ array(18) {
   string(5) "11211"
   ["public_key"]=>
   string(23) "cscms.travis.public_key"
+  ["custom_property"]=>
+  string(15) "Custom property"
+  ["custom_property2"]=>
+  string(15) "Custom property"
 }
 string(21) "get existing property"
-string(21) "cscms.travis.language"
-string(21) "cscms.travis.language"
+string(20) "Alternative language"
+string(20) "Alternative language"
 string(25) "get non-existing property"
 bool(false)
 bool(false)

@@ -15,7 +15,7 @@ define('DIR', getcwd());               //Root directory
 /**
  * Defining of basic constants with paths to system directories
  */
-define('ENGINES', DIR.'/core/engines');
+define('ENGINES', DIR.'/core/engines'); // Deprecated, TODO: remove in 5.x
 define('LANGUAGES', DIR.'/core/languages');
 define('CUSTOM', DIR.'/custom');
 define('TEMPLATES', DIR.'/templates');

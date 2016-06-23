@@ -38,3 +38,14 @@ function make_tmp_dir () {
 	);
 	return $tmp;
 }
+
+/**
+ * Clean contents of temporary directory without removing directory itself
+ *
+ * @param string $tmp_dir
+ */
+function clean_tmp_dir ($tmp_dir) {
+	if (strpos($tmp_dir, __DIR__.'/.tmp') === 0) {
+		exec("rm -rf ".escapeshellarg($tmp_dir).'/*');
+	}
+}

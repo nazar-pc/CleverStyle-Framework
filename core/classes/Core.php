@@ -44,15 +44,11 @@ class Core {
 	 */
 	protected $config = [];
 	/**
-	 * @var string
-	 */
-	protected $config_directory = DIR.'/config';
-	/**
 	 * Loading of base system configuration, creating of missing directories
 	 */
 	protected function construct () {
 		$this->config = $this->load_config();
-		require_once "$this->config_directory/main.php";
+		require DIR.'/config/main.php';
 		$this->constructed = true;
 	}
 	/**
@@ -61,7 +57,7 @@ class Core {
 	 * @return array
 	 */
 	protected function load_config () {
-		if (!file_exists("$this->config_directory/main.json")) {
+		if (!file_exists(DIR.'/config/main.json')) {
 			if (PHP_SAPI == 'cli') {
 				echo <<<CONFIG_NOT_FOUND
 Config file not found, is system installed properly?
@@ -80,7 +76,7 @@ CONFIG_NOT_FOUND;
 			// Can't proceed without config
 			exit(500);
 		}
-		return file_get_json_nocomments("$this->config_directory/main.json");
+		return file_get_json_nocomments(DIR.'/config/main.json');
 	}
 	/**
 	 * Getting of base configuration parameter

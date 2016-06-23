@@ -136,7 +136,7 @@ trait storages {
 	 * @return string[]
 	 */
 	protected static function admin_storages_get_engines () {
-		return _mb_substr(get_files_list(ENGINES.'/Storage', '/^[^_].*?\.php$/i', 'f'), 0, -4);
+		return _mb_substr(get_files_list(DIR.'/engines/Storage', '/^[^_].*?\.php$/i', 'f'), 0, -4);
 	}
 	/**
 	 * Test storage connection

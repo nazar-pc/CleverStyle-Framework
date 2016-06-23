@@ -3,6 +3,8 @@
 namespace cs;
 include __DIR__.'/../../unit.php';
 $Event = Event::instance();
+define('MODULES', make_tmp_dir());
+define('PLUGINS', make_tmp_dir());
 $Event->on('event/empty_return', function () {
 	return;
 });

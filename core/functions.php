@@ -22,9 +22,19 @@ use
 spl_autoload_register(
 	function ($class) {
 		static $cache, $aliases;
+		$get_from_cache = function ($file) {
+			return defined('CACHE') && file_exists(CACHE."/classes/$file") ? file_get_json(CACHE."/classes/$file") : [];
+		};
+		$put_into_cache = function ($file, $content) {
+			if (defined('CACHE')) {
+				/** @noinspection MkdirRaceConditionInspection */
+				@mkdir(CACHE.'/classes', 0770, true);
+				file_put_json(CACHE."/classes/$file", $content);
+			}
+		};
 		if (!isset($cache)) {
-			$cache   = file_exists(CACHE.'/classes/autoload') ? file_get_json(CACHE.'/classes/autoload') : [];
-			$aliases = file_exists(CACHE.'/classes/aliases') ? file_get_json(CACHE.'/classes/aliases') : [];
+			$cache   = $get_from_cache('autoload');
+			$aliases = $get_from_cache('aliases');
 		}
 		if (isset($aliases[$class])) {
 			spl_autoload_call($aliases[$class]);
@@ -41,25 +51,23 @@ spl_autoload_register(
 		$namespace           = count($prepared_class_name) > 1 ? implode('/', array_slice($prepared_class_name, 0, -1)) : '';
 		$class_name          = array_pop($prepared_class_name);
 		$cache[$class]       = false;
-		/** @noinspection MkdirRaceConditionInspection */
-		@mkdir(CACHE.'/classes', 0770, true);
 		/**
 		 * Try to load classes from different places. If not found in one place - try in another.
 		 */
 		if (
-			file_exists($file = DIR."/core/classes/$namespace/$class_name.php") ||    //Core classes
-			file_exists($file = DIR."/core/thirdparty/$namespace/$class_name.php") || //Third party classes
-			file_exists($file = DIR."/core/traits/$namespace/$class_name.php") ||     //Core traits
-			file_exists($file = ENGINES."/$namespace/$class_name.php") ||             //Core engines
-			file_exists($file = MODULES."/../$namespace/$class_name.php") ||          //Classes in modules
-			file_exists($file = PLUGINS."/../$namespace/$class_name.php")             //Classes in plugins
+			file_exists($file = __DIR__."/classes/$namespace/$class_name.php") ||    //Core classes
+			file_exists($file = __DIR__."/thirdparty/$namespace/$class_name.php") || //Third party classes
+			file_exists($file = __DIR__."/traits/$namespace/$class_name.php") ||     //Core traits
+			file_exists($file = __DIR__."/engines/$namespace/$class_name.php") ||                 //Core engines
+			file_exists($file = MODULES."/../$namespace/$class_name.php") ||              //Classes in modules
+			file_exists($file = PLUGINS."/../$namespace/$class_name.php")                 //Classes in plugins
 		) {
 			$cache[$class] = realpath($file);
-			file_put_json(CACHE.'/classes/autoload', $cache);
+			$put_into_cache('autoload', $cache);
 			require_once $file;
 			return true;
 		}
-		file_put_json(CACHE.'/classes/autoload', $cache);
+		$put_into_cache('autoload', $cache);
 		// Processing components aliases
 		if (strpos($namespace, 'modules') === 0 || strpos($namespace, 'plugins') === 0) {
 			$Config      = Config::instance();
@@ -81,7 +89,7 @@ spl_autoload_register(
 						$class_exploded[2] = $meta['package'];
 						$alias             = implode('\\', $class_exploded);
 						$aliases[$class]   = $alias;
-						file_put_json(CACHE.'/classes/aliases', $aliases);
+						$put_into_cache('aliases', $aliases);
 						spl_autoload_call($alias);
 						return class_exists($alias) || class_alias($alias, $class);
 					}

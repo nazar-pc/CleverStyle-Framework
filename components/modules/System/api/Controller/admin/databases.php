@@ -168,7 +168,7 @@ trait databases {
 	 * @return string[]
 	 */
 	protected static function admin_databases_get_engines () {
-		return _mb_substr(get_files_list(ENGINES.'/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4);
+		return _mb_substr(get_files_list(DIR.'/engines/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4);
 	}
 	/**
 	 * Test database connection
@@ -198,9 +198,9 @@ trait databases {
 	static function admin_databases_get_settings () {
 		$Config = Config::instance();
 		return [
-			'db_balance'        => $Config->core['db_balance'],
-			'db_mirror_mode'    => $Config->core['db_mirror_mode'],
-			'applied'           => $Config->cancel_available()
+			'db_balance'     => $Config->core['db_balance'],
+			'db_mirror_mode' => $Config->core['db_mirror_mode'],
+			'applied'        => $Config->cancel_available()
 		];
 	}
 	/**
