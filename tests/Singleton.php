@@ -9,6 +9,7 @@
 namespace cs;
 use
 	cs\Singleton\Base;
+
 /**
  * Singleton trait (actually not at all, hackable thing for tests)
  */
@@ -37,15 +38,17 @@ trait Singleton {
 	/**
 	 * Stub instance with custom object that will contain properties and methods specified here
 	 *
-	 * @param mixed[]             $properties Default properties of object
-	 * @param callable[]|string[] $methods    Methods of object - if callable - will be called, if not - will be used as return values
+	 * @param mixed[]                $properties     Default properties of object
+	 * @param callable[]|mixed[]     $methods        Methods of object - if callable - will be called, if not - will be used as return values
+	 * @param callable[][]|mixed[][] $methods_multi  Methods of object - contains array of arrays, during each next call next item of nested indexed array will
+	 *                                               be used
 	 *
 	 * @return False_class|static
 	 */
-	static function instance_stub ($properties = [], $methods = []) {
+	static function instance_stub ($properties = [], $methods = [], $methods_multi = []) {
 		return static::instance_internal(
 			false,
-			new Mock_object($properties, $methods)
+			new Mock_object($properties, $methods, $methods_multi)
 		);
 	}
 	/**
