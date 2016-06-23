@@ -73,13 +73,15 @@ class Mock_object {
 		if (isset($this->methods[$method])) {
 			$method = $this->methods[$method];
 			if ($method instanceof Closure) {
-				return Closure::bind($method, $this, self::class)(...$arguments);
+				$method = Closure::bind($method, $this, self::class);
+				return $method(...$arguments);
 			}
 			return $method;
 		} elseif (isset($this->methods_multi[$method])) {
 			$method = $this->methods_multi[$method][$this->methods_multi_index[$method]++];
 			if ($method instanceof Closure) {
-				return Closure::bind($method, $this, self::class)(...$arguments);
+				$method = Closure::bind($method, $this, self::class);
+				return $method(...$arguments);
 			}
 			return $method;
 		} else {
