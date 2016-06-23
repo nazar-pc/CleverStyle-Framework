@@ -7,6 +7,9 @@
  * @license    MIT License, see license.txt
  */
 namespace cs;
+use
+	Closure;
+
 /**
  * Mock object that accepts properties and methods in constructor and is used to simulate behavior of other class to some needed extent
  */
@@ -69,14 +72,14 @@ class Mock_object {
 	function __call ($method, $arguments) {
 		if (isset($this->methods[$method])) {
 			$method = $this->methods[$method];
-			if (is_callable($method)) {
-				return $method(...$arguments);
+			if ($method instanceof Closure) {
+				return Closure::bind($method, $this, self::class)(...$arguments);
 			}
 			return $method;
 		} elseif (isset($this->methods_multi[$method])) {
 			$method = $this->methods_multi[$method][$this->methods_multi_index[$method]++];
-			if (is_callable($method)) {
-				return $method(...$arguments);
+			if ($method instanceof Closure) {
+				return Closure::bind($method, $this, self::class)(...$arguments);
 			}
 			return $method;
 		} else {
