@@ -156,7 +156,6 @@ CONFIG;
 					strlen($file = @$file_index_map[str_replace('//', '/', "core/engines/$namespace/$class_name.php")]) ||    //Core engines
 					strlen($file = @$file_index_map[str_replace('//', '/', "components/$namespace/$class_name.php")])         //Classes in modules and plugins
 				) {
-					/** @noinspection UntrustedInclusionInspection */
 					require_once "$source/fs/$file";
 					return true;
 				}
