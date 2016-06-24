@@ -197,6 +197,7 @@ CONFIG;
 		) {
 			throw new RuntimeException("Can't extract system files from the archive! Installation aborted.");
 		}
+		chmod("$target/cli", 0775);
 	}
 	/**
 	 * @param string $target
