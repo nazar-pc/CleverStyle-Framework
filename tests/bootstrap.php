@@ -26,3 +26,5 @@ $_SERVER = [
 if (!defined('DEBUG')) {
 	define('DEBUG', false);
 }
+
+require_once __DIR__.'/code_coverage.php';

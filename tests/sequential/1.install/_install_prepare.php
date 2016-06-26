@@ -6,6 +6,10 @@ require_once "$root/core/thirdparty/nazarpc/BananaHTML.php";
 require_once "$root/core/classes/h/Base.php";
 require_once "$root/core/classes/h.php";
 require_once "$root/core/thirdparty/upf.php";
+
+require_once "$root/core/functions.php";
+require_once "$root/tests/code_coverage.php";
+
 if (is_dir($target)) {
 	exec("rm -r $target");
 }

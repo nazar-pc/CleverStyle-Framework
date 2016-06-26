@@ -26,3 +26,10 @@ script:
   - php -d variables_order=EGPCS phpt-tests-runner tests
 after_success:
   - php -d variables_order=EGPCS -d phar.readonly=Off ci/upload_build.php
+after_script:
+  - |
+    if [ $TRAVIS_PHP_VERSION = '7.0' ]; then
+      php tests/code_coverage_report.php
+      travis_retry wget https://scrutinizer-ci.com/ocular.phar
+      php ocular.phar code-coverage:upload --format=php-clover tests/code_coverage_report/clover.xml
+    fi
