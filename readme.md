@@ -2,6 +2,7 @@
 [![SensioLabsInsight](https://img.shields.io/sensiolabs/i/eacdd55b-4a0e-4429-add5-e6a01adb12af.svg?label=SLInsight)](https://insight.sensiolabs.com/projects/eacdd55b-4a0e-4429-add5-e6a01adb12af)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/nazar-pc/CleverStyle-Framework.svg?label=Scrutinizer)](https://scrutinizer-ci.com/g/nazar-pc/CleverStyle-Framework/)
 [![Build Status](https://img.shields.io/travis/nazar-pc/CleverStyle-Framework/master.svg?label=Travis CI)](https://travis-ci.org/nazar-pc/CleverStyle-Framework)
+[![Tests coverage](https://img.shields.io/scrutinizer/coverage/g/nazar-pc/CleverStyle-Framework.svg?label=Tests coverage)](https://scrutinizer-ci.com/g/nazar-pc/CleverStyle-Framework/)
 [![Join the chat at https://gitter.im/nazar-pc/CleverStyle-Framework](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nazar-pc/CleverStyle-Framework)
 
 ![CleverStyle Framework](https://nazar-pc.github.io/CleverStyle-Framework/logo.svg)
