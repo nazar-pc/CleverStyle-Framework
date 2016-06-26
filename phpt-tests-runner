@@ -99,14 +99,14 @@ function run_test ($test_file, $base_text) {
 	$script_arguments = isset($parsed_test['ARGS']) ? $parsed_test['ARGS'] : '';
 	$working_dir      = dirname($test_file);
 	if (isset($parsed_test['SKIPIF'])) {
-		$result = execute_code($working_dir, $parsed_test['SKIPIF'], $php_arguments, $script_arguments);
+		$result = execute_code($working_dir, $parsed_test['SKIPIF'], $php_arguments, $script_arguments, $test_file);
 		if (stripos($result, 'skip') === 0) {
 			line("<y>$base_text SKIPPED</y>", true);
 			line(ltrim(substr($result, 4)));
 			return 'skipped';
 		}
 	}
-	$output = rtrim(execute_code($working_dir, $parsed_test['FILE'], $php_arguments, $script_arguments));
+	$output = rtrim(execute_code($working_dir, $parsed_test['FILE'], $php_arguments, $script_arguments, $test_file));
 	return compare_output($output, $base_text, $test_file, $php_arguments, $script_arguments, $parsed_test);
 }
 
@@ -141,12 +141,14 @@ function parse_test ($test_file) {
  * @param string   $code
  * @param string[] $php_arguments
  * @param string   $script_arguments
+ * @param string   $test_file
  *
  * @return string
  */
-function execute_code ($working_dir, $code, $php_arguments, $script_arguments) {
+function execute_code ($working_dir, $code, $php_arguments, $script_arguments, $test_file) {
 	$file = "$working_dir/__code.php";
 	file_put_contents($file, $code);
+	putenv("TEST_FILE=\"$test_file\"");
 	$output = shell_exec(PHP_BINARY.' '.implode(' ', $php_arguments).' -f='.escapeshellarg($file)." -- $script_arguments 2>&1");
 	unlink($file);
 	return $output;
@@ -165,15 +167,15 @@ function execute_code ($working_dir, $code, $php_arguments, $script_arguments) {
 function compare_output ($output, $base_text, $test_file, $php_arguments, $script_arguments, $parsed_test) {
 	$working_dir = dirname($test_file);
 	if (isset($parsed_test['EXPECT'])) {
-		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECT'], $php_arguments, $script_arguments));
+		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECT'], $php_arguments, $script_arguments, $test_file));
 		if ($expect === $output) {
 			line("<g>$base_text SUCCESS</g>", true);
-			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments);;
+			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
 		$expect = $parsed_test['EXPECT'];
 	} elseif (isset($parsed_test['EXPECTF'])) {
-		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECTF'], $php_arguments, $script_arguments));
+		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECTF'], $php_arguments, $script_arguments, $test_file));
 		$regex  = str_replace(
 			[
 				'%s',
@@ -203,16 +205,16 @@ function compare_output ($output, $base_text, $test_file, $php_arguments, $scrip
 		);
 		if (preg_match("/^$regex\$/s", $output)) {
 			line("<g>$base_text SUCCESS</g>", true);
-			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments);;
+			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
 		$expect = $parsed_test['EXPECTF'];
 	} else {
-		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECREGEX'], $php_arguments, $script_arguments));
+		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECREGEX'], $php_arguments, $script_arguments, $test_file));
 		$regex  = preg_quote($expect, '/');
 		if (preg_match("/^$regex\$/s", $output)) {
 			line("<g>$base_text SUCCESS</g>", true);
-			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments);;
+			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
 	}
