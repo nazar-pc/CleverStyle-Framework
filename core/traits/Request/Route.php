@@ -268,20 +268,26 @@ trait Route {
 	 * @return mixed|string
 	 */
 	protected function determine_page_module (&$rc, &$home_page, $cli_path, $admin_path, $api_path) {
-		$Config  = Config::instance();
-		$modules = $this->get_modules($Config, (bool)$admin_path);
-		if (@in_array($rc[0], array_values($modules))) {
-			return array_shift($rc);
+		$Config           = Config::instance();
+		$modules          = $this->get_modules($Config, (bool)$admin_path);
+		$module_specified = isset($rc[0]);
+		if ($module_specified) {
+			if (in_array($module_specified, $modules)) {
+				return array_shift($rc);
+			}
+			$L = Language::instance();
+			foreach ($modules as $module) {
+				if ($module_specified == path($L->$module)) {
+					array_shift($rc);
+					return $module;
+				}
+			}
 		}
-		if (@$modules[$rc[0]]) {
-			return $modules[array_shift($rc)];
-		}
-		$current_module =
-			$cli_path || $admin_path || $api_path || isset($rc[0])
-				? 'System'
-				: $Config->core['default_module'];
-		if (!$cli_path && !$admin_path && !$api_path && !isset($rc[1])) {
-			$home_page = true;
+		if ($cli_path || $admin_path || $api_path || $module_specified) {
+			$current_module = 'System';
+		} else {
+			$current_module = $Config->core['default_module'];
+			$home_page      = true;
 		}
 		return $current_module;
 	}
@@ -291,7 +297,7 @@ trait Route {
 	 * @param Config $Config
 	 * @param bool   $admin_path
 	 *
-	 * @return array Array of form [localized_module_name => module_name]
+	 * @return array
 	 */
 	protected function get_modules ($Config, $admin_path) {
 		$modules = array_filter(
@@ -308,11 +314,7 @@ trait Route {
 					$module_data['active'] == Config\Module_Properties::ENABLED;
 			}
 		);
-		$L       = Language::instance();
-		foreach ($modules as $module => &$localized_name) {
-			$localized_name = path($L->$module);
-		}
-		return array_flip($modules);
+		return array_keys($modules);
 	}
 	/**
 	 * Get route part by index
