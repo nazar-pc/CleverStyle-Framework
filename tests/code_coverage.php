@@ -23,13 +23,13 @@ $coverage_data_location = __DIR__.'/coverage_data.json';
 
 $coverage = new \SebastianBergmann\CodeCoverage\CodeCoverage(null, $filter);
 if (file_exists($coverage_data_location)) {
-	$coverage->setData(file_get_json($coverage_data_location));
+	$coverage->setData(json_decode(file_get_contents($coverage_data_location), true));
 }
 $coverage->start($_ENV['TEST_FILE']);
 
 register_shutdown_function(
 	function () use ($coverage, $coverage_data_location) {
 		$coverage->stop();
-		file_put_json($coverage_data_location, $coverage->getData(true));
+		file_put_contents($coverage_data_location, json_encode($coverage->getData(true), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 	}
 );

@@ -173,7 +173,6 @@ function compare_output ($output, $base_text, $test_file, $php_arguments, $scrip
 			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
-		$expect = $parsed_test['EXPECT'];
 	} elseif (isset($parsed_test['EXPECTF'])) {
 		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECTF'], $php_arguments, $script_arguments, $test_file));
 		$regex  = str_replace(
@@ -208,7 +207,6 @@ function compare_output ($output, $base_text, $test_file, $php_arguments, $scrip
 			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
-		$expect = $parsed_test['EXPECTF'];
 	} else {
 		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECREGEX'], $php_arguments, $script_arguments, $test_file));
 		$regex  = preg_quote($expect, '/');

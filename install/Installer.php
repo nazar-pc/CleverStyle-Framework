@@ -134,6 +134,10 @@ CONFIG;
 	 */
 	protected static function initialize_filesystem ($source) {
 		$file_index_map = json_decode(file_get_contents("$source/fs_installer.json"), true);
+		require_once "$source/fs/".$file_index_map['core/thirdparty/upf.php'];
+		require_once "$source/fs/".$file_index_map['core/functions.php'];
+		// Remove default autoloader, since we have special autoloader suitable for operating inside installer where default will fail hard
+		spl_autoload_unregister(spl_autoload_functions()[0]);
 		/**
 		 * Special autoloader for installer
 		 */
@@ -162,10 +166,6 @@ CONFIG;
 				return false;
 			}
 		);
-		require_once "$source/fs/".$file_index_map['core/thirdparty/upf.php'];
-		require_once "$source/fs/".$file_index_map['core/functions.php'];
-		// Remove default autoloader, since we have special autoloader suitable for operating inside installer where default will fail hard
-		spl_autoload_unregister(spl_autoload_functions()[0]);
 		return $file_index_map;
 	}
 	/**

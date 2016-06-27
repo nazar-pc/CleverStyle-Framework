@@ -7,6 +7,9 @@
  * @license    MIT License, see license.txt
  */
 namespace cs;
+
+require_once __DIR__.'/code_coverage.php';
+
 require_once __DIR__.'/../core/traits/Singleton/Base.php';
 require_once __DIR__.'/Singleton.php';
 require_once __DIR__.'/cscms.travis/core/bootstrap.php';
@@ -26,5 +29,3 @@ $_SERVER = [
 if (!defined('DEBUG')) {
 	define('DEBUG', false);
 }
-
-require_once __DIR__.'/code_coverage.php';

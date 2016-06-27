@@ -97,9 +97,7 @@ spl_autoload_register(
 			}
 		}
 		return false;
-	},
-	true,
-	true
+	}
 );
 
 /**
