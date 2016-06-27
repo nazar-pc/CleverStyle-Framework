@@ -26,9 +26,9 @@ spl_autoload_register(
 			return defined('CACHE') && file_exists(CACHE."/classes/$file") ? file_get_json(CACHE."/classes/$file") : [];
 		};
 		$put_into_cache = function ($file, $content) {
-			if (defined('CACHE')) {
+			if (defined('CACHE') && is_dir(CACHE)) {
 				/** @noinspection MkdirRaceConditionInspection */
-				@mkdir(CACHE.'/classes', 0770, true);
+				@mkdir(CACHE.'/classes', 0770);
 				file_put_json(CACHE."/classes/$file", $content);
 			}
 		};
