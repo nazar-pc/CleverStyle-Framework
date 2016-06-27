@@ -265,7 +265,7 @@ trait Route {
 	 * @param string $admin_path
 	 * @param string $api_path
 	 *
-	 * @return mixed|string
+	 * @return string
 	 */
 	protected function determine_page_module (&$rc, &$home_page, $cli_path, $admin_path, $api_path) {
 		$Config           = Config::instance();
@@ -297,7 +297,7 @@ trait Route {
 	 * @param Config $Config
 	 * @param bool   $admin_path
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	protected function get_modules ($Config, $admin_path) {
 		$modules = array_filter(
