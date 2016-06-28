@@ -18,6 +18,7 @@ $filter->addDirectoryToWhitelist(__DIR__.'/../components/modules/System');
 $filter->addDirectoryToWhitelist(__DIR__.'/../core');
 $filter->addDirectoryToWhitelist(__DIR__.'/cscms.travis');
 $filter->removeDirectoryFromWhitelist(__DIR__.'/../core/thirdparty');
+$filter->removeDirectoryFromWhitelist(__DIR__.'/cscms.travis/core/thirdparty');
 
 $coverage_data_location = __DIR__.'/coverage_data.json';
 
