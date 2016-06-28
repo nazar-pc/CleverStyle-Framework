@@ -129,7 +129,7 @@ class Event {
 	 */
 	protected function register_events () {
 		foreach ($this->events_files_paths() as $path) {
-			include DIR."/$path";
+			include $path;
 		}
 	}
 	/**
@@ -137,13 +137,13 @@ class Event {
 	 */
 	protected function events_files_paths () {
 		$paths = [];
-		foreach (get_files_list(MODULES, false, 'd', 'components/modules') as $path) {
-			if (file_exists(DIR."/$path/events.php")) {
+		foreach (get_files_list(MODULES, false, 'd', true) as $path) {
+			if (file_exists("$path/events.php")) {
 				$paths[] = "$path/events.php";
 			}
 		}
-		foreach (get_files_list(PLUGINS, false, 'd', 'components/plugins') as $path) {
-			if (file_exists(DIR."/$path/events.php")) {
+		foreach (get_files_list(PLUGINS, false, 'd', true) as $path) {
+			if (file_exists("$path/events.php")) {
 				$paths[] = "$path/events.php";
 			}
 		}
