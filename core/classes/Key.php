@@ -19,10 +19,12 @@ class Key {
 	 * @param int|\cs\DB\_Abstract $database Keys database
 	 *
 	 * @return string
+	 *
+	 * @throws ExitException
 	 */
 	function generate ($database) {
 		if (!is_object($database)) {
-			$database = DB::instance()->$database();
+			$database = DB::instance()->db_prime($database);
 		}
 		while (true) {
 			$key  = hash('sha224', random_bytes(1000));
@@ -39,7 +41,6 @@ class Key {
 				return $key;
 			}
 		}
-		return false;
 	}
 	/**
 	 * Adding key into specified database
@@ -50,17 +51,17 @@ class Key {
 	 * @param int                  $expire   Timestamp of key expiration, if not specified - default system value will be used
 	 *
 	 * @return false|string
+	 *
+	 * @throws ExitException
 	 */
 	function add ($database, $key, $data = null, $expire = 0) {
 		if (!is_object($database)) {
-			$database = DB::instance()->$database();
+			$database = DB::instance()->db_prime($database);
 		}
-		if (!preg_match('/^[a-z0-9]{56}$/', $key)) {
-			if ($key === false) {
-				$key = $this->generate($database);
-			} else {
-				return false;
-			}
+		if ($key === false) {
+			$key = $this->generate($database);
+		} elseif (!preg_match('/^[a-z0-9]{56}$/', $key)) {
+			return false;
 		}
 		$expire = (int)$expire;
 		$Config = Config::instance();
@@ -104,14 +105,16 @@ class Key {
 	 * @param bool                 $get_data If <b>true</d> - stored data will be returned on success, otherwise boolean result of key existence will be
 	 *                                       returned
 	 *
-	 * @return false|mixed
+	 * @return bool|mixed
+	 *
+	 * @throws ExitException
 	 */
 	function get ($database, $key, $get_data = false) {
 		if (!preg_match('/^[a-z0-9]{56}$/', $key)) {
 			return false;
 		}
 		if (!is_object($database)) {
-			$database = DB::instance()->$database();
+			$database = DB::instance()->db_prime($database);
 		}
 		$time   = time();
 		$result = $database->qf(
@@ -143,20 +146,19 @@ class Key {
 	 * @param string               $key      56 character [0-9a-z] key
 	 *
 	 * @return bool
+	 *
+	 * @throws ExitException
 	 */
 	function del ($database, $key) {
 		if (!preg_match('/^[a-z0-9]{56}$/', $key)) {
 			return false;
 		}
 		if (!is_object($database)) {
-			$database = DB::instance()->$database();
+			$database = DB::instance()->db_prime($database);
 		}
-		$key = $database->s($key);
-		return $database->q(
+		return (bool)$database->q(
 			"DELETE FROM `[prefix]keys`
-			WHERE
-				`id`	= '$key' OR
-				`key`	= '$key'"
+			WHERE `key`	= '$key'"
 		);
 	}
 }
