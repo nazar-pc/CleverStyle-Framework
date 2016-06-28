@@ -116,13 +116,19 @@ trait Data_model_processing {
 		$arguments       = is_array_assoc($arguments) ? [$arguments] : _array((array)$arguments);
 		$arguments_assoc = is_array_assoc($arguments[0]);
 		foreach ($new_structure['fields'] as $field_name => $field_model) {
-			$field_model = explode(':', $field_model, 2);
-			$type        = $field_model[0];
-			$format      = isset($field_model[1]) ? $field_model[1] : null;
 			/**
 			 * Both associative and indexed arrays are supported - that is why we determine key for array
 			 */
 			$key = $arguments_assoc ? $field_name : array_search($field_name, array_keys($new_structure['fields']));
+			if (is_callable($field_model)) {
+				foreach ($arguments as $index => $arguments_local) {
+					$new_structure['data'][$index][$field_name] = $field_model($arguments_local[$key]);
+				}
+				continue;
+			}
+			$field_model = explode(':', $field_model, 2);
+			$type        = $field_model[0];
+			$format      = isset($field_model[1]) ? $field_model[1] : null;
 			foreach ($arguments as $index => $arguments_local) {
 				$new_structure['data'][$index][$field_name] = $this->crud_argument_preparation($type, $format, $arguments_local[$key]);
 			}

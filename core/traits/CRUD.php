@@ -86,7 +86,7 @@ trait CRUD {
 				array_filter(
 					$data_model,
 					function ($item) {
-						return !isset($item['data_model']);
+						return !is_array($item) || !isset($item['data_model']);
 					}
 				),
 				array_merge([array_keys($data_model)[0] => $id], $prepared_arguments),
@@ -199,16 +199,18 @@ trait CRUD {
 			return false;
 		}
 		foreach ($this->data_model as $field => $model) {
-			if (is_string($model)) {
-				/**
-				 * Handle multilingual fields automatically
-				 */
-				if (strpos($model, 'ml:') === 0) {
-					$data[$field] = Text::instance()->process($this->cdb(), $data[$field], true);
+			if (is_array($model) && isset($model['data_model'])) {
+				$data[$field] = $this->read_joined_table($id, $field, $model);
+			} else {
+				if (is_string($model)) {
+					/**
+					 * Handle multilingual fields automatically
+					 */
+					if (strpos($model, 'ml:') === 0) {
+						$data[$field] = Text::instance()->process($this->cdb(), $data[$field], true);
+					}
 				}
 				$data[$field] = $this->read_field_post_processing($data[$field], $model);
-			} elseif (is_array($model) && isset($model['data_model'])) {
-				$data[$field] = $this->read_joined_table($id, $field, $model);
 			}
 		}
 		return $data;
@@ -220,6 +222,9 @@ trait CRUD {
 	 * @return array|false|float|int|string
 	 */
 	private function read_field_post_processing ($value, $model) {
+		if (is_callable($model)) {
+			return $model($value);
+		}
 		/**
 		 * Decode JSON fields
 		 */
@@ -402,7 +407,7 @@ trait CRUD {
 			 */
 			if ($multilingual) {
 				foreach (array_keys($this->data_model) as $field) {
-					if (strpos($this->data_model[$field], 'ml:') === 0) {
+					if (is_string($this->data_model[$field]) && strpos($this->data_model[$field], 'ml:') === 0) {
 						Text::instance()->del($this->cdb(), "$this->data_model_ml_group/$field", $i);
 					}
 				}

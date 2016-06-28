@@ -8,8 +8,11 @@ class CRUD_basic {
 	protected $table      = '[prefix]crud_test_basic';
 	protected $data_model = [
 		'id'           => 'int:1',
+		'max'          => 'int:1..5',
+		'set'          => 'set:x,y,z',
+		'number'       => null, // Set in constructor
 		'title'        => 'text',
-		'description'  => 'html',
+		'description'  => 'html:13:###',
 		'data'         => 'json',
 		'joined_table' => [
 			'data_model' => [
@@ -18,6 +21,11 @@ class CRUD_basic {
 			]
 		]
 	];
+	function __construct () {
+		$this->data_model['number'] = function ($value) {
+			return max(1, (int)$value);
+		};
+	}
 	protected function cdb () {
 		return 0;
 	}
@@ -32,6 +40,9 @@ class CRUD_basic {
 		var_dump('create #1');
 		var_dump(
 			$this->create(
+				5,
+				'x',
+				5,
 				'Title 1',
 				'Description 1',
 				['d1-1', 'd1-2', false, null, 12, [], true, 10.5],
@@ -42,8 +53,11 @@ class CRUD_basic {
 		var_dump(
 			$this->create(
 				[
+					2,
+					'y',
+					2,
 					'Title 2',
-					'Description 2',
+					'Description 2 Longer than needed',
 					['d2-1', 'd2-2', false, null, 12, [], true, 10.5],
 					[2, 3, 4]
 				]
@@ -52,6 +66,9 @@ class CRUD_basic {
 		var_dump('create #3');
 		var_dump(
 			$this->create(
+				3,
+				2,
+				'z',
 				3,
 				'Title 3',
 				'Description 3',
@@ -63,6 +80,9 @@ class CRUD_basic {
 		var_dump(
 			$this->create(
 				4,
+				-1,
+				'n',
+				-1,
 				'Title 4',
 				'Description 4',
 				true,
@@ -117,9 +137,15 @@ int(3)
 string(9) "create #4"
 int(4)
 string(7) "read #1"
-array(5) {
+array(8) {
   ["id"]=>
   int(1)
+  ["max"]=>
+  int(5)
+  ["set"]=>
+  string(1) "x"
+  ["number"]=>
+  int(5)
   ["title"]=>
   string(7) "Title 1"
   ["description"]=>
@@ -155,13 +181,19 @@ array(5) {
   }
 }
 string(7) "read #2"
-array(5) {
+array(8) {
   ["id"]=>
+  int(2)
+  ["max"]=>
+  int(2)
+  ["set"]=>
+  string(1) "y"
+  ["number"]=>
   int(2)
   ["title"]=>
   string(7) "Title 2"
   ["description"]=>
-  string(13) "Description 2"
+  string(13) "Descriptio###"
   ["data"]=>
   array(8) {
     [0]=>
@@ -195,9 +227,15 @@ array(5) {
 string(7) "read #3"
 array(2) {
   [0]=>
-  array(5) {
+  array(8) {
     ["id"]=>
     int(1)
+    ["max"]=>
+    int(5)
+    ["set"]=>
+    string(1) "x"
+    ["number"]=>
+    int(5)
     ["title"]=>
     string(7) "Title 1"
     ["description"]=>
@@ -233,13 +271,19 @@ array(2) {
     }
   }
   [1]=>
-  array(5) {
+  array(8) {
     ["id"]=>
+    int(2)
+    ["max"]=>
+    int(2)
+    ["set"]=>
+    string(1) "y"
+    ["number"]=>
     int(2)
     ["title"]=>
     string(7) "Title 2"
     ["description"]=>
-    string(13) "Description 2"
+    string(13) "Descriptio###"
     ["data"]=>
     array(8) {
       [0]=>
@@ -273,9 +317,15 @@ array(2) {
 }
 string(9) "update #1"
 bool(true)
-array(5) {
+array(8) {
   ["id"]=>
   int(1)
+  ["max"]=>
+  int(5)
+  ["set"]=>
+  string(1) "x"
+  ["number"]=>
+  int(5)
   ["title"]=>
   string(8) "Title 1+"
   ["description"]=>
@@ -312,13 +362,19 @@ array(5) {
 }
 string(9) "update #2"
 bool(true)
-array(5) {
+array(8) {
   ["id"]=>
+  int(2)
+  ["max"]=>
+  int(2)
+  ["set"]=>
+  string(1) "y"
+  ["number"]=>
   int(2)
   ["title"]=>
   string(8) "Title 2+"
   ["description"]=>
-  string(13) "Description 2"
+  string(13) "Descriptio###"
   ["data"]=>
   array(8) {
     [0]=>
@@ -351,13 +407,19 @@ array(5) {
 }
 string(9) "update #3"
 bool(true)
-array(5) {
+array(8) {
   ["id"]=>
+  int(2)
+  ["max"]=>
+  int(2)
+  ["set"]=>
+  string(1) "y"
+  ["number"]=>
   int(2)
   ["title"]=>
   string(9) "Title 2+-"
   ["description"]=>
-  string(13) "Description 2"
+  string(13) "Descriptio###"
   ["data"]=>
   array(8) {
     [0]=>
@@ -399,9 +461,15 @@ array(3) {
   [1]=>
   bool(false)
   [2]=>
-  array(5) {
+  array(8) {
     ["id"]=>
     int(4)
+    ["max"]=>
+    int(1)
+    ["set"]=>
+    string(1) "x"
+    ["number"]=>
+    int(1)
     ["title"]=>
     string(7) "Title 4"
     ["description"]=>

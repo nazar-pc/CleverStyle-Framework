@@ -1,5 +1,8 @@
 CREATE TABLE "[prefix]crud_test_basic" (
 	"id" smallserial,
+	"max" int NOT NULL,
+	"set" text NOT NULL,
+	"number" int NOT NULL,
 	"title" text NOT NULL,
 	"description" text NOT NULL,
 	"data" text NOT NULL

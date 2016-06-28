@@ -9,7 +9,7 @@ class CRUD_advanced {
 		CRUD;
 	protected $table                       = '[prefix]crud_test_advanced';
 	protected $data_model                  = [
-		'id'            => 'int:1',
+		'id'            => null, // Set in constructor
 		'title'         => 'ml:text',
 		'description'   => 'ml:',
 		'joined_table1' => [
@@ -22,12 +22,20 @@ class CRUD_advanced {
 		'joined_table2' => [
 			'data_model' => [
 				'id'     => 'int:1',
-				'points' => 'int:1'
+				'points' => null // Set in constructor
 			]
 		]
 	];
 	protected $data_model_ml_group         = 'crud_test/advanced';
 	protected $data_model_files_tag_prefix = 'crud_test/advanced';
+	function __construct () {
+		$this->data_model['id']                                    = function ($value) {
+			return max(1, (int)$value);
+		};
+		$this->data_model['joined_table2']['data_model']['points'] = function ($value) {
+			return max(1, (int)$value);
+		};
+	}
 	protected function cdb () {
 		return 0;
 	}
@@ -100,6 +108,19 @@ class CRUD_advanced {
 		$L->change('Russian');
 
 		var_dump('read Russian', $this->read($id));
+
+		$Text = Text::instance();
+		Text::instance_stub(
+			[],
+			[
+				'delete' => function (...$arguments) use ($Text) {
+					var_dump('Text::del() called', $arguments);
+					$Text->del(...$arguments);
+				}
+			]
+		);
+		var_dump('delete');
+		var_dump($this->delete($id));
 
 		$this->db_prime()->q(
 			array_filter(
@@ -228,3 +249,10 @@ array(5) {
     int(24)
   }
 }
+string(6) "delete"
+string(16) "File tag deleted"
+array(1) {
+  ["tag"]=>
+  string(21) "crud_test/advanced/1%"
+}
+bool(true)
