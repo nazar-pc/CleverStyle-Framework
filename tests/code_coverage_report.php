@@ -34,7 +34,7 @@ foreach ($data as $file => $d) {
 			);
 			foreach ($data[$new_file] as $line => $calls) {
 				/** @noinspection SlowArrayOperationsInLoopInspection */
-				$data[$new_file][$line] = array_merge(@$data[$new_file][$line] ?: [], @$d[$line] ?: []);
+				$data[$new_file][$line] = array_merge(@$data[$new_file][$line] ?: [], @$d[$line] ?: []) ?: null;
 			}
 		} else {
 			$data[$new_file] = $d;
