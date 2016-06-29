@@ -152,7 +152,7 @@ trait Management {
 			!$confirmation ? 1 : -1
 		)
 		) {
-			$this->reg_id = $this->db_prime()->id();
+			$this->reg_id = (int)$this->db_prime()->id();
 			$password     = '';
 			if (!$confirmation) {
 				$password = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
@@ -223,7 +223,7 @@ trait Management {
 		if (!$data) {
 			return false;
 		}
-		$this->reg_id = $data['id'];
+		$this->reg_id = (int)$data['id'];
 		$Config       = Config::instance();
 		$password     = '';
 		if (!$this->get('password_hash', $data['id'])) {
