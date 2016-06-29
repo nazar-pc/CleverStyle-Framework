@@ -149,7 +149,7 @@ trait profile {
 				$Config->core_url()."/profile/registration_confirmation/$result[reg_key]",
 				$L->time($Config->core['registration_confirmation_time'], 'd')
 			);
-		} elseif ($result['password']) {
+		} elseif (!$Request->data('password') && $result['password']) {
 			$body = $L->success_mail_with_password_body(
 				$User->username($result['id']),
 				get_core_ml_text('name'),

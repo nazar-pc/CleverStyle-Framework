@@ -76,8 +76,8 @@ trait Management {
 	 *                             <b>[<br>
 	 *                             &nbsp;&nbsp;&nbsp;&nbsp;'reg_key'     => *,</b> //Registration confirmation key, or <b>true</b> if confirmation is not
 	 *                             required<br>
-	 *                             &nbsp;&nbsp;&nbsp;&nbsp;<b>'password' => *,</b> //Automatically generated password (empty if confirmation now needed and
-	 *                             needs to be specified separately)<br>
+	 *                             &nbsp;&nbsp;&nbsp;&nbsp;<b>'password' => *,</b> //Automatically generated password (empty if confirmation is needed and
+	 *                             will be set during registration confirmation)<br>
 	 *                             &nbsp;&nbsp;&nbsp;&nbsp;<b>'id'       => *</b>  //Id of registered user in DB<br>
 	 *                             <b>]</b>
 	 */
@@ -154,15 +154,13 @@ trait Management {
 		) {
 			$this->reg_id = $this->db_prime()->id();
 			$password     = '';
-			if ($confirmation) {
+			if (!$confirmation) {
 				$password = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 				$this->set_password($password, $this->reg_id);
-			}
-			if (!$confirmation) {
 				$this->set_groups([User::USER_GROUP_ID], $this->reg_id);
-			}
-			if (!$confirmation && $auto_sign_in && $Config->core['auto_sign_in_after_registration']) {
-				Session::instance()->add($this->reg_id);
+				if ($auto_sign_in && $Config->core['auto_sign_in_after_registration']) {
+					Session::instance()->add($this->reg_id);
+				}
 			}
 			if (!Event::instance()->fire(
 				'System/User/registration/after',
@@ -401,6 +399,7 @@ trait Management {
 	 * @param int|int[] $user User id or array of users ids
 	 */
 	function del_user ($user) {
+		$this->disable_memory_cache();
 		if (is_array($user)) {
 			foreach ($user as $id) {
 				$this->del_user($id);
