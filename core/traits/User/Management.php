@@ -74,26 +74,18 @@ trait Management {
 	 *                             <b>error</b> - if error occurred<br>
 	 *                             <b>false</b> - if email is incorrect<br>
 	 *                             <b>[<br>
-	 *                             &nbsp;'reg_key'     => *,</b> //Registration confirmation key, or <b>true</b> if confirmation is not required<br>
-	 *                             &nbsp;<b>'password' => *,</b> //Automatically generated password<br>
-	 *                             &nbsp;<b>'id'       => *</b> //Id of registered user in DB<br>
+	 *                             &nbsp;&nbsp;&nbsp;&nbsp;'reg_key'     => *,</b> //Registration confirmation key, or <b>true</b> if confirmation is not
+	 *                             required<br>
+	 *                             &nbsp;&nbsp;&nbsp;&nbsp;<b>'password' => *,</b> //Automatically generated password (empty if confirmation now needed and
+	 *                             needs to be specified separately)<br>
+	 *                             &nbsp;&nbsp;&nbsp;&nbsp;<b>'id'       => *</b>  //Id of registered user in DB<br>
 	 *                             <b>]</b>
 	 */
 	function registration ($email, $confirmation = true, $auto_sign_in = true) {
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return false;
 		}
-		$email = mb_strtolower($email);
-		$this->delete_unconfirmed_users();
-		if (!Event::instance()->fire(
-			'System/User/registration/before',
-			[
-				'email' => $email
-			]
-		)
-		) {
-			return false;
-		}
+		$email      = mb_strtolower($email);
 		$email_hash = hash('sha224', $email);
 		$login      = strstr($email, '@', true);
 		$login_hash = hash('sha224', $login);
@@ -116,6 +108,16 @@ trait Management {
 		)
 		) {
 			return 'exists';
+		}
+		$this->delete_unconfirmed_users();
+		if (!Event::instance()->fire(
+			'System/User/registration/before',
+			[
+				'email' => $email
+			]
+		)
+		) {
+			return false;
 		}
 		$Config       = Config::instance();
 		$confirmation = $confirmation && $Config->core['require_registration_confirmation'];
