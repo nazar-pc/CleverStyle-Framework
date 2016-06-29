@@ -50,6 +50,11 @@ bool(false)
 string(3) "Del"
 bool(false)
 bool(false)
+string(17) "Set (as property)"
+string(17) "Get (as property)"
+bool(false)
+string(17) "Del (as property)"
+bool(false)
 string(16) "Set the same key"
 bool(false)
 string(34) "Get non-existent key with callback"
@@ -66,6 +71,24 @@ bool(false)
 string(25) "Namespaced key del parent"
 bool(false)
 bool(false)
+bool(false)
+string(33) "Namespaced (using prefix) key set"
+bool(false)
+string(33) "Namespaced (using prefix) key get"
+bool(false)
+string(33) "Namespaced (using prefix) key del"
+bool(false)
+bool(false)
+string(40) "Namespaced (using prefix) key del parent"
+bool(false)
+bool(false)
+bool(false)
+string(46) "Namespaced (using prefix, as property) key set"
+string(46) "Namespaced (using prefix, as property) key get"
+bool(false)
+string(46) "Namespaced (using prefix, as property) key del"
+bool(false)
+string(53) "Namespaced (using prefix, as property) key del parent"
 bool(false)
 string(15) "Get after clean"
 bool(false)

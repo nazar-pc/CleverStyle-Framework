@@ -36,7 +36,7 @@ namespace cs {
 
 	$Config->core['auto_sign_in_after_registration'] = true;
 	var_dump('Register new user without confirmation necessary and with automatic sign-in according to system configuration (true)');
-	var_dump($User->registration('mr2@test.com', false, true), $User->id);
+	var_dump($User->registration('mr2@test.com', false, true), $User->id, $User->email);
 	Session::instance()->del();
 
 	$Config->core['auto_sign_in_after_registration'] = false;
@@ -126,6 +126,7 @@ array(3) {
   int(4)
 }
 int(4)
+string(12) "mr2@test.com"
 string(117) "Register new user without confirmation necessary and with automatic sign-in according to system configuration (false)"
 string(42) "System/User/registration/before fired with"
 array(1) {
