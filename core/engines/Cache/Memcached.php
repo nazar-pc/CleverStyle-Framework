@@ -19,12 +19,11 @@ class Memcached extends _Abstract_with_namespace {
 	 */
 	protected $memcached;
 	function __construct () {
-		if (!extension_loaded('memcached')) {
-			return;
+		if (extension_loaded('memcached')) {
+			$Core            = Core::instance();
+			$this->memcached = new \Memcached($Core->domain);
+			$this->memcached->addServer($Core->memcached_host ?: '127.0.0.1', $Core->memcached_port ?: 11211);
 		}
-		$Core            = Core::instance();
-		$this->memcached = new \Memcached($Core->domain);
-		$this->memcached->addServer($Core->memcached_host ?: '127.0.0.1', $Core->memcached_port ?: 11211);
 	}
 	/**
 	 * @inheritdoc
@@ -68,6 +67,7 @@ class Memcached extends _Abstract_with_namespace {
 	function __destruct () {
 		if ($this->memcached) {
 			$this->memcached->quit();
+			$this->memcached = null;
 		}
 	}
 }

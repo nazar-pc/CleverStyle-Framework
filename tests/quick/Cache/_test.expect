@@ -1,32 +1,35 @@
-string(13) "initial state"
+string(13) "Initial state"
 bool(true)
-string(10) "simple set"
+string(3) "Set"
 bool(true)
-string(10) "simple get"
+string(3) "Get"
 string(9) "blablabla"
-string(10) "simple del"
+string(3) "Del"
 bool(true)
 bool(false)
-string(16) "set the same key"
+string(16) "Set the same key"
 bool(true)
-string(34) "get non-existent key with callback"
+string(34) "Get non-existent key with callback"
 string(2) "me"
-string(26) "get non-existent key again"
+string(26) "Get non-existent key again"
 string(2) "me"
-string(18) "namespaced key set"
+string(18) "Namespaced key set"
 bool(true)
-string(18) "namespaced key get"
+string(18) "Namespaced key get"
 string(3) "foo"
-string(18) "namespaced key del"
+string(18) "Namespaced key del"
 bool(true)
 bool(false)
-string(25) "namespaced key del parent"
+string(25) "Namespaced key del parent"
 bool(true)
 bool(true)
 bool(false)
-string(19) "state after disable"
+string(15) "Get after clean"
+bool(true)
 bool(false)
-string(17) "get after disable"
+string(19) "State after disable"
 bool(false)
-string(31) "get with callback after disable"
+string(17) "Get after disable"
+bool(false)
+string(31) "Get with callback after disable"
 int(5)
