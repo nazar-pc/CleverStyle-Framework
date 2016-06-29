@@ -55,13 +55,23 @@ Config::instance_stub(
 		]
 	]
 );
+function time ($time = 0) {
+	static $stored_time;
+	if (!isset($stored_time)) {
+		$stored_time = \time();
+	}
+	if ($time) {
+		$stored_time = $time;
+	}
+	return $stored_time;
+}
 var_dump('Expiration test');
 $key_6 = $Key->add(0, false, null, time() + 1);
 $key_7 = $Key->add(0, false, null);
 $key_8 = $Key->add(0, false, null);
-sleep(2);
+time(\time() + 2);
 var_dump($Key->get(0, $key_6), $Key->get(0, $key_7));
-sleep(2);
+time(\time() + 4);
 var_dump($Key->get(0, $key_8));
 ?>
 --EXPECTF--
