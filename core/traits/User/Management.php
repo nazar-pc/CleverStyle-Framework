@@ -60,7 +60,7 @@ trait Management {
 		if (!$found_users) {
 			return false;
 		}
-		return $found_users;
+		return _int($found_users);
 	}
 	/**
 	 * User registration
@@ -400,7 +400,7 @@ trait Management {
 			return;
 		}
 		$user = (int)$user;
-		if (!$user) {
+		if (in_array($user, [0, User::GUEST_ID, User::ROOT_ID]) || !$this->get('id', $user)) {
 			return;
 		}
 		Event::instance()->fire(
