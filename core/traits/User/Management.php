@@ -254,12 +254,11 @@ trait Management {
 	 * Canceling of bad/failed registration
 	 */
 	function registration_cancel () {
-		if ($this->reg_id == 0) {
-			return;
+		if ($this->reg_id) {
+			Session::instance()->add(User::GUEST_ID);
+			$this->del_user($this->reg_id);
+			$this->reg_id = 0;
 		}
-		Session::instance()->add(User::GUEST_ID);
-		$this->del_user($this->reg_id);
-		$this->reg_id = 0;
 	}
 	/**
 	 * Checks for unconfirmed registrations and deletes expired
@@ -341,9 +340,8 @@ trait Management {
 		if ($user && $user != User::GUEST_ID) {
 			$reg_key = md5(random_bytes(1000));
 			if ($this->set('reg_key', $reg_key, $user)) {
-				$data                  = $this->get('data', $user);
-				$data['restore_until'] = time() + Config::instance()->core['registration_confirmation_time'] * 86400;
-				if ($this->set('data', $data, $user)) {
+				$restore_until = time() + Config::instance()->core['registration_confirmation_time'] * 86400;
+				if ($this->set_data('restore_until', $restore_until, $user)) {
 					return $reg_key;
 				}
 			}
@@ -361,7 +359,7 @@ trait Management {
 		if (!is_md5($key)) {
 			return false;
 		}
-		$id = $this->db_prime()->qfs(
+		$id = (int)$this->db_prime()->qfs(
 			"SELECT `id`
 			FROM `[prefix]users`
 			WHERE
@@ -374,19 +372,14 @@ trait Management {
 		if (!$id) {
 			return false;
 		}
-		$data = $this->get('data', $id);
-		if (!isset($data['restore_until'])) {
-			return false;
-		} elseif ($data['restore_until'] < time()) {
-			unset($data['restore_until']);
-			$this->set('data', $data, $id);
+		$restore_until = $this->get_data('restore_until', $id);
+		$this->del_data('restore_until', $id);
+		if ($restore_until < time()) {
 			return false;
 		}
-		unset($data['restore_until']);
 		$Config   = Config::instance();
 		$password = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$this->set_password($password, $id);
-		$this->set('data', $data, $id);
 		Session::instance()->add($id);
 		return [
 			'id'       => $id,
