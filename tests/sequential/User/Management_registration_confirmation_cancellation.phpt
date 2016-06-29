@@ -9,7 +9,7 @@ var_dump('Registration confirmation');
 $result = $User->registration('mrcc1@test.com', true, false);
 var_dump($result, $User->get('password_hash', $result['id']));
 var_dump($User->registration_confirmation($result['reg_key']));
-var_dump($User->get('id', $result['id']), $User->get('password_hash', $result['id']));
+var_dump((int)$User->get('id', $result['id']) ?: false, $User->get('password_hash', $result['id']));
 
 var_dump('Wrong confirmation key');
 var_dump($User->registration_confirmation('abc'));
@@ -23,7 +23,8 @@ $Event->once(
 );
 $result = $User->registration('mrcc2@test.com', true, false);
 var_dump($result, $User->get('password_hash', $result['id']));
-var_dump($User->registration_confirmation($result['reg_key']), $User->get('id', $result['id']), $User->get('password_hash', $result['id']));
+var_dump($User->registration_confirmation($result['reg_key']));
+var_dump((int)$User->get('id', $result['id']) ?: false, $User->get('password_hash', $result['id']));
 
 var_dump('Cancel registration in System/User/registration/confirmation/after event');
 $Event->once(
@@ -35,13 +36,13 @@ $Event->once(
 $result = $User->registration('mrcc3@test.com', true, false);
 var_dump($result, $User->get('password_hash', $result['id']));
 var_dump($User->registration_confirmation($result['reg_key']));
-var_dump($User->get('id', $result['id']), $User->get('password_hash', $result['id']));
+var_dump((int)$User->get('id', $result['id']) ?: false, $User->get('password_hash', $result['id']));
 
 var_dump('Generate password during confirmation');
 $result = $User->registration('mrcc4@test.com', true, false);
 var_dump($result, $User->get('password_hash', $result['id']));
 var_dump($User->registration_confirmation($result['reg_key']));
-var_dump($User->get('id', $result['id']), $User->get('password_hash', $result['id']));
+var_dump((int)$User->get('id', $result['id']) ?: false, $User->get('password_hash', $result['id']));
 
 ?>
 --EXPECTF--

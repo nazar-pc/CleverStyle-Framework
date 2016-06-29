@@ -226,7 +226,7 @@ trait Management {
 		$this->reg_id = (int)$data['id'];
 		$Config       = Config::instance();
 		$password     = '';
-		if (!$this->get('password_hash', $data['id'])) {
+		if (!$this->get('password_hash', $this->reg_id)) {
 			$password = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 			$this->set_password($password, $this->reg_id);
 		}
