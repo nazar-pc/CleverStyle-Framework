@@ -106,7 +106,8 @@ class App {
 			(
 				$Request->api_path &&
 				$Request->current_module == 'System' &&
-				$Request->route === ['user', 'sign_in']
+				$Request->route == ['profile'] &&
+				$Request->method == 'SIGN_IN'
 			);
 	}
 	/**
