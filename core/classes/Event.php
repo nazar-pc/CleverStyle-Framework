@@ -84,7 +84,7 @@ class Event {
 		}
 		$wrapped_callback = function (...$arguments) use (&$wrapped_callback, $event, $callback) {
 			$this->off($event, $wrapped_callback);
-			$callback(...$arguments);
+			return $callback(...$arguments);
 		};
 		return $this->on($event, $wrapped_callback);
 	}

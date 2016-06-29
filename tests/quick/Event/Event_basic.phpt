@@ -97,6 +97,49 @@ class Event_test extends Event {
 		$Event->on('test_not_callable_1', null);
 		$Event->on('test_not_callable_2', 'random_string_not_function');
 		var_dump('callbacks after registering not callable', $Event->callbacks);
+
+		self::instance_reset();
+		$Event = self::instance();
+
+		var_dump('test empty return value (on)');
+		$Event->on('test_empty_on', function () { });
+		var_dump($Event->fire('test_empty_on'));
+
+		var_dump('test empty return value (once)');
+		$Event->once('test_empty_once', function () { });
+		var_dump($Event->fire('test_empty_once'));
+
+		var_dump('test true return value (on)');
+		$Event->on('test_true_on', function () { return true;});
+		var_dump($Event->fire('test_true_on'));
+
+		var_dump('test true return value (once)');
+		$Event->once('test_true_once', function () { return true;});
+		var_dump($Event->fire('test_true_once'));
+
+		var_dump('test truthy return value (on)');
+		$Event->on('test_truthy_on', function () { return 1;});
+		var_dump($Event->fire('test_truthy_on'));
+
+		var_dump('test truthy return value (once)');
+		$Event->once('test_truthy_once', function () { return 1;});
+		var_dump($Event->fire('test_truthy_once'));
+
+		var_dump('test false return value (on)');
+		$Event->on('test_false_on', function () { return false;});
+		var_dump($Event->fire('test_false_on'));
+
+		var_dump('test false return value (once)');
+		$Event->once('test_false_once', function () { return false;});
+		var_dump($Event->fire('test_false_once'));
+
+		var_dump('test falsy return value (on)');
+		$Event->on('test_falsy_on', function () { return 0;});
+		var_dump($Event->fire('test_falsy_on'));
+
+		var_dump('test falsy return value (once)');
+		$Event->once('test_falsy_once', function () { return 0;});
+		var_dump($Event->fire('test_falsy_once'));
 	}
 }
 Event_test::test();
@@ -163,3 +206,23 @@ array(0) {
 string(40) "callbacks after registering not callable"
 array(0) {
 }
+string(28) "test empty return value (on)"
+bool(true)
+string(30) "test empty return value (once)"
+bool(true)
+string(27) "test true return value (on)"
+bool(true)
+string(29) "test true return value (once)"
+bool(true)
+string(29) "test truthy return value (on)"
+bool(true)
+string(31) "test truthy return value (once)"
+bool(true)
+string(28) "test false return value (on)"
+bool(false)
+string(30) "test false return value (once)"
+bool(false)
+string(28) "test falsy return value (on)"
+bool(true)
+string(30) "test falsy return value (once)"
+bool(true)
