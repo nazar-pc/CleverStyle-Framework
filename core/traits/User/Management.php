@@ -431,6 +431,9 @@ trait Management {
 	/**
 	 * Returns array of user id, that are associated as contacts
 	 *
+	 * @deprecated
+	 * @todo Remove in 5.x
+	 *
 	 * @param false|int $user If not specified - current user assumed
 	 *
 	 * @return int[] Array of user id
