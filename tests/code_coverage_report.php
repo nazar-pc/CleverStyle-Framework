@@ -33,7 +33,7 @@ foreach ($data as $file => $d) {
 			);
 			foreach ($data[$new_file] as $line => $calls) {
 				/** @noinspection SlowArrayOperationsInLoopInspection */
-				$data[$new_file][$line] = array_merge(@$data[$new_file][$line] ?: [], @$d[$line] ?: []) ?: null;
+				$data[$new_file][$line] = array_merge($data[$new_file][$line] ?: [], @$d[$line] ?: []) ?: $data[$new_file][$line];
 			}
 		} else {
 			$data[$new_file] = $d;
@@ -47,7 +47,11 @@ $report_location = __DIR__.'/code_coverage_report';
 exec("rm -rf ".escapeshellarg($report_location));
 $html_report = new \SebastianBergmann\CodeCoverage\Report\Html\Facade;
 @$html_report->process($coverage, $report_location);
+
 $clover_report = new \SebastianBergmann\CodeCoverage\Report\Clover;
 @$clover_report->process($coverage, "$report_location/clover.xml");
+
+$text_report = new \SebastianBergmann\CodeCoverage\Report\Text(50, 90, false, true);
+echo @$text_report->process($coverage);
 
 unlink($coverage_data_location);
