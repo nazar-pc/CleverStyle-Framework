@@ -10,25 +10,26 @@
  */
 define('MICROTIME', microtime(true)); //In seconds (float)
 define('TIME', floor(MICROTIME));     //In seconds (integer)
-chdir(__DIR__.'/..');
-define('DIR', getcwd());               //Root directory
+//Root directory
+defined('DIR') || define('DIR', realpath(__DIR__.'/..'));
+chdir(DIR);
 /**
  * Defining of basic constants with paths to system directories
  */
-define('ENGINES', DIR.'/core/engines'); // Deprecated, TODO: remove in 5.x
-define('LANGUAGES', DIR.'/core/languages');
-define('CUSTOM', DIR.'/custom');
-define('TEMPLATES', DIR.'/templates');
-define('BLOCKS', DIR.'/components/blocks');
-define('MODULES', DIR.'/components/modules');
-define('PLUGINS', DIR.'/components/plugins');
-define('STORAGE', DIR.'/storage');
-define('PUBLIC_STORAGE', STORAGE.'/public');
-define('CACHE', STORAGE.'/cache');
-define('LOGS', STORAGE.'/logs');
-define('TEMP', STORAGE.'/temp');
-define('PUBLIC_CACHE', STORAGE.'/pcache');
-define('THEMES', DIR.'/themes');
+defined('ENGINES') || define('ENGINES', DIR.'/core/engines'); // Deprecated, TODO: remove in 5.x
+defined('LANGUAGES') || define('LANGUAGES', DIR.'/core/languages');
+defined('CUSTOM') || define('CUSTOM', DIR.'/custom');
+defined('TEMPLATES') || define('TEMPLATES', DIR.'/templates');
+defined('BLOCKS') || define('BLOCKS', DIR.'/components/blocks');
+defined('MODULES') || define('MODULES', DIR.'/components/modules');
+defined('PLUGINS') || define('PLUGINS', DIR.'/components/plugins');
+defined('STORAGE') || define('STORAGE', DIR.'/storage');
+defined('PUBLIC_STORAGE') || define('PUBLIC_STORAGE', STORAGE.'/public');
+defined('CACHE') || define('CACHE', STORAGE.'/cache');
+defined('LOGS') || define('LOGS', STORAGE.'/logs');
+defined('TEMP') || define('TEMP', STORAGE.'/temp');
+defined('PUBLIC_CACHE') || define('PUBLIC_CACHE', STORAGE.'/pcache');
+defined('THEMES') || define('THEMES', DIR.'/themes');
 /**
  * Useful PHP Functions
  */
