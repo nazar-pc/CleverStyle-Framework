@@ -229,7 +229,7 @@ class PostgreSQL extends _Abstract {
 	 * @inheritdoc
 	 */
 	function server () {
-		return $this->handler->server_info;
+		return pg_version($this->handler)['server'];
 	}
 	/**
 	 * @inheritdoc

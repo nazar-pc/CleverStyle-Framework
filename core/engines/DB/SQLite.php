@@ -6,6 +6,9 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\DB;
+use
+	SQLite3Result;
+
 class SQLite extends _Abstract {
 	/**
 	 * @var \SQLite3 Instance of DB connection
@@ -41,7 +44,7 @@ class SQLite extends _Abstract {
 	/**
 	 * @inheritdoc
 	 *
-	 * @return bool|\SQLite3Result
+	 * @return bool|SQLite3Result
 	 */
 	protected function q_internal ($query) {
 		if (!$query) {
@@ -62,10 +65,10 @@ class SQLite extends _Abstract {
 	/**
 	 * @inheritdoc
 	 *
-	 * @param false|\SQLite3Result $query_result
+	 * @param false|SQLite3Result $query_result
 	 */
 	function f ($query_result, $single_column = false, $array = false, $indexed = false) {
-		if (!is_object($query_result)) {
+		if (!($query_result instanceof SQLite3Result)) {
 			return false;
 		}
 		$result_type = $single_column || $indexed ? SQLITE3_NUM : SQLITE3_ASSOC;
@@ -95,10 +98,10 @@ class SQLite extends _Abstract {
 	/**
 	 * @inheritdoc
 	 *
-	 * @param false|\SQLite3Result $query_result
+	 * @param false|SQLite3Result $query_result
 	 */
 	function free ($query_result) {
-		if (is_object($query_result)) {
+		if ($query_result instanceof SQLite3Result) {
 			return $query_result->finalize();
 		}
 		return true;

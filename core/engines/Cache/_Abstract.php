@@ -51,6 +51,6 @@ abstract class _Abstract {
 	 *
 	 * @final
 	 */
-	final function __clone () {
+	final protected function __clone () {
 	}
 }

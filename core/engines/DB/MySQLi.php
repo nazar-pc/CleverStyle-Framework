@@ -6,6 +6,9 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\DB;
+use
+	mysqli_result;
+
 class MySQLi extends _Abstract {
 	/**
 	 * @var \MySQLi Instance of DB connection
@@ -68,7 +71,7 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 *
-	 * @return false|\mysqli_result
+	 * @return false|mysqli_result
 	 */
 	protected function q_internal ($query) {
 		if (!$query) {
@@ -98,10 +101,10 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 *
-	 * @param false|\mysqli_result $query_result
+	 * @param false|mysqli_result $query_result
 	 */
 	function f ($query_result, $single_column = false, $array = false, $indexed = false) {
-		if (!is_object($query_result)) {
+		if (!($query_result instanceof mysqli_result)) {
 			return false;
 		}
 		$result_type = $single_column || $indexed ? MYSQLI_NUM : MYSQLI_ASSOC;
@@ -134,10 +137,10 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 *
-	 * @param false|\mysqli_result $query_result
+	 * @param false|mysqli_result $query_result
 	 */
 	function free ($query_result) {
-		if (is_object($query_result)) {
+		if ($query_result instanceof mysqli_result) {
 			$query_result->free();
 		}
 		return true;

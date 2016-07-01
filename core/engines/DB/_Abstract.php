@@ -281,9 +281,6 @@ abstract class _Abstract {
 				$query[1][0].')',
 				$query[1][1]
 			];
-			if (!isset($query[1]) || !$query[1]) {
-				return false;
-			}
 			$query[1] .= str_repeat(",$query[1]", count($params) - 1);
 			$query = $query[0].'VALUES'.$query[1].$query[2];
 			return (bool)$this->q(
@@ -486,7 +483,7 @@ abstract class _Abstract {
 	 *
 	 * @final
 	 */
-	final function __clone () {
+	final protected function __clone () {
 	}
 	/**
 	 * Disconnecting from DB
