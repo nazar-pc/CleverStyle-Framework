@@ -30,7 +30,7 @@ Permissions may be specified for groups and for specific users.
 If user consists in several groups - they have some order, which defines which permissions will user get.
 Rules for defining final user permissions are:
 * at first user have no specific permissions set
-* groups permissions are applied from group with lower priority to group with higher priority (higher priority have groups that are placed higher in user's groups list in administration)
-* every group with higher priority redefines permissions already set by previous group
-* lastly personal user permissions are applied, which may redefine any other permissions set by groups
+* groups permissions are applied from group with lower priority to group with higher priority (each next group in user's groups list in administration have higher priority than previous)
+* every group with higher priority overrides permissions already set by previous group
+* lastly personal user permissions are applied, which may override any other permissions set by groups
 * any rules above doesn't apply to root administrator (created at installation and have id `2`), it will have access anywhere and everywhere

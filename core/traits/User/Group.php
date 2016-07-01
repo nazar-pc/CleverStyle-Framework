@@ -27,14 +27,10 @@ trait Group {
 	 * @return bool
 	 */
 	function add_groups ($group, $user = false) {
-		$user = (int)$user ?: $this->id;
-		if (!$user || $user == User::GUEST_ID) {
-			return false;
-		}
 		$groups = $this->get_groups($user) ?: [];
 		foreach ((array)_int($group) as $g) {
 			$groups[] = $g;
-		};
+		}
 		return $this->set_groups($groups, $user);
 	}
 	/**
@@ -53,11 +49,13 @@ trait Group {
 			"groups/$user",
 			function () use ($user) {
 				return _int(
-					$this->db()->qfas(
-						"SELECT `group`
-						FROM `[prefix]users_groups`
-						WHERE `id` = '$user'
-						ORDER BY `priority` DESC"
+					array_values(
+						$this->db()->qfas(
+							"SELECT `group`
+							FROM `[prefix]users_groups`
+							WHERE `id` = '$user'
+							ORDER BY `priority` ASC"
+						)
 					) ?: []
 				);
 			}
@@ -73,7 +71,7 @@ trait Group {
 	 */
 	function set_groups ($groups, $user = false) {
 		$user = (int)$user ?: $this->id;
-		if (!$user) {
+		if (!$user || $user == User::GUEST_ID) {
 			return false;
 		}
 		if (!$groups) {
@@ -128,12 +126,8 @@ trait Group {
 	 * @return bool
 	 */
 	function del_groups ($group, $user = false) {
-		$user = (int)$user ?: $this->id;
-		if (!$user || $user == User::GUEST_ID) {
-			return false;
-		}
 		$groups = array_diff(
-			$this->get_groups($user),
+			$this->get_groups($user) ?: [],
 			(array)_int($group)
 		);
 		return $this->set_groups($groups, $user);

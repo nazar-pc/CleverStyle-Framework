@@ -22,17 +22,22 @@
     _reload: function(){
       var this$ = this;
       cs.api(['get api/System/admin/groups', "get api/System/admin/users/" + this.user + "/groups"]).then(function(arg$){
-        var groups, user_groups_ids, user_groups, other_groups, group;
+        var groups, user_groups_ids, user_groups, other_groups, normalized_groups, group, i$, len$;
         groups = arg$[0], user_groups_ids = arg$[1];
         user_groups = [];
         other_groups = [];
+        normalized_groups = {};
         for (group in groups) {
           group = groups[group];
           if (user_groups_ids.indexOf(group.id) !== -1) {
-            user_groups.push(group);
+            normalized_groups[group.id] = group;
           } else {
             other_groups.push(group);
           }
+        }
+        for (i$ = 0, len$ = user_groups_ids.length; i$ < len$; ++i$) {
+          group = user_groups_ids[i$];
+          user_groups.push(normalized_groups[group]);
         }
         this$.user_groups = user_groups;
         this$.other_groups = other_groups;

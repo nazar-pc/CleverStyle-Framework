@@ -22,13 +22,16 @@ Polymer(
 			'get api/System/admin/groups'
 			"get api/System/admin/users/#{@user}/groups"
 		]).then ([groups, user_groups_ids]) !~>
-			user_groups		= []
-			other_groups	= []
+			user_groups			= []
+			other_groups		= []
+			normalized_groups	= {}
 			for group, group of groups
 				if user_groups_ids.indexOf(group.id) != -1
-					user_groups.push(group)
+					normalized_groups[group.id] = group
 				else
 					other_groups.push(group)
+			for group in user_groups_ids
+				user_groups.push(normalized_groups[group])
 			@user_groups	= user_groups
 			@other_groups	= other_groups
 			@_init_sortable()
