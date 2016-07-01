@@ -507,7 +507,7 @@ bool(true)
 string(17) "Bad columns table"
 bool(false)
 string(11) "Server info"
-string(30) "%d.%d.%d-%s"
+string(%s) "%d.%d.%d-%s"
 string(7) "DB type"
 string(5) "mysql"
 string(13) "Database name"

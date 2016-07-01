@@ -502,7 +502,7 @@ bool(true)
 string(17) "Bad columns table"
 bool(false)
 string(11) "Server info"
-string(6) "%d.%d.%d"
+string(%s) "%d.%d.%d%S"
 string(24) "Unsupported columns call"
 PHP Warning:  Can't get columns like %tle, SQLite engine doesn't support such conditions in %s/core/engines/DB/SQLite.php on line %d
 
