@@ -35,11 +35,6 @@ trait Profile {
 	 * @var array
 	 */
 	protected $data = [];
-	/**
-	 * Whether to use memory cache (locally, inside object, may require a lot of memory if working with many users together)
-	 * @var bool
-	 */
-	protected $memory_cache = true;
 	protected function initialize_data () {
 		$this->users_columns = $this->cache->get(
 			'columns',
@@ -88,7 +83,7 @@ trait Profile {
 			);
 			if (!$data) {
 				return false;
-			} elseif ($this->memory_cache || $user = User::GUEST_ID) {
+			} elseif ($this->memory_cache || $user == User::GUEST_ID) {
 				$this->data[$user] = $data;
 			}
 		}
@@ -311,16 +306,6 @@ trait Profile {
 			$username = $this->get('email', $user);
 		}
 		return $username;
-	}
-	/**
-	 * Disable memory cache
-	 *
-	 * Memory cache stores users data inside User class in order to get data faster next time.
-	 * But in case of working with large amount of users this cache can be too large. Disabling will cause some performance drop, but save a lot of RAM.
-	 */
-	function disable_memory_cache () {
-		$this->memory_cache = false;
-		$this->data         = [];
 	}
 	/**
 	 * Returns array of users columns, available for getting of data

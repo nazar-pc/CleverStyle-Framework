@@ -106,6 +106,11 @@ class User {
 	 */
 	protected $cache;
 	/**
+	 * Whether to use memory cache (locally, inside object, may require a lot of memory if working with many users together)
+	 * @var bool
+	 */
+	protected $memory_cache = true;
+	/**
 	 * Returns database index
 	 *
 	 * @return int
@@ -246,5 +251,16 @@ class User {
 	 */
 	function guest () {
 		return Session::instance()->guest();
+	}
+	/**
+	 * Disable memory cache
+	 *
+	 * Memory cache stores users data inside User class in order to get data faster next time.
+	 * But in case of working with large amount of users this cache can be too large. Disabling will cause some performance drop, but save a lot of RAM.
+	 */
+	function disable_memory_cache () {
+		$this->memory_cache = false;
+		$this->data         = [];
+		$this->permissions  = [];
 	}
 }

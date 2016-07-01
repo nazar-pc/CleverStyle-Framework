@@ -72,23 +72,27 @@ trait Permission {
 	 * @return array
 	 */
 	protected function get_permission_internal ($user) {
-		if (!isset($this->permissions[$user])) {
-			$this->permissions[$user] = $this->cache->get(
-				"permissions/$user",
-				function () use ($user) {
-					$permissions = [];
-					if ($user != User::GUEST_ID) {
-						$Group = System_Group::instance();
-						foreach ($this->get_groups($user) ?: [] as $group_id) {
-							$permissions = $Group->get_permissions($group_id) ?: [] + $permissions;
-						}
-					}
-					$permissions = $this->get_permissions($user) ?: [] + $permissions;
-					return $permissions;
-				}
-			);
+		if (isset($this->permissions[$user])) {
+			return $this->permissions[$user];
 		}
-		return $this->permissions[$user];
+		$permissions = $this->cache->get(
+			"permissions/$user",
+			function () use ($user) {
+				$permissions = [];
+				if ($user != User::GUEST_ID) {
+					$Group = System_Group::instance();
+					foreach ($this->get_groups($user) ?: [] as $group_id) {
+						$permissions = $Group->get_permissions($group_id) ?: [] + $permissions;
+					}
+				}
+				$permissions = $this->get_permissions($user) ?: [] + $permissions;
+				return $permissions;
+			}
+		);
+		if ($this->memory_cache || $user == User::GUEST_ID) {
+			$this->permissions[$user] = $permissions;
+		}
+		return $permissions;
 	}
 	/**
 	 * Set permission state for specified user
