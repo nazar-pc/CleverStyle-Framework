@@ -48,7 +48,8 @@ trait Any {
 						`permission`,
 						`value`
 					FROM `$table`
-					WHERE `id` = '$id'"
+					WHERE `id` = '$id'
+					ORDER BY `permission` ASC"
 				);
 				if (is_array($permissions_array)) {
 					$permissions = [];
@@ -120,12 +121,9 @@ trait Any {
 					$insert_update
 				);
 		}
-		unset(
-			$insert_update,
-			$this->cache->{"permissions/$id"}
-		);
+		$this->cache->del("permissions/$id");
 		if ($type == 'group') {
-			unset(Cache::instance()->{'users/permissions'});
+			Cache::instance()->del('users/permissions');
 		}
 		return (bool)$return;
 	}
@@ -154,13 +152,10 @@ trait Any {
 			"DELETE FROM `$table`
 			WHERE `id` = '$id'"
 		);
-		if ($return) {
-			unset($this->cache->{"permissions/$id"});
-			if ($type == 'group') {
-				unset(Cache::instance()->{'users/permissions'});
-			}
-			return true;
+		$this->cache->del("permissions/$id");
+		if ($type == 'group') {
+			Cache::instance()->del('users/permissions');
 		}
-		return false;
+		return (bool)$return;
 	}
 }

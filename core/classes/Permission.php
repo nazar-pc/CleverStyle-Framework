@@ -18,7 +18,7 @@ class Permission {
 		Singleton;
 
 	protected $data_model = [
-		'id'    => 'int:0',
+		'id'    => 'int:1',
 		'group' => 'text',
 		'label' => 'text'
 	];
