@@ -2104,3 +2104,76 @@ Dropped backward compatibility:
 * Removed possibility to upgrade from older versions than latest release
 
 Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
+
+# 4.94.6+build-2277: Better testing
+
+This release is primarily focused on improving code quality of system core and testing.
+Code coverage analysis was added into testing process, it helps to figure out which areas require more attention than others.
+
+There are small fixes and improvements, but nothing major. However, there are some deprecations that will be removed in future 5.x release.
+
+This release is likely to be the last one from 4.x series.
+
+Security fixes:
+* None
+
+New components:
+* None
+
+New features:
+* Code coverage analysis added to tests
+* Add support for `/index.php`-prefixed requests
+* Add support setting event handlers using scripts in `custom` directory
+* Quick tests added that can be executed autonomously and concurrently
+
+Updates:
+* New upstream version of UPF
+* New upstream version of PHPT-Tests-Runner
+* New upstream version of Composer
+* New upstream version of Polymer (Native custom CSS properties are not used yet because of `Polymer.updateStyles()` is not compatible with it yet)
+
+Fixes and small improvements:
+* System:
+  * Change website protocol to https
+  * Added support for multiple return values from methods when mocking objects in tests
+  * Bind `$this` and `static` in mocked object's closures
+  * Make autoloader ready for `CACHE` being not defined
+  * Make `cli` file executable on system installation
+  * Small tweaks for builder tests
+  * Added badge with tests coverage
+  * Small tweaks to autoloader and installer
+  * Tiny refactoring in `cs\Event` class
+  * Small fixes in `cs\CRUD` trait
+  * Small fixes in `cs\Key` class
+  * Fix for `false` return value was not working correctly in `cs\Event::once()`
+  * Fixes for password restoration
+  * Fix for closed site sign in
+  * Allow overriding system core files constants upfront
+  * Fixes for groups permissions inheritance and consistency of getting/setting user's groups
+  * NOTE: User's groups priority has changed order in administration: now each next group have higher priority than previous
+  * Control memory cache for user's permissions the same way as user's data
+  * Fixes for user's permissions inheritance
+  * Fix for infinite loop in `cs\Language` class
+  * Improved sessions deletion
+  * Small fixes and simplifications in `cs\User\Profile` trait
+* Blockchain payment
+  * Change blockchain payment functionality from `payment` to `payment/blockchain`, that will allow installation of multiple payment systems at the same time
+* Blogs:
+  * Small fix, Blogs module didn't use proper namespace for `Json ld` module
+  * UI fix for editable area during posts addition or editing
+  * Add language prefix to post edit URL so that it wouldn't confuse users in multilingual setup
+* Composer assets:
+  * Increase `fxp/composer-asset-plugin` dependency version
+
+Deprecations:
+* `ENGINES` constant is deprecated now
+* User's contacts deprecated in system core
+* Templates for blocks are deprecated now
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* None
+
+Dropped backward compatibility:
+* None
+
+Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
