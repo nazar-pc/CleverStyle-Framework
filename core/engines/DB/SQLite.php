@@ -44,7 +44,7 @@ class SQLite extends _Abstract {
 	/**
 	 * @inheritdoc
 	 *
-	 * @return bool|SQLite3Result
+	 * @return false|SQLite3Result
 	 */
 	protected function q_internal ($query) {
 		if (!$query) {
