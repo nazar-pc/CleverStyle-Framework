@@ -49,13 +49,11 @@ trait Group {
 			"groups/$user",
 			function () use ($user) {
 				return _int(
-					array_values(
-						$this->db()->qfas(
-							"SELECT `group`
+					$this->db()->qfas(
+						"SELECT `group`
 							FROM `[prefix]users_groups`
 							WHERE `id` = '$user'
 							ORDER BY `priority` ASC"
-						)
 					) ?: []
 				);
 			}
