@@ -164,7 +164,7 @@ trait Profile {
 			return true;
 		}
 		if ($item == 'language') {
-			$value = $value ? Language::instance()->get('clanguage', $value) : '';
+			$value = $value && Language::instance()->get('clanguage', $value) == $value ? $value : '';
 		} elseif ($item == 'timezone') {
 			$value = in_array($value, get_timezones_list(), true) ? $value : '';
 		} elseif ($item == 'avatar') {
@@ -173,23 +173,22 @@ trait Profile {
 				strpos($value, 'https://') !== 0
 			) {
 				$value = '';
-			} else {
-				$Event = Event::instance();
-				$Event->fire(
-					'System/upload_files/del_tag',
-					[
-						'url' => $old_value,
-						'tag' => "users/$user/avatar"
-					]
-				);
-				$Event->fire(
-					'System/upload_files/add_tag',
-					[
-						'url' => $value,
-						'tag' => "users/$user/avatar"
-					]
-				);
 			}
+			$Event = Event::instance();
+			$Event->fire(
+				'System/upload_files/del_tag',
+				[
+					'url' => $old_value,
+					'tag' => "users/$user/avatar"
+				]
+			);
+			$Event->fire(
+				'System/upload_files/add_tag',
+				[
+					'url' => $value,
+					'tag' => "users/$user/avatar"
+				]
+			);
 		}
 		/**
 		 * @var string $item
@@ -199,7 +198,7 @@ trait Profile {
 			$old_value               = $this->get($item.'_hash', $user);
 			$data_set[$item.'_hash'] = hash('sha224', $value);
 			unset($this->cache->$old_value);
-		} elseif ($item == 'password_hash' || ($item == 'status' && $value == 0)) {
+		} elseif ($item == 'password_hash' || ($item == 'status' && $value != User::STATUS_ACTIVE)) {
 			Session::instance()->del_all($user);
 		}
 		return true;
@@ -232,7 +231,7 @@ trait Profile {
 			if ($value == $this->get($item, $user)) {
 				return true;
 			}
-			return !$this->get_id(hash('sha224', $value));
+			return $value && !$this->get_id(hash('sha224', $value));
 		}
 		return true;
 	}
@@ -250,7 +249,7 @@ trait Profile {
 		$id = $this->cache->get(
 			$login_hash,
 			function () use ($login_hash) {
-				return $this->db()->qfs(
+				return (int)$this->db()->qfs(
 					"SELECT `id`
 					FROM `[prefix]users`
 					WHERE
@@ -301,9 +300,6 @@ trait Profile {
 		$username = $this->get('username', $user);
 		if (!$username) {
 			$username = $this->get('login', $user);
-		}
-		if (!$username) {
-			$username = $this->get('email', $user);
 		}
 		return $username;
 	}

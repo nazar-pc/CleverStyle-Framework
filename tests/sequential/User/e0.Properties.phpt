@@ -32,6 +32,7 @@ var_dump($Properties->avatar(256));
 
 Config::instance()->core['gravatar_support'] = 1;
 var_dump('Avatar (gravatar)');
+var_dump($Properties->avatar());
 var_dump($Properties->avatar(256));
 
 var_dump('Set data');
@@ -61,6 +62,7 @@ string(0) ""
 string(42) "http://cscms.travis/includes/img/guest.svg"
 string(42) "http://cscms.travis/includes/img/guest.svg"
 string(17) "Avatar (gravatar)"
+string(129) "https://www.gravatar.com/avatar/8bcc08ae9406da85668f569be36b62f9?d=mm&s=&d=http%3A%2F%2Fcscms.travis%2Fincludes%2Fimg%2Fguest.svg"
 string(132) "https://www.gravatar.com/avatar/8bcc08ae9406da85668f569be36b62f9?d=mm&s=256&d=http%3A%2F%2Fcscms.travis%2Fincludes%2Fimg%2Fguest.svg"
 string(8) "Set data"
 bool(true)

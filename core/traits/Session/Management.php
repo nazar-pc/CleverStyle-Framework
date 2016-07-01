@@ -415,7 +415,10 @@ trait Management {
 			]
 		);
 		unset($this->cache->$session_id);
-		$this->session_id = false;
+		if ($session_id == $this->session_id) {
+			$this->session_id = false;
+			$this->user_id    = User::GUEST_ID;
+		}
 		Response::instance()->cookie('session', '');
 		$result = $this->delete($session_id);
 		if ($result) {
@@ -449,6 +452,9 @@ trait Management {
 	 */
 	function del_all ($user = false) {
 		$user = $user ?: $this->user_id;
+		if ($user == User::GUEST_ID) {
+			return false;
+		}
 		Event::instance()->fire(
 			'System/Session/del_all',
 			[
@@ -460,12 +466,9 @@ trait Management {
 			FROM `[prefix]sessions`
 			WHERE `user` = '$user'"
 		);
-		if (is_array($sessions)) {
-			if (!$this->delete($sessions)) {
+		foreach ($sessions ?: [] as $session) {
+			if (!$this->del($session)) {
 				return false;
-			}
-			foreach ($sessions as $session) {
-				unset($this->cache->$session);
 			}
 		}
 		return true;

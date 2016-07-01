@@ -244,7 +244,7 @@ class Language implements JsonSerializable {
 		}
 		$current_language = $this->clanguage;
 		$this->change($language);
-		$return = $this->get($item, $language, $prefix);
+		$return = $this->get($item, $this->clanguage, $prefix);
 		$this->change($current_language);
 		return $return;
 	}
