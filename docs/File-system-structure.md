@@ -31,7 +31,7 @@
   * **pcache** - public cache (css/js)
   * **public** - public directory for external access, directory for Local storage
   * **temp** - directory for temporary files
-* **templates**
+* **templates** (deprecated)
   * **blocks** - blocks templates
 * **themes** - themes
 

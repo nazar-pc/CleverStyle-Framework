@@ -1,3 +1,5 @@
+### WARNING: Templates are deprecated, blocks should render themselves completely without any template
+
 As for now - there are only one type of templates - for blocks.
 
 Template is used to customize view of [blocks components](/docs/backend-components/Blocks.md).
