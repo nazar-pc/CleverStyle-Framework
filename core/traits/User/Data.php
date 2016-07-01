@@ -32,8 +32,8 @@ trait Data {
 		if (!$item || $user == User::GUEST_ID) {
 			return false;
 		}
-		$data = $this->cache->{"data/$user"} ?: [];
 		if (is_array($item)) {
+			$data   = $this->cache->get("data/$user") ?: [];
 			$result = [];
 			$absent = [];
 			foreach ($item as $i) {
@@ -68,30 +68,15 @@ trait Data {
 				unset($a);
 				$result += $absent;
 				$data += $absent;
-				$this->cache->{"data/$user"} = $data;
+				$this->cache->set("data/$user", $data);
 			}
 			return $result;
 		}
-		if ($data === false || !isset($data[$item])) {
-			if (!is_array($data)) {
-				$data = [];
-			}
-			$data[$item] = _json_decode(
-				$this->db()->qfs(
-					"SELECT `value`
-					FROM `[prefix]users_data`
-					WHERE
-						`id`	= '$user' AND
-						`item`	= '%s'",
-					$item
-				)
-			);
-			if ($data[$item] === null) {
-				$data[$item] = false;
-			}
-			$this->cache->{"data/$user"} = $data;
-		}
-		return $data[$item];
+		/**
+		 * @var string $item
+		 */
+		$data = $this->get_data([$item], $user);
+		return isset($data[$item]) ? $data[$item] : false;
 	}
 	/**
 	 * Setting additional data item(s) of specified user
