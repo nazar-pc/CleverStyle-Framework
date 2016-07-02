@@ -193,7 +193,7 @@ class Language implements JsonSerializable {
 		/**
 		 * For `X-Facebook-Locale` and other similar
 		 */
-		foreach (Request::instance()->headers as $i => $v) {
+		foreach (Request::instance()->headers ?: [] as $i => $v) {
 			if (stripos($i, '-locale') !== false) {
 				$language = strtolower($v);
 				if (@in_array($aliases[$language], $active_languages)) {

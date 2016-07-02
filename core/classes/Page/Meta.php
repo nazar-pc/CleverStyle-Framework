@@ -48,7 +48,7 @@ class Meta {
 			return $this;
 		}
 		$images = (array)$images;
-		if (!$this->image_src) {
+		if (!$this->image_src && $images[0]) {
 			$this->image_src = true;
 			$this->links .= h::link(
 				[
