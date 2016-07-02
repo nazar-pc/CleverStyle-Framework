@@ -8,8 +8,8 @@
 	"license"      : "MIT License",
 	"provide"      : "scheduled_tasks",
 	"require"      : [
-		"System>=4.78",
-		"System<5.0"
+		"System>=5.0",
+		"System<6.0"
 	],
 	"multilingual" : [
 		"interface"

@@ -36,7 +36,7 @@ Polymer(
 			@other_groups	= other_groups
 			@_init_sortable()
 	_init_sortable : !->
-		html5sortable <~! require(['html5sortable-no-jquery'], _)
+		html5sortable <~! require(['html5sortable'], _)
 		if (
 			@shadowRoot.querySelectorAll('#user-groups > div:not(:first-child)').length < @user_groups.length ||
 			@shadowRoot.querySelectorAll('#other-groups > div:not(:first-child)').length < @other_groups.length

@@ -18,8 +18,8 @@
 		"payment/blockchain"
 	],
 	"require"             : [
-		"System>=4.82",
-		"System<5.0",
+		"System>=5.0",
+		"System<6.0",
 		"composer_assets"
 	],
 	"require_npm"         : {

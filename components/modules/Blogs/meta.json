@@ -15,8 +15,8 @@
 	],
 	"provide"             : "blogs",
 	"require"             : [
-		"System>=4.83",
-		"System<5.0",
+		"System>=5.0",
+		"System<6.0",
 		"Tags>=2.0",
 		"Tags<3.0",
 		"Json_ld>=0.2"

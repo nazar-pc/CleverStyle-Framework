@@ -9,6 +9,6 @@
 	"provide"     : "code_highlighting",
 	"require"     : [
 		"System>3.9",
-		"System<5.0"
+		"System<6.0"
 	]
 }

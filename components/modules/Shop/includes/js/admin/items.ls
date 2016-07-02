@@ -156,7 +156,7 @@ make_modal = (attributes, categories, title, action) ->
 			modal.find('[name=images]').val(
 				JSON.stringify(images)
 			)
-			html5sortable <~! require(['html5sortable-no-jquery'], _)
+			html5sortable <~! require(['html5sortable'], _)
 			html5sortable(images_container.get(), 'destroy')
 			html5sortable(
 				images_container.get()
@@ -204,7 +204,7 @@ make_modal = (attributes, categories, title, action) ->
 		)
 		videos_container	= modal.find('.videos')
 		modal.update_videos	= !->
-			html5sortable <~! require(['html5sortable-no-jquery'], _)
+			html5sortable <~! require(['html5sortable'], _)
 			html5sortable(videos_container.get(), 'destroy')
 			html5sortable(
 				videos_container.get()

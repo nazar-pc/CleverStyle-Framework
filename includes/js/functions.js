@@ -296,7 +296,7 @@
     if (typeof content === 'string' || content instanceof Function) {
       modal.innerHTML = content;
     } else {
-      if (content instanceof jQuery) {
+      if ('jquery' in content) {
         content.appendTo(modal);
       } else {
         modal.appendChild(content);
@@ -412,7 +412,7 @@
     if (typeof content === 'string' || content instanceof Function) {
       notify.innerHTML = content;
     } else {
-      if (content instanceof jQuery) {
+      if ('jquery' in content) {
         content.appendTo(notify);
       } else {
         notify.appendChild(content);

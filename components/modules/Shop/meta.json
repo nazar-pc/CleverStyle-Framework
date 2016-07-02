@@ -15,8 +15,8 @@
 	],
 	"provide"             : "shop",
 	"require"             : [
-		"System>=4.85",
-		"System<5.0",
+		"System>=5.0",
+		"System<6.0",
 		"Tags>=2.0",
 		"Tags<3.0",
 		"fotorama",

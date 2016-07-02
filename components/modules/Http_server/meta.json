@@ -8,8 +8,8 @@
 	"license"          : "MIT License",
 	"provide"          : "http_server",
 	"require"          : [
-		"System>=4.78",
-		"System<5.0",
+		"System>=5.0",
+		"System<6.0",
 		"composer"
 	],
 	"require_composer" : {

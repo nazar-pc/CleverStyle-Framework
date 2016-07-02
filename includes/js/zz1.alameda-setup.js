@@ -11,22 +11,10 @@
     paths: {
       jssha: 'includes/js/modules/jsSHA-2.1.0',
       autosize: 'includes/js/modules/autosize.min',
-      html5sortable: 'includes/js/modules/html5sortable.min.0.2.8',
-      'html5sortable-no-jquery': 'includes/js/modules/html5sortable-no-jquery'
+      html5sortable: 'includes/js/modules/html5sortable-0.4.0.min'
     },
     waitSeconds: 60
   });
-  if (window.$) {
-    define('jquery', function(){
-      return $;
-    });
-  } else {
-    requirejs.config({
-      paths: {
-        jquery: cs.optimized_includes[0].shift()
-      }
-    });
-  }
   define('sprintf-js', function(){
     return {
       sprintf: sprintf,

@@ -46,7 +46,7 @@
     },
     _init_sortable: function(){
       var this$ = this;
-      require(['html5sortable-no-jquery'], function(html5sortable){
+      require(['html5sortable'], function(html5sortable){
         if (this$.shadowRoot.querySelectorAll('#user-groups > div:not(:first-child)').length < this$.user_groups.length || this$.shadowRoot.querySelectorAll('#other-groups > div:not(:first-child)').length < this$.other_groups.length) {
           setTimeout(this$._init_sortable.bind(this$), 100);
           return;

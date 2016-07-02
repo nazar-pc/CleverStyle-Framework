@@ -15,8 +15,8 @@
 	],
 	"provide"             : "comments",
 	"require"             : [
-		"System>=4.83",
-		"System<5.0"
+		"System>=5.0",
+		"System<6.0"
 	],
 	"optional"            : [
 		"simple_editor"

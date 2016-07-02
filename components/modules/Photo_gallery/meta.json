@@ -18,8 +18,8 @@
 	],
 	"provide"             : "photo_gallery",
 	"require"             : [
-		"System>=4.83",
-		"System<5.0",
+		"System>=5.0",
+		"System<6.0",
 		"Fotorama>=4.4.9",
 		"SimpleImage>=2.5.3-cs38",
 		"file_upload",

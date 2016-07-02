@@ -234,7 +234,7 @@ cs.{}ui
 		if typeof content == 'string' || content instanceof Function
 			modal.innerHTML = content
 		else
-			if content instanceof jQuery
+			if 'jquery' of content
 				content.appendTo(modal)
 			else
 				modal.appendChild(content)
@@ -331,7 +331,7 @@ cs.{}ui
 		if typeof content == 'string' || content instanceof Function
 			notify.innerHTML = content
 		else
-			if content instanceof jQuery
+			if 'jquery' of content
 				content.appendTo(notify)
 			else
 				notify.appendChild(content)

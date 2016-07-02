@@ -18,7 +18,7 @@ Polymer(
 	ready : !->
 		@_reload()
 	_init_sortable : !->
-		html5sortable <~! require(['html5sortable-no-jquery'], _)
+		html5sortable <~! require(['html5sortable'], _)
 		if @blocks_count == undefined || @shadowRoot.querySelectorAll('[group] > div:not(:first-child)').length < @blocks_count
 			setTimeout(@~_init_sortable, 100)
 			return

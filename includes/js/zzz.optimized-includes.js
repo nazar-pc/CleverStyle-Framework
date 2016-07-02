@@ -6,30 +6,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var configure_jquery_ajax, original_ready;
-  configure_jquery_ajax = function(){
-    $.ajaxSetup({
-      contents: {
-        script: false
-      },
-      success: function(result, status, xhr){
-        if (this['success_' + xhr.status]) {
-          this['success_' + xhr.status].apply(this, arguments);
-        }
-      },
-      error: function(xhr){
-        if (this['error_' + xhr.status]) {
-          this['error_' + xhr.status].apply(this, arguments);
-        } else {
-          cs.ui.notify(xhr.responseText
-            ? JSON.parse(xhr.responseText).error_description
-            : cs.Language.system_server_connection_error, 'warning', 5);
-        }
-      }
-    });
-  };
+  var original_ready;
   if (!cs.optimized_includes) {
-    configure_jquery_ajax();
     return;
   }
   original_ready = cs.ui.ready;
@@ -75,11 +53,7 @@
       x$.href = href;
       document.head.appendChild(preload);
     };
-    promise = require(['jquery']).then(function(arg$){
-      window.$ = arg$[0];
-      window.jQuery = $;
-      configure_jquery_ajax();
-    });
+    promise = Promise.resolve();
     for (i$ = 0, len$ = (ref$ = cs.optimized_includes[0]).length; i$ < len$; ++i$) {
       script = ref$[i$];
       preload('script', script);
@@ -90,8 +64,8 @@
       preload('document', import_);
       promise = promise.then(load_import.bind(import_));
     }
-    return promise.then(function(){
-      return original_ready;
-    });
+    return promise;
+  }).then(function(){
+    return original_ready;
   });
 }).call(this);

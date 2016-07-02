@@ -8,7 +8,7 @@
 	"license"     : "MIT License",
 	"provide"     : "composer",
 	"require"     : [
-		"System>=4.82",
-		"System<5.0"
+		"System>=5.0",
+		"System<6.0"
 	]
 }

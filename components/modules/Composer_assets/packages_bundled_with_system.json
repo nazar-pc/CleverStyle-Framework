@@ -1,11 +1,9 @@
 {
 	"bower-asset/iron-flex-layout" : "*",
 	"bower-asset/html.sortable"    : "*",
-	"bower-asset/jQuery"           : "3.0.0",
 	"bower-asset/jssha"            : "*",
 	"bower-asset/polymer"          : "*",
 	"bower-asset/webcomponentsjs"  : "*",
-	"npm-asset/jquery"             : "3.0.0",
 	"npm-asset/jssha"              : "*",
 	"npm-asset/@polymer/polymer"   : "*",
 	"npm-asset/webcomponents.js"   : "*"

@@ -22,7 +22,7 @@
     },
     _init_sortable: function(){
       var this$ = this;
-      require(['html5sortable-no-jquery'], function(html5sortable){
+      require(['html5sortable'], function(html5sortable){
         var group;
         if (this$.blocks_count === undefined || this$.shadowRoot.querySelectorAll('[group] > div:not(:first-child)').length < this$.blocks_count) {
           setTimeout(bind$(this$, '_init_sortable'), 100);

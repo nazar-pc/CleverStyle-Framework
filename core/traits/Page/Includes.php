@@ -467,13 +467,11 @@ trait Includes {
 	 * @param string[] $preload
 	 */
 	protected function add_includes_on_page_manually_added_normal ($Config, $Request, $preload) {
-		$jquery    = $this->jquery($this->page_compression_usage($Config, $Request));
-		$preload[] = $jquery;
 		$this->add_preload($preload);
 		$configs      = $this->core_config.$this->config;
 		$scripts      =
 			array_reduce(
-				array_merge([$jquery], $this->core_js['path'], $this->js['path']),
+				array_merge($this->core_js['path'], $this->js['path']),
 				function ($content, $src) {
 					return "$content<script src=\"$src\"></script>\n";
 				}
@@ -489,22 +487,6 @@ trait Includes {
 			$this->html['plain'];
 		$this->Head .= $configs;
 		$this->add_script_imports_to_document($Config, $scripts.$html_imports);
-	}
-	/**
-	 * Hack: jQuery is kind of special; it is only loaded directly in normal mode, during frontend load optimization it is loaded asynchronously in frontend
-	 * TODO: In future we'll load jQuery as AMD module only and this thing will not be needed
-	 *
-	 * @param bool $with_compression
-	 *
-	 * @return string
-	 */
-	protected function jquery ($with_compression) {
-		if ($with_compression) {
-			$hash = file_get_contents(PUBLIC_CACHE.'/jquery.js.hash');
-			return "/storage/pcache/jquery.js?$hash";
-		} else {
-			return '/includes/js/jquery/jquery-3.0.0.js';
-		}
 	}
 	/**
 	 * @param string[] $preload
@@ -533,7 +515,7 @@ trait Includes {
 			)
 		);
 		$system_scripts    = '';
-		$optimized_scripts = [$this->jquery(true)];
+		$optimized_scripts = [];
 		$system_imports    = '';
 		$optimized_imports = [];
 		foreach (array_merge($this->core_js['path'], $this->js['path']) as $script) {

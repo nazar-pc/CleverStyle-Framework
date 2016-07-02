@@ -150,7 +150,7 @@
               images.push($(this).attr('href'));
             });
             modal.find('[name=images]').val(JSON.stringify(images));
-            require(['html5sortable-no-jquery'], function(html5sortable){
+            require(['html5sortable'], function(html5sortable){
               html5sortable(images_container.get(), 'destroy');
               html5sortable(images_container.get(), {
                 forcePlaceholderSize: true,
@@ -197,7 +197,7 @@
           videos_container = modal.find('.videos');
           modal.update_videos = function(){
             var this$ = this;
-            require(['html5sortable-no-jquery'], function(html5sortable){
+            require(['html5sortable'], function(html5sortable){
               html5sortable(videos_container.get(), 'destroy');
               html5sortable(videos_container.get(), {
                 handle: '.handle',
