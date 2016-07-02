@@ -19,7 +19,7 @@ Polymer.cs.behaviors.cs-section-switcher = [
 			@selected = 0
 	_selected_changed : !->
 		for element, index in @children
-			if element.tagName == 'TEMPLATE'
+			if element.matches('template')
 				continue
 			element.active = index == @selected
 			if index == @selected

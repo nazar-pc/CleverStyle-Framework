@@ -59,7 +59,7 @@ Polymer.{}cs.{}behaviors.label =
 		inputs.push(@local_input)
 		label	= @
 		while label = label.previousElementSibling
-			if label.tagName != 'LABEL'
+			if !label.matches('label')
 				break
 			input	= label.querySelector('input')
 			if !input
@@ -67,7 +67,7 @@ Polymer.{}cs.{}behaviors.label =
 			inputs.push(input)
 		label	= @
 		while label = label.nextElementSibling
-			if label.tagName != 'LABEL'
+			if !label.matches('label')
 				break
 			input	= label.querySelector('input')
 			if !input

@@ -24,7 +24,7 @@ Polymer.cs.behaviors.cs-tooltip	= [
 		pointerleave	: '_unset_show'
 	attached : !->
 		parent	= @parentNode
-		if parent.tagName != 'HTML'
+		if !parent.matches('html')
 			parent.removeChild(@)
 			parent.addEventListener('mouseover', !~function add_tooltip
 				parent.removeEventListener('mouseover', add_tooltip)

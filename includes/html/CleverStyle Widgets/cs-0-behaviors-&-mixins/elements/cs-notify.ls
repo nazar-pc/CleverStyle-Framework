@@ -44,7 +44,7 @@ Polymer.cs.behaviors.cs-notify	= [
 		'content.tap'	: '_tap'
 	attached : !->
 		@last_node = @parentNode
-		if @parentNode.tagName != 'HTML'
+		if !@parentNode.matches('html')
 			document.documentElement.appendChild(@)
 			return
 		if !@bottom && !@top

@@ -33,7 +33,7 @@
       attached: function(){
         var parent, this$ = this;
         parent = this.parentNode;
-        if (parent.tagName !== 'HTML') {
+        if (!parent.matches('html')) {
           parent.removeChild(this);
           parent.addEventListener('mouseover', (function(){
             function add_tooltip(){

@@ -62,7 +62,7 @@ Polymer.cs.behaviors.cs-select = [
 	_number_of_optgroups : ->
 		optgroup	= @selectedOptions[0].parentNode
 		count		= 0
-		if optgroup.tagName == 'OPTGROUP'
+		if optgroup.matches('optgroup')
 			while optgroup
 				++count
 				optgroup = optgroup.previousElementSibling

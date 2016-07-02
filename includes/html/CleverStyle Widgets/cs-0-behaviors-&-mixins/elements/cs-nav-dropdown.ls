@@ -29,7 +29,7 @@ Polymer.cs.behaviors.cs-nav-dropdown	= [
 				@close()
 		)
 	attached : !->
-		if !@target && @previousElementSibling.tagName == 'BUTTON'
+		if !@target && @previousElementSibling.matches('button')
 			@target			= @previousElementSibling
 			@target.action	= 'toggle'
 			@target.bind	= @

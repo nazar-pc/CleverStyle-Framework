@@ -51,7 +51,7 @@
         for (i$ = 0, len$ = (ref$ = this.children).length; i$ < len$; ++i$) {
           index = i$;
           element = ref$[i$];
-          if (element.tagName === 'TEMPLATE') {
+          if (element.matches('template')) {
             continue;
           }
           if (element === target) {
@@ -67,7 +67,7 @@
         for (i$ = 0, len$ = (ref$ = this.children).length; i$ < len$; ++i$) {
           index = i$;
           element = ref$[i$];
-          if (element.tagName === 'TEMPLATE') {
+          if (element.matches('template')) {
             continue;
           }
           element.active = index === this.selected;

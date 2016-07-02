@@ -27,7 +27,7 @@ Polymer.cs.behaviors.cs-section-modal	= [
 	ready : !->
 		@_esc_handler = @_esc_handler.bind(@)
 	attached : !->
-		if @previousElementSibling?.tagName == 'BUTTON' && !@previousElementSibling.action
+		if @previousElementSibling?.matches('button') && !@previousElementSibling.action
 			@previousElementSibling.action	= 'open'
 			@previousElementSibling.bind	= @
 		if @autoOpen
@@ -41,7 +41,7 @@ Polymer.cs.behaviors.cs-section-modal	= [
 		if !@manualClose
 			@close()
 	_opened_changed : !->
-		if @parentNode?.tagName != 'HTML'
+		if !@parentNode?.matches('html')
 			html.appendChild(@)
 		# Hack to make modal opening really smooth
 		@distributeContent(true)

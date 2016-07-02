@@ -30,7 +30,7 @@ Polymer.cs.behaviors.cs-nav-tabs = [
 		if !target
 			return
 		for element, index in @children
-			if element.tagName == 'TEMPLATE'
+			if element.matches('template')
 				continue
 			if element == target
 				@selected = index
@@ -39,7 +39,7 @@ Polymer.cs.behaviors.cs-nav-tabs = [
 				element.removeAttribute('active')
 	_selected_changed : !->
 		for element, index in @children
-			if element.tagName == 'TEMPLATE'
+			if element.matches('template')
 				continue
 			element.active = index == @selected
 			if index == @selected

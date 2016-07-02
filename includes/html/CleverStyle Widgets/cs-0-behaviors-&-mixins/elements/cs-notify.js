@@ -55,7 +55,7 @@
       },
       attached: function(){
         this.last_node = this.parentNode;
-        if (this.parentNode.tagName !== 'HTML') {
+        if (!this.parentNode.matches('html')) {
           document.documentElement.appendChild(this);
           return;
         }

@@ -42,7 +42,7 @@
         });
       },
       attached: function(){
-        if (!this.target && this.previousElementSibling.tagName === 'BUTTON') {
+        if (!this.target && this.previousElementSibling.matches('button')) {
           this.target = this.previousElementSibling;
           this.target.action = 'toggle';
           this.target.bind = this;

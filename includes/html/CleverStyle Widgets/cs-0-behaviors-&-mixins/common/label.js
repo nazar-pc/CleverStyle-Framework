@@ -80,7 +80,7 @@
       inputs.push(this.local_input);
       label = this;
       while (label = label.previousElementSibling) {
-        if (label.tagName !== 'LABEL') {
+        if (!label.matches('label')) {
           break;
         }
         input = label.querySelector('input');
@@ -91,7 +91,7 @@
       }
       label = this;
       while (label = label.nextElementSibling) {
-        if (label.tagName !== 'LABEL') {
+        if (!label.matches('label')) {
           break;
         }
         input = label.querySelector('input');

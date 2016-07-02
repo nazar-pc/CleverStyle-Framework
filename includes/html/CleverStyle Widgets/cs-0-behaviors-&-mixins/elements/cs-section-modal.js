@@ -38,7 +38,7 @@
       },
       attached: function(){
         var ref$;
-        if (((ref$ = this.previousElementSibling) != null ? ref$.tagName : void 8) === 'BUTTON' && !this.previousElementSibling.action) {
+        if (((ref$ = this.previousElementSibling) != null && ref$.matches('button')) && !this.previousElementSibling.action) {
           this.previousElementSibling.action = 'open';
           this.previousElementSibling.bind = this;
         }
@@ -62,7 +62,7 @@
       },
       _opened_changed: function(){
         var ref$, this$ = this;
-        if (((ref$ = this.parentNode) != null ? ref$.tagName : void 8) !== 'HTML') {
+        if (!((ref$ = this.parentNode) != null && ref$.matches('html'))) {
           html.appendChild(this);
         }
         this.distributeContent(true);
