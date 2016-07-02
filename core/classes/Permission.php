@@ -112,11 +112,8 @@ class Permission {
 	 * @return bool
 	 */
 	function del ($id) {
-		if (!$id) {
-			return false;
-		}
-		$id = implode(',', (array)_int($id));
-		if ($this->db_prime()->q(
+		$id     = implode(',', (array)_int($id));
+		$result = $this->db_prime()->q(
 			[
 				"DELETE FROM `[prefix]permissions`
 				WHERE `id` IN ($id)",
@@ -125,18 +122,16 @@ class Permission {
 				"DELETE FROM `[prefix]groups_permissions`
 				WHERE `permission` IN ($id)"
 			]
-		)
-		) {
+		);
+		if ($result) {
 			$Cache = $this->cache;
 			unset(
 				$Cache->users,
 				$Cache->groups
 			);
 			$this->del_all_cache();
-			return true;
-		} else {
-			return false;
 		}
+		return $result;
 	}
 	/**
 	 * Returns array of all permissions grouped by permissions groups

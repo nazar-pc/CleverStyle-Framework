@@ -3,15 +3,33 @@
 namespace cs;
 include __DIR__.'/../../bootstrap.php';
 $Permission = Permission::instance();
-var_dump('all permissions', $Permission->get_all());
-var_dump('permission 1', $Permission->get(1));
-var_dump('permissions by group api/System', $Permission->get(null, 'api/System'));
-var_dump('permissions by label index', $Permission->get(null, null, 'index'));
-var_dump('permissions by group api/System and label index', $Permission->get(null, 'api/System', 'index'));
+var_dump('all permissions');
+var_dump($Permission->get_all());
+
+var_dump('permission 1');
+var_dump($Permission->get(1));
+
+var_dump('permissions by group api/System');
+var_dump($Permission->get(null, 'api/System'));
+
+var_dump('permissions by label index');
+var_dump($Permission->get(null, null, 'index'));
+
+var_dump('permissions by group api/System and label index');
+var_dump($Permission->get(null, 'api/System', 'index'));
+
+var_dump('new permission added');
 $id = $Permission->add('test_permissions', 'first');
-var_dump('new permission added', $id, $Permission->get($id));
-var_dump('permission modification', $Permission->set($id, 'test_permissions', 'first_1'), $Permission->get($id));
-var_dump('delete permission', $Permission->del($id), $Permission->get($id));
+var_dump($id);
+var_dump($Permission->get($id));
+
+var_dump('permission modification');
+var_dump($Permission->set($id, 'test_permissions', 'first_1'));
+var_dump($Permission->get($id));
+
+var_dump('delete permission');
+var_dump($Permission->del($id));
+var_dump($Permission->get($id));
 ?>
 --EXPECT--
 string(15) "all permissions"
