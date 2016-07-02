@@ -25,9 +25,10 @@ class Permission {
 	protected $table      = '[prefix]permissions';
 	/**
 	 * Array of all permissions for quick selecting
-	 * @var array
+	 *
+	 * @var array|null
 	 */
-	protected $permissions_table = [];
+	protected $permissions_table;
 	/**
 	 * @var Cache\Prefix
 	 */
@@ -143,7 +144,7 @@ class Permission {
 	 * @return array Format of array: ['group']['label'] = <i>permission_id</i>
 	 */
 	function get_all () {
-		if (empty($this->permissions_table)) {
+		if ($this->permissions_table === null) {
 			$this->permissions_table = $this->cache->get(
 				'all',
 				function () {
@@ -164,7 +165,7 @@ class Permission {
 	 * Deletion of permission table (is used after adding, setting or deletion of permission)
 	 */
 	protected function del_all_cache () {
-		$this->permissions_table = [];
+		$this->permissions_table = null;
 		unset($this->cache->all);
 	}
 }

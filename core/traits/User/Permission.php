@@ -7,7 +7,6 @@
  */
 namespace cs\User;
 use
-	cs\Cache,
 	cs\Group as System_Group,
 	cs\Permission as System_Permission,
 	cs\Permission\Any,
@@ -58,10 +57,7 @@ trait Permission {
 		if (!$user || ($admin_section && !$this->admin())) {
 			return false;
 		}
-		$all_permissions = Cache::instance()->get('permissions/all');
-		if ($all_permissions === false) {
-			$all_permissions = System_Permission::instance()->get_all();
-		}
+		$all_permissions = System_Permission::instance()->get_all();
 		if (isset($all_permissions[$group][$label])) {
 			$user_permissions = $this->get_permission_internal($user);
 			$permission_id    = $all_permissions[$group][$label];
