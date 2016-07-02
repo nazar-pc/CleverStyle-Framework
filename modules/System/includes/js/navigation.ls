@@ -69,6 +69,6 @@ L				= cs.Language('system_admin_')
 		if href.substr(-1) == '/'
 			href = href.substr(0, href.length - 1)
 		if href == document.baseURI + 'admin' || href == document.baseURI + 'admin/System'
-			go('admin/System/modules')
+			go('admin/System/components/modules')
 addEventListener('popstate', popstate)
 popstate()
