@@ -14,10 +14,11 @@ require_once __DIR__.'/php-code-coverage.phar';
 
 $filter = new \SebastianBergmann\CodeCoverage\Filter;
 $filter->addDirectoryToWhitelist(__DIR__.'/../build');
-$filter->addDirectoryToWhitelist(__DIR__.'/../modules/System');
 $filter->addDirectoryToWhitelist(__DIR__.'/../core');
+$filter->addDirectoryToWhitelist(__DIR__.'/../modules/System');
 $filter->addDirectoryToWhitelist(__DIR__.'/cscms.travis');
 $filter->removeDirectoryFromWhitelist(__DIR__.'/../core/thirdparty');
+$filter->removeDirectoryFromWhitelist(__DIR__.'/../modules/System/meta/update');
 $filter->removeDirectoryFromWhitelist(__DIR__.'/cscms.travis/core/thirdparty');
 
 $coverage_data_location = __DIR__.'/coverage_data.json';
