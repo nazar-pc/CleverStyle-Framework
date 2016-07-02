@@ -58,9 +58,17 @@ bool(false)
 string(15) "Get after clean"
 bool(true)
 bool(false)
+string(32) "/ path is equivalent to cleaning"
+bool(true)
+bool(false)
 string(19) "State after disable"
 bool(false)
 string(17) "Get after disable"
 bool(false)
 string(31) "Get with callback after disable"
 int(5)
+string(17) "Set after disable"
+bool(true)
+bool(false)
+string(16) "Delete empty key"
+bool(false)

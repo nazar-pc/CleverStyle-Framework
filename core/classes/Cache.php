@@ -89,9 +89,7 @@ class Cache {
 	 * @return bool
 	 */
 	function set ($item, $data) {
-		if (is_object($this->engine_instance)) {
-			$this->engine_instance->del($item);
-		}
+		$this->engine_instance->del($item);
 		if (!$this->state) {
 			return true;
 		}
@@ -115,12 +113,8 @@ class Cache {
 		if ($item == '/') {
 			return $this->clean();
 		}
-		if (is_object($this->engine_instance)) {
-			$item = trim($item, '/');
-			return $this->engine_instance->del($item);
-		} else {
-			return false;
-		}
+		$item = trim($item, '/');
+		return $this->engine_instance->del($item);
 	}
 	/**
 	 * Clean cache by deleting all items
@@ -128,11 +122,7 @@ class Cache {
 	 * @return bool
 	 */
 	function clean () {
-		if (is_object($this->engine_instance)) {
-			return $this->engine_instance->clean();
-		} else {
-			return false;
-		}
+		return $this->engine_instance->clean();
 	}
 	/**
 	 * Cache state enabled/disabled

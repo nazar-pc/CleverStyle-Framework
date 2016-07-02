@@ -74,12 +74,20 @@ var_dump($Cache_prefix->one);
 
 var_dump('Get after clean');
 $Cache->set('key', 1);
-var_dump($Cache->clean(), $Cache->get('key'));
+var_dump($Cache->clean());
+var_dump($Cache->get('key'));
+
+var_dump('/ path is equivalent to cleaning');
+$Cache->set('key', 1);
+var_dump($Cache->del('/'));
+var_dump($Cache->get('key'));
+
+$Cache->set('key', 1);
 $Cache->disable();
 var_dump('State after disable');
 var_dump($Cache->cache_state());
 var_dump('Get after disable');
-var_dump($Cache->test);
+var_dump($Cache->key);
 var_dump('Get with callback after disable');
 var_dump(
 	$Cache->get(
@@ -89,5 +97,15 @@ var_dump(
 		}
 	)
 );
+
+var_dump('Set after disable');
+var_dump($Cache->set('key', 1));
+var_dump($Cache->key);
+
+Cache::instance_reset();
+$Cache = Cache::instance();
+var_dump('Delete empty key');
+var_dump($Cache->del(''));
+
 unset($Cache);
 Cache::instance_reset();
