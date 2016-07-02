@@ -40,7 +40,8 @@ trait Accessor {
 		/**
 		 * Save reference for faster access
 		 */
-		$this->_db = DB::instance()->{(string)$this->cdb()}();
+		/** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+		$this->_db = DB::instance()->db($this->cdb());
 		return $this->_db;
 	}
 	/**
@@ -55,7 +56,8 @@ trait Accessor {
 		/**
 		 * Save reference for faster access
 		 */
-		$this->_db_prime = DB::instance()->{(string)$this->cdb()}();
+		/** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+		$this->_db_prime = DB::instance()->db_prime($this->cdb());
 		return $this->_db_prime;
 	}
 	/**

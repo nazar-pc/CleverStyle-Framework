@@ -42,7 +42,7 @@ trait Base {
 	 */
 	protected static function instance_prototype (&$instance, $check = false) {
 		static::instance_prototype_state_init($instance);
-		if ($instance) {
+		if (is_object($instance)) {
 			return $instance;
 		}
 		if ($check) {
