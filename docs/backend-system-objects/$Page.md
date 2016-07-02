@@ -169,7 +169,7 @@ If *false* - page interface will not be displayed, just content (typical example
 * System/Page/requirejs
 
 #### System/Page/display/before
-This event is used for adding scripts, styles and some modifications with content and executed before page generation. Usually is used by modules and plugins in order to add their styles and scripts.
+This event is used for adding scripts, styles and some modifications with content and executed before page generation. Usually is used by modules in order to add their styles and scripts.
 
 #### System/Page/display/after
 This event is used for modifying final page right before output.
@@ -188,7 +188,7 @@ System/Page/requirejs
 ]
 ```
 
-Usage example (from Composer assets plugin):
+Usage example (from Composer assets module):
 ```php
 <?php
 \cs\Event::instance()->on(

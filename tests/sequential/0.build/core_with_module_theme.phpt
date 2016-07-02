@@ -10,7 +10,7 @@ if (getenv('DB') && getenv('DB') != 'MySQLi') {
 --INI--
 phar.readonly = Off
 --ARGS--
--M core -m Blogs -p TinyMCE -t DarkEnergy
+-M core -m Blogs -t DarkEnergy
 --FILE--
 <?php
 include __DIR__.'/../../../build.php';

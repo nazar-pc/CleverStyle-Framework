@@ -58,9 +58,8 @@ spl_autoload_register(
 			file_exists($file = __DIR__."/classes/$namespace/$class_name.php") ||    //Core classes
 			file_exists($file = __DIR__."/thirdparty/$namespace/$class_name.php") || //Third party classes
 			file_exists($file = __DIR__."/traits/$namespace/$class_name.php") ||     //Core traits
-			file_exists($file = __DIR__."/engines/$namespace/$class_name.php") ||                 //Core engines
-			file_exists($file = MODULES."/../$namespace/$class_name.php") ||              //Classes in modules
-			file_exists($file = PLUGINS."/../$namespace/$class_name.php")                 //Classes in plugins
+			file_exists($file = __DIR__."/engines/$namespace/$class_name.php") ||    //Core engines
+			file_exists($file = MODULES."/../$namespace/$class_name.php")            //Classes in modules
 		) {
 			$cache[$class] = realpath($file);
 			$put_into_cache('autoload', $cache);
@@ -69,7 +68,7 @@ spl_autoload_register(
 		}
 		$put_into_cache('autoload', $cache);
 		// Processing components aliases
-		if (strpos($namespace, 'modules') === 0 || strpos($namespace, 'plugins') === 0) {
+		if (strpos($namespace, 'modules') === 0) {
 			$Config      = Config::instance();
 			$directories = [];
 			foreach ($Config->components['modules'] ?: [] as $module_name => $module_data) {
@@ -77,9 +76,6 @@ spl_autoload_register(
 					continue;
 				}
 				$directories[] = MODULES."/$module_name";
-			}
-			foreach ($Config->components['plugins'] ?: [] as $plugin_name) {
-				$directories[] = PLUGINS."/$plugin_name";
 			}
 			$class_exploded = explode('\\', $class);
 			foreach ($directories as $directory) {
@@ -594,16 +590,6 @@ function functionality ($functionality) {
 				}
 				$functionality[] = [$module];
 				$meta            = file_get_json(MODULES."/$module/meta.json");
-				if (isset($meta['provide'])) {
-					$functionality[] = (array)$meta['provide'];
-				}
-			}
-			foreach ($components['plugins'] as $plugin) {
-				if (!file_exists(PLUGINS."/$plugin/meta.json")) {
-					continue;
-				}
-				$functionality[] = [$plugin];
-				$meta            = file_get_json(PLUGINS."/$plugin/meta.json");
 				if (isset($meta['provide'])) {
 					$functionality[] = (array)$meta['provide'];
 				}

@@ -1,4 +1,4 @@
-Components dependencies are specified in `meta.json` file of [module](/docs/quick-start/Module-architecture.md#metajson) or [plugin](/docs/quick-start/Plugin-architecture.md#metajson), for instance:
+Components dependencies are specified in `meta.json` file of [module](/docs/quick-start/Module-architecture.md#metajson), for instance:
 ```json
 {
     "package"      : "Blogs",

@@ -40,12 +40,10 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 	rm master.tar.gz && \
 	cd CleverStyle-Framework-master && \
 
-# Get list of available modules, plugins and themes
+# Get list of available modules and themes
 
 	cd components/modules && \
 	MODULES=`ls -md */ | tr -d '\n /'` && \
-	cd ../../components/plugins && \
-	PLUGINS=`ls -md */ | tr -d '\n /'` && \
 	cd ../../themes && \
 	THEMES=`ls -md */ | tr -d '\n /'` && \
 	cd .. && \
@@ -54,9 +52,9 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 
 	sed -i 's/;phar.readonly = On/phar.readonly = Off/g' /etc/php/5.6/cli/php.ini && \
 
-# Build distributive with all available modules, plugins and themes
+# Build distributive with all available modules and themes
 
-	php build.php -M core -m $MODULES -p $PLUGINS -t $THEMES && \
+	php build.php -M core -m $MODULES -t $THEMES && \
 
 # Create directory for future website, move distributive there, remove unnecessary files
 

@@ -59,24 +59,6 @@ class Packages_dependencies {
 		}
 		unset($module, $module_meta);
 		/**
-		 * Check for compatibility with plugins
-		 */
-		foreach ($Config->components['plugins'] as $plugin) {
-			/**
-			 * Stub for the case if there is no `meta.json`
-			 */
-			$plugin_meta = [
-				'package'  => $plugin,
-				'category' => 'plugins',
-				'version'  => 0
-			];
-			if (file_exists(PLUGINS."/$plugin/meta.json")) {
-				$plugin_meta = file_get_json(PLUGINS."/$plugin/meta.json");
-			}
-			self::common_checks($dependencies, $meta, $plugin_meta, $update);
-		}
-		unset($plugin, $plugin_meta);
-		/**
 		 * If some required packages still missing
 		 */
 		foreach ($meta['require'] as $package => $details) {
@@ -330,7 +312,7 @@ class Packages_dependencies {
 	 *
 	 * @param array $meta `meta.json` contents of target component
 	 *
-	 * @return string[][] Empty array if dependencies are fine or array with optional keys `modules` and `plugins` that contain array of dependent packages
+	 * @return string[][] Empty array if dependencies are fine or array with optional key `modules` that contain array of dependent packages
 	 */
 	static function get_dependent_packages ($meta) {
 		/**
@@ -369,32 +351,6 @@ class Packages_dependencies {
 				array_intersect(array_keys($module_meta['require']), $meta['provide'])
 			) {
 				$used_by['modules'][] = $module;
-			}
-		}
-		unset($module);
-		/**
-		 * Checking for backward dependencies of plugins
-		 */
-		foreach ($Config->components['plugins'] as $plugin) {
-			/**
-			 * If we compare plugin with itself or there is no `meta.json` - we do not care about it
-			 */
-			if (
-				(
-					$meta['category'] == 'plugins' &&
-					$meta['package'] == $plugin
-				) ||
-				!file_exists(PLUGINS."/$plugin/meta.json")
-			) {
-				continue;
-			}
-			$plugin_meta = file_get_json(PLUGINS."/$plugin/meta.json");
-			$plugin_meta = self::normalize_meta($plugin_meta);
-			if (
-				isset($plugin_meta['require'][$meta['package']]) ||
-				array_intersect(array_keys($plugin_meta['require']), $meta['provide'])
-			) {
-				$used_by['plugins'][] = $plugin;
 			}
 		}
 		return $used_by;

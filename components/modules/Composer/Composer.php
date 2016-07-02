@@ -29,7 +29,7 @@ use
  *
  *  Composer/Composer
  *  [
- *   'Composer' => $Composer //Instance of `\Composer\Composer`, so that it is possible, for instance, to inject some plugins manually
+ *   'Composer' => $Composer //Instance of `\Composer\Composer`, so that it is possible, for instance, to inject some Composer plugins manually
  *  ]
  *
  *  Composer/updated
@@ -68,19 +68,18 @@ class Composer {
 	 * Update composer
 	 *
 	 * @param string $component_name Is specified if called before component actually installed (to satisfy dependencies)
-	 * @param string $category       `modules` or `plugins`
 	 * @param int    $mode           Composer::MODE_ADD or Composer::MODE_DELETE
 	 *
 	 * @return array Array with `code` and `description` elements, first represents status code returned by composer, second contains ANSI text returned by
 	 *               composer
 	 */
-	function update ($component_name = null, $category = 'modules', $mode = self::MODE_ADD) {
+	function update ($component_name = null, $mode = self::MODE_ADD) {
 		time_limit_pause();
 		$storage     = STORAGE.'/Composer';
 		$status_code = 0;
 		$description = '';
 		$this->prepare($storage);
-		$composer_json = $this->generate_composer_json($component_name, $category, $mode);
+		$composer_json = $this->generate_composer_json($component_name, $mode);
 		$Config        = Config::instance();
 		$auth_json     = _json_decode($Config->module('Composer')->auth_json ?: '[]');
 		$Event         = Event::instance();
@@ -186,12 +185,11 @@ class Composer {
 	}
 	/**
 	 * @param string $component_name
-	 * @param string $category `modules` or `plugins`
-	 * @param int    $mode     `self::MODE_ADD` or `self::MODE_DELETE`
+	 * @param int    $mode `self::MODE_ADD` or `self::MODE_DELETE`
 	 *
 	 * @return array Resulting `composer.json` structure in form of array
 	 */
-	protected function generate_composer_json ($component_name, $category, $mode) {
+	protected function generate_composer_json ($component_name, $mode) {
 		$composer = [
 			'repositories' => [],
 			'require'      => []
@@ -200,7 +198,6 @@ class Composer {
 		foreach (array_keys($Config->components['modules']) as $module) {
 			if (
 				$module == $component_name &&
-				$category == 'modules' &&
 				$mode == self::MODE_DELETE
 			) {
 				continue;
@@ -209,35 +206,12 @@ class Composer {
 				file_exists(MODULES."/$module/meta.json") &&
 				(
 					!$Config->module($module)->uninstalled() ||
-					(
-						$component_name == $module &&
-						$category == 'modules'
-					)
+					$component_name == $module
 				)
 			) {
 				$this->generate_package(
 					$composer,
 					file_get_json(MODULES."/$module/meta.json")
-				);
-			}
-		}
-		foreach (
-			array_merge(
-				$Config->components['plugins'],
-				$category == 'plugins' && $component_name ? [$component_name] : []
-			) as $plugin
-		) {
-			if (
-				$plugin == $component_name &&
-				$category == 'plugins' &&
-				$mode == self::MODE_DELETE
-			) {
-				continue;
-			}
-			if (file_exists(PLUGINS."/$plugin/meta.json")) {
-				$this->generate_package(
-					$composer,
-					file_get_json(PLUGINS."/$plugin/meta.json")
 				);
 			}
 		}

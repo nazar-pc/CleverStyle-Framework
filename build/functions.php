@@ -15,23 +15,19 @@ function form () {
 			'Build: '.
 			h::{'radio[name=mode]'}(
 				[
-					'value' => ['core', 'module', 'plugin', 'theme'],
-					'in'    => ['Core', 'Module', 'Plugin', 'Theme']
+					'value' => ['core', 'module', 'theme'],
+					'in'    => ['Core', 'Module', 'Theme']
 				]
 			)
 		).
 		h::{'table tr| td'}(
 			[
 				'Modules',
-				'Plugins',
 				'Themes'
 			],
 			[
 				h::{'select[name=modules[]][size=20][multiple] option'}(
 					get_list_for_form(DIR.'/components/modules', 'System')
-				),
-				h::{'select[name=plugins[]][size=20][multiple] option'}(
-					get_list_for_form(DIR.'/components/plugins')
 				),
 				h::{'select[name=themes[]][size=20][multiple] option'}(
 					get_list_for_form(DIR.'/themes', 'CleverStyle')

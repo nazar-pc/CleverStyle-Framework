@@ -34,9 +34,6 @@ trait RequireJS {
 			}
 			$paths += $this->get_requirejs_paths_add_aliases(MODULES."/$module_name");
 		}
-		foreach ($Config->components['plugins'] as $plugin_name) {
-			$paths += $this->get_requirejs_paths_add_aliases(PLUGINS."/$plugin_name");
-		}
 		foreach ($directories_to_browse as $dir) {
 			foreach (get_files_list($dir, false, 'd', true) as $d) {
 				$paths += $this->get_requirejs_paths_find_package($d);

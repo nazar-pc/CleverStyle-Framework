@@ -39,11 +39,11 @@ class Controller {
 	static function index_post ($Request) {
 		static::common();
 		$force = $Request->data('force');
-		$data  = $Request->data('name', 'category');
+		$name  = $Request->data('name');
 		if ($force) {
 			$result = Composer::instance()->force_update();
-		} elseif ($data) {
-			$result = Composer::instance()->update($data['name'], $data['category'], Composer::MODE_ADD);
+		} elseif ($name) {
+			$result = Composer::instance()->update($name, Composer::MODE_ADD);
 		} else {
 			throw new ExitException(400);
 		}
@@ -61,11 +61,11 @@ class Controller {
 	 */
 	static function index_delete ($Request) {
 		static::common();
-		$data = $Request->data('name', 'category');
-		if (!$data) {
+		$name = $Request->data('name');
+		if (!$name) {
 			throw new ExitException(400);
 		}
-		$result = Composer::instance()->update($data['name'], $data['category'], Composer::MODE_DELETE);
+		$result = Composer::instance()->update($name, Composer::MODE_DELETE);
 		return [
 			'code'        => $result['code'],
 			'description' => ansispan($result['description'])

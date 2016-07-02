@@ -53,7 +53,6 @@ $modules = array_values(
 		}
 	)
 );
-$plugins = get_files_list(ROOT.'/components/plugins', false, 'd');
 $themes  = array_values(
 	array_filter(
 		get_files_list(ROOT.'/themes', false, 'd'),
@@ -64,13 +63,10 @@ $themes  = array_values(
 );
 
 $Builder = new cs\Builder(ROOT, 'dist');
-$Builder->core([], [], [], 'Core');
-$Builder->core($modules, $plugins, $themes, 'Full');
+$Builder->core([], [], 'Core');
+$Builder->core($modules, $themes, 'Full');
 foreach ($modules as $module) {
 	$Builder->module($module);
-}
-foreach ($plugins as $plugin) {
-	$Builder->plugin($plugin);
 }
 foreach ($themes as $theme) {
 	$Builder->theme($theme);

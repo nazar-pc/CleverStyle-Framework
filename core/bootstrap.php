@@ -22,7 +22,6 @@ defined('CUSTOM') || define('CUSTOM', DIR.'/custom');
 defined('TEMPLATES') || define('TEMPLATES', DIR.'/templates');
 defined('BLOCKS') || define('BLOCKS', DIR.'/components/blocks');
 defined('MODULES') || define('MODULES', DIR.'/components/modules');
-defined('PLUGINS') || define('PLUGINS', DIR.'/components/plugins');
 defined('STORAGE') || define('STORAGE', DIR.'/storage');
 defined('PUBLIC_STORAGE') || define('PUBLIC_STORAGE', STORAGE.'/public');
 defined('CACHE') || define('CACHE', STORAGE.'/cache');

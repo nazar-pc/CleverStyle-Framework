@@ -9,18 +9,16 @@
 L										= cs.Language('system_admin_')
 cs.{}Polymer.{}behaviors.{}admin.System	=
 	components	:
-		# Module/plugin enabling
-		_enable_component : (component, component_type, meta) !->
-			category		= component_type + 's'
+		# Module enabling
+		_enable_module : (component, meta) !->
 			cs.api([
-				"get			api/System/admin/#category/#component/dependencies"
+				"get			api/System/admin/modules/#component/dependencies"
 				'get_settings	api/System/admin/system'
 			]).then ([dependencies, settings]) !~>
 				# During enabling we don't care about those since module should be already installed
 				delete dependencies.db_support
 				delete dependencies.storage_support
-				translation_key	= if component_type == 'module' then 'modules_enabling_of_module' else 'plugins_enabling_of_plugin'
-				title			= "<h3>#{L[translation_key](component)}</h3>"
+				title			= "<h3>#{L.modules_enabling_of_module(component)}</h3>"
 				message			= ''
 				message_more	= ''
 				if Object.keys(dependencies).length
@@ -34,15 +32,15 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 					"#title#message#message_more"
 					!~>
 						cs.Event.fire(
-							"admin/System/components/#category/enable/before"
+							"admin/System/components/modules/enable/before"
 							name	: component
 						)
-							.then -> cs.api("enable api/System/admin/#category/#component")
+							.then -> cs.api("enable api/System/admin/modules/#component")
 							.then !~>
 								@reload()
 								cs.ui.notify(L.changes_saved, 'success', 5)
 								cs.Event.fire(
-									"admin/System/components/#category/enable/after"
+									"admin/System/components/modules/enable/after"
 									name	: component
 								)
 				)
@@ -51,21 +49,19 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				modal.cancel.primary	= !modal.ok.primary
 				for p in modal.querySelectorAll('p:not([class])')
 					p.classList.add('cs-text-error', 'cs-block-error')
-		# Module/plugin disabling
-		_disable_component : (component, component_type) !->
-			category			= component_type + 's'
+		# Module disabling
+		_disable_module : (component) !->
 			cs.api([
-				"get			api/System/admin/#category/#component/dependent_packages"
+				"get			api/System/admin/modules/#component/dependent_packages"
 				'get_settings	api/System/admin/system'
 			]).then ([dependent_packages, settings]) !~>
-				translation_key		= if component_type == 'module' then 'modules_disabling_of_module' else 'plugins_disabling_of_plugin'
-				title				= "<h3>#{L[translation_key](component)}</h3>"
+				title				= "<h3>#{L.modules_disabling_of_module(component)}</h3>"
 				message				= ''
 				if Object.keys(dependent_packages).length
+					# TODO: type is not needed here anymore, simplify data structure
 					for type, packages of dependent_packages
-						translation_key = if type == 'modules' then 'this_package_is_used_by_module' else 'this_package_is_used_by_plugin'
 						for _package in packages
-							message += "<p>#{L[translation_key](_package)}</p>"
+							message += "<p>#{L.this_package_is_used_by_module(_package)}</p>"
 					message += "<p>#{L.dependencies_not_satisfied}</p>"
 					if settings.simple_admin_mode
 						cs.ui.notify(message, 'error', 5)
@@ -74,15 +70,15 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 					"#title#message"
 					!~>
 						cs.Event.fire(
-							"admin/System/components/#category/disable/before"
+							"admin/System/components/modules/disable/before"
 							name	: component
 						)
-							.then -> cs.api("disable api/System/admin/#category/#component")
+							.then -> cs.api("disable api/System/admin/modules/#component")
 							.then !~>
 								@reload()
 								cs.ui.notify(L.changes_saved, 'success', 5)
 								cs.Event.fire(
-									"admin/System/components/#category/disable/after"
+									"admin/System/components/modules/disable/after"
 									name	: component
 								)
 				)
@@ -91,7 +87,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				modal.cancel.primary	= !modal.ok.primary
 				for p in modal.querySelectorAll('p')
 					p.classList.add('cs-text-error', 'cs-block-error')
-		# Module/plugin/theme update
+		# Module/theme update
 		_update_component : (existing_meta, new_meta) !->
 			component		= new_meta.package
 			category		= new_meta.category
@@ -105,7 +101,6 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				translation_key	=
 					switch category
 					| 'modules'	=> (if component == 'System' then 'modules_updating_of_system' else 'modules_updating_of_module')
-					| 'plugins'	=> 'plugins_updating_of_plugin'
 					| 'themes'	=> 'appearance_updating_theme'
 				title			= "<h3>#{L[translation_key](component)}</h3>"
 				message			= ''
@@ -115,7 +110,6 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 					translation_key	=
 						switch category
 						| 'modules'	=> 'modules_update_module'
-						| 'plugins'	=> 'plugins_update_plugin'
 						| 'themes'	=> 'appearance_update_theme'
 					message_more	= '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>'
 				if Object.keys(dependencies).length
@@ -154,12 +148,11 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				modal.cancel.primary	= !modal.ok.primary
 				for p in modal.querySelectorAll('p:not([class])')
 					p.classList.add('cs-text-error', 'cs-block-error')
-		# Module/plugin/theme complete removal
+		# Module/theme complete removal
 		_remove_completely_component : (component, category) !->
 			translation_key		=
 				switch category
 				| 'modules' => 'modules_completely_remove_module'
-				| 'plugins'	=> 'plugins_completely_remove_plugin'
 				| 'themes'	=> 'appearance_completely_remove_theme'
 			cs.ui.confirm(L[translation_key](component))
 				.then -> cs.api("delete api/System/admin/#category/#component")
@@ -186,35 +179,23 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 									translation_key =
 										switch category
 										| 'modules'	=> (if component == 'System' then 'modules_update_system_impossible_older_version' else 'modules_update_module_impossible_older_version')
-										| 'plugins'	=> 'plugins_update_plugin_impossible_older_version'
 										| 'themes'	=> 'appearance_update_theme_impossible_older_version'
 									L[translation_key](component, detail.from, detail.to)
 								case 'update_same'
 									translation_key =
 										switch category
 										| 'modules'	=> (if component == 'System' then 'modules_update_system_impossible_same_version' else 'modules_update_module_impossible_same_version')
-										| 'plugins'	=> 'plugins_update_plugin_impossible_same_version'
 										| 'themes'	=> 'appearance_update_theme_impossible_same_version'
 									L[translation_key](component, detail.version)
 								case 'provide'
-									translation_key =
-										if category == 'modules'
-											'module_already_provides_functionality'
-										else
-											'plugin_already_provides_functionality'
-									L[translation_key](detail.name, detail.features.join('", "'))
+									L.module_already_provides_functionality(detail.name, detail.features.join('", "'))
 								case 'require'
 									for required in detail.required
 										required	= if required[1] && required[1] !~= '0' then required.join(' ') else ''
 										if category == 'unknown'
 											L.package_or_functionality_not_found(detail.name + required)
 										else
-											translation_key =
-												if category == 'modules'
-													'modules_unsatisfactory_version_of_the_module'
-												else
-													'plugins_unsatisfactory_version_of_the_plugin'
-											L[translation_key](detail.name, required, detail.existing)
+											L.modules_unsatisfactory_version_of_the_module(detail.name, required, detail.existing)
 								case 'conflict'
 									for conflict in detail.conflicts
 										L.package_is_incompatible_with(conflict.package, conflict.conflicts_with, conflict.of_versions.filter(-> it !~= '0').join(' '))

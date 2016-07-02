@@ -4,7 +4,6 @@
 * **components** - different types of components
   * **blocks**
   * **modules**
-  * **plugins**
 * **config** - low level system configuration (DB connection, caching engine, etc.)
 * **core**
   * **classes** - basic and supplementary classes

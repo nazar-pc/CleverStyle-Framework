@@ -1,7 +1,6 @@
 {
 	"components"	: [
 		"modules",
-		"plugins",
 		"blocks"
 	],
 	"general"		: [

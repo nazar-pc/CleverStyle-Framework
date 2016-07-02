@@ -17,8 +17,6 @@ use
  *      'blocks_array'    => &$blocks_array //Reference to array in form ['top' => '', 'left' => '', 'right' => '', 'bottom' => '']
  *  ]
  *
- *  System/App/construct
- *
  *  System/App/render/before
  *
  *  System/App/execute_router/before
@@ -40,7 +38,7 @@ class App {
 		$this->init_router();
 	}
 	/**
-	 * Executes plugins processing, blocks and module page generation
+	 * Executes blocks and module page generation
 	 *
 	 * @throws ExitException
 	 */
@@ -53,13 +51,6 @@ class App {
 		$this->handle_closed_site(!$Config->core['site_mode'], $Request);
 		if (!$this->check_permission($Request, 'index')) {
 			throw new ExitException(403);
-		}
-		Event::instance()->fire('System/App/construct');
-		/**
-		 * Plugins processing
-		 */
-		foreach ($Config->components['plugins'] as $plugin) {
-			_include(PLUGINS."/$plugin/index.php", false, false);
 		}
 		Event::instance()->fire('System/App/render/before');
 		$this->render($Request);

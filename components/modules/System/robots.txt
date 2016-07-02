@@ -2,7 +2,6 @@ User-agent: *
 Disallow: /admin
 Disallow: /api
 Disallow: /components/modules
-Disallow: /components/plugins
 Disallow: /includes
 Disallow: /storage
 Disallow: /themes

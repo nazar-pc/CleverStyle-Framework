@@ -17,7 +17,6 @@ Polymer(
 		force		: Boolean
 		package		: String
 		status		: String
-		category	: String
 	ready : !->
 		cs.Event.once('admin/Composer/canceled', !~>
 			@canceled	= true
@@ -25,7 +24,6 @@ Polymer(
 		method	= if @action == 'uninstall' then 'delete' else 'post'
 		data	=
 			name		: @package
-			category	: @category
 			force		: @force
 		cs.api("#method api/Composer", data).then (result) !~>
 			@_save_scroll_position()

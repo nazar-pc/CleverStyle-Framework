@@ -372,14 +372,6 @@ class Language implements JsonSerializable {
 				$translation = $this->get_translation_from_json("$module_dir/languages/$language.json") + $translation;
 			}
 		}
-		/**
-		 * Set plugins' translations
-		 */
-		foreach (get_files_list(PLUGINS, false, 'd', true) as $plugin_dir) {
-			if (file_exists("$plugin_dir/languages/$language.json")) {
-				$translation = $this->get_translation_from_json("$plugin_dir/languages/$language.json") + $translation;
-			}
-		}
 		Event::instance()->fire(
 			'System/general/languages/load',
 			[

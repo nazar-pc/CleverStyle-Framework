@@ -8,7 +8,6 @@
 addEventListener('load', !->
 	labels		= document.querySelectorAll('label')
 	modules		= document.querySelector("[name='modules[]']")
-	plugins		= document.querySelector("[name='plugins[]']")
 	themes		= document.querySelector("[name='themes[]']")
 	document.querySelector('nav')?.addEventListener('click', (e) !->
 		if !e.target.matches('input')
@@ -18,11 +17,10 @@ addEventListener('load', !->
 				label.classList.add('active')
 			else
 				label.classList.remove('active')
-		[modules.disabled, plugins.disabled, themes.disabled] = switch (e.target.value)
-			| 'core'	=> [false, false, false]
-			| 'module'	=> [false, true, true]
-			| 'plugin'	=> [true, false, true]
-			| 'theme'	=> [true, true, false]
+		[modules.disabled, themes.disabled] = switch (e.target.value)
+			| 'core'	=> [false, false]
+			| 'module'	=> [false, true]
+			| 'theme'	=> [true, false]
 	)
 	if !document.querySelector('nav > label.active')
 		document.querySelector('nav > label')?.click()

@@ -4,7 +4,6 @@ namespace cs;
 include __DIR__.'/../../unit.php';
 define('DIR', __DIR__);
 define('MODULES', __DIR__.'/modules');
-define('PLUGINS', __DIR__.'/plugins');
 class Event_test extends Event {
 	static function test () {
 		$Event = self::instance();
@@ -153,39 +152,31 @@ NULL
 string(54) "Callbacks and cache after ensuring they are registered"
 array(1) {
   ["xyz"]=>
-  array(2) {
+  array(1) {
     [0]=>
     string(15) "module_xyz_test"
-    [1]=>
-    string(15) "plugin_xyz_test"
   }
 }
 array(1) {
   ["xyz"]=>
-  array(2) {
+  array(1) {
     [0]=>
     string(15) "module_xyz_test"
-    [1]=>
-    string(15) "plugin_xyz_test"
   }
 }
 string(78) "Callbacks and cache after resetting callbacks and ensuring they are registered"
 array(1) {
   ["xyz"]=>
-  array(2) {
+  array(1) {
     [0]=>
     string(15) "module_xyz_test"
-    [1]=>
-    string(15) "plugin_xyz_test"
   }
 }
 array(1) {
   ["xyz"]=>
-  array(2) {
+  array(1) {
     [0]=>
     string(15) "module_xyz_test"
-    [1]=>
-    string(15) "plugin_xyz_test"
   }
 }
 string(39) "callbacks after registering empty event"

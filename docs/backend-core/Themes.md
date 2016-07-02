@@ -4,7 +4,7 @@ Theme should have at least `index.html` or `index.php` file.
 
 All themes are located in `themes` directory.
 
-Also theme might have `meta.json` just like modules and plugins (but much simpler), it is required for theme in order to create its distributive, here is an example:
+Also theme might have `meta.json` just like modules (but much simpler), it is required for theme in order to create its distributive, here is an example:
 ```json
 {
 	"package"     : "DarkEnergy",

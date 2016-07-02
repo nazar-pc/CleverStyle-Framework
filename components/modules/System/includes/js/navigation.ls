@@ -8,7 +8,6 @@
  */
 url_map = {
 	"admin/System/components/modules"   : "cs-system-admin-modules-list",
-	"admin/System/components/plugins"   : "cs-system-admin-plugins-list",
 	"admin/System/components/blocks"    : "cs-system-admin-blocks-list",
 	"admin/System/components/databases" : "cs-system-admin-databases-list",
 	"admin/System/components/storages"  : "cs-system-admin-storages-list",

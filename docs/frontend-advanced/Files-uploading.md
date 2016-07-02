@@ -19,7 +19,7 @@ Method returns object, which can be used for some necessary actions using its me
 
 This is basically all on frontend, you just specify where to click or where to drop file and get array of URLs to uploaded files in callback, however, that files will be removed soon if you do not finish uploading process on backend.
 
-Example of usage in TinyMCE plugin (LiveScript):
+Example of usage in TinyMCE module (LiveScript):
 ```livescript
 uploader_callback = undefined
 button            = document.createElement('button')

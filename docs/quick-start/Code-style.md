@@ -105,7 +105,6 @@ class Example {
 For components:
 ```
 \cs\modules\Module_name
-\cs\plugins\Plugin_name
 ```
 For engines, following namespaces are used (derivative from names of core classes):
 ```

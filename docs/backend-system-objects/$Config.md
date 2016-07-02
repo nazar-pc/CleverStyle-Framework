@@ -3,7 +3,7 @@
 $Config = \cs\Config::instance();
 ```
 
-This object allow to get configuration of any module/plugin/block, and also general system parameters, configured databases/storages and others.
+This object allow to get configuration of any module/block, and also general system parameters, configured databases/storages and others.
 
 ### [Methods](#methods) [Properties](#properties) [Events](#events) [Constants](#constants) [\cs\Config\Module_Properties class](#module-properties-class)
 
@@ -244,9 +244,6 @@ Internal structure of components parameters (JSON only for presentation, propert
 			]
 		}
 	},
-	"plugins" : [
-		"TinyMCE"
-	],
 	"blocks"  : [
 		{
 			"position" : "top",

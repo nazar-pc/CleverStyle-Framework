@@ -34,7 +34,7 @@ class Event {
 	/**
 	 * Add event handler
 	 *
-	 * @param string   $event    For example `admin/System/components/plugins/disable`
+	 * @param string   $event    For example `admin/System/components/modules/disable`
 	 * @param callable $callback Callable, that will be called at event dispatching
 	 *
 	 * @return Event
@@ -93,7 +93,7 @@ class Event {
 	 *
 	 * After event name it is possible to specify as many arguments as needed
 	 *
-	 * @param string  $event For example `admin/System/components/plugins/disable`
+	 * @param string  $event For example `admin/System/components/modules/disable`
 	 * @param mixed[] $arguments
 	 *
 	 * @return bool
@@ -138,11 +138,6 @@ class Event {
 	protected function events_files_paths () {
 		$paths = [];
 		foreach (get_files_list(MODULES, false, 'd', true) as $path) {
-			if (file_exists("$path/events.php")) {
-				$paths[] = "$path/events.php";
-			}
-		}
-		foreach (get_files_list(PLUGINS, false, 'd', true) as $path) {
 			if (file_exists("$path/events.php")) {
 				$paths[] = "$path/events.php";
 			}

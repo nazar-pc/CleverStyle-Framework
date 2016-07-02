@@ -67,7 +67,6 @@ Describes module routing for administration pages. May have:
         ],
         "components" : [
             "modules",
-            "plugins",
             "blocks",
             "databases",
             "storages"
@@ -93,7 +92,7 @@ Describes module routing for administration pages. May have:
 For example, if module name is *System* (real example), then urls will look as following:
 * System/admin/general/site_info
 * System/admin/general/system
-* System/admin/components/plugins
+* System/admin/components/modules
 
 If some part of URL is not specified, the first element of corresponding level will be taken. Next urls will open the same page:
 * System/admin
@@ -234,7 +233,7 @@ Usually is used for simple pages.
 License file, may be of txt or html format.
 
 #### meta.json
-Main description file of module. A little bit extended in comparison with the same file for plugin. This file is required for module building, in order to be able to build module package. Example of meta.json file for module:
+Main description file of module. This file is required for module building, in order to be able to build module package. Example of meta.json file for module:
 ```json
 {
 	"package"             : "System",
@@ -269,7 +268,7 @@ Main description file of module. A little bit extended in comparison with the sa
 ```
 
 Some properties are not obvious:
-* provide - allows to specify a set of features, provided by this module. If other plugin or module with such feature already installed - system will not allow to install another one in order to eliminate conflicts of functionality.
+* provide - allows to specify a set of features, provided by this module. If other module with such feature already installed - system will not allow to install another one in order to eliminate conflicts of functionality.
 * multilingual - just hint, which level of multilingual capabilities is supported by module. Just interface translations, or event multilingual content support.
 
 If this file exists it should have at least next properties:

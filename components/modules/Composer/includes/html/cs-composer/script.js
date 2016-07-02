@@ -17,8 +17,7 @@
       canceled: Boolean,
       force: Boolean,
       'package': String,
-      status: String,
-      category: String
+      status: String
     },
     ready: function(){
       var method, data, this$ = this;
@@ -28,7 +27,6 @@
       method = this.action === 'uninstall' ? 'delete' : 'post';
       data = {
         name: this['package'],
-        category: this.category,
         force: this.force
       };
       cs.api(method + " api/Composer", data).then(function(result){

@@ -25,7 +25,6 @@ class Controller {
 		admin\modules,
 		admin\optimization,
 		admin\permissions,
-		admin\plugins,
 		admin\security,
 		admin\site_info,
 		admin\storages,

@@ -120,7 +120,7 @@ Event::instance()
 			$includes_map = [];
 			foreach ($composer_lock['packages'] as $package) {
 				$package_name = $package['name'];
-				if (preg_match('#^(modules|plugins)/#', $package_name)) {
+				if (preg_match('#^modules/#', $package_name)) {
 					$package_name = explode('/', $package_name, 2)[1];
 				} elseif (strpos($package_name, '-asset/') !== false) {
 					$package_name = str_replace('-asset/', '-asset-', $package_name);

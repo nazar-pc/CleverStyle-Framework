@@ -25,14 +25,11 @@ Here you can find all useful information:
 ### Components [Backend] [dev]
 * [Blocks](/docs/backend-components/Blocks.md)
 * [Modules](/docs/backend-components/Modules.md)
-* [Plugins](/docs/backend-components/Plugins.md)
 
 ### Quick start [Backend] [Frontend] [dev]
 * [Simplest block](/docs/quick-start/Simplest-block.md)
 * [Simplest module](/docs/quick-start/Simplest-module.md)
-* [Simplest plugin](/docs/quick-start/Simplest-plugin.md)
 * [Code style](/docs/quick-start/Code-style.md)
-* [Plugin architecture](/docs/quick-start/Plugin-architecture.md)
 * [Module architecture](/docs/quick-start/Module-architecture.md)
 * [Events](/docs/quick-start/Events.md)
 * [Classes autoloading](/docs/quick-start/Classes-autoloading.md)

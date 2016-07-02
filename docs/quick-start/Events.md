@@ -14,10 +14,10 @@ NOTE: all examples will be shown for backend `\cs\Event` class, but are the same
 
 All events are named like paths in file system (sometimes it corresponds to the page, on which this event is called), this allows to determine easily for what purpose by what component of system this event is used:
 
-* admin/System/components/plugins/disable
+* admin/System/components/modules/disable
 * System/Page/rebuild_cache
 
-Usually, system events are stated with `System/`, other components (modules and plugins) similarly starts with component name. Events, that are used in admin section are prefixed by `admin`, for api with `api` and for CLI with `cli`.
+Usually, system events are stated with `System/`, other modules similarly starts with module name. Events, that are used in admin section are prefixed by `admin`, for api with `api` and for CLI with `cli`.
 
 It is a good practice to put into file, that runs event such comment section:
 ```
@@ -126,14 +126,7 @@ Backend events:
 * admin/System/components/modules/install/after
 * admin/System/components/modules/uninstall/before
 * admin/System/components/modules/uninstall/after
-* admin/System/components/plugins/enable/before
-* admin/System/components/plugins/enable/after
-* admin/System/components/plugins/disable/before
-* admin/System/components/plugins/disable/after
-* admin/System/components/plugins/update/before
-* admin/System/components/plugins/update/after
 * admin/System/Menu
-* System/App/construct
 * System/App/render/before
 * System/App/execute_router/before
 * System/App/execute_router/after
@@ -169,18 +162,10 @@ Backend events:
 Frontend events:
 * admin/System/components/modules/default/before
 * admin/System/components/modules/default/after
-* admin/System/components/plugins/disable/before
-* admin/System/components/plugins/disable/after
 * admin/System/components/modules/disable/before
 * admin/System/components/modules/disable/after
 * admin/System/components/modules/enable/before
 * admin/System/components/modules/enable/after
-* admin/System/components/plugins/enable/before
-* admin/System/components/plugins/enable/after
-* admin/System/components/plugins/update/before
-* admin/System/components/plugins/update/after
-* admin/System/components/plugins/update/before
-* admin/System/components/plugins/update/after
 * admin/System/components/modules/update/before
 * admin/System/components/modules/update/after
 * admin/System/components/modules/uninstall/before

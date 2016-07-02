@@ -12,16 +12,14 @@
   L = cs.Language('system_admin_');
   ((ref$ = (ref1$ = cs.Polymer || (cs.Polymer = {})).behaviors || (ref1$.behaviors = {})).admin || (ref$.admin = {})).System = {
     components: {
-      _enable_component: function(component, component_type, meta){
-        var category, this$ = this;
-        category = component_type + 's';
-        cs.api(["get			api/System/admin/" + category + "/" + component + "/dependencies", 'get_settings	api/System/admin/system']).then(function(arg$){
-          var dependencies, settings, translation_key, title, message, message_more, modal, i$, ref$, len$, p;
+      _enable_module: function(component, meta){
+        var this$ = this;
+        cs.api(["get			api/System/admin/modules/" + component + "/dependencies", 'get_settings	api/System/admin/system']).then(function(arg$){
+          var dependencies, settings, title, message, message_more, modal, i$, ref$, len$, p;
           dependencies = arg$[0], settings = arg$[1];
           delete dependencies.db_support;
           delete dependencies.storage_support;
-          translation_key = component_type === 'module' ? 'modules_enabling_of_module' : 'plugins_enabling_of_plugin';
-          title = "<h3>" + L[translation_key](component) + "</h3>";
+          title = "<h3>" + L.modules_enabling_of_module(component) + "</h3>";
           message = '';
           message_more = '';
           if (Object.keys(dependencies).length) {
@@ -35,14 +33,14 @@
             message_more += '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>';
           }
           modal = cs.ui.confirm(title + "" + message + message_more, function(){
-            cs.Event.fire("admin/System/components/" + category + "/enable/before", {
+            cs.Event.fire("admin/System/components/modules/enable/before", {
               name: component
             }).then(function(){
-              return cs.api("enable api/System/admin/" + category + "/" + component);
+              return cs.api("enable api/System/admin/modules/" + component);
             }).then(function(){
               this$.reload();
               cs.ui.notify(L.changes_saved, 'success', 5);
-              cs.Event.fire("admin/System/components/" + category + "/enable/after", {
+              cs.Event.fire("admin/System/components/modules/enable/after", {
                 name: component
               });
             });
@@ -56,22 +54,19 @@
           }
         });
       },
-      _disable_component: function(component, component_type){
-        var category, this$ = this;
-        category = component_type + 's';
-        cs.api(["get			api/System/admin/" + category + "/" + component + "/dependent_packages", 'get_settings	api/System/admin/system']).then(function(arg$){
-          var dependent_packages, settings, translation_key, title, message, type, packages, i$, len$, _package, modal, ref$, p;
+      _disable_module: function(component){
+        var this$ = this;
+        cs.api(["get			api/System/admin/modules/" + component + "/dependent_packages", 'get_settings	api/System/admin/system']).then(function(arg$){
+          var dependent_packages, settings, title, message, type, packages, i$, len$, _package, modal, ref$, p;
           dependent_packages = arg$[0], settings = arg$[1];
-          translation_key = component_type === 'module' ? 'modules_disabling_of_module' : 'plugins_disabling_of_plugin';
-          title = "<h3>" + L[translation_key](component) + "</h3>";
+          title = "<h3>" + L.modules_disabling_of_module(component) + "</h3>";
           message = '';
           if (Object.keys(dependent_packages).length) {
             for (type in dependent_packages) {
               packages = dependent_packages[type];
-              translation_key = type === 'modules' ? 'this_package_is_used_by_module' : 'this_package_is_used_by_plugin';
               for (i$ = 0, len$ = packages.length; i$ < len$; ++i$) {
                 _package = packages[i$];
-                message += "<p>" + L[translation_key](_package) + "</p>";
+                message += "<p>" + L.this_package_is_used_by_module(_package) + "</p>";
               }
             }
             message += "<p>" + L.dependencies_not_satisfied + "</p>";
@@ -81,14 +76,14 @@
             }
           }
           modal = cs.ui.confirm(title + "" + message, function(){
-            cs.Event.fire("admin/System/components/" + category + "/disable/before", {
+            cs.Event.fire("admin/System/components/modules/disable/before", {
               name: component
             }).then(function(){
-              return cs.api("disable api/System/admin/" + category + "/" + component);
+              return cs.api("disable api/System/admin/modules/" + component);
             }).then(function(){
               this$.reload();
               cs.ui.notify(L.changes_saved, 'success', 5);
-              cs.Event.fire("admin/System/components/" + category + "/disable/after", {
+              cs.Event.fire("admin/System/components/modules/disable/after", {
                 name: component
               });
             });
@@ -120,8 +115,6 @@
                 return 'modules_updating_of_module';
               }
               break;
-            case 'plugins':
-              return 'plugins_updating_of_plugin';
             case 'themes':
               return 'appearance_updating_theme';
             }
@@ -135,8 +128,6 @@
               switch (category) {
               case 'modules':
                 return 'modules_update_module';
-              case 'plugins':
-                return 'plugins_update_plugin';
               case 'themes':
                 return 'appearance_update_theme';
               }
@@ -186,8 +177,6 @@
           switch (category) {
           case 'modules':
             return 'modules_completely_remove_module';
-          case 'plugins':
-            return 'plugins_completely_remove_plugin';
           case 'themes':
             return 'appearance_completely_remove_theme';
           }
@@ -238,8 +227,6 @@
                   return 'modules_update_module_impossible_older_version';
                 }
                 break;
-              case 'plugins':
-                return 'plugins_update_plugin_impossible_older_version';
               case 'themes':
                 return 'appearance_update_theme_impossible_older_version';
               }
@@ -255,16 +242,13 @@
                   return 'modules_update_module_impossible_same_version';
                 }
                 break;
-              case 'plugins':
-                return 'plugins_update_plugin_impossible_same_version';
               case 'themes':
                 return 'appearance_update_theme_impossible_same_version';
               }
             }());
             return L[translation_key](component, detail.version);
           case 'provide':
-            translation_key = category === 'modules' ? 'module_already_provides_functionality' : 'plugin_already_provides_functionality';
-            return L[translation_key](detail.name, detail.features.join('", "'));
+            return L.module_already_provides_functionality(detail.name, detail.features.join('", "'));
           case 'require':
             for (i$ = 0, len$ = (ref$ = detail.required).length; i$ < len$; ++i$) {
               required = ref$[i$];
@@ -272,8 +256,7 @@
               if (category === 'unknown') {
                 results$.push(L.package_or_functionality_not_found(detail.name + required));
               } else {
-                translation_key = category === 'modules' ? 'modules_unsatisfactory_version_of_the_module' : 'plugins_unsatisfactory_version_of_the_plugin';
-                results$.push(L[translation_key](detail.name, required, detail.existing));
+                results$.push(L.modules_unsatisfactory_version_of_the_module(detail.name, required, detail.existing));
               }
             }
             return results$;

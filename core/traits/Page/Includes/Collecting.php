@@ -31,9 +31,6 @@ trait Collecting {
 			}
 			$this->fill_includes(MODULES."/$module_name/includes", $includes);
 		}
-		foreach ($Config->components['plugins'] as $plugin_name) {
-			$this->fill_includes(PLUGINS."/$plugin_name/includes", $includes);
-		}
 		return [
 			'html' => array_merge(...$includes['html']),
 			'js'   => array_merge(...$includes['js']),
@@ -89,11 +86,6 @@ trait Collecting {
 			$this->process_map(MODULES."/$module_name", $includes_map, $all_includes);
 		}
 		unset($module_name, $module_data);
-		foreach ($Config->components['plugins'] as $plugin_name) {
-			$this->process_meta(PLUGINS."/$plugin_name", $dependencies, $functionalities);
-			$this->process_map(PLUGINS."/$plugin_name", $includes_map, $all_includes);
-		}
-		unset($plugin_name);
 		/**
 		 * For consistency
 		 */

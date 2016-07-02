@@ -8,10 +8,9 @@
  */
 (function(){
   addEventListener('load', function(){
-    var labels, modules, plugins, themes, ref$, ref1$;
+    var labels, modules, themes, ref$, ref1$;
     labels = document.querySelectorAll('label');
     modules = document.querySelector("[name='modules[]']");
-    plugins = document.querySelector("[name='plugins[]']");
     themes = document.querySelector("[name='themes[]']");
     if ((ref$ = document.querySelector('nav')) != null) {
       ref$.addEventListener('click', function(e){
@@ -30,15 +29,13 @@
         ref$ = (function(){
           switch (e.target.value) {
           case 'core':
-            return [false, false, false];
+            return [false, false];
           case 'module':
-            return [false, true, true];
-          case 'plugin':
-            return [true, false, true];
+            return [false, true];
           case 'theme':
-            return [true, true, false];
+            return [true, false];
           }
-        }()), modules.disabled = ref$[0], plugins.disabled = ref$[1], themes.disabled = ref$[2];
+        }()), modules.disabled = ref$[0], themes.disabled = ref$[1];
       });
     }
     if (!document.querySelector('nav > label.active')) {

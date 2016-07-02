@@ -30,13 +30,12 @@ class Builder {
 	}
 	/**
 	 * @param string[]    $modules
-	 * @param string[]    $plugins
 	 * @param string[]    $themes
 	 * @param null|string $suffix
 	 *
 	 * @return string
 	 */
-	function core ($modules = [], $plugins = [], $themes = [], $suffix = null) {
+	function core ($modules = [], $themes = [], $suffix = null) {
 		$suffix      = $suffix ? "_$suffix" : '';
 		$version     = file_get_json("$this->root/components/modules/System/meta.json")['version'];
 		$target_file = "$this->target/CleverStyle_Framework_$version$suffix.phar.php";
@@ -62,11 +61,6 @@ class Builder {
 		$components_files = [];
 		$modules          = $this->filter_and_add_components("$this->root/components/modules", $modules, $components_files);
 		$phar->addFromString('modules.json', _json_encode($modules));
-		/**
-		 * Add plugins that should be built-in into package
-		 */
-		$plugins = $this->filter_and_add_components("$this->root/components/plugins", $plugins, $components_files);
-		$phar->addFromString('plugins.json', _json_encode($plugins));
 		/**
 		 * Add themes that should be built-in into package
 		 */
@@ -174,7 +168,6 @@ STUB
 		$files_to_include = [
 			"$this->root/components/modules/System",
 			"$this->root/components/blocks/.gitkept",
-			"$this->root/components/plugins/.gitkept",
 			"$this->root/core",
 			"$this->root/custom",
 			"$this->root/includes",
@@ -296,15 +289,6 @@ HTACCESS;
 		return $this->generic_package_creation("$this->root/components/modules/$module", $suffix);
 	}
 	/**
-	 * @param string      $plugin
-	 * @param null|string $suffix
-	 *
-	 * @return string
-	 */
-	function plugin ($plugin, $suffix = null) {
-		return $this->generic_package_creation("$this->root/components/plugins/$plugin", $suffix);
-	}
-	/**
 	 * @param string      $theme
 	 * @param null|string $suffix
 	 *
@@ -328,10 +312,6 @@ HTACCESS;
 			case 'modules':
 				$type = 'module_';
 				$Type = 'Module';
-				break;
-			case 'plugins':
-				$type = 'plugins_';
-				$Type = 'Plugin';
 				break;
 			case 'themes':
 				$type = 'theme_';

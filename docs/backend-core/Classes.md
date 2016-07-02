@@ -2,7 +2,7 @@
 
 | namespace\class                | Description                                                                                                            |
 |--------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| `\cs\App`                      | provides functionality of application execution (plugins processing, blocks and module page generation, etc.)          |
+| `\cs\App`                      | provides functionality of application execution (blocks and module page generation, etc.)          |
 | `\cs\Cache`                    | caching interface                                                                                                      |
 | `\cs\Cache\Prefix`             | class is used for simplified work with cache, when using common prefix                                                 |
 | `\cs\Config`                   | routing, modules defining, and configuration getting/setting                                                           |

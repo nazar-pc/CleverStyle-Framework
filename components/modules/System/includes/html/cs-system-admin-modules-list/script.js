@@ -122,7 +122,7 @@
      *  {name : module_name}
      */,
     _enable: function(e){
-      this._enable_component(e.model.module.name, 'module', e.model.module.meta);
+      this._enable_module(e.model.module.name, e.model.module.meta);
     }
     /**
      * Provides next events:
@@ -133,7 +133,7 @@
      *  {name : module_name}
      */,
     _disable: function(e){
-      this._disable_component(e.model.module.name, 'module');
+      this._disable_module(e.model.module.name);
     }
     /**
      * Provides next events:

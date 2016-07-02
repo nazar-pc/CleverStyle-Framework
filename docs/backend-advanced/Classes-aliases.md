@@ -1,6 +1,6 @@
-Classes aliases is a convenient feature of modules and plugins.
+Classes aliases is a convenient feature of modules.
 
-Every module and plugin can provide some functionality of even few of them. Later, this functionality might be used to refer for classes instead of original component name.
+Every module can provide some functionality or even a few of them. Later, this functionality might be used to refer for classes instead of original component name.
 
 Let's say, we have `Blogs` module and `cs\modules\Blogs\Posts` class.
 If `meta.json` of this module contains `"provide" : "superblog",`, then we can also refer mentioned class as `cs\modules\superblog\Posts`.

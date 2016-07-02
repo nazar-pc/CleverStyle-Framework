@@ -62,12 +62,6 @@ HTACCESS
 				$files[] = self::extract_files($meta, $package_name);
 			}
 		}
-		foreach ($Config->components['plugins'] as $plugin_name) {
-			if (file_exists(PLUGINS."/$plugin_name/meta.json")) {
-				$meta    = file_get_json(PLUGINS."/$plugin_name/meta.json");
-				$files[] = self::extract_files($meta, $package_name);
-			}
-		}
 		return array_unique(array_merge(...$files));
 	}
 	/**

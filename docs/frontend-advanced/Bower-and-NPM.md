@@ -12,4 +12,4 @@ require(['d3', 'lodash'], function (d3, _) {
 });
 ```
 
-Also Composer assets plugin provides additional support for Bower and NPM packages through packages dependencies.
+Also Composer assets module provides additional support for Bower and NPM packages through packages dependencies.
