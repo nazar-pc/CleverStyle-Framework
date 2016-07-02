@@ -131,7 +131,7 @@ class Permission {
 			);
 			$this->del_all_cache();
 		}
-		return $result;
+		return (bool)$result;
 	}
 	/**
 	 * Returns array of all permissions grouped by permissions groups
