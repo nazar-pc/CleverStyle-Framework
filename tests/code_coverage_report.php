@@ -10,7 +10,7 @@ require_once __DIR__.'/php-code-coverage.phar';
 
 $filter = new \SebastianBergmann\CodeCoverage\Filter;
 $filter->addDirectoryToWhitelist(__DIR__.'/../build');
-$filter->addDirectoryToWhitelist(__DIR__.'/../components/modules/System');
+$filter->addDirectoryToWhitelist(__DIR__.'/../modules/System');
 $filter->addDirectoryToWhitelist(__DIR__.'/../core');
 $filter->removeDirectoryFromWhitelist(__DIR__.'/../core/thirdparty');
 

@@ -118,7 +118,7 @@ use
     \cs\modules\Blogs\Blogs,
     \cs\modules\Test\Test;
 ```
-Following this convention will allow to use built-in class autoloader, for instance, `\cs\modules\Module_name\Class_name` class intended to be in `components/modules/Module_name/Class_name.php`.
+Following this convention will allow to use built-in class autoloader, for instance, `\cs\modules\Module_name\Class_name` class intended to be in `modules/Module_name/Class_name.php`.
 
 ##### JavaScript
 System functions/variables are defined inside `window.cs`.

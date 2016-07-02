@@ -1,4 +1,4 @@
-Every described below element is optional, even empty directory in `components/modules` will be considered as module. You are free to use only features you need.
+Every described below element is optional, even empty directory in `modules` will be considered as module. You are free to use only features you need.
 
 ### File system structure of module
 * admin
@@ -92,7 +92,7 @@ Describes module routing for administration pages. May have:
 For example, if module name is *System* (real example), then urls will look as following:
 * System/admin/general/site_info
 * System/admin/general/system
-* System/admin/components/modules
+* System/admin/modules
 
 If some part of URL is not specified, the first element of corresponding level will be taken. Next urls will open the same page:
 * System/admin
@@ -101,7 +101,7 @@ If some part of URL is not specified, the first element of corresponding level w
 
 Similarly:
 * System/components
-* System/components/modules
+* System/modules
 
 Route may be accessed and read/changed through `$Request->route`. This property contains array of route parts without module name and `admin|api|cli` prefix.
 

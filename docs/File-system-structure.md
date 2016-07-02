@@ -1,9 +1,7 @@
 ### Directories tree
 
+* **blocks**
 * **build** [dev] - build tools
-* **components** - different types of components
-  * **blocks**
-  * **modules**
 * **config** - low level system configuration (DB connection, caching engine, etc.)
 * **core**
   * **classes** - basic and supplementary classes
@@ -24,6 +22,7 @@
   * **js**
 * **install** [dev] - installation instruments
   * **DB** - SQL schemas for every supported DB type
+* **modules**
 * **storage**
   * **cache** - FileSystem cache
   * **logs** - logs

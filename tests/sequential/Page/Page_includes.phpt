@@ -97,7 +97,7 @@ string(%d) "<script src="/includes/js/WebComponents-polyfill/webcomponents-custo
 <script class="cs-config" target="cs.Language" type="application/json">
 	%s
 </script>
-<script class="cs-config" target="requirejs.paths" type="application/json">{"System":"\/components\/modules\/System\/includes\/js"}</script>
+<script class="cs-config" target="requirejs.paths" type="application/json">{"System":"\/modules\/System\/includes\/js"}</script>
 <script src="/includes/js/a0.config.js?%s"></script>
 <script src="/includes/js/a1.Event.js?%s"></script>
 <script src="/includes/js/a1.hacks.js?%s"></script>
@@ -166,7 +166,7 @@ string(%d) "<link href="/includes/css/unresolved.css?%s" rel="stylesheet">
 <script class="cs-config" target="cs.Language" type="application/json">
 	%s
 </script>
-<script class="cs-config" target="requirejs.paths" type="application/json">{"System":"\/components\/modules\/System\/includes\/js"}</script>
+<script class="cs-config" target="requirejs.paths" type="application/json">{"System":"\/modules\/System\/includes\/js"}</script>
 "
 string(9) "post_Body"
 string(%d) "<script src="/includes/js/WebComponents-polyfill/webcomponents-custom.min.js"></script>

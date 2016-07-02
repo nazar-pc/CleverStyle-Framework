@@ -1,6 +1,6 @@
 Steps to create the simplest module:
 
-1. Create module subdirectory in **components/modules**
+1. Create module subdirectory in **modules**
 2. Create index.html or index.php inside created directory with any content
 3. Go to Administration >> Components >> Modules
 4. Click **Update modules list**, created module will appear in modules list

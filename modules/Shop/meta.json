@@ -1,0 +1,47 @@
+{
+	"package"             : "Shop",
+	"category"            : "modules",
+	"version"             : "0.170.0+build-275",
+	"description"         : "Shop functionality",
+	"author"              : "Nazar Mokrynskyi",
+	"website"             : "cleverstyle.org/Framework",
+	"license"             : "MIT License",
+	"update_from_version" : "0.152",
+	"db"                  : [
+		"shop"
+	],
+	"db_support"          : [
+		"MySQLi"
+	],
+	"provide"             : "shop",
+	"require"             : [
+		"System>=5.0",
+		"System<6.0",
+		"Tags>=2.0",
+		"Tags<3.0",
+		"fotorama",
+		"composer_assets"
+	],
+	"require_npm"         : {
+		"jquery" : "^3.0.0"
+	},
+	"optional"            : [
+		"Comments",
+		"Plupload",
+		"TinyMCE",
+		"file_upload",
+		"editor",
+		"simple_editor",
+		"inline_editor",
+		"payment"
+	],
+	"multilingual"        : [
+		"interface",
+		"content"
+	],
+	"languages"           : [
+		"English",
+		"Russian",
+		"Ukrainian"
+	]
+}

@@ -8,10 +8,10 @@ There are some general rules how system core processes routes for different page
 In generic form page URL looks like `admin|api|cli/Module_name/path/sub_path/more`, while all parts except `Module_name` are optional.
 
 Working directory (`working_dir` hereinafter) for files and controller searching depends on prefix before module name:
-* no prefix - `/components/modules/Module_name`
-* `admin` prefix - `/components/modules/Module_name/admin`
-* `api` prefix - `/components/modules/Module_name/api`
-* `cli` prefix - `/components/modules/Module_name/cli`
+* no prefix - `/modules/Module_name`
+* `admin` prefix - `/modules/Module_name/admin`
+* `api` prefix - `/modules/Module_name/api`
+* `cli` prefix - `/modules/Module_name/cli`
 
 `path` and `sub_path` are two levels of routing supported by system core, and they should be non-numeric (purely numeric elements are ignored here and next path element will be taken), everything else might be implemented by developer if needed.
 

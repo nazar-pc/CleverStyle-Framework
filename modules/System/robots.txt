@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin
+Disallow: /api
+Disallow: /modules
+Disallow: /includes
+Disallow: /storage
+Disallow: /themes

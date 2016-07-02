@@ -158,7 +158,7 @@ CONFIG;
 					strlen($file = @$file_index_map[str_replace('//', '/', "core/thirdparty/$namespace/$class_name.php")]) || //Third party classes
 					strlen($file = @$file_index_map[str_replace('//', '/', "core/traits/$namespace/$class_name.php")]) ||     //Core traits
 					strlen($file = @$file_index_map[str_replace('//', '/', "core/engines/$namespace/$class_name.php")]) ||    //Core engines
-					strlen($file = @$file_index_map[str_replace('//', '/', "components/$namespace/$class_name.php")])         //Classes in modules
+					strlen($file = @$file_index_map[str_replace('//', '/', "$namespace/$class_name.php")])                    //Classes in modules
 				) {
 					require_once "$source/fs/$file";
 					return true;

@@ -1,0 +1,30 @@
+{
+	"package"             : "WebSockets",
+	"category"            : "modules",
+	"version"             : "0.56.0+build-91",
+	"description"         : "WebSockets server based on Ratchet and React with client-side bindings as well",
+	"author"              : "Nazar Mokrynskyi",
+	"website"             : "cleverstyle.org/Framework",
+	"license"             : "MIT License",
+	"update_from_version" : "0.46",
+	"db"                  : [
+		"pool"
+	],
+	"db_support"          : [
+		"MySQLi"
+	],
+	"provide"             : "websockets",
+	"require"             : [
+		"System>=5.0",
+		"System<6.0",
+		"composer"
+	],
+	"require_composer"    : {
+		"cboden/ratchet" : "0.3.*",
+		"ratchet/pawl"   : "0.2.*"
+	},
+	"multilingual"        : [
+		"interface"
+	],
+	"hide_in_menu"        : 1
+}

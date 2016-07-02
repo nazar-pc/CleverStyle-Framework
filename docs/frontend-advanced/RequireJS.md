@@ -12,6 +12,6 @@ require(['Experiment/some-module'], function (some_module) {
 });
 ```
 
-So in this case you don't need to specify full path to module like `components/modules/Experiment/includes/js/some-module`, but instead can use nice short syntax.
+So in this case you don't need to specify full path to module like `modules/Experiment/includes/js/some-module`, but instead can use nice short syntax.
 
 RequireJS mappings and Bower/NPM directories can be tweaked using [special event](/docs/backend-system-objects/$Page.md#systempagerequirejs).

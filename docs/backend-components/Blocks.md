@@ -11,4 +11,4 @@ First 4 positions are obvious, they mean displaying of block around main content
 
 Block may be presented by php files or just HTML specified in administration area of web site. In case of php file - it will be included, output will be used as block content. Obviously, file may contain only HTML without any php code.
 
-All php blocks are located in directory **components/blocks** with names **block.{block_name}.php**. Usually blocks are used to display some information of modules, for example last news.
+All php blocks are located in directory **blocks** with names **block.{block_name}.php**. Usually blocks are used to display some information of modules, for example last news.

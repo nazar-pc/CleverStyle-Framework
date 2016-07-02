@@ -20,5 +20,5 @@ include __DIR__.'/../../../build.php';
 Done! Module Blogs %s+build-%d
 --CLEAN--
 <?php
-$version = json_decode(file_get_contents(__DIR__.'/../../../components/modules/Blogs/meta.json'), true)['version'];
+$version = json_decode(file_get_contents(__DIR__.'/../../../modules/Blogs/meta.json'), true)['version'];
 unlink(__DIR__."/../../../module_Blogs_{$version}_Suffix.phar.php");

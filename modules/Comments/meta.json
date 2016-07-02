@@ -1,0 +1,33 @@
+{
+	"package"             : "Comments",
+	"category"            : "modules",
+	"version"             : "2.19.0+build-93",
+	"description"         : "Adds comments functionality to other modules",
+	"author"              : "Nazar Mokrynskyi",
+	"website"             : "cleverstyle.org/Framework",
+	"license"             : "MIT License",
+	"update_from_version" : "1.17",
+	"db"                  : [
+		"comments"
+	],
+	"db_support"          : [
+		"MySQLi"
+	],
+	"provide"             : "comments",
+	"require"             : [
+		"System>=5.0",
+		"System<6.0"
+	],
+	"optional"            : [
+		"simple_editor"
+	],
+	"multilingual"        : [
+		"interface",
+		"content"
+	],
+	"languages"           : [
+		"English",
+		"Russian",
+		"Ukrainian"
+	]
+}

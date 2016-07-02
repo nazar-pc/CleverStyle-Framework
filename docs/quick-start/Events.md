@@ -14,7 +14,7 @@ NOTE: all examples will be shown for backend `\cs\Event` class, but are the same
 
 All events are named like paths in file system (sometimes it corresponds to the page, on which this event is called), this allows to determine easily for what purpose by what component of system this event is used:
 
-* admin/System/components/modules/disable
+* admin/System/modules/disable
 * System/Page/rebuild_cache
 
 Usually, system events are stated with `System/`, other modules similarly starts with module name. Events, that are used in admin section are prefixed by `admin`, for api with `api` and for CLI with `cli`.
@@ -41,7 +41,7 @@ Example:
 ```php
 <?php
 \cs\Event::instance()->on(
-    'admin/System/components/modules/disable',
+    'admin/System/modules/disable',
     function ($data) {
         if ($data['name'] == basename(__DIR__)) {
             clean_pcache();
@@ -113,19 +113,19 @@ if (!\cs\Event::instance()->fire(
 Backend events:
 * System/robots.txt
 * admin/System/general/optimization/clean_pcache
-* admin/System/components/modules/default
-* admin/System/components/modules/update/before
-* admin/System/components/modules/update/after
-* admin/System/components/modules/update_system/before
-* admin/System/components/modules/update_system/after
-* admin/System/components/modules/enable/before
-* admin/System/components/modules/enable/after
-* admin/System/components/modules/disable/before
-* admin/System/components/modules/disable/after
-* admin/System/components/modules/install/before
-* admin/System/components/modules/install/after
-* admin/System/components/modules/uninstall/before
-* admin/System/components/modules/uninstall/after
+* admin/System/modules/default
+* admin/System/modules/update/before
+* admin/System/modules/update/after
+* admin/System/modules/update_system/before
+* admin/System/modules/update_system/after
+* admin/System/modules/enable/before
+* admin/System/modules/enable/after
+* admin/System/modules/disable/before
+* admin/System/modules/disable/after
+* admin/System/modules/install/before
+* admin/System/modules/install/after
+* admin/System/modules/uninstall/before
+* admin/System/modules/uninstall/after
 * admin/System/Menu
 * System/App/render/before
 * System/App/execute_router/before
@@ -159,24 +159,24 @@ Backend events:
 * System/User/Group/del/after
 
 Frontend events:
-* admin/System/components/modules/default/before
-* admin/System/components/modules/default/after
-* admin/System/components/modules/disable/before
-* admin/System/components/modules/disable/after
-* admin/System/components/modules/enable/before
-* admin/System/components/modules/enable/after
-* admin/System/components/modules/update/before
-* admin/System/components/modules/update/after
-* admin/System/components/modules/uninstall/before
-* admin/System/components/modules/uninstall/after
-* admin/System/components/modules/install/before
-* admin/System/components/modules/install/after
-* admin/System/components/modules/update_system/before
-* admin/System/components/modules/update_system/after
-* admin/System/components/themes/current/before
-* admin/System/components/themes/current/after
-* admin/System/components/themes/update/before
-* admin/System/components/themes/update/after
+* admin/System/modules/default/before
+* admin/System/modules/default/after
+* admin/System/modules/disable/before
+* admin/System/modules/disable/after
+* admin/System/modules/enable/before
+* admin/System/modules/enable/after
+* admin/System/modules/update/before
+* admin/System/modules/update/after
+* admin/System/modules/uninstall/before
+* admin/System/modules/uninstall/after
+* admin/System/modules/install/before
+* admin/System/modules/install/after
+* admin/System/modules/update_system/before
+* admin/System/modules/update_system/after
+* admin/System/themes/current/before
+* admin/System/themes/current/after
+* admin/System/themes/update/before
+* admin/System/themes/update/after
 * cs-system-sign-in
 
 For more details look corresponding classes and source files. It is easy to find any of these events by name.

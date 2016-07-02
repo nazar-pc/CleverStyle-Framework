@@ -18,8 +18,8 @@ chdir(DIR);
  */
 defined('LANGUAGES') || define('LANGUAGES', DIR.'/core/languages');
 defined('CUSTOM') || define('CUSTOM', DIR.'/custom');
-defined('BLOCKS') || define('BLOCKS', DIR.'/components/blocks');
-defined('MODULES') || define('MODULES', DIR.'/components/modules');
+defined('BLOCKS') || define('BLOCKS', DIR.'/blocks');
+defined('MODULES') || define('MODULES', DIR.'/modules');
 defined('STORAGE') || define('STORAGE', DIR.'/storage');
 defined('PUBLIC_STORAGE') || define('PUBLIC_STORAGE', STORAGE.'/public');
 defined('CACHE') || define('CACHE', STORAGE.'/cache');

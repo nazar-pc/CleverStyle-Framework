@@ -27,7 +27,7 @@ function form () {
 			],
 			[
 				h::{'select[name=modules[]][size=20][multiple] option'}(
-					get_list_for_form(DIR.'/components/modules', 'System')
+					get_list_for_form(DIR.'/modules', 'System')
 				),
 				h::{'select[name=themes[]][size=20][multiple] option'}(
 					get_list_for_form(DIR.'/themes', 'CleverStyle')

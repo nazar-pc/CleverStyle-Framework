@@ -14,8 +14,8 @@ Also autoloader looks for classes inside
 for some thirdparty components.
 
 Classes in namespaces `cs\modules` are used by modules:
-* `cs\modules\Blogs\Posts` > `components/modules/Blogs/Posts.php`
-* `cs\modules\Comments\Comments` > `components/modules/Comments/Comments.php`
+* `cs\modules\Blogs\Posts` > `modules/Blogs/Posts.php`
+* `cs\modules\Comments\Comments` > `modules/Comments/Comments.php`
 
 ### Composer
 User's `composer.json` can be in root directory.

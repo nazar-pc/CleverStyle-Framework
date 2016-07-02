@@ -1,0 +1,35 @@
+{
+	"package"             : "System",
+	"category"            : "modules",
+	"version"             : "5.5.0+build-2287",
+	"description"         : "Base system module of CleverStyle Framework",
+	"author"              : "Nazar Mokrynskyi",
+	"website"             : "cleverstyle.org/Framework",
+	"license"             : "MIT License",
+	"update_from_version" : "4.78",
+	"db"                  : [
+		"keys",
+		"texts",
+		"users"
+	],
+	"db_support"          : [
+		"MySQLi",
+		"PostgreSQL",
+		"SQLite"
+	],
+	"provide"             : "system",
+	"optional"            : [
+		"editor",
+		"simple_editor",
+		"file_upload"
+	],
+	"multilingual"        : [
+		"interface",
+		"content"
+	],
+	"languages"           : [
+		"English",
+		"Russian",
+		"Ukrainian"
+	]
+}

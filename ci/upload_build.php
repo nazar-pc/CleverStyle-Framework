@@ -47,7 +47,7 @@ require_once ROOT.'/core/functions.php';
 
 $modules = array_values(
 	array_filter(
-		get_files_list(ROOT.'/components/modules', false, 'd'),
+		get_files_list(ROOT.'/modules', false, 'd'),
 		function ($module) {
 			return $module != 'System';
 		}

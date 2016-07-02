@@ -42,9 +42,9 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 
 # Get list of available modules and themes
 
-	cd components/modules && \
+	cd modules && \
 	MODULES=`ls -md */ | tr -d '\n /'` && \
-	cd ../../themes && \
+	cd ../themes && \
 	THEMES=`ls -md */ | tr -d '\n /'` && \
 	cd .. && \
 

@@ -1,0 +1,23 @@
+/**
+ * @package   Shop
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+@import '../../../../../../includes/css/flexy-plexy';
+
+#content {
+	@include flexy-plexy(1em, 3 7)
+}
+
+::content h1 {
+	margin-top : 0;
+}
+
+#img {
+	background : #fff;
+	border     : 1px solid #e5e5e5;
+	box-sizing : border-box;
+	padding    : .3em;
+}

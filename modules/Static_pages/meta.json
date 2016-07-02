@@ -1,0 +1,35 @@
+{
+	"package"             : "Static_pages",
+	"category"            : "modules",
+	"version"             : "1.28.0+build-109",
+	"description"         : "Creating of simple static pages with categories",
+	"author"              : "Nazar Mokrynskyi",
+	"website"             : "cleverstyle.org/Framework",
+	"license"             : "MIT License",
+	"update_from_version" : "1.17",
+	"db"                  : [
+		"pages"
+	],
+	"db_support"          : [
+		"MySQLi"
+	],
+	"provide"             : "static_pages",
+	"require"             : [
+		"System>=5.0",
+		"System<6.0"
+	],
+	"optional"            : [
+		"TinyMCE",
+		"editor"
+	],
+	"multilingual"        : [
+		"interface",
+		"content"
+	],
+	"languages"           : [
+		"English",
+		"Russian",
+		"Ukrainian"
+	],
+	"hide_in_menu"        : 1
+}

@@ -34,7 +34,7 @@ class Event {
 	/**
 	 * Add event handler
 	 *
-	 * @param string   $event    For example `admin/System/components/modules/disable`
+	 * @param string   $event    For example `admin/System/modules/disable`
 	 * @param callable $callback Callable, that will be called at event dispatching
 	 *
 	 * @return Event
@@ -93,7 +93,7 @@ class Event {
 	 *
 	 * After event name it is possible to specify as many arguments as needed
 	 *
-	 * @param string  $event For example `admin/System/components/modules/disable`
+	 * @param string  $event For example `admin/System/modules/disable`
 	 * @param mixed[] $arguments
 	 *
 	 * @return bool

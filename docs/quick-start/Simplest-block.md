@@ -1,6 +1,6 @@
 Steps to create the simplest block:
 
-1. Create block file in **components/blocks** with name **block.{block_name_here}.php**
+1. Create block file in **blocks** with name **block.{block_name_here}.php**
 2. Add some HTML content or PHP code with direct output through **echo**, **print()**, etc.
 3. Go to Administration >> Components >> Blocks
 4. Click **Add block**

@@ -37,7 +37,7 @@ class Builder {
 	 */
 	function core ($modules = [], $themes = [], $suffix = null) {
 		$suffix      = $suffix ? "_$suffix" : '';
-		$version     = file_get_json("$this->root/components/modules/System/meta.json")['version'];
+		$version     = file_get_json("$this->root/modules/System/meta.json")['version'];
 		$target_file = "$this->target/CleverStyle_Framework_$version$suffix.phar.php";
 		if (file_exists($target_file)) {
 			unlink($target_file);
@@ -59,7 +59,7 @@ class Builder {
 		 * Add modules that should be built-in into package
 		 */
 		$components_files = [];
-		$modules          = $this->filter_and_add_components("$this->root/components/modules", $modules, $components_files);
+		$modules          = $this->filter_and_add_components("$this->root/modules", $modules, $components_files);
 		$phar->addFromString('modules.json', _json_encode($modules));
 		/**
 		 * Add themes that should be built-in into package
@@ -137,7 +137,7 @@ class Builder {
 		 * information about available languages, themes, current version of system
 		 */
 		$phar->addFile("$this->root/license.txt", 'license.txt');
-		$phar->addFile("$this->root/components/modules/System/meta.json", 'meta.json');
+		$phar->addFile("$this->root/modules/System/meta.json", 'meta.json');
 		$phar->setStub(
 		/** @lang PHP */
 			<<<STUB
@@ -166,8 +166,8 @@ STUB
 	 */
 	protected function get_core_files () {
 		$files_to_include = [
-			"$this->root/components/modules/System",
-			"$this->root/components/blocks/.gitkept",
+			"$this->root/modules/System",
+			"$this->root/blocks/.gitkept",
 			"$this->root/core",
 			"$this->root/custom",
 			"$this->root/includes",
@@ -285,7 +285,7 @@ HTACCESS;
 		if ($module == 'System') {
 			return "Can't build module, System module is a part of core, it is not necessary to build it as separate module";
 		}
-		return $this->generic_package_creation("$this->root/components/modules/$module", $suffix);
+		return $this->generic_package_creation("$this->root/modules/$module", $suffix);
 	}
 	/**
 	 * @param string      $theme
