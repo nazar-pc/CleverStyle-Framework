@@ -6,4 +6,7 @@
  * @copyright Copyright (c) 2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-chmod(DIR.'/cli', 0775);
+namespace cs;
+$Config = Config::instance();
+unset($Config->components['plugins']);
+$Config->save();

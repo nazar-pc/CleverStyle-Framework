@@ -16,7 +16,6 @@ chdir(DIR);
 /**
  * Defining of basic constants with paths to system directories
  */
-defined('ENGINES') || define('ENGINES', DIR.'/core/engines'); // Deprecated, TODO: remove in 5.x
 defined('LANGUAGES') || define('LANGUAGES', DIR.'/core/languages');
 defined('CUSTOM') || define('CUSTOM', DIR.'/custom');
 defined('TEMPLATES') || define('TEMPLATES', DIR.'/templates');

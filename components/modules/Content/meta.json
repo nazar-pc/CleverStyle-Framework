@@ -1,12 +1,12 @@
 {
 	"package"             : "Content",
 	"category"            : "modules",
-	"version"             : "1.30.0+build-68",
+	"version"             : "1.31.0+build-69",
 	"description"         : "Simple content functionality. May be used by other components or stand-alone.",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/Framework",
 	"license"             : "MIT License",
-	"update_from_version" : "1.18",
+	"update_from_version" : "1.30",
 	"db"                  : [
 		"content"
 	],

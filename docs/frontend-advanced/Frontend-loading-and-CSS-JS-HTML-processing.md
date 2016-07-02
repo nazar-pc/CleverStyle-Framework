@@ -40,23 +40,6 @@ This feature takes into account optimized frontend loading and if used will only
 
 Preloading feature is smart enough to preload images and fonts from within CSS files that are not inlined (but skips files that had `?` in URL, you can use this to avoid preloading non-critical fonts and images).
 
-#### jQuery and other bundled third-party libraries
+#### Bundled third-party libraries
 System includes few third-party libraries that are available as AMD modules, they can be found in [/includes/js/modules](/includes/js/modules) directory.
 Also Polymer, Alameda and sprintf.js are always present unconditionally.
-
-### jQuery in system core is deprecated, declare NPM dependency explicitly and use it only as AMD module
-jQuery is a bit tricky. It is also loaded unconditionally, but since it is quite large and is not required on initial stages of frontend loading, if optimized frontend loading is used its loading will be delayed.
-If you need jQuery on earlier stages, make sure that you call it as AMD module, this way everything will work as you would expect.
-
-Also in future jQuery will likely be either removed from System core or loaded as AMD module only, so generally it is highly recommended to always call jQuery as AMD module using Alameda:
-```javascript
-// Like this
-require(['jquery'], function ($) {
-    // Use jQuery
-});
-// Or this:
-require(['jquery']).then(function (modules) {
-    var $ = modules[0];
-    // Use jQuery
-});
-```

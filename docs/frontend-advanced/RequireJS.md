@@ -1,6 +1,6 @@
 [Alameda](https://github.com/requirejs/alameda) (modern RequireJS-compatible library) is bundled in CleverStyle Framework out of the box.
 
-All other third-party libraries bundled with system like jQuery or jsSHA are also available as AMD modules through RequireJS.
+All other third-party libraries bundled with system like jsSHA and html5sortable are also available as AMD modules through RequireJS.
 
 Besides [Bower & NPM](/docs/frontend-advanced/Bower-and-NPM.md) integration, RequireJS can be used with CleverStyle Framework components.
 
