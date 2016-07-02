@@ -2,9 +2,10 @@
 <dom-module id="Normalize">
 	<template>
 		<style>
-			/*! normalize.css v4.1.1 | MIT License | github.com/necolas/normalize.css */
+			/*! normalize.css v4.2.0 | MIT License | github.com/necolas/normalize.css */
 			/* Support for IE10- and Android 4.x- removed */
 			html {
+				line-height              : 1.15;
 				-ms-text-size-adjust     : 100%;
 				-webkit-text-size-adjust : 100%;
 			}
@@ -144,12 +145,14 @@
 				-webkit-appearance : none;
 			}
 
-			+::-webkit-input-placeholder {
+			+
+			::-webkit-input-placeholder {
 				color   : inherit;
 				opacity : 0.54;
 			}
 
-			+::-webkit-file-upload-button {
+			+
+			::-webkit-file-upload-button {
 				-webkit-appearance : button;
 				font               : inherit;
 			}
