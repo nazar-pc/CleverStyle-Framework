@@ -13,6 +13,7 @@ phar.readonly = Off
 -M core -m Blogs -t DarkEnergy
 --FILE--
 <?php
+include __DIR__.'/../../code_coverage.php';
 include __DIR__.'/../../../build.php';
 ?>
 --EXPECTF--

@@ -10,15 +10,15 @@ if (getenv('DB') && getenv('DB') != 'MySQLi') {
 --INI--
 phar.readonly = Off
 --ARGS--
--M core
+-M theme -t DarkEnergy -s Suffix
 --FILE--
 <?php
 include __DIR__.'/../../code_coverage.php';
 include __DIR__.'/../../../build.php';
 ?>
 --EXPECTF--
-Done! CleverStyle Framework %s+build-%d
+Done! Theme DarkEnergy %s+build-%d
 --CLEAN--
 <?php
-$version = json_decode(file_get_contents(__DIR__.'/../../../components/modules/System/meta.json'), true)['version'];
-unlink(__DIR__."/../../../CleverStyle_Framework_$version.phar.php");
+$version = json_decode(file_get_contents(__DIR__.'/../../../themes/DarkEnergy/meta.json'), true)['version'];
+unlink(__DIR__."/../../../theme_DarkEnergy_{$version}_Suffix.phar.php");
