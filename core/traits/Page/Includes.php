@@ -458,15 +458,14 @@ trait Includes {
 		if ($this->page_compression_usage($Config, $Request) && $Config->core['frontend_load_optimization']) {
 			$this->add_includes_on_page_manually_added_frontend_load_optimization($Config);
 		} else {
-			$this->add_includes_on_page_manually_added_normal($Config, $Request, $preload);
+			$this->add_includes_on_page_manually_added_normal($Config, $preload);
 		}
 	}
 	/**
 	 * @param Config   $Config
-	 * @param Request  $Request
 	 * @param string[] $preload
 	 */
-	protected function add_includes_on_page_manually_added_normal ($Config, $Request, $preload) {
+	protected function add_includes_on_page_manually_added_normal ($Config, $preload) {
 		$this->add_preload($preload);
 		$configs      = $this->core_config.$this->config;
 		$scripts      =
