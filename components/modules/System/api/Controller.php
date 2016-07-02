@@ -11,8 +11,7 @@ namespace cs\modules\System\api;
 use
 	cs\modules\System\api\Controller\admin,
 	cs\modules\System\api\Controller\general,
-	cs\modules\System\api\Controller\profile,
-	cs\modules\System\api\Controller\profiles;
+	cs\modules\System\api\Controller\profile;
 
 class Controller {
 	use
@@ -36,7 +35,6 @@ class Controller {
 		admin\users\groups,
 		admin\users\permissions,
 		general,
-		profile,
-		profiles;
+		profile;
 	static function blank () { }
 }

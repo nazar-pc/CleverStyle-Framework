@@ -84,20 +84,6 @@ Event::instance()
 		}
 	)
 	->on(
-		'System/User/get_contacts',
-		function ($data) {
-			if (!Config::instance()->module('HybridAuth')->enabled()) {
-				return;
-			}
-			$data['contacts'] = array_unique(
-				array_merge(
-					$data['contacts'],
-					Social_integration::instance()->get_contacts($data['id'])
-				)
-			);
-		}
-	)
-	->on(
 		'admin/System/components/modules/install/after',
 		function ($data) {
 			if ($data['name'] != 'HybridAuth') {

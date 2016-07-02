@@ -44,7 +44,6 @@ $User = \cs\User::instance();
 * del_user()
 * get_users_columns()
 * dnt()
-* get_contacts()
 * disable_memory_cache()
 
 #### get($item : string|string[], $user = false : false|int) : false|int|mixed[]|string|cs\User\Properties
@@ -165,9 +164,6 @@ Returns array of users columns, available for getting of data
 #### dnt() : bool
 Do not track checking
 
-#### get_contacts($user = false : false|int) : int[]
-Returns array of user id, that are associated as contacts
-
 #### () : disable_memory_cache
 Disable memory cache to decrease RAM usage when working with large number of users.
 
@@ -238,7 +234,6 @@ Status of not activated user
 * System/User/registration/confirmation/after
 * System/User/del/before
 * System/User/del/after
-* System/User/get_contacts
 
 #### System/User/construct/before
 Event is fired at the beginning of constructor
@@ -293,17 +288,6 @@ Is running after user  deletion. Parameters array:
     'id' => user_id    //id or array of ids
 ]
 ```
-
-#### System/User/get_contacts
-Event is used by modules in order to determine contacts (friends) of specified user. Parameters array:
-```
-[
-    'id'       => user_id,
-    'contacts' => &$contacts    //Array of user id
-]
-```
-
-`&$contacts` parameter contains list of unique users ids.
 
 <a name="properties-class" />
 ###[Up](#) \cs\User\Properties class

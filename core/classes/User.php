@@ -40,12 +40,6 @@ use
  *  System/User/del/after
  *  ['id' => <i>user_id</i>]
  *
- *  System/User/get_contacts
- *  [
- *    'id'       => <i>user_id</i>,
- *    'contacts' => <i>&$contacts</i> //Array of user id
- *  ]
- *
  * @property int    $id
  * @property string $login
  * @property string $login_hash    sha224 hash

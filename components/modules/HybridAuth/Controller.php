@@ -525,15 +525,6 @@ class Controller {
 					$User->set($item, $value, $user_id);
 				}
 			}
-			if (Config::instance()->module('HybridAuth')->enable_contacts_detection) {
-				$contacts = [];
-				try {
-					$contacts = $adapter->getUserContacts();
-				} catch (Exception $e) {
-					unset($e);
-				}
-				Social_integration::instance()->set_contacts($user_id, $contacts, $provider);
-			}
 		}
 	}
 	/**

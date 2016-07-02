@@ -136,6 +136,7 @@ class Module_Properties {
 	 */
 	function set ($item, $value = null) {
 		if (is_array($item)) {
+			/** @noinspection SuspiciousLoopInspection */
 			foreach ($item as $i => $value) {
 				$this->set_internal($i, $value, false);
 			}

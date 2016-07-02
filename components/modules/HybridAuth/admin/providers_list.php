@@ -13,14 +13,8 @@ use
 
 $L    = new Prefix('hybridauth_');
 $Page = Page::instance();
-if (isset($_POST['providers'], $_POST['enable_contacts_detection'])) {
-	if (Config::instance()->module('HybridAuth')->set(
-		[
-			'providers'                 => $_POST['providers'],
-			'enable_contacts_detection' => $_POST['enable_contacts_detection']
-		]
-	)
-	) {
+if (isset($_POST['providers'])) {
+	if (Config::instance()->module('HybridAuth')->set('providers', $_POST['providers'])) {
 		$Page->success($L->changes_saved);
 	} else {
 		$Page->warning($L->changes_save_error);
@@ -31,17 +25,6 @@ $providers_config = $Config->module('HybridAuth')->providers;
 $providers        = file_get_json(__DIR__.'/../providers.json');
 $Page->content(
 	h::{'form[is=cs-form]'}(
-		h::{'table.cs-table[right-left] tr td'}(
-			h::info('enable_contacts_detection'),
-			h::radio(
-				[
-					'name'    => 'enable_contacts_detection',
-					'checked' => $Config->module('HybridAuth')->enable_contacts_detection,
-					'value'   => [0, 1],
-					'in'      => [$L->off, $L->on]
-				]
-			)
-		).
 		h::{'table.cs-table[list][center]'}(
 			h::{'tr th'}(
 				$L->provider,

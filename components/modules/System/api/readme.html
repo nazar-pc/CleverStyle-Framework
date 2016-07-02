@@ -30,10 +30,3 @@
 	<li>timezone</li>
 	<li>avatar</li>
 </ul>
-<h4>GET /api/System/profiles/{id}:</h4>
-<p>Similar to <b>/System/profile</b>, returns profile information of specified user <b>{id}</b>, which SHOULD BE in contacts list of current user.</p>
-<h4>GET /api/System/profiles/{id},{id}:</h4>
-<p>Similar to <b>/System/profiles/{id}</b>, but allows to get several profiles by coma separated ids at one request. Ids, that are not contacts of current user may be ignored.</p>
-<p>Returns array of profiles information.</p>
-<h4>GET /api/System/profile/contacts:</h4>
-<p>Returns array of id of current user contacts.</p>

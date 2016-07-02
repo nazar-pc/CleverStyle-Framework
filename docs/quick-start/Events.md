@@ -157,7 +157,6 @@ Backend events:
 * System/User/Group/add
 * System/User/Group/del/before
 * System/User/Group/del/after
-* System/User/get_contacts
 
 Frontend events:
 * admin/System/components/modules/default/before
