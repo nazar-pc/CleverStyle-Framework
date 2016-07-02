@@ -213,34 +213,13 @@ class App {
 					$block['content'] = $this->ml_process($block['content']);
 					break;
 			}
-			/**
-			 * Template file will have access to `$block` variable, so it can use that
-			 */
-			$content = str_replace(
-				[
-					'<!--id-->',
-					'<!--title-->',
-					'<!--content-->'
-				],
-				[
-					$block['index'],
-					$block['title'],
-					$block['content']
-				],
-				ob_wrapper(
-					function () use ($block) {
-						$template = file_exists(TEMPLATES."/blocks/block.$block[template]") ? $block['template'] : 'default.html';
-						include TEMPLATES."/blocks/block.$template";
-					}
-				)
-			);
 			if ($block['position'] == 'floating') {
 				$Page->replace(
 					"<!--block#$block[index]-->",
-					$content
+					$block['content']
 				);
 			} else {
-				$blocks_array[$block['position']] .= $content;
+				$blocks_array[$block['position']] .= $block['content'];
 			}
 		}
 		$Page->Top .= $blocks_array['top'];

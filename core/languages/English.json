@@ -123,8 +123,6 @@
 				"block_title_info"      : "Allows you to set the title to be displayed over the contents of the block",
 				"block_active"          : "Is block active",
 				"block_active_info"     : "Allows you to enable or disable block displaying",
-				"block_template"        : "Block template",
-				"block_template_info"   : "Allows you to make each block with a different visual style",
 				"block_start"           : "Start of block displaying",
 				"block_start_info"      : "If you want to start block displaying from some time - select that time, otherwise left current time, or time before now",
 				"block_expire"          : "Block expires",

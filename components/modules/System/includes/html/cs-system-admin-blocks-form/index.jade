@@ -33,15 +33,6 @@ dom-module#cs-system-admin-blocks-form
 						[[L.no]]
 			tr
 				td
-					span(tooltip="[[L.block_template_info]]")
-						[[L.block_template]]
-						cs-tooltip
-				td
-					select(is="cs-select" name="block[template]" size="5" selected="{{block.template}}")
-						template(is="dom-repeat" items="[[templates]]" as="template")
-							option(value="[[template]]") [[template]]
-			tr
-				td
 					span(tooltip="[[L.block_start_info]]")
 						[[L.block_start]]
 						cs-tooltip

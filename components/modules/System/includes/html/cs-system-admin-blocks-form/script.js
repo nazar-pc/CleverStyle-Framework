@@ -14,18 +14,16 @@
     properties: {
       block: Object,
       index: Number,
-      templates: Array,
       types: Array
     },
     observers: ['_type_change(block.type)'],
     ready: function(){
       var this$ = this;
-      cs.api(['types		api/System/admin/blocks', 'templates	api/System/admin/blocks']).then(function(arg$){
-        this$.types = arg$[0], this$.templates = arg$[1];
+      cs.api('types api/System/admin/blocks').then(function(types){
+        this$.types = types;
         if (this$.index) {
           return cs.api('get api/System/admin/blocks/' + this$.index).then(function(block){
             block.type = block.type || this$.types[0];
-            block.template = block.template || this$.templates[0];
             if (block.active === undefined) {
               block.active = 1;
             } else {

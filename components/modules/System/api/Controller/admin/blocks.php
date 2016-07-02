@@ -47,7 +47,6 @@ trait blocks {
 			'title'    => $Text->process($db_id, $block['title'], true),
 			'type'     => $block['type'],
 			'active'   => (int)$block['active'],
-			'template' => $block['template'],
 			'start'    => date('Y-m-d\TH:i', $block['start'] ?: TIME),
 			'expire'   => [
 				'date'  => date('Y-m-d\TH:i', $block['expire'] ?: TIME),
@@ -116,12 +115,6 @@ trait blocks {
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
-	}
-	/**
-	 * Get array of available block templates
-	 */
-	static function admin_blocks_templates () {
-		return _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6);
 	}
 	/**
 	 * Get array of available block types
@@ -193,7 +186,6 @@ trait blocks {
 		$block['title']    = $Text->set($db_id, 'System/Config/blocks/title', $block['index'], $block_new['title']);
 		$block['active']   = $block_new['active'];
 		$block['type']     = $block_new['type'];
-		$block['template'] = $block_new['template'];
 		$block['start']    = $block_new['start'];
 		$block['start']    = strtotime($block_new['start']);
 		$block['expire']   = $block_new['expire']['state'] ? strtotime($block_new['expire']['date']) : 0;

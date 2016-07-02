@@ -14,21 +14,16 @@ Polymer(
 	properties	:
 		block		: Object
 		index		: Number
-		templates	: Array
 		types		: Array
 	observers	: [
 		'_type_change(block.type)'
 	]
 	ready : !->
-		cs.api([
-			'types		api/System/admin/blocks'
-			'templates	api/System/admin/blocks'
-		])
-			.then ([@types, @templates]) ~>
+		cs.api('types api/System/admin/blocks')
+			.then (@types) ~>
 				if @index
 					cs.api('get api/System/admin/blocks/' + @index).then (block) ~>
-						block.type		= block.type || @types[0]
-						block.template	= block.template || @templates[0]
+						block.type	= block.type || @types[0]
 						if block.active == undefined
 							block.active	= 1
 						else

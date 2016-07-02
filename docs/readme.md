@@ -19,7 +19,6 @@ Here you can find all useful information:
 * [Classes](/docs/backend-core/Classes.md)
 * [Engines](/docs/backend-core/Engines.md)
 * [Languages](/docs/backend-core/Languages.md)
-* [Templates](/docs/backend-core/Templates.md)
 * [Themes](/docs/backend-core/Themes.md)
 
 ### Components [Backend] [dev]

@@ -70,7 +70,7 @@ server {
 		log_not_found off;
 	}
 	# Deny access to directories config, core, storage/cache
-	location ~ ^/(config|core|storage/cache|templates) {
+	location ~ ^/(config|core|storage/cache) {
 		return 404;
 	}
 	# Exclude html imports (for Web Components) from next rule

@@ -171,7 +171,6 @@ STUB
 			"$this->root/core",
 			"$this->root/custom",
 			"$this->root/includes",
-			"$this->root/templates",
 			"$this->root/themes/CleverStyle",
 			"$this->root/bower.json",
 			"$this->root/cli",
