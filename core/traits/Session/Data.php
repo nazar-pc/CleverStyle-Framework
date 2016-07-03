@@ -51,11 +51,8 @@ trait Data {
 			$session_id   = $this->add(User::GUEST_ID);
 			$session_data = $this->get_data_internal($session_id);
 		}
-		if (!isset($session_data['data'])) {
-			return false;
-		}
 		$session_data['data'][$item] = $value;
-		return $this->update($session_data) && $this->cache->del($session_id);
+		return $this->update($session_data) && $this->cache->del($session_data['id']);
 	}
 	/**
 	 * Delete data, stored with session
@@ -71,6 +68,7 @@ trait Data {
 		if (!isset($session_data['data'][$item])) {
 			return true;
 		}
-		return $this->update($session_data) && $this->cache->del($session_id);
+		unset($session_data['data'][$item]);
+		return $this->update($session_data) && $this->cache->del($session_data['id']);
 	}
 }
