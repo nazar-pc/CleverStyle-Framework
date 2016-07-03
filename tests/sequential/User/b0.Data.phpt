@@ -49,7 +49,7 @@ var_dump($User->del_data('exp', User::GUEST_ID));
 ?>
 --EXPECT--
 string(18) "Register test user"
-int(16)
+int(17)
 string(21) "Set/get data (single)"
 bool(true)
 string(9) "One value"

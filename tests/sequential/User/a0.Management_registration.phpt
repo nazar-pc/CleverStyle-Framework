@@ -95,7 +95,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(3)
+  int(4)
 }
 array(3) {
   ["reg_key"]=>
@@ -103,7 +103,7 @@ array(3) {
   ["password"]=>
   string(4) "%s"
   ["id"]=>
-  int(3)
+  int(4)
 }
 int(1)
 string(116) "Register new user without confirmation necessary and with automatic sign-in according to system configuration (true)"
@@ -115,7 +115,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(4)
+  int(5)
 }
 array(3) {
   ["reg_key"]=>
@@ -123,9 +123,9 @@ array(3) {
   ["password"]=>
   string(4) "%s"
   ["id"]=>
-  int(4)
+  int(5)
 }
-int(4)
+int(5)
 string(12) "mr2@test.com"
 string(117) "Register new user without confirmation necessary and with automatic sign-in according to system configuration (false)"
 string(42) "System/User/registration/before fired with"
@@ -136,7 +136,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(5)
+  int(6)
 }
 array(3) {
   ["reg_key"]=>
@@ -144,7 +144,7 @@ array(3) {
   ["password"]=>
   string(4) "%s"
   ["id"]=>
-  int(5)
+  int(6)
 }
 int(1)
 string(88) "Register new user with system confirmation settings (true) and without automatic sign-in"
@@ -156,7 +156,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(6)
+  int(7)
 }
 array(3) {
   ["reg_key"]=>
@@ -164,7 +164,7 @@ array(3) {
   ["password"]=>
   string(0) ""
   ["id"]=>
-  int(6)
+  int(7)
 }
 int(1)
 string(89) "Register new user with system confirmation settings (false) and without automatic sign-in"
@@ -176,7 +176,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(7)
+  int(8)
 }
 array(3) {
   ["reg_key"]=>
@@ -184,7 +184,7 @@ array(3) {
   ["password"]=>
   string(4) "%s"
   ["id"]=>
-  int(7)
+  int(8)
 }
 int(1)
 string(60) "Cancel registration in System/User/registration/before event"
@@ -204,7 +204,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(8)
+  int(9)
 }
 bool(false)
 int(1)
@@ -223,7 +223,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(9)
+  int(10)
 }
 string(12) "mr7@test.com"
 string(42) "System/User/registration/before fired with"
@@ -234,6 +234,6 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(10)
+  int(11)
 }
 bool(false)

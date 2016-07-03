@@ -237,6 +237,7 @@ trait Management {
 			$session_data['expire'] = $time + $Config->core['session_expire'];
 			$this->update($session_data);
 			$this->cache->set($session_data['id'], $session_data);
+			Response::instance()->cookie('session', $session_data['id'], $session_data['expire'], true);
 		}
 		unset($session_data['data']);
 		Event::instance()->fire(
@@ -321,10 +322,7 @@ trait Management {
 	 * @return false|string Session id on success, `false` otherwise
 	 */
 	function add ($user, $delete_current_session = true) {
-		$user = (int)$user;
-		if (!$user) {
-			return false;
-		}
+		$user = (int)$user ?: User::GUEST_ID;
 		if ($delete_current_session && is_md5($this->session_id)) {
 			$this->del_internal($this->session_id, false);
 		}

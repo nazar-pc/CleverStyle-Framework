@@ -77,40 +77,27 @@ array(3) {
   ["password"]=>
   string(0) ""
   ["id"]=>
-  int(11)
+  int(12)
 }
 string(0) ""
 array(3) {
   ["id"]=>
-  int(11)
+  int(12)
   ["email"]=>
   string(14) "mrcc1@test.com"
   ["password"]=>
   string(4) "%s"
 }
-int(11)
+int(12)
 string(60) "%s"
 string(19) "Find confirmed user"
 array(1) {
   [0]=>
-  int(11)
+  int(12)
 }
 string(22) "Wrong confirmation key"
 bool(false)
 string(73) "Cancel registration in System/User/registration/confirmation/before event"
-array(3) {
-  ["reg_key"]=>
-  string(32) "%s"
-  ["password"]=>
-  string(0) ""
-  ["id"]=>
-  int(12)
-}
-string(0) ""
-bool(false)
-bool(false)
-bool(false)
-string(72) "Cancel registration in System/User/registration/confirmation/after event"
 array(3) {
   ["reg_key"]=>
   string(32) "%s"
@@ -123,7 +110,7 @@ string(0) ""
 bool(false)
 bool(false)
 bool(false)
-string(37) "Generate password during confirmation"
+string(72) "Cancel registration in System/User/registration/confirmation/after event"
 array(3) {
   ["reg_key"]=>
   string(32) "%s"
@@ -133,15 +120,28 @@ array(3) {
   int(14)
 }
 string(0) ""
+bool(false)
+bool(false)
+bool(false)
+string(37) "Generate password during confirmation"
+array(3) {
+  ["reg_key"]=>
+  string(32) "%s"
+  ["password"]=>
+  string(0) ""
+  ["id"]=>
+  int(15)
+}
+string(0) ""
 array(3) {
   ["id"]=>
-  int(14)
+  int(15)
   ["email"]=>
   string(14) "mrcc4@test.com"
   ["password"]=>
   string(4) "%s"
 }
-int(14)
+int(15)
 string(60) "%s"
 string(29) "Confirm with non-existing key"
 bool(false)
