@@ -35,21 +35,10 @@ server {
 	#}
 	# Add necessary headers
 	location /storage/pcache {
-		location ~ \.css$ {
-			add_header Content-Encoding gzip;
-			add_header Content-Type text/css;
+		location ~ \.(css|js|html)$ {
 			add_header Cache-Control "max-age=2592000, public";
 		}
-		location ~ \.js$ {
-			add_header Content-Encoding gzip;
-			add_header Content-Type application/javascript;
-			add_header Cache-Control "max-age=2592000, public";
-		}
-		location ~ \.html$ {
-			add_header Content-Encoding gzip;
-			add_header Content-Type text/html;
-			add_header Cache-Control "max-age=2592000, public";
-		}
+		return 403;
 	}
 	# Some headers to improve security when dealing with downloaded content
 	location /storage/public {
