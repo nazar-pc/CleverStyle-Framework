@@ -50,7 +50,7 @@ trait Cache {
 	}
 	protected function rebuild_cache_other () {
 		$webcomponents_js = file_get_contents(DIR.'/includes/js/WebComponents-polyfill/webcomponents-custom.min.js');
-		file_put_contents(PUBLIC_CACHE.'/webcomponents.js', gzencode($webcomponents_js, 9), LOCK_EX | FILE_BINARY);
+		file_put_contents(PUBLIC_CACHE.'/webcomponents.js', $webcomponents_js, LOCK_EX | FILE_BINARY);
 		file_put_contents(PUBLIC_CACHE.'/webcomponents.js.hash', substr(md5($webcomponents_js), 0, 5), LOCK_EX | FILE_BINARY);
 	}
 	/**
@@ -83,7 +83,7 @@ trait Cache {
 			}
 			unset($resource);
 			$file_path = "$target_file_path.$extension";
-			file_put_contents($file_path, gzencode($content, 9), LOCK_EX | FILE_BINARY);
+			file_put_contents($file_path, $content, LOCK_EX | FILE_BINARY);
 			$relative_path                              = '/storage/pcache/'.basename($file_path).'?'.substr(md5($content), 0, 5);
 			$local_includes[$extension]                 = $relative_path;
 			$not_embedded_resources_map[$relative_path] = $not_embedded_resources;

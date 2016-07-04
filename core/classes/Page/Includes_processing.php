@@ -267,11 +267,7 @@ class Includes_processing {
 			 * md5 to distinguish modifications of the files
 			 */
 			$content_md5 = substr(md5($scripts_content), 0, 5);
-			file_put_contents(
-				"$base_target_file_path.js",
-				gzencode($scripts_content, 9),
-				LOCK_EX | FILE_BINARY
-			);
+			file_put_contents("$base_target_file_path.js", $scripts_content, LOCK_EX | FILE_BINARY);
 			$base_target_file_name = basename($base_target_file_path);
 			// Add script with combined content file to the end
 			$data .= "<script src=\"$base_target_file_name.js?$content_md5\"></script>";

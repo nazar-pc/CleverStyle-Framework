@@ -101,9 +101,6 @@ if (!file_exists(PUBLIC_CACHE.'/.htaccess')) {
 <ifModule mod_headers.c>
 	Header set Cache-Control "max-age=2592000, public"
 </ifModule>
-AddEncoding gzip .js
-AddEncoding gzip .css
-AddEncoding gzip .html
 
 HTACCESS
 	);
