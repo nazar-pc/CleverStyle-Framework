@@ -237,11 +237,11 @@ array(1) {
 }
 string(39) "Compression, no load optimization, head"
 string(4) "Head"
-string(345) "<script src="/storage/pcache/webcomponents.js?cfbac"></script>
-<link href="/storage/pcache/CleverStyle_en:System.css?30c60" rel="stylesheet">
-<script src="/storage/pcache/jquery.js?d0212"></script>
-<script src="/storage/pcache/CleverStyle_en:System.js?bbf08"></script>
-<link href="/storage/pcache/CleverStyle_en:System.html?b4976" rel="import">
+string(345) "<script src="/storage/pcache/webcomponents.js?%s"></script>
+<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet">
+<script src="/storage/pcache/jquery.js?%s"></script>
+<script src="/storage/pcache/CleverStyle_en:System.js?%s"></script>
+<link href="/storage/pcache/CleverStyle_en:System.html?%s" rel="import">
 "
 string(9) "post_Body"
 string(0) ""
@@ -250,46 +250,46 @@ array(1) {
   ["link"]=>
   array(4) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?b4976>; rel=preload; as=document"
+    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?bbf08>; rel=preload; as=script"
+    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?30c60>; rel=preload; as=style"
+    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
     [3]=>
-    string(57) "</storage/pcache/jquery.js?d0212>; rel=preload; as=script"
+    string(57) "</storage/pcache/jquery.js?%s>; rel=preload; as=script"
   }
 }
 string(45) "Compression, no load optimization, after body"
 string(4) "Head"
-string(79) "<link href="/storage/pcache/CleverStyle_en:System.css?30c60" rel="stylesheet">
+string(79) "<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet">
 "
 string(9) "post_Body"
-string(266) "<script src="/storage/pcache/webcomponents.js?cfbac"></script>
-<script src="/storage/pcache/jquery.js?d0212"></script>
-<script src="/storage/pcache/CleverStyle_en:System.js?bbf08"></script>
-<link href="/storage/pcache/CleverStyle_en:System.html?b4976" rel="import">
+string(266) "<script src="/storage/pcache/webcomponents.js?%s"></script>
+<script src="/storage/pcache/jquery.js?%s"></script>
+<script src="/storage/pcache/CleverStyle_en:System.js?%s"></script>
+<link href="/storage/pcache/CleverStyle_en:System.html?%s" rel="import">
 "
 string(7) "headers"
 array(1) {
   ["link"]=>
   array(4) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?b4976>; rel=preload; as=document"
+    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?bbf08>; rel=preload; as=script"
+    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?30c60>; rel=preload; as=style"
+    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
     [3]=>
-    string(57) "</storage/pcache/jquery.js?d0212>; rel=preload; as=script"
+    string(57) "</storage/pcache/jquery.js?%s>; rel=preload; as=script"
   }
 }
 string(36) "Compression, load optimization, head"
 string(4) "Head"
-string(423) "<script src="/storage/pcache/webcomponents.js?cfbac"></script>
-<link href="/storage/pcache/CleverStyle_en:System.css?30c60" rel="stylesheet">
-<script class="cs-config" target="cs.optimized_includes" type="application/json">[["\/storage\/pcache\/jquery.js?d0212"],[]]</script>
-<script src="/storage/pcache/CleverStyle_en:System.js?bbf08"></script>
-<link href="/storage/pcache/CleverStyle_en:System.html?b4976" rel="import">
+string(423) "<script src="/storage/pcache/webcomponents.js?%s"></script>
+<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet">
+<script class="cs-config" target="cs.optimized_includes" type="application/json">[["\/storage\/pcache\/jquery.js?%s"],[]]</script>
+<script src="/storage/pcache/CleverStyle_en:System.js?%s"></script>
+<link href="/storage/pcache/CleverStyle_en:System.html?%s" rel="import">
 "
 string(9) "post_Body"
 string(0) ""
@@ -298,32 +298,32 @@ array(1) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?b4976>; rel=preload; as=document"
+    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?bbf08>; rel=preload; as=script"
+    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?30c60>; rel=preload; as=style"
+    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
   }
 }
 string(42) "Compression, load optimization, after body"
 string(4) "Head"
-string(213) "<link href="/storage/pcache/CleverStyle_en:System.css?30c60" rel="stylesheet">
-<script class="cs-config" target="cs.optimized_includes" type="application/json">[["\/storage\/pcache\/jquery.js?d0212"],[]]</script>
+string(213) "<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet">
+<script class="cs-config" target="cs.optimized_includes" type="application/json">[["\/storage\/pcache\/jquery.js?%s"],[]]</script>
 "
 string(9) "post_Body"
-string(210) "<script src="/storage/pcache/webcomponents.js?cfbac"></script>
-<script src="/storage/pcache/CleverStyle_en:System.js?bbf08"></script>
-<link href="/storage/pcache/CleverStyle_en:System.html?b4976" rel="import">
+string(210) "<script src="/storage/pcache/webcomponents.js?%s"></script>
+<script src="/storage/pcache/CleverStyle_en:System.js?%s"></script>
+<link href="/storage/pcache/CleverStyle_en:System.html?%s" rel="import">
 "
 string(7) "headers"
 array(1) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?b4976>; rel=preload; as=document"
+    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?bbf08>; rel=preload; as=script"
+    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?30c60>; rel=preload; as=style"
+    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
   }
 }
