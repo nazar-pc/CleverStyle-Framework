@@ -63,6 +63,7 @@
         xhr.send(data);
       } else if (data) {
         xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.send(JSON.stringify(data));
       } else {
         xhr.send();
