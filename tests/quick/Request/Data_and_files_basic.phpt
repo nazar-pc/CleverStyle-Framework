@@ -199,7 +199,7 @@ array(6) {
     ["error"]=>
     int(0)
     ["stream"]=>
-    resource(145) of type (stream)
+    resource(%d) of type (stream)
   }
   ["single_file_stream"]=>
   array(6) {
@@ -210,7 +210,7 @@ array(6) {
     ["size"]=>
     int(16)
     ["stream"]=>
-    resource(140) of type (stream)
+    resource(%d) of type (stream)
     ["error"]=>
     int(0)
     ["tmp_name"]=>
@@ -229,7 +229,7 @@ array(6) {
       ["tmp_name"]=>
       string(%d) "%s/tests/quick/Request/upload1.html"
       ["stream"]=>
-      resource(146) of type (stream)
+      resource(%d) of type (stream)
       ["error"]=>
       int(0)
     }
@@ -244,7 +244,7 @@ array(6) {
       ["tmp_name"]=>
       string(%d) "%s/tests/quick/Request/upload2.html"
       ["stream"]=>
-      resource(147) of type (stream)
+      resource(%d) of type (stream)
       ["error"]=>
       int(0)
     }
@@ -264,7 +264,7 @@ array(6) {
       ["error"]=>
       int(0)
       ["stream"]=>
-      resource(148) of type (stream)
+      resource(%d) of type (stream)
     }
     [1]=>
     array(6) {
@@ -279,7 +279,7 @@ array(6) {
       ["error"]=>
       int(0)
       ["stream"]=>
-      resource(149) of type (stream)
+      resource(%d) of type (stream)
     }
   }
   ["multiple_files_streams"]=>
@@ -295,7 +295,7 @@ array(6) {
       ["tmp_name"]=>
       string(40) "request-file:///multiple_files_streams/0"
       ["stream"]=>
-      resource(141) of type (stream)
+      resource(%d) of type (stream)
       ["error"]=>
       int(0)
     }
@@ -310,7 +310,7 @@ array(6) {
       ["tmp_name"]=>
       string(40) "request-file:///multiple_files_streams/1"
       ["stream"]=>
-      resource(142) of type (stream)
+      resource(%d) of type (stream)
       ["error"]=>
       int(0)
     }
@@ -326,7 +326,7 @@ array(6) {
       ["size"]=>
       int(17)
       ["stream"]=>
-      resource(143) of type (stream)
+      resource(%d) of type (stream)
       ["error"]=>
       int(0)
       ["tmp_name"]=>
@@ -341,7 +341,7 @@ array(6) {
       ["size"]=>
       int(11)
       ["stream"]=>
-      resource(144) of type (stream)
+      resource(%d) of type (stream)
       ["error"]=>
       int(0)
       ["tmp_name"]=>
@@ -361,7 +361,7 @@ array(6) {
   ["error"]=>
   int(0)
   ["stream"]=>
-  resource(145) of type (stream)
+  resource(%d) of type (stream)
 }
 array(2) {
   [0]=>
@@ -375,7 +375,7 @@ array(2) {
     ["tmp_name"]=>
     string(%d) "%s/tests/quick/Request/upload1.html"
     ["stream"]=>
-    resource(146) of type (stream)
+    resource(%d) of type (stream)
     ["error"]=>
     int(0)
   }
@@ -390,7 +390,7 @@ array(2) {
     ["tmp_name"]=>
     string(%d) "%s/tests/quick/Request/upload2.html"
     ["stream"]=>
-    resource(147) of type (stream)
+    resource(%d) of type (stream)
     ["error"]=>
     int(0)
   }
