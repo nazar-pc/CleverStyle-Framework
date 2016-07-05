@@ -139,7 +139,7 @@ trait Data_and_files {
 						'stream'   => @$files['stream'][$index],
 						'error'    => $files['error'][$index]
 					],
-					$file_path
+					"$file_path/$index"
 				);
 			}
 			return $result;
