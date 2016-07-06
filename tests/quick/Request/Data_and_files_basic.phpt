@@ -17,14 +17,14 @@ $Request->init_data_and_files(
 		'single_file'                        => [
 			'name'     => 'upload1.html',
 			'type'     => 'text/html',
-			'size'     => 16,
+			'size'     => 17,
 			'tmp_name' => __DIR__.'/upload1.html',
 			'error'    => UPLOAD_ERR_OK
 		],
 		'single_file_stream'                 => [
 			'name'   => 'upload1.html',
 			'type'   => 'text/html',
-			'size'   => 16,
+			'size'   => 17,
 			'stream' => fopen(__DIR__.'/upload1.html', 'rb'),
 			'error'  => UPLOAD_ERR_OK
 		],
@@ -203,7 +203,7 @@ array(7) {
     ["type"]=>
     string(9) "text/html"
     ["size"]=>
-    int(16)
+    int(17)
     ["tmp_name"]=>
     string(%d) "%s/tests/quick/Request/upload1.html"
     ["error"]=>
@@ -218,7 +218,7 @@ array(7) {
     ["type"]=>
     string(9) "text/html"
     ["size"]=>
-    int(16)
+    int(17)
     ["stream"]=>
     resource(%d) of type (stream)
     ["error"]=>
@@ -380,7 +380,7 @@ array(6) {
   ["type"]=>
   string(9) "text/html"
   ["size"]=>
-  int(16)
+  int(17)
   ["tmp_name"]=>
   string(%d) "%s/tests/quick/Request/upload1.html"
   ["error"]=>
