@@ -102,6 +102,12 @@ $Request->init_data_and_files(
 				'stream' => fopen(__DIR__.'/upload2.html', 'rb'),
 				'error'  => UPLOAD_ERR_OK
 			]
+		],
+		'file_error'                         => [
+			'name'  => 'upload1.html',
+			'type'  => 'text/html',
+			'size'  => 17,
+			'error' => UPLOAD_ERR_OK
 		]
 	]
 );
@@ -145,6 +151,9 @@ rewind($Request->files['multiple_files'][1]['stream']);
 var_dump(stream_get_contents($Request->files['multiple_files'][1]['stream']));
 rewind($Request->files['multiple_files_streams'][1]['stream']);
 var_dump(stream_get_contents($Request->files['multiple_files_streams'][1]['stream']));
+
+var_dump('Upload error');
+var_dump($Request->files['file_error'] !== UPLOAD_ERR_OK);
 ?>
 --EXPECTF--
 string(10) "Data basic"
@@ -185,7 +194,7 @@ array(2) {
 NULL
 NULL
 string(10) "File basic"
-array(6) {
+array(7) {
   ["single_file"]=>
   array(6) {
     ["name"]=>
@@ -348,6 +357,21 @@ array(6) {
       string(52) "request-file:///multiple_files_streams_alternative/1"
     }
   }
+  ["file_error"]=>
+  array(6) {
+    ["name"]=>
+    string(12) "upload1.html"
+    ["type"]=>
+    string(9) "text/html"
+    ["size"]=>
+    int(17)
+    ["error"]=>
+    int(4)
+    ["tmp_name"]=>
+    NULL
+    ["stream"]=>
+    NULL
+  }
 }
 array(6) {
   ["name"]=>
@@ -423,3 +447,5 @@ string(11) "0123456789
 "
 string(11) "0123456789
 "
+string(12) "Upload error"
+bool(true)
