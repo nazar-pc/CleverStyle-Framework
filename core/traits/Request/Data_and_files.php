@@ -57,15 +57,19 @@ trait Data_and_files {
 		if (is_resource($this->data_stream)) {
 			fclose($this->data_stream);
 		}
-		$this->data  = $data;
-		$this->files = $this->normalize_files($files);
-		$data_stream = is_string($data_stream) ? fopen($data_stream, 'rb') : $data_stream;
-		if ($copy_stream && is_resource($data_stream)) {
-			$this->data_stream = fopen('php://temp', 'w+b');
-			stream_copy_to_stream($data_stream, $this->data_stream);
-			fclose($data_stream);
-		} else {
-			$this->data_stream = $data_stream;
+		$this->data        = $data;
+		$this->files       = $this->normalize_files($files);
+		$this->data_stream = null;
+		$data_stream       = is_string($data_stream) ? fopen($data_stream, 'rb') : $data_stream;
+		if (is_resource($data_stream)) {
+			rewind($data_stream);
+			if ($copy_stream) {
+				$this->data_stream = fopen('php://temp', 'w+b');
+				stream_copy_to_stream($data_stream, $this->data_stream);
+				fclose($data_stream);
+			} else {
+				$this->data_stream = $data_stream;
+			}
 		}
 		/**
 		 * If we don't appear to have any data or files detected - probably, we need to parse request ourselves
