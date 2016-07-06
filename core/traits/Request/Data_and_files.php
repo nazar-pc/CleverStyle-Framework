@@ -280,7 +280,7 @@ trait Data_and_files {
 		 * Last boundary after all parts ends with '--' and we don't care what rubbish happens after it
 		 */
 		$post_max_size = $this->post_max_size();
-		if (0 !== strpos($body, '--')) {
+		if (strpos($body, '--') !== 0) {
 			return false;
 		}
 		/**
@@ -319,7 +319,7 @@ trait Data_and_files {
 					'stream' => Stream_slicer::slice($stream, $part['body']['offset'], $part['body']['size']),
 					'error'  => UPLOAD_ERR_OK
 				];
-				if ($headers['content-disposition']['filename'] === '') {
+				if ($file['name'] === '') {
 					$file['type']   = '';
 					$file['stream'] = null;
 					$file['error']  = UPLOAD_ERR_NO_FILE;
@@ -410,7 +410,7 @@ trait Data_and_files {
 		$headers = [];
 		foreach (explode("\r\n", $content) as $header) {
 			list($name, $value) = explode(':', $header, 2);
-			if (!preg_match_all('/(.+)(?:="*?(.*)"?)?(?:;\s|$)/U', $value, $matches)) {
+			if (!preg_match_all('/(.+)(?:="?([^"]*)"?)?(?:;\s|$)/U', $value, $matches)) {
 				continue;
 			}
 			$name           = strtolower($name);
@@ -423,7 +423,7 @@ trait Data_and_files {
 				}
 			}
 			if (count($headers[$name]) == 1) {
-				$headers[$name] = $headers[$name][0];
+				$headers[$name] = @$headers[$name][0];
 			}
 		}
 		return $headers;

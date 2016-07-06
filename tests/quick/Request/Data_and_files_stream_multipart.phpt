@@ -1,3 +1,5 @@
+--INI--
+post_max_size = 1G
 --FILE--
 <?php
 namespace cs;
@@ -11,7 +13,7 @@ $Request->init_server(
 	]
 );
 var_dump('Multipart, copy stream');
-$Request->init_data_and_files([], [], fopen(__DIR__.'/multipart-body.bin', 'rb'));
+$Request->init_data_and_files([], [], fopen(__DIR__.'/multipart_body.bin', 'rb'));
 var_dump($Request->data);
 var_dump($Request->files);
 
@@ -39,8 +41,11 @@ array(2) {
   string(2) "v1"
   ["d2"]=>
   array(1) {
-    ["d2-nested"]=>
-    string(3) "v2n"
+    [0]=>
+    array(1) {
+      ["d2-nested"]=>
+      string(3) "v2n"
+    }
   }
 }
 array(2) {
