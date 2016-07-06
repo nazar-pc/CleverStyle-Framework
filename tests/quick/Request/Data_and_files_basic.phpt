@@ -3,7 +3,8 @@
 namespace cs;
 include __DIR__.'/../../unit.php';
 stream_wrapper_register('request-file', Request\File_stream::class);
-$Request = Request::instance();
+$Request         = Request::instance();
+$Request->method = 'POST';
 
 $Request->init_data_and_files(
 	[

@@ -6,7 +6,8 @@ stream_wrapper_register('request-file', Request\File_stream::class);
 $Request = Request::instance();
 $Request->init_server(
 	[
-		'CONTENT_TYPE' => 'application/json'
+		'REQUEST_METHOD' => 'POST',
+		'CONTENT_TYPE'   => 'application/json'
 	]
 );
 $json = json_encode(

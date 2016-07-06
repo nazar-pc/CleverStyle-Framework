@@ -60,7 +60,10 @@ trait Data_and_files {
 		$this->data        = $data;
 		$this->files       = $this->normalize_files($files);
 		$this->data_stream = null;
-		$data_stream       = is_string($data_stream) ? fopen($data_stream, 'rb') : $data_stream;
+		if (in_array($this->method, ['GET', 'HEAD', 'OPTIONS'])) {
+			return;
+		}
+		$data_stream = is_string($data_stream) ? fopen($data_stream, 'rb') : $data_stream;
 		if (is_resource($data_stream)) {
 			rewind($data_stream);
 			if ($copy_stream) {
