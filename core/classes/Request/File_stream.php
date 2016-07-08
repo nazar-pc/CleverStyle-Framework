@@ -24,6 +24,10 @@ class File_stream {
 	 * @var resource
 	 */
 	protected $stream;
+	/**
+	 * @var int
+	 */
+	protected $position;
 
 	function stream_open ($path, $mode) {
 		if ($mode != 'r' && $mode != 'rb') {
@@ -36,7 +40,8 @@ class File_stream {
 			}
 			$files = $files[$file_path];
 		}
-		$this->stream = $files['stream'];
+		$this->stream   = $files['stream'];
+		$this->position = 0;
 		return true;
 	}
 	/**
@@ -45,18 +50,22 @@ class File_stream {
 	 * @return false|string
 	 */
 	function stream_read ($length) {
-		return fread($this->stream, $length);
+		fseek($this->stream, $this->position);
+		$bytes          = fread($this->stream, $length);
+		$this->position += strlen($bytes);
+		return $bytes;
 	}
 	/**
 	 * @return false|int
 	 */
 	function stream_tell () {
-		return ftell($this->stream);
+		return $this->position;
 	}
 	/**
 	 * @return bool
 	 */
 	function stream_eof () {
+		fseek($this->stream, $this->position);
 		return feof($this->stream);
 	}
 	/**
@@ -66,7 +75,10 @@ class File_stream {
 	 * @return int
 	 */
 	function stream_seek ($offset, $whence = SEEK_SET) {
-		return fseek($this->stream, $offset, $whence);
+		fseek($this->stream, $this->position);
+		$result         = fseek($this->stream, $offset, $whence);
+		$this->position = ftell($this->stream);
+		return $result;
 	}
 	/**
 	 * @return array
