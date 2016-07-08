@@ -14,9 +14,12 @@ use
 	cs\Response;
 
 /**
+ * @property bool   $cli
  * @property string $scheme
  * @property string $host
  * @property string $path
+ *
+ * @method string header(string $name)
  */
 trait Route {
 	/**
@@ -181,7 +184,7 @@ trait Route {
 		/**
 		 * If url is cli, admin or API page - set corresponding variables to corresponding path prefix
 		 */
-		if (@mb_strtolower($rc[0]) == 'cli') {
+		if ($this->cli && @mb_strtolower($rc[0]) == 'cli') {
 			$cli_path = 'cli/';
 			array_shift($rc);
 		} elseif (@mb_strtolower($rc[0]) == 'admin') {
@@ -270,7 +273,7 @@ trait Route {
 	protected function determine_page_module (&$rc, &$home_page, $cli_path, $admin_path, $api_path) {
 		$Config           = Config::instance();
 		$modules          = $this->get_modules($Config, (bool)$admin_path);
-		$module_specified = isset($rc[0]);
+		$module_specified = @$rc[0];
 		if ($module_specified) {
 			if (in_array($module_specified, $modules)) {
 				return array_shift($rc);

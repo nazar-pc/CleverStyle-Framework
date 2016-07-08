@@ -1,0 +1,613 @@
+--FILE--
+<?php
+namespace cs;
+include __DIR__.'/../../unit.php';
+define('MODULES', make_tmp_dir());
+Config::instance_stub(
+	[
+		'core'       => [
+			'url'            => [
+				'http://cscms.travis'
+			],
+			'default_module' => Config::SYSTEM_MODULE
+		],
+		'components' => [
+			'modules' => [
+				'System'             => [
+					'active' => Config\Module_Properties::ENABLED
+				],
+				'Enabled_module'     => [
+					'active' => Config\Module_Properties::ENABLED
+				],
+				'Disabled_module'    => [
+					'active' => Config\Module_Properties::DISABLED
+				],
+				'Uninstalled_module' => [
+					'active' => Config\Module_Properties::UNINSTALLED
+				]
+			]
+		]
+	]
+);
+class Language_test extends Language {
+	public $Enabled_module = 'Enabled_module_localized';
+	protected function construct () {
+	}
+	function get_aliases () {
+		return [
+			'en'    => 'English',
+			'en_gb' => 'English',
+			'en_us' => 'English',
+			'ru'    => 'Russian',
+			'ru_ru' => 'Russian',
+			'ru_ua' => 'Russian',
+			'uk'    => 'Ukrainian',
+			'uk_ua' => 'Ukrainian'
+		];
+	}
+	function __get ($item) {
+		return $item;
+	}
+}
+Language::instance_replace(
+	Language_test::instance()
+);
+Event::instance()->on(
+	'System/Request/routing_replace',
+	function ($data) {
+		var_dump('System/Request/routing_replace event fired with', $data);
+	}
+);
+$server  = [
+	'HTTP_HOST'            => 'cscms.travis',
+	'HTTP_ACCEPT_LANGUAGE' => 'en-us;q=0.5,en;q=0.3',
+	'SERVER_NAME'          => 'cscms.travis',
+	'SERVER_PROTOCOL'      => 'HTTP/1.1',
+	'REQUEST_METHOD'       => 'GET',
+	'QUERY_STRING'         => '',
+	'REQUEST_URI'          => '/',
+	'CONTENT_TYPE'         => 'text/html'
+];
+$Request = Request::instance();
+
+var_dump('Home page');
+$Request->init_server($server);
+$Request->init_route();
+var_dump(
+	$Request->mirror_index,
+	$Request->path_normalized,
+	$Request->route,
+	$Request->route_path,
+	$Request->route_ids,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path,
+	$Request->current_module,
+	$Request->home_page
+);
+
+var_dump('Home page, language in URL');
+$Request->init_server(['REQUEST_URI' => '/en'] + $server);
+$Request->init_route();
+var_dump($Request->path_normalized, $Request->route, $Request->current_module, $Request->home_page);
+
+var_dump('Module page');
+$Request->init_server(['REQUEST_URI' => '/Enabled_module'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->mirror_index,
+	$Request->path_normalized,
+	$Request->route,
+	$Request->route_path,
+	$Request->route_ids,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path,
+	$Request->current_module,
+	$Request->home_page
+);
+
+var_dump('Module page, language in URL');
+$Request->init_server(['REQUEST_URI' => '/en/Enabled_module'] + $server);
+$Request->init_route();
+var_dump($Request->path_normalized, $Request->route, $Request->current_module, $Request->home_page);
+
+var_dump('API page');
+$Request->init_server(['REQUEST_URI' => '/api/Enabled_module'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->route,
+	$Request->current_module,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path
+);
+
+var_dump('API page, language in URL');
+$Request->init_server(['REQUEST_URI' => '/en/api/Enabled_module'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->route,
+	$Request->current_module,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path
+);
+
+var_dump('Admin page');
+$Request->init_server(['REQUEST_URI' => '/admin/Enabled_module'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->route,
+	$Request->current_module,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path
+);
+
+var_dump('Admin page, language in URL');
+$Request->init_server(['REQUEST_URI' => '/en/admin/Enabled_module'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->route,
+	$Request->current_module,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path
+);
+
+var_dump('CLI');
+$Request->init_server(['CLI' => true, 'REQUEST_URI' => '/cli/Enabled_module'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->route,
+	$Request->current_module,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path
+);
+
+var_dump('Localized module name');
+$Request->init_server(['REQUEST_URI' => '/en/Enabled_module_localized'] + $server);
+$Request->init_route();
+var_dump($Request->path_normalized, $Request->current_module);
+
+var_dump('Admin request without module specified');
+$Request->init_server(['REQUEST_URI' => '/admin'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->current_module,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path
+);
+
+var_dump('API request without module specified');
+$Request->init_server(['REQUEST_URI' => '/api'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->current_module,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path
+);
+
+var_dump('CLI request without module specified');
+$Request->init_server(['CLI' => true, 'REQUEST_URI' => '/cli'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->current_module,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path
+);
+
+var_dump('Request to regular page of disabled module');
+$Request->init_server(['REQUEST_URI' => '/Disabled_module'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->current_module,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path
+);
+
+var_dump('Request to admin page of disabled module');
+$Request->init_server(['REQUEST_URI' => '/admin/Disabled_module'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->current_module,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path
+);
+
+var_dump('Request to regular page of uninstalled module');
+$Request->init_server(['REQUEST_URI' => '/Uninstalled_module'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->current_module,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path
+);
+
+var_dump('Request to admin page of uninstalled module');
+$Request->init_server(['REQUEST_URI' => '/admin/Uninstalled_module'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->current_module,
+	$Request->api_path,
+	$Request->admin_path,
+	$Request->cli_path
+);
+
+var_dump('Page with route');
+$Request->init_server(['REQUEST_URI' => '/api/Enabled_module/path/subpath/10/15?page=3&count=10'] + $server);
+$Request->init_route();
+var_dump(
+	$Request->path_normalized,
+	$Request->current_module,
+	$Request->route,
+	$Request->route_path,
+	$Request->route_ids,
+	$Request->route(0),
+	$Request->route_path(0),
+	$Request->route_ids(0)
+);
+
+var_dump('Not allowed host');
+$Request->init_server(['SERVER_NAME' => 'abc.xyz'] + $server);
+try {
+	$Request->init_route();
+} catch (ExitException $e) {
+	var_dump($e->getCode(), $e->getMessage());
+}
+var_dump($Request->mirror_index);
+
+var_dump('Correct redirect');
+Response::instance_stub(
+	[
+		'code' => 200
+	],
+	[
+		'redirect' => function (...$arguments) {
+			var_dump('Redirect called with', $arguments);
+		}
+	]
+);
+$Request->init_server(['REQUEST_URI' => '/redirect/http://google.com', 'HTTP_REFERER' => 'http://cscms.travis/Some_page'] + $server);
+try {
+	$Request->init_route();
+} catch (ExitException $e) {
+	var_dump($e->getCode(), $e->getMessage());
+}
+
+var_dump('Incorrect redirect (no header)');
+Response::instance_stub(
+	[
+		'code' => 200
+	],
+	[
+		'redirect' => function (...$arguments) {
+			var_dump('Redirect called with', $arguments);
+		}
+	]
+);
+$Request->init_server(['REQUEST_URI' => '/redirect/http://google.com'] + $server);
+try {
+	$Request->init_route();
+} catch (ExitException $e) {
+	var_dump($e->getCode(), $e->getMessage());
+}
+
+var_dump('Incorrect redirect (with header)');
+Response::instance_stub(
+	[
+		'code' => 200
+	],
+	[
+		'redirect' => function (...$arguments) {
+			var_dump('Redirect called with', $arguments);
+		}
+	]
+);
+$Request->init_server(['REQUEST_URI' => '/redirect/http://google.com', 'HTTP_REFERER' => 'http://abc.xyz/Some_page'] + $server);
+try {
+	$Request->init_route();
+} catch (ExitException $e) {
+	var_dump($e->getCode(), $e->getMessage());
+}
+
+?>
+--EXPECT--
+string(9) "Home page"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(0) ""
+}
+int(0)
+string(6) "System"
+array(0) {
+}
+array(0) {
+}
+array(0) {
+}
+bool(false)
+bool(false)
+bool(false)
+string(6) "System"
+bool(true)
+string(26) "Home page, language in URL"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(0) ""
+}
+string(6) "System"
+array(0) {
+}
+string(6) "System"
+bool(true)
+string(11) "Module page"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(14) "Enabled_module"
+}
+int(0)
+string(14) "Enabled_module"
+array(0) {
+}
+array(0) {
+}
+array(0) {
+}
+bool(false)
+bool(false)
+bool(false)
+string(14) "Enabled_module"
+bool(false)
+string(28) "Module page, language in URL"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(14) "Enabled_module"
+}
+string(14) "Enabled_module"
+array(0) {
+}
+string(14) "Enabled_module"
+bool(false)
+string(8) "API page"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(18) "api/Enabled_module"
+}
+string(18) "api/Enabled_module"
+array(0) {
+}
+string(14) "Enabled_module"
+bool(true)
+bool(false)
+bool(false)
+string(25) "API page, language in URL"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(18) "api/Enabled_module"
+}
+string(18) "api/Enabled_module"
+array(0) {
+}
+string(14) "Enabled_module"
+bool(true)
+bool(false)
+bool(false)
+string(10) "Admin page"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(20) "admin/Enabled_module"
+}
+string(20) "admin/Enabled_module"
+array(0) {
+}
+string(14) "Enabled_module"
+bool(false)
+bool(true)
+bool(false)
+string(27) "Admin page, language in URL"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(20) "admin/Enabled_module"
+}
+string(20) "admin/Enabled_module"
+array(0) {
+}
+string(14) "Enabled_module"
+bool(false)
+bool(true)
+bool(false)
+string(3) "CLI"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(18) "cli/Enabled_module"
+}
+string(18) "cli/Enabled_module"
+array(0) {
+}
+string(14) "Enabled_module"
+bool(false)
+bool(false)
+bool(true)
+string(21) "Localized module name"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(24) "Enabled_module_localized"
+}
+string(14) "Enabled_module"
+string(14) "Enabled_module"
+string(38) "Admin request without module specified"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(5) "admin"
+}
+string(12) "admin/System"
+string(6) "System"
+bool(false)
+bool(true)
+bool(false)
+string(36) "API request without module specified"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(3) "api"
+}
+string(10) "api/System"
+string(6) "System"
+bool(true)
+bool(false)
+bool(false)
+string(36) "CLI request without module specified"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(3) "cli"
+}
+string(10) "cli/System"
+string(6) "System"
+bool(false)
+bool(false)
+bool(true)
+string(42) "Request to regular page of disabled module"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(15) "Disabled_module"
+}
+string(22) "System/Disabled_module"
+string(6) "System"
+bool(false)
+bool(false)
+bool(false)
+string(40) "Request to admin page of disabled module"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(21) "admin/Disabled_module"
+}
+string(21) "admin/Disabled_module"
+string(15) "Disabled_module"
+bool(false)
+bool(true)
+bool(false)
+string(45) "Request to regular page of uninstalled module"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(18) "Uninstalled_module"
+}
+string(25) "System/Uninstalled_module"
+string(6) "System"
+bool(false)
+bool(false)
+bool(false)
+string(43) "Request to admin page of uninstalled module"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(24) "admin/Uninstalled_module"
+}
+string(31) "admin/System/Uninstalled_module"
+string(6) "System"
+bool(false)
+bool(true)
+bool(false)
+string(15) "Page with route"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(37) "api/Enabled_module/path/subpath/10/15"
+}
+string(37) "api/Enabled_module/path/subpath/10/15"
+string(14) "Enabled_module"
+array(4) {
+  [0]=>
+  string(4) "path"
+  [1]=>
+  string(7) "subpath"
+  [2]=>
+  string(2) "10"
+  [3]=>
+  string(2) "15"
+}
+array(2) {
+  [0]=>
+  string(4) "path"
+  [1]=>
+  string(7) "subpath"
+}
+array(2) {
+  [0]=>
+  string(2) "10"
+  [1]=>
+  string(2) "15"
+}
+string(4) "path"
+string(4) "path"
+string(2) "10"
+string(16) "Not allowed host"
+int(400)
+string(26) "Mirror abc.xyz not allowed"
+int(-1)
+string(16) "Correct redirect"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(26) "redirect/http://google.com"
+}
+string(20) "Redirect called with"
+array(2) {
+  [0]=>
+  string(17) "http://google.com"
+  [1]=>
+  int(301)
+}
+int(200)
+string(0) ""
+string(30) "Incorrect redirect (no header)"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(26) "redirect/http://google.com"
+}
+int(400)
+string(0) ""
+string(32) "Incorrect redirect (with header)"
+string(47) "System/Request/routing_replace event fired with"
+array(1) {
+  ["rc"]=>
+  &string(26) "redirect/http://google.com"
+}
+int(400)
+string(0) ""
