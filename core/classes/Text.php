@@ -47,7 +47,7 @@ class Text {
 	 */
 	protected function get_text_by_id ($database, $clang, $id) {
 		$cdb  = DB::instance()->db($database);
-		$text = $cdb->qf(
+		$text = $cdb->qfs(
 			"SELECT `d`.`text`
 			FROM `[prefix]texts` AS `t`
 				LEFT JOIN `[prefix]texts_data` AS `d`
@@ -59,7 +59,7 @@ class Text {
 			$clang
 		);
 		if (!$text) {
-			$text = $cdb->qf(
+			$text = $cdb->qfs(
 				"SELECT `d`.`text`
 				FROM `[prefix]texts` AS `t`
 					LEFT JOIN `[prefix]texts_data` AS `d`
