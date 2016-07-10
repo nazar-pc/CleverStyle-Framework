@@ -1,15 +1,7 @@
-FROM phusion/baseimage
+FROM phusion/baseimage:0.9.19
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 RUN	export DEBIAN_FRONTEND=noninteractive && \
-
-# We'll need fresh MariaDB version here
-
-	apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db && \
-	add-apt-repository 'deb http://ams2.mirrors.digitalocean.com/mariadb/repo/10.1/ubuntu trusty main' && \
-	# Hack, otherwise add-apt-repository crashes
-	export LANG=C.UTF-8 && \
-	add-apt-repository -y ppa:ondrej/php && \
 
 # Update packages list, upgrade installed packages
 
@@ -28,7 +20,7 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 	apt-get install -y --no-install-recommends \
 		mariadb-server \
 		nginx \
-		php5.6-cli php5.6-curl php5.6-gd php5.6-fpm php5.6-mbstring php5.6-mysql php5.6-xml \
+		php-cli php-curl php-gd php-fpm php-mbstring php-mysql php-xml \
 		wget && \
 	rm -rf /var/lib/apt/lists/* && \
 
@@ -50,7 +42,7 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 
 # Allow to build phar archives
 
-	sed -i 's/;phar.readonly = On/phar.readonly = Off/g' /etc/php/5.6/cli/php.ini && \
+	sed -i 's/;phar.readonly = On/phar.readonly = Off/g' /etc/php/7.0/cli/php.ini && \
 
 # Build distributive with all available modules and themes
 
