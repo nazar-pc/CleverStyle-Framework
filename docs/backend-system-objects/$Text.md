@@ -20,8 +20,8 @@ Each method accepts database id as first parameter. This database should contain
 
 Group - usually module name, or module name plus some section. Label - usually id of some item or section + id. Such structure is made for simpler managing of texts.
 
-#### get($database : int, $group : string, $label : string, $id = null : int|null, $store_in_cache = false : bool) : false|string
-Get text by group and label or id. In most cases it is not needed because of `$Text->process()` method.
+#### get($database : int, $id = null : int|null, $store_in_cache = false : bool) : false|string
+Get text by id. In most cases it is not needed because of `$Text->process()` method.
 
 #### search($database : int, $group : string, $label : string, $text : string) : array[]|false
 Search for text regardless language.
