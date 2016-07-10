@@ -29,29 +29,26 @@ class Text {
 		if ($store_in_cache && ($text = $Cache->$cache_key) !== false) {
 			return $text;
 		}
-		$cdb  = DB::instance()->db($database);
-		$text = $this->get_text_by_id($id, $cdb, $L);
-		if (!$text) {
+		$text = $this->get_text_by_id($database, $L->clang, $id);
+		if ($text === false) {
 			return false;
 		}
 		if ($store_in_cache) {
-			$Cache->$cache_key = $text['text'];
+			$Cache->$cache_key = $text;
 		}
-		return $text['text'];
+		return $text;
 	}
 	/**
-	 * @param int          $id
-	 * @param DB\_Abstract $cdb
-	 * @param Language     $L
+	 * @param int    $database
+	 * @param string $clang
+	 * @param int    $id
 	 *
-	 * @return false|string[]
+	 * @return false|string
 	 */
-	protected function get_text_by_id ($id, $cdb, $L) {
+	protected function get_text_by_id ($database, $clang, $id) {
+		$cdb  = DB::instance()->db($database);
 		$text = $cdb->qf(
-			"SELECT
-				`d`.`id`,
-				`d`.`lang`,
-				`d`.`text`
+			"SELECT `d`.`text`
 			FROM `[prefix]texts` AS `t`
 				LEFT JOIN `[prefix]texts_data` AS `d`
 			ON `t`.`id` = `d`.`id`
@@ -59,14 +56,11 @@ class Text {
 				`t`.`id`	= $id AND
 				`d`.`lang`	= '%s'
 			LIMIT 1",
-			$L->clang
+			$clang
 		);
 		if (!$text) {
 			$text = $cdb->qf(
-				"SELECT
-					`d`.`id`,
-					`d`.`lang`,
-					`d`.`text`
+				"SELECT `d`.`text`
 				FROM `[prefix]texts` AS `t`
 					LEFT JOIN `[prefix]texts_data` AS `d`
 				ON `t`.`id` = `d`.`id`
@@ -125,9 +119,6 @@ class Text {
 		if (preg_match('/^\{¶(\d+)\}$/', $text)) {
 			return false;
 		}
-		/**
-		 * @var \cs\DB\_Abstract $cdb
-		 */
 		// Find existing text id
 		$id = $cdb->qfs(
 			"SELECT `id`
@@ -162,22 +153,19 @@ class Text {
 				}
 			}
 		}
-		unset(
-			$Cache->{"texts/$database/{$id}_$L->clang"},
-			$Cache->{"texts/$database/".md5($group).md5($label)."_$L->clang"}
-		);
-		return $this->set_text($id, $text, $cdb, $Config, $L);
+		$Cache->del("texts/$database/{$id}_$L->clang");
+		return $this->set_text($id, $text, $cdb, (bool)$Config->core['multilingual'], $L->clang);
 	}
 	/**
 	 * @param int          $id
 	 * @param string       $text
 	 * @param DB\_Abstract $cdb
-	 * @param Config       $Config
-	 * @param Language     $L
+	 * @param bool         $multilingual
+	 * @param string       $clang
 	 *
 	 * @return mixed
 	 */
-	protected function set_text ($id, $text, $cdb, $Config, $L) {
+	protected function set_text ($id, $text, $cdb, $multilingual, $clang) {
 		$exists_for_current_language = $cdb->qfs(
 			"SELECT `id`
 			FROM `[prefix]texts_data`
@@ -186,7 +174,7 @@ class Text {
 				`lang`	= '%s'
 			LIMIT 1",
 			$id,
-			$L->clang
+			$clang
 		);
 		if ($exists_for_current_language) {
 			if ($cdb->q(
@@ -200,12 +188,12 @@ class Text {
 				$text,
 				md5($text),
 				$id,
-				$L->clang
+				$clang
 			)
 			) {
 				return "{¶$id}";
 			}
-		} elseif ($Config->core['multilingual']) {
+		} elseif ($multilingual) {
 			if ($cdb->q(
 				"INSERT INTO `[prefix]texts_data`
 					(
@@ -223,7 +211,7 @@ class Text {
 					)",
 				$id,
 				"{¶$id}",
-				$L->clang,
+				$clang,
 				$text,
 				md5($text)
 			)
@@ -259,10 +247,7 @@ class Text {
 		);
 		if ($id) {
 			$L = Language::instance();
-			unset(
-				$Cache->{"texts/$database/{$id}_$L->clang"},
-				$Cache->{"texts/$database/".md5($group).md5($label)."_$L->clang"}
-			);
+			$Cache->del("texts/$database/{$id}_$L->clang");
 			return $cdb->q(
 				[
 					"DELETE FROM `[prefix]texts`
