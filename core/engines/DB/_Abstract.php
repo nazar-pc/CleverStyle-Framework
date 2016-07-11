@@ -142,7 +142,7 @@ abstract class _Abstract {
 	 * @param string[] $queries
 	 * @param string[] $params
 	 *
-	 * @return false|object|resource
+	 * @return bool
 	 */
 	protected function execute_multiple ($queries, $params) {
 		$time_from = microtime(true);
