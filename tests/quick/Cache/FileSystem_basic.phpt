@@ -10,7 +10,3 @@ require __DIR__.'/_test.php';
 <?php
 require __DIR__.'/_test.expect';
 ?>
---CLEAN--
-<?php
-include __DIR__.'/../../bootstrap.php';
-exec('rm -r '.CACHE.'/*');
