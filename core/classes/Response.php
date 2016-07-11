@@ -70,7 +70,7 @@ class Response {
 		if ($this->body_stream) {
 			fclose($this->body_stream);
 		}
-		$this->data_stream = is_string($body_stream) ? fopen($body_stream, 'a+b') : $body_stream;
+		$this->body_stream = is_string($body_stream) ? fopen($body_stream, 'a+b') : $body_stream;
 		return $this;
 	}
 	/**
