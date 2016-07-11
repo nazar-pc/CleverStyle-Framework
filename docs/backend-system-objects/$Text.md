@@ -11,7 +11,6 @@ $Text = \cs\Text::instance();
 
 `$Text` object has next public methods:
 * get()
-* search()
 * set()
 * del()
 * process()
@@ -22,9 +21,6 @@ Group - usually module name, or module name plus some section. Label - usually i
 
 #### get($database : int, $id = null : int|null, $store_in_cache = false : bool) : false|string
 Get text by id. In most cases it is not needed because of `$Text->process()` method.
-
-#### search($database : int, $group : string, $label : string, $text : string) : array[]|false
-Search for text regardless language.
 
 #### set($database : int, $group : string, $label : string, $text : string) : false|string
 Set text for specified group and label.

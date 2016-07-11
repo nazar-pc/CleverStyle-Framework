@@ -125,7 +125,7 @@ class PostgreSQL extends _Abstract {
 	 * @inheritdoc
 	 */
 	protected function q_multi_internal ($query) {
-		return $this->q_internal(implode(';', $query));
+		return (bool)$this->q_internal(implode(';', $query));
 	}
 	/**
 	 * @inheritdoc

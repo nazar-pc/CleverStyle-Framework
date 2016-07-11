@@ -6,7 +6,11 @@ include __DIR__.'/../../../bootstrap.php';
 Request::instance()->init_from_globals();
 $Config                           = Config::instance();
 $Config->core['multilingual']     = 1;
-$Config->core['active_languages'] = _mb_substr(get_files_list(LANGUAGES, '/^.*?\.json$/i', 'f'), 0, -5) ?: [];
+$Config->core['active_languages'] = [
+	'English',
+	'Russian',
+	'Ukrainian'
+];
 Meta::instance()->render();
 echo Page::instance()->Head;
 ?>

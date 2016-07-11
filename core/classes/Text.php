@@ -71,33 +71,6 @@ class Text {
 		return $text;
 	}
 	/**
-	 * Search for text regardless language
-	 *
-	 * @param int    $database
-	 * @param string $group
-	 * @param string $label
-	 * @param string $text
-	 *
-	 * @return array[]|false Array of items `['id' => id, 'lang' => lang]` on success, `false` otherwise
-	 */
-	function search ($database, $group, $label, $text) {
-		return DB::instance()->db($database)->qfa(
-			"SELECT
-				`t`.`id`,
-				`d`.`lang`
-			FROM `[prefix]texts` AS `t`
-				INNER JOIN `[prefix]texts_data` AS `d`
-			ON `t`.`id` = `d`.`id`
-			WHERE
-				`t`.`group`		= '%s' AND
-				`t`.`label`		= '%s' AND
-				`d`.`text_md5`	= '%s'",
-			$group,
-			$label,
-			md5($text)
-		);
-	}
-	/**
 	 * Sets text on current language
 	 *
 	 * @param int    $database
@@ -153,19 +126,19 @@ class Text {
 				}
 			}
 		}
+		$result = $this->set_text($id, $text, $cdb, $L->clang);
 		$Cache->del("texts/$database/{$id}_$L->clang");
-		return $this->set_text($id, $text, $cdb, (bool)$Config->core['multilingual'], $L->clang);
+		return $result;
 	}
 	/**
 	 * @param int          $id
 	 * @param string       $text
 	 * @param DB\_Abstract $cdb
-	 * @param bool         $multilingual
 	 * @param string       $clang
 	 *
 	 * @return mixed
 	 */
-	protected function set_text ($id, $text, $cdb, $multilingual, $clang) {
+	protected function set_text ($id, $text, $cdb, $clang) {
 		$exists_for_current_language = $cdb->qfs(
 			"SELECT `id`
 			FROM `[prefix]texts_data`
@@ -177,7 +150,7 @@ class Text {
 			$clang
 		);
 		if ($exists_for_current_language) {
-			if ($cdb->q(
+			$result = $cdb->q(
 				"UPDATE `[prefix]texts_data`
 				SET
 					`text`		= '%s',
@@ -189,12 +162,9 @@ class Text {
 				md5($text),
 				$id,
 				$clang
-			)
-			) {
-				return "{¶$id}";
-			}
-		} elseif ($multilingual) {
-			if ($cdb->q(
+			);
+		} else {
+			$result = $cdb->q(
 				"INSERT INTO `[prefix]texts_data`
 					(
 						`id`,
@@ -214,12 +184,9 @@ class Text {
 				$clang,
 				$text,
 				md5($text)
-			)
-			) {
-				return "{¶$id}";
-			}
+			);
 		}
-		return $text;
+		return $result ? "{¶$id}" : false;
 	}
 	/**
 	 * Deletes text on all languages
@@ -234,21 +201,18 @@ class Text {
 		$Cache = Cache::instance();
 		$cdb   = DB::instance()->db_prime($database);
 		$id    = $cdb->qfs(
-			[
-				"SELECT `id`
-				FROM `[prefix]texts`
-				WHERE
-					`group`	= '%s' AND
-					`label`	= '%s'
-				LIMIT 1",
-				$group,
-				$label
-			]
+			"SELECT `id`
+			FROM `[prefix]texts`
+			WHERE
+				`group`	= '%s' AND
+				`label`	= '%s'
+			LIMIT 1",
+			$group,
+			$label
 		);
 		if ($id) {
-			$L = Language::instance();
-			$Cache->del("texts/$database/{$id}_$L->clang");
-			return $cdb->q(
+			$L      = Language::instance();
+			$result = $cdb->q(
 				[
 					"DELETE FROM `[prefix]texts`
 					WHERE `id` = '%s'",
@@ -257,6 +221,8 @@ class Text {
 				],
 				$id
 			);
+			$Cache->del("texts/$database/{$id}_$L->clang");
+			return $result;
 		}
 		return true;
 	}
