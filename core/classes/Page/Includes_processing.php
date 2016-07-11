@@ -64,10 +64,6 @@ class Includes_processing {
 		 */
 		$data = preg_replace('/;+/m', ';', $data);
 		/**
-		 * Minify repeated colors declarations
-		 */
-		$data = preg_replace('/#([0-9a-f])\1([0-9a-f])\2([0-9a-f])\3/i', '#$1$2$3', $data);
-		/**
 		 * Minify rgb colors declarations
 		 */
 		$data = preg_replace_callback(
@@ -83,39 +79,49 @@ class Includes_processing {
 			$data
 		);
 		/**
+		 * Minify repeated colors declarations
+		 */
+		$data = preg_replace('/#([0-9a-f])\1([0-9a-f])\2([0-9a-f])\3/i', '#$1$2$3', $data);
+		/**
 		 * Remove unnecessary zeros
 		 */
 		$data = preg_replace('/(\D)0\.(\d+)/i', '$1.$2', $data);
 		/**
+		 * Unnecessary spaces around colons (should have whitespace character after, otherwise might be `.c :disabled` and will be handled incorrectly)
+		 */
+		$data = preg_replace('/\s*:\s+/', ':', $data);
+		/**
 		 * Includes processing
 		 */
 		$data = preg_replace_callback(
-			'/url\((.*?)\)|@import[\s\t\n\r]*[\'"](.*?)[\'"]/',
+			'/url\((.*?)\)|@import\s*[\'"](.*?)[\'"]\s*;/',
 			function ($match) use ($dir, &$not_embedded_resources) {
-				$link = trim($match[1], '\'" ');
-				$link = explode('?', $link, 2)[0];
-				if (!static::is_relative_path_and_exists($link, $dir)) {
-					return $match[0];
-				}
+				$path      = @$match[2] ?: $match[1];
+				$path      = trim($path, '\'" ');
+				$link      = explode('?', $path, 2)[0];
 				$content   = file_get_contents("$dir/$link");
 				$extension = file_extension($link);
-				if (!isset(static::$extension_to_mime[$extension]) || filesize("$dir/$link") > static::MAX_EMBEDDING_SIZE) {
-					$path_relatively_to_the_root = str_replace(getcwd(), '', realpath("$dir/$link"));
-					$path_relatively_to_the_root .= '?'.substr(md5($content), 0, 5);
-					if (strpos($match[1], '?') === false) {
-						$not_embedded_resources[] = $path_relatively_to_the_root;
-					}
-					return str_replace($match[1], "'".str_replace("'", "\\'", $path_relatively_to_the_root)."'", $match[0]);
-				}
 				if ($extension == 'css') {
 					/**
 					 * For recursive includes processing, if CSS file includes others CSS files
+					 * TODO: Support for `@import` with media queries
 					 */
-					$content = static::css($content, $link, $not_embedded_resources);
+					return static::css($content, $link, $not_embedded_resources);
+				}
+				if (!static::is_relative_path_and_exists($link, $dir)) {
+					return $match[0];
+				}
+				if (!isset(static::$extension_to_mime[$extension]) || filesize("$dir/$link") > static::MAX_EMBEDDING_SIZE) {
+					$path_relatively_to_the_root = str_replace(getcwd(), '', realpath("$dir/$link"));
+					$path_relatively_to_the_root .= '?'.substr(md5($content), 0, 5);
+					if (strpos($path, '?') === false) {
+						$not_embedded_resources[] = $path_relatively_to_the_root;
+					}
+					return str_replace($path, "'".str_replace("'", "\\'", $path_relatively_to_the_root)."'", $match[0]);
 				}
 				$mime_type = static::$extension_to_mime[$extension];
 				$content   = base64_encode($content);
-				return str_replace($match[1], "data:$mime_type;charset=utf-8;base64,$content", $match[0]);
+				return str_replace($path, "data:$mime_type;charset=utf-8;base64,$content", $match[0]);
 			},
 			$data
 		);
