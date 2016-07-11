@@ -268,7 +268,7 @@ array(1) {
     [0]=>
     string(15) "c=value; path=/"
     [1]=>
-    string(%d) "c-expire=value; path=/; expires=Tue, %d-%s-%d %d:%d:%d GMT"
+    string(%d) "c-expire=value; path=/; expires=%s, %d-%s-%d %d:%d:%d GMT"
     [2]=>
     string(34) "c-httponly=value; path=/; HttpOnly"
     [3]=>
