@@ -217,8 +217,8 @@ class Includes_processing {
 	 * @return string
 	 */
 	static function html ($data, $file, $base_target_file_path, $vulcanization, &$not_embedded_resources = []) {
-		static::html_process_scripts($data, $file, $base_target_file_path, $vulcanization, $not_embedded_resources);
 		static::html_process_links_and_styles($data, $file, $base_target_file_path, $vulcanization, $not_embedded_resources);
+		static::html_process_scripts($data, $file, $base_target_file_path, $vulcanization, $not_embedded_resources);
 		// Removing HTML comments (those that are mostly likely comments, to avoid problems)
 		$data = preg_replace_callback(
 			'/^\s*<!--([^>-].*[^-])?-->/Ums',
@@ -298,9 +298,7 @@ class Includes_processing {
 		if (!preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles)) {
 			return;
 		}
-		$imports_content             = '';
-		$links_and_styles_to_replace = [];
-		$dir                         = dirname($file);
+		$dir = dirname($file);
 		foreach ($links_and_styles[1] as $index => $link) {
 			/**
 			 * Check for custom styles `is="custom-style"` or styles includes `include=".."` - we'll skip them
@@ -346,21 +344,19 @@ class Includes_processing {
 				/**
 				 * If content is HTML import
 				 */
-				$links_and_styles_to_replace[] = $links_and_styles[0][$index];
-				$imports_content .= static::html(
-					file_get_contents("$dir/$url"),
-					"$dir/$url",
-					"$base_target_file_path-".basename($url, '.html'),
-					$vulcanization,
-					$not_embedded_resources
+				$data = str_replace(
+					$links_and_styles[0][$index],
+					static::html(
+						file_get_contents("$dir/$url"),
+						"$dir/$url",
+						"$base_target_file_path-".basename($url, '.html'),
+						$vulcanization,
+						$not_embedded_resources
+					),
+					$data
 				);
 			}
 		}
-		if (!$links_and_styles_to_replace) {
-			return;
-		}
-		// Add imports to the end
-		$data .= $imports_content;
 	}
 	/**
 	 * @param string $link

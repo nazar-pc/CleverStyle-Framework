@@ -1,0 +1,29 @@
+<!-- Some comment here -->
+<dom-module id="my-element">
+	<link rel="import" href="style.css" type="css"><!-- Another comment -->
+	<template>
+		<style>
+			/* Default element styles */
+			:host {
+				display: block;
+			}
+		</style>
+	</template>
+	<script>
+		// Register element
+		Polymer({
+			is : 'my-element'
+		});
+	</script>
+	<script src="script.js"></script>
+</dom-module>
+<script>
+	// Some more JS here
+	Polymer.updateStyles();
+</script>
+<script src="/external-script.js"></script>
+<link rel="import" href="imported.html" type="html">
+<link rel="import" href="imported-no-scripts.html" type="html">
+<link rel="import" href="imported-no-styles.html" type="html">
+<link rel="import" href="imported-external-scripts.html" type="html">
+<link rel="import" href="/external-import.html" type="html">
