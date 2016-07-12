@@ -39,7 +39,7 @@ trait about_server {
 			],
 			'main_db'          => [
 				'type'    => $Core->db_type,
-				'version' => DB::instance()->server(),
+				'version' => DB::instance()->db(0)->server(),
 				'host'    => $Core->db_host,
 				'name'    => $Core->db_name,
 				'prefix'  => $Core->db_prefix

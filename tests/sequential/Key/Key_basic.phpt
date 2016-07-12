@@ -66,7 +66,7 @@ function time ($time = 0) {
 	return $stored_time;
 }
 var_dump('Expiration test');
-$key_6 = $Key->add(0, false, null, time() + 1);
+$key_6 = $Key->add(0, false, null, \time() + 1);
 $key_7 = $Key->add(0, false, null);
 $key_8 = $Key->add(0, false, null);
 time(\time() + 2);
