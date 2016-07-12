@@ -49,7 +49,7 @@ Event::instance()
 				return;
 			}
 			$module_data   = Config::instance()->module('Photo_gallery');
-			$storage       = Storage::instance()->{$module_data->storage('files')};
+			$storage       = Storage::instance()->storage($module_data->storage('files'));
 			$Photo_gallery = Photo_gallery::instance();
 			foreach ($Photo_gallery->get_galleries_list() ?: [] as $gallery) {
 				$Photo_gallery->del_gallery($gallery);

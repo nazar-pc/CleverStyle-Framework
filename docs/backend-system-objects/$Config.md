@@ -370,7 +370,7 @@ Is used to get storage index by associated identifier, as it is described in *me
 $Config           = \cs\Config::instance();
 $Storage          = \cs\Storage::instance();
 $users_storage_id = $Config->module('System')->storage('images');
-$result           = $db->$users_storage_id->file_put_contents('test', 123);
+$result           = $Storage->storage($users_storage_id)->file_put_contents('test', 123);
 ```
 #### enabled() : bool
 Returns boolean `true` if module is enabled, and `false` otherwise

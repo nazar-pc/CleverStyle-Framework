@@ -17,18 +17,11 @@ Also if there is only one configured storage it is possible to call methods of \
 ```php
 <?php
 $Storage = \cs\Storage::instance();
-$content = $Storage->file_get_content('some_file');
+$content = $Storage->storage(0)->file_get_content('some_file');
 ```
 
 #### storage($connection : int) : cs\\Storage\\_Abstract|False_class
 Method returns instance of class for storage abstraction.
-
-Also there is simplified way to get instance - to get it as property of object:
-```php
-<?php
-$Storage = \cs\Storage::instance();
-$storage = $Storage->{'0'};
-```
 
 #### get_connections_list($status = null : bool|null|string) : array|null
 Is used for getting of successful and failed connections.

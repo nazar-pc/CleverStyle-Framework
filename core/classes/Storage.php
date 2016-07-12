@@ -51,16 +51,6 @@ class Storage {
 		return $this->connecting($connection);
 	}
 	/**
-	 * Processing of getting storage instance
-	 *
-	 * @param int $connection
-	 *
-	 * @return Storage\_Abstract|False_class
-	 */
-	function __get ($connection) {
-		return $this->storage($connection);
-	}
-	/**
 	 * Processing of all storage requests
 	 *
 	 * @param int $connection

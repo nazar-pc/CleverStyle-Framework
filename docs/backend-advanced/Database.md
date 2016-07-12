@@ -11,7 +11,7 @@ First thing you need to know - how to use prepared statements, because this is t
 There are few ways to use them:
 ```php
 <?php
-\cs\DB::instance()->q(
+\cs\DB::instance()->db_prime(0)->q(
     "DELETE FROM `[prefix]table`
     WHERE
         `param`    = '%s' AND
@@ -26,7 +26,7 @@ Method `::q()` just executes the query. First argument is query string followed 
 
 ```php
 <?php
-\cs\DB::instance()->q(
+\cs\DB::instance()->db_prime(0)->q(
     "DELETE FROM `[prefix]table`
     WHERE
         `param`    = '%s' AND
@@ -43,7 +43,7 @@ Query string itself may be an array too.
 
 ```php
 <?php
-\cs\DB::instance()->q(
+\cs\DB::instance()->db_prime(0)->q(
     [
         "DELETE FROM `[prefix]table`
         WHERE `id` = %d",
@@ -67,14 +67,14 @@ Normally, you need to make query, then fetch result or make it few times to get 
 
 ```php
 <?php
-$db     = \cs\DB::instance();
-$result = $db->qf([
+$cdb    = \cs\DB::instance()->db(0);
+$result = $cdb->qf(
     "SELECT `id`, `name`
     FROM `[prefix]table`
     WHERE `id` = 10
     LIMIT 1,
     10
-]);
+);
 var_dump($result); // ['id' => '10', 'name' => 'Some name']
 ```
 
@@ -87,30 +87,28 @@ There are more of such methods:
 Use them where applicable, methods names are short but very easy to remember.
 
 ### Read only databases and write databases
-In order to simplify all the things we used `\cs\DB::instance()->*` methods, which actually works, but is limited to cases when there is only one database and doesn't have necessary context for system.
+Database may have mirrors, mirrors may be used for read only access, while master database is used for writes, so as developer you should specify explicitly whether you'll make read or write queries.
 
-Database may have mirrors, mirrors may be used for read only access, while master database is used for writes.
-
-To get instance of specific database in read only mode call:
+To get instance of specific database in read only mode call `::db()` method with database id:
 
 ```php
 <?php
 $db_index = 0;
 $db       = \cs\DB::instance();
-$cdb      = $db->$db_index;
+$cdb      = $db->db($db_index);
 $cdb->q(...);
 ```
 
-To get instance in write mode you need to call method instead of getting property:
+To get instance in write mode you need call `::db_prime()` method with database id:
 
 ```php
 <?php
 $db_index = 0;
 $db       = \cs\DB::instance();
-$cdb      = $db->$db_index();
+$cdb      = $db->db_prime($db_index);
 $cdb->q(...);
 ```
 
 While it is likely that most of times you'll deal with single database it doesn't make things very complex to separate different queries by default.
 
-Also, if you have one write query and one read query in the same block of code - you can make both operations on database with write mode in order to open less connections.
+Also, if you have one write query and one read query in the same block of code - you can make both operations on database with write mode in order to use single database connection.

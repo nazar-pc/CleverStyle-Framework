@@ -5,7 +5,7 @@ require_once __DIR__.'/../bootstrap.php';
  * @var DB\_Abstract $cdb
  */
 Config::instance_replace(False_class::instance());
-$cdb	= DB::instance();
+$cdb	= DB::instance()->db_prime(0);
 foreach ($cdb->tables() as $table) {
 	if (!$cdb->q("DROP TABLE `$table`")) {
 		echo "Dropping DB table `$table` failed\n";

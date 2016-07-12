@@ -93,18 +93,6 @@ class DB {
 		return $this->generic_connecting($database_id, true);
 	}
 	/**
-	 * Get database instance for read queries
-	 *
-	 * @param int $database_id
-	 *
-	 * @return DB\_Abstract|False_class Returns instance of False_class on failure
-	 *
-	 * @throws ExitException
-	 */
-	function __get ($database_id) {
-		return $this->db($database_id);
-	}
-	/**
 	 * Get database instance for write queries
 	 *
 	 * @param int $database_id
@@ -115,25 +103,6 @@ class DB {
 	 */
 	function db_prime ($database_id) {
 		return $this->generic_connecting($database_id, false);
-	}
-	/**
-	 * Get database instance for read queries or process implicit calls to methods of main database instance
-	 *
-	 * @param int|string $method
-	 * @param array      $arguments
-	 *
-	 * @return DB\_Abstract|False_class Returns instance of False_class on failure
-	 *
-	 * @throws ExitException
-	 */
-	function __call ($method, $arguments) {
-		if (is_int($method) || $method == '0') {
-			return $this->db_prime($method);
-		} elseif (method_exists('cs\\DB\\_Abstract', $method)) {
-			return $this->db(0)->$method(...$arguments);
-		} else {
-			return False_class::instance();
-		}
 	}
 	/**
 	 * @param int  $database_id

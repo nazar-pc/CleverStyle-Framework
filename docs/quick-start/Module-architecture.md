@@ -300,10 +300,10 @@ Contains array with identifiers for databases. If some tables of module can be c
 Index of configured database may be obtained from global object `$Config`. Example for module *System*:
 ```php
 <?php
-$Config        = \cs\Config::instance();
-$db        = \cs\DB::instance();
-$users_db_id    = $Config->module('System')->db('users');
-$result        = $db->$users_db_id->q(
+$Config      = \cs\Config::instance();
+$db          = \cs\DB::instance();
+$users_db_id = $Config->module('System')->db('users');
+$result      = $db->db($users_db_id)->q(
     "SELECT `login`
     FROM `[prefix]users`"
 );
@@ -315,10 +315,10 @@ Contains array with identifiers for storage, similarly to `db` property. This al
 Index of configured storage may be obtained from system object `$Config`. Example for module *System*:
 ```php
 <?php
-$Config            = \cs\Config::instance();
-$Storage        = \cs\Storage::instance();
-$users_storage_id    = $Config->module('System')->storage('images');
-$result            = $Storage->$users_storage_id->file_put_contents('test', 123);
+$Config           = \cs\Config::instance();
+$Storage          = \cs\Storage::instance();
+$users_storage_id = $Config->module('System')->storage('images');
+$result           = $Storage->storage($users_storage_id)->file_put_contents('test', 123);
 ```
 
 #### readme.html / readme.txt

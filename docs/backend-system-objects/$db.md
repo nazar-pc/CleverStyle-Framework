@@ -14,34 +14,12 @@ $db    = \cs\DB::instance();
 * db_prime()
 * get_connections_list()
 
-Also if there is only one configured database it is possible to call methods of `\cs\DB\\_Abstract` class directly from this object:
-```php
-<?php
-$db    = \cs\DB::instance();
-$query    = $db->q(
-    "SELECT `id`
-    FROM `[prefix]users`
-    LIMIT 1"
-);
-```
 #### db($database_id : int) : cs\\DB\\_Abstract|False_class
 Method returns instance of class for database abstraction. This object guaranteed will have read access to database.
 
-Also there is simplified way to get instance - to get it as property of object:
-```php
-<?php
-$db    = \cs\DB::instance();
-$cdb    = $db->{'0'};
-```
 #### db_prime($database_id : int) : cs\\DB\\_Abstract|False_class
-Similar to `db()`, but guaranteed will have write access to database. These two methods were separated in order to balance load on DB when database replication is used.
+Similar to `db()`, but guaranteed will have write access to database. These two methods were separated in order to balance load when database replication is used.
 
-Also there is simplified way to get instance - to get it as result of calling of object function:
-```php
-<?php
-$db    = \cs\DB::instance();
-$cdb    = $db->{'0'}();
-```
 #### get_connections_list($status = null : bool|null|string) : array|null
 Is used for getting of successful, failed and mirror connections.
 
@@ -94,7 +72,7 @@ For example:
 ```php
 <?php
 $db    = \cs\DB::instance();
-$query = $db->q(
+$query = $db->db(0)->q(
     "SELECT `id`
     FROM `[prefix]users`
     WHERE `login`    = '%s'
@@ -118,7 +96,7 @@ For example:
 ```php
 <?php
 $db    = \cs\DB::instance();
-$query = $db->qf(
+$query = $db->db(0)->qf(
     "SELECT `id`
     FROM `[prefix]users`
     WHERE `login`    = '%s'
@@ -153,7 +131,7 @@ For example:
 ```php
 <?php
 $db     = \cs\DB::instance();
-$result = $db->insert(
+$result = $db->db_prime(0)->insert(
     "INSERT INTO `[prefix]table`
     (
         `id`,
@@ -243,10 +221,10 @@ And one protected abstract method:
 * cdb()
 
 #### db() : DB\_Abstract|False_class
-Similar to `$db->db()`
+Similar to `$db->db()`, uses database id returned by `::cdb()` method 
 
 #### db_prime() : DB\_Abstract|False_class
-Similar to `$db->db_prime()`
+Similar to `$db->db_prime()`, uses database id returned by `::cdb()` method 
 
 #### protected int cdb() : abstract
-This is abstract method, that should be defined in classes, that use this trait. Method return integer index of database in system configuration.
+Current database id. Method return integer index of database in system configuration.
