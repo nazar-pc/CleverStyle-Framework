@@ -1,11 +1,12 @@
 <?php
 /**
- * @package   CleverStyle Framework
- * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright Copyright (c) 2016, Nazar Mokrynskyi
- * @license   MIT License, see license.txt
+ * @package    Psr7
+ * @category   modules
+ * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
+ * @license    MIT License, see license.txt
  */
-namespace cs\Request;
+namespace cs\modules\Psr7;
 use
 	Exception;
 
@@ -96,3 +97,7 @@ class Psr7_data_stream {
 		return $this->stat;
 	}
 }
+/**
+ * Stream wrapper for PSR7 request interface
+ */
+stream_wrapper_register('request-psr7-data', Psr7_data_stream::class);

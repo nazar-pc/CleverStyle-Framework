@@ -98,6 +98,7 @@ Some components are developed in parallel with core in this repository
  * **Picturefill** (integration of [Picturefill](https://github.com/scottjehl/picturefill) polyfill into CleverStyle Framework)
  * **Polls** (provides polls functionality to other modules)
  * **Prism** (integration of [Prism](http://prismjs.com/index.html) syntax highlighter into CleverStyle Framework)
+ * **Psr7** (allows initializing system request from Psr7-compatible request and output response to Psr7-compatible response object)
  * **Service Worker cache** (uses Service Worker to cache requests to static assets like CSS/JS/HTML/fonts/images to improve subsequent page loads, especially on bad internet connection)
  * **Shop** (provides simple, but highly extensible and customizable shopping functionality)
  * **SimpleImage** (integration of [SimpleImage](https://github.com/claviska/SimpleImage) class into CleverStyle Framework)

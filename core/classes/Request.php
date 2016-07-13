@@ -11,7 +11,6 @@ use
 	cs\Request\Data_and_files,
 	cs\Request\Query,
 	cs\Request\Route,
-	cs\Request\Psr7,
 	cs\Request\Server;
 
 /**
@@ -27,7 +26,6 @@ class Request {
 		Cookie,
 		Data_and_files,
 		Query,
-		Psr7,
 		Route,
 		Server;
 	/**

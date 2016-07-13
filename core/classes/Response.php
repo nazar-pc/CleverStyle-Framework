@@ -6,16 +6,13 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-use
-	cs\Response\Psr7;
 use function
 	cli\err,
 	cli\out;
 
 class Response {
 	use
-		Singleton,
-		Psr7;
+		Singleton;
 	/**
 	 * Protocol, for instance: `HTTP/1.0`, `HTTP/1.1` (default), HTTP/2.0
 	 *
