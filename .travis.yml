@@ -15,8 +15,10 @@ env:
     - DB=MySQLi
     - DB=SQLite
 #    - DB=PostgreSQL
-#matrix:
-#  allow_failures:
+matrix:
+  allow_failures:
+# Travis have too old HHVM, can't rely on it yet
+    - php: hhvm
 #    - env: DB=PostgreSQL
 before_script:
   - mysql -e 'CREATE DATABASE `travis`;'
