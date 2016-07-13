@@ -15,7 +15,6 @@
 * redirect()
 * cookie()
 * output_default()
-* output_to_psr7()
 
 #### init($body = '', $body_stream = null, $headers = [], $code = 200, $protocol = 'HTTP/1.1') : \cs\Response
 Initialize response object with specified data
@@ -34,9 +33,6 @@ Function for setting cookies, taking into account cookies prefix. Parameters lik
 
 #### output_default()
 Provides default output for all the response data using `header()`, `http_response_code()` and `echo` or `php://output`
-
-#### output_to_psr7()
-Provides output to PSR-7 response object
 
 <a name="properties" />
 ###[Up](#) Properties

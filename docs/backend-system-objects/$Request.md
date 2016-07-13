@@ -11,7 +11,6 @@
 `$Request` object has next public method:
 * init()
 * init_from_globals()
-* init_from_psr7()
 * init_server()
 * init_query()
 * init_data_and_files()
@@ -32,9 +31,6 @@ Initialize request with specified data, internally increases counter in static p
 
 #### init_from_globals()
 Initialize request object from superglobals `$_SERVER`, `$_GET`, `$_POST`, `$_COOKIE` and `$_FILES` (including parsing `php://input` when necessary), just wrapper around `::init()`
-
-#### init_from_psr7($request : \Psr\Http\Message\ServerRequestInterface)
-Initializes request from PSR7-compatible request object, wrapper around `::init()`
 
 #### init_server($server = [] : array)
 Initialize server configuration (including request headers), `$server` structure is the same as `$_SERVER`
