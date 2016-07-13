@@ -1,6 +1,6 @@
 --SKIPIF--
 <?php
-if (getenv('DB') && getenv('DB') != 'PostgreSQL') {
+if (getenv('DB') != 'PostgreSQL') {
 	exit('skip only running for database PostgreSQL engine');
 }
 ?>

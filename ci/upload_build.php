@@ -6,10 +6,6 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-if (substr(PHP_VERSION, 0, 3) !== '5.6' || getenv('DB') != 'MySQLi') {
-	echo "Distributive is uploaded only under PHP 5.6 with DB=MySQLi\n";
-	return;
-}
 chdir(__DIR__);
 define('ROOT', __DIR__.'/..');
 

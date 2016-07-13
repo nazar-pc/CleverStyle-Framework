@@ -1,6 +1,6 @@
 --SKIPIF--
 <?php
-if (getenv('DB') && getenv('DB') != 'MySQLi') {
+if (getenv('DB') != 'MySQLi') {
 	exit('skip only running for database MySQLi engine');
 }
 ?>
