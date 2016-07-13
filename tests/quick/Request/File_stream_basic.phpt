@@ -58,31 +58,27 @@ string(6) "Direct"
 string(16) "0123456789abcdef"
 string(3) "012"
 int(3)
-int(-1)
+int(%d)
 string(2) "23"
-int(5)
+int(%d)
 string(6) "Nested"
 string(16) "0123456789abcdef"
 string(3) "012"
 int(3)
-int(-1)
+int(%d)
 string(2) "23"
-int(5)
+int(%d)
 string(8) "Bad mode"
-PHP Warning:  file_put_contents(request-file:///direct): failed to open stream: "cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
-
-Warning: file_put_contents(request-file:///direct): failed to open stream: "cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
+%A
+Warning: %S"cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
 bool(false)
-PHP Warning:  fopen(request-file:///direct): failed to open stream: "cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
-
-Warning: fopen(request-file:///direct): failed to open stream: "cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
+%A
+Warning: %S"cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
 bool(false)
 string(17) "Non-existing file"
-PHP Warning:  file_put_contents(request-file:///non_existing): failed to open stream: "cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
-
-Warning: file_put_contents(request-file:///non_existing): failed to open stream: "cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
+%A
+Warning: %S"cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
 bool(false)
-PHP Warning:  fopen(request-file:///non_existing): failed to open stream: "cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
-
-Warning: fopen(request-file:///non_existing): failed to open stream: "cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
+%A
+Warning: %S"cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
 bool(false)

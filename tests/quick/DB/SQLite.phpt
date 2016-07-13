@@ -225,7 +225,7 @@ unset($db, $e);
 unlink($tmp);
 
 var_dump('Bad connection settings');
-var_dump(@(new \cs\DB\SQLite('fail'))->connected());
+var_dump(@(new \cs\DB\SQLite(''))->connected());
 ?>
 --EXPECTF--
 string(16) "single insert id"
@@ -504,7 +504,7 @@ bool(false)
 string(11) "Server info"
 string(%s) "%d.%d.%d%S"
 string(24) "Unsupported columns call"
-%a
+%A
 Warning: Can't get columns like %tle, SQLite engine doesn't support such conditions in %s/core/engines/DB/SQLite.php on line %d
 array(0) {
 }

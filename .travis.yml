@@ -2,6 +2,7 @@ language: php
 php:
   - 5.6
   - 7.0
+  - hhvm
 sudo: false
 services:
   - memcached
@@ -30,7 +31,12 @@ before_script:
   - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 # HHVM doesn't have write support for Pha archives, so we'll only run quick tests on it
 script:
-  - php -d variables_order=EGPCS phpt-tests-runner tests
+  - |
+    if [[ $TRAVIS_PHP_VERSION = 'hhvm' ]]; then
+      php -d variables_order=EGPCS phpt-tests-runner tests/quick
+    else
+      php -d variables_order=EGPCS phpt-tests-runner tests
+    fi
 after_success:
   - |
     if [[ $TRAVIS_PHP_VERSION = '7.0' && DB = 'SQLite' ]]; then

@@ -22,6 +22,10 @@ class SQLite extends _Abstract {
 	 * @param string $prefix
 	 */
 	function __construct ($database, $user = '', $password = '', $host = '', $prefix = '') {
+		// Hack for HHVM: https://github.com/facebook/hhvm/issues/7225
+		if (!$host) {
+			return;
+		}
 		$start = microtime(true);
 		try {
 			$this->instance        = new \SQLite3($host);
