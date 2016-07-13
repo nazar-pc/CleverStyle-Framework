@@ -58,14 +58,14 @@ string(6) "Direct"
 string(16) "0123456789abcdef"
 string(3) "012"
 int(3)
-int(%d)
+int(%s)
 string(2) "23"
 int(%d)
 string(6) "Nested"
 string(16) "0123456789abcdef"
 string(3) "012"
 int(3)
-int(%d)
+int(%s)
 string(2) "23"
 int(%d)
 string(8) "Bad mode"

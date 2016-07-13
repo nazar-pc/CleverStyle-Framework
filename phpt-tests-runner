@@ -149,7 +149,7 @@ function execute_code ($working_dir, $code, $php_arguments, $script_arguments, $
 	$file = "$working_dir/__code.php";
 	file_put_contents($file, $code);
 	putenv("TEST_FILE=\"$test_file\"");
-	$output = shell_exec(PHP_BINARY.' '.implode(' ', $php_arguments).' '.escapeshellarg($file)." -- $script_arguments 2>&1");
+	$output = shell_exec(PHP_BINARY.' '.implode(' ', $php_arguments).' -f '.escapeshellarg($file)." -- $script_arguments 2>&1");
 	unlink($file);
 	return $output;
 }
