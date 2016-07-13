@@ -79,6 +79,8 @@ $Request->init_server(['REQUEST_SCHEME' => 'https'] + $server);
 var_dump($Request->scheme, $Request->secure);
 $Request->init_server(['HTTP_X_FORWARDED_PROTO' => 'https'] + $server);
 var_dump($Request->scheme, $Request->secure);
+$Request->init_server(['HTTP_FORWARDED' => 'proto=https'] + $server);
+var_dump($Request->scheme, $Request->secure);
 
 var_dump('/index.php prefix');
 $Request->init_server(['REQUEST_URI' => '/index.php/Hello'] + $server);
@@ -94,7 +96,7 @@ $Request->init_server(['HTTP_X_CLUSTER_CLIENT_IP' => '99.99.99.99'] + $server);
 var_dump($Request->ip);
 $Request->init_server(['HTTP_FORWARDED_FOR' => '99.99.99.99'] + $server);
 var_dump($Request->ip);
-$Request->init_server(['HTTP_FORWARDED' => '99.99.99.99'] + $server);
+$Request->init_server(['HTTP_FORWARDED' => 'for=99.99.99.99'] + $server);
 var_dump($Request->ip);
 $Request->init_server(['HTTP_X_FORWARDED_FOR' => '99.99.99.99, 88.88.88.88, 77.77.77.77'] + $server);
 var_dump($Request->ip);
@@ -147,6 +149,8 @@ string(4) "http"
 bool(false)
 string(4) "http"
 bool(false)
+string(5) "https"
+bool(true)
 string(5) "https"
 bool(true)
 string(5) "https"

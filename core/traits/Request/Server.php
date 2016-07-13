@@ -79,6 +79,10 @@ trait Server {
 	 */
 	protected $cli;
 	/**
+	 * @var string[]
+	 */
+	public $forwarded;
+	/**
 	 * @param string[] $server Typically `$_SERVER`
 	 */
 	function init_server ($server = []) {
@@ -99,6 +103,7 @@ trait Server {
 	 * @param string[] $server
 	 */
 	protected function fill_server_properties ($server) {
+		$this->parse_forwarded_header();
 		$this->cli          = @$server['CLI'] === true;
 		$this->method       = strtoupper($server['REQUEST_METHOD']);
 		$this->host         = $this->host($server);
@@ -110,9 +115,9 @@ trait Server {
 		if (strpos($this->uri, '/index.php') === 0) {
 			$this->uri = substr($this->uri, 10);
 		}
-		$this->path         = explode('?', $this->uri, 2)[0];
-		$this->remote_addr  = $server['REMOTE_ADDR'];
-		$this->ip           = $this->ip($server);
+		$this->path        = explode('?', $this->uri, 2)[0];
+		$this->remote_addr = $server['REMOTE_ADDR'];
+		$this->ip          = $this->ip();
 	}
 	/**
 	 * @param string[] $server
@@ -131,27 +136,36 @@ trait Server {
 		$this->headers = $headers;
 	}
 	/**
+	 * Parse `Forwarded` header into `$this->forwarded`
+	 */
+	protected function parse_forwarded_header () {
+		$this->forwarded = [];
+		if (preg_match_all('/(for|proto|by)=(.*)(?:;|$)/Ui', explode(',', $this->header('forwarded'))[0], $matches)) {
+			$this->forwarded = array_combine(
+				$matches[1],
+				_trim($matches[2], " \t\n\r\0\x0B\"")
+			);
+		}
+	}
+	/**
 	 * The best guessed IP of client (based on all known headers), `127.0.0.1` by default
-	 *
-	 * @param string[] $server
 	 *
 	 * @return string
 	 */
-	protected function ip ($server) {
-		$all_possible_keys = [
-			'HTTP_X_FORWARDED_FOR',
-			'HTTP_CLIENT_IP',
-			'HTTP_X_FORWARDED',
-			'HTTP_X_CLUSTER_CLIENT_IP',
-			'HTTP_FORWARDED_FOR',
-			'HTTP_FORWARDED'
+	protected function ip () {
+		$ips = [
+			@$this->forwarded['for'],
+			$this->header('x-forwarded-for'),
+			$this->header('client-ip'),
+			$this->header('x-forwarded'),
+			$this->header('x-cluster-client-ip'),
+			$this->header('forwarded-for')
 		];
-		foreach ($all_possible_keys as $key) {
-			if (isset($server[$key])) {
-				$ip = trim(explode(',', $server[$key])[0]);
-				if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-					return $ip;
-				}
+		$ips = array_filter($ips, 'trim');
+		foreach ($ips as $ip) {
+			$ip = trim(explode(',', $ip)[0]);
+			if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+				return $ip;
 			}
 		}
 		return $this->remote_addr;
@@ -164,32 +178,27 @@ trait Server {
 	 * @return string
 	 */
 	protected function host ($server) {
-		$host          = @$server['SERVER_NAME'] ?: '';
-		$port          = '';
-		$expected_port = $this->secure ? 443 : 80;
-		if (!$host && isset($server['HTTP_X_FORWARDED_HOST'])) {
-			$host = $server['HTTP_X_FORWARDED_HOST'];
-			if (
-				isset($server['HTTP_X_FORWARDED_PORT']) &&
-				$server['HTTP_X_FORWARDED_PORT'] != $expected_port
-			) {
-				$port = (int)$server['HTTP_X_FORWARDED_PORT'];
-			}
-		} elseif (isset($server['HTTP_HOST'])) {
-			/** @noinspection NotOptimalIfConditionsInspection */
+		$host                  = @$server['SERVER_NAME'] ?: '';
+		$port                  = '';
+		$expected_port         = $this->secure ? 443 : 80;
+		$forwarded_host_header = $this->header('x-forwarded-host');
+		$host_header           = $this->header('host');
+		if (!$host && $forwarded_host_header) {
+			list($host, $port) = explode(':', $forwarded_host_header) + [1 => $this->header('x-forwarded-port')];
+		} elseif ($host_header) {
 			if (!$host || filter_var($host, FILTER_VALIDATE_IP)) {
-				$host = $server['HTTP_HOST'];
-			} elseif (strpos($server['HTTP_HOST'], ':') !== false) {
-				$port = (int)explode(':', $server['HTTP_HOST'])[1];
-				if ($port == $expected_port) {
-					$port = '';
-				}
+				$host = $host_header;
+			} elseif (strpos($host_header, ':') !== false) {
+				$port = explode(':', $host_header)[1];
 			}
+		}
+		if ($port == $expected_port) {
+			$port = '';
 		}
 		if (preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host) !== '') {
 			return '';
 		}
-		return $host.($port ? ":$port" : '');
+		return $host.($port ? ':'.(int)$port : '');
 	}
 	/**
 	 * Secure protocol detection
@@ -199,9 +208,13 @@ trait Server {
 	 * @return bool
 	 */
 	protected function secure ($server) {
-		return @$server['HTTPS'] ? $server['HTTPS'] !== 'off' : (
-			@$server['REQUEST_SCHEME'] === 'https' ||
-			@$server['HTTP_X_FORWARDED_PROTO'] === 'https'
+		return @$server['HTTPS'] ? $server['HTTPS'] !== 'off' : in_array(
+			'https',
+			[
+				@$server['REQUEST_SCHEME'],
+				@$this->forwarded['proto'],
+				$this->header('x-forwarded-proto')
+			]
 		);
 	}
 	/**
