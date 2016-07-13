@@ -48,16 +48,32 @@ class Request {
 		/** @noinspection NestedTernaryOperatorInspection */
 		$System_request->uri         = $System_request->path.($System_request->query_string ? "?$System_request->query_string" : '') ?: '/';
 		$System_request->remote_addr = @$Psr7_request->getServerParams()['REMOTE_ADDR'] ?: '127.0.0.1';
-		$System_request->ip          = $System_request->ip(
-			[
-				'HTTP_X_FORWARDED_FOR'     => $Psr7_request->getHeaderLine('x-forwarded-for'),
-				'HTTP_CLIENT_IP'           => $Psr7_request->getHeaderLine('client-ip'),
-				'HTTP_X_FORWARDED'         => $Psr7_request->getHeaderLine('x-forwarded'),
-				'HTTP_X_CLUSTER_CLIENT_IP' => $Psr7_request->getHeaderLine('x-cluster-client-ip'),
-				'HTTP_FORWARDED_FOR'       => $Psr7_request->getHeaderLine('forwarded-for'),
-				'HTTP_FORWARDED'           => $Psr7_request->getHeaderLine('forwarded')
-			]
-		);
+		$System_request->ip          = self::ip($System_request, $Psr7_request);
+	}
+	/**
+	 * The best guessed IP of client (based on all known headers), `127.0.0.1` by default
+	 *
+	 * @param System_request                           $System_request
+	 * @param \Psr\Http\Message\ServerRequestInterface $Psr7_request
+	 *
+	 * @return string
+	 */
+	protected static function ip ($System_request, $Psr7_request) {
+		$potential_addresses = [
+			$Psr7_request->getHeaderLine('x-forwarded-for'),
+			$Psr7_request->getHeaderLine('client-ip'),
+			$Psr7_request->getHeaderLine('x-forwarded'),
+			$Psr7_request->getHeaderLine('x-cluster-client-ip'),
+			$Psr7_request->getHeaderLine('forwarded-for'),
+			$Psr7_request->getHeaderLine('forwarded')
+		];
+		foreach ($potential_addresses as $ip) {
+			$ip = trim(explode(',', $ip)[0]);
+			if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+				return $ip;
+			}
+		}
+		return $System_request->remote_addr;
 	}
 	/**
 	 * @param System_request                           $System_request
