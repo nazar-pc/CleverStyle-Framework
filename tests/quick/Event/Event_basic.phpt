@@ -67,9 +67,6 @@ class Event_test extends Event {
 		$Event->ensure_events_registered();
 		var_dump('Callbacks and cache after resetting callbacks and ensuring they are registered', $Event->callbacks, $Event->callbacks_cache);
 
-		self::instance_reset();
-		$Event = self::instance();
-
 		$Event->once('', function () {
 			die('Empty event name not allowed');
 		});
