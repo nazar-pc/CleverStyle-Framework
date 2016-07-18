@@ -15,7 +15,10 @@ L = cs.Language('system_profile_')
  */
 cs.api = (method_path, data) ->
 	if method_path instanceof Array
-		return Promise.all(method_path.map(cs.api))
+		return Promise.all(
+			for mp in method_path
+				cs.api(mp)
+		)
 	[method, path] = method_path.split(/\s+/, 2)
 	new Promise (resolve, reject) !->
 		xhr			= new XMLHttpRequest()

@@ -17,9 +17,16 @@
    * @return {Promise}
    */
   cs.api = function(method_path, data){
-    var ref$, method, path;
+    var mp, ref$, method, path;
     if (method_path instanceof Array) {
-      return Promise.all(method_path.map(cs.api));
+      return Promise.all((function(){
+        var i$, ref$, len$, results$ = [];
+        for (i$ = 0, len$ = (ref$ = method_path).length; i$ < len$; ++i$) {
+          mp = ref$[i$];
+          results$.push(cs.api(mp));
+        }
+        return results$;
+      }()));
     }
     ref$ = method_path.split(/\s+/, 2), method = ref$[0], path = ref$[1];
     return new Promise(function(resolve, reject){

@@ -119,8 +119,8 @@ class Request {
 		$_SERVER  = $SUPERGLOBALS['SERVER'];
 		$_COOKIE  = $SUPERGLOBALS['COOKIE'];
 		$_GET     = $SUPERGLOBALS['GET'];
-		$_POST    = $SUPERGLOBALS['POST'];
-		$_REQUEST = $SUPERGLOBALS['POST'] + $SUPERGLOBALS['GET'];
+		$_POST    = is_array($SUPERGLOBALS['POST']) ? $SUPERGLOBALS['POST'] : [];
+		$_REQUEST = $_POST + $_GET;
 	}
 	/**
 	 * @param float $request_started
