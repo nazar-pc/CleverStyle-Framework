@@ -11,7 +11,10 @@ Polymer(
 		cs.Polymer.behaviors.Language('hybridauth_')
 	]
 	properties	:
-		providers	: do (providers = cs.hybridauth.providers) ->
+		providers	: Array
+	ready		: !->
+		providers = cs.hybridauth.providers
+		@providers	=
 			for provider of providers
 				provider	: provider
 				name		: providers[provider].name

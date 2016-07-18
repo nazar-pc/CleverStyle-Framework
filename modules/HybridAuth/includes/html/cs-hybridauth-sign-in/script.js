@@ -11,18 +11,20 @@
     'is': 'cs-hybridauth-sign-in',
     behaviors: [cs.Polymer.behaviors.Language('hybridauth_')],
     properties: {
-      providers: function(providers){
-        var provider, results$ = [];
-        providers == null && (providers = cs.hybridauth.providers);
-        for (provider in providers) {
-          results$.push({
-            provider: provider,
-            name: providers[provider].name,
-            icon: providers[provider].icon
-          });
-        }
-        return results$;
-      }()
+      providers: Array
+    },
+    ready: function(){
+      var providers, res$, provider;
+      providers = cs.hybridauth.providers;
+      res$ = [];
+      for (provider in providers) {
+        res$.push({
+          provider: provider,
+          name: providers[provider].name,
+          icon: providers[provider].icon
+        });
+      }
+      this.providers = res$;
     }
   });
 }).call(this);

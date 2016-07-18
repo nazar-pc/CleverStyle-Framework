@@ -8,7 +8,8 @@
  */
 (function(){
   cs.Event.on('cs-system-sign-in', function(target){
-    if (cs.hybridauth.providers) {
+    var ref$;
+    if ((ref$ = cs.hybridauth) != null && ref$.providers) {
       target.shadowRoot.appendChild(document.createElement('cs-hybridauth-sign-in'));
     }
   });
