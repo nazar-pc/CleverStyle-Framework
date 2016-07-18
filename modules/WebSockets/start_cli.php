@@ -25,4 +25,4 @@ $_SERVER = [
 if (isset($argv[2])) {
 	$_GET['address'] = $argv[2];
 }
-require __DIR__.'/../../../index.php';
+require __DIR__.'/../../index.php';

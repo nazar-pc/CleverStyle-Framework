@@ -10,7 +10,7 @@ namespace cs\modules\Http_server;
 use
 	React;
 
-require_once __DIR__.'/../../../core/bootstrap.php';
+require_once __DIR__.'/../../core/bootstrap.php';
 
 for ($i = 1; isset($argv[$i]); ++$i) {
 	switch ($argv[$i]) {
