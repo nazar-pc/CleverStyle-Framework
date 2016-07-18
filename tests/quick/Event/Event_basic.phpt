@@ -180,22 +180,52 @@ array(1) {
   }
 }
 string(39) "callbacks after registering empty event"
-array(0) {
+array(1) {
+  ["xyz"]=>
+  array(1) {
+    [0]=>
+    string(15) "module_xyz_test"
+  }
 }
 string(40) "callbacks after registering not callable"
-array(0) {
+array(1) {
+  ["xyz"]=>
+  array(1) {
+    [0]=>
+    string(15) "module_xyz_test"
+  }
 }
 string(46) "callbacks after registering empty event (once)"
-array(0) {
+array(1) {
+  ["xyz"]=>
+  array(1) {
+    [0]=>
+    string(15) "module_xyz_test"
+  }
 }
 string(47) "callbacks after registering not callable (once)"
-array(0) {
+array(1) {
+  ["xyz"]=>
+  array(1) {
+    [0]=>
+    string(15) "module_xyz_test"
+  }
 }
 string(39) "callbacks after registering empty event"
-array(0) {
+array(1) {
+  ["xyz"]=>
+  array(1) {
+    [0]=>
+    string(15) "module_xyz_test"
+  }
 }
 string(40) "callbacks after registering not callable"
-array(0) {
+array(1) {
+  ["xyz"]=>
+  array(1) {
+    [0]=>
+    string(15) "module_xyz_test"
+  }
 }
 string(28) "test empty return value (on)"
 bool(true)

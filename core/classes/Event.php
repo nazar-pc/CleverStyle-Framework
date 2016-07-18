@@ -99,13 +99,13 @@ class Event {
 	 * @return bool
 	 */
 	function fire ($event, ...$arguments) {
+		$this->ensure_events_registered();
 		if (
 			!$event ||
 			!isset($this->callbacks[$event])
 		) {
 			return true;
 		}
-		$this->ensure_events_registered();
 		foreach ($this->callbacks[$event] as $callback) {
 			if ($callback(...$arguments) === false) {
 				return false;
