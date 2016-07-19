@@ -116,6 +116,14 @@ class Builder {
 		 */
 		$phar->addFromString('fs/'.count($core_files), $this->get_htaccess());
 		$core_files[] = '.htaccess';
+		$phar->addFile("$this->root/storage/.htaccess", 'fs/'.count($core_files));
+		$core_files[] = 'storage/.htaccess';
+		$phar->addFile("$this->root/pcache/.htaccess", 'fs/'.count($core_files));
+		$core_files[] = 'pcache/.htaccess';
+		$phar->addFile("$this->root/public/.htaccess", 'fs/'.count($core_files));
+		$core_files[] = 'public/.htaccess';
+		$phar->addFile("$this->root/temp/.htaccess", 'fs/'.count($core_files));
+		$core_files[] = 'temp/.htaccess';
 		$phar->addFile("$this->root/config/main.php", 'fs/'.count($core_files));
 		$core_files[] = 'config/main.php';
 		$phar->addFile("$this->root/favicon.ico", 'fs/'.count($core_files));
@@ -255,6 +263,7 @@ STUB
 AddDefaultCharset utf-8
 Options -Indexes -Multiviews +FollowSymLinks
 IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
+FileETag None
 
 RewriteEngine On
 RewriteBase /
@@ -265,12 +274,18 @@ RewriteBase /
 <FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|svg|svgz|ttc|ttf|otf|woff|woff2|eot)$">
 	RewriteEngine Off
 </FilesMatch>
+<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|svg|svgz|ttc|ttf|otf|woff|woff2|eot|html)$">
+	<ifModule mod_expires.c>
+		ExpiresActive On
+		ExpiresDefault "access plus 1 month"
+	</ifModule>
+	<ifModule mod_headers.c>
+		Header set Cache-Control "max-age=2592000, public"
+	</ifModule>
+</FilesMatch>
 <Files license.txt>
 	RewriteEngine Off
 </Files>
-#<Files Storage.php>
-#	RewriteEngine Off
-#</Files>
 
 RewriteRule .* index.php
 HTACCESS;

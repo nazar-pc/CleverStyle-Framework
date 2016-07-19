@@ -117,12 +117,12 @@ function modified_classes ($updated_modified_classes = null) {
 	if (!defined('CACHE')) {
 		return [];
 	}
-	/** @noinspection MkdirRaceConditionInspection */
-	@mkdir(CACHE.'/classes', 0770, true);
 	if (!isset($modified_classes)) {
 		$modified_classes = file_exists(CACHE.'/classes/modified') ? file_get_json(CACHE.'/classes/modified') : [];
 	}
 	if ($updated_modified_classes) {
+		/** @noinspection MkdirRaceConditionInspection */
+		@mkdir(CACHE.'/classes', 0770);
 		$modified_classes = $updated_modified_classes;
 		file_put_json(CACHE.'/classes/modified', $modified_classes);
 	}

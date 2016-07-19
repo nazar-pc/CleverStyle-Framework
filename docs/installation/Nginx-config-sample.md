@@ -6,6 +6,7 @@ server {
 	root		/path/to/example.com/public_html;
 	index		index.php;
 	error_log	/path/to/example.com/error.log info;
+	etag		off;
 	# Point any URI to index.php
 	location / {
 		try_files $uri $uri/ /index.php?$args;

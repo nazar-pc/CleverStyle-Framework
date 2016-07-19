@@ -189,15 +189,10 @@ CONFIG;
 			}
 		}
 		file_put_json("$target/core/fs.json", array_keys(file_get_json("$source/fs.json")));
-		if (
-			(
-				!@mkdir("$target/storage", 0770) && !is_dir("$target/storage")
-			) ||
-			!file_put_contents("$target/storage/.htaccess", "Deny from all\nRewriteEngine Off\n<Files *>\n\tSetHandler default-handler\n</Files>")
-		) {
-			throw new RuntimeException("Can't extract system files from the archive! Installation aborted.");
-		}
-		chmod("$target/cli", 0775);
+		/**
+		 * Make CLI executable
+		 */
+		chmod("$target/cli", 0770);
 	}
 	/**
 	 * @param string $target

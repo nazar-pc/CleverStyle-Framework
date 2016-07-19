@@ -1,6 +1,7 @@
 AddDefaultCharset utf-8
 Options -Indexes -Multiviews +FollowSymLinks
 IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
+FileETag None
 
 RewriteEngine On
 RewriteBase /
@@ -26,8 +27,5 @@ RewriteBase /
 <Files *.php>
 	RewriteEngine Off
 </Files>
-#<Files Storage.php>
-#	RewriteEngine Off
-#</Files>
 
 RewriteRule .* index.php
