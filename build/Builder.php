@@ -118,12 +118,12 @@ class Builder {
 		$core_files[] = '.htaccess';
 		$phar->addFile("$this->root/storage/.htaccess", 'fs/'.count($core_files));
 		$core_files[] = 'storage/.htaccess';
-		$phar->addFile("$this->root/pcache/.htaccess", 'fs/'.count($core_files));
-		$core_files[] = 'pcache/.htaccess';
-		$phar->addFile("$this->root/public/.htaccess", 'fs/'.count($core_files));
-		$core_files[] = 'public/.htaccess';
-		$phar->addFile("$this->root/temp/.htaccess", 'fs/'.count($core_files));
-		$core_files[] = 'temp/.htaccess';
+		$phar->addFile("$this->root/storage/pcache/.htaccess", 'fs/'.count($core_files));
+		$core_files[] = 'storage/pcache/.htaccess';
+		$phar->addFile("$this->root/storage/public/.htaccess", 'fs/'.count($core_files));
+		$core_files[] = 'storage/public/.htaccess';
+		$phar->addFile("$this->root/storage/temp/.htaccess", 'fs/'.count($core_files));
+		$core_files[] = 'storage/temp/.htaccess';
 		$phar->addFile("$this->root/config/main.php", 'fs/'.count($core_files));
 		$core_files[] = 'config/main.php';
 		$phar->addFile("$this->root/favicon.ico", 'fs/'.count($core_files));
