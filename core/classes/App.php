@@ -7,7 +7,8 @@
  */
 namespace cs;
 use
-	cs\App\Router;
+	cs\App\Router,
+	cs\App\Static_files;
 
 /**
  * Provides next events:
@@ -32,7 +33,8 @@ use
 class App {
 	use
 		Singleton,
-		Router;
+		Router,
+		Static_files;
 	const INIT_STATE_METHOD = 'init';
 	protected function init () {
 		$this->init_router();
@@ -47,6 +49,12 @@ class App {
 		$Request = Request::instance();
 		if (!preg_match('/^[0-9a-z_]+$/i', $Request->method)) {
 			throw new ExitException(400);
+		}
+		if (
+			$Request->method == 'GET' &&
+			in_array(PHP_SAPI, ['cli', 'cli-server'])
+		) {
+			$this->serve_static_files($Request);
 		}
 		$this->handle_closed_site(!$Config->core['site_mode'], $Request);
 		if (!$this->check_permission($Request, 'index')) {

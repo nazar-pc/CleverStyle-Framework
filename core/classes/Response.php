@@ -81,9 +81,9 @@ class Response {
 			'',
 			null,
 			[
-				'Content-Type'    => 'text/html; charset=utf-8',
-				'Vary'            => 'Accept-Language,User-Agent,Cookie',
-				'X-UA-Compatible' => 'IE=edge' // TODO: I hope some day we'll get rid of this sh*t :(
+				'content-type'    => 'text/html; charset=utf-8',
+				'vary'            => 'Accept-Language,User-Agent,Cookie',
+				'x-ua-compatible' => 'IE=edge' // TODO: I hope some day we'll get rid of this sh*t :(
 			],
 			200,
 			Request::instance()->protocol

@@ -31,6 +31,10 @@ var_dump(
 	$Request->header('xyz')
 );
 
+var_dump('Path with `+` symbol and null bytes');
+$Request->init_server(['REQUEST_URI' => "/x+y\0"] + $server);
+var_dump($Request->path);
+
 var_dump('Various host configurations (http)');
 $Request->init_server(['HTTP_HOST' => 'cscms.travis:80'] + $server);
 var_dump($Request->host);
@@ -133,6 +137,8 @@ array(3) {
 string(20) "en-us;q=0.5,en;q=0.3"
 string(9) "text/html"
 string(0) ""
+string(35) "Path with `+` symbol and null bytes"
+string(4) "/x+y"
 string(34) "Various host configurations (http)"
 string(12) "cscms.travis"
 string(17) "cscms.travis:8080"

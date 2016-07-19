@@ -121,17 +121,17 @@ string(34) "Init with typical default settings"
 string(8) "HTTP/1.1"
 int(200)
 array(3) {
-  ["Content-Type"]=>
+  ["content-type"]=>
   array(1) {
     [0]=>
     string(24) "text/html; charset=utf-8"
   }
-  ["Vary"]=>
+  ["vary"]=>
   array(1) {
     [0]=>
     string(33) "Accept-Language,User-Agent,Cookie"
   }
-  ["X-UA-Compatible"]=>
+  ["x-ua-compatible"]=>
   array(1) {
     [0]=>
     string(7) "IE=edge"
@@ -157,7 +157,7 @@ array(2) {
 string(20) "header() called with"
 array(2) {
   [0]=>
-  string(24) "X-UA-Compatible: IE=edge"
+  string(24) "X-Ua-Compatible: IE=edge"
   [1]=>
   bool(false)
 }

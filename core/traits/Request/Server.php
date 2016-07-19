@@ -111,7 +111,7 @@ trait Server {
 		$this->scheme       = $this->secure ? 'https' : 'http';
 		$this->protocol     = $server['SERVER_PROTOCOL'];
 		$this->query_string = $server['QUERY_STRING'];
-		$this->uri          = null_byte_filter(urldecode($server['REQUEST_URI'])) ?: '/';
+		$this->uri          = null_byte_filter(rawurldecode($server['REQUEST_URI'])) ?: '/';
 		if (strpos($this->uri, '/index.php') === 0) {
 			$this->uri = substr($this->uri, 10);
 		}
