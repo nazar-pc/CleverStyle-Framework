@@ -42,6 +42,7 @@ class Request {
 				$response->write(fread($Response->body_stream, 1024));
 			}
 			fseek($Response->body_stream, $position);
+			$response->end();
 		} else {
 			$response->end($Response->body);
 		}
