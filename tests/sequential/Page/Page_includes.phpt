@@ -151,13 +151,7 @@ string(%d) "<script src="/includes/js/WebComponents-polyfill/webcomponents-custo
 string(9) "post_Body"
 string(0) ""
 string(7) "headers"
-array(1) {
-  ["content-language"]=>
-  array(1) {
-    [0]=>
-    string(2) "en"
-  }
-}
+NULL
 string(26) "No compression, after body"
 string(4) "Head"
 string(%d) "<link href="/includes/css/unresolved.css?%s" rel="stylesheet">

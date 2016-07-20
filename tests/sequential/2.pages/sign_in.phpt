@@ -13,12 +13,7 @@ $Response = Response::instance();
 var_dump($Response->headers, $Response->body);
 ?>
 --EXPECTF--
-array(2) {
-  ["content-language"]=>
-  array(1) {
-    [0]=>
-    string(2) "en"
-  }
+array(1) {
   ["set-cookie"]=>
   array(1) {
     [0]=>
