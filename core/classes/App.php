@@ -127,10 +127,10 @@ class App {
 	 * @throws ExitException
 	 */
 	protected function render ($Request) {
-		if ($Request->cli_path || $Request->api_path) {
+		$Page = Page::instance();
+		if ($Request->cli_path || $Request->api_path || !$Page->interface) {
 			$this->execute_router($Request);
 		} else {
-			$Page = Page::instance();
 			$this->render_title($Request, $Page);
 			$this->execute_router($Request);
 			$this->render_blocks($Page);

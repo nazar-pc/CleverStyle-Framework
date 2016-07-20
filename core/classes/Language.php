@@ -324,7 +324,9 @@ class Language implements JsonSerializable {
 		 */
 		$this->current_language = $language;
 		_include(LANGUAGES."/$language.php", false, false);
-		Response::instance()->header('content-language', $this->content_language);
+		if ($Config->core['multilingual']) {
+			Response::instance()->header('content-language', $this->content_language);
+		}
 		return true;
 	}
 	/**
