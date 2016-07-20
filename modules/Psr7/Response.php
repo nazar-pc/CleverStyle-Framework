@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Psr7;
 use
+	cs\Request as System_request,
 	cs\Response as System_response,
 	Exception;
 
@@ -25,7 +26,7 @@ class Response {
 		$Psr7_response = self::to_psr7_headers($System_response, $Psr7_response);
 		/** @noinspection ExceptionsAnnotatingAndHandlingInspection */
 		return $Psr7_response
-			->withProtocolVersion(explode('/', $System_response->protocol, 2)[1])
+			->withProtocolVersion(explode('/', System_request::instance()->protocol, 2)[1])
 			->withStatus($System_response->code);
 	}
 	/**

@@ -1,14 +1,14 @@
 {
 	"package"      : "Psr7",
 	"category"     : "modules",
-	"version"      : "1.0.1+build-2",
+	"version"      : "1.1.0+build-3",
 	"description"  : "Compatibility module, allows initializing system request from Psr7-compatible request and output response to Psr7-compatible response object",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/Framework",
 	"license"      : "MIT License",
 	"provide"      : "psr7",
 	"require"      : [
-		"System>=5.10",
+		"System>=5.13",
 		"System<6.0"
 	]
 }

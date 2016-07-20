@@ -25,7 +25,6 @@ function fseek () {
 
 $Request  = Request::instance_stub(
 	[
-		'protocol' => 'HTTP/1.1',
 		'cli_path' => false
 	]
 );
@@ -33,7 +32,7 @@ $Response = Response::instance();
 
 var_dump('Init with typical default settings');
 $Response->init_with_typical_default_settings();
-var_dump($Response->protocol, $Response->code, $Response->headers, $Response->body, $Response->body_stream);
+var_dump($Response->code, $Response->headers, $Response->body, $Response->body_stream);
 
 var_dump('Default output');
 $Response->body = "Some content\n";
@@ -118,7 +117,6 @@ $Response->output_default();
 ?>
 --EXPECTF--
 string(34) "Init with typical default settings"
-string(8) "HTTP/1.1"
 int(200)
 array(3) {
   ["content-type"]=>

@@ -129,10 +129,10 @@ class Request {
 	 * @throws ExitException
 	 */
 	protected static function execute_request ($request_started) {
+		System_response::instance()->init_with_typical_default_settings();
 		$Request = System_request::instance();
 		$Request->init_from_globals();
 		$Request->started = $request_started;
-		System_response::instance()->init_with_typical_default_settings();
 		$L            = Language::instance(true);
 		$url_language = $L->url_language();
 		if ($url_language) {

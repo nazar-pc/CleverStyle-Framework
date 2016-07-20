@@ -10,8 +10,8 @@ namespace cs;
 
 function do_request () {
 	try {
-		Request::instance()->init_from_globals();
 		Response::instance()->init_with_typical_default_settings();
+		Request::instance()->init_from_globals();
 		App::instance()->execute();
 	} catch (ExitException $e) {
 		if ($e->getCode() >= 400) {

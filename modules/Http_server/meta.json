@@ -1,14 +1,14 @@
 {
 	"package"          : "Http_server",
 	"category"         : "modules",
-	"version"          : "0.35.3+build-60",
+	"version"          : "0.36.0+build-61",
 	"description"      : "Http server based on React, potentially consumes less memory and works much faster that mod-php5 and php-fpm (and even pure HHVM too)",
 	"author"           : "Nazar Mokrynskyi",
 	"website"          : "cleverstyle.org/Framework",
 	"license"          : "MIT License",
 	"provide"          : "http_server",
 	"require"          : [
-		"System>=5.0",
+		"System>=5.13",
 		"System<6.0",
 		"composer"
 	],

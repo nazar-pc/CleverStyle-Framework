@@ -22,14 +22,13 @@ Usually, system events are stated with `System/`, other modules similarly starts
 It is a good practice to put into file, that runs event such comment section:
 ```
 /**
- * Provides next events:<br>
- *  System/general/languages/load([
- *   'clanguage'        => <i>clanguage</i><br>
- *   'clang'            => <i>clang</i><br>
- *   'clanguage_en'     => <i>clanguage_en</i><br>
- *   'content_language' => <i>content_language</i><br>
- *   'locale'           => <i>locale</i><br>
- *  ])
+ * Provides next events:
+ *  System/general/languages/load
+ *  [
+ *   'clanguage'        => clanguage
+ *   'clang'            => clang
+ *   'cregion'          => cregion
+ *  ]
  */
 ```
 <a name="subscribing" />

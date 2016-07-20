@@ -38,14 +38,10 @@ Provides default output for all the response data using `header()`, `http_respon
 ###[Up](#) Properties
 
 `$Response` object has next public properties:
-* protocol
 * code
 * headers
 * body
 * body_stream
-
-#### protocol
-Protocol, for instance: `HTTP/1.0`, `HTTP/1.1` (default), HTTP/2.0
 
 #### code
 HTTP status code

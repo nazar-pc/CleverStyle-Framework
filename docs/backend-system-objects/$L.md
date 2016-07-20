@@ -88,7 +88,6 @@ Method for language changing (usually is called by system automatically, and set
 
 * clanguage
 * time
-* clanguage_en*
 * clang*
 * cregion*
 * content_language*
@@ -100,19 +99,13 @@ Method for language changing (usually is called by system automatically, and set
 \* actually are not properties, they are translations, but are widely used and should be mentioned here.
 
 #### clanguage
-Current language (in original writing):
+Current language:
 * English
 * Russian
 * Ukrainian
 
 #### time
 May be set to closure to be used by `$L->time()` instead of built-in mechanism, to provide proper endings of words for some languages.
-
-#### clanguage_en
-English lowercase variant of language name:
-* english
-* russian
-* ukrainian
 
 #### clang
 ISO 639-1 language code:
@@ -159,10 +152,9 @@ Object implements `JsonSerializable` interface and allows getting of all transla
 This event is running at language changing to allow third-party components add their own translations. Array:
 ```
 [
-    'clanguage'    => clanguage
-    'clang'        => clang
+    'clanguage'    => clanguage,
+    'clang'        => clang,
     'cregion'      => cregion
-    'clanguage_en' => clanguage_en
 ]
 ```
 is set as parameter for event, all necessary language and locale aspects are given with event to determine exact translation.

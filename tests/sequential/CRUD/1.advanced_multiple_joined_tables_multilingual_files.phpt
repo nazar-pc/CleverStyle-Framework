@@ -2,8 +2,8 @@
 <?php
 namespace cs;
 include __DIR__.'/../../bootstrap.php';
-Request::instance()->init_from_globals();
 Response::instance()->init_with_typical_default_settings();
+Request::instance()->init_from_globals();
 class CRUD_advanced {
 	use
 		CRUD;

@@ -14,12 +14,6 @@ class Response {
 	use
 		Singleton;
 	/**
-	 * Protocol, for instance: `HTTP/1.0`, `HTTP/1.1` (default), HTTP/2.0
-	 *
-	 * @var string
-	 */
-	public $protocol;
-	/**
 	 * HTTP status code
 	 *
 	 * @var int
@@ -56,12 +50,10 @@ class Response {
 	 *                                          `content-type`, `accept-language`; Values might be strings in case of single value or array of strings in case
 	 *                                          of multiple values with the same field name
 	 * @param int                  $code        HTTP status code
-	 * @param string               $protocol    Protocol, for instance: `HTTP/1.0`, `HTTP/1.1` (default), HTTP/2.0
 	 *
 	 * @return Response
 	 */
-	function init ($body = '', $body_stream = null, $headers = [], $code = 200, $protocol = 'HTTP/1.1') {
-		$this->protocol = $protocol;
+	function init ($body = '', $body_stream = null, $headers = [], $code = 200) {
 		$this->code     = $code;
 		$this->headers  = _array($headers);
 		$this->body     = $body;
@@ -72,7 +64,7 @@ class Response {
 		return $this;
 	}
 	/**
-	 * Initialize with typical default settings (headers `Content-Type`, `Vary` and `X-UA-Compatible`, protocol taken from `cs\Request::$protocol`)
+	 * Initialize with typical default settings (headers `Content-Type`, `Vary` and `X-UA-Compatible`
 	 *
 	 * @return Response
 	 */
@@ -85,8 +77,7 @@ class Response {
 				'vary'            => 'Accept-Language,User-Agent,Cookie',
 				'x-ua-compatible' => 'IE=edge' // TODO: I hope some day we'll get rid of this sh*t :(
 			],
-			200,
-			Request::instance()->protocol
+			200
 		);
 	}
 	/**

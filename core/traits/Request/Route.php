@@ -11,6 +11,7 @@ use
 	cs\Event,
 	cs\ExitException,
 	cs\Language,
+	cs\Request\Route\Static_files,
 	cs\Response;
 
 /**
@@ -22,6 +23,8 @@ use
  * @method string header(string $name)
  */
 trait Route {
+	use
+		Static_files;
 	/**
 	 * Current mirror according to configuration
 	 *
@@ -88,6 +91,10 @@ trait Route {
 	 * @throws ExitException
 	 */
 	function init_route () {
+		/**
+		 * Serve static files here for early exit
+		 */
+		$this->serve_static_files();
 		$this->mirror_index    = -1;
 		$this->path_normalized = '';
 		$this->route           = [];

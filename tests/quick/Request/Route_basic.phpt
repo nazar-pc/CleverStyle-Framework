@@ -2,6 +2,7 @@
 <?php
 namespace cs;
 include __DIR__.'/../../unit.php';
+define('DIR', make_tmp_dir());
 define('MODULES', make_tmp_dir());
 Config::instance_stub(
 	[

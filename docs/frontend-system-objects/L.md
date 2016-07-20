@@ -63,7 +63,6 @@ This way is more natural. You can specify as much arguments as you need.
 `L` object has next public properties:
 
 * clanguage
-* clanguage_en
 * clang
 * content_language
 * locale
@@ -73,16 +72,10 @@ This way is more natural. You can specify as much arguments as you need.
 * _time
 
 #### clanguage
-Current language (in original writing):
+Current language:
 * English
 * Russian
 * Ukrainian
-
-#### clanguage_en
-English lowercase variant of language name:
-* english
-* russian
-* ukrainian
 
 #### clang
 Short English lowercase variant of language name:
