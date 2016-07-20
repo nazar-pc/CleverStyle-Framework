@@ -16,7 +16,6 @@ echo Page::instance()->Head;
 ?>
 --EXPECT--
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
-	<meta content="Web-site" property="og:title">
 	<meta content="http://cscms.travis/en" property="og:url">
 	<meta content="Web-site" property="og:site_name">
 	<meta content="website" property="og:type">

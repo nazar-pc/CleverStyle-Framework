@@ -9,16 +9,10 @@
 namespace cs\modules\Blockchain_payment;
 use
 	cs\ExitException,
-	cs\Language,
 	cs\Page,
 	cs\Request,
 	cs\User;
 
-$Page = Page::instance();
-array_pop($Page->Title);
-$Page->title(
-	Language::instance()->blockchain_payment_bitcoin
-);
 $Transactions = Transactions::instance();
 $Request      = Request::instance();
 if (!isset($Request->route_ids[0])) {
@@ -31,7 +25,7 @@ if (!$transaction) {
 if ($transaction['user'] != User::instance()->id) {
 	throw new ExitException(403);
 }
-$Page->json(
+Page::instance()->json(
 	[
 		'id'            => $transaction['id'],
 		'input_address' => $transaction['input_address'],

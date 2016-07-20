@@ -25,7 +25,6 @@ $Page = \cs\Page::instance();
 * link()
 * atom()
 * rss()
-* set_theme()
 * replace()
 * render()
 
@@ -107,9 +106,6 @@ Is used for simple adding of atom feed (actually, wrapper for `$Page->link()` me
 
 #### rss($href : string, $title = 'RSS Feed' : string) : cs\Page
 Is used for simple adding of rss feed (actually, wrapper for `$Page->link()` method)
-
-#### set_theme($theme : string) : cs\Page
-Is used for theme changing (in most cases there is no need to use this method directly).
 
 #### replace($search : string|string[], $replace = '' : string|string[]) : cs\Page
 Is used for replacing anything in source code of finally generated page. Supports regular expressions.

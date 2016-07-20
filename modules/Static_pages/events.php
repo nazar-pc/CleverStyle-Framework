@@ -37,7 +37,8 @@ Event::instance()
 			}
 			$page = array_slice($rc, -1)[0];
 			if (isset($structure['pages'][$page])) {
-				$data['rc'] = $structure['pages'][$page];
+				$data['current_module'] = 'Static_pages';
+				$data['rc']             = $structure['pages'][$page];
 			}
 		}
 	)

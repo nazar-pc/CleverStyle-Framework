@@ -22,13 +22,13 @@ use
  *
  *  System/Request/routing_replace/after
  *  [
- *   'rc'             => &$rc,              //Reference to string with current route, this string can be changed
- *   'cli_path'       => (bool)$cli_path,
- *   'admin_path'     => (bool)$admin_path,
- *   'api_path'       => (bool)$api_path,
+ *   'rc'             => &$rc,                                     //Reference to string with current route, this string can be changed
+ *   'cli_path'       => &$cli_path,
+ *   'admin_path'     => &$admin_path,
+ *   'api_path'       => &$api_path,
  *   'regular_path'   => !($cli_path || $admin_path || $api_path),
- *   'current_module' => $current_module,
- *   'home_page'      => $home_page
+ *   'current_module' => &$current_module,
+ *   'home_page'      => &$home_page
  *  ]
  *
  * @method static $this instance($check = false)

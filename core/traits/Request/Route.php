@@ -210,12 +210,12 @@ trait Route {
 			'System/Request/routing_replace/after',
 			[
 				'rc'             => &$rc,
-				'cli_path'       => (bool)$cli_path,
-				'admin_path'     => (bool)$admin_path,
-				'api_path'       => (bool)$api_path,
+				'cli_path'       => &$cli_path,
+				'admin_path'     => &$admin_path,
+				'api_path'       => &$api_path,
 				'regular_path'   => !($cli_path || $admin_path || $api_path),
-				'current_module' => $current_module,
-				'home_page'      => $home_page
+				'current_module' => &$current_module,
+				'home_page'      => &$home_page
 			]
 		);
 		return [

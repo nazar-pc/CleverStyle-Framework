@@ -351,17 +351,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(true)
   ["current_module"]=>
-  string(6) "System"
+  &string(6) "System"
   ["home_page"]=>
-  bool(true)
+  &bool(true)
 }
 int(0)
 string(6) "System"
@@ -391,17 +391,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(true)
   ["current_module"]=>
-  string(6) "System"
+  &string(6) "System"
   ["home_page"]=>
-  bool(true)
+  &bool(true)
 }
 string(6) "System"
 array(1) {
@@ -421,17 +421,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(true)
   ["current_module"]=>
-  string(14) "Enabled_module"
+  &string(14) "Enabled_module"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 int(0)
 string(14) "Enabled_module"
@@ -461,17 +461,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(true)
   ["current_module"]=>
-  string(14) "Enabled_module"
+  &string(14) "Enabled_module"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(14) "Enabled_module"
 array(1) {
@@ -491,17 +491,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(true)
+  &string(4) "api/"
   ["regular_path"]=>
   bool(false)
   ["current_module"]=>
-  string(14) "Enabled_module"
+  &string(14) "Enabled_module"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(18) "api/Enabled_module"
 array(1) {
@@ -523,17 +523,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(true)
+  &string(4) "api/"
   ["regular_path"]=>
   bool(false)
   ["current_module"]=>
-  string(14) "Enabled_module"
+  &string(14) "Enabled_module"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(18) "api/Enabled_module"
 array(1) {
@@ -555,17 +555,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(true)
+  &string(6) "admin/"
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(false)
   ["current_module"]=>
-  string(14) "Enabled_module"
+  &string(14) "Enabled_module"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(20) "admin/Enabled_module"
 array(1) {
@@ -587,17 +587,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(true)
+  &string(6) "admin/"
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(false)
   ["current_module"]=>
-  string(14) "Enabled_module"
+  &string(14) "Enabled_module"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(20) "admin/Enabled_module"
 array(1) {
@@ -619,17 +619,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(true)
+  &string(4) "cli/"
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(false)
   ["current_module"]=>
-  string(14) "Enabled_module"
+  &string(14) "Enabled_module"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(18) "cli/Enabled_module"
 array(1) {
@@ -651,17 +651,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(true)
   ["current_module"]=>
-  string(14) "Enabled_module"
+  &string(14) "Enabled_module"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(14) "Enabled_module"
 string(14) "Enabled_module"
@@ -676,17 +676,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(true)
+  &string(6) "admin/"
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(false)
   ["current_module"]=>
-  string(6) "System"
+  &string(6) "System"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(12) "admin/System"
 string(6) "System"
@@ -704,17 +704,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(true)
+  &string(4) "api/"
   ["regular_path"]=>
   bool(false)
   ["current_module"]=>
-  string(6) "System"
+  &string(6) "System"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(10) "api/System"
 string(6) "System"
@@ -732,17 +732,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(true)
+  &string(4) "cli/"
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(false)
   ["current_module"]=>
-  string(6) "System"
+  &string(6) "System"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(10) "cli/System"
 string(6) "System"
@@ -760,17 +760,17 @@ array(7) {
   ["rc"]=>
   &string(15) "Disabled_module"
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(true)
   ["current_module"]=>
-  string(6) "System"
+  &string(6) "System"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(22) "System/Disabled_module"
 string(6) "System"
@@ -788,17 +788,17 @@ array(7) {
   ["rc"]=>
   &string(0) ""
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(true)
+  &string(6) "admin/"
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(false)
   ["current_module"]=>
-  string(15) "Disabled_module"
+  &string(15) "Disabled_module"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(21) "admin/Disabled_module"
 string(15) "Disabled_module"
@@ -816,17 +816,17 @@ array(7) {
   ["rc"]=>
   &string(18) "Uninstalled_module"
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(true)
   ["current_module"]=>
-  string(6) "System"
+  &string(6) "System"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(25) "System/Uninstalled_module"
 string(6) "System"
@@ -844,17 +844,17 @@ array(7) {
   ["rc"]=>
   &string(18) "Uninstalled_module"
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(true)
+  &string(6) "admin/"
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(false)
   ["current_module"]=>
-  string(6) "System"
+  &string(6) "System"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(31) "admin/System/Uninstalled_module"
 string(6) "System"
@@ -872,17 +872,17 @@ array(7) {
   ["rc"]=>
   &string(18) "path/subpath/10/15"
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(true)
+  &string(4) "api/"
   ["regular_path"]=>
   bool(false)
   ["current_module"]=>
-  string(14) "Enabled_module"
+  &string(14) "Enabled_module"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(37) "api/Enabled_module/path/subpath/10/15"
 string(14) "Enabled_module"
@@ -926,17 +926,17 @@ array(7) {
   ["rc"]=>
   &string(26) "redirect/http://google.com"
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(true)
   ["current_module"]=>
-  string(6) "System"
+  &string(6) "System"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 string(20) "Redirect called with"
 array(2) {
@@ -958,17 +958,17 @@ array(7) {
   ["rc"]=>
   &string(26) "redirect/http://google.com"
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(true)
   ["current_module"]=>
-  string(6) "System"
+  &string(6) "System"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 int(400)
 string(0) ""
@@ -983,17 +983,17 @@ array(7) {
   ["rc"]=>
   &string(26) "redirect/http://google.com"
   ["cli_path"]=>
-  bool(false)
+  &string(0) ""
   ["admin_path"]=>
-  bool(false)
+  &string(0) ""
   ["api_path"]=>
-  bool(false)
+  &string(0) ""
   ["regular_path"]=>
   bool(true)
   ["current_module"]=>
-  string(6) "System"
+  &string(6) "System"
   ["home_page"]=>
-  bool(false)
+  &bool(false)
 }
 int(400)
 string(0) ""

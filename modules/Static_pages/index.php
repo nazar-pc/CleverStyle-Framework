@@ -46,7 +46,7 @@ if (isset($_POST['save'])) {
 }
 if ($page['interface']) {
 	if (!$Request->home_page) {
-		$Page->Title[1] = $page['title'];
+		$Page->title($page['title']);
 	}
 	$Page->Description = description($page['content']);
 	$Meta              = Meta::instance();

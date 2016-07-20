@@ -170,40 +170,18 @@ class Page {
 			Event::instance()->once(
 				'System/Config/init/after',
 				function () {
-					$this->init_config();
+					$this->theme = Config::instance()->core['theme'];
 				}
 			);
 		} else {
-			$this->init_config();
+			$this->theme = Config::instance()->core['theme'];
 		}
 		Event::instance()->on(
 			'System/Config/changed',
 			function () {
-				$this->init_config();
+				$this->theme = Config::instance()->core['theme'];
 			}
 		);
-	}
-	/**
-	 * Initialization: setting of title and theme according to system configuration
-	 *
-	 * @return Page
-	 */
-	protected function init_config () {
-		$Config         = Config::instance();
-		$this->Title[0] = htmlentities(get_core_ml_text('name'), ENT_COMPAT, 'utf-8');
-		$this->set_theme($Config->core['theme']);
-		return $this;
-	}
-	/**
-	 * Theme changing
-	 *
-	 * @param string $theme
-	 *
-	 * @return Page
-	 */
-	function set_theme ($theme) {
-		$this->theme = $theme;
-		return $this;
 	}
 	/**
 	 * Adding of content on the page
@@ -264,6 +242,7 @@ class Page {
 		 * Forming page title
 		 */
 		$this->Title = array_filter($this->Title, 'trim');
+		array_unshift($this->Title, get_core_ml_text('name'));
 		$this->Title = $Config->core['title_reverse'] ? array_reverse($this->Title) : $this->Title;
 		$this->Title = implode($Config->core['title_delimiter'] ?: '|', $this->Title);
 		/**
