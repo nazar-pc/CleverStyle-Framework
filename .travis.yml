@@ -34,7 +34,7 @@ before_script:
     if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then
       echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     fi
-# HHVM doesn't have write support for Pha archives, so we'll only run quick tests on it
+# HHVM doesn't have write support for Phar archives, so we'll only run quick tests on it
 script:
   - |
     if [[ $TRAVIS_PHP_VERSION = 'hhvm' ]]; then
