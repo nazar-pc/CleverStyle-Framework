@@ -44,7 +44,7 @@ script:
     fi
 after_success:
   - |
-    if [[ $TRAVIS_PHP_VERSION = '7.0' && DB = 'SQLite' ]]; then
+    if [[ $TRAVIS_PHP_VERSION = '7.0' && $DB = 'SQLite' ]]; then
       php -d variables_order=EGPCS -d phar.readonly=Off ci/upload_build.php
     fi
 after_script:
