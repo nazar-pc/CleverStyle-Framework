@@ -115,7 +115,7 @@ class Language implements JsonSerializable {
 		} else {
 			$language = $Config->core['language'];
 		}
-		$this->set_language($language ?: '');
+		$this->current_language = $language ?: '';
 	}
 	/**
 	 * Returns instance for simplified work with translations, when using common prefix
@@ -281,14 +281,6 @@ class Language implements JsonSerializable {
 	 */
 	function __set ($item, $value = null) {
 		$this->set($item, $value);
-	}
-	/**
-	 * Will set language, but not actually change to it until requested for the first time
-	 *
-	 * @param string $language
-	 */
-	protected function set_language ($language) {
-		$this->current_language = $language;
 	}
 	/**
 	 * Change language
