@@ -12,34 +12,33 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Language,
 	cs\Storage;
 
 Event::instance()
 	->on(
-		'System/Request/routing_replace',
+		'System/Request/routing_replace/after',
 		function ($data) {
-			$rc = explode('/', $data['rc']);
-			$L  = Language::instance();
-			if ($rc[0] != 'Photo_gallery' && $rc[0] != path($L->Photo_gallery)) {
+			if (!Config::instance()->module('Photo_gallery')->enabled()) {
 				return;
 			}
-			$rc[0] = 'Photo_gallery';
+			if ($data['current_module'] != 'Photo_gallery' || !$data['rc'] || !$data['regular_path']) {
+				return;
+			}
+			$rc = explode('/', $data['rc']);
 			if (
-				isset($rc[1]) &&
-				!isset($rc[2]) &&
-				!in_array($rc[1], ['gallery', 'edit_image'])
+				!isset($rc[1]) &&
+				!in_array($rc[0], ['gallery', 'edit_image'])
 			) {
-				$rc[2]         = $rc[1];
-				$rc[1]         = 'gallery';
+				$rc[1]         = $rc[0];
+				$rc[0]         = 'gallery';
 				$Photo_gallery = Photo_gallery::instance();
 				$galleries     = $Photo_gallery->get_galleries_list();
-				if (!isset($galleries[$rc[2]])) {
+				if (!isset($galleries[$rc[1]])) {
 					throw new ExitException(404);
 				}
-				$rc[2] = $galleries[$rc[2]];
+				$rc[1]      = $galleries[$rc[1]];
+				$data['rc'] = implode('/', $rc);
 			}
-			$data['rc'] = implode('/', $rc);
 		}
 	)
 	->on(

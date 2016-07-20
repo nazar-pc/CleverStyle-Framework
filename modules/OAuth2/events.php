@@ -16,29 +16,29 @@ use
 
 Event::instance()
 	->on(
-		'System/Request/routing_replace',
+		'System/Request/routing_replace/after',
 		function ($data) {
-			if (Config::instance()->module('OAuth2')->enabled() && strpos($data['rc'], 'admin') !== 0) {
-				$rc = explode('/', $data['rc'], 2);
-				if (isset($rc[0]) && $rc[0] == 'OAuth2') {
-					if (isset($rc[1])) {
-						$rc[1] = explode('?', $rc[1], 2)[0];
-					}
-					$data['rc'] = implode('/', $rc);
-					Response::instance()
-						->header('cache-control', 'no-store')
-						->header('pragma', 'no-cache');
-				}
-				$POST = (array)$_POST;
-				Event::instance()->on(
-					'System/User/construct/after',
-					function () use ($POST) {
-						foreach ($POST as $i => $v) {
-							$_POST[$i] = $v;
-						}
-					}
-				);
+			if (!Config::instance()->module('Blogs')->enabled()) {
+				return;
 			}
+			if (!$data['regular_path']) {
+				return;
+			}
+			if ($data['current_module'] == 'OAuth2') {
+				Response::instance()
+					->header('cache-control', 'no-store')
+					->header('pragma', 'no-cache');
+			}
+			// TODO: Remove this hack
+			$POST = (array)$_POST;
+			Event::instance()->on(
+				'System/User/construct/after',
+				function () use ($POST) {
+					foreach ($POST as $i => $v) {
+						$_POST[$i] = $v;
+					}
+				}
+			);
 		}
 	)
 	->on(

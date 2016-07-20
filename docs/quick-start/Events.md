@@ -85,7 +85,7 @@ Event with parameter:
 ```php
 <?php
 \cs\Event::instance()->fire(
-    'System/Request/routing_replace',
+    'System/Request/routing_replace/before',
     [
         'rc' => &$rc
     ]
@@ -139,7 +139,8 @@ Backend events:
 * System/Page/render/after
 * System/Page/rebuild_cache
 * System/Page/requirejs
-* System/Request/routing_replace
+* System/Request/routing_replace/before
+* System/Request/routing_replace/after
 * System/Session/init/before
 * System/Session/init/before
 * System/Session/del_session/before

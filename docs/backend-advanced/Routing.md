@@ -41,7 +41,7 @@ So, all regular files names will be suffixed by underscore and request method.
 
 Also routes processing is more strict. In case when neither `working_dir/path/sub_path.php` nor `working_dir/path/sub_path_{request_method_lowercase}.php` file exists (and similarly for situations when there is no `sub_path` or `path`) then `404 Not Found` response will be generated (in non-API calls it would result in page without content).
 
-And the last - if there is second level of routing in `index.json` - `sub_path` is required to be specified (alternatively module may change this behavior with event `System/Request/routing_replace`), but system will not do that).
+And the last - if there is second level of routing in `index.json` - `sub_path` is required to be specified (alternatively module may change this behavior with events `System/Request/routing_replace/before` and `System/Request/routing_replace/after`), but system will not do that).
 
 ### Controller-based routing
 Controller-based routing is similar to files-based, so, read about it first, please.

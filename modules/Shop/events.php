@@ -16,29 +16,31 @@ use
 
 Event::instance()
 	->on(
-		'System/Request/routing_replace',
+		'System/Request/routing_replace/after',
 		function ($data) {
-			$rc = explode('/', $data['rc']);
-			$L  = new Prefix('shop_');
-			if ($rc[0] != 'Shop' && $rc[0] != path($L->shop)) {
+			if (!Config::instance()->module('Shop')->enabled()) {
 				return;
 			}
-			$rc[0] = 'Shop';
-			if (!isset($rc[1])) {
-				$rc[1] = 'categories_';
+			if ($data['current_module'] != 'Shop') {
+				return;
 			}
-			switch ($rc[1]) {
+			$rc = explode('/', $data['rc']);
+			if (!$rc[0]) {
+				$rc[0] = 'categories_';
+			}
+			$L = new Prefix('shop_');
+			switch ($rc[0]) {
 				case path($L->categories):
-					$rc[1] = 'categories_';
+					$rc[0] = 'categories_';
 					break;
 				case path($L->items):
-					$rc[1] = 'items_';
+					$rc[0] = 'items_';
 					break;
 				case path($L->orders):
-					$rc[1] = 'orders_';
+					$rc[0] = 'orders_';
 					break;
 				case path($L->cart):
-					$rc[1] = 'cart';
+					$rc[0] = 'cart';
 					break;
 			}
 			$data['rc'] = implode('/', $rc);

@@ -14,23 +14,17 @@ use
 
 Event::instance()
 	->on(
-		'System/Request/routing_replace',
+		'System/Request/routing_replace/after',
 		function ($data) {
-			if (
-				strpos($data['rc'], 'admin') !== 0 &&
-				!Config::instance()->module('Static_pages')->enabled()
-			) {
+			if (!Config::instance()->module('Static_pages')->enabled()) {
+				return;
+			}
+			if (!$data['regular_path']) {
 				return;
 			}
 			$rc = explode('/', $data['rc']);
-			switch ($rc[0]) {
-				case 'admin':
-				case 'api':
-					return;
-				case 'Static_pages':
-					if (!isset($rc[1])) {
-						$rc = ['index'];
-					}
+			if ($data['current_module'] == 'Static_pages' && !$rc[0]) {
+				$rc = ['index'];
 			}
 			$structure  = Pages::instance()->get_structure();
 			$categories = array_slice($rc, 0, -1);
@@ -41,9 +35,9 @@ Event::instance()
 					}
 				}
 			}
-			unset($categories);
-			if (isset($structure['pages'][array_slice($rc, -1)[0]])) {
-				$data['rc'] = 'Static_pages/'.$structure['pages'][array_slice($rc, -1)[0]];
+			$page = array_slice($rc, -1)[0];
+			if (isset($structure['pages'][$page])) {
+				$data['rc'] = $structure['pages'][$page];
 			}
 		}
 	)

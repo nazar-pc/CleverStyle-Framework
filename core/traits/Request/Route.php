@@ -170,16 +170,16 @@ trait Route {
 	 */
 	function analyze_route_path ($path) {
 		$rc = trim($path, '/');
-		if (Language::instance()->url_language($rc)) {
-			$rc = explode('/', $rc, 2);
-			$rc = isset($rc[1]) ? $rc[1] : '';
-		}
 		Event::instance()->fire(
-			'System/Request/routing_replace',
+			'System/Request/routing_replace/before',
 			[
 				'rc' => &$rc
 			]
 		);
+		if (Language::instance()->url_language($rc)) {
+			$rc = explode('/', $rc, 2);
+			$rc = isset($rc[1]) ? $rc[1] : '';
+		}
 		/**
 		 * Obtaining page path in form of array
 		 */
@@ -205,10 +205,23 @@ trait Route {
 		 * Module detection
 		 */
 		$current_module = $this->determine_page_module($rc, $home_page, $cli_path, $admin_path, $api_path);
+		$rc             = implode('/', $rc);
+		Event::instance()->fire(
+			'System/Request/routing_replace/after',
+			[
+				'rc'             => &$rc,
+				'cli_path'       => (bool)$cli_path,
+				'admin_path'     => (bool)$admin_path,
+				'api_path'       => (bool)$api_path,
+				'regular_path'   => !($cli_path || $admin_path || $api_path),
+				'current_module' => $current_module,
+				'home_page'      => $home_page
+			]
+		);
 		return [
-			'route'           => $rc,
+			'route'           => explode('/', $rc),
 			'path_normalized' => trim(
-				$cli_path.$admin_path.$api_path.$current_module.'/'.implode('/', $rc),
+				"$cli_path$admin_path$api_path$current_module/$rc",
 				'/'
 			),
 			'cli_path'        => (bool)$cli_path,

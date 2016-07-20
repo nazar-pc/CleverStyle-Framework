@@ -25,26 +25,25 @@ Event::instance()
 		}
 	)
 	->on(
-		'System/Request/routing_replace',
-		function () {
+		'System/Request/routing_replace/before',
+		function ($data) {
 			if (!Config::instance()->module('Composer_assets')->enabled()) {
 				return;
 			}
-			$Request = Request::instance();
 			if (
-				$Request->method == 'GET' &&
+				Request::instance()->method == 'GET' &&
 				(
-					strpos($Request->uri, '/bower_components') === 0 ||
-					strpos($Request->uri, '/node_modules') === 0
+					strpos($data['rc'], 'bower_components/') === 0 ||
+					strpos($data['rc'], 'node_modules/') === 0
 				)
 			) {
 				$composer_lock   = @file_get_json(STORAGE.'/Composer/composer.lock');
 				$target_location = str_replace(
-					['/bower_components', '/node_modules'],
-					['/storage/Composer/vendor/bower-asset', '/storage/Composer/vendor/npm-asset'],
-					$Request->uri
+					['bower_components', 'node_modules'],
+					['storage/Composer/vendor/bower-asset', 'storage/Composer/vendor/npm-asset'],
+					$data['rc']
 				);
-				Response::instance()->redirect("$target_location?$composer_lock[hash]", 301);
+				Response::instance()->redirect("/$target_location?$composer_lock[hash]", 301);
 				throw new ExitException;
 			}
 		}

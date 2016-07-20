@@ -20,33 +20,20 @@ use
 
 Event::instance()
 	->on(
-		'System/Request/routing_replace',
+		'System/Request/routing_replace/after',
 		function ($data) {
-			$rc = explode('/', $data['rc']);
-			$L  = new Prefix('blogs_');
-			if ($rc[0] != 'Blogs' && $rc[0] != path($L->Blogs)) {
+			if (!Config::instance()->module('Blogs')->enabled()) {
 				return;
 			}
-			$rc[0] = 'Blogs';
-			if (!isset($rc[1])) {
-				$rc[1] = 'latest_posts';
+			$rc = explode('/', $data['rc']);
+			if ($data['current_module'] != 'Blogs' || !$data['regular_path']) {
+				return;
 			}
-			switch ($rc[1]) {
-				case path($L->latest_posts):
-					$rc[1] = 'latest_posts';
-					break;
-				case path($L->section):
-					$rc[1] = 'section';
-					break;
-				case path($L->tag):
-					$rc[1] = 'tag';
-					break;
-				case path($L->new_post):
-					$rc[1] = 'new_post';
-					break;
-				case path($L->drafts):
-					$rc[1] = 'drafts';
-					break;
+			if (!$rc[0]) {
+				$rc[0] = 'latest_posts';
+			}
+			$L = new Prefix('blogs_');
+			switch ($rc[0]) {
 				case 'latest_posts':
 				case 'section':
 				case 'tag':
@@ -56,10 +43,25 @@ Event::instance()
 				case 'post':
 				case 'atom.xml':
 					break;
+				case path($L->latest_posts):
+					$rc[0] = 'latest_posts';
+					break;
+				case path($L->section):
+					$rc[0] = 'section';
+					break;
+				case path($L->tag):
+					$rc[0] = 'tag';
+					break;
+				case path($L->new_post):
+					$rc[0] = 'new_post';
+					break;
+				case path($L->drafts):
+					$rc[0] = 'drafts';
+					break;
 				default:
-					if (mb_strpos($rc[1], ':') !== false) {
-						$rc[2] = $rc[1];
-						$rc[1] = 'post';
+					if (mb_strpos($rc[0], ':') !== false) {
+						$rc[1] = $rc[0];
+						$rc[0] = 'post';
 					} else {
 						throw new ExitException(404);
 					}

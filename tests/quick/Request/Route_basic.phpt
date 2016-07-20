@@ -54,9 +54,15 @@ Language::instance_replace(
 	Language_test::instance()
 );
 Event::instance()->on(
-	'System/Request/routing_replace',
+	'System/Request/routing_replace/before',
 	function ($data) {
-		var_dump('System/Request/routing_replace event fired with', $data);
+		var_dump('System/Request/routing_replace/before event fired with', $data);
+	}
+);
+Event::instance()->on(
+	'System/Request/routing_replace/after',
+	function ($data) {
+		var_dump('System/Request/routing_replace/after event fired with', $data);
 	}
 );
 $server  = [
@@ -335,16 +341,37 @@ try {
 ?>
 --EXPECT--
 string(9) "Home page"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(0) ""
 }
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(true)
+  ["current_module"]=>
+  string(6) "System"
+  ["home_page"]=>
+  bool(true)
+}
 int(0)
 string(6) "System"
-array(0) {
+array(1) {
+  [0]=>
+  string(0) ""
 }
-array(0) {
+array(1) {
+  [0]=>
+  string(0) ""
 }
 array(0) {
 }
@@ -354,27 +381,67 @@ bool(false)
 string(6) "System"
 bool(true)
 string(26) "Home page, language in URL"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
+  &string(2) "en"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
   &string(0) ""
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(true)
+  ["current_module"]=>
+  string(6) "System"
+  ["home_page"]=>
+  bool(true)
 }
 string(6) "System"
-array(0) {
+array(1) {
+  [0]=>
+  string(0) ""
 }
 string(6) "System"
 bool(true)
 string(11) "Module page"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(14) "Enabled_module"
 }
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(true)
+  ["current_module"]=>
+  string(14) "Enabled_module"
+  ["home_page"]=>
+  bool(false)
+}
 int(0)
 string(14) "Enabled_module"
-array(0) {
+array(1) {
+  [0]=>
+  string(0) ""
 }
-array(0) {
+array(1) {
+  [0]=>
+  string(0) ""
 }
 array(0) {
 }
@@ -384,94 +451,242 @@ bool(false)
 string(14) "Enabled_module"
 bool(false)
 string(28) "Module page, language in URL"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
-  &string(14) "Enabled_module"
+  &string(17) "en/Enabled_module"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(true)
+  ["current_module"]=>
+  string(14) "Enabled_module"
+  ["home_page"]=>
+  bool(false)
 }
 string(14) "Enabled_module"
-array(0) {
+array(1) {
+  [0]=>
+  string(0) ""
 }
 string(14) "Enabled_module"
 bool(false)
 string(8) "API page"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(18) "api/Enabled_module"
 }
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(true)
+  ["regular_path"]=>
+  bool(false)
+  ["current_module"]=>
+  string(14) "Enabled_module"
+  ["home_page"]=>
+  bool(false)
+}
 string(18) "api/Enabled_module"
-array(0) {
+array(1) {
+  [0]=>
+  string(0) ""
 }
 string(14) "Enabled_module"
 bool(true)
 bool(false)
 bool(false)
 string(25) "API page, language in URL"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
-  &string(18) "api/Enabled_module"
+  &string(21) "en/api/Enabled_module"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(true)
+  ["regular_path"]=>
+  bool(false)
+  ["current_module"]=>
+  string(14) "Enabled_module"
+  ["home_page"]=>
+  bool(false)
 }
 string(18) "api/Enabled_module"
-array(0) {
+array(1) {
+  [0]=>
+  string(0) ""
 }
 string(14) "Enabled_module"
 bool(true)
 bool(false)
 bool(false)
 string(10) "Admin page"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(20) "admin/Enabled_module"
 }
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(true)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(false)
+  ["current_module"]=>
+  string(14) "Enabled_module"
+  ["home_page"]=>
+  bool(false)
+}
 string(20) "admin/Enabled_module"
-array(0) {
+array(1) {
+  [0]=>
+  string(0) ""
 }
 string(14) "Enabled_module"
 bool(false)
 bool(true)
 bool(false)
 string(27) "Admin page, language in URL"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
-  &string(20) "admin/Enabled_module"
+  &string(23) "en/admin/Enabled_module"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(true)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(false)
+  ["current_module"]=>
+  string(14) "Enabled_module"
+  ["home_page"]=>
+  bool(false)
 }
 string(20) "admin/Enabled_module"
-array(0) {
+array(1) {
+  [0]=>
+  string(0) ""
 }
 string(14) "Enabled_module"
 bool(false)
 bool(true)
 bool(false)
 string(3) "CLI"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(18) "cli/Enabled_module"
 }
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(true)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(false)
+  ["current_module"]=>
+  string(14) "Enabled_module"
+  ["home_page"]=>
+  bool(false)
+}
 string(18) "cli/Enabled_module"
-array(0) {
+array(1) {
+  [0]=>
+  string(0) ""
 }
 string(14) "Enabled_module"
 bool(false)
 bool(false)
 bool(true)
 string(21) "Localized module name"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
-  &string(24) "Enabled_module_localized"
+  &string(27) "en/Enabled_module_localized"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(true)
+  ["current_module"]=>
+  string(14) "Enabled_module"
+  ["home_page"]=>
+  bool(false)
 }
 string(14) "Enabled_module"
 string(14) "Enabled_module"
 string(38) "Admin request without module specified"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(5) "admin"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(true)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(false)
+  ["current_module"]=>
+  string(6) "System"
+  ["home_page"]=>
+  bool(false)
 }
 string(12) "admin/System"
 string(6) "System"
@@ -479,10 +694,27 @@ bool(false)
 bool(true)
 bool(false)
 string(36) "API request without module specified"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(3) "api"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(true)
+  ["regular_path"]=>
+  bool(false)
+  ["current_module"]=>
+  string(6) "System"
+  ["home_page"]=>
+  bool(false)
 }
 string(10) "api/System"
 string(6) "System"
@@ -490,10 +722,27 @@ bool(true)
 bool(false)
 bool(false)
 string(36) "CLI request without module specified"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(3) "cli"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(true)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(false)
+  ["current_module"]=>
+  string(6) "System"
+  ["home_page"]=>
+  bool(false)
 }
 string(10) "cli/System"
 string(6) "System"
@@ -501,10 +750,27 @@ bool(false)
 bool(false)
 bool(true)
 string(42) "Request to regular page of disabled module"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(15) "Disabled_module"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(15) "Disabled_module"
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(true)
+  ["current_module"]=>
+  string(6) "System"
+  ["home_page"]=>
+  bool(false)
 }
 string(22) "System/Disabled_module"
 string(6) "System"
@@ -512,10 +778,27 @@ bool(false)
 bool(false)
 bool(false)
 string(40) "Request to admin page of disabled module"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(21) "admin/Disabled_module"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(0) ""
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(true)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(false)
+  ["current_module"]=>
+  string(15) "Disabled_module"
+  ["home_page"]=>
+  bool(false)
 }
 string(21) "admin/Disabled_module"
 string(15) "Disabled_module"
@@ -523,10 +806,27 @@ bool(false)
 bool(true)
 bool(false)
 string(45) "Request to regular page of uninstalled module"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(18) "Uninstalled_module"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(18) "Uninstalled_module"
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(true)
+  ["current_module"]=>
+  string(6) "System"
+  ["home_page"]=>
+  bool(false)
 }
 string(25) "System/Uninstalled_module"
 string(6) "System"
@@ -534,10 +834,27 @@ bool(false)
 bool(false)
 bool(false)
 string(43) "Request to admin page of uninstalled module"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(24) "admin/Uninstalled_module"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(18) "Uninstalled_module"
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(true)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(false)
+  ["current_module"]=>
+  string(6) "System"
+  ["home_page"]=>
+  bool(false)
 }
 string(31) "admin/System/Uninstalled_module"
 string(6) "System"
@@ -545,10 +862,27 @@ bool(false)
 bool(true)
 bool(false)
 string(15) "Page with route"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(37) "api/Enabled_module/path/subpath/10/15"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(18) "path/subpath/10/15"
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(true)
+  ["regular_path"]=>
+  bool(false)
+  ["current_module"]=>
+  string(14) "Enabled_module"
+  ["home_page"]=>
+  bool(false)
 }
 string(37) "api/Enabled_module/path/subpath/10/15"
 string(14) "Enabled_module"
@@ -582,10 +916,27 @@ int(400)
 string(26) "Mirror abc.xyz not allowed"
 int(-1)
 string(16) "Correct redirect"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(26) "redirect/http://google.com"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(26) "redirect/http://google.com"
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(true)
+  ["current_module"]=>
+  string(6) "System"
+  ["home_page"]=>
+  bool(false)
 }
 string(20) "Redirect called with"
 array(2) {
@@ -597,18 +948,52 @@ array(2) {
 int(200)
 string(0) ""
 string(30) "Incorrect redirect (no header)"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(26) "redirect/http://google.com"
 }
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(26) "redirect/http://google.com"
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(true)
+  ["current_module"]=>
+  string(6) "System"
+  ["home_page"]=>
+  bool(false)
+}
 int(400)
 string(0) ""
 string(32) "Incorrect redirect (with header)"
-string(47) "System/Request/routing_replace event fired with"
+string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
   &string(26) "redirect/http://google.com"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(26) "redirect/http://google.com"
+  ["cli_path"]=>
+  bool(false)
+  ["admin_path"]=>
+  bool(false)
+  ["api_path"]=>
+  bool(false)
+  ["regular_path"]=>
+  bool(true)
+  ["current_module"]=>
+  string(6) "System"
+  ["home_page"]=>
+  bool(false)
 }
 int(400)
 string(0) ""

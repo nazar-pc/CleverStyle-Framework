@@ -222,24 +222,27 @@ Home page
 ###[Up](#) Events
 
 *$Request* object supports next events:
-* System/Request/routing_replace
+* System/Request/routing_replace/before
+* System/Request/routing_replace/after
 
-#### System/Request/routing_replace
+#### System/Request/routing_replace/before
 This event is used by components in order to change current route. Array with one element `rc` is set as parameter for event, is contains reference to string of current route. It may be changed by components, for example, to catch request to some page, that actually doesn't exists, and to make some replacements here.
+```
+[
+    'rc' => &$rc //Reference to string with current route, this string can be changed
+]
+```
 
-Real example, allows to open module by localized module name in URL:
-```php
-<?php
-\cs\Event::instance()->on(
-    'System/Request/routing_replace',
-    function ($data) {
-        $L      = \cs\Language::instance();
-        $module = basename(__DIR__);
-        $rc     = explode('/', $data['rc']);
-        if ($rc[0] == $L->$module) {
-            $rc[0]      = $module;
-            $data['rc'] = implode('/', $rc);
-        }
-    }
-);
+#### System/Request/routing_replace/after
+Similar to `System/Request/routing_replace/before`, but happens after language, module, home page and other things are identified and removed from `$rc`.
+```
+[
+    'rc'             => &$rc,              //Reference to string with current route, this string can be changed
+    'cli_path'       => (bool)$cli_path,
+    'admin_path'     => (bool)$admin_path,
+    'api_path'       => (bool)$api_path,
+    'regular_path'   => !($cli_path || $admin_path || $api_path),
+    'current_module' => $current_module,
+    'home_page'      => $home_page
+]
 ```
