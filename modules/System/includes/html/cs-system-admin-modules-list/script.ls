@@ -166,8 +166,7 @@ Polymer(
 								'admin/System/modules/install/after'
 								name	: module
 							)
-						.then !->
-							location.reload()
+						.then(location~reload)
 			)
 			modal.ok.innerHTML		= L[if !message then 'install' else 'force_install_not_recommended']
 			modal.ok.primary		= !message
@@ -268,13 +267,13 @@ Polymer(
 					name	: module
 				)
 					.then -> cs.api("uninstall api/System/admin/modules/#module")
-					.then !~>
-						@reload()
+					.then ->
 						cs.ui.notify(L.changes_saved, 'success', 5)
 						cs.Event.fire(
 							'admin/System/modules/uninstall/after'
 							name	: module
 						)
+					.then(location~reload)
 		)
 		modal.ok.innerHTML		= L.uninstall
 		modal.ok.primary		= false

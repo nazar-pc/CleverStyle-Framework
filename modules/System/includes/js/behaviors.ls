@@ -36,13 +36,13 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 							name	: component
 						)
 							.then -> cs.api("enable api/System/admin/modules/#component")
-							.then !~>
-								@reload()
+							.then ->
 								cs.ui.notify(L.changes_saved, 'success', 5)
 								cs.Event.fire(
 									"admin/System/modules/enable/after"
 									name	: component
 								)
+							.then(location~reload)
 				)
 				modal.ok.innerHTML		= L[if !message then 'enable' else 'force_enable_not_recommended']
 				modal.ok.primary		= !message
@@ -74,13 +74,13 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 							name	: component
 						)
 							.then -> cs.api("disable api/System/admin/modules/#component")
-							.then !~>
-								@reload()
+							.then ->
 								cs.ui.notify(L.changes_saved, 'success', 5)
 								cs.Event.fire(
 									"admin/System/modules/disable/after"
 									name	: component
 								)
+							.then(location~reload)
 				)
 				modal.ok.innerHTML		= L[if !message then 'disable' else 'force_disable_not_recommended']
 				modal.ok.primary		= !message

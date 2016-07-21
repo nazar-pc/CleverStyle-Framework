@@ -38,12 +38,11 @@
             }).then(function(){
               return cs.api("enable api/System/admin/modules/" + component);
             }).then(function(){
-              this$.reload();
               cs.ui.notify(L.changes_saved, 'success', 5);
-              cs.Event.fire("admin/System/modules/enable/after", {
+              return cs.Event.fire("admin/System/modules/enable/after", {
                 name: component
               });
-            });
+            }).then(bind$(location, 'reload'));
           });
           modal.ok.innerHTML = L[!message ? 'enable' : 'force_enable_not_recommended'];
           modal.ok.primary = !message;
@@ -81,12 +80,11 @@
             }).then(function(){
               return cs.api("disable api/System/admin/modules/" + component);
             }).then(function(){
-              this$.reload();
               cs.ui.notify(L.changes_saved, 'success', 5);
-              cs.Event.fire("admin/System/modules/disable/after", {
+              return cs.Event.fire("admin/System/modules/disable/after", {
                 name: component
               });
-            });
+            }).then(bind$(location, 'reload'));
           });
           modal.ok.innerHTML = L[!message ? 'disable' : 'force_disable_not_recommended'];
           modal.ok.primary = !message;

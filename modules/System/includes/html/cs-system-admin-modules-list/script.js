@@ -173,9 +173,7 @@
             return cs.Event.fire('admin/System/modules/install/after', {
               name: module
             });
-          }).then(function(){
-            location.reload();
-          });
+          }).then(bind$(location, 'reload'));
         });
         modal.ok.innerHTML = L[!message ? 'install' : 'force_install_not_recommended'];
         modal.ok.primary = !message;
@@ -266,12 +264,11 @@
         }).then(function(){
           return cs.api("uninstall api/System/admin/modules/" + module);
         }).then(function(){
-          this$.reload();
           cs.ui.notify(L.changes_saved, 'success', 5);
-          cs.Event.fire('admin/System/modules/uninstall/after', {
+          return cs.Event.fire('admin/System/modules/uninstall/after', {
             name: module
           });
-        });
+        }).then(bind$(location, 'reload'));
       });
       modal.ok.innerHTML = L.uninstall;
       modal.ok.primary = false;
@@ -381,4 +378,7 @@
       });
     }
   });
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);
