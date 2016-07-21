@@ -119,7 +119,7 @@ class Config {
 		foreach ($config as $part => $value) {
 			$this->$part = $value;
 		}
-		$this->core += file_get_json(MODULES.'/System/core_settings_defaults.json');
+		$this->core += @file_get_json(MODULES.'/System/core_settings_defaults.json') ?: file_get_json(DIR.'/modules/System/core_settings_defaults.json');
 		date_default_timezone_set($this->core['timezone']);
 		$this->fill_mirrors();
 	}
@@ -178,7 +178,7 @@ class Config {
 		if ($this->cancel_available()) {
 			unset($this->core['cache_not_saved']);
 		}
-		$core_settings_defaults = file_get_json(MODULES.'/System/core_settings_defaults.json');
+		$core_settings_defaults = @file_get_json(MODULES.'/System/core_settings_defaults.json') ?: file_get_json(DIR.'/modules/System/core_settings_defaults.json');
 		$this->core += $core_settings_defaults;
 		foreach ($this->core as $key => $value) {
 			if (!isset($core_settings_defaults[$key])) {

@@ -2177,3 +2177,7 @@ Dropped backward compatibility:
 * None
 
 Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
+
+# 4.95.0+build-2279: Forward-compatible version
+
+Version for smooth upgrade to 5.x

@@ -613,6 +613,7 @@ trait modules {
 		$module_data = $Config->components['modules'][$module];
 		// Run PHP update scripts and SQL queries if any
 		Packages_manipulation::update_php_sql($module_dir, $existing_meta['version'], isset($module_data['db']) ? $module_data['db'] : null);
+		Packages_manipulation::update_php_sql(DIR."/modules/$module", $existing_meta['version'], isset($module_data['db']) ? $module_data['db'] : null);
 		Event::instance()->fire('admin/System/components/modules/update_system/after');
 		/**
 		 * Restore previous site mode
