@@ -1,12 +1,12 @@
 {
 	"package"             : "System",
 	"category"            : "modules",
-	"version"             : "5.15.1+build-2330",
+	"version"             : "5.15.2+build-2331",
 	"description"         : "Base system module of CleverStyle Framework",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/Framework",
 	"license"             : "MIT License",
-	"update_from_version" : "4.78",
+	"update_from_version" : "4.95",
 	"db"                  : [
 		"keys",
 		"texts",
