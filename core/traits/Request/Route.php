@@ -271,7 +271,7 @@ trait Route {
 			list($protocol, $urls) = explode('://', $address, 2);
 			if ($protocol === $referer_protocol) {
 				foreach (explode(';', $urls) as $url) {
-					if (mb_strpos($referer_host, $url) === 0) {
+					if (mb_strpos("$referer_host/", "$url/") === 0) {
 						return true;
 					}
 				}

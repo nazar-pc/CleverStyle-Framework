@@ -338,6 +338,24 @@ try {
 	var_dump($e->getCode(), $e->getMessage());
 }
 
+var_dump('Incorrect redirect (with wrong subdomain in header)');
+Response::instance_stub(
+	[
+		'code' => 200
+	],
+	[
+		'redirect' => function (...$arguments) {
+			var_dump('Redirect called with', $arguments);
+		}
+	]
+);
+$Request->init_server(['REQUEST_URI' => '/redirect/http://google.com', 'HTTP_REFERER' => 'http://cscms.travis.abc.xyz/Some_page'] + $server);
+try {
+	$Request->init_route();
+} catch (ExitException $e) {
+	var_dump($e->getCode(), $e->getMessage());
+}
+
 ?>
 --EXPECT--
 string(9) "Home page"
@@ -973,6 +991,31 @@ array(7) {
 int(400)
 string(0) ""
 string(32) "Incorrect redirect (with header)"
+string(54) "System/Request/routing_replace/before event fired with"
+array(1) {
+  ["rc"]=>
+  &string(26) "redirect/http://google.com"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(7) {
+  ["rc"]=>
+  &string(26) "redirect/http://google.com"
+  ["cli_path"]=>
+  &string(0) ""
+  ["admin_path"]=>
+  &string(0) ""
+  ["api_path"]=>
+  &string(0) ""
+  ["regular_path"]=>
+  bool(true)
+  ["current_module"]=>
+  &string(6) "System"
+  ["home_page"]=>
+  &bool(false)
+}
+int(400)
+string(0) ""
+string(51) "Incorrect redirect (with wrong subdomain in header)"
 string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
   ["rc"]=>
