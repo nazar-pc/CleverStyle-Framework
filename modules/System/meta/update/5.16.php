@@ -7,6 +7,6 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-$Config = Config::instance();
-unset($Config->components['plugins']);
-$Config->save();
+if (is_dir(DIR.'/components')) {
+	rmdir_recursive(DIR.'/components');
+}
