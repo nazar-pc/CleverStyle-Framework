@@ -11,7 +11,7 @@ file_put_contents(
 	str_replace(
 	/** @lang ApacheConfig */
 		<<<HTACCESS
-IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd',
+IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
 HTACCESS
 		,
 		/** @lang ApacheConfig */
