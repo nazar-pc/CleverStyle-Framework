@@ -116,14 +116,6 @@ class Builder {
 		 */
 		$phar->addFromString('fs/'.count($core_files), $this->get_htaccess());
 		$core_files[] = '.htaccess';
-		$phar->addFile("$this->root/storage/.htaccess", 'fs/'.count($core_files));
-		$core_files[] = 'storage/.htaccess';
-		$phar->addFile("$this->root/storage/pcache/.htaccess", 'fs/'.count($core_files));
-		$core_files[] = 'storage/pcache/.htaccess';
-		$phar->addFile("$this->root/storage/public/.htaccess", 'fs/'.count($core_files));
-		$core_files[] = 'storage/public/.htaccess';
-		$phar->addFile("$this->root/storage/temp/.htaccess", 'fs/'.count($core_files));
-		$core_files[] = 'storage/temp/.htaccess';
 		$phar->addFile("$this->root/config/main.php", 'fs/'.count($core_files));
 		$core_files[] = 'config/main.php';
 		$phar->addFile("$this->root/favicon.ico", 'fs/'.count($core_files));
@@ -179,6 +171,10 @@ STUB
 			"$this->root/core",
 			"$this->root/custom",
 			"$this->root/includes",
+			"$this->root/storage/.htaccess",
+			"$this->root/storage/pcache/.htaccess",
+			"$this->root/storage/public/.htaccess",
+			"$this->root/storage/temp/.htaccess",
 			"$this->root/themes/CleverStyle",
 			"$this->root/bower.json",
 			"$this->root/cli",
@@ -186,8 +182,7 @@ STUB
 			"$this->root/composer.lock",
 			"$this->root/index.php",
 			"$this->root/license.txt",
-			"$this->root/package.json",
-			"$this->root/Storage.php"
+			"$this->root/package.json"
 		];
 		$files            = [];
 		foreach ($files_to_include as $s) {
