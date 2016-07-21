@@ -2177,3 +2177,116 @@ Dropped backward compatibility:
 * None
 
 Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
+
+# 4.95.0+build-2279: Forward-compatible version
+
+Version for smooth upgrade to 5.x
+
+# 5.15.3+build-2332: Focus on quality
+
+This release is primarily focused on code quality with significantly increased tests coverage.
+
+Another aspect is rectifying framework's API by removing redundant elements (like plugins, blocks templates, users contacts, some methods and properties), blocks and modules now moved to project root similarly to themes.
+
+The last noteworthy aspect is slightly improved minimal request overhead, which improves page rendering under mod_php or php-fpm as well as under Http server (which can render pages in almost 0.5 ms).
+
+This is the first release of 5.x series, so it brings some BC-breaks, as well as removed all functionality declared as deprecated in any previous release.
+
+Security fixes:
+* None
+
+New components:
+* Psr7 (decoupled into optional module from system core)
+
+New features:
+* Added serving static files in framework itself (without external web-server)
+* Backend events added:
+  * `System/Request/routing_replace/before`
+  * `System/Request/routing_replace/after`
+
+Updates:
+* Normalize is now based on normalize.css 4.2.0
+* New upstream version of PHPT-Tests-Runner
+* New upstream version of autosize
+* New upstream version of Composer
+
+Fixes and small improvements:
+* System:
+  * Use `element.matches()` instead of `element.tagName`
+  * Fixes for session data setting and deletion
+  * Fix for making API requests for non-authorized user (essentially, initial sign in)
+  * Updated Nginx config sample without compression headers
+  * Small fix for streams in multiple files uploads as streams
+  * Do not handle and request data and/or files for `GET`, `HEAD` and `OPTIONS` requests
+  * Keep correct independent position in uploaded files that are opened multiple times
+  * Docker image updated to newer base `phusion/baseimage` as well as using PHP7
+  * Multiple DB query always returns boolean result
+  * Print error messages to stderr in CLI mode
+  * Fixes and small improvements for CSS minifier
+  * Small fixes and improvements for processing nested HTML imports
+  * Correct support for `Forwarded` HTTP header per spec
+  * Improved HHVM support in some edge cases with errors
+  * Fix for making multiple API calls on frontend: request body was sent where it shouldn't
+  * Small fix for headers initialization in `cs\Response::init_with_typical_default_settings()` method
+  * Small fix for `REQUEST_URI` decoding in `cs\Request\Server` trait
+  * Stop using ETags for improved caching
+  * Stop setting the same headers multiple times
+  * Multiple `.htaccess` files are added to installation distributive instead of creating them in `core/bootstrap.php`
+  * Fix permission for `cli`
+  * More lightweight Language initialization, delays loading of translations until really needed
+  * Website name is now added to `Page::instance()->Title` only right before page rendering (affects only manual changing of this property), which allows to avoid loading translations completely for certain requests
+  * Only set `Content-Language` header for multilingual setups
+  * Do not render title when interface turned off
+  * Many tweaks and small fixes
+* Deferred tasks
+  * Hide deferred tasks from menu
+* Http server
+  * Fix for serving streams in Http server module
+* HybridAuth
+  * Contacts integration removed from HybridAuth module
+  * Small fix in HybridAuth module when no providers enabled
+
+Deprecations (will be dropped right after release):
+* None (major release)
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* Minor potential BC-break (very unlikely), `cs\Text::get()` signature has changed and implementation largely simplified
+* Request initialization should not happen after Response initialization, since exit might happen during Request initialization and there is a need for response to be ready by that time
+
+Dropped backward compatibility:
+* All deprecated functionality was dropped
+* Dropped update support from System versions older than previous release, the same for all components
+* jQuery was removed from system (including jQuery configuration)
+* Plugins support removed with all corresponding backend and frontend events, UI elements, API and documentation.
+* Removed backend events:
+  * `System/App/construct`
+  * `admin/System/components/plugins/enable/before`
+  * `admin/System/components/plugins/enable/after`
+  * `admin/System/components/plugins/disable/before`
+  * `admin/System/components/plugins/disable/after`
+  * `admin/System/components/plugins/update/before`
+  * `admin/System/components/plugins/update/after`
+  * `System/User/get_contacts`
+  * `System/Request/routing_replace`
+* Removed frontend events:
+  * `admin/System/components/plugins/disable/before`
+  * `admin/System/components/plugins/disable/after`
+  * `admin/System/components/plugins/enable/before`
+  * `admin/System/components/plugins/enable/after`
+  * `admin/System/components/plugins/update/before`
+  * `admin/System/components/plugins/update/after`
+* `ENGINES` constant removed
+* Contacts support removed from system
+* Blocks templates removed together with corresponding configuration, UI elements, constants, files and documentation
+* Major backward-compatibility break: blocks and modules moved to the root of the project (system tries to make sure process goes smooth by correcting `fs.json` files and creating temporary symlinks in original locations).
+* Also events with `components/` in their name have lost this suffix, for instance, `admin/System/components/modules/default` become `admin/System/modules/default`
+* Do not compress minified files i public cache, this should be better done by web/proxy server (also resolves problems with setting headers on some configurations)
+* `cs\Text::search()` method removed as unused
+* Dropped support for calling `DB::instance()->$db_index`, `DB::instance()->$db_index()`, `Storage::instance()->$storage_index`
+* Dropped support for calling database methods directly on `DB::instance()` objects, now explicit getting database with `DB::instance()->db()` or `DB::instance()->db_prime()` is required
+* Psr7 support moved from system core to new Psr7 module
+* `cs\Response::$protocol` property removed as unused
+* `clanguage_en` removed from translations and events as redundant
+* `cs\Page::set_theme()` function removed
+
+Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
