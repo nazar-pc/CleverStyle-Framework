@@ -301,23 +301,11 @@ class Language implements JsonSerializable {
 		 * @var string $language
 		 */
 		$language = $language ?: $Config->core['language'];
-		if (
-			!$language ||
-			!$this->can_be_changed_to($Config, $language)
-		) {
+		if (!$this->can_be_changed_to($Config, $language)) {
 			return false;
 		}
 		if (!isset($this->translation[$language])) {
-			$Cache       = Cache::instance();
-			$translation = $Cache->{"languages/$language"};
-			if ($translation) {
-				$this->translation[$language] = $translation;
-			} else {
-				/**
-				 * `$this->get_translation()` will implicitly change `$this->translation`, so we do not need to assign new translation there manually
-				 */
-				$Cache->{"languages/$language"} = $this->get_translation($language);
-			}
+			$this->translation[$language] = $this->get_translation($language);
 		}
 		/**
 		 * Change current language to `$language`
@@ -338,6 +326,9 @@ class Language implements JsonSerializable {
 	 * @return bool
 	 */
 	protected function can_be_changed_to ($Config, $language) {
+		if (!$language) {
+			return false;
+		}
 		return
 			// Config not loaded yet
 			!$Config->core ||
@@ -349,6 +340,14 @@ class Language implements JsonSerializable {
 				in_array($language, $Config->core['active_languages'])
 			);
 	}
+	protected function get_translation ($language) {
+		return Cache::instance()->get(
+			"languages/$language",
+			function () use ($language) {
+				return $this->get_translation_internal($language);
+			}
+		);
+	}
 	/**
 	 * Load translation from all over the system, set `$this->translation[$language]` and return it
 	 *
@@ -356,11 +355,10 @@ class Language implements JsonSerializable {
 	 *
 	 * @return string[]
 	 */
-	protected function get_translation ($language) {
+	protected function get_translation_internal ($language) {
 		/**
 		 * Get current system translations
 		 */
-		$translation = &$this->translation[$language];
 		$translation = $this->get_translation_from_json(LANGUAGES."/$language.json");
 		$translation = $this->fill_required_translation_keys($translation, $language);
 		/**
@@ -380,10 +378,11 @@ class Language implements JsonSerializable {
 			]
 		);
 		/**
-		 * If current language was set - append its translation to fill potentially missing keys
+		 * Append translations from core language to fill potentially missing keys
 		 */
-		if ($this->current_language) {
-			$translation = $translation + $this->translation[$this->current_language];
+		$core_language = Core::instance()->language;
+		if ($language != $core_language) {
+			$translation += $this->get_translation($core_language);
 		}
 		return $translation;
 	}
@@ -393,8 +392,9 @@ class Language implements JsonSerializable {
 	 * @return string[]
 	 */
 	protected function get_translation_from_json ($filename) {
-		$translation = file_get_json_nocomments($filename);
-		return $this->get_translation_from_json_internal($translation);
+		return $this->get_translation_from_json_internal(
+			file_get_json_nocomments($filename)
+		);
 	}
 	/**
 	 * @param string[]|string[][] $translation
