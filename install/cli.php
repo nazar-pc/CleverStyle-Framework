@@ -7,6 +7,19 @@
  * @license    MIT License, see license.txt
  */
 namespace cs;
+use
+	Phar;
+
+$phar_path = __DIR__;
+if (strpos(__DIR__, 'phar://') !== 0) {
+	foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS) as $step) {
+		if (preg_match('#^phar://.+/cli.php$#', $step['file'])) {
+			$phar_path = dirname($step['file']);
+			break;
+		}
+	}
+}
+
 date_default_timezone_set('UTC');
 require_once __DIR__.'/Installer.php';
 
@@ -182,7 +195,7 @@ HELP;
 
 try {
 	Installer::install(
-		__DIR__.'/..',
+		$phar_path,
 		getcwd(),
 		$options['site_name'],
 		$options['site_url'],
@@ -205,8 +218,8 @@ try {
 $admin_login = strstr($options['admin_email'], '@', true);
 $warning     = false;
 // Removing of installer file
-$installer = getcwd()."/$argv[0]";
-if (!is_writable($installer) || !unlink($installer)) {
+$installer = substr($phar_path, strlen('phar://'));
+if (!is_writable($installer) || !Phar::unlinkArchive($installer)) {
 	$warning = "Please, remove installer file $installer for security!\n";
 }
 echo <<<SUCCESS

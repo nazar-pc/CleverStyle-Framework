@@ -6,7 +6,7 @@
  * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-require_once __DIR__.'/php-code-coverage+PR-457+phar.phar';
+require_once __DIR__.'/php-code-coverage.phar';
 
 $filter = new \SebastianBergmann\CodeCoverage\Filter;
 $filter->addDirectoryToWhitelist(__DIR__.'/../build');
@@ -20,9 +20,15 @@ $coverage_data_location = __DIR__.'/coverage_data.json';
 
 $coverage = new \SebastianBergmann\CodeCoverage\CodeCoverage(null, $filter);
 $coverage->setAddUncoveredFilesFromWhitelist(true);
-$coverage->setData(
-	json_decode(file_get_contents($coverage_data_location), true)
-);
+$handler = fopen($coverage_data_location, 'rb');
+while ($data = fgets($handler)) {
+	$c = new \SebastianBergmann\CodeCoverage\CodeCoverage(null, $filter);
+	$c->setData(json_decode($data, true) ?: []);
+	$coverage->merge($c);
+	unset($c);
+}
+fclose($handler);
+unset($data, $handler);
 
 $report_location = __DIR__.'/code_coverage_report';
 exec("rm -rf ".escapeshellarg($report_location));

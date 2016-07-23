@@ -8,9 +8,28 @@
  */
 namespace cs;
 use
-	h;
+	h,
+	Phar;
 
-function install_form () {
+$phar_path = __DIR__;
+if (strpos(__DIR__, 'phar://') !== 0) {
+	foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS) as $step) {
+		if (preg_match('#^phar://.+/web.php$#', $step['file'])) {
+			$phar_path = dirname($step['file']);
+			break;
+		}
+	}
+}
+
+date_default_timezone_set('UTC');
+require_once __DIR__.'/Installer.php';
+
+/**
+ * @param string $phar_path
+ *
+ * @return string
+ */
+function install_form ($phar_path) {
 	$timezones = get_timezones_list();
 	return h::{'form[method=post]'}(
 		h::nav(
@@ -34,7 +53,7 @@ function install_form () {
 			h::{'tr.expert td'}(
 				'Database engine:',
 				h::{'select[name=db_engine][size=3][selected=MySQLi]'}(
-					file_get_json(__DIR__.'/../db_engines.json')
+					file_get_json("$phar_path/db_engines.json")
 				)
 			).
 			h::{'tr.expert td'}(
@@ -77,7 +96,7 @@ function install_form () {
 			h::{'tr td'}(
 				'Language:',
 				h::{'select[name=language][size=3][selected=English]'}(
-					file_get_json(__DIR__.'/../languages.json')
+					file_get_json("$phar_path/languages.json")
 				)
 			).
 			h::{'tr td'}(
@@ -102,9 +121,11 @@ function install_form () {
 }
 
 /**
+ * @param string $phar_path
+ *
  * @return string
  */
-function install_process () {
+function install_process ($phar_path) {
 	if (isset($_POST['site_url'])) {
 		$url = $_POST['site_url'];
 	} else {
@@ -120,7 +141,7 @@ function install_process () {
 	}
 	try {
 		Installer::install(
-			__DIR__.'/..',
+			$phar_path,
 			getcwd(),
 			$_POST['site_name'],
 			$url,
@@ -142,8 +163,8 @@ function install_process () {
 	$admin_login = strstr($_POST['admin_email'], '@', true);
 	$warning     = false;
 	// Removing of installer file
-	$installer = getcwd().'/'.basename(__DIR__);
-	if (!is_writable($installer) || !unlink($installer)) {
+	$installer = substr($phar_path, strlen('phar://'));
+	if (!is_writable($installer) || !Phar::unlinkArchive($installer)) {
 		$warning = "Please, remove installer file $installer for security!\n";
 	}
 	return <<<HTML
@@ -166,9 +187,6 @@ function install_process () {
 HTML;
 }
 
-date_default_timezone_set('UTC');
-require_once __DIR__.'/Installer.php';
-
 if (count(explode('/', $_SERVER['REQUEST_URI'])) > 3) {
 	echo 'Installation into subdirectory is not supported!';
 	return;
@@ -177,22 +195,22 @@ if (count(explode('/', $_SERVER['REQUEST_URI'])) > 3) {
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
 
-$fs = json_decode(file_get_contents(__DIR__.'/../fs.json'), true);
-require_once __DIR__.'/../fs/'.$fs['core/thirdparty/upf.php'];
-require_once __DIR__.'/../fs/'.$fs['core/functions.php'];
-require_once __DIR__.'/../fs/'.$fs['core/thirdparty/nazarpc/BananaHTML.php'];
-require_once __DIR__.'/../fs/'.$fs['core/classes/h/Base.php'];
-require_once __DIR__.'/../fs/'.$fs['core/classes/h.php'];
+$fs = json_decode(file_get_contents("$phar_path/fs.json"), true);
+require_once "$phar_path/fs/".$fs['core/thirdparty/upf.php'];
+require_once "$phar_path/fs/".$fs['core/functions.php'];
+require_once "$phar_path/fs/".$fs['core/thirdparty/nazarpc/BananaHTML.php'];
+require_once "$phar_path/fs/".$fs['core/classes/h/Base.php'];
+require_once "$phar_path/fs/".$fs['core/classes/h.php'];
 
-$version = file_get_json(__DIR__.'/../meta.json')['version'];
+$version = file_get_json("$phar_path/meta.json")['version'];
 ?>
 <!doctype html>
 <title>CleverStyle Framework <?=$version?> Installation</title>
 <meta charset="utf-8">
 <style><?=file_get_contents(__DIR__.'/style.css')?></style>
 <header>
-	<?=file_get_contents(__DIR__.'/../logo.svg')?>
+	<?=file_get_contents("$phar_path/logo.svg")?>
 	<h1>Installation</h1>
 </header>
-<section><?=isset($_POST['site_name']) ? install_process() : install_form()?></section>
+<section><?=isset($_POST['site_name']) ? install_process($phar_path) : install_form($phar_path)?></section>
 <footer>Copyright (c) 2011-2016, Nazar Mokrynskyi</footer>

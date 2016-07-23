@@ -21,35 +21,26 @@ $version = json_decode(file_get_contents(__DIR__.'/../../../modules/System/meta.
 (new Builder($root, $target))->core();
 rename("$target/CleverStyle_Framework_$version.phar.php", "$target/distributive.phar.php");
 /**
- * Inject code coverage into distributive
+ * Hack distributive to use source files instead of files from distributive and inject code coverage analysis
  */
-$phar                       = new Phar("$target/distributive.phar.php");
-$replace_with_code_coverage = <<<PHP
-namespace cs;
-require '$target/../code_coverage.php';
-// Keep distributive file until php-code-coverage finishes its job
-function unlink (\$filename) {
-	register_shutdown_function(function () use (\$filename) {
-		\unlink(\$filename);
-	});
-	return true;
-}
-PHP;
+$phar = new Phar("$target/distributive.phar.php");
 $phar->addFromString(
 	'cli.php',
-	str_replace(
-		'namespace cs;',
-		$replace_with_code_coverage,
-		file_get_contents("phar://$target/distributive.phar.php/cli.php")
-	)
+	/** @lang PHP */
+	<<<PHP
+<?php
+require '$target/../code_coverage.php';
+require '$root/install/cli.php';
+PHP
 );
 $phar->addFromString(
 	'web.php',
-	str_replace(
-		'namespace cs;',
-		$replace_with_code_coverage,
-		file_get_contents("phar://$target/distributive.phar.php/web.php")
-	)
+	/** @lang PHP */
+	<<<PHP
+<?php
+require '$target/../code_coverage.php';
+require '$root/install/web.php';
+PHP
 );
 unset($phar);
 
