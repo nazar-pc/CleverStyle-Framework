@@ -137,7 +137,7 @@ CONFIG;
 		require_once "$source/fs/".$file_index_map['core/thirdparty/upf.php'];
 		require_once "$source/fs/".$file_index_map['core/functions.php'];
 		// Remove default autoloader, since we have special autoloader suitable for operating inside installer where default will fail hard
-		spl_autoload_unregister(spl_autoload_functions()[0]);
+		spl_autoload_unregister(array_reverse(spl_autoload_functions())[0]);
 		/**
 		 * Special autoloader for installer
 		 */

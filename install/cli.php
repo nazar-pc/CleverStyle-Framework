@@ -6,6 +6,7 @@
  * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
+namespace cs;
 date_default_timezone_set('UTC');
 require_once __DIR__.'/Installer.php';
 
@@ -22,7 +23,10 @@ $options = [
 	'language'  => 'English',
 	'mode'      => 1
 ];
-
+/**
+ * @var array $argv
+ * @var int   $argc
+ */
 for ($i = 1; $i < $argc; $i += 2) {
 	$value = $argv[$i + 1];
 	switch ($argv[$i]) {
@@ -177,7 +181,7 @@ HELP;
 }
 
 try {
-	cs\Installer::install(
+	Installer::install(
 		__DIR__.'/..',
 		getcwd(),
 		$options['site_name'],
@@ -194,7 +198,7 @@ try {
 		$options['admin_password'],
 		$options['mode']
 	);
-} catch (Exception $e) {
+} catch (\Exception $e) {
 	echo $e->getMessage();
 	exit(1);
 }

@@ -9,7 +9,7 @@ phar.readonly = Off
 --FILE--
 <?php
 include __DIR__.'/_install_prepare.php';
-system(PHP_BINARY." distributive.phar.php -sn Web-site -su http://cscms.travis -dh 127.0.0.1 -dn travis -du travis -dp \"\" -dr 'xyz_' -ae admin@cscms.travis -ap 1111 -de $_ENV[DB]");
+system(PHP_BINARY." -d variables_order=EGPCS -d xdebug.default_enable=0 distributive.phar.php -sn Web-site -su http://cscms.travis -dh 127.0.0.1 -dn travis -du travis -dp \"\" -dr 'xyz_' -ae admin@cscms.travis -ap 1111 -de $_ENV[DB]");
 ?>
 --CLEAN--
 <?php
