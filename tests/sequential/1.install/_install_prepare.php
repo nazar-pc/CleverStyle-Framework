@@ -1,4 +1,8 @@
 <?php
+namespace cs;
+use
+	Phar;
+
 $root   = __DIR__.'/../../..';
 $target = __DIR__.'/../../cscms.travis';
 
@@ -14,7 +18,7 @@ if (is_dir($target)) {
 	exec("rm -r $target");
 }
 $version = json_decode(file_get_contents(__DIR__.'/../../../modules/System/meta.json'), true)['version'];
-(new \cs\Builder($root, $target))->core();
+(new Builder($root, $target))->core();
 rename("$target/CleverStyle_Framework_$version.phar.php", "$target/distributive.phar.php");
 /**
  * Inject code coverage into distributive

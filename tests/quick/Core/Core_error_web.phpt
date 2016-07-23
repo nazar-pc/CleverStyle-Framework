@@ -3,7 +3,10 @@
 namespace cs;
 include __DIR__.'/../../unit.php';
 define('DIR', make_tmp_dir());
-const PHP_SAPI = 'apache2handler';
+function php_sapi_name () {
+	return 'apache2handler';
+}
+
 Core::instance();
 ?>
 --EXPECT--

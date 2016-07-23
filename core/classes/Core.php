@@ -58,7 +58,7 @@ class Core {
 	 */
 	protected function load_config () {
 		if (!file_exists(DIR.'/config/main.json')) {
-			if (PHP_SAPI == 'cli') {
+			if (php_sapi_name() == 'cli') {
 				echo <<<CONFIG_NOT_FOUND
 Config file not found, is system installed properly?
 How to install CleverStyle Framework: https://github.com/nazar-pc/CleverStyle-Framework/tree/master/docs/installation/Installation.md

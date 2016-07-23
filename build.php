@@ -19,7 +19,7 @@ require_once DIR.'/core/thirdparty/upf.php';
 require_once DIR.'/core/functions.php';
 date_default_timezone_set('UTC');
 
-if (PHP_SAPI == 'cli') {
+if (php_sapi_name() == 'cli') {
 	require __DIR__.'/build/cli.php';
 } else {
 	require __DIR__.'/build/web.php';

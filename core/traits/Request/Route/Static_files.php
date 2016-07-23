@@ -15,10 +15,10 @@ trait Static_files {
 	 * @throws ExitException
 	 */
 	protected function serve_static_files () {
-		$path = explode('?', $this->path)[0];
+		$path = $this->path;
 		if (
 			$this->method != 'GET' ||
-			!in_array(PHP_SAPI, ['cli', 'cli-server']) ||
+			!in_array(php_sapi_name(), ['cli', 'cli-server']) ||
 			strlen($path) < 2
 		) {
 			return;
@@ -32,9 +32,6 @@ trait Static_files {
 		}
 		$path      = substr($path, strlen(DIR));
 		$extension = file_extension($path);
-		if ($extension == 'php') {
-			throw new ExitException(404);
-		}
 		/**
 		 * Public cache
 		 */
@@ -53,6 +50,9 @@ trait Static_files {
 				'content-type'    => 'application/octet-stream'
 			];
 			$this->serve_static_file($path, $headers);
+		}
+		if ($extension == 'php') {
+			throw new ExitException(404);
 		}
 		/**
 		 * System, modules and themes includes

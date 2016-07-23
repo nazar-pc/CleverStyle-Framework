@@ -13,7 +13,7 @@ use
 	cs\Page,
 	cs\Request;
 
-if (PHP_SAPI == 'cli') {
+if (php_sapi_name() == 'cli') {
 	Server::instance()->run(isset($_GET['address']) ? $_GET['address'] : null);
 } else {
 	Page::instance()->interface = false;

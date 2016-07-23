@@ -147,7 +147,7 @@ if (version_compare(PHP_VERSION, '5.6', '<')) {
 	return;
 }
 
-if (PHP_SAPI == 'cli') {
+if (php_sapi_name() == 'cli') {
 	Phar::mapPhar('cleverstyle_framework.phar');
 	include 'phar://cleverstyle_framework.phar/cli.php';
 } else {
