@@ -63,6 +63,7 @@ function line ($text = '', $clean = false) {
  * @return string `skipped`, `success` or `error`
  */
 function run_test ($test_file, $base_text) {
+	$time = microtime(true);
 	out("<y>$base_text ...</y>");
 	$test_file = realpath($test_file);
 	@unlink("$test_file.exp");
@@ -107,7 +108,7 @@ function run_test ($test_file, $base_text) {
 		}
 	}
 	$output = rtrim(execute_code($working_dir, $parsed_test['FILE'], $php_arguments, $script_arguments, $test_file));
-	return compare_output($output, $base_text, $test_file, $php_arguments, $script_arguments, $parsed_test);
+	return compare_output($output, $base_text, $test_file, $php_arguments, $script_arguments, $parsed_test, $time);
 }
 
 /**
@@ -155,21 +156,31 @@ function execute_code ($working_dir, $code, $php_arguments, $script_arguments, $
 }
 
 /**
+ * @param float $started In seconds
+ *
+ * @return string
+ */
+function time_since_started ($started) {
+	return round((microtime(true) - $started) * 1000, 2).' ms';
+}
+
+/**
  * @param string   $output
  * @param string   $base_text
  * @param string   $test_file
  * @param array    $php_arguments
  * @param string   $script_arguments
  * @param string[] $parsed_test
+ * @param float    $started_time
  *
  * @return string `skipped`, `success` or `error`
  */
-function compare_output ($output, $base_text, $test_file, $php_arguments, $script_arguments, $parsed_test) {
+function compare_output ($output, $base_text, $test_file, $php_arguments, $script_arguments, $parsed_test, $started_time) {
 	$working_dir = dirname($test_file);
 	if (isset($parsed_test['EXPECT'])) {
 		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECT'], $php_arguments, $script_arguments, $test_file));
 		if ($expect === $output) {
-			line("<g>$base_text SUCCESS</g>", true);
+			line("<g>$base_text SUCCESS</g> ".time_since_started($started_time), true);
 			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
@@ -203,7 +214,7 @@ function compare_output ($output, $base_text, $test_file, $php_arguments, $scrip
 			preg_quote($expect, '/')
 		);
 		if (preg_match("/^$regex\$/s", $output)) {
-			line("<g>$base_text SUCCESS</g>", true);
+			line("<g>$base_text SUCCESS</g> ".time_since_started($started_time), true);
 			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
@@ -211,12 +222,12 @@ function compare_output ($output, $base_text, $test_file, $php_arguments, $scrip
 		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECREGEX'], $php_arguments, $script_arguments, $test_file));
 		$regex  = preg_quote($expect, '/');
 		if (preg_match("/^$regex\$/s", $output)) {
-			line("<g>$base_text SUCCESS</g>", true);
+			line("<g>$base_text SUCCESS</g> ".time_since_started($started_time), true);
 			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
 	}
-	line("<r>$base_text ERROR:</r>", true);
+	line("<r>$base_text ERROR:</r> ".time_since_started($started_time), true);
 	$diff = preg_replace_callback(
 		'/^([-+]).*$/m',
 		function ($match) {
@@ -225,6 +236,7 @@ function compare_output ($output, $base_text, $test_file, $php_arguments, $scrip
 		compute_diff($test_file, $expect, $output)
 	);
 	line($diff);
+	isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 	return 'error';
 }
 
@@ -357,11 +369,12 @@ foreach ($tests as $test_file) {
 	$max_length = max($max_length, strlen($test_file));
 }
 
-$results = [
+$results      = [
 	'skipped' => 0,
 	'success' => 0,
 	'error'   => 0
 ];
+$started_time = microtime(true);
 
 foreach ($tests as $index => $test_file) {
 	$base_text = sprintf("%' 3d/$tests_count %s", $index + 1, str_pad($test_file, $max_length));
@@ -379,3 +392,4 @@ if ($results['error']) {
 	line(sprintf("<r>%' 3d/$tests_count tests (%' 6.2f%%) failed</r>", $results['error'], $results['error'] / $tests_count * 100));
 	exit(1);
 }
+line(sprintf('Time: %s', time_since_started($started_time)));
