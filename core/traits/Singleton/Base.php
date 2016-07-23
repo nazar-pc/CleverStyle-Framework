@@ -48,11 +48,11 @@ trait Base {
 		if ($check) {
 			return False_class::instance();
 		}
-		$class = get_called_class();
-		if (strpos($class, 'cs') !== 0) {
+		$called_class = get_called_class();
+		if (strpos($called_class, 'cs') !== 0) {
 			return False_class::instance();
 		}
-		list($aliases, $final_class) = static::instance_prototype_get_aliases_final_class($class);
+		list($aliases, $final_class) = static::instance_prototype_get_aliases_final_class($called_class);
 		foreach ($aliases as $alias) {
 			/**
 			 * If for whatever reason base class does not exists or file that should be included does not exists
@@ -62,15 +62,29 @@ trait Base {
 				!file_exists($alias['path'])
 			) {
 				clean_classes_cache();
-				$instance = new $class;
-				static::instance_prototype_state_init($instance);
-				$instance->construct();
+				$instance = static::instance_create($called_class, $called_class);
 				return $instance;
 			}
 			class_alias($alias['original'], $alias['alias']);
 			require_once $alias['path'];
 		}
-		$instance = new $final_class;
+		$instance = static::instance_create($called_class, $final_class);
+		return $instance;
+	}
+	/**
+	 * @param string $called_class
+	 * @param string $final_class
+	 *
+	 * @return static
+	 */
+	protected static function instance_create ($called_class, $final_class) {
+		if ($final_class != $called_class) {
+			/**
+			 * We can't access protected methods of class if it doesn't extend current class, so let's call its `::instance()` method instead
+			 */
+			return $final_class::instance();
+		}
+		$instance = new $called_class;
 		static::instance_prototype_state_init($instance);
 		$instance->construct();
 		return $instance;
@@ -89,18 +103,21 @@ trait Base {
 			if (class_exists($custom_class_base, false)) {
 				$next_alias = $custom_class_base;
 			}
-			$custom_classes = defined('CUSTOM') ? glob(CUSTOM.'/classes/'.substr($class, 2).'_*.php') : [];
-			foreach ($custom_classes as $custom_class) {
+			$custom_classes_paths = defined('CUSTOM') ? glob(CUSTOM.'/classes/'.str_replace('\\', '/', substr($class, 3)).'_*.php') : [];
+			$custom_length        = strlen(CUSTOM.'/classes/');
+			foreach ($custom_classes_paths as $custom_class_path) {
+				$custom_class = substr($custom_class_path, $custom_length, -4);
+				$custom_class = 'cs\\custom\\'.str_replace('/', '\\', $custom_class);
 				// Same path with prefixed class name
-				$_custom_class   = explode('/', $custom_class);
+				$_custom_class   = explode('\\', $custom_class);
 				$_custom_class[] = '_'.array_pop($_custom_class);
-				$_custom_class   = implode('/', $_custom_class);
+				$_custom_class   = implode('\\', $_custom_class);
 				$aliases[]       = [
 					'original' => $next_alias,
-					'alias'    => "cs\\custom\\$_custom_class",
-					'path'     => $custom_class
+					'alias'    => $_custom_class,
+					'path'     => $custom_class_path
 				];
-				$next_alias      = "cs\\custom\\$custom_class";
+				$next_alias      = $custom_class;
 			}
 			$modified_classes[$class] = [
 				'aliases'     => $aliases,

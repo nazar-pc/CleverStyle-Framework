@@ -7,7 +7,7 @@ Limitation: this patching applies only for classes that implement `cs\Singleton`
 ### Complete replacement
 In order to replace class with custom implementation you need to declare the same class as original, but put it inside namespace `cs\custom` instead of `cs` where all system classes are.
 
-Practically, since namespaces are different, you can extend system class and modify it, if this suits, it is even better, because smooth upgrade process between versions.
+Practically, since namespaces are different, you can extend system class and modify it, if this suits, it is even better, because of smoother upgrade process between versions.
 
 Customized class should be placed directly inside `custom` directory with any name, but it is better to use original class name, use `_` instead of `\` in case of nested namespaces:
 * class `cs\Core` from `core/classes/Core.php` to be placed as `custom/Core.php`
@@ -22,7 +22,7 @@ In order to patch system class, custom class must:
 * add suffix to original class name like `Core_Modified`, suffix should correspond to component name, that patches class
 * extend class with similar name, but with `_` prefix like `_Core_Modified`
 * be placed inside `cs/custom` namespace
-* class file should be placed in `custom/classes/{namespace/Class_name.php` file, but namespace `cs\custom` should be dropped here
+* class file should be placed in `custom/classes/{namespace}/Class_name.php` file, but namespace `cs\custom` should be dropped here
 
 This all a bit complex, lets show on example of `cs\Page` class patching by `Foo` module:
 ```<?php
