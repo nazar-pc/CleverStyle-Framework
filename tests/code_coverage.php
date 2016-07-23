@@ -39,6 +39,7 @@ register_shutdown_function(
 			$coverage_existing = new \SebastianBergmann\CodeCoverage\CodeCoverage(null, $coverage->filter());
 			$coverage_existing->setData(json_decode(file_get_contents($coverage_data_location), true));
 			$coverage->merge($coverage_existing);
+			unset($coverage_existing);
 		}
 
 		$data = $coverage->getData(true);
@@ -46,6 +47,7 @@ register_shutdown_function(
 		$normal_prefix    = realpath(__DIR__.'/..');
 		$installed_prefix = __DIR__.'/cscms.travis';
 		$installer_prefix = 'phar://'.__DIR__.'/cscms.travis/distributive.phar.php';
+		$new_data         = [];
 		foreach ($data as $file => $d) {
 			if (strpos($file, $installed_prefix) === 0) {
 				$new_file = $normal_prefix.substr($file, strlen($installed_prefix));
@@ -54,17 +56,16 @@ register_shutdown_function(
 			} else {
 				continue;
 			}
-			if (isset($data[$new_file])) {
-				foreach ($data[$new_file] as $line => $calls) {
-					/** @noinspection SlowArrayOperationsInLoopInspection */
-					$data[$new_file][$line] = array_merge($data[$new_file][$line] ?: [], @$d[$line] ?: []) ?: $data[$new_file][$line];
-				}
-			} else {
-				$data[$new_file] = $d;
-			}
-			unset($data[$file]);
+			$new_data[$new_file] = $d;
+		}
+		unset($data);
+		if ($new_data) {
+			$coverage_new = new \SebastianBergmann\CodeCoverage\CodeCoverage(null, $coverage->filter());
+			$coverage_new->setData($new_data);
+			$coverage->merge($coverage_new);
+			unset($coverage_new);
 		}
 
-		file_put_contents($coverage_data_location, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+		file_put_contents($coverage_data_location, json_encode($coverage->getData(true), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 	}
 );
