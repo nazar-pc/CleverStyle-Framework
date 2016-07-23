@@ -2,6 +2,7 @@ language: php
 php:
   - 5.6
   - 7.0
+  - nightly
   - hhvm
 sudo: false
 services:
@@ -17,6 +18,7 @@ env:
 #    - DB=PostgreSQL
 matrix:
   allow_failures:
+    - php: nightly
 # Travis have too old HHVM, can't rely on it yet
     - php: hhvm
 #    - env: DB=PostgreSQL
