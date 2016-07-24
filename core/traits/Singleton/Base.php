@@ -62,22 +62,21 @@ trait Base {
 				!file_exists($alias['path'])
 			) {
 				clean_classes_cache();
-				$instance = static::instance_create($called_class, $called_class);
-				return $instance;
+				return static::instance_create($instance, $called_class, $called_class);
 			}
 			class_alias($alias['original'], $alias['alias']);
 			require_once $alias['path'];
 		}
-		$instance = static::instance_create($called_class, $final_class);
-		return $instance;
+		return static::instance_create($instance, $called_class, $final_class);
 	}
 	/**
+	 * @param static $instance
 	 * @param string $called_class
 	 * @param string $final_class
 	 *
 	 * @return static
 	 */
-	protected static function instance_create ($called_class, $final_class) {
+	protected static function instance_create (&$instance, $called_class, $final_class) {
 		if ($final_class != $called_class) {
 			/**
 			 * We can't access protected methods of class if it doesn't extend current class, so let's call its `::instance()` method instead
@@ -104,7 +103,7 @@ trait Base {
 				$next_alias = $custom_class_base;
 			}
 			$custom_classes_paths = defined('CUSTOM') ? glob(CUSTOM.'/classes/'.str_replace('\\', '/', substr($class, 3)).'_*.php') : [];
-			$custom_length        = strlen(CUSTOM.'/classes/');
+			$custom_length        = defined('CUSTOM') ? strlen(CUSTOM.'/classes/') : 0;
 			foreach ($custom_classes_paths as $custom_class_path) {
 				$custom_class = substr($custom_class_path, $custom_length, -4);
 				$custom_class = 'cs\\custom\\'.str_replace('/', '\\', $custom_class);
