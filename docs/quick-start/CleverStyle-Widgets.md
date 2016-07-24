@@ -29,7 +29,7 @@ Attributes (also available as properties, so use whatever is more convenient):
 * active - boolean, allows to force `:active` state
 * force-fullsize - boolean, forces even empty button to appear as regular
 * icon - string, icon from `cs-icon` element added before button contents
-* icon-after - string, icon from `cs-icon` element added before button contents
+* icon-after - string, icon from `cs-icon` element added after button contents
 * primary - boolean, allows to apply different styling to button, usually used for some key actions
 * tight - boolean, affects button styling by removing space after button and placing directly before next element (useful for button groups and combining with inputs)
 
