@@ -390,6 +390,8 @@ if ($results['success']) {
 }
 if ($results['error']) {
 	line(sprintf("<r>%' 3d/$tests_count tests (%' 6.2f%%) failed</r>", $results['error'], $results['error'] / $tests_count * 100));
-	exit(1);
 }
 line(sprintf('Time: %s', time_since_started($started_time)));
+if ($results['error']) {
+	exit(1);
+}
