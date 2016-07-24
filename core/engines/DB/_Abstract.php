@@ -55,7 +55,7 @@ abstract class _Abstract {
 	 * @var array
 	 */
 	protected $queries = [
-		'num'  => '',
+		'num'  => 0,
 		'time' => [],
 		'text' => []
 	];
