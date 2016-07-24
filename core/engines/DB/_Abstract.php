@@ -46,7 +46,7 @@ abstract class _Abstract {
 	 * @var array
 	 */
 	protected $query = [
-		'time' => '',
+		'time' => 0,
 		'text' => ''
 	];
 	/**

@@ -36,14 +36,14 @@ object(cs\DB\Fake)#%d (%d) {
   ["query":protected]=>
   array(2) {
     ["time"]=>
-    string(0) ""
+    int(0)
     ["text"]=>
     string(0) ""
   }
   ["queries":protected]=>
   array(3) {
     ["num"]=>
-    string(0) ""
+    int(0)
     ["time"]=>
     array(0) {
     }
