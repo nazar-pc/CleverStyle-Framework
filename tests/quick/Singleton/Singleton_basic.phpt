@@ -118,36 +118,36 @@ namespace cs {
 	$Extended2->test();
 }
 ?>
---EXPECT--
+--EXPECTF--
 string(22) "Getting basic instance"
-object(cs\False_class)#9 (0) {
+object(cs\False_class)#%d (0) {
 }
 string(27) "cs\Example reinitialization"
-object(cs\Example)#8 (1) {
+object(cs\Example)#%d (1) {
   ["__request_id":"cs\Example":private]=>
   int(0)
 }
-object(cs\Example)#8 (1) {
+object(cs\Example)#%d (1) {
   ["__request_id":"cs\Example":private]=>
   int(0)
 }
 string(37) "Class reinitialization on new request"
 string(27) "cs\Example reinitialization"
-object(cs\Example)#8 (1) {
+object(cs\Example)#%d (1) {
   ["__request_id":"cs\Example":private]=>
   int(1)
 }
 string(25) "Class not in cs namespace"
-object(cs\False_class)#9 (0) {
+object(cs\False_class)#%d (0) {
 }
 string(28) "Class in cs\custom namespace"
 string(36) "cs\custom\Example_custom constructed"
-object(cs\custom\Example_custom)#10 (1) {
+object(cs\custom\Example_custom)#%d (1) {
   ["__request_id":"cs\custom\Example_custom":private]=>
   int(1)
 }
 string(24) "Multiple class extension"
-object(cs\custom\nested\Extended_Module_name2)#12 (1) {
+object(cs\custom\nested\Extended_Module_name2)#%d (1) {
   ["__request_id":"cs\nested\Extended":private]=>
   int(1)
 }
@@ -156,7 +156,7 @@ string(38) "cs\custom\nested\Extended_Module_name1"
 string(38) "cs\custom\nested\Extended_Module_name2"
 string(43) "Multiple class extension non existing files"
 string(28) "clean_classes_cache() called"
-object(cs\nested\Extended2)#11 (1) {
+object(cs\nested\Extended2)#%d (1) {
   ["__request_id":"cs\nested\Extended2":private]=>
   int(1)
 }

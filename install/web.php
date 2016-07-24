@@ -9,7 +9,7 @@
 namespace cs;
 use
 	h,
-	Phar;
+	PharException;
 
 $phar_path = __DIR__;
 if (strpos(__DIR__, 'phar://') !== 0) {
@@ -163,8 +163,13 @@ function install_process ($phar_path) {
 	$admin_login = strstr($_POST['admin_email'], '@', true);
 	$warning     = false;
 	// Removing of installer file
-	$installer = substr($phar_path, strlen('phar://'));
-	if (!is_writable($installer) || !Phar::unlinkArchive($installer)) {
+	$installer       = substr($phar_path, strlen('phar://'));
+	$unlink_function = $phar_path == __DIR__ ? 'unlink' : ['Phar', 'unlinkArchive'];
+	try {
+		if (!is_writable($installer) || !$unlink_function($installer)) {
+			throw new PharException;
+		}
+	} catch (PharException $e) {
 		$warning = "Please, remove installer file $installer for security!\n";
 	}
 	return <<<HTML
