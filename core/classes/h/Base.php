@@ -157,22 +157,18 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param array|string $in
-	 * @param array        $data
+	 * @param array $in
+	 * @param array $data
 	 *
 	 * @return string
 	 */
 	static function checkbox ($in = [], $data = []) {
-		if (self::common_checkbox_radio_pre($in, $data, __FUNCTION__, $return) !== false) {
-			return $return;
+		$pre_result = self::common_checkbox_radio_pre($in, $data, __FUNCTION__);
+		if ($pre_result !== false) {
+			return $pre_result;
 		}
 		if (@is_array($in['name']) || @is_array($in['id'])) {
-			$items  = self::array_flip_3d($in);
-			$return = '';
-			foreach ($items as $item) {
-				$return .= static::checkbox($item);
-			}
-			return $return;
+			return static::common_checkbox_radio_reduce($in, [static::class, 'checkbox']);
 		} else {
 			self::common_checkbox_radio_post($in);
 			return static::label(
@@ -189,45 +185,45 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param array|string $in
-	 * @param array        $data
+	 * @param array $in
+	 * @param array $data
 	 *
 	 * @return string
 	 */
 	static function radio ($in = [], $data = []) {
-		if (self::common_checkbox_radio_pre($in, $data, __FUNCTION__, $return) !== false) {
-			return $return;
+		$pre_result = self::common_checkbox_radio_pre($in, $data, __FUNCTION__);
+		if ($pre_result !== false) {
+			return $pre_result;
 		}
 		if (!isset($in['checked'])) {
 			$in['checked'] = $in['value'][0];
 		}
-		$items   = self::array_flip_3d($in);
-		$content = '';
-		foreach ($items as $item) {
-			self::common_checkbox_radio_post($item);
-			$content .= static::label(
-				static::u_wrap($item, 'input'),
-				[
-					'is'    => 'cs-label-button',
-					'class' => isset($item['class']) ? $item['class'] : false
-				]
-			);
-		}
-		return $content;
+		return static::common_checkbox_radio_reduce(
+			$in,
+			function ($item) {
+				self::common_checkbox_radio_post($item);
+				return static::label(
+					static::u_wrap($item, 'input'),
+					[
+						'is'    => 'cs-label-button',
+						'class' => isset($item['class']) ? $item['class'] : false
+					]
+				);
+			}
+		);
 	}
 	/**
 	 * @static
 	 *
-	 * @param array|string $in
-	 * @param array        $data
-	 * @param string       $type
-	 * @param string       $return
+	 * @param array  $in
+	 * @param array  $data
+	 * @param string $type
 	 *
 	 * @return bool|string
 	 */
-	protected static function common_checkbox_radio_pre (&$in, $data, $type, &$return) {
+	protected static function common_checkbox_radio_pre (&$in, $data, $type) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return static::__callStatic($type, func_get_args());
+			return static::__callStatic($type, [$in, $data]);
 		}
 		if ($in === false) {
 			return '';
@@ -249,5 +245,22 @@ abstract class Base extends BananaHTML {
 		if (isset($item['value'], $item['checked'])) {
 			$item['checked'] = $item['value'] == $item['checked'];
 		}
+	}
+	/**
+	 * @static
+	 *
+	 * @param array    $in
+	 * @param callable $callable
+	 *
+	 * @return string
+	 */
+	protected static function common_checkbox_radio_reduce ($in, $callable) {
+		return array_reduce(
+			self::array_flip_3d($in) ?: [],
+			function ($carry, $item) use ($callable) {
+				return $carry.$callable($item);
+			},
+			''
+		);
 	}
 }
