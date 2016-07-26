@@ -24,7 +24,8 @@ url_map = {
 	"admin/System/users/security"       : "cs-system-admin-security",
 	"admin/System/users/mail"           : "cs-system-admin-mail"
 }
-buttons	= document.querySelectorAll('body > header > nav > button')
+# Hack: should be `nav > button`, but fails in Firefox (https://github.com/Polymer/polymer/issues/3809)
+buttons	= document.querySelectorAll('body > header > nav button')
 links	= document.querySelectorAll('body > header > nav a')
 for link in links
 	link.addEventListener('mousedown', (e) !->

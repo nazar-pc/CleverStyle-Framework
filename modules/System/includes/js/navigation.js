@@ -27,7 +27,7 @@
     "admin/System/users/security": "cs-system-admin-security",
     "admin/System/users/mail": "cs-system-admin-mail"
   };
-  buttons = document.querySelectorAll('body > header > nav > button');
+  buttons = document.querySelectorAll('body > header > nav button');
   links = document.querySelectorAll('body > header > nav a');
   for (i$ = 0, len$ = links.length; i$ < len$; ++i$) {
     link = links[i$];
