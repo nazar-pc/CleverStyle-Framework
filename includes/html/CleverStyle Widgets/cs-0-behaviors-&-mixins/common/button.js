@@ -24,13 +24,17 @@
         reflectToAttribute: true,
         type: Boolean
       },
-      icon: {
+      iconBefore: {
         reflectToAttribute: true,
         type: String
       },
       iconAfter: {
         reflectToAttribute: true,
         type: String
+      },
+      icon: {
+        type: String,
+        observer: '_icon_changed'
       },
       primary: {
         reflectToAttribute: true,
@@ -47,6 +51,9 @@
       if (this.bind && this.action) {
         return this.bind[this.action]();
       }
+    },
+    _icon_changed: function(){
+      this.iconBefore = this.icon;
     }
   };
 }).call(this);

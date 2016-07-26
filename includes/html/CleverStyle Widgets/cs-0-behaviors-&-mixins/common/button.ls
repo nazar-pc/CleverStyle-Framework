@@ -18,12 +18,15 @@ Polymer.{}cs.{}behaviors.button =
 		force-fullsize	:
 			reflectToAttribute	: true
 			type				: Boolean
-		icon			:
+		icon-before		:
 			reflectToAttribute	: true
 			type				: String
 		icon-after		:
 			reflectToAttribute	: true
 			type				: String
+		icon			:
+			type				: String
+			observer			: '_icon_changed'
 		primary			:
 			reflectToAttribute	: true
 			type				: Boolean
@@ -34,3 +37,5 @@ Polymer.{}cs.{}behaviors.button =
 	_tap : ->
 		if @bind && @action
 			@bind[@action]()
+	_icon_changed : !->
+		@iconBefore = @icon
