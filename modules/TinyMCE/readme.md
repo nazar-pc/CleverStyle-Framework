@@ -11,3 +11,4 @@ Also after update `includes/html/cs-0-behaviors-&-mixins/common.scss` should be 
 Temporary, even more patches on top of TinyMCE are added (but these should be, hopefully, merged soon):
 * https://github.com/tinymce/tinymce/pull/2913
 * https://github.com/tinymce/tinymce/pull/2928
+* https://github.com/tinymce/tinymce/pull/3009
