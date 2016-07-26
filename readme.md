@@ -133,7 +133,7 @@ Some components are developed in parallel with core in this repository
 
 It is possible to try latest git version of CleverStyle Framework without even installing it using [Docker](https://www.docker.com/), just type in terminal:
 ```bash
-$ docker run --rm -p 8888:8888 nazarpc/cleverstyle-framework
+$ docker run --rm -p 8888:80 nazarpc/cleverstyle-framework
 ```
 And go to `http://localhost:8888`, sign in using login `admin` and password `1111`.
 
@@ -141,7 +141,7 @@ And go to `http://localhost:8888`, sign in using login `admin` and password `111
 
 If you want to play with live system - attach volume to container:
 ```bash
-$ docker run --rm -p 8888:8888 -v /some_dir:/web nazarpc/cleverstyle-framework
+$ docker run --rm -p 8888:80 -v /some_dir:/web nazarpc/cleverstyle-framework
 ```
 Now in `/some_dir` you'll have source code of CleverStyle Framework from container which you can edit as you like and it will reflect on demo.
 

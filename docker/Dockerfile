@@ -8,17 +8,10 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
 
-# Generate password for MySQL
-
-	apt-get install -y pwgen && \
-	test ! -z "$MYSQL_PASSWORD" || MYSQL_PASSWORD=`pwgen -s 20 1` && \
-	echo mysql-server mysql-server/root_password password $MYSQL_PASSWORD | debconf-set-selections && \
-	echo mysql-server mysql-server/root_password_again password $MYSQL_PASSWORD | debconf-set-selections && \
-
 # Install MySQL, Nginx, PHP (both fpm and CLI)
 
 	apt-get install -y --no-install-recommends \
-		mariadb-server \
+		mariadb-server-10.0 \
 		nginx \
 		php-cli php-curl php-gd php-fpm php-mbstring php-mysql php-xml \
 		wget && \
@@ -58,16 +51,20 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 # Run MySQL server, create database
 
 	service mysql start && \
-	mysql -uroot -p$MYSQL_PASSWORD -e 'CREATE DATABASE `cscms`;' && \
+	mysql -uroot -e 'CREATE DATABASE `cscms`;' && \
+
+# Allow root user to authenticate from php
+
+	mysql -uroot -e "UPDATE mysql.user SET plugin = '';" && \
 
 # Install CleverStyle Framework
 
 	php dist.phar.php \
 		--site_name      "CleverStyle Framework Demo (not for production, admin:1111)" \
-		--site_url       http://localhost:8888 \
+		--site_url       http://localhost \
 		--db_name        cscms \
 		--db_user        root \
-		--db_password    $MYSQL_PASSWORD \
+		--db_password    '' \
 		--admin_email    admin@localhost.loc \
 		--admin_password 1111 && \
 
@@ -75,8 +72,11 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 
 	mv /web /web_tmp
 
+# Add custom file that will allow to open demo from any host
+ADD any_host.php /web_tmp/custom/any_host.php
+
 # Add Nginx config
-ADD cscms /etc/nginx/sites-enabled/cscms
+ADD nginx.default /etc/nginx/sites-available/default
 
 # Add services execution script
 ADD start_webserver.sh /etc/my_init.d/start_webserver.sh

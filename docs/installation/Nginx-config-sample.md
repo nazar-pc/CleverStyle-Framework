@@ -15,7 +15,7 @@ server {
 	location ~ ^/index\.php {
 		include			fastcgi_params;
 		# Uncomment next line for PHP-FPM
-		# fastcgi_pass	unix:/var/run/php5-fpm.sock;
+		# fastcgi_pass	unix:/run/php/php7.0-fpm.sock;
 		# Uncomment next line for HHVM
 		# fastcgi_pass	127.0.0.1:9000;
 		fastcgi_index	index.php;
