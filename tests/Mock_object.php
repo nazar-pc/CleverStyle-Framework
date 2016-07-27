@@ -38,7 +38,7 @@ class Mock_object {
 	 * @param callable[]|mixed[]     $methods
 	 * @param callable[][]|mixed[][] $methods_multi
 	 */
-	function __construct ($properties, $methods, $methods_multi) {
+	public function __construct ($properties, $methods, $methods_multi) {
 		$this->properties          = $properties;
 		$this->methods             = $methods;
 		$this->methods_multi       = $methods_multi;
@@ -69,7 +69,7 @@ class Mock_object {
 	 *
 	 * @return callable|mixed|null
 	 */
-	function __call ($method, $arguments) {
+	public function __call ($method, $arguments) {
 		if (isset($this->methods[$method])) {
 			$method = $this->methods[$method];
 			if ($method instanceof Closure) {

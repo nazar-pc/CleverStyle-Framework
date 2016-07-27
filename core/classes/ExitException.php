@@ -21,7 +21,7 @@ class ExitException extends Exception {
 	 * @param int                 $code    HTTP status code
 	 * @param Exception|null      $previous
 	 */
-	function __construct ($message = '', $code = 0, Exception $previous = null) {
+	public function __construct ($message = '', $code = 0, Exception $previous = null) {
 		parent::__construct('', $code, $previous);
 		if (is_numeric($message) && !$code) {
 			$this->code = $message;
@@ -41,7 +41,7 @@ class ExitException extends Exception {
 	/**
 	 * @return bool
 	 */
-	function getJson () {
+	public function getJson () {
 		return $this->json;
 	}
 	/**
@@ -49,7 +49,7 @@ class ExitException extends Exception {
 	 *
 	 * @return $this
 	 */
-	function setJson () {
+	public function setJson () {
 		$this->json = true;
 		return $this;
 	}

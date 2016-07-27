@@ -18,7 +18,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function index_get () {
+	public static function index_get () {
 		static::common();
 		$log_file = STORAGE.'/Composer/last_execution.log';
 		return file_exists($log_file) ? ansispan(file_get_contents($log_file)) : '';
@@ -36,7 +36,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function index_post ($Request) {
+	public static function index_post ($Request) {
 		static::common();
 		$force = $Request->data('force');
 		$name  = $Request->data('name');
@@ -59,7 +59,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function index_delete ($Request) {
+	public static function index_delete ($Request) {
 		static::common();
 		$name = $Request->data('name');
 		if (!$name) {

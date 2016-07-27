@@ -51,7 +51,7 @@ class Categories {
 	 *
 	 * @return array|array[]|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		return $this->read($id);
 	}
 	/**
@@ -63,7 +63,7 @@ class Categories {
 	 *
 	 * @return false|int Id of created category on success of `false` on failure
 	 */
-	function add ($parent, $title, $path) {
+	public function add ($parent, $title, $path) {
 		$id = $this->create($parent, $title, path($path ?: $title));
 		if ($id) {
 			unset($this->cache->structure);
@@ -80,7 +80,7 @@ class Categories {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $parent, $title, $path) {
+	public function set ($id, $parent, $title, $path) {
 		$result = $this->update($id, $parent, $title, path($path ?: $title));
 		if ($result) {
 			unset($this->cache->structure);
@@ -94,7 +94,7 @@ class Categories {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		$result = $this->delete($id);
 		if ($result) {
 			unset($this->cache->{'/'});

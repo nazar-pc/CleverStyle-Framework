@@ -16,7 +16,7 @@ trait general {
 	/**
 	 * Get general users settings
 	 */
-	static function admin_users_general_get_settings () {
+	public static function admin_users_general_get_settings () {
 		$Config = Config::instance();
 		return [
 			'session_expire'                    => $Config->core['session_expire'],
@@ -39,7 +39,7 @@ trait general {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users_general_apply_settings ($Request) {
+	public static function admin_users_general_apply_settings ($Request) {
 		static::admin_users_general_settings_common($Request);
 		if (!Config::instance()->apply()) {
 			throw new ExitException(500);
@@ -85,7 +85,7 @@ trait general {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users_general_save_settings ($Request) {
+	public static function admin_users_general_save_settings ($Request) {
 		static::admin_users_general_settings_common($Request);
 		if (!Config::instance()->save()) {
 			throw new ExitException(500);
@@ -96,7 +96,7 @@ trait general {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users_general_cancel_settings () {
+	public static function admin_users_general_cancel_settings () {
 		Config::instance()->cancel();
 	}
 }

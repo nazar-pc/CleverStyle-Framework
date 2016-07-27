@@ -81,7 +81,7 @@ abstract class _Abstract_with_namespace extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function get ($item) {
+	public function get ($item) {
 		if (!$this->available_internal()) {
 			return false;
 		}
@@ -92,7 +92,7 @@ abstract class _Abstract_with_namespace extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function set ($item, $data) {
+	public function set ($item, $data) {
 		if (!$this->available_internal()) {
 			return false;
 		}
@@ -104,7 +104,7 @@ abstract class _Abstract_with_namespace extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function del ($item) {
+	public function del ($item) {
 		if (!$this->available_internal()) {
 			return false;
 		}
@@ -127,7 +127,7 @@ abstract class _Abstract_with_namespace extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function clean () {
+	public function clean () {
 		if (!$this->available_internal()) {
 			return false;
 		}

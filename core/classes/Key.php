@@ -22,7 +22,7 @@ class Key {
 	 *
 	 * @throws ExitException
 	 */
-	function generate ($database) {
+	public function generate ($database) {
 		if (!is_object($database)) {
 			$database = DB::instance()->db_prime($database);
 		}
@@ -54,7 +54,7 @@ class Key {
 	 *
 	 * @throws ExitException
 	 */
-	function add ($database, $key, $data = null, $expire = 0) {
+	public function add ($database, $key, $data = null, $expire = 0) {
 		if (!is_object($database)) {
 			$database = DB::instance()->db_prime($database);
 		}
@@ -109,7 +109,7 @@ class Key {
 	 *
 	 * @throws ExitException
 	 */
-	function get ($database, $key, $get_data = false) {
+	public function get ($database, $key, $get_data = false) {
 		if (!preg_match('/^[a-z0-9]{56}$/', $key)) {
 			return false;
 		}
@@ -149,7 +149,7 @@ class Key {
 	 *
 	 * @throws ExitException
 	 */
-	function del ($database, $key) {
+	public function del ($database, $key) {
 		if (!preg_match('/^[a-z0-9]{56}$/', $key)) {
 			return false;
 		}

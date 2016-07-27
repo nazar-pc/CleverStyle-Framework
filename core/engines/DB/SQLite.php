@@ -21,7 +21,7 @@ class SQLite extends _Abstract {
 	 * @param string $host     Path to database file, relatively to website root or absolute
 	 * @param string $prefix
 	 */
-	function __construct ($database, $user = '', $password = '', $host = '', $prefix = '') {
+	public function __construct ($database, $user = '', $password = '', $host = '', $prefix = '') {
 		// Hack for HHVM: https://github.com/facebook/hhvm/issues/7225
 		if (!$host) {
 			return;
@@ -40,7 +40,7 @@ class SQLite extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function q ($query, $params = [], ...$param) {
+	public function q ($query, $params = [], ...$param) {
 		// Hack to convert small subset of MySQL queries into SQLite-compatible syntax
 		$query = str_replace('INSERT IGNORE', 'INSERT OR IGNORE', $query);
 		return parent::q(...([$query] + func_get_args()));
@@ -71,7 +71,7 @@ class SQLite extends _Abstract {
 	 *
 	 * @param false|SQLite3Result $query_result
 	 */
-	function f ($query_result, $single_column = false, $array = false, $indexed = false) {
+	public function f ($query_result, $single_column = false, $array = false, $indexed = false) {
 		if (!($query_result instanceof SQLite3Result)) {
 			return false;
 		}
@@ -90,13 +90,13 @@ class SQLite extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function id () {
+	public function id () {
 		return $this->instance->lastInsertRowID();
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function affected () {
+	public function affected () {
 		return $this->instance->changes();
 	}
 	/**
@@ -104,7 +104,7 @@ class SQLite extends _Abstract {
 	 *
 	 * @param false|SQLite3Result $query_result
 	 */
-	function free ($query_result) {
+	public function free ($query_result) {
 		if ($query_result instanceof SQLite3Result) {
 			return $query_result->finalize();
 		}
@@ -113,7 +113,7 @@ class SQLite extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function columns ($table, $like = false) {
+	public function columns ($table, $like = false) {
 		if (!$table) {
 			return false;
 		}
@@ -147,7 +147,7 @@ class SQLite extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function tables ($like = false) {
+	public function tables ($like = false) {
 		if ($like) {
 			$like = $this->s($like);
 			return $this->qfas(
@@ -180,13 +180,13 @@ class SQLite extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function server () {
+	public function server () {
 		return \SQLite3::version()['versionString'];
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function __destruct () {
+	public function __destruct () {
 		if ($this->connected && is_object($this->instance)) {
 			$this->instance->close();
 			$this->connected = false;

@@ -15,7 +15,7 @@ class Controller {
 	/**
 	 * @param \cs\Request $Request
 	 */
-	static function index ($Request) {
+	public static function index ($Request) {
 		$Page = Page::instance();
 		if ($Request->route_path(2) == 'phpinfo') {
 			$Page->interface = false;

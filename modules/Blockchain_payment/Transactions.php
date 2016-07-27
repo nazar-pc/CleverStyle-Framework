@@ -58,7 +58,7 @@ class Transactions {
 	 *
 	 * @return array|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		return $this->read($id);
 	}
 	/**
@@ -74,7 +74,7 @@ class Transactions {
 	 * @return false|int Id of created transaction on success of <b>false</> on failure
 	 *
 	 */
-	function add ($amount, $currency, $user, $module, $purpose, $description) {
+	public function add ($amount, $currency, $user, $module, $purpose, $description) {
 		while ($secret = hash('sha512', random_bytes(1000))) {
 			if ($this->search(['secret' => $secret, 'total_count' => true])) {
 				break;
@@ -124,7 +124,7 @@ class Transactions {
 	 *
 	 * @return float
 	 */
-	function convert_to_btc ($amount, $currency) {
+	public function convert_to_btc ($amount, $currency) {
 		return (float)file_get_contents("$this->blockchain_url/tobtc?currency=$currency&value=$amount");
 	}
 	/**
@@ -136,7 +136,7 @@ class Transactions {
 	 *
 	 * @return bool
 	 */
-	function set_as_paid ($id, $transaction_hash, $input_transaction_hash) {
+	public function set_as_paid ($id, $transaction_hash, $input_transaction_hash) {
 		$data                           = $this->get($id);
 		$data['paid']                   = time();
 		$data['transaction_hash']       = $transaction_hash;
@@ -150,7 +150,7 @@ class Transactions {
 	 *
 	 * @return bool
 	 */
-	function set_as_confirmed ($id) {
+	public function set_as_confirmed ($id) {
 		$data              = $this->get($id);
 		$data['confirmed'] = time();
 		return $this->update($data);
@@ -162,7 +162,7 @@ class Transactions {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		return $this->delete($id);
 	}
 }

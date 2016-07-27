@@ -27,7 +27,7 @@ trait users {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users___get ($Request) {
+	public static function admin_users___get ($Request) {
 		$User    = User::instance();
 		$columns = static::admin_users___search_options()['columns'];
 		$id      = $Request->route_ids(0);
@@ -68,7 +68,7 @@ trait users {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users___patch ($Request) {
+	public static function admin_users___patch ($Request) {
 		$user_id = (int)$Request->route_ids(0);
 		$user    = $Request->data('user');
 		if (!$user_id || !$user) {
@@ -120,7 +120,7 @@ trait users {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users___post ($Request) {
+	public static function admin_users___post ($Request) {
 		$User  = User::instance();
 		$email = $Request->data('email');
 		if (!$email) {
@@ -149,7 +149,7 @@ trait users {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users___search ($Request) {
+	public static function admin_users___search ($Request) {
 		$options = $Request->data('mode', 'column', 'text', 'page', 'limit');
 		if (!$options) {
 			throw new ExitException(400);
@@ -284,7 +284,7 @@ trait users {
 	 *
 	 * @return string[][]
 	 */
-	static function admin_users___search_options () {
+	public static function admin_users___search_options () {
 		return [
 			'modes'   => [
 				'=',

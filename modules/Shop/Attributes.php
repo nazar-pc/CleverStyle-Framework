@@ -65,7 +65,7 @@ class Attributes {
 	 *
 	 * @return array|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		return $this->get_common($id);
 	}
 	/**
@@ -73,7 +73,7 @@ class Attributes {
 	 *
 	 * @return int[] Array of attributes ids
 	 */
-	function get_all () {
+	public function get_all () {
 		return $this->get_all_common();
 	}
 	/**
@@ -81,7 +81,7 @@ class Attributes {
 	 *
 	 * @return array
 	 */
-	function get_type_to_name_array () {
+	public function get_type_to_name_array () {
 		$L = new Language_prefix('shop_');
 		return [
 			static::TYPE_INT_SET     => $L->type_int_set,
@@ -105,7 +105,7 @@ class Attributes {
 	 *
 	 * @return false|int Id of created attribute on success of <b>false</> on failure
 	 */
-	function add ($type, $title, $title_internal, $value) {
+	public function add ($type, $title, $title_internal, $value) {
 		return $this->add_common(func_get_args());
 	}
 	/**
@@ -119,7 +119,7 @@ class Attributes {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $type, $title, $title_internal, $value) {
+	public function set ($id, $type, $title, $title_internal, $value) {
 		return $this->set_common(func_get_args());
 	}
 	/**
@@ -129,7 +129,7 @@ class Attributes {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		$return = $this->del_common($id);
 		if ($return) {
 			Cache::instance()->del('Shop/categories');

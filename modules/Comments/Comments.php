@@ -60,7 +60,7 @@ class Comments {
 	 *
 	 * @return array|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		return $this->read($id);
 	}
 	/**
@@ -70,7 +70,7 @@ class Comments {
 	 *
 	 * @return array|false
 	 */
-	function get_extended ($id) {
+	public function get_extended ($id) {
 		if (is_array($id)) {
 			foreach ($id as &$i) {
 				$i = $this->get_extended($i);
@@ -91,7 +91,7 @@ class Comments {
 	 *
 	 * @return int[]
 	 */
-	function get_for_module_item ($module, $item) {
+	public function get_for_module_item ($module, $item) {
 		$search_parameters = [
 			'module' => $module,
 			'item'   => $item
@@ -104,7 +104,7 @@ class Comments {
 	 *
 	 * @return int
 	 */
-	function get_for_module_item_count ($module, $item) {
+	public function get_for_module_item_count ($module, $item) {
 		$search_parameters = [
 			'module'      => $module,
 			'item'        => $item,
@@ -122,7 +122,7 @@ class Comments {
 	 *
 	 * @return false|int
 	 */
-	function add ($module, $item, $text, $parent = 0) {
+	public function add ($module, $item, $text, $parent = 0) {
 		$L    = Language::instance();
 		$User = User::instance();
 		$text = xap($text, true);
@@ -149,7 +149,7 @@ class Comments {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $text) {
+	public function set ($id, $text) {
 		$text = xap($text, true);
 		if (!$text) {
 			return false;
@@ -172,7 +172,7 @@ class Comments {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		$comment = $this->read($id);
 		if (
 			!$comment ||
@@ -199,7 +199,7 @@ class Comments {
 	 *
 	 * @return bool
 	 */
-	function del_all ($module, $item) {
+	public function del_all ($module, $item) {
 		$item   = (int)$item;
 		$result = $this->db_prime()->q(
 			"DELETE FROM `[prefix]comments`

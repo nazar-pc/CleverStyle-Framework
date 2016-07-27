@@ -16,7 +16,7 @@ use
 	cs\modules\Blogs\Sections;
 
 trait admin {
-	static function admin___get_settings () {
+	public static function admin___get_settings () {
 		$module_data = Config::instance()->module('Blogs');
 		return [
 			'posts_per_page'                => $module_data->posts_per_page,
@@ -31,7 +31,7 @@ trait admin {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin___save_settings ($Request) {
+	public static function admin___save_settings ($Request) {
 		$data = $Request->data('posts_per_page', 'max_sections', 'enable_comments', 'new_posts_only_from_admins', 'allow_iframes_without_content');
 		if (!$data) {
 			throw new ExitException(400);
@@ -47,7 +47,7 @@ trait admin {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_posts_get ($Request) {
+	public static function admin_posts_get ($Request) {
 		$id    = $Request->route_ids(0);
 		$Posts = Posts::instance();
 		if ($id) {
@@ -73,7 +73,7 @@ trait admin {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_posts_delete ($Request) {
+	public static function admin_posts_delete ($Request) {
 		$id = $Request->route_ids(0);
 		if (!$id) {
 			throw new ExitException(400);
@@ -93,7 +93,7 @@ trait admin {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_sections_get ($Request) {
+	public static function admin_sections_get ($Request) {
 		return static::sections_get($Request);
 	}
 	/**
@@ -104,7 +104,7 @@ trait admin {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_sections_post ($Request, $Response) {
+	public static function admin_sections_post ($Request, $Response) {
 		$data = $Request->data('title', 'path', 'parent');
 		if (!$data) {
 			throw new ExitException(400);
@@ -125,7 +125,7 @@ trait admin {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_sections_put ($Request) {
+	public static function admin_sections_put ($Request) {
 		$id   = $Request->route_ids(0);
 		$data = $Request->data('title', 'path', 'parent');
 		if (!$id || !$data) {
@@ -144,7 +144,7 @@ trait admin {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_sections_delete ($Request) {
+	public static function admin_sections_delete ($Request) {
 		$id = $Request->route_ids(0);
 		if (!$id) {
 			throw new ExitException(400);

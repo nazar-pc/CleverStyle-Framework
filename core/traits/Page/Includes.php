@@ -103,7 +103,7 @@ trait Includes {
 	 *
 	 * @return \cs\Page
 	 */
-	function html ($add, $mode = 'file') {
+	public function html ($add, $mode = 'file') {
 		return $this->html_internal($add, $mode);
 	}
 	/**
@@ -124,7 +124,7 @@ trait Includes {
 	 *
 	 * @return \cs\Page
 	 */
-	function js ($add, $mode = 'file') {
+	public function js ($add, $mode = 'file') {
 		return $this->js_internal($add, $mode);
 	}
 	/**
@@ -145,7 +145,7 @@ trait Includes {
 	 *
 	 * @return \cs\Page
 	 */
-	function css ($add, $mode = 'file') {
+	public function css ($add, $mode = 'file') {
 		return $this->css_internal($add, $mode);
 	}
 	/**
@@ -196,7 +196,7 @@ trait Includes {
 	 *
 	 * @return \cs\Page
 	 */
-	function config ($config_structure, $target) {
+	public function config ($config_structure, $target) {
 		return $this->config_internal($config_structure, $target);
 	}
 	/**

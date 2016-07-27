@@ -36,7 +36,7 @@ class FileSystem extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function get ($item) {
+	public function get ($item) {
 		$path_in_filesystem = $this->get_absolute_path($item);
 		if (
 			strpos($path_in_filesystem, CACHE) !== 0 ||
@@ -55,7 +55,7 @@ class FileSystem extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function set ($item, $data) {
+	public function set ($item, $data) {
 		$path_in_filesystem = $this->get_absolute_path($item);
 		if (strpos($path_in_filesystem, CACHE) !== 0) {
 			return false;
@@ -78,7 +78,7 @@ class FileSystem extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function del ($item) {
+	public function del ($item) {
 		$path_in_filesystem = $this->get_absolute_path($item);
 		if (strpos($path_in_filesystem, CACHE) !== 0) {
 			return false;
@@ -98,7 +98,7 @@ class FileSystem extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function clean () {
+	public function clean () {
 		$ok         = true;
 		$dirs_to_rm = [];
 		/**

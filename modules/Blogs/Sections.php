@@ -54,7 +54,7 @@ class Sections {
 	 *
 	 * @return array|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		if (is_array($id)) {
 			foreach ($id as &$i) {
 				$i = $this->get($i);
@@ -88,7 +88,7 @@ class Sections {
 	/**
 	 * @return array[]
 	 */
-	function get_all () {
+	public function get_all () {
 		$L = Language::instance();
 		return $this->cache->get(
 			"sections/all/$L->clang",
@@ -113,7 +113,7 @@ class Sections {
 	 *
 	 * @return false|int[]
 	 */
-	function get_by_path ($path) {
+	public function get_by_path ($path) {
 		$full_path = implode('/', (array)$path);
 		$sections  = $this->get_all();
 		$found     = false;
@@ -142,7 +142,7 @@ class Sections {
 	 *
 	 * @return false|int Id of created section on success of <b>false</> on failure
 	 */
-	function add ($parent, $title, $path) {
+	public function add ($parent, $title, $path) {
 		$id = $this->create($parent, $title, path($path ?: $title));
 		if ($id) {
 			$this->db_prime()->q(
@@ -168,7 +168,7 @@ class Sections {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $parent, $title, $path) {
+	public function set ($id, $parent, $title, $path) {
 		$result = $this->update($id, $parent, $title, path($path ?: $title));
 		if ($result) {
 			unset($this->cache->sections);
@@ -182,7 +182,7 @@ class Sections {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		$id      = (int)$id;
 		$section = $this->read($id);
 		if (!$section || !$this->delete($id)) {

@@ -21,7 +21,7 @@ class Prefix {
 	 *
 	 * @param string $prefix
 	 */
-	function __construct ($prefix) {
+	public function __construct ($prefix) {
 		$this->prefix = $prefix;
 	}
 	/**
@@ -32,7 +32,7 @@ class Prefix {
 	 *
 	 * @return string
 	 */
-	function get ($item, $language = false) {
+	public function get ($item, $language = false) {
 		return Language::instance()->get($item, $language, $this->prefix);
 	}
 	/**
@@ -42,7 +42,7 @@ class Prefix {
 	 *
 	 * @return string
 	 */
-	function __get ($item) {
+	public function __get ($item) {
 		return Language::instance()->get($item, false, $this->prefix);
 	}
 	/**
@@ -54,7 +54,7 @@ class Prefix {
 	 *
 	 * @return string
 	 */
-	function time ($in, $type) {
+	public function time ($in, $type) {
 		return Language::instance()->time($in, $type);
 	}
 	/**
@@ -67,7 +67,7 @@ class Prefix {
 	 *
 	 * @return string
 	 */
-	function __call ($item, $arguments) {
+	public function __call ($item, $arguments) {
 		return Language::instance()->format($item, $arguments, false, $this->prefix);
 	}
 	/**
@@ -79,7 +79,7 @@ class Prefix {
 	 *
 	 * @return string
 	 */
-	function format ($item, $arguments, $language = false) {
+	public function format ($item, $arguments, $language = false) {
 		return Language::instance()->format($item, $arguments, $language, $this->prefix);
 	}
 	/**
@@ -91,7 +91,7 @@ class Prefix {
 	 *
 	 * @return string|string[]
 	 */
-	function to_locale ($data, $short_may = false) {
+	public function to_locale ($data, $short_may = false) {
 		return Language::instance()->to_locale($data, $short_may);
 	}
 }

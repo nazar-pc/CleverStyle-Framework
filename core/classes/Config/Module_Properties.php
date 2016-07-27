@@ -29,7 +29,7 @@ class Module_Properties {
 	 * @param array  $module_data
 	 * @param string $module
 	 */
-	function __construct ($module_data, $module) {
+	public function __construct ($module_data, $module) {
 		$this->module_data = $module_data;
 		$this->module      = $module;
 	}
@@ -38,7 +38,7 @@ class Module_Properties {
 	 *
 	 * @return bool
 	 */
-	function enabled () {
+	public function enabled () {
 		return $this->module_data['active'] == self::ENABLED;
 	}
 	/**
@@ -46,7 +46,7 @@ class Module_Properties {
 	 *
 	 * @return bool
 	 */
-	function disabled () {
+	public function disabled () {
 		return $this->module_data['active'] == self::DISABLED;
 	}
 	/**
@@ -54,7 +54,7 @@ class Module_Properties {
 	 *
 	 * @return bool
 	 */
-	function installed () {
+	public function installed () {
 		return $this->module_data['active'] != self::UNINSTALLED;
 	}
 	/**
@@ -62,7 +62,7 @@ class Module_Properties {
 	 *
 	 * @return bool
 	 */
-	function uninstalled () {
+	public function uninstalled () {
 		return $this->module_data['active'] == self::UNINSTALLED;
 	}
 	/**
@@ -72,7 +72,7 @@ class Module_Properties {
 	 *
 	 * @return int
 	 */
-	function db ($db_name) {
+	public function db ($db_name) {
 		return $this->module_data['db'][$db_name];
 	}
 	/**
@@ -82,7 +82,7 @@ class Module_Properties {
 	 *
 	 * @return int
 	 */
-	function storage ($storage_name) {
+	public function storage ($storage_name) {
 		return $this->module_data['storage'][$storage_name];
 	}
 	/**
@@ -92,7 +92,7 @@ class Module_Properties {
 	 *
 	 * @return false|mixed
 	 */
-	function __get ($item) {
+	public function __get ($item) {
 		return $this->get($item);
 	}
 	/**
@@ -101,7 +101,7 @@ class Module_Properties {
 	 * @param string $item
 	 * @param mixed  $value
 	 */
-	function __set ($item, $value) {
+	public function __set ($item, $value) {
 		$this->set_internal($item, $value);
 	}
 	/**
@@ -111,7 +111,7 @@ class Module_Properties {
 	 *
 	 * @return false|mixed|mixed[]
 	 */
-	function get ($item) {
+	public function get ($item) {
 		if (is_array($item)) {
 			$result = [];
 			foreach ($item as $i) {
@@ -134,7 +134,7 @@ class Module_Properties {
 	 *
 	 * @throws \cs\ExitException
 	 */
-	function set ($item, $value = null) {
+	public function set ($item, $value = null) {
 		if (is_array($item)) {
 			/** @noinspection SuspiciousLoopInspection */
 			foreach ($item as $i => $value) {

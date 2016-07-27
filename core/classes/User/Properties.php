@@ -38,7 +38,7 @@ class Properties {
 	 *
 	 * @param int $user
 	 */
-	function __construct ($user) {
+	public function __construct ($user) {
 		$this->id = $user;
 	}
 	/**
@@ -48,7 +48,7 @@ class Properties {
 	 *
 	 * @return false|string|mixed[]
 	 */
-	function get ($item) {
+	public function get ($item) {
 		return User::instance()->get($item, $this->id);
 	}
 	/**
@@ -59,7 +59,7 @@ class Properties {
 	 *
 	 * @return bool
 	 */
-	function set ($item, $value = null) {
+	public function set ($item, $value = null) {
 		return User::instance()->set($item, $value, $this->id);
 	}
 	/**
@@ -69,7 +69,7 @@ class Properties {
 	 *
 	 * @return array|false|string
 	 */
-	function __get ($item) {
+	public function __get ($item) {
 		return User::instance()->get($item, $this->id);
 	}
 	/**
@@ -79,7 +79,7 @@ class Properties {
 	 *
 	 * @return string
 	 */
-	function avatar ($size = null) {
+	public function avatar ($size = null) {
 		return User::instance()->avatar($size, $this->id);
 	}
 	/**
@@ -87,7 +87,7 @@ class Properties {
 	 *
 	 * @return string
 	 */
-	function username () {
+	public function username () {
 		return $this->get('username') ?: ($this->get('login') ?: $this->get('email'));
 	}
 	/**
@@ -96,7 +96,7 @@ class Properties {
 	 * @param array|string $item
 	 * @param mixed|null   $value
 	 */
-	function __set ($item, $value = null) {
+	public function __set ($item, $value = null) {
 		User::instance()->set($item, $value, $this->id);
 	}
 	/**
@@ -106,7 +106,7 @@ class Properties {
 	 *
 	 * @return false|string|mixed[]
 	 */
-	function get_data ($item) {
+	public function get_data ($item) {
 		return User::instance()->get_data($item, $this->id);
 	}
 	/**
@@ -117,7 +117,7 @@ class Properties {
 	 *
 	 * @return bool
 	 */
-	function set_data ($item, $value = null) {
+	public function set_data ($item, $value = null) {
 		return User::instance()->set_data($item, $value, $this->id);
 	}
 	/**
@@ -127,7 +127,7 @@ class Properties {
 	 *
 	 * @return bool
 	 */
-	function del_data ($item) {
+	public function del_data ($item) {
 		return User::instance()->del_data($item, $this->id);
 	}
 }

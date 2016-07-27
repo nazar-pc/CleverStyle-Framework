@@ -16,7 +16,7 @@ trait security {
 	/**
 	 * Get security settings
 	 */
-	static function admin_security_get_settings () {
+	public static function admin_security_get_settings () {
 		$Config = Config::instance();
 		return [
 			'key_expire'       => $Config->core['key_expire'],
@@ -31,7 +31,7 @@ trait security {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_security_apply_settings ($Request) {
+	public static function admin_security_apply_settings ($Request) {
 		static::admin_security_settings_common($Request);
 		if (!Config::instance()->apply()) {
 			throw new ExitException(500);
@@ -70,7 +70,7 @@ trait security {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_security_save_settings ($Request) {
+	public static function admin_security_save_settings ($Request) {
 		static::admin_security_settings_common($Request);
 		if (!Config::instance()->save()) {
 			throw new ExitException(500);
@@ -81,7 +81,7 @@ trait security {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_security_cancel_settings () {
+	public static function admin_security_cancel_settings () {
 		Config::instance()->cancel();
 	}
 }

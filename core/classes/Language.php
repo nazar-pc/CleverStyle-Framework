@@ -124,7 +124,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @return Prefix
 	 */
-	static function prefix ($prefix) {
+	public static function prefix ($prefix) {
 		return new Prefix($prefix);
 	}
 	/**
@@ -134,7 +134,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @return false|string If there is language prefix - language will be returned, `false` otherwise
 	 */
-	function url_language ($url = false) {
+	public function url_language ($url = false) {
 		/**
 		 * @var string $url
 		 */
@@ -228,7 +228,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @return string
 	 */
-	function get ($item, $language = false, $prefix = '') {
+	public function get ($item, $language = false, $prefix = '') {
 		$language = $language ?: $this->current_language;
 		if (isset($this->translation[$language])) {
 			$translation = $this->translation[$language];
@@ -253,7 +253,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @return void
 	 */
-	function set ($item, $value = null) {
+	public function set ($item, $value = null) {
 		$translate = &$this->translation[$this->current_language];
 		if (is_array($item)) {
 			$translate = $item + ($translate ?: []);
@@ -268,7 +268,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @return string
 	 */
-	function __get ($item) {
+	public function __get ($item) {
 		return $this->get($item);
 	}
 	/**
@@ -279,7 +279,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @return string
 	 */
-	function __set ($item, $value = null) {
+	public function __set ($item, $value = null) {
 		$this->set($item, $value);
 	}
 	/**
@@ -289,7 +289,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @return bool
 	 */
-	function change ($language) {
+	public function change ($language) {
 		/**
 		 * Already set to specified language
 		 */
@@ -443,7 +443,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @return string
 	 */
-	function time ($in, $type) {
+	public function time ($in, $type) {
 		if (is_callable($this->time)) {
 			$time = $this->time;
 			return $time($in, $type);
@@ -475,7 +475,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @return string
 	 */
-	function __call ($item, $arguments) {
+	public function __call ($item, $arguments) {
 		return $this->format($item, $arguments);
 	}
 	/**
@@ -488,7 +488,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @return string
 	 */
-	function format ($item, $arguments, $language = false, $prefix = '') {
+	public function format ($item, $arguments, $language = false, $prefix = '') {
 		return vsprintf($this->get($item, $language, $prefix), $arguments);
 	}
 	/**
@@ -500,7 +500,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @return string|string[]
 	 */
-	function to_locale ($data, $short_may = false) {
+	public function to_locale ($data, $short_may = false) {
 		if (is_array($data)) {
 			foreach ($data as &$item) {
 				$item = $this->to_locale($item, $short_may);
@@ -560,7 +560,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @return string[]
 	 */
-	function jsonSerialize () {
+	public function jsonSerialize () {
 		return $this->translation[$this->current_language];
 	}
 }

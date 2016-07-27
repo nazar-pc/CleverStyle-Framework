@@ -14,7 +14,7 @@ use
 	cs\Page;
 
 class Controller {
-	static function general () {
+	public static function general () {
 		$L    = new Prefix('composer_');
 		$Page = Page::instance();
 		$Page->title($L->general);
@@ -38,7 +38,7 @@ class Controller {
 	/**
 	 * @param \cs\Request $Request
 	 */
-	static function auth_json ($Request) {
+	public static function auth_json ($Request) {
 		$L    = new Prefix('composer_');
 		$Page = Page::instance();
 		$Page->title($L->auth_json);

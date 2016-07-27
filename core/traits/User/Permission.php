@@ -40,7 +40,7 @@ trait Permission {
 	 *
 	 * @return bool If permission exists - returns its state for specified user, otherwise for admin permissions returns <b>false</b> and for others <b>true</b>
 	 */
-	function get_permission ($group, $label, $user = false) {
+	public function get_permission ($group, $label, $user = false) {
 		$user = (int)$user ?: $this->id;
 		if ($user == User::ROOT_ID) {
 			return true;
@@ -103,7 +103,7 @@ trait Permission {
 	 *
 	 * @return bool
 	 */
-	function set_permission ($group, $label, $value, $user = false) {
+	public function set_permission ($group, $label, $value, $user = false) {
 		$permission = System_Permission::instance()->get(null, $group, $label);
 		if ($permission) {
 			return $this->set_permissions(
@@ -124,7 +124,7 @@ trait Permission {
 	 *
 	 * @return bool
 	 */
-	function del_permission ($group, $label, $user = false) {
+	public function del_permission ($group, $label, $user = false) {
 		return $this->set_permission($group, $label, -1, $user);
 	}
 	/**
@@ -134,7 +134,7 @@ trait Permission {
 	 *
 	 * @return int[]|false
 	 */
-	function get_permissions ($user = false) {
+	public function get_permissions ($user = false) {
 		$user = (int)$user ?: $this->id;
 		if ($user == User::ROOT_ID || !$user) {
 			return false;
@@ -149,7 +149,7 @@ trait Permission {
 	 *
 	 * @return bool
 	 */
-	function set_permissions ($data, $user = false) {
+	public function set_permissions ($data, $user = false) {
 		$user = (int)$user ?: $this->id;
 		if ($user == User::ROOT_ID || !$user) {
 			return false;
@@ -166,7 +166,7 @@ trait Permission {
 	 *
 	 * @return bool
 	 */
-	function del_permissions_all ($user = false) {
+	public function del_permissions_all ($user = false) {
 		$user = (int)$user ?: $this->id;
 		if ($user == User::ROOT_ID || !$user) {
 			return false;

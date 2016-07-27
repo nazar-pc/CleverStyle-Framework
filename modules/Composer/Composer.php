@@ -60,7 +60,7 @@ class Composer {
 	 *
 	 * @return array
 	 */
-	function force_update () {
+	public function force_update () {
 		$this->force_update = true;
 		return $this->update();
 	}
@@ -73,7 +73,7 @@ class Composer {
 	 * @return array Array with `code` and `description` elements, first represents status code returned by composer, second contains ANSI text returned by
 	 *               composer
 	 */
-	function update ($component_name = null, $mode = self::MODE_ADD) {
+	public function update ($component_name = null, $mode = self::MODE_ADD) {
 		time_limit_pause();
 		$storage     = STORAGE.'/Composer';
 		$status_code = 0;

@@ -45,7 +45,7 @@ class Polls {
 	 *
 	 * @return false|int
 	 */
-	function add ($title) {
+	public function add ($title) {
 		$id = $this->create($title);
 		if ($id) {
 			unset($this->cache->all);
@@ -60,7 +60,7 @@ class Polls {
 	 *
 	 * @return array|array[]|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		return $this->get_common($id);
 	}
 	/**
@@ -68,7 +68,7 @@ class Polls {
 	 *
 	 * @return false|int[]
 	 */
-	function get_all () {
+	public function get_all () {
 		return $this->cache->get(
 			'all',
 			function () {
@@ -84,7 +84,7 @@ class Polls {
 	 *
 	 * @return false|int
 	 */
-	function set ($id, $title) {
+	public function set ($id, $title) {
 		$id     = (int)$id;
 		$result = $this->update($id, $title);
 		if ($result) {
@@ -103,7 +103,7 @@ class Polls {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		$id = (int)$id;
 		if (!$this->delete($id)) {
 			return false;

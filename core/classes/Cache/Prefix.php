@@ -19,7 +19,7 @@ class Prefix {
 	 *
 	 * @param string $prefix
 	 */
-	function __construct ($prefix) {
+	public function __construct ($prefix) {
 		$this->prefix = $prefix;
 	}
 	/**
@@ -32,7 +32,7 @@ class Prefix {
 	 *
 	 * @return false|mixed Returns item on success of <b>false</b> on failure
 	 */
-	function get ($item, $callback = null) {
+	public function get ($item, $callback = null) {
 		return Cache::instance()->get("$this->prefix/$item", $callback);
 	}
 	/**
@@ -43,7 +43,7 @@ class Prefix {
 	 *
 	 * @return bool
 	 */
-	function set ($item, $data) {
+	public function set ($item, $data) {
 		return Cache::instance()->set("$this->prefix/$item", $data);
 	}
 	/**
@@ -53,7 +53,7 @@ class Prefix {
 	 *
 	 * @return bool
 	 */
-	function del ($item) {
+	public function del ($item) {
 		return Cache::instance()->del("$this->prefix/$item");
 	}
 	/**
@@ -63,7 +63,7 @@ class Prefix {
 	 *
 	 * @return false|mixed Returns item on success of <b>false</b> on failure
 	 */
-	function __get ($item) {
+	public function __get ($item) {
 		return $this->get($item);
 	}
 	/**
@@ -72,7 +72,7 @@ class Prefix {
 	 * @param string $item May contain "/" symbols for cache structure, for example users/<i>user_id</i>
 	 * @param mixed  $data
 	 */
-	function __set ($item, $data) {
+	public function __set ($item, $data) {
 		$this->set($item, $data);
 	}
 	/**
@@ -80,7 +80,7 @@ class Prefix {
 	 *
 	 * @param string $item May contain "/" symbols for cache structure, for example users/<i>user_id</i>
 	 */
-	function __unset ($item) {
+	public function __unset ($item) {
 		$this->del($item);
 	}
 }

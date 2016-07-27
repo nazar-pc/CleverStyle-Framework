@@ -43,7 +43,7 @@ class Meta {
 	 *
 	 * @return Meta
 	 */
-	function image ($images) {
+	public function image ($images) {
 		if (!$images) {
 			return $this;
 		}
@@ -68,7 +68,7 @@ class Meta {
 	 *
 	 * @return Meta
 	 */
-	function __call ($type, $params) {
+	public function __call ($type, $params) {
 		if (!$params) {
 			$this->og_type         = $type;
 			$this->og_data['type'] = h::meta(
@@ -104,7 +104,7 @@ class Meta {
 	 *
 	 * Usually called by system itself, there is no need to call it manually
 	 */
-	function render () {
+	public function render () {
 		$og = &$this->og_data;
 		$this->fill_required_properties($og);
 		$prefix = 'og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#';

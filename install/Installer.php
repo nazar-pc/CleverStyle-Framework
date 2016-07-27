@@ -62,7 +62,7 @@ CONFIG;
 	 *
 	 * @throws RuntimeException
 	 */
-	static function install (
+	public static function install (
 		$source,
 		$target,
 		$site_name,

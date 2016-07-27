@@ -55,7 +55,7 @@ class Permission {
 	 * @return array|false If only <b>$id</b> specified - result is array of permission data, in other cases result will be array of arrays of corresponding
 	 *                     permissions data
 	 */
-	function get ($id = null, $group = null, $label = null) {
+	public function get ($id = null, $group = null, $label = null) {
 		if ($group !== null || $label !== null) {
 			return $this->read(
 				$this->search(
@@ -81,7 +81,7 @@ class Permission {
 	 *
 	 * @return false|int Group id or <b>false</b> on failure
 	 */
-	function add ($group, $label) {
+	public function add ($group, $label) {
 		$id = $this->create($group, $label);
 		if ($id) {
 			$this->del_all_cache();
@@ -97,7 +97,7 @@ class Permission {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $group, $label) {
+	public function set ($id, $group, $label) {
 		$result = $this->update($id, $group, $label);
 		if ($result) {
 			$this->del_all_cache();
@@ -111,7 +111,7 @@ class Permission {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		$id     = implode(',', (array)_int($id));
 		$result = $this->db_prime()->q(
 			[
@@ -138,7 +138,7 @@ class Permission {
 	 *
 	 * @return array Format of array: ['group']['label'] = <i>permission_id</i>
 	 */
-	function get_all () {
+	public function get_all () {
 		if ($this->permissions_table === null) {
 			$this->permissions_table = $this->cache->get(
 				'all',

@@ -24,7 +24,7 @@ trait themes {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_themes_get ($Request) {
+	public static function admin_themes_get ($Request) {
 		if ($Request->route_path(3) == 'update_dependencies') {
 			/**
 			 * Get dependencies for theme during update
@@ -132,7 +132,7 @@ trait themes {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_themes_put ($Request) {
+	public static function admin_themes_put ($Request) {
 		if ($Request->route_path(2) == 'current') {
 			$theme = $Request->data('theme');
 			if (!$theme) {
@@ -192,7 +192,7 @@ trait themes {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_themes_extract () {
+	public static function admin_themes_extract () {
 		$L            = Language::instance();
 		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
 		$tmp_dir      = "phar://$tmp_location";
@@ -224,7 +224,7 @@ trait themes {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_themes_update ($Request) {
+	public static function admin_themes_update ($Request) {
 		$L      = Language::instance();
 		$theme  = $Request->route_path(2);
 		$themes = get_files_list(THEMES, false, 'd');
@@ -278,7 +278,7 @@ trait themes {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_themes_delete ($Request) {
+	public static function admin_themes_delete ($Request) {
 		$Config = Config::instance();
 		$theme  = $Request->route_path(2);
 		$themes = get_files_list(THEMES, false, 'd');

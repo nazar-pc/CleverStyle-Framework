@@ -12,10 +12,10 @@ use
 	cs\Config;
 
 trait general {
-	static function languages_get () {
+	public static function languages_get () {
 		return Config::instance()->core['active_languages'];
 	}
-	static function timezones_get () {
+	public static function timezones_get () {
 		return get_timezones_list();
 	}
 }

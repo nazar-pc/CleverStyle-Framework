@@ -39,7 +39,7 @@ class Answers {
 	 *
 	 * @return bool
 	 */
-	function add ($poll, $option) {
+	public function add ($poll, $option) {
 		$User = User::instance();
 		if ($User->guest()) {
 			return false;
@@ -59,7 +59,7 @@ class Answers {
 	 *
 	 * @return int|int[]|false Option id
 	 */
-	function get ($poll, $user = false) {
+	public function get ($poll, $user = false) {
 		if (is_array($poll)) {
 			foreach ($poll as &$i) {
 				$i = $this->get($i, $user);

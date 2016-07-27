@@ -63,7 +63,7 @@ class Shipping_types {
 	 *
 	 * @return array|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		return $this->get_common($id);
 	}
 	/**
@@ -71,7 +71,7 @@ class Shipping_types {
 	 *
 	 * @return int[] Array of shipping types ids
 	 */
-	function get_all () {
+	public function get_all () {
 		return $this->get_all_common();
 	}
 	/**
@@ -82,7 +82,7 @@ class Shipping_types {
 	 *
 	 * @return array|false
 	 */
-	function get_for_user ($id, $user = false) {
+	public function get_for_user ($id, $user = false) {
 		if (is_array($id)) {
 			foreach ($id as $index => &$i) {
 				$i = $this->get_for_user($i, $user);
@@ -117,7 +117,7 @@ class Shipping_types {
 	 *
 	 * @return false|int Id of created item on success of <b>false</> on failure
 	 */
-	function add ($price, $phone_needed, $address_needed, $title, $description) {
+	public function add ($price, $phone_needed, $address_needed, $title, $description) {
 		return $this->add_common(func_get_args());
 	}
 	/**
@@ -132,7 +132,7 @@ class Shipping_types {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $price, $phone_needed, $address_needed, $title, $description) {
+	public function set ($id, $price, $phone_needed, $address_needed, $title, $description) {
 		return $this->set_common(func_get_args());
 	}
 	/**
@@ -142,7 +142,7 @@ class Shipping_types {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		return $this->del_common($id);
 	}
 }

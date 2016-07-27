@@ -42,7 +42,7 @@ trait Management {
 	 *
 	 * @return false|int[]
 	 */
-	function search_users ($search_phrase) {
+	public function search_users ($search_phrase) {
 		$search_phrase = trim($search_phrase, "%\n");
 		$found_users   = $this->db()->qfas(
 			"SELECT `id`
@@ -81,7 +81,7 @@ trait Management {
 	 *                             &nbsp;&nbsp;&nbsp;&nbsp;<b>'id'       => *</b>  //Id of registered user in DB<br>
 	 *                             <b>]</b>
 	 */
-	function registration ($email, $confirmation = true, $auto_sign_in = true) {
+	public function registration ($email, $confirmation = true, $auto_sign_in = true) {
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return false;
 		}
@@ -192,7 +192,7 @@ trait Management {
 	 *
 	 * @return array|false ['id' => <i>id</i>, 'email' => <i>email</i>, 'password' => <i>password</i>] or <b>false</b> on failure
 	 */
-	function registration_confirmation ($reg_key) {
+	public function registration_confirmation ($reg_key) {
 		if (!is_md5($reg_key)) {
 			return false;
 		}
@@ -253,7 +253,7 @@ trait Management {
 	/**
 	 * Canceling of bad/failed registration
 	 */
-	function registration_cancel () {
+	public function registration_cancel () {
 		if ($this->reg_id) {
 			Session::instance()->add(User::GUEST_ID);
 			$this->del_user($this->reg_id);
@@ -286,7 +286,7 @@ trait Management {
 	 *
 	 * @return bool
 	 */
-	function set_password ($new_password, $user = false, $already_prepared = false) {
+	public function set_password ($new_password, $user = false, $already_prepared = false) {
 		$public_key = Core::instance()->public_key;
 		if (!$already_prepared) {
 			$new_password = hash('sha512', hash('sha512', $new_password).$public_key);
@@ -308,7 +308,7 @@ trait Management {
 	 *
 	 * @return bool
 	 */
-	function validate_password ($password, $user = false, $already_prepared = false) {
+	public function validate_password ($password, $user = false, $already_prepared = false) {
 		if (!$already_prepared) {
 			$password = hash('sha512', hash('sha512', $password).Core::instance()->public_key);
 		}
@@ -336,7 +336,7 @@ trait Management {
 	 *
 	 * @return false|string Key for confirmation or <b>false</b> on failure
 	 */
-	function restore_password ($user) {
+	public function restore_password ($user) {
 		if ($user && $user != User::GUEST_ID) {
 			$reg_key = md5(random_bytes(1000));
 			if ($this->set('reg_key', $reg_key, $user)) {
@@ -355,7 +355,7 @@ trait Management {
 	 *
 	 * @return array|false ['id' => <i>id</i>, 'password' => <i>password</i>] or <b>false</b> on failure
 	 */
-	function restore_password_confirmation ($key) {
+	public function restore_password_confirmation ($key) {
 		if (!is_md5($key)) {
 			return false;
 		}
@@ -391,7 +391,7 @@ trait Management {
 	 *
 	 * @param int|int[] $user User id or array of users ids
 	 */
-	function del_user ($user) {
+	public function del_user ($user) {
 		$this->disable_memory_cache();
 		if (is_array($user)) {
 			foreach ($user as $id) {

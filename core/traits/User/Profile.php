@@ -51,7 +51,7 @@ trait Profile {
 	 *
 	 * @return false|int|mixed[]|string|Properties If <i>$item</i> is integer - cs\User\Properties object will be returned
 	 */
-	function get ($item, $user = false) {
+	public function get ($item, $user = false) {
 		if (is_scalar($item) && ctype_digit((string)$item)) {
 			return new Properties($item);
 		}
@@ -113,7 +113,7 @@ trait Profile {
 	 *
 	 * @return bool
 	 */
-	function set ($item, $value = null, $user = false) {
+	public function set ($item, $value = null, $user = false) {
 		$user     = (int)$user ?: $this->id;
 		$data_set = [];
 		if (!$this->set_internal($item, $value, $user, $data_set)) {
@@ -242,7 +242,7 @@ trait Profile {
 	 *
 	 * @return false|int User id if found and not guest, otherwise - boolean <i>false</i>
 	 */
-	function get_id ($login_hash) {
+	public function get_id ($login_hash) {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return false;
 		}
@@ -271,7 +271,7 @@ trait Profile {
 	 *
 	 * @return string
 	 */
-	function avatar ($size = null, $user = false) {
+	public function avatar ($size = null, $user = false) {
 		$user         = (int)$user ?: $this->id;
 		$avatar       = $this->get('avatar', $user);
 		$Config       = Config::instance();
@@ -292,7 +292,7 @@ trait Profile {
 	 *
 	 * @return string
 	 */
-	function username ($user = false) {
+	public function username ($user = false) {
 		$user = (int)$user ?: $this->id;
 		if ($user == User::GUEST_ID) {
 			return Language::instance()->system_profile_guest;
@@ -308,7 +308,7 @@ trait Profile {
 	 *
 	 * @return array
 	 */
-	function get_users_columns () {
+	public function get_users_columns () {
 		return $this->users_columns;
 	}
 }

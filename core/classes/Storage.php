@@ -27,7 +27,7 @@ class Storage {
 	 *
 	 * @return array|null
 	 */
-	function get_connections_list ($status = null) {
+	public function get_connections_list ($status = null) {
 		if ($status === null) {
 			return $this->connections;
 		} elseif ($status == 0) {
@@ -44,7 +44,7 @@ class Storage {
 	 *
 	 * @return Storage\_Abstract|False_class
 	 */
-	function storage ($connection) {
+	public function storage ($connection) {
 		if (!is_int($connection) && $connection != '0') {
 			return False_class::instance();
 		}

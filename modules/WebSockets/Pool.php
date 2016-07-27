@@ -30,7 +30,7 @@ class Pool {
 	 *
 	 * @return string[]
 	 */
-	function get_all () {
+	public function get_all () {
 		return $this->db_prime()->qfas(
 			"SELECT `address`
 			FROM `[prefix]websockets_pool`
@@ -42,7 +42,7 @@ class Pool {
 	 *
 	 * @return false|string
 	 */
-	function get_master () {
+	public function get_master () {
 		$servers = $this->get_all();
 		return $servers ? $servers[0] : false;
 	}
@@ -53,7 +53,7 @@ class Pool {
 	 *
 	 * @return bool
 	 */
-	function add ($server_address) {
+	public function add ($server_address) {
 		return (bool)$this->db_prime()->q(
 			"INSERT IGNORE INTO `[prefix]websockets_pool`
 			(
@@ -75,7 +75,7 @@ class Pool {
 	 * @return bool
 	 *
 	 */
-	function del ($server_address) {
+	public function del ($server_address) {
 		return (bool)$this->db_prime()->q(
 			"DELETE FROM `[prefix]websockets_pool`
 			WHERE `address` = '%s'",

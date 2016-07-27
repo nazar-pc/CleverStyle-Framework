@@ -130,7 +130,7 @@ class Config {
 	 *
 	 * @throws ExitException
 	 */
-	function apply () {
+	public function apply () {
 		return $this->apply_internal();
 	}
 	/**
@@ -174,7 +174,7 @@ class Config {
 	 *
 	 * @throws ExitException
 	 */
-	function save () {
+	public function save () {
 		if ($this->cancel_available()) {
 			unset($this->core['cache_not_saved']);
 		}
@@ -195,7 +195,7 @@ class Config {
 	 *
 	 * @return bool
 	 */
-	function cancel_available () {
+	public function cancel_available () {
 		return isset($this->core['cache_not_saved']);
 	}
 	/**
@@ -203,7 +203,7 @@ class Config {
 	 *
 	 * @throws ExitException
 	 */
-	function cancel () {
+	public function cancel () {
 		Cache::instance()->del('config');
 		$this->load_configuration();
 	}
@@ -212,7 +212,7 @@ class Config {
 	 *
 	 * @return string
 	 */
-	function base_url () {
+	public function base_url () {
 		if (Request::instance()->mirror_index === -1) {
 			return '';
 		}
@@ -228,7 +228,7 @@ class Config {
 	 *
 	 * @return string
 	 */
-	function core_url () {
+	public function core_url () {
 		$Request = Request::instance();
 		return "$Request->scheme://$Request->host";
 	}
@@ -239,7 +239,7 @@ class Config {
 	 *
 	 * @return Config\Module_Properties
 	 */
-	function module ($module_name) {
+	public function module ($module_name) {
 		if (!isset($this->components['modules'][$module_name])) {
 			return False_class::instance();
 		}

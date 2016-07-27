@@ -37,7 +37,7 @@ class OAuth2 {
 	 * @var Prefix
 	 */
 	protected $cache;
-	function construct () {
+	public function construct () {
 		$this->cache                  = new Prefix('OAuth2');
 		$module_data                  = Config::instance()->module('OAuth2');
 		$this->automatic_prolongation = $module_data->automatic_prolongation;
@@ -60,7 +60,7 @@ class OAuth2 {
 	 *
 	 * @return false|string            <i>false</i> on failure, id of created client otherwise
 	 */
-	function add_client ($name, $domain, $active) {
+	public function add_client ($name, $domain, $active) {
 		if (
 			!$domain ||
 			strpos($domain, '/') !== false
@@ -114,7 +114,7 @@ class OAuth2 {
 	 *
 	 * @return array|false
 	 */
-	function get_client ($id) {
+	public function get_client ($id) {
 		if (!is_md5($id)) {
 			return false;
 		}
@@ -142,7 +142,7 @@ class OAuth2 {
 	 *
 	 * @return bool
 	 */
-	function set_client ($id, $secret, $name, $domain, $active) {
+	public function set_client ($id, $secret, $name, $domain, $active) {
 		if (
 			!is_md5($id) ||
 			!is_md5($secret) ||
@@ -175,7 +175,7 @@ class OAuth2 {
 	 *
 	 * @return bool
 	 */
-	function del_client ($id) {
+	public function del_client ($id) {
 		$result = $this->db_prime()->q(
 			[
 				"DELETE FROM `[prefix]oauth2_clients`
@@ -195,7 +195,7 @@ class OAuth2 {
 	 *
 	 * @return array|false
 	 */
-	function clients_list () {
+	public function clients_list () {
 		return $this->db()->qfa(
 			"SELECT *
 			FROM `[prefix]oauth2_clients`"
@@ -208,7 +208,7 @@ class OAuth2 {
 	 *
 	 * @return bool
 	 */
-	function add_access ($client) {
+	public function add_access ($client) {
 		$User = User::instance();
 		if (!$User->user() || !$this->get_client($client)) {
 			return false;
@@ -236,7 +236,7 @@ class OAuth2 {
 	 *
 	 * @return bool
 	 */
-	function get_access ($client, $user = false) {
+	public function get_access ($client, $user = false) {
 		$user = (int)$user ?: User::instance()->id;
 		if ($user == User::GUEST_ID) {
 			return false;
@@ -262,7 +262,7 @@ class OAuth2 {
 	 *
 	 * @return bool
 	 */
-	function del_access ($client = '', $user = false) {
+	public function del_access ($client = '', $user = false) {
 		$user = (int)$user ?: User::instance()->id;
 		if ($user == User::GUEST_ID) {
 			return false;
@@ -301,7 +301,7 @@ class OAuth2 {
 	 *
 	 * @return false|string                    <i>false</i> on failure or code for token access otherwise
 	 */
-	function add_code ($client, $response_type, $redirect_uri = '') {
+	public function add_code ($client, $response_type, $redirect_uri = '') {
 		$Session = Session::instance();
 		$client  = $this->get_client($client);
 		if (
@@ -389,7 +389,7 @@ class OAuth2 {
 	 *                                        ['access_token' => md5, 'refresh_token' => md5, 'expires_in' => seconds, 'token_type' => 'bearer']<br>
 	 *                                        <i>expires_in</i> may be negative
 	 */
-	function get_code ($code, $client, $secret, $redirect_uri = '') {
+	public function get_code ($code, $client, $secret, $redirect_uri = '') {
 		$client = $this->get_client($client);
 		if (!is_md5($code) || !$client || $client['secret'] != $secret) {
 			return false;
@@ -439,7 +439,7 @@ class OAuth2 {
 	 *
 	 * @return array|false                    <i>false</i> on failure, array ['user' => id, 'session' => id, 'expire' => unix time, 'type' => 'code'|'token']
 	 */
-	function get_token ($access_token) {
+	public function get_token ($access_token) {
 		if (!is_md5($access_token)) {
 			return false;
 		}
@@ -498,7 +498,7 @@ class OAuth2 {
 	 *
 	 * @return bool
 	 */
-	function del_token ($access_token) {
+	public function del_token ($access_token) {
 		if (!is_md5($access_token)) {
 			return false;
 		}
@@ -532,7 +532,7 @@ class OAuth2 {
 	 * @return array|false <i>false</i> on failure, otherwise array ['access_token' => md5, 'refresh_token' => md5, 'expires_in' => seconds, 'token_type' =>
 	 *                     'bearer']
 	 */
-	function refresh_token ($refresh_token, $client, $secret) {
+	public function refresh_token ($refresh_token, $client, $secret) {
 		$client = $this->get_client($client);
 		if (!is_md5($refresh_token) || !$client || $client['secret'] != $secret) {
 			return false;

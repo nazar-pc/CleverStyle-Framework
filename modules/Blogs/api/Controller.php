@@ -20,7 +20,7 @@ class Controller {
 	use
 		admin;
 
-	static function __get_settings () {
+	public static function __get_settings () {
 		$User        = User::instance();
 		$module_data = Config::instance()->module('Blogs');
 		$admin       = $User->admin() && $User->get_permission('admin/Blogs', 'index');
@@ -40,7 +40,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function posts_get ($Request) {
+	public static function posts_get ($Request) {
 		$id = $Request->route_ids(0);
 		if ($id) {
 			$post = Posts::instance()->get($id);
@@ -60,7 +60,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function posts_post ($Request, $Response) {
+	public static function posts_post ($Request, $Response) {
 		$Config      = Config::instance();
 		$module_data = $Config->module('Blogs');
 		$L           = new Prefix('blogs_');
@@ -93,7 +93,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function posts_put ($Request) {
+	public static function posts_put ($Request) {
 		$Config = Config::instance();
 		$L      = new Prefix('blogs_');
 		$User   = User::instance();
@@ -127,7 +127,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function posts_delete ($Request) {
+	public static function posts_delete ($Request) {
 		$L    = new Prefix('blogs_');
 		$User = User::instance();
 		$id   = $Request->route(1);
@@ -188,7 +188,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function posts_preview ($Request) {
+	public static function posts_preview ($Request) {
 		$User = User::instance();
 		if (!$User->user()) {
 			throw new ExitException(403);
@@ -213,7 +213,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function sections_get ($Request) {
+	public static function sections_get ($Request) {
 		$id       = $Request->route_ids(0);
 		$Sections = Sections::instance();
 		if ($id) {

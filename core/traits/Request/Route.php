@@ -90,7 +90,7 @@ trait Route {
 	 *
 	 * @throws ExitException
 	 */
-	function init_route () {
+	public function init_route () {
 		/**
 		 * Serve static files here for early exit
 		 */
@@ -168,7 +168,7 @@ trait Route {
 	 *
 	 * @return array Array contains next elements: `route`, `path_normalized`, `cli_path`, `admin_path`, `api_path`, `current_module`, `home_page`
 	 */
-	function analyze_route_path ($path) {
+	public function analyze_route_path ($path) {
 		$rc = trim($path, '/');
 		Event::instance()->fire(
 			'System/Request/routing_replace/before',
@@ -346,7 +346,7 @@ trait Route {
 	 *
 	 * @return int|null|string
 	 */
-	function route ($index) {
+	public function route ($index) {
 		return @$this->route[$index];
 	}
 	/**
@@ -356,7 +356,7 @@ trait Route {
 	 *
 	 * @return null|string
 	 */
-	function route_path ($index) {
+	public function route_path ($index) {
 		return @$this->route_path[$index];
 	}
 	/**
@@ -366,7 +366,7 @@ trait Route {
 	 *
 	 * @return int|null
 	 */
-	function route_ids ($index) {
+	public function route_ids ($index) {
 		return @$this->route_ids[$index];
 	}
 }

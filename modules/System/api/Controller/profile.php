@@ -18,7 +18,7 @@ use
 	cs\User;
 
 trait profile {
-	static function profile_get () {
+	public static function profile_get () {
 		$User         = User::instance();
 		$fields       = [
 			'id',
@@ -41,7 +41,7 @@ trait profile {
 	 *
 	 * @throws ExitException
 	 */
-	static function profile_patch ($Request) {
+	public static function profile_patch ($Request) {
 		$user_data = $Request->data('login', 'username', 'language', 'timezone', 'avatar');
 		if (
 			!$user_data ||
@@ -90,7 +90,7 @@ trait profile {
 	 *
 	 * @throws ExitException
 	 */
-	static function profile_change_password ($Request) {
+	public static function profile_change_password ($Request) {
 		$L    = Language::prefix('system_profile_');
 		$User = User::instance();
 		$data = $Request->data('current_password', 'new_password');
@@ -119,7 +119,7 @@ trait profile {
 	 *
 	 * @throws ExitException
 	 */
-	static function profile_registration ($Request, $Response) {
+	public static function profile_registration ($Request, $Response) {
 		$Config = Config::instance();
 		$L      = Language::prefix('system_profile_registration_');
 		$User   = User::instance();
@@ -214,7 +214,7 @@ trait profile {
 	 *
 	 * @throws ExitException
 	 */
-	static function profile_restore_password ($Request) {
+	public static function profile_restore_password ($Request) {
 		$Config = Config::instance();
 		$L      = Language::prefix('system_profile_restore_password_');
 		$User   = User::instance();
@@ -251,7 +251,7 @@ trait profile {
 	 *
 	 * @throws ExitException
 	 */
-	static function profile_sign_in ($Request) {
+	public static function profile_sign_in ($Request) {
 		$Config = Config::instance();
 		$L      = Language::prefix('system_profile_sign_in_');
 		$User   = User::instance();
@@ -302,7 +302,7 @@ trait profile {
 	 *
 	 * @throws ExitException
 	 */
-	static function profile_sign_out (
+	public static function profile_sign_out (
 		/** @noinspection PhpUnusedParameterInspection */
 		$Request,
 		$Response
@@ -318,7 +318,7 @@ trait profile {
 		 */
 		$Response->cookie('sign_out', 1, TIME + 5, true);
 	}
-	static function profile_configuration () {
+	public static function profile_configuration () {
 		$Config = Config::instance();
 		return [
 			'public_key'            => Core::instance()->public_key,

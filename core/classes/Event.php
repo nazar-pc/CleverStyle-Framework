@@ -39,7 +39,7 @@ class Event {
 	 *
 	 * @return Event
 	 */
-	function on ($event, $callback) {
+	public function on ($event, $callback) {
 		if (!$event || !is_callable($callback)) {
 			return $this;
 		}
@@ -54,7 +54,7 @@ class Event {
 	 *
 	 * @return Event
 	 */
-	function off ($event, $callback = null) {
+	public function off ($event, $callback = null) {
 		if (!isset($this->callbacks[$event])) {
 			return $this;
 		}
@@ -78,7 +78,7 @@ class Event {
 	 *
 	 * @return Event
 	 */
-	function once ($event, $callback) {
+	public function once ($event, $callback) {
 		if (!$event || !is_callable($callback)) {
 			return $this;
 		}
@@ -98,7 +98,7 @@ class Event {
 	 *
 	 * @return bool
 	 */
-	function fire ($event, ...$arguments) {
+	public function fire ($event, ...$arguments) {
 		$this->ensure_events_registered();
 		if (
 			!$event ||

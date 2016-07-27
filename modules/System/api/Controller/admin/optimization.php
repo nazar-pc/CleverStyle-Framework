@@ -18,7 +18,7 @@ trait optimization {
 	/**
 	 * Get optimization settings
 	 */
-	static function admin_optimization_get_settings () {
+	public static function admin_optimization_get_settings () {
 		$Config = Config::instance();
 		return [
 			'cache_compress_js_css'      => $Config->core['cache_compress_js_css'],
@@ -38,7 +38,7 @@ trait optimization {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_optimization_clean_cache ($Request) {
+	public static function admin_optimization_clean_cache ($Request) {
 		$Cache = Cache::instance();
 		time_limit_pause();
 		$path_prefix = $Request->data('path_prefix');
@@ -59,7 +59,7 @@ trait optimization {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_optimization_clean_pcache () {
+	public static function admin_optimization_clean_pcache () {
 		if (!clean_pcache()) {
 			throw new ExitException(500);
 		}
@@ -72,7 +72,7 @@ trait optimization {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_optimization_apply_settings ($Request) {
+	public static function admin_optimization_apply_settings ($Request) {
 		static::admin_optimization_settings_common($Request);
 		$Config = Config::instance();
 		if (!$Config->apply()) {
@@ -105,7 +105,7 @@ trait optimization {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_optimization_save_settings ($Request) {
+	public static function admin_optimization_save_settings ($Request) {
 		static::admin_optimization_settings_common($Request);
 		$Config = Config::instance();
 		if (!$Config->save()) {
@@ -118,7 +118,7 @@ trait optimization {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_optimization_cancel_settings () {
+	public static function admin_optimization_cancel_settings () {
 		Config::instance()->cancel();
 	}
 }

@@ -67,7 +67,7 @@ class Request {
 	 *
 	 * @throws ExitException
 	 */
-	function init ($server, $query, $data, $files, $data_stream, $cookie, $request_started) {
+	public function init ($server, $query, $data, $files, $data_stream, $cookie, $request_started) {
 		++static::$id;
 		$this->init_server($server);
 		$this->init_query($query);
@@ -81,7 +81,7 @@ class Request {
 	 *
 	 * @throws ExitException
 	 */
-	function init_from_globals () {
+	public function init_from_globals () {
 		$this->init($_SERVER, $_GET, $_POST, $_FILES, 'php://input', $_COOKIE, MICROTIME);
 	}
 }

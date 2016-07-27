@@ -68,7 +68,7 @@ class Order_statuses {
 	 *
 	 * @return array|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		return $this->get_common($id);
 	}
 	/**
@@ -76,7 +76,7 @@ class Order_statuses {
 	 *
 	 * @return int[] Array of order statuses ids
 	 */
-	function get_all () {
+	public function get_all () {
 		return $this->get_all_common();
 	}
 	/**
@@ -84,7 +84,7 @@ class Order_statuses {
 	 *
 	 * @return array
 	 */
-	function get_type_to_name_array () {
+	public function get_type_to_name_array () {
 		$L = new Language_prefix('shop_');
 		return [
 			static::TYPE_OTHER            => $L->type_other,
@@ -113,7 +113,7 @@ class Order_statuses {
 	 * @return false|int Id of created item on success of <b>false</> on failure
 	 *
 	 */
-	function add ($title, $type, $color, $send_update_status_email, $comment) {
+	public function add ($title, $type, $color, $send_update_status_email, $comment) {
 		return $this->add_common(func_get_args());
 	}
 	/**
@@ -128,7 +128,7 @@ class Order_statuses {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $title, $type, $color, $send_update_status_email, $comment) {
+	public function set ($id, $title, $type, $color, $send_update_status_email, $comment) {
 		return $this->set_common(func_get_args());
 	}
 	/**
@@ -138,7 +138,7 @@ class Order_statuses {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		return $this->del_common($id);
 	}
 }

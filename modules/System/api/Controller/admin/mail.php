@@ -17,7 +17,7 @@ trait mail {
 	/**
 	 * Get mail settings
 	 */
-	static function admin_mail_get_settings () {
+	public static function admin_mail_get_settings () {
 		$Config = Config::instance();
 		return [
 			'smtp'              => $Config->core['smtp'],
@@ -40,7 +40,7 @@ trait mail {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_mail_send_test_email ($Request) {
+	public static function admin_mail_send_test_email ($Request) {
 		$email = $Request->data('email');
 		if (!$email) {
 			throw new ExitException(400);
@@ -56,7 +56,7 @@ trait mail {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_mail_apply_settings ($Request) {
+	public static function admin_mail_apply_settings ($Request) {
 		static::admin_mail_settings_common($Request);
 		if (!Config::instance()->apply()) {
 			throw new ExitException(500);
@@ -102,7 +102,7 @@ trait mail {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_mail_save_settings ($Request) {
+	public static function admin_mail_save_settings ($Request) {
 		static::admin_mail_settings_common($Request);
 		if (!Config::instance()->save()) {
 			throw new ExitException(500);
@@ -113,7 +113,7 @@ trait mail {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_mail_cancel_settings () {
+	public static function admin_mail_cancel_settings () {
 		Config::instance()->cancel();
 	}
 }

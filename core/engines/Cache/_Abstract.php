@@ -16,7 +16,7 @@ abstract class _Abstract {
 	 *
 	 * @return false|mixed Returns item on success of <b>false</b> on failure
 	 */
-	abstract function get ($item);
+	abstract public function get ($item);
 	/**
 	 * Put or change data of cache item
 	 *
@@ -27,7 +27,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	abstract function set ($item, $data);
+	abstract public function set ($item, $data);
 	/**
 	 * Delete item from cache
 	 *
@@ -37,7 +37,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	abstract function del ($item);
+	abstract public function del ($item);
 	/**
 	 * Clean cache by deleting all items
 	 *
@@ -45,7 +45,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	abstract function clean ();
+	abstract public function clean ();
 	/**
 	 * Cloning restriction
 	 *

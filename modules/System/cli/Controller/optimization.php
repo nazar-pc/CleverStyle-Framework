@@ -15,7 +15,7 @@ trait optimization {
 	/**
 	 * @return string
 	 */
-	static function optimization_help () {
+	public static function optimization_help () {
 		return <<<HELP
 %ySystem optimization%n
 
@@ -45,7 +45,7 @@ HELP;
 	 *
 	 * @throws \cs\ExitException
 	 */
-	static function optimization_clean_cache ($Request) {
+	public static function optimization_clean_cache ($Request) {
 		Api_controller::admin_optimization_clean_cache($Request);
 		return "%gOK%n\n";
 	}
@@ -56,7 +56,7 @@ HELP;
 	 *
 	 * @throws \cs\ExitException
 	 */
-	static function optimization_clean_pcache () {
+	public static function optimization_clean_pcache () {
 		Api_controller::admin_optimization_clean_pcache();
 		return "%gOK%n\n";
 	}

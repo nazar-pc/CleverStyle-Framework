@@ -18,7 +18,7 @@ trait databases {
 	/**
 	 * Get array of databases
 	 */
-	static function admin_databases_get () {
+	public static function admin_databases_get () {
 		$Config       = Config::instance();
 		$Core         = Core::instance();
 		$databases    = $Config->db;
@@ -51,7 +51,7 @@ trait databases {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_databases_patch ($Request) {
+	public static function admin_databases_patch ($Request) {
 		$data = $Request->data('host', 'type', 'prefix', 'name', 'user', 'password');
 		if (!$data || !in_array($data['type'], static::admin_databases_get_engines())) {
 			throw new ExitException(400);
@@ -85,7 +85,7 @@ trait databases {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_databases_post ($Request) {
+	public static function admin_databases_post ($Request) {
 		$data = $Request->data('mirror', 'host', 'type', 'prefix', 'name', 'user', 'password');
 		if (!$data || !in_array($data['type'], static::admin_databases_get_engines())) {
 			throw new ExitException(400);
@@ -112,7 +112,7 @@ trait databases {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_databases_delete ($Request) {
+	public static function admin_databases_delete ($Request) {
 		$route_ids = $Request->route_ids;
 		if (!isset($route_ids[0])) {
 			throw new ExitException(400);
@@ -161,7 +161,7 @@ trait databases {
 	/**
 	 * Get array of available database engines
 	 */
-	static function admin_databases_engines () {
+	public static function admin_databases_engines () {
 		return static::admin_databases_get_engines();
 	}
 	/**
@@ -177,7 +177,7 @@ trait databases {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_databases_test ($Request) {
+	public static function admin_databases_test ($Request) {
 		$data    = $Request->data('type', 'name', 'user', 'password', 'host');
 		$engines = static::admin_databases_get_engines();
 		if (!$data || !in_array($data['type'], $engines, true)) {
@@ -195,7 +195,7 @@ trait databases {
 	/**
 	 * Get database settings
 	 */
-	static function admin_databases_get_settings () {
+	public static function admin_databases_get_settings () {
 		$Config = Config::instance();
 		return [
 			'db_balance'     => $Config->core['db_balance'],
@@ -210,7 +210,7 @@ trait databases {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_databases_apply_settings ($Request) {
+	public static function admin_databases_apply_settings ($Request) {
 		static::admin_databases_settings_common($Request);
 		if (!Config::instance()->apply()) {
 			throw new ExitException(500);
@@ -237,7 +237,7 @@ trait databases {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_databases_save_settings ($Request) {
+	public static function admin_databases_save_settings ($Request) {
 		static::admin_databases_settings_common($Request);
 		if (!Config::instance()->save()) {
 			throw new ExitException(500);
@@ -248,7 +248,7 @@ trait databases {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_databases_cancel_settings () {
+	public static function admin_databases_cancel_settings () {
 		Config::instance()->cancel();
 	}
 }

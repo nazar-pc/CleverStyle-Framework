@@ -24,7 +24,7 @@ class Packages_dependencies {
 	 *
 	 * @return array
 	 */
-	static function get_dependencies ($meta, $update = false) {
+	public static function get_dependencies ($meta, $update = false) {
 		/**
 		 * No `meta.json` - nothing to check, allow it
 		 */
@@ -314,7 +314,7 @@ class Packages_dependencies {
 	 *
 	 * @return string[][] Empty array if dependencies are fine or array with optional key `modules` that contain array of dependent packages
 	 */
-	static function get_dependent_packages ($meta) {
+	public static function get_dependent_packages ($meta) {
 		/**
 		 * No `meta.json` - nothing to check, allow it
 		 */

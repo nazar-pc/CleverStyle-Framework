@@ -26,7 +26,7 @@ trait blocks {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_blocks_get ($Request) {
+	public static function admin_blocks_get ($Request) {
 		$Config = Config::instance();
 		$Text   = Text::instance();
 		$db_id  = $Config->module('System')->db('texts');
@@ -62,7 +62,7 @@ trait blocks {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_blocks_post ($Request) {
+	public static function admin_blocks_post ($Request) {
 		static::save_block_data($Request->data);
 	}
 	/**
@@ -72,7 +72,7 @@ trait blocks {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_blocks_put ($Request) {
+	public static function admin_blocks_put ($Request) {
 		$index = $Request->route_ids(0);
 		if (!$index) {
 			throw new ExitException(400);
@@ -86,7 +86,7 @@ trait blocks {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_blocks_delete ($Request) {
+	public static function admin_blocks_delete ($Request) {
 		$index = $Request->route_ids(0);
 		if (!$index) {
 			throw new ExitException(400);
@@ -119,7 +119,7 @@ trait blocks {
 	/**
 	 * Get array of available block types
 	 */
-	static function admin_blocks_types () {
+	public static function admin_blocks_types () {
 		return array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4));
 	}
 	/**
@@ -129,7 +129,7 @@ trait blocks {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_blocks_update_order ($Request) {
+	public static function admin_blocks_update_order ($Request) {
 		$order = $Request->data('order');
 		if (!is_array($order)) {
 			throw new ExitException(400);

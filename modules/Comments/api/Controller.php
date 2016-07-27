@@ -49,7 +49,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function index_get ($Request) {
+	public static function index_get ($Request) {
 		$query    = $Request->query('module', 'item');
 		$id       = $Request->route_ids(0);
 		$Comments = Comments::instance();
@@ -75,7 +75,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function index_post ($Request, $Response) {
+	public static function index_post ($Request, $Response) {
 		if (!User::instance()->user()) {
 			throw new ExitException(403);
 		}
@@ -111,7 +111,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function index_put ($Request) {
+	public static function index_put ($Request) {
 		if (!User::instance()->user()) {
 			throw new ExitException(403);
 		}
@@ -152,7 +152,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function index_delete ($Request) {
+	public static function index_delete ($Request) {
 		if (!User::instance()->user()) {
 			throw new ExitException(403);
 		}
@@ -186,7 +186,7 @@ class Controller {
 	/**
 	 * @return bool
 	 */
-	static function index_is_admin () {
+	public static function index_is_admin () {
 		return (bool)User::instance()->admin();
 	}
 }

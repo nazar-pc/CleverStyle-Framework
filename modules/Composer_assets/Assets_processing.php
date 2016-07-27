@@ -22,7 +22,7 @@ class Assets_processing {
 	 *
 	 * @return string[][]
 	 */
-	static function run ($package_name, $package_dir, $composer_assets_dir) {
+	public static function run ($package_name, $package_dir, $composer_assets_dir) {
 		$package_name = explode('/', $package_name, 2)[1];
 		$Config       = Config::instance();
 		$files        = self::get_files($Config, $package_name);

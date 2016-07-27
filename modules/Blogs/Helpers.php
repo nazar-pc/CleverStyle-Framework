@@ -24,7 +24,7 @@ class Helpers {
 	 *
 	 * @return string
 	 */
-	static function show_posts_list ($posts, $posts_count, $page, $base_url) {
+	public static function show_posts_list ($posts, $posts_count, $page, $base_url) {
 		$module_data = Config::instance()->module('Blogs');
 		$L           = new Prefix('blogs_');
 		$Page        = Page::instance();

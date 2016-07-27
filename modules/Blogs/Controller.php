@@ -21,7 +21,7 @@ class Controller {
 	/**
 	 * @param \cs\Request $Request
 	 */
-	static function latest_posts ($Request) {
+	public static function latest_posts ($Request) {
 		if (!Event::instance()->fire('Blogs/latest_posts')) {
 			return;
 		}
@@ -90,7 +90,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function section ($Request) {
+	public static function section ($Request) {
 		if (!Event::instance()->fire('Blogs/section')) {
 			return;
 		}
@@ -158,7 +158,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function post ($Request, $Response) {
+	public static function post ($Request, $Response) {
 		if (!Event::instance()->fire('Blogs/post')) {
 			return;
 		}
@@ -207,7 +207,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function tag ($Request) {
+	public static function tag ($Request) {
 		if (!Event::instance()->fire('Blogs/tag')) {
 			return;
 		}
@@ -276,7 +276,7 @@ class Controller {
 			$base_url
 		);
 	}
-	static function new_post () {
+	public static function new_post () {
 		if (!Event::instance()->fire('Blogs/new_post')) {
 			return;
 		}
@@ -303,7 +303,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function edit_post ($Request) {
+	public static function edit_post ($Request) {
 		if (!Event::instance()->fire('Blogs/edit_post')) {
 			return;
 		}
@@ -342,7 +342,7 @@ class Controller {
 	/**
 	 * @param \cs\Request $Request
 	 */
-	static function drafts ($Request) {
+	public static function drafts ($Request) {
 		if (!Event::instance()->fire('Blogs/drafts')) {
 			return;
 		}
@@ -382,7 +382,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function atom_xml ($Request, $Response) {
+	public static function atom_xml ($Request, $Response) {
 		$Config   = Config::instance();
 		$L        = new Prefix('blogs_');
 		$Page     = Page::instance();

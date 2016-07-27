@@ -44,7 +44,7 @@ class DB {
 	 * @return array For `self::CONNECTIONS_ALL` array of successful connections with corresponding objects as values of array<br>
 	 *               Otherwise array where keys are database ids and values are strings with information about database
 	 */
-	function get_connections_list ($type = self::CONNECTIONS_ALL) {
+	public function get_connections_list ($type = self::CONNECTIONS_ALL) {
 		if ($type == self::CONNECTIONS_FAILED) {
 			return $this->failed_connections;
 		}
@@ -61,7 +61,7 @@ class DB {
 	 *
 	 * @return int
 	 */
-	function queries () {
+	public function queries () {
 		$queries = 0;
 		foreach ($this->connections as $c) {
 			$queries += $c->queries()['num'];
@@ -73,7 +73,7 @@ class DB {
 	 *
 	 * @return float
 	 */
-	function time () {
+	public function time () {
 		$time = 0;
 		foreach ($this->connections as $c) {
 			$time += $c->connecting_time() + $c->time();
@@ -89,7 +89,7 @@ class DB {
 	 *
 	 * @throws ExitException
 	 */
-	function db ($database_id) {
+	public function db ($database_id) {
 		return $this->generic_connecting($database_id, true);
 	}
 	/**
@@ -101,7 +101,7 @@ class DB {
 	 *
 	 * @throws ExitException
 	 */
-	function db_prime ($database_id) {
+	public function db_prime ($database_id) {
 		return $this->generic_connecting($database_id, false);
 	}
 	/**

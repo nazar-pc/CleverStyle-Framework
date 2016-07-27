@@ -17,7 +17,7 @@ trait Query {
 	/**
 	 * @param array $query Typically `$_GET`
 	 */
-	function init_query ($query = []) {
+	public function init_query ($query = []) {
 		$this->query = $query;
 	}
 	/**
@@ -28,7 +28,7 @@ trait Query {
 	 * @return mixed|mixed[]|null Query parameter (or associative array of Query parameters) if exists or `null` otherwise (in case if `$name` is an array
 	 *                             even one missing key will cause the whole thing to fail)
 	 */
-	function query (...$name) {
+	public function query (...$name) {
 		if (count($name) === 1) {
 			$name = $name[0];
 		}

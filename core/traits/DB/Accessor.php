@@ -30,7 +30,7 @@ trait Accessor {
 	 *
 	 * @return _Abstract
 	 */
-	function db () {
+	public function db () {
 		if (is_object($this->_db)) {
 			return $this->_db;
 		}
@@ -49,7 +49,7 @@ trait Accessor {
 	 *
 	 * @return _Abstract
 	 */
-	function db_prime () {
+	public function db_prime () {
 		if (is_object($this->_db_prime)) {
 			return $this->_db_prime;
 		}

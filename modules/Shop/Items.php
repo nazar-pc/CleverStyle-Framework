@@ -120,7 +120,7 @@ class Items {
 	 *
 	 * @return array|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		if (is_array($id)) {
 			foreach ($id as &$i) {
 				$i = $this->get($i);
@@ -221,7 +221,7 @@ class Items {
 	 *
 	 * @return array|false
 	 */
-	function get_for_user ($id, $user = false) {
+	public function get_for_user ($id, $user = false) {
 		if (is_array($id)) {
 			foreach ($id as $index => &$i) {
 				$i = $this->get_for_user($i, $user);
@@ -250,7 +250,7 @@ class Items {
 	 *
 	 * @return int[] Array of items ids
 	 */
-	function get_all () {
+	public function get_all () {
 		return $this->cache->get(
 			'all',
 			function () {
@@ -271,7 +271,7 @@ class Items {
 	 *
 	 * @return array|false|int
 	 */
-	function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'id', $asc = false) {
+	public function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'id', $asc = false) {
 		if (!isset($this->data_model[$order_by])) {
 			return false;
 		}
@@ -390,7 +390,7 @@ class Items {
 	 *
 	 * @return false|int Id of created item on success of <b>false</> on failure
 	 */
-	function add ($category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
+	public function add ($category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
 		$L  = Language::instance();
 		$id = $this->create(
 			time(),
@@ -538,7 +538,7 @@ class Items {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
+	public function set ($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
 		$id   = (int)$id;
 		$data = $this->get($id);
 		if (!$data) {
@@ -582,7 +582,7 @@ class Items {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		$id     = (int)$id;
 		$result = $this->delete($id);
 		if ($result) {

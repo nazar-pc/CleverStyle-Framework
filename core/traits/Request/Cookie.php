@@ -19,7 +19,7 @@ trait Cookie {
 	/**
 	 * @param array $cookie Typically `$_COOKIE`
 	 */
-	function init_cookie ($cookie = []) {
+	public function init_cookie ($cookie = []) {
 		$this->cookie = $cookie;
 		/**
 		 * Fill un-prefixed keys according to system configuration
@@ -41,7 +41,7 @@ trait Cookie {
 	 *
 	 * @return null|string Cookie content if exists or `null` otherwise
 	 */
-	function cookie ($name) {
+	public function cookie ($name) {
 		return @$this->cookie[$name];
 	}
 }

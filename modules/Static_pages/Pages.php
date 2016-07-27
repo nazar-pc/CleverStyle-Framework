@@ -55,7 +55,7 @@ class Pages {
 	 *
 	 * @return array|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		$L  = Language::instance();
 		$id = (int)$id;
 		return $this->cache->get(
@@ -76,7 +76,7 @@ class Pages {
 	 *
 	 * @return false|int Id of created page on success of <b>false</> on failure
 	 */
-	function add ($category, $title, $path, $content, $interface) {
+	public function add ($category, $title, $path, $content, $interface) {
 		$id = $this->create($category, $title, path($path ?: $title), $content, $interface);
 		if ($id) {
 			unset($this->cache->{'/'});
@@ -95,7 +95,7 @@ class Pages {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $category, $title, $path, $content, $interface) {
+	public function set ($id, $category, $title, $path, $content, $interface) {
 		$result = $this->update($id, $category, $title, path($path ?: $title), $content, $interface);
 		if ($result) {
 			$Cache = $this->cache;
@@ -113,7 +113,7 @@ class Pages {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		$result = $this->delete($id);
 		if ($result) {
 			$Cache = $this->cache;
@@ -129,7 +129,7 @@ class Pages {
 	 *
 	 * @return array|false
 	 */
-	function get_structure () {
+	public function get_structure () {
 		$L = Language::instance();
 		return $this->cache->get(
 			"structure/$L->clang",

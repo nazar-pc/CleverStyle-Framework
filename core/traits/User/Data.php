@@ -27,7 +27,7 @@ trait Data {
 	 *
 	 * @return false|string|mixed[]
 	 */
-	function get_data ($item, $user = false) {
+	public function get_data ($item, $user = false) {
 		$user = (int)$user ?: $this->id;
 		if (!$item || $user == User::GUEST_ID) {
 			return false;
@@ -87,7 +87,7 @@ trait Data {
 	 *
 	 * @return bool
 	 */
-	function set_data ($item, $value = null, $user = false) {
+	public function set_data ($item, $value = null, $user = false) {
 		$user = (int)$user ?: $this->id;
 		if (!$item || $user == User::GUEST_ID) {
 			return false;
@@ -126,7 +126,7 @@ trait Data {
 	 *
 	 * @return bool
 	 */
-	function del_data ($item, $user = false) {
+	public function del_data ($item, $user = false) {
 		$user = (int)$user ?: $this->id;
 		if (!$item || $user == User::GUEST_ID) {
 			return false;

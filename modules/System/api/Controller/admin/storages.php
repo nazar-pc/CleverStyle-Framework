@@ -18,7 +18,7 @@ trait storages {
 	/**
 	 * Get array of storages
 	 */
-	static function admin_storages_get () {
+	public static function admin_storages_get () {
 		$Config      = Config::instance();
 		$Core        = Core::instance();
 		$storages    = $Config->storage;
@@ -40,7 +40,7 @@ trait storages {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_storages_patch ($Request) {
+	public static function admin_storages_patch ($Request) {
 		$storage_index = $Request->route_ids(0);
 		$data          = $Request->data('url', 'host', 'connection', 'user', 'password');
 		if (
@@ -69,7 +69,7 @@ trait storages {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_storages_post ($Request) {
+	public static function admin_storages_post ($Request) {
 		$data = $Request->data('url', 'host', 'connection', 'user', 'password');
 		if (
 			!$data ||
@@ -91,7 +91,7 @@ trait storages {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_storages_delete ($Request) {
+	public static function admin_storages_delete ($Request) {
 		$storage_index = $Request->route_ids(0);
 		if (!$storage_index) {
 			throw new ExitException(400);
@@ -129,7 +129,7 @@ trait storages {
 	/**
 	 * Get array of available storage engines
 	 */
-	static function admin_storages_engines () {
+	public static function admin_storages_engines () {
 		return static::admin_storages_get_engines();
 	}
 	/**
@@ -145,7 +145,7 @@ trait storages {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_storages_test ($Request) {
+	public static function admin_storages_test ($Request) {
 		$data    = $Request->data('url', 'host', 'connection', 'user', 'password');
 		$engines = static::admin_storages_get_engines();
 		if (!$data || !in_array($data['connection'], $engines, true)) {

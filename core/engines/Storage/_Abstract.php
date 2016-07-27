@@ -17,7 +17,7 @@ abstract class _Abstract {
 	 * @param string $user
 	 * @param string $password
 	 */
-	abstract function __construct ($base_url, $host, $user = '', $password = '');
+	abstract public function __construct ($base_url, $host, $user = '', $password = '');
 	/**
 	 * Function for getting content of a directory
 	 *
@@ -38,7 +38,7 @@ abstract class _Abstract {
 	 *
 	 * @return    array|false
 	 */
-	abstract function get_files_list (
+	abstract public function get_files_list (
 		$dir,
 		$mask = false,
 		$mode = 'f',
@@ -62,7 +62,7 @@ abstract class _Abstract {
 	 *
 	 * @return array|false
 	 */
-	abstract function file ($filename, $flags = null);
+	abstract public function file ($filename, $flags = null);
 	/**
 	 * Reads entire file into a string
 	 *
@@ -75,7 +75,7 @@ abstract class _Abstract {
 	 *
 	 * @return false|string
 	 */
-	abstract function file_get_contents ($filename, $flags = null);
+	abstract public function file_get_contents ($filename, $flags = null);
 	/**
 	 * Write a string to a file
 	 *
@@ -89,7 +89,7 @@ abstract class _Abstract {
 	 *
 	 * @return false|int
 	 */
-	abstract function file_put_contents ($filename, $data, $flags = null);
+	abstract public function file_put_contents ($filename, $data, $flags = null);
 	/**
 	 * Copies file
 	 *
@@ -102,7 +102,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	abstract function copy ($source, $dest);
+	abstract public function copy ($source, $dest);
 	/**
 	 * Deletes a file
 	 *
@@ -114,7 +114,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	abstract function unlink ($filename);
+	abstract public function unlink ($filename);
 	/**
 	 * Checks whether a file or directory exists
 	 *
@@ -126,7 +126,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	abstract function file_exists ($filename);
+	abstract public function file_exists ($filename);
 	/**
 	 * @deprecated
 	 * @todo Remove in 6.x
@@ -138,7 +138,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	function move_uploaded_file ($filename, $destination) {
+	public function move_uploaded_file ($filename, $destination) {
 		return $this->copy($filename, $destination);
 	}
 	/**
@@ -153,7 +153,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	abstract function rename ($oldname, $newname);
+	abstract public function rename ($oldname, $newname);
 	/**
 	 * Attempts to create the directory specified by pathname.
 	 *
@@ -167,7 +167,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	abstract function mkdir ($pathname, $mode = 0777, $recursive = false);
+	abstract public function mkdir ($pathname, $mode = 0777, $recursive = false);
 	/**
 	 * Removes directory
 	 *
@@ -179,7 +179,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	abstract function rmdir ($dirname);
+	abstract public function rmdir ($dirname);
 	/**
 	 * Tells whether the filename is a regular file
 	 *
@@ -191,7 +191,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	abstract function is_file ($filename);
+	abstract public function is_file ($filename);
 	/**
 	 * Tells whether the filename is a directory
 	 *
@@ -203,7 +203,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	abstract function is_dir ($filename);
+	abstract public function is_dir ($filename);
 	/**
 	 * Get file url by it's destination in file system
 	 *
@@ -215,7 +215,7 @@ abstract class _Abstract {
 	 *
 	 * @return false|string
 	 */
-	abstract function url_by_source ($source);
+	abstract public function url_by_source ($source);
 	/**
 	 * Get file destination in file system by it's url
 	 *
@@ -227,13 +227,13 @@ abstract class _Abstract {
 	 *
 	 * @return false|string
 	 */
-	abstract function source_by_url ($url);
+	abstract public function source_by_url ($url);
 	/**
 	 * Return base url of storage
 	 *
 	 * @return string
 	 */
-	function base_url () {
+	public function base_url () {
 		return $this->base_url;
 	}
 	/**
@@ -241,7 +241,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	function connected () {
+	public function connected () {
 		return $this->connected;
 	}
 	/**
@@ -249,6 +249,6 @@ abstract class _Abstract {
 	 *
 	 * @final
 	 */
-	final function __clone () {
+	final protected function __clone () {
 	}
 }

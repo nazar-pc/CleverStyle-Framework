@@ -29,14 +29,14 @@ class Output extends Symfony_output {
 	 * @var resource
 	 */
 	protected $stream;
-	function __construct ($verbosity = self::VERBOSITY_NORMAL, $decorated = false, OutputFormatterInterface $formatter = null) {
+	public function __construct ($verbosity = self::VERBOSITY_NORMAL, $decorated = false, OutputFormatterInterface $formatter = null) {
 		$this->stream = fopen(STORAGE.'/Composer/last_execution.log', 'w');
 		parent::__construct($verbosity, $decorated, $formatter);
 	}
 	/**
 	 * @return string
 	 */
-	function get_buffer () {
+	public function get_buffer () {
 		return $this->buffer;
 	}
 	/**
@@ -57,7 +57,7 @@ class Output extends Symfony_output {
 			]
 		);
 	}
-	function __destruct () {
+	public function __destruct () {
 		fclose($this->stream);
 	}
 }

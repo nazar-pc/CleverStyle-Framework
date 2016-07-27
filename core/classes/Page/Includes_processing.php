@@ -44,7 +44,7 @@ class Includes_processing {
 	 *
 	 * @return string    $data
 	 */
-	static function css ($data, $file, &$not_embedded_resources = []) {
+	public static function css ($data, $file, &$not_embedded_resources = []) {
 		$dir = dirname($file);
 		/**
 		 * Remove comments, tabs and new lines
@@ -134,7 +134,7 @@ class Includes_processing {
 	 *
 	 * @return string
 	 */
-	static function js ($data) {
+	public static function js ($data) {
 		/**
 		 * Split into array of lines
 		 */
@@ -216,7 +216,7 @@ class Includes_processing {
 	 *
 	 * @return string
 	 */
-	static function html ($data, $file, $base_target_file_path, $vulcanization, &$not_embedded_resources = []) {
+	public static function html ($data, $file, $base_target_file_path, $vulcanization, &$not_embedded_resources = []) {
 		static::html_process_links_and_styles($data, $file, $base_target_file_path, $vulcanization, $not_embedded_resources);
 		static::html_process_scripts($data, $file, $base_target_file_path, $vulcanization, $not_embedded_resources);
 		// Removing HTML comments (those that are mostly likely comments, to avoid problems)

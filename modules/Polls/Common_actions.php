@@ -17,7 +17,7 @@ trait Common_actions {
 	 *
 	 * @return array|array[]|false
 	 */
-	function get_common ($id) {
+	public function get_common ($id) {
 		if (is_array($id)) {
 			foreach ($id as &$i) {
 				$i = $this->get_common($i);

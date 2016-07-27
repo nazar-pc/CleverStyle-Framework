@@ -27,7 +27,7 @@ trait modules {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_modules_get ($Request) {
+	public static function admin_modules_get ($Request) {
 		if ($Request->route_path(3)) {
 			$route_path = $Request->route_path;
 			switch ($route_path[3]) {
@@ -220,7 +220,7 @@ trait modules {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_modules_put ($Request) {
+	public static function admin_modules_put ($Request) {
 		if ($Request->route_path(3)) {
 			$module = $Request->route_path[2];
 			switch ($Request->route_path[3]) {
@@ -316,7 +316,7 @@ trait modules {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_modules_enable ($Request) {
+	public static function admin_modules_enable ($Request) {
 		$Config = Config::instance();
 		$module = $Request->route_path(2);
 		if (!$Config->module($module)->disabled()) {
@@ -353,7 +353,7 @@ trait modules {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_modules_disable ($Request) {
+	public static function admin_modules_disable ($Request) {
 		$Config = Config::instance();
 		$module = $Request->route_path(2);
 		if (
@@ -394,7 +394,7 @@ trait modules {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_modules_install ($Request) {
+	public static function admin_modules_install ($Request) {
 		$Config = Config::instance();
 		$module = $Request->route_path(2);
 		if (!$Config->module($module)->uninstalled()) {
@@ -432,7 +432,7 @@ trait modules {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_modules_uninstall ($Request) {
+	public static function admin_modules_uninstall ($Request) {
 		$Config  = Config::instance();
 		$module  = $Request->route_path(2);
 		$modules = &$Config->components['modules'];
@@ -476,7 +476,7 @@ trait modules {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_modules_extract () {
+	public static function admin_modules_extract () {
 		$Config       = Config::instance();
 		$L            = Language::prefix('system_admin_modules_');
 		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
@@ -506,7 +506,7 @@ trait modules {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_modules_update ($Request) {
+	public static function admin_modules_update ($Request) {
 		$module = $Request->route_path(2);
 		if (!Config::instance()->module($module)) {
 			throw new ExitException(404);
@@ -630,7 +630,7 @@ trait modules {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_modules_delete ($Request) {
+	public static function admin_modules_delete ($Request) {
 		$Config = Config::instance();
 		$module = $Request->route_path(2);
 		if (!$Config->module($module)->uninstalled()) {
@@ -647,7 +647,7 @@ trait modules {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_modules_update_list () {
+	public static function admin_modules_update_list () {
 		$Config = Config::instance();
 		/**
 		 * List of currently presented modules in file system

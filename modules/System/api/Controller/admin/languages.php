@@ -16,7 +16,7 @@ trait languages {
 	/**
 	 * Get languages settings
 	 */
-	static function admin_languages_get_settings () {
+	public static function admin_languages_get_settings () {
 		$Config = Config::instance();
 		return [
 			'language'         => $Config->core['language'],
@@ -46,7 +46,7 @@ trait languages {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_languages_apply_settings ($Request) {
+	public static function admin_languages_apply_settings ($Request) {
 		static::admin_languages_settings_common($Request);
 		if (!Config::instance()->apply()) {
 			throw new ExitException(500);
@@ -79,7 +79,7 @@ trait languages {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_languages_save_settings ($Request) {
+	public static function admin_languages_save_settings ($Request) {
 		static::admin_languages_settings_common($Request);
 		if (!Config::instance()->save()) {
 			throw new ExitException(500);
@@ -90,7 +90,7 @@ trait languages {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_languages_cancel_settings () {
+	public static function admin_languages_cancel_settings () {
 		Config::instance()->cancel();
 	}
 }

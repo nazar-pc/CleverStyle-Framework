@@ -52,7 +52,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	static function index ($Request, $Response) {
+	public static function index ($Request, $Response) {
 		$route = $Request->route;
 		/**
 		 * This should be present in any case, if not - exit from here

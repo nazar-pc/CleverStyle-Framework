@@ -85,7 +85,7 @@ trait Server {
 	/**
 	 * @param string[] $server Typically `$_SERVER`
 	 */
-	function init_server ($server = []) {
+	public function init_server ($server = []) {
 		$this->fill_headers($server);
 		/**
 		 * Add some defaults to avoid isset() hell afterwards
@@ -224,7 +224,7 @@ trait Server {
 	 *
 	 * @return string Header content if exists or empty string otherwise
 	 */
-	function header ($name) {
+	public function header ($name) {
 		$name = strtolower($name);
 		return isset($this->headers[$name]) ? $this->headers[$name] : '';
 	}

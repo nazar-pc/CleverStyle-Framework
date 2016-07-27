@@ -36,5 +36,5 @@ class Controller {
 		admin\users\permissions,
 		general,
 		profile;
-	static function blank () { }
+	public static function blank () { }
 }

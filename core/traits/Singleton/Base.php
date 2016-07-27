@@ -28,7 +28,7 @@ trait Base {
 	 *
 	 * @return False_class|static
 	 */
-	static function instance ($check = false) {
+	public static function instance ($check = false) {
 		static $instance;
 		return self::instance_prototype($instance, $check);
 	}

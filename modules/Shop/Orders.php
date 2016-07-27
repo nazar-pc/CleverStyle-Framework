@@ -102,7 +102,7 @@ class Orders {
 	 *
 	 * @return array|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		$data = $this->read($id);
 		if (!is_array($data)) {
 			return false;
@@ -144,7 +144,7 @@ class Orders {
 	 *
 	 * @return int[] Array of orders ids
 	 */
-	function get_all () {
+	public function get_all () {
 		return $this->db()->qfas(
 			"SELECT `id`
 			FROM `$this->table`"
@@ -157,7 +157,7 @@ class Orders {
 	 *
 	 * @return array[]|false
 	 */
-	function get_statuses ($id) {
+	public function get_statuses ($id) {
 		return $this->db()->qfa(
 			"SELECT
 				`id`,
@@ -176,7 +176,7 @@ class Orders {
 	 *
 	 * @return array[]|false
 	 */
-	function get_items ($id) {
+	public function get_items ($id) {
 		return $this->db()->qfa(
 			"SELECT
 				`id`,
@@ -194,7 +194,7 @@ class Orders {
 	 *
 	 * @return array [method => [title => title, description => description]]
 	 */
-	function get_payment_methods () {
+	public function get_payment_methods () {
 		$currency        = Config::instance()->module('Shop')->currency;
 		$payment_methods = [
 			self::PAYMENT_METHOD_CASH => [
@@ -223,7 +223,7 @@ class Orders {
 	 *
 	 * @return array|false|string
 	 */
-	function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'date', $asc = false) {
+	public function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'date', $asc = false) {
 		return $this->crud_search($search_parameters, $page, $count, $order_by, $asc);
 	}
 	/**
@@ -242,7 +242,7 @@ class Orders {
 	 *   'shipping' => $shipping // Array in form [type => shipping_type_id, price => shipping_type_price]
 	 *  ]</pre>
 	 */
-	function get_recalculated_cart_prices ($items, $shipping_type, $user = false) {
+	public function get_recalculated_cart_prices ($items, $shipping_type, $user = false) {
 		$Items         = Items::instance();
 		$items         = array_map(
 			function ($item, $units) use ($Items, $user) {
@@ -297,7 +297,7 @@ class Orders {
 	 * @return false|int Id of created item on success of <b>false</> on failure
 	 *
 	 */
-	function add ($user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $payment_method, $paid, $status, $comment) {
+	public function add ($user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $payment_method, $paid, $status, $comment) {
 		$id = $this->create(
 			$user,
 			time(),
@@ -352,7 +352,7 @@ class Orders {
 	 *
 	 * @return bool
 	 */
-	function add_item ($id, $item, $units, $price, $unit_price) {
+	public function add_item ($id, $item, $units, $price, $unit_price) {
 		if (!$units) {
 			return false;
 		}
@@ -415,7 +415,7 @@ class Orders {
 	 *
 	 * @return bool
 	 */
-	function set (
+	public function set (
 		$id,
 		$user,
 		$shipping_type,
@@ -484,7 +484,7 @@ class Orders {
 	 *
 	 * @return bool
 	 */
-	function set_item ($id, $item, $units, $price, $unit_price) {
+	public function set_item ($id, $item, $units, $price, $unit_price) {
 		if (!$units) {
 			return $this->del_item($id, $item);
 		}
@@ -531,7 +531,7 @@ class Orders {
 	 * @param int    $status
 	 * @param string $comment
 	 */
-	function set_status ($id, $status, $comment) {
+	public function set_status ($id, $status, $comment) {
 		$this->db_prime()->q(
 			"INSERT INTO `{$this->table}_history`
 				(
@@ -568,7 +568,7 @@ class Orders {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		if ($this->delete($id)) {
 			$this->db_prime()->q(
 				"DELETE FROM `{$this->table}_history`
@@ -598,7 +598,7 @@ class Orders {
 	 *
 	 * @return bool
 	 */
-	function del_item ($id, $item) {
+	public function del_item ($id, $item) {
 		$items  = $this->get_items($id);
 		$result = $this->db_prime()->q(
 			"DELETE FROM `{$this->table}_items`

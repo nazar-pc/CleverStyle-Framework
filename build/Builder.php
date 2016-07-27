@@ -23,9 +23,10 @@ class Builder {
 	 * @param string $root
 	 * @param string $target
 	 */
-	function __construct ($root, $target) {
+	public function __construct ($root, $target) {
 		$this->root   = $root;
 		$this->target = $target;
+		/** @noinspection MkdirRaceConditionInspection */
 		@mkdir($target);
 	}
 	/**
@@ -34,8 +35,11 @@ class Builder {
 	 * @param null|string $suffix
 	 *
 	 * @return string
+	 *
+	 * @throws \UnexpectedValueException
+	 * @throws \BadMethodCallException
 	 */
-	function core ($modules = [], $themes = [], $suffix = null) {
+	public function core ($modules = [], $themes = [], $suffix = null) {
 		$suffix      = $suffix ? "_$suffix" : '';
 		$version     = file_get_json("$this->root/modules/System/meta.json")['version'];
 		$target_file = "$this->target/CleverStyle_Framework_$version$suffix.phar.php";
@@ -46,6 +50,7 @@ class Builder {
 		unset($target_file);
 		$phar->startBuffering();
 		$length = strlen("$this->root/");
+		/** @noinspection ForeachSourceInspection */
 		foreach (get_files_list("$this->root/install", false, 'f', '', true) as $file) {
 			$phar->addFile("$this->root/install/$file", $file);
 		}
@@ -291,7 +296,7 @@ HTACCESS;
 	 *
 	 * @return string
 	 */
-	function module ($module, $suffix = null) {
+	public function module ($module, $suffix = null) {
 		if ($module == 'System') {
 			return "Can't build module, System module is a part of core, it is not necessary to build it as separate module";
 		}
@@ -303,7 +308,7 @@ HTACCESS;
 	 *
 	 * @return string
 	 */
-	function theme ($theme, $suffix = null) {
+	public function theme ($theme, $suffix = null) {
 		if ($theme == 'CleverStyle') {
 			return "Can't build theme, CleverStyle theme is a part of core, it is not necessary to build it as separate theme";
 		}
@@ -338,6 +343,7 @@ HTACCESS;
 		@unlink("$source_dir/fs.json");
 		$files  = get_files_list($source_dir, false, 'f', true, true, false, false, true);
 		$length = strlen("$source_dir/");
+		/** @noinspection ForeachSourceInspection */
 		foreach ($files as $index => &$file) {
 			$phar->addFile($file, "fs/$index");
 			$file = substr($file, $length);

@@ -13,7 +13,7 @@ use
 	cs\Page;
 
 class Controller {
-	static function general () {
+	public static function general () {
 		$L = Language::prefix('blogs_');
 		Page::instance()
 			->title($L->general)
@@ -21,7 +21,7 @@ class Controller {
 				h::cs_blogs_admin_general()
 			);
 	}
-	static function browse_sections () {
+	public static function browse_sections () {
 		$L = Language::prefix('blogs_');
 		Page::instance()
 			->title($L->browse_sections)
@@ -29,7 +29,7 @@ class Controller {
 				h::cs_blogs_admin_sections_list()
 			);
 	}
-	static function browse_posts () {
+	public static function browse_posts () {
 		$L = Language::prefix('blogs_');
 		Page::instance()
 			->title($L->browse_posts)

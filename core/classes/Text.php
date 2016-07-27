@@ -21,7 +21,7 @@ class Text {
 	 *
 	 * @return false|string
 	 */
-	function get ($database, $id = null, $store_in_cache = false) {
+	public function get ($database, $id = null, $store_in_cache = false) {
 		$Cache     = Cache::instance();
 		$L         = Language::instance();
 		$id        = (int)$id;
@@ -81,7 +81,7 @@ class Text {
 	 * @return false|string If multilingual support enabled or was enabled and then disabled but translations remains - returns {¶<i>id</i>}, otherwise returns
 	 *                      original text
 	 */
-	function set ($database, $group, $label, $text) {
+	public function set ($database, $group, $label, $text) {
 		$Cache  = Cache::instance();
 		$Config = Config::instance();
 		$L      = Language::instance();
@@ -197,7 +197,7 @@ class Text {
 	 *
 	 * @return bool
 	 */
-	function del ($database, $group, $label) {
+	public function del ($database, $group, $label) {
 		$Cache = Cache::instance();
 		$cdb   = DB::instance()->db_prime($database);
 		$id    = $cdb->qfs(
@@ -235,7 +235,7 @@ class Text {
 	 *
 	 * @return string|string[]
 	 */
-	function process ($database, $data, $store_in_cache = false) {
+	public function process ($database, $data, $store_in_cache = false) {
 		if (is_array($data)) {
 			foreach ($data as &$d) {
 				$d = $this->process($database, $d);

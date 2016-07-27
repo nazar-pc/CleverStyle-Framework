@@ -18,7 +18,7 @@ class Request {
 	 *
 	 * @throws \cs\ExitException
 	 */
-	static function init_from_psr7 ($Psr7_request) {
+	public static function init_from_psr7 ($Psr7_request) {
 		++System_request::$id;
 		$System_request = System_request::instance();
 		self::from_psr7_server($System_request, $Psr7_request);

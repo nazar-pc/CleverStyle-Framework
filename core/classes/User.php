@@ -129,7 +129,7 @@ class User {
 	 *
 	 * @return int Number of attempts
 	 */
-	function get_sign_in_attempts_count ($login_hash) {
+	public function get_sign_in_attempts_count ($login_hash) {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return false;
 		}
@@ -153,7 +153,7 @@ class User {
 	 * @param bool   $success
 	 * @param string $login_hash Hash (sha224) from login (hash from lowercase string)
 	 */
-	function sign_in_result ($success, $login_hash) {
+	public function sign_in_result ($success, $login_hash) {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return;
 		}
@@ -199,7 +199,7 @@ class User {
 	 *
 	 * @return false|int|mixed[]|string|User\Properties If <i>$item</i> is integer - cs\User\Properties object will be returned
 	 */
-	function __get ($item) {
+	public function __get ($item) {
 		if ($item == 'id') {
 			return Session::instance()->get_user();
 		}
@@ -213,7 +213,7 @@ class User {
 	 *
 	 * @return bool
 	 */
-	function __set ($item, $value = null) {
+	public function __set ($item, $value = null) {
 		$this->set($item, $value);
 	}
 	/**
@@ -223,7 +223,7 @@ class User {
 	 *
 	 * @return bool
 	 */
-	function admin () {
+	public function admin () {
 		return Session::instance()->admin();
 	}
 	/**
@@ -233,7 +233,7 @@ class User {
 	 *
 	 * @return bool
 	 */
-	function user () {
+	public function user () {
 		return Session::instance()->user();
 	}
 	/**
@@ -243,7 +243,7 @@ class User {
 	 *
 	 * @return bool
 	 */
-	function guest () {
+	public function guest () {
 		return Session::instance()->guest();
 	}
 	/**
@@ -252,7 +252,7 @@ class User {
 	 * Memory cache stores users data inside User class in order to get data faster next time.
 	 * But in case of working with large amount of users this cache can be too large. Disabling will cause some performance drop, but save a lot of RAM.
 	 */
-	function disable_memory_cache () {
+	public function disable_memory_cache () {
 		$this->memory_cache = false;
 		$this->data         = [];
 		$this->permissions  = [];

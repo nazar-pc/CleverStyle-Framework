@@ -22,7 +22,7 @@ trait permissions {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users_permissions_get ($Request) {
+	public static function admin_users_permissions_get ($Request) {
 		if (!isset($Request->route_ids[0])) {
 			throw new ExitException(400);
 		}
@@ -35,7 +35,7 @@ trait permissions {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users_permissions_put ($Request) {
+	public static function admin_users_permissions_put ($Request) {
 		$user_id     = $Request->route_ids(0);
 		$permissions = $Request->data('permissions');
 		if (!$user_id || !$permissions) {

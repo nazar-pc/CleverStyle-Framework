@@ -115,7 +115,7 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @return mixed
 	 */
-	static function info ($in = '', $data = []) {
+	public static function info ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
 			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
@@ -142,7 +142,7 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @return mixed
 	 */
-	static function icon ($icon, $data = []) {
+	public static function icon ($icon, $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
 			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
@@ -162,7 +162,7 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @return string
 	 */
-	static function checkbox ($in = [], $data = []) {
+	public static function checkbox ($in = [], $data = []) {
 		$pre_result = self::common_checkbox_radio_pre($in, $data, __FUNCTION__);
 		if ($pre_result !== false) {
 			return $pre_result;
@@ -190,7 +190,7 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @return string
 	 */
-	static function radio ($in = [], $data = []) {
+	public static function radio ($in = [], $data = []) {
 		$pre_result = self::common_checkbox_radio_pre($in, $data, __FUNCTION__);
 		if ($pre_result !== false) {
 			return $pre_result;

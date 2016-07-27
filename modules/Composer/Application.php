@@ -18,7 +18,7 @@ class Application extends Composer_application {
 	/**
 	 * @param callable $composer_callback
 	 */
-	function __construct ($composer_callback) {
+	public function __construct ($composer_callback) {
 		$this->composer_callback = $composer_callback;
 		parent::__construct();
 	}
@@ -30,7 +30,7 @@ class Application extends Composer_application {
 	 *
 	 * @throws \Composer\Json\JsonValidationException
 	 */
-	function getComposer ($required = true, $disablePlugins = false) {
+	public function getComposer ($required = true, $disablePlugins = false) {
 		$Composer = parent::getComposer($required, $disablePlugins);
 		if ($callback = $this->composer_callback) {
 			$callback($Composer);

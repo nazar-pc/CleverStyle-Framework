@@ -49,7 +49,7 @@ class Options {
 	 *
 	 * @return false|int
 	 */
-	function add ($poll, $title) {
+	public function add ($poll, $title) {
 		$id = $this->create($poll, $title, 0);
 		if ($id) {
 			unset($this->cache->{"poll/$poll"});
@@ -64,7 +64,7 @@ class Options {
 	 *
 	 * @return array|array[]|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		return $this->get_common($id);
 	}
 	/**
@@ -76,7 +76,7 @@ class Options {
 	 *
 	 * @return false|int
 	 */
-	function set ($id, $poll, $title) {
+	public function set ($id, $poll, $title) {
 		$id   = (int)$id;
 		$data = $this->get($id);
 		if ($this->update($id, $poll, $title, $data['votes'])) {
@@ -92,7 +92,7 @@ class Options {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		$return = $this->delete($id);
 		if ($return) {
 			foreach (_int((array)$id) as $i) {
@@ -108,7 +108,7 @@ class Options {
 	 *
 	 * @return bool
 	 */
-	function update_votes ($id) {
+	public function update_votes ($id) {
 		$id     = (int)$id;
 		$result = (bool)$this->db_prime()->q(
 			"UPDATE `$this->table`
@@ -132,7 +132,7 @@ class Options {
 	 *
 	 * @return false|int[]
 	 */
-	function get_all_for_poll ($poll) {
+	public function get_all_for_poll ($poll) {
 		$poll = (int)$poll;
 		return $this->cache->get(
 			"poll/$poll",

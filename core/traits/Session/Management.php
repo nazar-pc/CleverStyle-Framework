@@ -83,7 +83,7 @@ trait Management {
 	 *
 	 * @return bool
 	 */
-	function admin () {
+	public function admin () {
 		return $this->is_admin;
 	}
 	/**
@@ -91,7 +91,7 @@ trait Management {
 	 *
 	 * @return bool
 	 */
-	function user () {
+	public function user () {
 		return $this->is_user;
 	}
 	/**
@@ -99,7 +99,7 @@ trait Management {
 	 *
 	 * @return bool
 	 */
-	function guest () {
+	public function guest () {
 		return $this->is_guest;
 	}
 	/**
@@ -107,7 +107,7 @@ trait Management {
 	 *
 	 * @return false|string
 	 */
-	function get_id () {
+	public function get_id () {
 		return $this->session_id ?: false;
 	}
 	/**
@@ -115,7 +115,7 @@ trait Management {
 	 *
 	 * @return int
 	 */
-	function get_user () {
+	public function get_user () {
 		return $this->user_id;
 	}
 	/**
@@ -125,7 +125,7 @@ trait Management {
 	 *
 	 * @return false|array
 	 */
-	function get ($session_id) {
+	public function get ($session_id) {
 		$session_data = $this->get_internal($session_id);
 		unset($session_data['data']);
 		return $session_data;
@@ -181,7 +181,7 @@ trait Management {
 	 *
 	 * @return bool
 	 */
-	function is_session_owner ($session_id, $user_agent, $remote_addr, $ip) {
+	public function is_session_owner ($session_id, $user_agent, $remote_addr, $ip) {
 		$session_data = $this->get($session_id);
 		return $session_data ? $this->is_session_owner_internal($session_data, $user_agent, $remote_addr, $ip) : false;
 	}
@@ -222,7 +222,7 @@ trait Management {
 	 *
 	 * @return int User id
 	 */
-	function load ($session_id = null) {
+	public function load ($session_id = null) {
 		$session_data = $this->get_internal($session_id);
 		if (!$session_data || !$this->is_session_owner_internal($session_data)) {
 			$this->add(User::GUEST_ID);
@@ -321,7 +321,7 @@ trait Management {
 	 *
 	 * @return false|string Session id on success, `false` otherwise
 	 */
-	function add ($user, $delete_current_session = true) {
+	public function add ($user, $delete_current_session = true) {
 		$user = (int)$user ?: User::GUEST_ID;
 		if ($delete_current_session && is_md5($this->session_id)) {
 			$this->del_internal($this->session_id, false);
@@ -390,7 +390,7 @@ trait Management {
 	 *
 	 * @return bool
 	 */
-	function del ($session_id = null) {
+	public function del ($session_id = null) {
 		return (bool)$this->del_internal($session_id);
 	}
 	/**
@@ -448,7 +448,7 @@ trait Management {
 	 *
 	 * @return bool
 	 */
-	function del_all ($user = false) {
+	public function del_all ($user = false) {
 		$user = $user ?: $this->user_id;
 		if ($user == User::GUEST_ID) {
 			return false;

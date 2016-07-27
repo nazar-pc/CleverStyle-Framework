@@ -24,7 +24,7 @@ trait permissions {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions___get ($Request) {
+	public static function admin_permissions___get ($Request) {
 		$Permission = Permission::instance();
 		if (isset($Request->route_ids[0])) {
 			$result = $Permission->get($Request->route_ids[0]);
@@ -44,7 +44,7 @@ trait permissions {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions___post ($Request, $Response) {
+	public static function admin_permissions___post ($Request, $Response) {
 		$data = $Request->data('group', 'label');
 		if (!$data) {
 			throw new ExitException(400);
@@ -62,7 +62,7 @@ trait permissions {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions___put ($Request) {
+	public static function admin_permissions___put ($Request) {
 		$id   = $Request->route_ids(0);
 		$data = $Request->data('group', 'label');
 		if (!$id || !$data) {
@@ -79,7 +79,7 @@ trait permissions {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions___delete ($Request) {
+	public static function admin_permissions___delete ($Request) {
 		if (!isset($Request->route_ids[0])) {
 			throw new ExitException(400);
 		}
@@ -96,7 +96,7 @@ trait permissions {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions_for_item_get ($Request) {
+	public static function admin_permissions_for_item_get ($Request) {
 		$data = $Request->query('group', 'label');
 		if (!$data) {
 			throw new ExitException(400);
@@ -148,7 +148,7 @@ trait permissions {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_permissions_for_item_post ($Request) {
+	public static function admin_permissions_for_item_post ($Request) {
 		$data = $Request->data('group', 'label');
 		if (!$data) {
 			throw new ExitException(400);

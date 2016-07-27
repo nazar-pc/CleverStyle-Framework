@@ -26,7 +26,7 @@ trait Group {
 	 *
 	 * @return bool
 	 */
-	function add_groups ($group, $user = false) {
+	public function add_groups ($group, $user = false) {
 		$groups = $this->get_groups($user) ?: [];
 		foreach ((array)_int($group) as $g) {
 			$groups[] = $g;
@@ -40,7 +40,7 @@ trait Group {
 	 *
 	 * @return false|int[]
 	 */
-	function get_groups ($user = false) {
+	public function get_groups ($user = false) {
 		$user = (int)$user ?: $this->id;
 		if (!$user || $user == User::GUEST_ID) {
 			return false;
@@ -67,7 +67,7 @@ trait Group {
 	 *
 	 * @return bool
 	 */
-	function set_groups ($groups, $user = false) {
+	public function set_groups ($groups, $user = false) {
 		$user = (int)$user ?: $this->id;
 		if (!$user || $user == User::GUEST_ID) {
 			return false;
@@ -123,7 +123,7 @@ trait Group {
 	 *
 	 * @return bool
 	 */
-	function del_groups ($group, $user = false) {
+	public function del_groups ($group, $user = false) {
 		$groups = array_diff(
 			$this->get_groups($user) ?: [],
 			(array)_int($group)

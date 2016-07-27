@@ -60,7 +60,7 @@ class Group {
 	 *
 	 * @return array|array[]|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		if (is_array($id)) {
 			foreach ($id as &$i) {
 				$i = $this->get($i);
@@ -83,7 +83,7 @@ class Group {
 	 *
 	 * @return int[]
 	 */
-	function get_all () {
+	public function get_all () {
 		return $this->cache->get(
 			'all',
 			function () {
@@ -99,7 +99,7 @@ class Group {
 	 *
 	 * @return false|int
 	 */
-	function add ($title, $description) {
+	public function add ($title, $description) {
 		$id = $this->create($title, $description);
 		if ($id) {
 			unset($this->cache->all);
@@ -121,7 +121,7 @@ class Group {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $title, $description) {
+	public function set ($id, $title, $description) {
 		$id     = (int)$id;
 		$result = $this->update($id, $title, $description);
 		if ($result) {
@@ -140,7 +140,7 @@ class Group {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		if (is_array($id)) {
 			foreach ($id as &$i) {
 				$i = (int)$this->del($i);
@@ -187,7 +187,7 @@ class Group {
 	 *
 	 * @return int[]|false
 	 */
-	function get_permissions ($group) {
+	public function get_permissions ($group) {
 		return $this->get_any_permissions($group, 'group');
 	}
 	/**
@@ -198,7 +198,7 @@ class Group {
 	 *
 	 * @return bool
 	 */
-	function set_permissions ($data, $group) {
+	public function set_permissions ($data, $group) {
 		return $this->set_any_permissions($data, (int)$group, 'group');
 	}
 	/**
@@ -208,7 +208,7 @@ class Group {
 	 *
 	 * @return bool
 	 */
-	function del_permissions_all ($group) {
+	public function del_permissions_all ($group) {
 		return $this->del_any_permissions_all((int)$group, 'group');
 	}
 }

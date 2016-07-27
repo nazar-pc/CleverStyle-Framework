@@ -53,7 +53,7 @@ trait Data_and_files {
 	 *
 	 * @throws ExitException
 	 */
-	function init_data_and_files ($data = [], $files = [], $data_stream = null, $copy_stream = true) {
+	public function init_data_and_files ($data = [], $files = [], $data_stream = null, $copy_stream = true) {
 		if (is_resource($this->data_stream)) {
 			fclose($this->data_stream);
 		}
@@ -91,7 +91,7 @@ trait Data_and_files {
 	 * @return mixed|mixed[]|null Data items (or associative array of data items) if exists or `null` otherwise (in case if `$name` is an array even one
 	 *                             missing key will cause the whole thing to fail)
 	 */
-	function data (...$name) {
+	public function data (...$name) {
 		if (count($name) === 1) {
 			$name = $name[0];
 		}
@@ -118,7 +118,7 @@ trait Data_and_files {
 	 *
 	 * @return array|null File item if exists or `null` otherwise
 	 */
-	function files ($name) {
+	public function files ($name) {
 		return @$this->files[$name];
 	}
 	/**

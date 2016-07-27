@@ -32,7 +32,7 @@ class Social_integration {
 	 *
 	 * @return false|int|string
 	 */
-	function add ($user_id, $provider, $identifier, $profile) {
+	public function add ($user_id, $provider, $identifier, $profile) {
 		return $this->db_prime()->q(
 			"REPLACE INTO `[prefix]users_social_integration`
 				(
@@ -60,7 +60,7 @@ class Social_integration {
 	 *
 	 * @return false|int User id or `false` if not found
 	 */
-	function find_integration ($provider, $identifier) {
+	public function find_integration ($provider, $identifier) {
 		return $this->db()->qfs(
 			"SELECT `id`
 			FROM `[prefix]users_social_integration`

@@ -23,7 +23,7 @@ trait groups {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users_groups_get ($Request) {
+	public static function admin_users_groups_get ($Request) {
 		if (!isset($Request->route_ids[0])) {
 			throw new ExitException(400);
 		}
@@ -36,7 +36,7 @@ trait groups {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_users_groups_put ($Request) {
+	public static function admin_users_groups_put ($Request) {
 		$user_id = $Request->route_ids(0);
 		$groups  = $Request->data('groups');
 		if (

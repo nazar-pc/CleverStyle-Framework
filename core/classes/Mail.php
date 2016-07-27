@@ -19,7 +19,7 @@ class Mail extends PHPMailer {
 	/**
 	 * Setting base mail sending parameters according to system configuration
 	 */
-	function construct () {
+	public function construct () {
 		$Config = Config::instance();
 		if ($Config->core['smtp']) {
 			$this->isSMTP();
@@ -56,7 +56,7 @@ class Mail extends PHPMailer {
 	 *
 	 * @return bool
 	 */
-	function send_to ($email, $subject, $body, $body_text = null, $attachments = null, $reply_to = null, $signature = true) {
+	public function send_to ($email, $subject, $body, $body_text = null, $attachments = null, $reply_to = null, $signature = true) {
 		if (!$email || !$subject || !$body) {
 			return false;
 		}

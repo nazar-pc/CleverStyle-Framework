@@ -96,7 +96,7 @@ class Categories {
 	 *
 	 * @return array|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		if (is_array($id)) {
 			foreach ($id as &$i) {
 				$i = $this->get($i);
@@ -134,7 +134,7 @@ class Categories {
 	 *
 	 * @return array|false
 	 */
-	function get_for_user ($id, $user = false) {
+	public function get_for_user ($id, $user = false) {
 		if (is_array($id)) {
 			foreach ($id as $index => &$i) {
 				$i = $this->get_for_user($i, $user);
@@ -163,7 +163,7 @@ class Categories {
 	 *
 	 * @return int[] Array of categories ids
 	 */
-	function get_all () {
+	public function get_all () {
 		return $this->cache->get(
 			'all',
 			function () {
@@ -205,7 +205,7 @@ class Categories {
 	 *
 	 * @return false|int Id of created category on success of <b>false</> on failure
 	 */
-	function add ($parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes) {
+	public function add ($parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes) {
 		$attributes = $this->clean_nonexistent_attributes($attributes);
 		$id         = $this->create(
 			$parent,
@@ -243,7 +243,7 @@ class Categories {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes) {
+	public function set ($id, $parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes) {
 		$id         = (int)$id;
 		$attributes = $this->clean_nonexistent_attributes($attributes);
 		$result     = $this->update(
@@ -278,7 +278,7 @@ class Categories {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		$id     = (int)$id;
 		$result = $this->delete($id);
 		if ($result) {

@@ -16,7 +16,7 @@ trait system {
 	/**
 	 * Get system settings
 	 */
-	static function admin_system_get_settings () {
+	public static function admin_system_get_settings () {
 		$Config = Config::instance();
 		return [
 			'site_mode'         => $Config->core['site_mode'],
@@ -35,7 +35,7 @@ trait system {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_system_apply_settings ($Request) {
+	public static function admin_system_apply_settings ($Request) {
 		static::admin_system_settings_common($Request);
 		if (!Config::instance()->apply()) {
 			throw new ExitException(500);
@@ -66,7 +66,7 @@ trait system {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_system_save_settings ($Request) {
+	public static function admin_system_save_settings ($Request) {
 		static::admin_system_settings_common($Request);
 		if (!Config::instance()->save()) {
 			throw new ExitException(500);
@@ -77,7 +77,7 @@ trait system {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_system_cancel_settings () {
+	public static function admin_system_cancel_settings () {
 		Config::instance()->cancel();
 	}
 }

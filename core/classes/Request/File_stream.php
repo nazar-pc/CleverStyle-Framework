@@ -29,7 +29,7 @@ class File_stream {
 	 */
 	protected $position;
 
-	function stream_open ($path, $mode) {
+	public function stream_open ($path, $mode) {
 		if ($mode != 'r' && $mode != 'rb') {
 			return false;
 		}
@@ -49,7 +49,7 @@ class File_stream {
 	 *
 	 * @return false|string
 	 */
-	function stream_read ($length) {
+	public function stream_read ($length) {
 		fseek($this->stream, $this->position);
 		$bytes          = fread($this->stream, $length);
 		$this->position += strlen($bytes);
@@ -58,13 +58,13 @@ class File_stream {
 	/**
 	 * @return false|int
 	 */
-	function stream_tell () {
+	public function stream_tell () {
 		return $this->position;
 	}
 	/**
 	 * @return bool
 	 */
-	function stream_eof () {
+	public function stream_eof () {
 		fseek($this->stream, $this->position);
 		return feof($this->stream);
 	}
@@ -74,7 +74,7 @@ class File_stream {
 	 *
 	 * @return int
 	 */
-	function stream_seek ($offset, $whence = SEEK_SET) {
+	public function stream_seek ($offset, $whence = SEEK_SET) {
 		fseek($this->stream, $this->position);
 		$result         = fseek($this->stream, $offset, $whence);
 		$this->position = ftell($this->stream);
@@ -83,7 +83,7 @@ class File_stream {
 	/**
 	 * @return array
 	 */
-	function stream_stat () {
+	public function stream_stat () {
 		return fstat($this->stream);
 	}
 }

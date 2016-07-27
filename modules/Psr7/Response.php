@@ -20,7 +20,7 @@ class Response {
 	 *
 	 * @return \Psr\Http\Message\ResponseInterface
 	 */
-	static function output_to_psr7 ($Psr7_response) {
+	public static function output_to_psr7 ($Psr7_response) {
 		$System_response = System_response::instance();
 		self::to_psr7_body($System_response, $Psr7_response);
 		$Psr7_response = self::to_psr7_headers($System_response, $Psr7_response);

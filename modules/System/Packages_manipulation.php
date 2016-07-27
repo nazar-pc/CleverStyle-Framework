@@ -25,7 +25,7 @@ class Packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static function install_extract ($target_directory, $source_phar) {
+	public static function install_extract ($target_directory, $source_phar) {
 		/** @noinspection MkdirRaceConditionInspection */
 		if (!mkdir($target_directory, 0770)) {
 			return false;
@@ -64,7 +64,7 @@ class Packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static function update_extract ($target_directory, $source_phar, $fs_location_directory = null, $meta_location_directory = null) {
+	public static function update_extract ($target_directory, $source_phar, $fs_location_directory = null, $meta_location_directory = null) {
 		$fs_location_directory   = $fs_location_directory ?: $target_directory;
 		$meta_location_directory = $meta_location_directory ?: $target_directory;
 		/**
@@ -134,7 +134,7 @@ class Packages_manipulation {
 	 *
 	 * @throws \cs\ExitException
 	 */
-	static function update_php_sql ($target_directory, $old_version, $db_array = null) {
+	public static function update_php_sql ($target_directory, $old_version, $db_array = null) {
 		foreach (self::get_update_versions($target_directory) as $version) {
 			if (version_compare($old_version, $version, '<')) {
 				/**
@@ -175,7 +175,7 @@ class Packages_manipulation {
 	 *
 	 * @throws \cs\ExitException
 	 */
-	static function execute_sql_from_directory ($directory, $db_configuration, $version = '') {
+	public static function execute_sql_from_directory ($directory, $db_configuration, $version = '') {
 		$Config = Config::instance();
 		$Core   = Core::instance();
 		$db     = DB::instance();

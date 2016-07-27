@@ -39,7 +39,7 @@ class Menu {
 	 *
 	 * @return string
 	 */
-	function get_menu () {
+	public function get_menu () {
 		Event::instance()->fire('admin/System/Menu');
 		$current_module = Request::instance()->current_module;
 		if (isset($this->section_items[$current_module])) {
@@ -107,7 +107,7 @@ class Menu {
 	 * @param string $title
 	 * @param array  $attributes
 	 */
-	function add_section_item ($module, $title, $attributes = []) {
+	public function add_section_item ($module, $title, $attributes = []) {
 		$this->section_items[$module][] = [
 			$title,
 			$attributes
@@ -120,7 +120,7 @@ class Menu {
 	 * @param string $title
 	 * @param array  $attributes
 	 */
-	function add_item ($module, $title, $attributes = []) {
+	public function add_item ($module, $title, $attributes = []) {
 		$this->items[$module][] = [
 			$title,
 			$attributes

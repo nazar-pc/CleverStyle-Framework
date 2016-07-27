@@ -56,7 +56,7 @@ class Content {
 	 *
 	 * @return bool
 	 */
-	function add ($key, $title, $content, $type) {
+	public function add ($key, $title, $content, $type) {
 		$key    = str_replace(['/', '?', '#', '"', '<', '>'], '_', $key);
 		$result = $this->create($key, $title, $content, $type);
 		if ($result) {
@@ -77,7 +77,7 @@ class Content {
 	 *
 	 * @return false|mixed
 	 */
-	function get ($key) {
+	public function get ($key) {
 		if (is_array($key)) {
 			foreach ($key as &$k) {
 				$k = $this->get($k);
@@ -97,7 +97,7 @@ class Content {
 	 *
 	 * @return int[]|false
 	 */
-	function get_all () {
+	public function get_all () {
 		return $this->search([], 1, PHP_INT_MAX, 'key', true);
 	}
 	/**
@@ -110,7 +110,7 @@ class Content {
 	 *
 	 * @return bool
 	 */
-	function set ($key, $title, $content, $type) {
+	public function set ($key, $title, $content, $type) {
 		$result = $this->update($key, $title, $content, $type);
 		if ($result) {
 			$this->clean_cache($key);
@@ -124,7 +124,7 @@ class Content {
 	 *
 	 * @return bool
 	 */
-	function del ($key) {
+	public function del ($key) {
 		$result = $this->delete($key);
 		if ($result) {
 			$this->clean_cache($key);

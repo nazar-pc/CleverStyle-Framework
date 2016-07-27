@@ -85,7 +85,7 @@ CONFIG_NOT_FOUND;
 	 *
 	 * @return false|string
 	 */
-	function get ($item) {
+	public function get ($item) {
 		return isset($this->config[$item]) ? $this->config[$item] : false;
 	}
 	/**
@@ -94,7 +94,7 @@ CONFIG_NOT_FOUND;
 	 * @param string $item
 	 * @param mixed  $value
 	 */
-	function set ($item, $value) {
+	public function set ($item, $value) {
 		if (!$this->constructed) {
 			$this->config[$item] = $value;
 		}
@@ -106,7 +106,7 @@ CONFIG_NOT_FOUND;
 	 *
 	 * @return false|string
 	 */
-	function __get ($item) {
+	public function __get ($item) {
 		return $this->get($item);
 	}
 	/**
@@ -115,7 +115,7 @@ CONFIG_NOT_FOUND;
 	 * @param string $item
 	 * @param mixed  $value
 	 */
-	function __set ($item, $value) {
+	public function __set ($item, $value) {
 		$this->set($item, $value);
 	}
 }

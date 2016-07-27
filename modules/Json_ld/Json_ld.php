@@ -23,7 +23,7 @@ class Json_ld {
 	 *
 	 * @return string[]
 	 */
-	static function context_stub ($data = []) {
+	public static function context_stub ($data = []) {
 		$context = [
 			'@vocab' => self::SCHEMA_ORG.'/'
 		];
@@ -38,7 +38,7 @@ class Json_ld {
 	 *
 	 * @return string
 	 */
-	static function Date ($timestamp) {
+	public static function Date ($timestamp) {
 		return date('c', $timestamp);
 	}
 	/**
@@ -46,7 +46,7 @@ class Json_ld {
 	 *
 	 * @return string[]
 	 */
-	static function Person ($user_id) {
+	public static function Person ($user_id) {
 		$user_data = new User\Properties($user_id);
 		return [
 			'@context' => self::SCHEMA_ORG,

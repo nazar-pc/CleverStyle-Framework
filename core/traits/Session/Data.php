@@ -19,7 +19,7 @@ trait Data {
 	 * @return false|mixed
 	 *
 	 */
-	function get_data ($item, $session_id = null) {
+	public function get_data ($item, $session_id = null) {
 		$session_data = $this->get_data_internal($session_id);
 		return isset($session_data['data'][$item]) ? $session_data['data'][$item] : false;
 	}
@@ -42,7 +42,7 @@ trait Data {
 	 * @return bool
 	 *
 	 */
-	function set_data ($item, $value, $session_id = null) {
+	public function set_data ($item, $value, $session_id = null) {
 		$session_data = $this->get_data_internal($session_id);
 		/**
 		 * If there is no session yet - let's create one
@@ -63,7 +63,7 @@ trait Data {
 	 * @return bool
 	 *
 	 */
-	function del_data ($item, $session_id = null) {
+	public function del_data ($item, $session_id = null) {
 		$session_data = $this->get_data_internal($session_id);
 		if (!isset($session_data['data'][$item])) {
 			return true;

@@ -71,7 +71,7 @@ class Deferred_tasks {
 	 *
 	 * @return false|int Id of created task or `false` on failure
 	 */
-	function add ($module, $data, $expected, $begin = 0, $priority = 1) {
+	public function add ($module, $data, $expected, $begin = 0, $priority = 1) {
 		return $this->create($begin, 0, '', $expected, $priority, $module, $data);
 	}
 	/**
@@ -91,7 +91,7 @@ class Deferred_tasks {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		return $this->delete($id);
 	}
 	/**
@@ -101,7 +101,7 @@ class Deferred_tasks {
 	 *
 	 * @throws ExitException
 	 */
-	function run_task ($task) {
+	public function run_task ($task) {
 		$data = $this->read($task);
 		if (!$data) {
 			throw new ExitException(404);
@@ -118,7 +118,7 @@ class Deferred_tasks {
 	/**
 	 * Run worker
 	 */
-	function run_tasks () {
+	public function run_tasks () {
 		/**
 		 * Disable time limit
 		 */

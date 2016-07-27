@@ -18,7 +18,7 @@ class Memcached extends _Abstract_with_namespace {
 	 * @var \Memcached
 	 */
 	protected $memcached;
-	function __construct () {
+	public function __construct () {
 		if (extension_loaded('memcached')) {
 			$Core            = Core::instance();
 			$this->memcached = new \Memcached($Core->domain);
@@ -64,7 +64,7 @@ class Memcached extends _Abstract_with_namespace {
 	/**
 	 * Close connections to memcached servers
 	 */
-	function __destruct () {
+	public function __destruct () {
 		if ($this->memcached) {
 			$this->memcached->quit();
 			$this->memcached = null;

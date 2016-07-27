@@ -131,7 +131,7 @@ class Server implements MessageComponentInterface {
 	 *
 	 * @param null|string $address
 	 */
-	function run ($address = null) {
+	public function run ($address = null) {
 		$this->address = $address ?: $this->address;
 		@ini_set('error_log', LOGS.'/WebSockets-server.log');
 		$ws_server = new WsServer($this);
@@ -163,14 +163,14 @@ class Server implements MessageComponentInterface {
 	/**
 	 * @param ConnectionInterface $connection
 	 */
-	function onOpen (ConnectionInterface $connection) {
+	public function onOpen (ConnectionInterface $connection) {
 		$this->clients->attach($connection);
 	}
 	/**
 	 * @param ConnectionInterface $connection
 	 * @param string              $message
 	 */
-	function onMessage (ConnectionInterface $connection, $message) {
+	public function onMessage (ConnectionInterface $connection, $message) {
 		$from_master = $connection === $this->connection_to_master;
 		if (!$this->parse_message($message, $action, $details, $send_to, $target)) {
 			if (!$from_master) {
@@ -294,7 +294,7 @@ class Server implements MessageComponentInterface {
 	 *
 	 * @return array Array to be passed as details to `::send_to_clients()`
 	 */
-	function compose_error ($error_code, $error_message = null) {
+	public function compose_error ($error_code, $error_message = null) {
 		$error_message = $error_message ?: status_code_string($error_code);
 		return [$error_code, $error_message];
 	}
@@ -306,7 +306,7 @@ class Server implements MessageComponentInterface {
 	 * @param int             $send_to Constants `self::SEND_TO*` should be used here
 	 * @param false|int|int[] $target  Id or array of ids in case of response to one or several users or groups
 	 */
-	function send_to_clients ($action, $details, $send_to, $target = false) {
+	public function send_to_clients ($action, $details, $send_to, $target = false) {
 		$message = _json_encode([$action, $details, $send_to, $target]);
 		/**
 		 * If server running in current process
@@ -428,7 +428,7 @@ class Server implements MessageComponentInterface {
 	 *
 	 * @param string $session_id
 	 */
-	function close_by_session ($session_id) {
+	public function close_by_session ($session_id) {
 		$this->send_to_clients('Server/close_by_session', $session_id, 0);
 	}
 	/**
@@ -436,7 +436,7 @@ class Server implements MessageComponentInterface {
 	 *
 	 * @param string $user_id
 	 */
-	function close_by_user ($user_id) {
+	public function close_by_user ($user_id) {
 		$this->send_to_clients('Server/close_by_user', $user_id, 0);
 	}
 	/**
@@ -526,13 +526,13 @@ class Server implements MessageComponentInterface {
 	 *
 	 * @return \React\EventLoop\LoopInterface
 	 */
-	function get_loop () {
+	public function get_loop () {
 		return $this->loop;
 	}
 	/**
 	 * @param ConnectionInterface $connection
 	 */
-	function onClose (ConnectionInterface $connection) {
+	public function onClose (ConnectionInterface $connection) {
 		/**
 		 * Generate pseudo-event when client is disconnected
 		 */
@@ -558,10 +558,10 @@ class Server implements MessageComponentInterface {
 	 * @param ConnectionInterface $connection
 	 * @param Exception           $e
 	 */
-	function onError (ConnectionInterface $connection, Exception $e) {
+	public function onError (ConnectionInterface $connection, Exception $e) {
 		$connection->close();
 	}
-	function __destruct () {
+	public function __destruct () {
 		$this->pool->del($this->address);
 	}
 }

@@ -10,14 +10,14 @@ class Local extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function __construct ($base_url, $host, $user = '', $password = '') {
+	public function __construct ($base_url, $host, $user = '', $password = '') {
 		$this->base_url  = url_by_source(PUBLIC_STORAGE);
 		$this->connected = true;
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function get_files_list (
+	public function get_files_list (
 		$dir,
 		$mask = false,
 		$mode = 'f',
@@ -34,80 +34,80 @@ class Local extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function file ($filename, $flags = null) {
+	public function file ($filename, $flags = null) {
 		return file($this->absolute_path($filename), $flags);
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function file_get_contents ($filename, $flags = null) {
+	public function file_get_contents ($filename, $flags = null) {
 		return file_get_contents($this->absolute_path($filename), $flags);
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function file_put_contents ($filename, $data, $flags = null) {
+	public function file_put_contents ($filename, $data, $flags = null) {
 		return file_put_contents($this->absolute_path($filename), $data, $flags);
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function copy ($source, $dest) {
+	public function copy ($source, $dest) {
 		return copy($this->absolute_path($source), $this->absolute_path($dest));
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function unlink ($filename) {
+	public function unlink ($filename) {
 		return unlink($this->absolute_path($filename));
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function file_exists ($filename) {
+	public function file_exists ($filename) {
 		return file_exists($this->absolute_path($filename));
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function rename ($oldname, $newname) {
+	public function rename ($oldname, $newname) {
 		return rename($this->absolute_path($oldname), $this->absolute_path($newname));
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function mkdir ($pathname, $mode = 0777, $recursive = false) {
+	public function mkdir ($pathname, $mode = 0777, $recursive = false) {
 		/** @noinspection MkdirRaceConditionInspection */
 		return mkdir($this->absolute_path($pathname), $mode, $recursive);
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function rmdir ($dirname) {
+	public function rmdir ($dirname) {
 		return rmdir($this->absolute_path($dirname));
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function is_file ($filename) {
+	public function is_file ($filename) {
 		return is_file($this->absolute_path($filename));
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function is_dir ($filename) {
+	public function is_dir ($filename) {
 		return is_dir($this->absolute_path($filename));
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function url_by_source ($source) {
+	public function url_by_source ($source) {
 		return url_by_source($this->absolute_path($source));
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function source_by_url ($url) {
+	public function source_by_url ($url) {
 		return $this->relative_path(source_by_url($url));
 	}
 	protected function absolute_path ($path) {

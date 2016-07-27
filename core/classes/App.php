@@ -42,7 +42,7 @@ class App {
 	 *
 	 * @throws ExitException
 	 */
-	function execute () {
+	public function execute () {
 		$Config  = Config::instance();
 		$Request = Request::instance();
 		if (!preg_match('/^[0-9a-z_]+$/i', $Request->method)) {
@@ -259,7 +259,7 @@ class App {
 	 *
 	 * @return false|string[]
 	 */
-	function __get ($property) {
+	public function __get ($property) {
 		if ($property == 'controller_path') {
 			return $this->controller_path;
 		}

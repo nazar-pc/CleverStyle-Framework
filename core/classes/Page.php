@@ -124,7 +124,7 @@ class Page {
 	 *
 	 * @return false|null|string
 	 */
-	function __get ($property) {
+	public function __get ($property) {
 		// Hack: for internal use by \cs\Meta class
 		if ($property === 'canonical_url') {
 			return $this->canonical_url;
@@ -191,7 +191,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	function content ($add, $level = false) {
+	public function content ($add, $level = false) {
 		if ($level !== false) {
 			$this->Content .= h::level($add, $level);
 		} else {
@@ -206,7 +206,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	function json ($add) {
+	public function json ($add) {
 		Response::instance()->header('content-type', 'application/json; charset=utf-8');
 		$this->interface = false;
 		$this->Content   = _json_encode($add);
@@ -351,7 +351,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	function replace ($search, $replace = '') {
+	public function replace ($search, $replace = '') {
 		if (is_array($search)) {
 			$this->search_replace = $search + $this->search_replace;
 		} else {
@@ -381,7 +381,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	function link ($data) {
+	public function link ($data) {
 		if ($data !== false) {
 			$this->link[] = $data;
 		}
@@ -395,7 +395,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	function atom ($href, $title = 'Atom Feed') {
+	public function atom ($href, $title = 'Atom Feed') {
 		return $this->link(
 			[
 				'href'  => $href,
@@ -413,7 +413,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	function rss ($href, $title = 'RSS Feed') {
+	public function rss ($href, $title = 'RSS Feed') {
 		return $this->link(
 			[
 				'href'  => $href,
@@ -430,7 +430,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	function canonical_url ($url) {
+	public function canonical_url ($url) {
 		$this->canonical_url         = $url;
 		$this->link['canonical_url'] = [
 			'href' => $this->canonical_url,
@@ -446,7 +446,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	function title ($title, $replace = false) {
+	public function title ($title, $replace = false) {
 		$title = htmlentities($title, ENT_COMPAT, 'utf-8');
 		if ($replace) {
 			$this->Title = [$title];
@@ -462,7 +462,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	function success ($success_text) {
+	public function success ($success_text) {
 		return $this->top_message($success_text, 'success');
 	}
 	/**
@@ -472,7 +472,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	function notice ($notice_text) {
+	public function notice ($notice_text) {
 		return $this->top_message($notice_text, 'warning');
 	}
 	/**
@@ -482,7 +482,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	function warning ($warning_text) {
+	public function warning ($warning_text) {
 		return $this->top_message($warning_text, 'error');
 	}
 	/**
@@ -508,7 +508,7 @@ class Page {
 	 * @param null|string|string[] $custom_text Custom error text instead of text like "404 Not Found" or array with two elements: [error, error_description]
 	 * @param bool                 $json        Force JSON return format
 	 */
-	function error ($custom_text = null, $json = false) {
+	public function error ($custom_text = null, $json = false) {
 		$Request  = Request::instance();
 		$Response = Response::instance();
 		$code     = $Response->code;
@@ -576,7 +576,7 @@ class Page {
 	 *
 	 * Page generation
 	 */
-	function render () {
+	public function render () {
 		/**
 		 * Protection from double calling
 		 */

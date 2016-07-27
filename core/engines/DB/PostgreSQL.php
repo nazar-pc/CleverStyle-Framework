@@ -18,7 +18,7 @@ class PostgreSQL extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function __construct ($database, $user = '', $password = '', $host = 'localhost', $prefix = '') {
+	public function __construct ($database, $user = '', $password = '', $host = 'localhost', $prefix = '') {
 		$start = microtime(true);
 		/**
 		 * Parsing of $host variable, detecting port and persistent connection
@@ -69,7 +69,7 @@ class PostgreSQL extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function q ($query, $params = [], ...$param) {
+	public function q ($query, $params = [], ...$param) {
 		// Hack to convert small subset of MySQL queries into PostgreSQL-compatible syntax
 		$query = str_replace('`', '"', $query);
 		$query = preg_replace_callback(
@@ -132,7 +132,7 @@ class PostgreSQL extends _Abstract {
 	 *
 	 * @param false|resource $query_result
 	 */
-	function f ($query_result, $single_column = false, $array = false, $indexed = false) {
+	public function f ($query_result, $single_column = false, $array = false, $indexed = false) {
 		if (!is_resource($query_result)) {
 			return false;
 		}
@@ -151,13 +151,13 @@ class PostgreSQL extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function id () {
+	public function id () {
 		return (int)$this->qfs('SELECT lastval()');
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function affected () {
+	public function affected () {
 		return is_resource($this->query_result) ? pg_affected_rows($this->query_result) : 0;
 	}
 	/**
@@ -165,7 +165,7 @@ class PostgreSQL extends _Abstract {
 	 *
 	 * @param false|resource $query_result
 	 */
-	function free ($query_result) {
+	public function free ($query_result) {
 		if (is_resource($query_result)) {
 			return pg_free_result($query_result);
 		}
@@ -174,7 +174,7 @@ class PostgreSQL extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function columns ($table, $like = false) {
+	public function columns ($table, $like = false) {
 		if (!$table) {
 			return false;
 		}
@@ -199,7 +199,7 @@ class PostgreSQL extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function tables ($like = false) {
+	public function tables ($like = false) {
 		if ($like) {
 			$like = $this->s($like);
 			return $this->qfas(
@@ -228,13 +228,13 @@ class PostgreSQL extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function server () {
+	public function server () {
 		return pg_version($this->handler)['server'];
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function __destruct () {
+	public function __destruct () {
 		if ($this->connected && is_resource($this->handler)) {
 			pg_close($this->handler);
 			$this->connected = false;

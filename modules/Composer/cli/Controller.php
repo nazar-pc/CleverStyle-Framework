@@ -13,7 +13,7 @@ use
 	cs\ExitException;
 
 class Controller {
-	static function index_help () {
+	public static function index_help () {
 		return <<<HELP
 %yComposer module%n
 
@@ -33,7 +33,7 @@ HELP;
 	 * @param \cs\Request  $Request
 	 * @param \cs\Response $Response
 	 */
-	static function index_update (
+	public static function index_update (
 		/** @noinspection PhpUnusedParameterInspection */
 		$Request,
 		$Response
@@ -51,7 +51,7 @@ HELP;
 	 *
 	 * @throws ExitException
 	 */
-	static function index_clean () {
+	public static function index_clean () {
 		if (!rmdir_recursive(STORAGE.'/Composer')) {
 			throw new ExitException(500);
 		}

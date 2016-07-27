@@ -20,7 +20,7 @@ trait upload {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_upload_post () {
+	public static function admin_upload_post () {
 		$file = Request::instance()->files('file');
 		if (!$file) {
 			throw new ExitException(400);

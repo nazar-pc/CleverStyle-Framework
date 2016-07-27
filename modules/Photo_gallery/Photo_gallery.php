@@ -66,7 +66,7 @@ class Photo_gallery {
 	 *
 	 * @return array|array[]|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		if (is_array($id)) {
 			foreach ($id as &$i) {
 				$i	= $this->get($i);
@@ -108,7 +108,7 @@ class Photo_gallery {
 	 *
 	 * @return false|int				Id of created post on success of <b>false</> on failure
 	 */
-	function add ($original, $gallery, $title = '', $description = '') {
+	public function add ($original, $gallery, $title = '', $description = '') {
 		if (empty($original) || !$gallery) {
 			return false;
 		}
@@ -196,7 +196,7 @@ class Photo_gallery {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $title, $description) {
+	public function set ($id, $title, $description) {
 		$User			= User::instance();
 		$id				= (int)$id;
 		$title			= xap(trim($title));
@@ -230,7 +230,7 @@ class Photo_gallery {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		$id		= (int)$id;
 		$data	= $this->get($id);
 		if ($this->db_prime()->q(
@@ -263,7 +263,7 @@ class Photo_gallery {
 	 *
 	 * @return array|false
 	 */
-	function get_galleries_list () {
+	public function get_galleries_list () {
 		$L = Language::instance();
 		return $this->cache->get(
 			"galleries/list/$L->clang",
@@ -292,7 +292,7 @@ class Photo_gallery {
 	 *
 	 * @return array|array[]|false
 	 */
-	function get_gallery ($id) {
+	public function get_gallery ($id) {
 		if (is_array($id)) {
 			foreach ($id as &$i) {
 				$i	= $this->get_gallery($i);
@@ -351,7 +351,7 @@ class Photo_gallery {
 	 *
 	 * @return false|int				Id of created gallery on success of <b>false</> on failure
 	 */
-	function add_gallery ($title, $path, $description, $active, $preview_image) {
+	public function add_gallery ($title, $path, $description, $active, $preview_image) {
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]photo_gallery_galleries`
 				(`active`)
@@ -377,7 +377,7 @@ class Photo_gallery {
 	 *
 	 * @return bool
 	 */
-	function set_gallery ($id, $title, $path, $description, $active, $preview_image) {
+	public function set_gallery ($id, $title, $path, $description, $active, $preview_image) {
 		$path			= path($path ?: $title);
 		$title			= xap(trim($title));
 		$description	= xap(trim($description));
@@ -415,7 +415,7 @@ class Photo_gallery {
 	 *
 	 * @return bool
 	 */
-	function del_gallery ($id) {
+	public function del_gallery ($id) {
 		$id		= (int)$id;
 		if (!$this->db_prime()->q(
 			"DELETE FROM `[prefix]photo_gallery_galleries`

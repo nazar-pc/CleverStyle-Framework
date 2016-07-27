@@ -53,7 +53,7 @@ class Response {
 	 *
 	 * @return Response
 	 */
-	function init ($body = '', $body_stream = null, $headers = [], $code = 200) {
+	public function init ($body = '', $body_stream = null, $headers = [], $code = 200) {
 		$this->code     = $code;
 		$this->headers  = _array($headers);
 		$this->body     = $body;
@@ -68,7 +68,7 @@ class Response {
 	 *
 	 * @return Response
 	 */
-	function init_with_typical_default_settings () {
+	public function init_with_typical_default_settings () {
 		return $this->init(
 			'',
 			null,
@@ -90,7 +90,7 @@ class Response {
 	 *
 	 * @return Response
 	 */
-	function header ($field, $value, $replace = true) {
+	public function header ($field, $value, $replace = true) {
 		$field = strtolower($field);
 		if ($value === '') {
 			unset($this->headers[$field]);
@@ -109,7 +109,7 @@ class Response {
 	 *
 	 * @return Response
 	 */
-	function redirect ($location, $code = 302) {
+	public function redirect ($location, $code = 302) {
 		$this->header('location', $location);
 		$this->code                 = $code;
 		Page::instance()->interface = false;
@@ -128,7 +128,7 @@ class Response {
 	 *
 	 * @return Response
 	 */
-	function cookie ($name, $value, $expire = 0, $httponly = false) {
+	public function cookie ($name, $value, $expire = 0, $httponly = false) {
 		$Request = Request::instance();
 		$Config  = Config::instance();
 		$prefix  = '';
@@ -166,7 +166,7 @@ class Response {
 	/**
 	 * Provides default output for all the response data using `header()`, `http_response_code()` and `echo` or `php://output`
 	 */
-	function output_default () {
+	public function output_default () {
 		ob_implicit_flush(true);
 		if (Request::instance()->cli_path) {
 			$this->output_default_cli();

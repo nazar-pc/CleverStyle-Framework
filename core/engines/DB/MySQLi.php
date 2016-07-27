@@ -17,7 +17,7 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function __construct ($database, $user = '', $password = '', $host = 'localhost', $prefix = '') {
+	public function __construct ($database, $user = '', $password = '', $host = 'localhost', $prefix = '') {
 		$start = microtime(true);
 		/**
 		 * Parsing of $host variable, detecting port and persistent connection
@@ -103,7 +103,7 @@ class MySQLi extends _Abstract {
 	 *
 	 * @param false|mysqli_result $query_result
 	 */
-	function f ($query_result, $single_column = false, $array = false, $indexed = false) {
+	public function f ($query_result, $single_column = false, $array = false, $indexed = false) {
 		if (!($query_result instanceof mysqli_result)) {
 			return false;
 		}
@@ -125,13 +125,13 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function id () {
+	public function id () {
 		return $this->instance->insert_id;
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function affected () {
+	public function affected () {
 		return $this->instance->affected_rows;
 	}
 	/**
@@ -139,7 +139,7 @@ class MySQLi extends _Abstract {
 	 *
 	 * @param false|mysqli_result $query_result
 	 */
-	function free ($query_result) {
+	public function free ($query_result) {
 		if ($query_result instanceof mysqli_result) {
 			$query_result->free();
 		}
@@ -148,7 +148,7 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function columns ($table, $like = false) {
+	public function columns ($table, $like = false) {
 		if (!$table) {
 			return false;
 		}
@@ -163,7 +163,7 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function tables ($like = false) {
+	public function tables ($like = false) {
 		if ($like) {
 			$like = $this->s($like);
 			return $this->qfas("SHOW TABLES FROM `$this->database` LIKE $like") ?: [];
@@ -181,13 +181,13 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function server () {
+	public function server () {
 		return $this->instance->server_info;
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function __destruct () {
+	public function __destruct () {
 		if ($this->connected && is_object($this->instance)) {
 			$this->instance->close();
 			$this->connected = false;

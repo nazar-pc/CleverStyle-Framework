@@ -17,7 +17,7 @@ trait about_server {
 	/**
 	 * Get information about server
 	 */
-	static function admin_about_server_get () {
+	public static function admin_about_server_get () {
 		$Core = Core::instance();
 		$L    = Language::prefix('system_filesize_');
 		return [

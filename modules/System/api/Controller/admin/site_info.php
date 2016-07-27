@@ -16,7 +16,7 @@ trait site_info {
 	/**
 	 * Get site info settings
 	 */
-	static function admin_site_info_get_settings () {
+	public static function admin_site_info_get_settings () {
 		$Config = Config::instance();
 		return [
 			'site_name'     => get_core_ml_text('name'),
@@ -35,7 +35,7 @@ trait site_info {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_site_info_apply_settings ($Request) {
+	public static function admin_site_info_apply_settings ($Request) {
 		static::admin_site_info_settings_common($Request);
 		if (!Config::instance()->apply()) {
 			throw new ExitException(500);
@@ -78,7 +78,7 @@ trait site_info {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_site_info_save_settings ($Request) {
+	public static function admin_site_info_save_settings ($Request) {
 		static::admin_site_info_settings_common($Request);
 		if (!Config::instance()->save()) {
 			throw new ExitException(500);
@@ -89,7 +89,7 @@ trait site_info {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_site_info_cancel_settings () {
+	public static function admin_site_info_cancel_settings () {
 		Config::instance()->cancel();
 	}
 }

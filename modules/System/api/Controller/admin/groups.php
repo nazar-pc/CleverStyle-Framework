@@ -23,7 +23,7 @@ trait groups {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_groups___get ($Request) {
+	public static function admin_groups___get ($Request) {
 		$Group = Group::instance();
 		$id    = $Request->route_ids(0);
 		$ids   = $Request->query('ids');
@@ -46,7 +46,7 @@ trait groups {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_groups___post ($Request) {
+	public static function admin_groups___post ($Request) {
 		$data = $Request->data('title', 'description');
 		if (!$data) {
 			throw new ExitException(400);
@@ -64,7 +64,7 @@ trait groups {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_groups___put ($Request) {
+	public static function admin_groups___put ($Request) {
 		$id   = $Request->route_ids(0);
 		$data = $Request->data('title', 'description');
 		if (!$id || !$data) {
@@ -81,7 +81,7 @@ trait groups {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_groups___delete ($Request) {
+	public static function admin_groups___delete ($Request) {
 		$id = $Request->route_ids(0);
 		if (!$id) {
 			throw new ExitException(400);
@@ -99,7 +99,7 @@ trait groups {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_groups_permissions_get ($Request) {
+	public static function admin_groups_permissions_get ($Request) {
 		$id = $Request->route_ids(0);
 		if (!$id) {
 			throw new ExitException(400);
@@ -113,7 +113,7 @@ trait groups {
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_groups_permissions_put ($Request) {
+	public static function admin_groups_permissions_put ($Request) {
 		$id          = $Request->route_ids(0);
 		$permissions = $Request->data('permissions');
 		if (!$id || !$permissions) {

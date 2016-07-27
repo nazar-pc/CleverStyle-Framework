@@ -28,7 +28,7 @@ class Psr7_data_stream {
 	 */
 	protected $stat = [];
 
-	function stream_open ($path, $mode) {
+	public function stream_open ($path, $mode) {
 		if ($mode != 'r' && $mode != 'rb') {
 			return false;
 		}
@@ -54,7 +54,7 @@ class Psr7_data_stream {
 	 *
 	 * @return false|string
 	 */
-	function stream_read ($length) {
+	public function stream_read ($length) {
 		try {
 			return static::$stream->read($length);
 		} catch (Exception $e) {
@@ -64,7 +64,7 @@ class Psr7_data_stream {
 	/**
 	 * @return false|int
 	 */
-	function stream_tell () {
+	public function stream_tell () {
 		try {
 			return static::$stream->tell();
 		} catch (Exception $e) {
@@ -74,7 +74,7 @@ class Psr7_data_stream {
 	/**
 	 * @return bool
 	 */
-	function stream_eof () {
+	public function stream_eof () {
 		return static::$stream->eof();
 	}
 	/**
@@ -83,7 +83,7 @@ class Psr7_data_stream {
 	 *
 	 * @return bool
 	 */
-	function stream_seek ($offset, $whence = SEEK_SET) {
+	public function stream_seek ($offset, $whence = SEEK_SET) {
 		try {
 			return static::$stream->seek($offset, $whence);
 		} catch (Exception $e) {
@@ -93,7 +93,7 @@ class Psr7_data_stream {
 	/**
 	 * @return array
 	 */
-	function stream_stat () {
+	public function stream_stat () {
 		return $this->stat;
 	}
 }

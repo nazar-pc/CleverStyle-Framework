@@ -21,7 +21,7 @@ class Controller {
 	 * @param \cs\Request  $Request
 	 * @param \cs\Response $Response
 	 */
-	static function profile_registration_confirmation ($Request, $Response) {
+	public static function profile_registration_confirmation ($Request, $Response) {
 		$L    = Language::prefix('system_profile_registration_');
 		$Page = Page::instance();
 		$User = User::instance();
@@ -79,7 +79,7 @@ class Controller {
 	 * @param \cs\Request  $Request
 	 * @param \cs\Response $Response
 	 */
-	static function profile_restore_password_confirmation ($Request, $Response) {
+	public static function profile_restore_password_confirmation ($Request, $Response) {
 		$L    = Language::prefix('system_profile_restore_password_');
 		$Page = Page::instance();
 		$User = User::instance();
@@ -122,7 +122,7 @@ class Controller {
 			$Page->warning($L->mail_sending_error);
 		}
 	}
-	static function robots_txt () {
+	public static function robots_txt () {
 		$Page            = Page::instance();
 		$Page->interface = false;
 		$text            = file_get_contents(__DIR__.'/robots.txt');

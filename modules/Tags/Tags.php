@@ -28,7 +28,7 @@ trait Tags {
 	 *
 	 * @return array|array[]|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		if (!$id) {
 			return false;
 		}
@@ -58,7 +58,7 @@ trait Tags {
 	 *
 	 * @return false|int|int[]
 	 */
-	function get_by_text ($text) {
+	public function get_by_text ($text) {
 		if (!$text) {
 			return false;
 		}
@@ -80,7 +80,7 @@ trait Tags {
 	 *
 	 * @return false|int[] Array of tags ids (regardless of whether tag existed before or not, ids will be returned for all of them)
 	 */
-	function add ($tags) {
+	public function add ($tags) {
 		if (!$tags) {
 			return false;
 		}

@@ -75,7 +75,7 @@ class Posts {
 	 *
 	 * @return array|false
 	 */
-	function get ($id) {
+	public function get ($id) {
 		if (is_array($id)) {
 			foreach ($id as &$i) {
 				$i = $this->get($i);
@@ -103,7 +103,7 @@ class Posts {
 	 *
 	 * @return int[]
 	 */
-	function get_all ($page, $count) {
+	public function get_all ($page, $count) {
 		return $this->search([], $page, $count, 'id');
 	}
 	/**
@@ -123,7 +123,7 @@ class Posts {
 	 *
 	 * @return array|false
 	 */
-	function get_as_json_ld ($id) {
+	public function get_as_json_ld ($id) {
 		$post = $this->get($id);
 		if (!$post) {
 			return false;
@@ -135,7 +135,7 @@ class Posts {
 	 *
 	 * @return array
 	 */
-	function post_to_jsonld ($post) {
+	public function post_to_jsonld ($post) {
 		$base_structure = [
 			'@context' =>
 				[
@@ -213,7 +213,7 @@ class Posts {
 	 *
 	 * @return int[]
 	 */
-	function get_latest_posts ($page, $count) {
+	public function get_latest_posts ($page, $count) {
 		$search_parameters = [
 			'draft' => 0
 		];
@@ -228,7 +228,7 @@ class Posts {
 	 *
 	 * @return int[]
 	 */
-	function get_for_section ($section, $page, $count) {
+	public function get_for_section ($section, $page, $count) {
 		$search_parameters = [
 			'draft'    => 0,
 			'sections' => [
@@ -244,7 +244,7 @@ class Posts {
 	 *
 	 * @return int
 	 */
-	function get_for_section_count ($section) {
+	public function get_for_section_count ($section) {
 		$search_parameters = [
 			'draft'       => 0,
 			'sections'    => [
@@ -264,7 +264,7 @@ class Posts {
 	 *
 	 * @return int[]
 	 */
-	function get_for_tag ($tag, $lang, $page, $count) {
+	public function get_for_tag ($tag, $lang, $page, $count) {
 		$search_parameters = [
 			'draft' => 0,
 			'tags'  => [
@@ -282,7 +282,7 @@ class Posts {
 	 *
 	 * @return int
 	 */
-	function get_for_tag_count ($tag, $lang) {
+	public function get_for_tag_count ($tag, $lang) {
 		$search_parameters = [
 			'draft'       => 0,
 			'tags'        => [
@@ -302,7 +302,7 @@ class Posts {
 	 *
 	 * @return int[]
 	 */
-	function get_drafts ($user, $page, $count) {
+	public function get_drafts ($user, $page, $count) {
 		$search_parameters = [
 			'user'  => $user,
 			'draft' => 1
@@ -316,7 +316,7 @@ class Posts {
 	 *
 	 * @return int
 	 */
-	function get_drafts_count ($user) {
+	public function get_drafts_count ($user) {
 		$search_parameters = [
 			'user'        => $user,
 			'draft'       => 1,
@@ -336,7 +336,7 @@ class Posts {
 	 *
 	 * @return false|int Id of created post on success of <b>false</> on failure
 	 */
-	function add ($title, $path, $content, $sections, $tags, $draft) {
+	public function add ($title, $path, $content, $sections, $tags, $draft) {
 		if (!$this->check_arguments($content, $sections, $tags)) {
 			return false;
 		}
@@ -407,7 +407,7 @@ class Posts {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $title, $path, $content, $sections, $tags, $draft) {
+	public function set ($id, $title, $path, $content, $sections, $tags, $draft) {
 		if (!$this->check_arguments($content, $sections, $tags)) {
 			return false;
 		}
@@ -433,7 +433,7 @@ class Posts {
 	 *
 	 * @return bool
 	 */
-	function del ($id) {
+	public function del ($id) {
 		$id     = (int)$id;
 		$result = $this->delete($id);
 		if ($result) {
@@ -453,7 +453,7 @@ class Posts {
 	 *
 	 * @return int
 	 */
-	function get_total_count () {
+	public function get_total_count () {
 		return $this->cache->get(
 			'total_count',
 			function () {

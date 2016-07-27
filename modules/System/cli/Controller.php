@@ -14,7 +14,7 @@ use
 class Controller {
 	use
 		optimization;
-	static function __help () {
+	public static function __help () {
 		$version = file_get_json(__DIR__.'/../meta.json')['version'];
 		return <<<HELP
 %gCleverStyle Framework%n version %y$version%n, CLI interface%n

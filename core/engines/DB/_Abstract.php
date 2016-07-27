@@ -78,7 +78,7 @@ abstract class _Abstract {
 	 * @param string $host
 	 * @param string $prefix
 	 */
-	abstract function __construct ($database, $user = '', $password = '', $host = 'localhost', $prefix = '');
+	abstract public function __construct ($database, $user = '', $password = '', $host = 'localhost', $prefix = '');
 	/**
 	 * Query
 	 *
@@ -94,7 +94,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool|object|resource
 	 */
-	function q ($query, $params = [], ...$param) {
+	public function q ($query, $params = [], ...$param) {
 		$normalized = $this->prepare_and_normalize_arguments($query, func_get_args());
 		if (!$normalized) {
 			return false;
@@ -210,7 +210,7 @@ abstract class _Abstract {
 	 *
 	 * @return array[]|false|int|int[]|string|string[]
 	 */
-	abstract function f ($query_result, $single_column = false, $array = false, $indexed = false);
+	abstract public function f ($query_result, $single_column = false, $array = false, $indexed = false);
 	/**
 	 * Query, Fetch
 	 *
@@ -220,7 +220,7 @@ abstract class _Abstract {
 	 *
 	 * @return array|false
 	 */
-	function qf (...$query) {
+	public function qf (...$query) {
 		return $this->f($this->q(...$query));
 	}
 	/**
@@ -232,7 +232,7 @@ abstract class _Abstract {
 	 *
 	 * @return array[]|false
 	 */
-	function qfa (...$query) {
+	public function qfa (...$query) {
 		return $this->f($this->q(...$query), false, true);
 	}
 	/**
@@ -244,7 +244,7 @@ abstract class _Abstract {
 	 *
 	 * @return false|int|string
 	 */
-	function qfs (...$query) {
+	public function qfs (...$query) {
 		return $this->f($this->q(...$query), true);
 	}
 	/**
@@ -256,7 +256,7 @@ abstract class _Abstract {
 	 *
 	 * @return false|int[]|string[]
 	 */
-	function qfas (...$query) {
+	public function qfas (...$query) {
 		return $this->f($this->q(...$query), true, true);
 	}
 	/**
@@ -269,7 +269,7 @@ abstract class _Abstract {
 	 *
 	 * @return bool
 	 */
-	function insert ($query, $params, $join = true) {
+	public function insert ($query, $params, $join = true) {
 		if (!$query || !$params) {
 			return false;
 		}
@@ -304,7 +304,7 @@ abstract class _Abstract {
 	 *
 	 * @return int
 	 */
-	abstract function id ();
+	abstract public function id ();
 	/**
 	 * Affected
 	 *
@@ -314,7 +314,7 @@ abstract class _Abstract {
 	 *
 	 * @return int
 	 */
-	abstract function affected ();
+	abstract public function affected ();
 	/**
 	 * Execute transaction
 	 *
@@ -327,7 +327,7 @@ abstract class _Abstract {
 	 *
 	 * @throws Exception Re-throws exception thrown inside callback
 	 */
-	function transaction ($callback) {
+	public function transaction ($callback) {
 		$start_transaction = !$this->in_transaction;
 		if ($start_transaction) {
 			$this->in_transaction = true;
@@ -363,7 +363,7 @@ abstract class _Abstract {
 	 *
 	 * @param false|object|resource $query_result
 	 */
-	abstract function free ($query_result);
+	abstract public function free ($query_result);
 	/**
 	 * Get columns list of table
 	 *
@@ -372,7 +372,7 @@ abstract class _Abstract {
 	 *
 	 * @return string[]
 	 */
-	abstract function columns ($table, $like = false);
+	abstract public function columns ($table, $like = false);
 	/**
 	 * Get tables list
 	 *
@@ -380,7 +380,7 @@ abstract class _Abstract {
 	 *
 	 * @return string[]
 	 */
-	abstract function tables ($like = false);
+	abstract public function tables ($like = false);
 	/**
 	 * Safe
 	 *
@@ -392,7 +392,7 @@ abstract class _Abstract {
 	 *
 	 * @return string|string[]
 	 */
-	function s ($string, $single_quotes_around = true) {
+	public function s ($string, $single_quotes_around = true) {
 		if (is_array($string)) {
 			foreach ($string as &$s) {
 				$s = $this->s_internal($s, $single_quotes_around);
@@ -416,13 +416,13 @@ abstract class _Abstract {
 	 *
 	 * @return string
 	 */
-	abstract function server ();
+	abstract public function server ();
 	/**
 	 * Connection state
 	 *
 	 * @return bool
 	 */
-	function connected () {
+	public function connected () {
 		return $this->connected;
 	}
 	/**
@@ -430,7 +430,7 @@ abstract class _Abstract {
 	 *
 	 * @return string
 	 */
-	function db_type () {
+	public function db_type () {
 		return $this->db_type;
 	}
 	/**
@@ -438,7 +438,7 @@ abstract class _Abstract {
 	 *
 	 * @return string
 	 */
-	function database () {
+	public function database () {
 		return $this->database;
 	}
 	/**
@@ -449,7 +449,7 @@ abstract class _Abstract {
 	 *
 	 * @return array
 	 */
-	function queries () {
+	public function queries () {
 		return $this->queries;
 	}
 	/**
@@ -459,7 +459,7 @@ abstract class _Abstract {
 	 *
 	 * @return array
 	 */
-	function query () {
+	public function query () {
 		return $this->query;
 	}
 	/**
@@ -467,7 +467,7 @@ abstract class _Abstract {
 	 *
 	 * @return int
 	 */
-	function time () {
+	public function time () {
 		return $this->time;
 	}
 	/**
@@ -475,7 +475,7 @@ abstract class _Abstract {
 	 *
 	 * @return float
 	 */
-	function connecting_time () {
+	public function connecting_time () {
 		return $this->connecting_time;
 	}
 	/**
@@ -488,5 +488,5 @@ abstract class _Abstract {
 	/**
 	 * Disconnecting from DB
 	 */
-	abstract function __destruct ();
+	abstract public function __destruct ();
 }

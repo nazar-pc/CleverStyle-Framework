@@ -23,7 +23,7 @@ class Request {
 	 * @param float                $request_started
 	 * @param string               $data
 	 */
-	static function process ($request, $response, $request_started, $data) {
+	public static function process ($request, $response, $request_started, $data) {
 		static::fill_superglobals(
 			static::prepare_superglobals($request, $data)
 		);

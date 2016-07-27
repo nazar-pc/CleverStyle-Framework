@@ -13,25 +13,25 @@ class BlackHole extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function get ($item) {
+	public function get ($item) {
 		return false;
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function set ($item, $data) {
+	public function set ($item, $data) {
 		return true;
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function del ($item) {
+	public function del ($item) {
 		return true;
 	}
 	/**
 	 * @inheritdoc
 	 */
-	function clean () {
+	public function clean () {
 		return true;
 	}
 }

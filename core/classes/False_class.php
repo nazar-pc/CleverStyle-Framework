@@ -26,7 +26,7 @@ class False_class extends SimpleXMLElement implements ArrayAccess {
 	 *
 	 * @return False_class
 	 */
-	static function instance () {
+	public static function instance () {
 		static $instance;
 		if (!isset($instance)) {
 			$instance = new self('<?xml version=\'1.0\'?><cs></cs>');
@@ -40,7 +40,7 @@ class False_class extends SimpleXMLElement implements ArrayAccess {
 	 *
 	 * @return False_class
 	 */
-	function __get ($item) {
+	public function __get ($item) {
 		return $this;
 	}
 	/**
@@ -50,7 +50,7 @@ class False_class extends SimpleXMLElement implements ArrayAccess {
 	 *
 	 * @return False_class
 	 */
-	function __isset ($item) {
+	public function __isset ($item) {
 		return false;
 	}
 	/**
@@ -61,7 +61,7 @@ class False_class extends SimpleXMLElement implements ArrayAccess {
 	 *
 	 * @return False_class
 	 */
-	function __call ($method, $params) {
+	public function __call ($method, $params) {
 		return $this;
 	}
 	/**
@@ -69,25 +69,25 @@ class False_class extends SimpleXMLElement implements ArrayAccess {
 	 *
 	 * @return False_class
 	 */
-	function __invoke () {
+	public function __invoke () {
 		return $this;
 	}
 	/**
 	 * @return string
 	 */
-	function __toString () {
+	public function __toString () {
 		return '0';
 	}
 	/**
 	 * If item exists
 	 */
-	function offsetExists ($offset) {
+	public function offsetExists ($offset) {
 		return false;
 	}
 	/**
 	 * Get item
 	 */
-	function offsetGet ($offset) {
+	public function offsetGet ($offset) {
 		return $this;
 	}
 	/**
