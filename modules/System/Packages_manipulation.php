@@ -11,45 +11,12 @@ namespace cs\modules\System;
 use
 	cs\Config,
 	cs\Core,
-	cs\DB,
-	cs\Language,
-	cs\Page,
-	cs\Request;
+	cs\DB;
 
 /**
  * Utility functions, necessary during packages manipulation (installation/uninstallation, enabling/disabling)
  */
 class Packages_manipulation {
-	/**
-	 * @param string $file_name File key in `cs\Request::$files`
-	 *
-	 * @return false|string Path to file location if succeed or `false` on failure
-	 */
-	static function move_uploaded_file_to_tmp ($file_name) {
-		$file = Request::instance()->files($file_name);
-		if (!$file) {
-			return false;
-		}
-		$L    = Language::prefix('system_admin_');
-		$Page = Page::instance();
-		switch ($file['error']) {
-			case UPLOAD_ERR_INI_SIZE:
-			case UPLOAD_ERR_FORM_SIZE:
-				$Page->warning($L->file_too_large);
-				return false;
-			case UPLOAD_ERR_NO_TMP_DIR:
-				$Page->warning($L->temporary_folder_is_missing);
-				return false;
-			case UPLOAD_ERR_CANT_WRITE:
-				$Page->warning($L->cant_write_file_to_disk);
-				return false;
-		}
-		if ($file['error'] != UPLOAD_ERR_OK) {
-			return false;
-		}
-		$tmp_name = TEMP.'/'.md5(random_bytes(1000)).'.phar';
-		return copy($file['tmp_name'], $tmp_name) ? $tmp_name : false;
-	}
 	/**
 	 * Generic extraction of files from phar distributive for CleverStyle Framework (components installation)
 	 *

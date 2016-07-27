@@ -41,7 +41,6 @@ This class has next public methods:
 * copy()
 * unlink()
 * file_exists()
-* move_uploaded_file()
 * rename()
 * mkdir()
 * rmdir()

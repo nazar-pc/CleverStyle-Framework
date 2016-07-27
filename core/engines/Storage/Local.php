@@ -70,12 +70,6 @@ class Local extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	function move_uploaded_file ($filename, $destination) {
-		return copy($filename, $this->absolute_path($destination));
-	}
-	/**
-	 * @inheritdoc
-	 */
 	function rename ($oldname, $newname) {
 		return rename($this->absolute_path($oldname), $this->absolute_path($newname));
 	}

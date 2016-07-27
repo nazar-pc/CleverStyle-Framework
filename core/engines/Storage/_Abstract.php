@@ -128,18 +128,19 @@ abstract class _Abstract {
 	 */
 	abstract function file_exists ($filename);
 	/**
-	 * Moves an uploaded file to a new location
+	 * @deprecated
+	 * @todo Remove in 6.x
 	 *
-	 * @abstract
-	 *
-	 * @see move_uploaded_file()
+	 * @see static::copy()
 	 *
 	 * @param string $filename
 	 * @param string $destination
 	 *
 	 * @return bool
 	 */
-	abstract function move_uploaded_file ($filename, $destination);
+	function move_uploaded_file ($filename, $destination) {
+		return $this->copy($filename, $destination);
+	}
 	/**
 	 * Renames a file or directory
 	 *
