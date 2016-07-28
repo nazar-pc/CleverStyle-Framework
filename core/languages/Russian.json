@@ -227,7 +227,8 @@
 				"mail_signature_info"       : "Подпись будет добавляться в конец каждого отправленного email",
 				"test_email_sending"        : "Проверка отправки email",
 				"test_email_sending_failed" : "Отправка email завершилась ошибкой, проверьте вашу конфигурацию",
-				"done"                      : "Готово"
+				"done"                      : "Готово",
+				"off"                       : "Выкл."
 			},
 			"modules"                               : "Модули",
 			"modules_"                              : {

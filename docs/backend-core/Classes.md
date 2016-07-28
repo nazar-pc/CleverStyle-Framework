@@ -2,7 +2,7 @@
 
 | namespace\class                | Description                                                                                                            |
 |--------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| `\cs\App`                      | provides functionality of application execution (blocks and module page generation, etc.)          |
+| `\cs\App`                      | provides functionality of application execution (blocks and module page generation, etc.)                              |
 | `\cs\Cache`                    | caching interface                                                                                                      |
 | `\cs\Cache\Prefix`             | class is used for simplified work with cache, when using common prefix                                                 |
 | `\cs\Config`                   | routing, modules defining, and configuration getting/setting                                                           |
@@ -17,7 +17,7 @@
 | `\cs\Key`                      | generating/getting/setting/checking of keys, keys may be stored with some attached information                         |
 | `\cs\Language`                 | multilingual user interface                                                                                            |
 | `\cs\Language\Prefix`          | class is used for simplified work with language translations, when using common prefix                                 |
-| `\cs\Mail`                     | mail sending functionality, inherits PHPMailer                                                                         |
+| `\cs\Mail`                     | mail sending functionality                                                                                             |
 | `\cs\Menu`                     | menu class is used in administration for generating second and third level of menu                                     |
 | `\cs\Page`                     | resulting page generation                                                                                              |
 | `\cs\Page\Meta`                | generation of various meta tags                                                                                        |

@@ -228,7 +228,8 @@
 				"mail_signature_info"       : "Підпис буде додаватися в кінець кожного відправленого email",
 				"test_email_sending"        : "Перевірка надсилання email",
 				"test_email_sending_failed" : "Надсилання email завершилось помилкою, перевірте вашу конфігурацію",
-				"done"                      : "Готово"
+				"done"                      : "Готово",
+				"off"                       : "Вимкн."
 			},
 			"modules"                               : "Модулі",
 			"modules_"                              : {

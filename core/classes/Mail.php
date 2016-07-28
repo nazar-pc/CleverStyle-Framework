@@ -14,30 +14,8 @@ use
 /**
  * @method static $this instance($check = false)
  */
-class Mail extends PHPMailer {
+class Mail {
 	use Singleton;
-	/**
-	 * Setting base mail sending parameters according to system configuration
-	 */
-	public function construct () {
-		$Config = Config::instance();
-		if ($Config->core['smtp']) {
-			$this->isSMTP();
-			$this->Host = $Config->core['smtp_host'];
-			/** @noinspection NestedTernaryOperatorInspection */
-			$this->Port       = $Config->core['smtp_port'] ?: ($Config->core['smtp_secure'] ? 465 : 25);
-			$this->SMTPSecure = $Config->core['smtp_secure'];
-			if ($Config->core['smtp_auth']) {
-				$this->SMTPAuth = true;
-				$this->Username = $Config->core['smtp_user'];
-				$this->Password = $Config->core['smtp_password'];
-			}
-		}
-		$this->From     = $Config->core['mail_from'];
-		$this->FromName = get_core_ml_text('mail_from_name');
-		$this->CharSet  = 'utf-8';
-		$this->isHTML();
-	}
 	/**
 	 * Sending of email
 	 *
@@ -60,35 +38,59 @@ class Mail extends PHPMailer {
 		if (!$email || !$subject || !$body) {
 			return false;
 		}
+		$PHPMailer = $this->phpmailer_instance();
 		foreach ($this->normalize_email($email) as $e) {
-			$this->addAddress(...$e);
+			$PHPMailer->addAddress(...$e);
 		}
 		foreach ($this->normalize_email($reply_to) as $r) {
-			$this->addReplyTo(...$r);
+			$PHPMailer->addReplyTo(...$r);
 		}
 		foreach ($this->normalize_attachment($attachments) as $a) {
 			try {
-				$this->addAttachment(...$a);
+				$PHPMailer->addAttachment(...$a);
 			} catch (phpmailerException $e) {
 				trigger_error($e->getMessage(), E_USER_WARNING);
 			}
 		}
-		$this->Subject = $subject;
-		$signature     = $this->make_signature($signature);
-		$this->Body    = $this->normalize_body($body, $signature);
+		$PHPMailer->Subject = $subject;
+		$signature          = $this->make_signature($signature);
+		$PHPMailer->Body    = $this->normalize_body($body, $signature);
 		if ($body_text) {
-			$this->AltBody = $body_text.strip_tags($signature);
+			$PHPMailer->AltBody = $body_text.strip_tags($signature);
 		}
 		try {
-			$result = $this->send();
+			$result = $PHPMailer->send();
 		} catch (phpmailerException $e) {
 			trigger_error($e->getMessage(), E_USER_WARNING);
 			$result = false;
 		}
-		$this->clearAddresses();
-		$this->clearAttachments();
-		$this->clearReplyTos();
 		return $result;
+	}
+	/**
+	 * Create PHPMailer instance with parameters according to system configuration
+	 *
+	 * @return PHPMailer
+	 */
+	protected function phpmailer_instance () {
+		$PHPMailer = new PHPMailer(true);
+		$Config    = Config::instance();
+		if ($Config->core['smtp']) {
+			$PHPMailer->isSMTP();
+			$PHPMailer->Host = $Config->core['smtp_host'];
+			/** @noinspection NestedTernaryOperatorInspection */
+			$PHPMailer->Port       = $Config->core['smtp_port'] ?: ($Config->core['smtp_secure'] ? 465 : 25);
+			$PHPMailer->SMTPSecure = $Config->core['smtp_secure'];
+			if ($Config->core['smtp_auth']) {
+				$PHPMailer->SMTPAuth = true;
+				$PHPMailer->Username = $Config->core['smtp_user'];
+				$PHPMailer->Password = $Config->core['smtp_password'];
+			}
+		}
+		$PHPMailer->From     = $Config->core['mail_from'];
+		$PHPMailer->FromName = get_core_ml_text('mail_from_name');
+		$PHPMailer->CharSet  = 'utf-8';
+		$PHPMailer->isHTML();
+		return $PHPMailer;
 	}
 	/**
 	 * @param array|string|string[] $email
@@ -109,9 +111,9 @@ class Mail extends PHPMailer {
 	protected function make_signature ($signature) {
 		if ($signature === true) {
 			$signature = get_core_ml_text('mail_signature');
-			return $signature ? "<br>$this->LE<br>$this->LE-- $this->LE<br>$signature" : '';
+			return $signature ? "<br>\n<br>\n-- \n<br>$signature" : '';
 		}
-		return $signature ? "<br>$this->LE<br>$this->LE-- $this->LE<br>".xap($signature, true) : '';
+		return $signature ? "<br>\n<br>\n-- \n<br>".xap($signature, true) : '';
 	}
 	/**
 	 * @param string $body

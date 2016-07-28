@@ -227,7 +227,8 @@
 				"mail_signature_info"       : "Signature will be appended to every sent email",
 				"test_email_sending"        : "Test email sending",
 				"test_email_sending_failed" : "Email sending failed, check your configuration",
-				"done"                      : "Done"
+				"done"                      : "Done",
+				"off"                       : "Off"
 			},
 			"modules"                               : "Modules",
 			"modules_"                              : {

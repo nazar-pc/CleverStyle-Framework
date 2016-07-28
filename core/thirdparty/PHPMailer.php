@@ -641,6 +641,17 @@ class PHPMailer
     const MAX_LINE_LENGTH = 998;
 
     /**
+     * Constructor.
+     * @param boolean $exceptions Should we throw external exceptions?
+     */
+    public function __construct($exceptions = null)
+    {
+        if ($exceptions !== null) {
+            $this->exceptions = (boolean)$exceptions;
+        }
+    }
+
+    /**
      * Destructor.
      */
     public function __destruct()
