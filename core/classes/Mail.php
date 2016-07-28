@@ -76,9 +76,8 @@ class Mail {
 		$Config    = Config::instance();
 		if ($Config->core['smtp']) {
 			$PHPMailer->isSMTP();
-			$PHPMailer->Host = $Config->core['smtp_host'];
-			/** @noinspection NestedTernaryOperatorInspection */
-			$PHPMailer->Port       = $Config->core['smtp_port'] ?: ($Config->core['smtp_secure'] ? 465 : 25);
+			$PHPMailer->Host       = $Config->core['smtp_host'];
+			$PHPMailer->Port       = $Config->core['smtp_port'];
 			$PHPMailer->SMTPSecure = $Config->core['smtp_secure'];
 			if ($Config->core['smtp_auth']) {
 				$PHPMailer->SMTPAuth = true;
