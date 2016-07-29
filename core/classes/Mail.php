@@ -92,7 +92,7 @@ class Mail {
 		return $PHPMailer;
 	}
 	/**
-	 * @param array|string|string[] $email
+	 * @param array|null|string|string[] $email
 	 *
 	 * @return string[][]
 	 */
@@ -107,6 +107,11 @@ class Mail {
 		}
 		return _array($email);
 	}
+	/**
+	 * @param bool|string $signature
+	 *
+	 * @return string
+	 */
 	protected function make_signature ($signature) {
 		if ($signature === true) {
 			$signature = get_core_ml_text('mail_signature');
