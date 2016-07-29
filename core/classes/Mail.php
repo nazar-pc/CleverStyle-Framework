@@ -121,9 +121,6 @@ class Mail {
 	 * @return string
 	 */
 	protected function normalize_body ($body, $signature) {
-		if (strpos($body, '<!doctype') === 0 && strpos($body, '<body') !== false) {
-			$body = "<!doctype html>\n$body";
-		}
 		if (strpos($body, '<html') === false) {
 			if (strpos($body, '<body') === false) {
 				$body = h::body($body.$signature);
@@ -141,6 +138,9 @@ class Mail {
 			);
 		} else {
 			$body = str_replace('</body>', "$signature</body>", $body);
+		}
+		if (strpos($body, '<!doctype') === false) {
+			$body = "<!doctype html>\n$body";
 		}
 		return $body;
 	}
