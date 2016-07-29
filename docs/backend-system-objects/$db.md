@@ -20,8 +20,8 @@ Method returns instance of class for database abstraction. This object guarantee
 #### db_prime($database_id : int) : cs\\DB\\_Abstract|False_class
 Similar to `db()`, but guaranteed will have write access to database. These two methods were separated in order to balance load when database replication is used.
 
-#### get_connections_list($status = null : bool|null|string) : array|null
-Is used for getting of successful, failed and mirror connections.
+#### get_connections_list($status : int) : array|null
+Is used for getting of master, mirror, successful and failed connections.
 
 <a name="properties" />
 ###[Up](#) Properties

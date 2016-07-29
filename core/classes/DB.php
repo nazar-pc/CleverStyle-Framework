@@ -13,48 +13,32 @@ namespace cs;
 class DB {
 	use
 		Singleton;
-	const CONNECTIONS_ALL           = null;
-	const CONNECTIONS_FAILED        = 0;
-	const CONNECTIONS_SUCCESSFUL    = 1;
-	const CONNECTIONS_MIRRORS       = 'mirror';
+	const CONNECTIONS_MASTER        = 0;
+	const CONNECTIONS_MIRROR        = 1;
+	const CONNECTIONS_SUCCESSFUL    = 2;
+	const CONNECTIONS_FAILED        = 3;
 	const MASTER_MIRROR             = -1;
 	const MIRROR_MODE_MASTER_MASTER = 0;
 	const MIRROR_MODE_MASTER_SLAVE  = 1;
 	/**
-	 * @var DB\_Abstract[]
+	 * @var array[]
 	 */
-	protected $connections = [];
-	/**
-	 * @var array
-	 */
-	protected $successful_connections = [];
-	/**
-	 * @var array
-	 */
-	protected $failed_connections = [];
-	/**
-	 * @var array
-	 */
-	protected $mirrors = [];
+	protected $connections = [
+		self::CONNECTIONS_MASTER     => [],
+		self::CONNECTIONS_MIRROR     => [],
+		self::CONNECTIONS_SUCCESSFUL => [],
+		self::CONNECTIONS_FAILED     => [],
+	];
 	/**
 	 * Get list of connections of specified type
 	 *
-	 * @param bool|null|string $type One of constants `self::CONNECTIONS_*`
+	 * @param int $type One of constants `self::CONNECTIONS_*`
 	 *
-	 * @return array For `self::CONNECTIONS_ALL` array of successful connections with corresponding objects as values of array<br>
-	 *               Otherwise array where keys are database ids and values are strings with information about database
+	 * @return array For `self::CONNECTIONS_MASTER` and `self::CONNECTIONS_MIRRORS` array of successful connections with corresponding objects as values of
+	 *               array, otherwise array where keys are database ids and values are strings with information about database
 	 */
-	public function get_connections_list ($type = self::CONNECTIONS_ALL) {
-		if ($type == self::CONNECTIONS_FAILED) {
-			return $this->failed_connections;
-		}
-		if ($type == self::CONNECTIONS_SUCCESSFUL) {
-			return $this->successful_connections;
-		}
-		if ($type == self::CONNECTIONS_MIRRORS) {
-			return $this->mirrors;
-		}
-		return $this->connections;
+	public function get_connections_list ($type) {
+		return $this->connections[$type];
 	}
 	/**
 	 * Total number of executed queries
@@ -63,7 +47,10 @@ class DB {
 	 */
 	public function queries () {
 		$queries = 0;
-		foreach ($this->connections as $c) {
+		foreach ($this->connections[self::CONNECTIONS_MASTER] as $c) {
+			$queries += $c->queries()['num'];
+		}
+		foreach ($this->connections[self::CONNECTIONS_MIRROR] as $c) {
 			$queries += $c->queries()['num'];
 		}
 		return $queries;
@@ -75,7 +62,10 @@ class DB {
 	 */
 	public function time () {
 		$time = 0;
-		foreach ($this->connections as $c) {
+		foreach ($this->connections[self::CONNECTIONS_MASTER] as $c) {
+			$time += $c->connecting_time() + $c->time();
+		}
+		foreach ($this->connections[self::CONNECTIONS_MIRROR] as $c) {
 			$time += $c->connecting_time() + $c->time();
 		}
 		return $time;
@@ -90,7 +80,7 @@ class DB {
 	 * @throws ExitException
 	 */
 	public function db ($database_id) {
-		return $this->generic_connecting($database_id, true);
+		return $this->connect($database_id, true);
 	}
 	/**
 	 * Get database instance for write queries
@@ -102,7 +92,7 @@ class DB {
 	 * @throws ExitException
 	 */
 	public function db_prime ($database_id) {
-		return $this->generic_connecting($database_id, false);
+		return $this->connect($database_id, false);
 	}
 	/**
 	 * @param int  $database_id
@@ -112,41 +102,12 @@ class DB {
 	 *
 	 * @throws ExitException
 	 */
-	protected function generic_connecting ($database_id, $read_query) {
-		if (!is_int($database_id) && $database_id != '0') {
-			return False_class::instance();
-		}
-		/**
-		 * Establish wne connection to the database
-		 */
-		$connection = $this->connecting($database_id, $read_query);
-		/**
-		 * If connection fails - try once more
-		 */
-		if (!$connection) {
-			$connection = $this->connecting($database_id, $read_query);
-		}
-		/**
-		 * If failed twice - show error
-		 */
-		if (!$connection) {
-			throw new ExitException(500);
-		}
-		return $connection;
-	}
-	/**
-	 * Processing of all DB request
-	 *
-	 * @param int  $database_id
-	 * @param bool $read_query
-	 *
-	 * @return DB\_Abstract|False_class
-	 */
-	protected function connecting ($database_id, $read_query = true) {
+	protected function connect ($database_id, $read_query) {
+		$database_id = (int)$database_id;
 		/**
 		 * If connection found in list of failed connections - return instance of False_class
 		 */
-		if (isset($this->failed_connections[$database_id])) {
+		if (isset($this->connections[self::CONNECTIONS_FAILED][$database_id])) {
 			return False_class::instance();
 		}
 		/**
@@ -154,54 +115,62 @@ class DB {
 		 */
 		if (
 			$read_query &&
-			isset($this->mirrors[$database_id])
+			isset($this->connections[self::CONNECTIONS_MIRROR][$database_id])
 		) {
-			return $this->mirrors[$database_id];
+			return $this->connections[self::CONNECTIONS_MIRROR][$database_id];
 		}
 		/**
 		 * If connection already established
 		 */
-		if (isset($this->connections[$database_id])) {
-			return $this->connections[$database_id];
+		if (isset($this->connections[self::CONNECTIONS_MASTER][$database_id])) {
+			return $this->connections[self::CONNECTIONS_MASTER][$database_id];
 		}
 		$Core = Core::instance();
-		list($database_settings, $is_mirror) = $this->get_db_connection_settings($database_id, $read_query);
 		/**
-		 * Establish new connection
-		 *
-		 * @var DB\_Abstract $connection
+		 * Try to connect second time if first time fails, probably, to another mirror
 		 */
-		$engine_class    = "cs\\DB\\$database_settings[type]";
-		$connection      = new $engine_class(
-			$database_settings['name'],
-			$database_settings['user'],
-			$database_settings['password'],
-			$database_settings['host'],
-			$database_settings['prefix']
-		);
-		$connection_name = ($database_id == 0 ? "Core DB ($Core->db_type)" : $database_id)."/$database_settings[host]/$database_settings[type]";
-		unset($engine_class, $database_settings);
-		/**
-		 * If successfully - add connection to the list of success connections and return instance of DB engine object
-		 */
-		if (is_object($connection) && $connection->connected()) {
-			$this->successful_connections[] = $connection_name;
-			$this->$database_id             = $connection;
-			if ($is_mirror) {
-				$this->mirrors[$database_id] = $connection;
-			} else {
-				$this->connections[$database_id] = $connection;
+		for ($trial = 0; $trial < 2; ++$trial) {
+			list($database_settings, $is_mirror) = $this->get_db_connection_settings($database_id, $read_query);
+			/**
+			 * Establish new connection
+			 *
+			 * @var DB\_Abstract $connection
+			 */
+			$engine_class    = "cs\\DB\\$database_settings[type]";
+			$connection      = new $engine_class(
+				$database_settings['name'],
+				$database_settings['user'],
+				$database_settings['password'],
+				$database_settings['host'],
+				$database_settings['prefix']
+			);
+			$connection_name = ($database_id == 0 ? "Core DB ($Core->db_type)" : $database_id)."/$database_settings[host]/$database_settings[type]";
+			unset($engine_class, $database_settings);
+			/**
+			 * If successfully - add connection to the list of success connections and return instance of DB engine object
+			 */
+			if (is_object($connection) && $connection->connected()) {
+				$this->connections[self::CONNECTIONS_SUCCESSFUL][] = $connection_name;
+				if ($is_mirror) {
+					$this->connections[self::CONNECTIONS_MIRROR][$database_id] = $connection;
+				} else {
+					$this->connections[self::CONNECTIONS_MASTER][$database_id] = $connection;
+				}
+				return $connection;
 			}
-			return $connection;
 		}
 		/**
 		 * If failed - add connection to the list of failed connections and log error
 		 */
-		$this->failed_connections[$database_id] = $connection_name;
+		/** @noinspection PhpUndefinedVariableInspection */
+		$this->connections[self::CONNECTIONS_FAILED][$database_id] = $connection_name;
 		trigger_error(
 			$database_id == 0 ? 'Error connecting to core DB of site' : "Error connecting to DB $connection_name",
-			E_USER_ERROR
+			E_USER_WARNING
 		);
+		if ($database_id == 0) {
+			throw new ExitException('Error connecting to core DB of site', 500);
+		}
 		return False_class::instance();
 	}
 	/**
@@ -253,7 +222,7 @@ class DB {
 	protected function choose_mirror ($database_id, $read_query = true) {
 		$Config = Config::instance(true);
 		/**
-		 * $Config might be not initialized, so, check also for `$Config->core`
+		 * $Config might not be initialized yet
 		 */
 		if (
 			!@$Config->core['db_balance'] ||
