@@ -202,7 +202,7 @@ Last query information, has 2 properties:
 * time - execution time
 * text - query text
 
-#### time() : int
+#### time() : float
 Total working time (including connection, queries execution and other delays)
 
 #### connecting_time() : float

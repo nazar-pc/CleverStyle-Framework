@@ -62,6 +62,9 @@ class DB {
 	 */
 	public function time () {
 		$time = 0;
+		/**
+		 * @var DB\_Abstract $c
+		 */
 		foreach ($this->connections[self::CONNECTIONS_MASTER] as $c) {
 			$time += $c->connecting_time() + $c->time();
 		}

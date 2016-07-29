@@ -37,7 +37,7 @@ abstract class _Abstract {
 	/**
 	 * Total time of requests execution
 	 *
-	 * @var int
+	 * @var float
 	 */
 	protected $time;
 	/**
@@ -465,7 +465,7 @@ abstract class _Abstract {
 	/**
 	 * Total working time (including connection, queries execution and other delays)
 	 *
-	 * @return int
+	 * @return float
 	 */
 	public function time () {
 		return $this->time;
