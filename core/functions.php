@@ -338,56 +338,24 @@ function set_core_ml_text ($item, $value) {
  * @return null|string
  */
 function status_code_string ($code) {
-	switch ($code) {
-		case 201:
-			$string_code = '201 Created';
-			break;
-		case 202:
-			$string_code = '202 Accepted';
-			break;
-		case 301:
-			$string_code = '301 Moved Permanently';
-			break;
-		case 302:
-			$string_code = '302 Found';
-			break;
-		case 303:
-			$string_code = '303 See Other';
-			break;
-		case 307:
-			$string_code = '307 Temporary Redirect';
-			break;
-		case 400:
-			$string_code = '400 Bad Request';
-			break;
-		case 403:
-			$string_code = '403 Forbidden';
-			break;
-		case 404:
-			$string_code = '404 Not Found';
-			break;
-		case 405:
-			$string_code = '405 Method Not Allowed';
-			break;
-		case 409:
-			$string_code = '409 Conflict';
-			break;
-		case 429:
-			$string_code = '429 Too Many Requests';
-			break;
-		case 500:
-			$string_code = '500 Internal Server Error';
-			break;
-		case 501:
-			$string_code = '501 Not Implemented';
-			break;
-		case 503:
-			$string_code = '503 Service Unavailable';
-			break;
-		default:
-			return null;
-	}
-	return $string_code;
+	$code_to_string = [
+		201 => '201 Created',
+		202 => '202 Accepted',
+		301 => '301 Moved Permanently',
+		302 => '302 Found',
+		303 => '303 See Other',
+		307 => '307 Temporary Redirect',
+		400 => '400 Bad Request',
+		403 => '403 Forbidden',
+		404 => '404 Not Found',
+		405 => '405 Method Not Allowed',
+		409 => '409 Conflict',
+		429 => '429 Too Many Requests',
+		500 => '500 Internal Server Error',
+		501 => '501 Not Implemented',
+		503 => '503 Service Unavailable'
+	];
+	return @$code_to_string[$code];
 }
 
 /**
