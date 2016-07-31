@@ -36,7 +36,7 @@ abstract class _Abstract {
 	 * @param    callable|null $apply
 	 * @param    int|null      $limit
 	 *
-	 * @return    array|false
+	 * @return    array
 	 */
 	abstract public function get_files_list (
 		$dir,

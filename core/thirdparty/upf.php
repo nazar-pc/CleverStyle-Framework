@@ -119,7 +119,7 @@ function time_limit_pause ($pause = true) {
  * @param callable    $apply        Apply function to each found item, return nothing (sorting will not work, items will be processed as they found)
  * @param int|null    $limit        If specified - limits total number of found items (if $limit items found - stop further searching)
  *
- * @return    array|bool
+ * @return    array
  */
 function get_files_list (
 	$dir,
