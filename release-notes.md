@@ -2290,3 +2290,77 @@ Dropped backward compatibility:
 * `cs\Page::set_theme()` function removed
 
 Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
+
+# 5.21.2+build-2360: Better consistency
+
+Small incremental release on top of last major update.
+Release improves consistency in builder/installer and some interfaces, have significantly code coverage (>90% for core system classes).
+
+Nothing major this time.
+
+Security fixes:
+* None
+
+New components:
+* None
+
+New features:
+* Allow any host in Docker demo
+
+Updates:
+* New upstream version of phpt-tests-runner
+* New upstream Promise polyfill
+* New upstream version of autosize
+* New version of TinyMCE
+
+Fixes and small improvements:
+* System:
+  * Add `.htaccess` files in `storage` directory to core files in builder, so that they'll be updated with system update
+  * Remove mentioning `Storage.php` from builder
+  * Reload page on module enabling, disabling and uninstallation
+  * Fix for potential redirect use wih specially created subdomain
+  * Fix for inheriting translations from core language, that was broken in 1183976
+  * Installer is now covered by code coverage analysis (not 100%, but mostly)
+  * Add nightly PHP to Travis CI, but allow it to fail
+  * Use native code coverage merging
+  * `PHP_SAPI` constant usage changed to `php_sapi_name()` function usage, which is easier to wrap in tests
+  * Smaller code coverage overhead (bug bigger data file)
+  * Lighter integration of code coverage into installer
+  * Fix for instantiating classes from `cs\custom` namespace which do not extend original class
+  * Fix for multiple class extension
+  * Many tests added
+  * Only compute code coverage on PHP 7.0
+  * Tiny fix for bug found under PHP Nightly
+  * Fix for Docker demo
+  * Small fix for nav bar in administration
+  * `icon` property on `cs-button` renamed to `icon-before`, `icon` property is still supported and will be, now it is just an alias to `icon-before`
+  * Declare `public` visibility on methods explicitly
+  * Clean upstream version of PHPMailer without any modifications is used
+  * Tiny fix in mail settings in administration interface
+  * Use smtp port in `cs\Mail` class directly as is
+  * Small fix in `cs\Mail` class
+  * Mark more tests as slow
+  * Refactoring and simplifications in `cs\Storage` class
+  * New constants:
+    * `cs\Storage::CONNECTIONS_ACTIVE`
+    * `cs\Storage::CONNECTIONS_SUCCESSFUL`
+    * `cs\Storage::CONNECTIONS_FAILED`
+  * Small refactorings and fixes
+
+Deprecations (will be dropped right after release):
+* `cs\Storage\_Abstract::move_uploaded_file()` method deprecated and is just an alias to `::copy()` now
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* `cs\modules\System\Packages_manipulation::move_uploaded_file_to_tmp()` method removed as unused, it remained from pre-API-based administration interface
+* `cs\Mail` doesn't extend `PHPMailer` class anymore, but rather uses it internally
+* `cs\DB::CONNECTIONS_ALL` constant renamed into `CONNECTIONS_MASTER`
+* `cs\DB::CONNECTIONS_MIRRORS` constant renamed into `CONNECTIONS_MIRROR`
+* `cs\DB::get_connections_list()` method now requires first argument to be specified explicitly
+* `cs\Storage::get_connections_list()` method now requires first argument to be specified explicitly, also requires arguments to be `cs\Storage::CONNECTIONS_*` constants
+
+Dropped backward compatibility:
+* All features that were deprecated in last release and kept for smooth upgrade were removed
+* Removed possibility to upgrade from older versions than latest release
+* SimpleImage module removed, hacks in it were not actually used anywhere, so better use upstream version from Composer, it will not make any practical difference
+
+Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
