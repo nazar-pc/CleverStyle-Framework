@@ -23,8 +23,8 @@ $content = $Storage->storage(0)->file_get_content('some_file');
 #### storage($connection : int) : cs\\Storage\\_Abstract|False_class
 Method returns instance of class for storage abstraction.
 
-#### get_connections_list($status = null : bool|null|string) : array|null
-Is used for getting of successful and failed connections.
+#### get_connections_list($status : int) : array
+Is used for getting of active, successful and failed connections.
 
 <a name="abstract-class" />
 ###[Up](#) \cs\Storage\\_Abstract class
