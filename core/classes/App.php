@@ -180,13 +180,6 @@ class App {
 			if (
 				!$this->should_block_be_rendered($block) ||
 				!Event::instance()->fire(
-					'System/Index/block_render',
-					[
-						'index'        => $block['index'],
-						'blocks_array' => &$blocks_array
-					]
-				) ||
-				!Event::instance()->fire(
 					'System/App/block_render',
 					[
 						'index'        => $block['index'],
