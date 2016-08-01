@@ -32,10 +32,12 @@ trait blocks {
 		$db_id  = $Config->module('System')->db('texts');
 		$index  = $Request->route_ids(0);
 		if (!$index) {
+			/**
+			 * @var array $blocks
+			 */
 			$blocks = $Config->components['blocks'];
 			foreach ($blocks as &$block) {
-				$block['title']   = $Text->process($db_id, $block['title'], true);
-				$block['content'] = $block['content'] ? $Text->process($db_id, $block['content'], true) : '';
+				$block = static::admin_blocks_get_prepare($db_id, $Text, $block);
 			}
 			return array_values($blocks) ?: [];
 		}
@@ -43,17 +45,25 @@ trait blocks {
 		if (!$block) {
 			throw new ExitException(404);
 		}
-		return [
-			'title'    => $Text->process($db_id, $block['title'], true),
-			'type'     => $block['type'],
-			'active'   => (int)$block['active'],
-			'start'    => date('Y-m-d\TH:i', $block['start'] ?: TIME),
-			'expire'   => [
-				'date'  => date('Y-m-d\TH:i', $block['expire'] ?: TIME),
-				'state' => (int)($block['expire'] != 0)
-			],
-			'content'  => $Text->process($db_id, $block['content'], true)
+		return static::admin_blocks_get_prepare($db_id, $Text, $block);
+	}
+	/**
+	 * @param int   $db_id
+	 * @param Text  $Text
+	 * @param array $block
+	 *
+	 * @return array
+	 */
+	protected static function admin_blocks_get_prepare ($db_id, $Text, $block) {
+		$block['active']  = (int)$block['active'];
+		$block['title']   = $Text->process($db_id, $block['title'], true);
+		$block['content'] = $block['content'] ? $Text->process($db_id, $block['content'], true) : '';
+		$block['start']   = date('Y-m-d\TH:i', $block['start'] ?: time());
+		$block['expire']  = [
+			'date'  => date('Y-m-d\TH:i', $block['expire'] ?: time()),
+			'state' => (int)($block['expire'] != 0)
 		];
+		return $block;
 	}
 	/**
 	 * Add new block
@@ -96,7 +106,11 @@ trait blocks {
 		$Permission = Permission::instance();
 		$Text       = Text::instance();
 		$found      = false;
-		foreach ($Config->components['blocks'] as $i => $block) {
+		/**
+		 * @var array $blocks
+		 */
+		$blocks = $Config->components['blocks'];
+		foreach ($blocks as $i => $block) {
 			if ($block['index'] == $index) {
 				unset($Config->components['blocks'][$i]);
 				$found = $i;
@@ -134,7 +148,10 @@ trait blocks {
 		if (!is_array($order)) {
 			throw new ExitException(400);
 		}
-		$Config           = Config::instance();
+		$Config = Config::instance();
+		/**
+		 * @var array $blocks
+		 */
 		$blocks           = $Config->components['blocks'];
 		$indexed_blocks   = array_combine(
 			array_column($blocks, 'index'),
@@ -142,6 +159,9 @@ trait blocks {
 		);
 		$new_blocks_order = [];
 		$all_indexes      = [];
+		/**
+		 * @var array[] $order
+		 */
 		foreach ($order as $position => $indexes) {
 			foreach ($indexes as $index) {
 				$all_indexes[]      = $index;
@@ -164,8 +184,6 @@ trait blocks {
 	 * @param array     $block_new
 	 * @param false|int $index Index of existing block, if not specified - new block being added
 	 *
-	 * @return bool
-	 *
 	 * @throws ExitException
 	 */
 	protected static function save_block_data ($block_new, $index = false) {
@@ -175,7 +193,7 @@ trait blocks {
 		$block  = [
 			'position' => 'floating',
 			'type'     => xap($block_new['type']),
-			'index'    => substr(TIME, 3)
+			'index'    => intval(substr(round(microtime(true) * 1000), 3), 10)
 		];
 		if ($index) {
 			$block = &static::get_block_by_index($index);
@@ -183,13 +201,13 @@ trait blocks {
 				throw new ExitException(404);
 			}
 		}
-		$block['title']    = $Text->set($db_id, 'System/Config/blocks/title', $block['index'], $block_new['title']);
-		$block['active']   = $block_new['active'];
-		$block['type']     = $block_new['type'];
-		$block['start']    = $block_new['start'];
-		$block['start']    = strtotime($block_new['start']);
-		$block['expire']   = $block_new['expire']['state'] ? strtotime($block_new['expire']['date']) : 0;
-		$block['content']  = '';
+		$block['title']   = $Text->set($db_id, 'System/Config/blocks/title', $block['index'], $block_new['title']);
+		$block['active']  = $block_new['active'];
+		$block['type']    = $block_new['type'];
+		$block['start']   = $block_new['start'];
+		$block['start']   = strtotime($block_new['start']);
+		$block['expire']  = $block_new['expire']['state'] ? strtotime($block_new['expire']['date']) : 0;
+		$block['content'] = '';
 		if ($block['type'] == 'html') {
 			$block['content'] = $Text->set($db_id, 'System/Config/blocks/content', $block['index'], xap($block_new['content'], true));
 		} elseif ($block['type'] == 'raw_html') {
@@ -209,7 +227,11 @@ trait blocks {
 	 * @return array|false
 	 */
 	protected static function &get_block_by_index ($index) {
-		foreach (Config::instance()->components['blocks'] as &$block) {
+		/**
+		 * @var array $blocks
+		 */
+		$blocks = Config::instance()->components['blocks'];
+		foreach ($blocks as &$block) {
 			if ($block['index'] == $index) {
 				return $block;
 			}

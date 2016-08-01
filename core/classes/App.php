@@ -160,6 +160,9 @@ class App {
 	 * @param Page $Page
 	 */
 	protected function render_blocks ($Page) {
+		/**
+		 * @var array $blocks
+		 */
 		$blocks = Config::instance()->components['blocks'];
 		/**
 		 * It is frequent that there is no blocks - so, no need to to anything here
