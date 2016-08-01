@@ -71,7 +71,7 @@ $key_7 = $Key->add(0, false, null);
 $key_8 = $Key->add(0, false, null);
 time(\time() + 2);
 var_dump($Key->get(0, $key_6), $Key->get(0, $key_7));
-time(\time() + 4);
+time(\time() + 5);
 var_dump($Key->get(0, $key_8));
 ?>
 --EXPECTF--
