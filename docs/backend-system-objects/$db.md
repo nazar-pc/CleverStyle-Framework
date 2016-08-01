@@ -66,7 +66,10 @@ This class has next public methods:
 * connecting_time()
 
 #### q($query : string|string[], ...$params : array) : bool|object|resource
-Query method. `$query` may be SQL string or array of strings. Strings may be formatted according to [sprintf()](http://www.php.net/manual/en/function.sprintf.php) PHP function. In this case `$params` argument may contain array of arguments for formatting of string, another way - to specify arguments as arguments of this method started from second argument.
+Query method. `$query` may be SQL string or array of strings. Strings may be formatted according to [sprintf()](http://www.php.net/manual/en/function.sprintf.php) PHP function or may contain markers for prepared statements (but not both at the same time).
+
+There might be arbitrary number of parameters for formatting SQL statement or for using in prepared statements.
+If an array provided as second argument - its items will be used, so that you can either specify parameters as an array, or in line.
 
 For example:
 ```php
@@ -82,6 +85,36 @@ $query = $db->db(0)->q(
 );
 ```
 Every parameter, passed in such way will have escaped special characters for use in an SQL statement.
+
+Or the same example with prepared statements:
+```php
+<?php
+$db    = \cs\DB::instance();
+$query = $db->db(0)->q(
+    "SELECT `id`
+    FROM `[prefix]users`
+    WHERE `login`    = ?
+    LIMIT ?",
+    $login,
+    1
+);
+```
+
+And the same example with array of parameters:
+```php
+<?php
+$db    = \cs\DB::instance();
+$query = $db->db(0)->q(
+    "SELECT `id`
+    FROM `[prefix]users`
+    WHERE `login`    = ?
+    LIMIT ?",
+    [
+        $login,
+        1
+    ]
+);
+```
 
 #### f($query_result : object|resource, $single_column = false : bool, $array = false : bool, $indexed = false : bool) : array[]|false|int|int[]|string|string[]
 Fetch a result row
