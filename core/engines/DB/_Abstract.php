@@ -86,88 +86,101 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param string|string[] $query  SQL query string or array, may be a format string in accordance with the first parameter of sprintf() function
-	 * @param string|string[] $params May be array of arguments for formatting of <b>$query</b><br>
-	 *                                or string - in this case it will be first argument for formatting of <b>$query</b>
-	 * @param string[]        $param  if <b>$params</b> is string - this parameter will be second argument for formatting of <b>$query</b>.
-	 *                                If you need more arguments - add them after this one, function will accept them.
+	 * @param string|string[] $query      SQL query string or array, may be a format string in accordance with the first parameter of sprintf() function or may
+	 *                                    contain markers for prepared statements (but not both at the same time)
+	 * @param array           $parameters There might be arbitrary number of parameters for formatting SQL statement or for using in prepared statements.<br>
+	 *                                    If an array provided as second argument - its items will be used, so that you can either specify parameters as an
+	 *                                    array, or in line.
 	 *
 	 * @return bool|object|resource
 	 */
-	public function q ($query, $params = [], ...$param) {
-		$normalized = $this->prepare_and_normalize_arguments($query, func_get_args());
+	public function q ($query, ...$parameters) {
+		$normalized = $this->normalize_parameters($query, $parameters);
 		if (!$normalized) {
 			return false;
 		}
-		list($query, $params) = $normalized;
+		list($query, $parameters) = $normalized;
 		/**
 		 * Executing multiple queries
 		 */
 		if (is_array($query)) {
-			return $this->execute_multiple($query, $params);
+			return $this->execute_multiple($query, $parameters);
 		}
-		return $this->execute_single($query, $params);
+		return $this->execute_single($query, $parameters);
 	}
 	/**
 	 * @param string|string[] $query
-	 * @param array           $arguments
+	 * @param array           $parameters
 	 *
 	 * @return array|false
 	 */
-	protected function prepare_and_normalize_arguments ($query, $arguments) {
-		if (!$query || !$arguments) {
+	protected function normalize_parameters ($query, $parameters) {
+		if (!$query) {
 			return false;
 		}
 		$query = str_replace('[prefix]', $this->prefix, $query);
-		switch (count($arguments)) {
-			default:
-				$params = array_slice($arguments, 1);
-				break;
-			case 1:
-				$params = [];
-				break;
-			case 2:
-				$params = (array)$arguments[1];
-				break;
-		}
-		foreach ($params as &$param) {
-			$param = $this->s($param, false);
+		/** @noinspection NotOptimalIfConditionsInspection */
+		if (count($parameters) == 1 && is_array($parameters[0])) {
+			$parameters = $parameters[0];
 		}
 		return [
 			$query,
-			$params
+			$parameters
 		];
 	}
 	/**
 	 * @param string[] $queries
-	 * @param string[] $params
+	 * @param string[] $parameters
 	 *
 	 * @return bool
 	 */
-	protected function execute_multiple ($queries, $params) {
-		$time_from = microtime(true);
+	protected function execute_multiple ($queries, $parameters) {
+		$time_from         = microtime(true);
+		$parameters_server = [];
 		foreach ($queries as &$q) {
-			$q = $params ? vsprintf($q, $params) : $q;
+			$q = $this->prepare_query_and_parameters($q, $parameters);
+			if ($q[1]) {
+				$q                 = $q[0];
+				$parameters_server = $parameters;
+				break;
+			}
+			$q = $q[0];
 		}
 		unset($q);
 		$this->queries['num'] += count($queries);
-		$result = $this->q_multi_internal($queries);
+		$result = $this->q_multi_internal($queries, $parameters_server);
 		$this->time += round(microtime(true) - $time_from, 6);
 		return $result;
 	}
 	/**
 	 * @param string   $query
-	 * @param string[] $params
+	 * @param string[] $parameters
+	 *
+	 * @return array
+	 */
+	protected function prepare_query_and_parameters ($query, $parameters) {
+		if (!$parameters || strpos($query, '?') !== false) {
+			return [$query, $parameters];
+		}
+		foreach ($parameters as &$parameter) {
+			$parameter = $this->s($parameter, false);
+		}
+		return [vsprintf($query, $parameters), []];
+	}
+	/**
+	 * @param string   $query
+	 * @param string[] $parameters
 	 *
 	 * @return false|object|resource
 	 */
-	protected function execute_single ($query, $params) {
-		$time_from           = microtime(true);
-		$this->query['text'] = empty($params) ? $query : vsprintf($query, $params);
+	protected function execute_single ($query, $parameters) {
+		$time_from = microtime(true);
+		list($query, $parameters) = $this->prepare_query_and_parameters($query, $parameters);
+		$this->query['text'] = $query[0];
 		if (DEBUG) {
 			$this->queries['text'][] = $this->query['text'];
 		}
-		$result              = $this->q_internal($this->query['text']);
+		$result              = $this->q_internal($query, $parameters);
 		$this->query['time'] = round(microtime(true) - $time_from, 6);
 		$this->time += $this->query['time'];
 		if (DEBUG) {
@@ -181,21 +194,29 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param string $query
+	 * @param string   $query
+	 * @param string[] $parameters If not empty, than server-side prepared statements should be used
 	 *
 	 * @return false|object|resource
 	 */
-	abstract protected function q_internal ($query);
+	abstract protected function q_internal ($query, $parameters = []);
 	/**
 	 * Multiple SQL request to DB
 	 *
 	 * @abstract
 	 *
 	 * @param string[] $query
+	 * @param string[] $parameters If not empty, than server-side prepared statements should be used
 	 *
 	 * @return bool
 	 */
-	abstract protected function q_multi_internal ($query);
+	protected function q_multi_internal ($query, $parameters = []) {
+		$result = true;
+		foreach ($query as $q) {
+			$result = $result && $this->q_internal($q, $parameters);
+		}
+		return $result;
+	}
 	/**
 	 * Fetch
 	 *
@@ -263,14 +284,14 @@ abstract class _Abstract {
 	 * Method for simplified inserting of several rows
 	 *
 	 * @param string        $query
-	 * @param array|array[] $params   Array of array of parameters for inserting
-	 * @param bool          $join     If true - inserting of several rows will be combined in one query. For this, be sure, that your query has keyword
-	 *                                <i>VALUES</i> in uppercase. Part of query after this keyword will be multiplied with coma separator.
+	 * @param array|array[] $parameters Array of array of parameters for inserting
+	 * @param bool          $join       If true - inserting of several rows will be combined in one query. For this, be sure, that your query has keyword
+	 *                                  <i>VALUES</i> in uppercase. Part of query after this keyword will be multiplied with coma separator.
 	 *
 	 * @return bool
 	 */
-	public function insert ($query, $params, $join = true) {
-		if (!$query || !$params) {
+	public function insert ($query, $parameters, $join = true) {
+		if (!$query || !$parameters) {
 			return false;
 		}
 		if ($join) {
@@ -281,15 +302,15 @@ abstract class _Abstract {
 				$query[1][0].')',
 				$query[1][1]
 			];
-			$query[1] .= str_repeat(",$query[1]", count($params) - 1);
+			$query[1] .= str_repeat(",$query[1]", count($parameters) - 1);
 			$query = $query[0].'VALUES'.$query[1].$query[2];
 			return (bool)$this->q(
 				$query,
-				array_merge(...array_map('array_values', _array($params)))
+				array_merge(...array_map('array_values', _array($parameters)))
 			);
 		} else {
 			$result = true;
-			foreach ($params as $p) {
+			foreach ($parameters as $p) {
 				$result = $result && (bool)$this->q($query, $p);
 			}
 			return $result;

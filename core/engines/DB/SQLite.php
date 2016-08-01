@@ -40,31 +40,28 @@ class SQLite extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	public function q ($query, $params = [], ...$param) {
+	public function q ($query, ...$params) {
 		// Hack to convert small subset of MySQL queries into SQLite-compatible syntax
 		$query = str_replace('INSERT IGNORE', 'INSERT OR IGNORE', $query);
-		return parent::q(...([$query] + func_get_args()));
+		return parent::q($query, ...$params);
 	}
 	/**
 	 * @inheritdoc
 	 *
 	 * @return false|SQLite3Result
 	 */
-	protected function q_internal ($query) {
+	protected function q_internal ($query, $parameters = []) {
 		if (!$query) {
 			return false;
 		}
-		return $this->instance->query($query);
-	}
-	/**
-	 * @inheritdoc
-	 */
-	protected function q_multi_internal ($query) {
-		$result = true;
-		foreach ($query as $q) {
-			$result = $result && $this->q_internal($q);
+		if ($parameters) {
+			$stmt = $this->instance->prepare($query);
+			foreach ($parameters as $index => $parameter) {
+				$stmt->bindValue($index + 1, $parameter);
+			}
+			return $stmt->execute();
 		}
-		return $result;
+		return $this->instance->query($query);
 	}
 	/**
 	 * @inheritdoc

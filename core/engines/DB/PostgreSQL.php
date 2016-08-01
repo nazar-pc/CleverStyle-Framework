@@ -69,7 +69,7 @@ class PostgreSQL extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
-	public function q ($query, $params = [], ...$param) {
+	public function q ($query, ...$params) {
 		// Hack to convert small subset of MySQL queries into PostgreSQL-compatible syntax
 		$query = str_replace('`', '"', $query);
 		$query = preg_replace_callback(
@@ -108,24 +108,39 @@ class PostgreSQL extends _Abstract {
 			},
 			$query
 		);
-		return parent::q(...([$query] + func_get_args()));
+		// Hack: Prepared statements will be converted right before execution
+		return parent::q($query, ...$params);
 	}
 	/**
 	 * @inheritdoc
 	 *
 	 * @return false|resource
 	 */
-	protected function q_internal ($query) {
+	protected function q_internal ($query, $parameters = []) {
 		if (!$query) {
 			return false;
+		}
+		if ($parameters) {
+			$query = $this->convert_prepared_statements_syntax($query);
+			return $this->query_result = pg_query_params($this->handler, $query, $parameters);
 		}
 		return $this->query_result = pg_query($this->handler, $query);
 	}
 	/**
-	 * @inheritdoc
+	 * @param string|string[] $query
+	 *
+	 * @return string|string[]
 	 */
-	protected function q_multi_internal ($query) {
-		return (bool)$this->q_internal(implode(';', $query));
+	protected function convert_prepared_statements_syntax ($query) {
+		if (is_array($query)) {
+			return array_map([$this, 'convert_prepared_statements_syntax'], $query);
+		}
+		$i = 1;
+		while ($q_pos = strpos($query, '?')) {
+			$query = substr($query, 0, $q_pos).'$1'.substr($query, $q_pos + 1);
+			++$i;
+		}
+		return $query;
 	}
 	/**
 	 * @inheritdoc

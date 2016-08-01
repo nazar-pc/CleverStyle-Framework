@@ -73,29 +73,32 @@ class MySQLi extends _Abstract {
 	 *
 	 * @return false|mysqli_result
 	 */
-	protected function q_internal ($query) {
+	protected function q_internal ($query, $parameters = []) {
 		if (!$query) {
 			return false;
 		}
-		$result = $this->instance->query($query);
-		// In case of MySQL Client error - try to fix everything, but only once
-		if (
-			!$result &&
-			$this->instance->errno >= 2000 &&
-			$this->instance->ping()
-		) {
-			$result = $this->instance->query($query);
+		for ($i = 0; $i < 2; ++$i) {
+			if ($parameters) {
+				$stmt = $this->instance->prepare($query);
+				$stmt->bind_param(
+					str_repeat('s', count($parameters)),
+					...$parameters
+				);
+				$stmt->execute();
+				$result = $stmt->get_result();
+			} else {
+				$result = $this->instance->query($query);
+			}
+			// In case of MySQL Client error - try to fix everything, but only once
+			if (
+				$result ||
+				$this->instance->errno < 2000 ||
+				!$this->instance->ping()
+			) {
+				break;
+			}
 		}
-		return $result;
-	}
-	/**
-	 * @inheritdoc
-	 */
-	protected function q_multi_internal ($query) {
-		$result = true;
-		foreach ($query as $q) {
-			$result = $result && $this->q_internal($q);
-		}
+		/** @noinspection PhpUndefinedVariableInspection */
 		return $result;
 	}
 	/**

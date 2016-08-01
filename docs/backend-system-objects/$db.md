@@ -65,7 +65,7 @@ This class has next public methods:
 * time()
 * connecting_time()
 
-#### q($query : string|string[], $params = [] : string|string[], ...$param : string[]) : bool|object|resource
+#### q($query : string|string[], ...$params : array) : bool|object|resource
 Query method. `$query` may be SQL string or array of strings. Strings may be formatted according to [sprintf()](http://www.php.net/manual/en/function.sprintf.php) PHP function. In this case `$params` argument may contain array of arguments for formatting of string, another way - to specify arguments as arguments of this method started from second argument.
 
 For example:

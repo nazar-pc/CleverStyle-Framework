@@ -12,8 +12,8 @@ namespace cs\DB {
 			$connected_fake  = Fake::$connected_fake;
 			$this->connected = $connected_fake();
 		}
-		protected function q_internal ($query) { }
-		protected function q_multi_internal ($query) { }
+		protected function q_internal ($query, $parameters = []) { }
+		protected function q_multi_internal ($query, $parameters = []) { }
 		public function n ($query_result) { }
 		public function f ($query_result, $single_column = false, $array = false, $indexed = false) { }
 		public function id () { }

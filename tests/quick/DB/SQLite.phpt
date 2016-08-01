@@ -108,6 +108,7 @@ var_dump('multiple rows indexed array single column', $u);
 
 var_dump('->qf()', $db->qf("SELECT * FROM `[prefix]test` ORDER BY `id` ASC"));
 var_dump('->qf(..., 2)', $db->qf("SELECT * FROM `[prefix]test` WHERE `id` = '%d' ORDER BY `id` ASC", 2));
+var_dump('->qf(..., 2), prepared statement', $db->qf("SELECT * FROM `[prefix]test` WHERE `id` = ?", 2));
 var_dump('->qfs()', $db->qfs("SELECT * FROM `[prefix]test` ORDER BY `id` ASC"));
 var_dump('->qfa()', $db->qfa("SELECT * FROM `[prefix]test` ORDER BY `id` ASC"));
 var_dump('->qfas()', $db->qfas("SELECT * FROM `[prefix]test`"));
@@ -368,6 +369,17 @@ array(4) {
   ["value"]=>
   float(11.5)
 }
+string(32) "->qf(..., 2), prepared statement"
+array(4) {
+  ["id"]=>
+  int(2)
+  ["title"]=>
+  string(7) "Title 2"
+  ["description"]=>
+  string(13) "Description 2"
+  ["value"]=>
+  float(11.5)
+}
 string(7) "->qfs()"
 int(1)
 string(7) "->qfa()"
@@ -515,7 +527,7 @@ string(0) ""
 string(7) "Queries"
 array(3) {
   ["num"]=>
-  int(35)
+  int(36)
   ["time"]=>
   array(0) {
   }
