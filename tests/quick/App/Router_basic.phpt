@@ -374,15 +374,15 @@ array(4) {
   string(7) "level30"
 }
 string(33) "Getting working directory (admin)"
-string(79) "%s/tests/quick/App/modules/Module_with_controller_routing/admin"
+string(%d) "%s/tests/quick/App/modules/Module_with_controller_routing/admin"
 string(31) "Getting working directory (api)"
-string(77) "%s/tests/quick/App/modules/Module_with_controller_routing/api"
+string(%d) "%s/tests/quick/App/modules/Module_with_controller_routing/api"
 string(31) "Getting working directory (cli)"
-string(77) "%s/tests/quick/App/modules/Module_with_controller_routing/cli"
+string(%d) "%s/tests/quick/App/modules/Module_with_controller_routing/cli"
 string(44) "Getting non-existing working directory (api)"
 int(404)
 string(44) "Getting non-existing working directory (cli)"
-string(69) "%s/tests/quick/App/modules/Module_does_not_exists/cli"
+string(%d) "%s/tests/quick/App/modules/Module_does_not_exists/cli"
 string(16) "Empty index.json"
 array(1) {
   [0]=>
