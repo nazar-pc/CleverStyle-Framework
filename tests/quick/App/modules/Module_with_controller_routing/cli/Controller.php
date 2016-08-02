@@ -8,12 +8,6 @@ class Controller {
 	public static function index_get () {
 		var_dump(__METHOD__);
 	}
-	public static function _ () {
-		var_dump(__METHOD__);
-	}
-	public static function __post () {
-		var_dump(__METHOD__);
-	}
 	public static function level10_get () {
 		var_dump(__METHOD__);
 	}

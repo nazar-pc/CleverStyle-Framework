@@ -20,14 +20,16 @@ trait Files {
 	 */
 	protected function files_router ($Request) {
 		foreach ($this->controller_path as $index => $path) {
+			$dir = $this->working_directory;
 			/**
-			 * Starting from index 2 we need to maintain slash-separated string that includes all paths from index 1 and till current
+			 * Starting from index 2 (first is always `index`) we need to maintain slash-separated string that includes all paths from index 1 and till pre-last
+			 * (last is base filename, while pre-last goes into directory path)
 			 */
 			if ($index > 1) {
-				$path = implode('/', array_slice($this->controller_path, 1, $index));
+				$dir .= '/'.implode('/', array_slice($this->controller_path, 1, $index - 1));
 			}
 			$next_exists = isset($this->controller_path[$index + 1]);
-			$this->files_router_handler($Request, $this->working_directory, $path, !$next_exists);
+			$this->files_router_handler($Request, $dir, $path, !$next_exists);
 		}
 	}
 	/**

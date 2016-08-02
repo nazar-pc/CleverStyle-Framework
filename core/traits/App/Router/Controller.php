@@ -35,7 +35,8 @@ trait Controller {
 			: "cs\\modules\\$Request->current_module$suffix\\Controller";
 		foreach ($this->controller_path as $index => $path) {
 			/**
-			 * Starting from index 2 we need to maintain underscore-separated string that includes all paths from index 1 and till current
+			 * Starting from index 2 (first is always `index`) we need to maintain underscore-separated string that includes all paths from index 1 and till
+			 * current
 			 */
 			if ($index > 1) {
 				$path = implode('_', array_slice($this->controller_path, 1, $index));
@@ -107,10 +108,7 @@ trait Controller {
 				return true;
 			}
 		);
-		if (method_exists($controller_class, $method_name)) {
-			$methods[] = $method_name;
-		}
-		$methods = _strtoupper(_substr($methods, strlen($method_name) + 1));
+		$methods   = _strtoupper(_substr($methods, strlen($method_name) + 1));
 		natcasesort($methods);
 		return array_values($methods);
 	}
