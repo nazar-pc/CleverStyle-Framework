@@ -1,5 +1,5 @@
 <?php
-namespace cs\modules\Module_with_controller_routing;
+namespace cs\modules\Module_with_controller_routing\admin;
 
 class Controller {
 	public static function index () {

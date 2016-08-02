@@ -16,7 +16,11 @@ trait CLI {
 	protected function print_cli_structure ($path) {
 		$Config = Config::instance();
 		$result = [];
-		foreach ($Config->components['modules'] as $module_name => $data) {
+		/**
+		 * @var array $modules
+		 */
+		$modules = $Config->components['modules'];
+		foreach ($modules as $module_name => $data) {
 			if ($data['active'] == Module_Properties::ENABLED) {
 				$working_dir = MODULES."/$module_name/cli";
 				$structure   = file_exists("$working_dir/index.json") ? file_get_json("$working_dir/index.json") : [];
