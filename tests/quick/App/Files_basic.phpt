@@ -116,7 +116,7 @@ string(%d) "%s/tests/quick/App/modules/Module_with_files_routing/admin/level10.p
 string(%d) "%s/tests/quick/App/modules/Module_with_files_routing/admin/level10/level21.php"
 string(%d) "%s/tests/quick/App/modules/Module_with_files_routing/admin/level10/level21/level30.php"
 string(32) "API request (GET, method exists)"
-string(82) "%s/tests/quick/App/modules/Module_with_files_routing/api/index.php"
+string(%d) "%s/tests/quick/App/modules/Module_with_files_routing/api/index.php"
 string(%d) "%s/tests/quick/App/modules/Module_with_files_routing/api/index.get.php"
 string(%d) "%s/tests/quick/App/modules/Module_with_files_routing/api/level10.get.php"
 string(%d) "%s/tests/quick/App/modules/Module_with_files_routing/api/level10/level21.php"
