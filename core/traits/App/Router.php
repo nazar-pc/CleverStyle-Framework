@@ -54,11 +54,9 @@ trait Router {
 		 */
 		if (file_exists("$this->working_directory/index.html")) {
 			ob_start();
-			_include("$this->working_directory/index.html", false, false);
+			include "$this->working_directory/index.html";
 			Page::instance()->content(ob_get_clean());
-			return;
-		}
-		if (file_exists("$this->working_directory/Controller.php")) {
+		} elseif (file_exists("$this->working_directory/Controller.php")) {
 			$this->controller_router($Request);
 		} else {
 			$this->files_router($Request);
@@ -81,6 +79,7 @@ trait Router {
 		} elseif ($Request->api_path) {
 			$working_directory .= '/api';
 		}
+		// CLI interface will print useful info instead of 404
 		if (!is_dir($working_directory) && (!$Request->cli_path || $Request->method != 'CLI')) {
 			throw new ExitException(404);
 		}

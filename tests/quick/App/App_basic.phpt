@@ -7,7 +7,7 @@ namespace cs\App {
 		protected function init_router () {
 			var_dump('cs\App\Router::init_router() called');
 		}
-		protected function execute_router () {
+		protected function execute_router ($Request) {
 			var_dump('cs\App\Router::execute_router() called');
 		}
 	}
