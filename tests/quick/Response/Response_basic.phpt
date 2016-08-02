@@ -2,7 +2,6 @@
 <?php
 namespace cs;
 include __DIR__.'/../../unit.php';
-include __DIR__.'/../../../core/thirdparty/cli/cli.php';
 function header (...$arguments) {
 	var_dump('header() called with', $arguments);
 }

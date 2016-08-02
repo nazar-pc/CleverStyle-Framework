@@ -14,12 +14,11 @@ use
 
 trait CLI {
 	protected function print_cli_structure ($path) {
-		$Config = Config::instance();
 		$result = [];
 		/**
 		 * @var array $modules
 		 */
-		$modules = $Config->components['modules'];
+		$modules = Config::instance()->components['modules'];
 		foreach ($modules as $module_name => $data) {
 			if ($data['active'] == Module_Properties::ENABLED) {
 				$working_dir = MODULES."/$module_name/cli";

@@ -15,6 +15,7 @@ require_once __DIR__.'/Singleton.php';
 require_once __DIR__.'/Mock_object.php';
 require_once __DIR__.'/functions.php';
 require_once __DIR__.'/../core/thirdparty/upf.php';
+require_once __DIR__.'/../core/thirdparty/cli/cli.php';
 require_once __DIR__.'/../core/functions.php';
 
 if (!defined('DEBUG')) {

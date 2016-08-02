@@ -80,6 +80,7 @@ trait Router {
 			$working_directory .= '/api';
 		}
 		// CLI interface will print useful info instead of 404
+		/** @noinspection NotOptimalIfConditionsInspection */
 		if (!is_dir($working_directory) && (!$Request->cli_path || $Request->method != 'CLI')) {
 			throw new ExitException(404);
 		}
