@@ -434,7 +434,7 @@ array(2) {
 string(30) "cs\Page::replace() called with"
 array(2) {
   [0]=>
-  string(21) "<!--block#%d-->"
+  string(%d) "<!--block#%d-->"
   [1]=>
   string(46) "<h1>Custom block title</h1>
 Some content here
