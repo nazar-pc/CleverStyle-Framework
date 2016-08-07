@@ -10,43 +10,58 @@
    * Simplified access to translations in Polymer elements
    */
   (cs.Polymer || (cs.Polymer = {})).behaviors = {
-    Language: (function(){
-      Language.displayName = 'Language';
-      var prototype, create_property, constructor = Language;
-      prototype = Language;
-      create_property = function(L){
-        return {
+    Language: function(){
+      var x$;
+      function Language(prefix){
+        var x$;
+        x$ = Object.create(Language);
+        x$.properties = x$.properties;
+        x$._set_language_properties = x$._set_language_properties;
+        x$._compute__ = x$._compute__;
+        x$.ready = function(){
+          var this$ = this;
+          cs.Language.ready().then(function(L){
+            L = L(prefix);
+            this$._set_language_properties(L);
+          });
+        };
+        return x$;
+      }
+      x$ = Language;
+      x$.properties = {
+        Language: {
           readOnly: true,
-          type: Object,
-          value: function(){
-            return L;
+          type: Object
+        },
+        L: {
+          readOnly: true,
+          type: Object
+        },
+        __: {
+          type: Function,
+          computed: '_compute__(Language)'
+        }
+      };
+      x$.ready = function(){
+        var this$ = this;
+        cs.Language.ready().then(function(L){
+          this$._set_language_properties(L);
+        });
+      };
+      x$._compute__ = function(L){
+        return function(key){
+          if (arguments.length === 1) {
+            return L.get(key);
+          } else {
+            return L.format.apply(L, arguments);
           }
         };
       };
-      function Language(prefix){
-        var this$ = this instanceof ctor$ ? this : new ctor$;
-        this$.Language = this$.Language(prefix);
-        this$.properties = {
-          Language: create_property(this$.Language),
-          L: create_property(this$.Language)
-        };
-        this$.__ = this$.__;
-        return this$;
-      } function ctor$(){} ctor$.prototype = prototype;
-      prototype.Language = cs.Language;
-      prototype.properties = {
-        Language: create_property(prototype.Language),
-        L: create_property(prototype.Language)
+      x$._set_language_properties = function(L){
+        this._setLanguage(L);
+        this._setL(L);
       };
-      prototype.__ = function(key){
-        var ref$;
-        if (arguments.length === 1) {
-          return this.Language.get(key);
-        } else {
-          return (ref$ = this.Language).format.apply(ref$, arguments);
-        }
-      };
-      return Language;
-    }())
+      return x$;
+    }()
   };
 }).call(this);
