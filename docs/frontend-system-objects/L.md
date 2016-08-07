@@ -1,10 +1,15 @@
 `L` - is system object, that provides multilingual interface functionality, instance can be obtained in such way:
 ```javascript
-L = window.cs.Language;
+window.cs.Language.ready().then(function (L) {
+	// Use L here
+});
 ```
 Also there is possibility to simplify getting translations with common prefix:
 ```javascript
-L = window.cs.Language(prefix);
+window.cs.Language.ready().then(function (L) {
+	L	= L(prefix);
+	// Use L here
+});
 ```
 In case of prefixed usage full keys are still available, but prefixed keys are preferred in case of conflict.
 
@@ -24,14 +29,16 @@ Object is similar to [$L](/docs/backend-system-objects/$L.md) object on backend,
 #### get(item : string) : string
 Get translation.
 ```javascript
-L = cs.Language;
-L.get('module_name');
+cs.Language.ready().then(function (L) {
+	L.get('module_name');
+});
 ```
 
 Also there is simplified way to get translation - to get it as property of object:
 ```javascript
-L = cs.Language;
-L.module_name;
+cs.Language.ready().then(function (L) {
+	L.module_name;
+});
 ```
 
 #### format(name : string, arguments : string[]) : string
@@ -43,16 +50,18 @@ translation (in json file)
 ```
 usage
 ```javascript
-L = cs.Language;
-L.format('hello', ['my friend']);
+cs.Language.ready().then(function (L) {
+	L.format('hello', ['my friend']);
+});
 ```
 
 Translation string should be formatted according to [sprintf()](http://www.php.net/manual/en/function.sprintf.php) PHP function.
 
 Also there is simplified way to get formatted string - to get it as result of calling of object function:
 ```javascript
-L = cs.Language;
-L.hello('my friend')
+cs.Language.ready().then(function (L) {
+	L.hello('my friend')
+});
 ```
 
 This way is more natural. You can specify as much arguments as you need.
