@@ -16,7 +16,11 @@
     content_loaded = function(){
       var imports;
       imports = document.querySelectorAll('link[rel=import]:not([async]');
-      imports[imports.length - 1].addEventListener('load', resolve);
+      if (imports.length) {
+        imports[imports.length - 1].addEventListener('load', resolve);
+      } else {
+        resolve();
+      }
     };
     switch (document.readyState) {
     case 'complete':

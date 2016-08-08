@@ -260,7 +260,9 @@ trait Includes {
 		}
 		$this->css_internal($includes['css'], 'file', true);
 		$this->js_internal($includes['js'], 'file', true);
-		$this->html_internal($includes['html'], 'file', true);
+		if (isset($includes['html'])) {
+			$this->html_internal($includes['html'], 'file', true);
+		}
 		$this->add_includes_on_page_manually_added($Config, $Request, $preload);
 		return $this;
 	}
@@ -294,7 +296,7 @@ trait Includes {
 	 * @param bool    $with_compression
 	 */
 	protected function webcomponents_polyfill ($Request, $Config, $with_compression) {
-		if ($Request->cookie('shadow_dom') == 1) {
+		if (($this->theme != Config::SYSTEM_THEME && $Config->core['disable_webcomponents']) || $Request->cookie('shadow_dom') == 1) {
 			return;
 		}
 		if ($with_compression) {

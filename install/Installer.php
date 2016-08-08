@@ -276,6 +276,7 @@ CONFIG;
 			'frontend_load_optimization'        => 1,
 			'vulcanization'                     => 1,
 			'put_js_after_body'                 => 1,
+			'disable_webcomponents'             => 0,
 			'theme'                             => 'CleverStyle',
 			'language'                          => $language,
 			'active_languages'                  => [$language],

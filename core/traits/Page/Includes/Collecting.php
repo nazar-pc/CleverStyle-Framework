@@ -97,6 +97,7 @@ trait Collecting {
 				'includes_map' => &$includes_map
 			]
 		);
+		$includes_map = $this->webcomponents_support_filter($Config, $includes_map);
 		$dependencies = $this->normalize_dependencies($dependencies, $functionalities);
 		$includes_map = $this->clean_includes_arrays_without_files($dependencies, $includes_map);
 		$dependencies = array_map('array_values', $dependencies);
@@ -276,6 +277,32 @@ trait Collecting {
 			}
 		}
 		return array_merge(..._array($array));
+	}
+	/**
+	 * If system is configured to not use Web Components - all HTML imports and Polymer-related JS code will be removed from includes map
+	 *
+	 * @param Config  $Config
+	 * @param array[] $includes_map
+	 *
+	 * @return array[]
+	 */
+	protected function webcomponents_support_filter ($Config, $includes_map) {
+		if ($this->theme != Config::SYSTEM_THEME && $Config->core['disable_webcomponents']) {
+			foreach ($includes_map as &$includes) {
+				unset($includes['html']);
+			}
+			unset($includes);
+			$prefix                                    = DIR.'/includes/js/Polymer';
+			$includes_map[Config::SYSTEM_MODULE]['js'] = array_values(
+				array_filter(
+					$includes_map[Config::SYSTEM_MODULE]['js'],
+					function ($file) use ($prefix) {
+						return strpos($file, $prefix) !== 0;
+					}
+				)
+			);
+		}
+		return $includes_map;
 	}
 	/**
 	 * Includes array is composed from dependencies and sometimes dependencies doesn't have any files, so we'll clean that
