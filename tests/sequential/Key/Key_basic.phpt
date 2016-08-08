@@ -51,7 +51,7 @@ Config::instance_stub(
 	[
 		'core' => [
 			'inserts_limit' => 1,
-			'key_expire'    => 3
+			'key_expire'    => 4
 		]
 	]
 );
@@ -66,12 +66,14 @@ function time ($time = 0) {
 	return $stored_time;
 }
 var_dump('Expiration test');
-$key_6 = $Key->add(0, false, null, \time() + 1);
+$time  = \time();
+time($time);
+$key_6 = $Key->add(0, false, null, $time + 2);
 $key_7 = $Key->add(0, false, null);
 $key_8 = $Key->add(0, false, null);
-time(\time() + 2);
+time($time + 3);
 var_dump($Key->get(0, $key_6), $Key->get(0, $key_7));
-time(\time() + 5);
+time($time + 5);
 var_dump($Key->get(0, $key_8));
 ?>
 --EXPECTF--
