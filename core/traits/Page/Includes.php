@@ -12,7 +12,6 @@ use
 	cs\Language,
 	cs\Request,
 	cs\Response,
-	cs\User,
 	h,
 	cs\Page\Includes\Cache,
 	cs\Page\Includes\Collecting,
