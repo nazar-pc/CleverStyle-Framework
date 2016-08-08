@@ -9,7 +9,8 @@
   /**
    * Simplified access to translations in Polymer elements
    */
-  (cs.Polymer || (cs.Polymer = {})).behaviors = {
+  var ref$;
+  ((ref$ = window.cs || (window.cs = {})).Polymer || (ref$.Polymer = {})).behaviors = {
     Language: function(){
       var x$;
       function Language(prefix){

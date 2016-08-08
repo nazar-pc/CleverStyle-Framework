@@ -4,10 +4,6 @@
  * @copyright Copyright (c) 2014-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-window.WebComponents	= window.WebComponents || {}
-window.Polymer			=
-	dom				: 'shadow'
-	lazyRegister	: true
 ###
  # Load configuration from special script elements
 ###

@@ -7,7 +7,7 @@
 /**
  * Simplified access to translations in Polymer elements
  */
-cs.{}Polymer.behaviors =
+window.{}cs.{}Polymer.behaviors =
 	# This will add `Language` property (and its short alias `L`) alongside with `__()` method which can be used for formatted translations
 	# Also might be called as function with prefix
 	Language : do ->
