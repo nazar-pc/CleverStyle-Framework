@@ -32,9 +32,9 @@ class Pool {
 	 */
 	public function get_all () {
 		return $this->db_prime()->qfas(
-			"SELECT `address`
+			'SELECT `address`
 			FROM `[prefix]websockets_pool`
-			ORDER BY `date` ASC"
+			ORDER BY `date` ASC'
 		) ?: [];
 	}
 	/**

@@ -197,8 +197,8 @@ class OAuth2 {
 	 */
 	public function clients_list () {
 		return $this->db()->qfa(
-			"SELECT *
-			FROM `[prefix]oauth2_clients`"
+			'SELECT *
+			FROM `[prefix]oauth2_clients`'
 		);
 	}
 	/**

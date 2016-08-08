@@ -84,8 +84,8 @@ Event::instance()
 				return;
 			}
 			$files = $cdb->q(
-				"SELECT `source`
-				FROM `[prefix]uploader_files`"
+				'SELECT `source`
+				FROM `[prefix]uploader_files`'
 			);
 			while ($f = $cdb->f($files, true)) {
 				$storage->unlink($f);

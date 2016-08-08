@@ -437,8 +437,8 @@ trait Management {
 	 */
 	protected function delete_old_sessions () {
 		$this->db_prime()->q(
-			"DELETE FROM `[prefix]sessions`
-			WHERE `expire` < ".time()
+			'DELETE FROM `[prefix]sessions`
+			WHERE `expire` < '.time()
 		);
 	}
 	/**

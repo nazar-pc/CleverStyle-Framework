@@ -154,7 +154,7 @@ trait CRUD_helpers {
 			}
 			$where_tmp = [];
 			$this->search_conditions("j$join_index", $field, $value, $where_tmp, $join_params);
-			$joins .= " AND ".implode(" AND ", $where_tmp);
+			$joins .= ' AND '.implode(' AND ', $where_tmp);
 		}
 		if ($language_field) {
 			/** @noinspection OffsetOperationsInspection */

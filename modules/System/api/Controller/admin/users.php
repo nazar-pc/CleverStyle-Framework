@@ -228,7 +228,7 @@ trait users {
 						"`%s` $mode (%s)",
 						$column,
 						implode(
-							", ",
+							', ',
 							$cdb->s(
 								_trim(
 									_trim(explode(',', $text), "'")

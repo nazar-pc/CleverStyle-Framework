@@ -73,7 +73,7 @@ class Meta {
 			$this->og_type         = $type;
 			$this->og_data['type'] = h::meta(
 				[
-					'property' => "og:type",
+					'property' => 'og:type',
 					'content'  => $type
 				]
 			);

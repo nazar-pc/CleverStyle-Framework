@@ -239,7 +239,7 @@ class Server implements MessageComponentInterface {
 		} elseif (isset($connection->user_id)) {
 			/** @noinspection PhpUndefinedFieldInspection */
 			Event::instance()->fire(
-				"WebSockets/message",
+				'WebSockets/message',
 				[
 					'action'     => $action,
 					'details'    => $details,
@@ -539,7 +539,7 @@ class Server implements MessageComponentInterface {
 		if (isset($connection->user_id) && $this->clients->contains($connection)) {
 			/** @noinspection PhpUndefinedFieldInspection */
 			Event::instance()->fire(
-				"WebSockets/message",
+				'WebSockets/message',
 				[
 					'action'     => 'Client/disconnection',
 					'details'    => null,

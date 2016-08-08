@@ -151,8 +151,8 @@ Event::instance()
 			}
 			unset($section);
 			$posts = DB::instance()->db(Config::instance()->module('Blogs')->db('posts'))->qfas(
-				"SELECT `id`
-				FROM `[prefix]blogs_posts`"
+				'SELECT `id`
+				FROM `[prefix]blogs_posts`'
 			) ?: [];
 			foreach ($posts as $post) {
 				$Posts->del($post);

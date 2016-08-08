@@ -283,7 +283,7 @@ trait Includes {
 			return;
 		}
 		$this->js_internal(
-			get_files_list(DIR."/includes/js/microsoft_sh*t", "/.*\\.js$/i", 'f', "includes/js/microsoft_sh*t", true),
+			get_files_list(DIR.'/includes/js/microsoft_sh*t', '/.*\.js$/i', 'f', 'includes/js/microsoft_sh*t', true),
 			'file',
 			true
 		);
@@ -347,7 +347,7 @@ trait Includes {
 		 * Current URL based on controller path (it better represents how page was rendered)
 		 */
 		$current_url = array_slice(App::instance()->controller_path, 1);
-		$current_url = ($Request->admin_path ? "admin/" : '')."$current_module/".implode('/', $current_url);
+		$current_url = ($Request->admin_path ? 'admin/' : '')."$current_module/".implode('/', $current_url);
 		/**
 		 * Narrow the dependencies to current module only
 		 */

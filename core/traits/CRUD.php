@@ -56,7 +56,7 @@ trait CRUD {
 			$insert_id,
 			$update_needed
 		);
-		$columns = "`".implode("`,`", array_keys($prepared_arguments))."`";
+		$columns = '`'.implode('`,`', array_keys($prepared_arguments)).'`';
 		$values  = implode(',', array_fill(0, count($prepared_arguments), "'%s'"));
 		$return  = $this->db_prime()->q(
 			"INSERT IGNORE INTO `$table`
@@ -186,7 +186,7 @@ trait CRUD {
 				return !is_array($column) || !isset($column['data_model']);
 			}
 		);
-		$columns      = "`".implode("`,`", array_keys($columns))."`";
+		$columns      = '`'.implode('`,`', array_keys($columns)).'`';
 		$first_column = array_keys($data_model)[0];
 		$data         = $this->db()->qf(
 			"SELECT $columns

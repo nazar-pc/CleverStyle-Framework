@@ -270,10 +270,10 @@ class Photo_gallery {
 			function () {
 				$data      = [];
 				$galleries = $this->db()->qfas(
-					"SELECT `id`
+					'SELECT `id`
 					FROM `[prefix]photo_gallery_galleries`
 					WHERE `active` = 1
-					ORDER BY `order` ASC"
+					ORDER BY `order` ASC'
 				);
 				foreach ($galleries ?: [] as $gallery) {
 					$gallery = $this->get_gallery($gallery);

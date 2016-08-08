@@ -37,11 +37,9 @@ function install_form ($phar_path) {
 				[
 					'value'   => ['1', '0'],
 					'in'      => [h::span('Regular user'), h::span('Expert')],
-					'onclick' =>
-						"var items = document.getElementsByClassName('expert');"
-						."for (var i = 0; i < items.length; i++) {"
-						."items.item(i).style.display = this.value == '0' ? 'table-row' : '';"
-						."}"
+					'onclick' => <<<JS
+var items = document.querySelectorAll('expert'), i; for (i = 0; i < items.length; i++) items[i].style.display = this.value == '0' ? 'table-row' : '';
+JS
 				]
 			)
 		).
