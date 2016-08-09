@@ -70,3 +70,14 @@ $this->search([
 ]);
 ...
 ```
+
+Special `total_count` key might be used when number of results is needed instead of results themselves:
+```php
+<?php
+...
+$this->search([
+    'argument'    => 'Value',
+    'total_count' => 1
+]);
+...
+```

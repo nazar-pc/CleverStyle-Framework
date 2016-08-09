@@ -30,9 +30,6 @@ trait CRUD_helpers {
 	 * @return false|int|int[]|string[] Array of `id` or number of elements
 	 */
 	protected function search ($search_parameters = [], $page = 1, $count = 100, $order_by = 'id', $asc = false) {
-		if (!isset($this->data_model[$order_by])) {
-			return false;
-		}
 		$joins        = '';
 		$join_params  = [];
 		$join_index   = 0;
@@ -72,7 +69,8 @@ trait CRUD_helpers {
 				"SELECT COUNT(`$table_alias`.`$first_column`)
 				FROM `$this->table` AS `$table_alias`
 				$joins
-				$where",
+				$where
+				GROUP BY `$table_alias`.`$first_column`",
 				array_merge($join_params, $where_params)
 			);
 		}
@@ -85,6 +83,7 @@ trait CRUD_helpers {
 			FROM `$this->table` AS `$table_alias`
 			$joins
 			$where
+			GROUP BY `$table_alias`.`$first_column`
 			ORDER BY $order_by $asc
 			LIMIT %d OFFSET %d",
 			array_merge($join_params, $where_params)
@@ -113,7 +112,7 @@ trait CRUD_helpers {
 				return;
 			}
 			if (isset($details['from'])) {
-				$where[]        = "`$table_alias`.`$key` => '%s'";
+				$where[]        = "`$table_alias`.`$key` >= '%s'";
 				$where_params[] = $details['from'];
 			}
 			if (isset($details['to'])) {
@@ -189,7 +188,7 @@ trait CRUD_helpers {
 			if (!isset($this->data_model[$order_by[0]]['data_model'][$order_by[1]])) {
 				$order_by = ['id'];
 			}
-		} elseif (isset($this->data_model[$order_by[0]]['data_model'])) {
+		} elseif (is_array($this->data_model[$order_by[0]]) && isset($this->data_model[$order_by[0]]['data_model'])) {
 			/**
 			 * Default field in joined table
 			 */

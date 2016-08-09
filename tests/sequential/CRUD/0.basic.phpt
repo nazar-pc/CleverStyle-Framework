@@ -73,7 +73,7 @@ class CRUD_basic {
 				'Title 3',
 				'Description 3',
 				null,
-				[]
+				[2, 3]
 			)
 		);
 		var_dump('create #4');
