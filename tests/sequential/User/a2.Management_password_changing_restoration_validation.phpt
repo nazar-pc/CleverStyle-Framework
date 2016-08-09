@@ -67,7 +67,9 @@ namespace cs {
 	var_dump('Password rehashing');
 	$hashed_password = password_hash($password_prepared, PASSWORD_DEFAULT, ['cost' => 5]);
 	$User->set('password_hash', $hashed_password, $result['id']);
+	Session::instance()->add($result['id']);
 	var_dump($User->validate_password($password, $result['id']), $User->get('password_hash') == $hashed_password);
+	var_dump($User->id === $result['id']);
 }
 ?>
 --EXPECTF--
@@ -108,3 +110,4 @@ bool(false)
 string(18) "Password rehashing"
 bool(true)
 bool(false)
+bool(true)
