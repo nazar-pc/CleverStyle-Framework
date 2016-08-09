@@ -217,11 +217,17 @@ trait CRUD {
 	}
 	/**
 	 * @param false|string|string[] $value
-	 * @param string                $model
+	 * @param callable|string       $model
 	 *
 	 * @return array|false|float|int|string
 	 */
 	private function read_field_post_processing ($value, $model) {
+		if (is_array($value)) {
+			foreach ($value as &$v) {
+				$v = $this->read_field_post_processing($v, $model);
+			}
+			return $value;
+		}
 		if (is_callable($model)) {
 			return $model($value);
 		}
@@ -232,10 +238,10 @@ trait CRUD {
 			return _json_decode($value);
 		}
 		if (strpos($model, 'int') === 0) {
-			return _int($value);
+			return (int)$value;
 		}
 		if (strpos($model, 'float') === 0) {
-			return _float($value);
+			return (float)$value;
 		}
 		return $value;
 	}

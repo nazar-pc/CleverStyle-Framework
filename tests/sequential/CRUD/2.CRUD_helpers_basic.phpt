@@ -21,7 +21,7 @@ class CRUD_helpers_basic {
 			]
 		]
 	];
-	function __construct () {
+	public function __construct () {
 		$this->data_model['number'] = function ($value) {
 			return max(1, (int)$value);
 		};
@@ -29,7 +29,7 @@ class CRUD_helpers_basic {
 	protected function cdb () {
 		return 0;
 	}
-	function test () {
+	public function test () {
 		$this->db_prime()->q(
 			array_filter(
 				explode(';', file_get_contents(__DIR__."/basic.$_ENV[DB].sql")),
@@ -246,47 +246,6 @@ class CRUD_helpers_basic {
 			)
 		);
 
-		var_dump('Order by (joined table, desc)');
-		var_dump(
-			$this->search(
-				[],
-				1,
-				100,
-				'joined_table:value'
-			)
-		);
-
-		var_dump('Order by (joined table, asc)');
-		var_dump(
-			$this->search(
-				[],
-				1,
-				100,
-				'joined_table:value',
-				true
-			)
-		);
-
-		var_dump('Order by (joined table, no column specified)');
-		var_dump(
-			$this->search(
-				[],
-				1,
-				100,
-				'joined_table'
-			)
-		);
-
-		var_dump('Order by (joined table, non-existent column)');
-		var_dump(
-			$this->search(
-				[],
-				1,
-				100,
-				'joined_table:non-existent'
-			)
-		);
-
 		$this->db_prime()->q(
 			array_filter(
 				explode(';', file_get_contents(__DIR__."/basic.cleanup.sql")),
@@ -403,44 +362,6 @@ array(4) {
   int(1)
 }
 string(42) "Order by (main table, non-existent column)"
-array(4) {
-  [0]=>
-  int(4)
-  [1]=>
-  int(3)
-  [2]=>
-  int(2)
-  [3]=>
-  int(1)
-}
-string(29) "Order by (joined table, desc)"
-array(3) {
-  [0]=>
-  int(2)
-  [1]=>
-  int(1)
-  [2]=>
-  int(3)
-}
-string(28) "Order by (joined table, asc)"
-array(3) {
-  [0]=>
-  int(1)
-  [1]=>
-  int(3)
-  [2]=>
-  int(2)
-}
-string(44) "Order by (joined table, no column specified)"
-array(3) {
-  [0]=>
-  int(2)
-  [1]=>
-  int(1)
-  [2]=>
-  int(3)
-}
-string(44) "Order by (joined table, non-existent column)"
 array(4) {
   [0]=>
   int(4)

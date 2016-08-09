@@ -83,7 +83,7 @@ trait CRUD_helpers {
 			FROM `$this->table` AS `$table_alias`
 			$joins
 			$where
-			GROUP BY `$table_alias`.`$first_column`
+			GROUP BY `$table_alias`.`$first_column`, $order_by
 			ORDER BY $order_by $asc
 			LIMIT %d OFFSET %d",
 			array_merge($join_params, $where_params)

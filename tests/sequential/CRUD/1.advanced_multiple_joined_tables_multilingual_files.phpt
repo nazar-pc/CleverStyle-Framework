@@ -28,7 +28,7 @@ class CRUD_advanced {
 	];
 	protected $data_model_ml_group         = 'crud_test/advanced';
 	protected $data_model_files_tag_prefix = 'crud_test/advanced';
-	function __construct () {
+	public function __construct () {
 		$this->data_model['id']                                    = function ($value) {
 			return max(1, (int)$value);
 		};
@@ -39,7 +39,7 @@ class CRUD_advanced {
 	protected function cdb () {
 		return 0;
 	}
-	function test () {
+	public function test () {
 		$this->db_prime()->q(
 			array_filter(
 				explode(';', file_get_contents(__DIR__."/advanced.$_ENV[DB].sql")),

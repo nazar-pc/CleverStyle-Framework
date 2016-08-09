@@ -21,7 +21,7 @@ class CRUD_basic {
 			]
 		]
 	];
-	function __construct () {
+	public function __construct () {
 		$this->data_model['number'] = function ($value) {
 			return max(1, (int)$value);
 		};
@@ -29,7 +29,7 @@ class CRUD_basic {
 	protected function cdb () {
 		return 0;
 	}
-	function test () {
+	public function test () {
 		$this->db_prime()->q(
 			array_filter(
 				explode(';', file_get_contents(__DIR__."/basic.$_ENV[DB].sql")),

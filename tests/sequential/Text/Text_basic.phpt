@@ -88,7 +88,7 @@ bool(true)
 string(14) "Text test text"
 bool(false)
 string(32) "Set text (multilingual, English)"
-string(5) "{¶3}"
+string(6) "{¶11}"
 string(36) "Process text (multilingual, English)"
 string(17) "Text test text en"
 array(1) {
@@ -102,12 +102,12 @@ string(17) "Text test text en"
 string(38) "Process text (multilingual, Ukrainian)"
 string(17) "Text test text en"
 string(34) "Set text (multilingual, Ukrainian)"
-string(5) "{¶3}"
+string(6) "{¶11}"
 string(17) "Text test text uk"
 string(42) "Process text (multilingual, English again)"
 string(17) "Text test text en"
 string(35) "Update text (multilingual, English)"
-string(5) "{¶3}"
+string(6) "{¶11}"
 string(20) "Text test text en #2"
 string(21) "Delete (multilingual)"
 bool(true)
