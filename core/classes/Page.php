@@ -118,7 +118,6 @@ class Page {
 	 */
 	protected $canonical_url;
 	protected $theme;
-	protected $finish_called_once;
 	/**
 	 * @param string $property
 	 *
@@ -132,21 +131,21 @@ class Page {
 		return false;
 	}
 	protected function init () {
-		$this->Content            = '';
-		$this->interface          = true;
-		$this->pre_Html           = '';
-		$this->Html               = '';
-		$this->Description        = '';
-		$this->Title              = [];
-		$this->Head               = '';
-		$this->pre_Body           = '';
-		$this->Left               = '';
-		$this->Top                = '';
-		$this->Right              = '';
-		$this->Bottom             = '';
-		$this->post_Body          = '';
-		$this->post_Html          = '';
-		$this->level              = [
+		$this->Content        = '';
+		$this->interface      = true;
+		$this->pre_Html       = '';
+		$this->Html           = '';
+		$this->Description    = '';
+		$this->Title          = [];
+		$this->Head           = '';
+		$this->pre_Body       = '';
+		$this->Left           = '';
+		$this->Top            = '';
+		$this->Right          = '';
+		$this->Bottom         = '';
+		$this->post_Body      = '';
+		$this->post_Html      = '';
+		$this->level          = [
 			'Head'      => 0,
 			'pre_Body'  => 1,
 			'Left'      => 3,
@@ -156,11 +155,10 @@ class Page {
 			'Right'     => 3,
 			'post_Body' => 1
 		];
-		$this->link               = [];
-		$this->search_replace     = [];
-		$this->canonical_url      = false;
-		$this->theme              = null;
-		$this->finish_called_once = false;
+		$this->link           = [];
+		$this->search_replace = [];
+		$this->canonical_url  = false;
+		$this->theme          = null;
 		$this->init_includes();
 		$Config = Config::instance(true);
 		/**
@@ -577,14 +575,7 @@ class Page {
 	 * Page generation
 	 */
 	public function render () {
-		/**
-		 * Protection from double calling
-		 */
-		if ($this->finish_called_once) {
-			return;
-		}
-		$this->finish_called_once = true;
-		$Response                 = Response::instance();
+		$Response = Response::instance();
 		if (is_resource($Response->body_stream)) {
 			return;
 		}
