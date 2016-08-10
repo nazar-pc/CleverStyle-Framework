@@ -137,6 +137,12 @@ class Includes_processing {
 	 */
 	public static function js ($data) {
 		/**
+		 * Handling template strings can be tricky (since they might be multi-line), so better do nothing
+		 */
+		if (strpos($data, '`')) {
+			return $data;
+		}
+		/**
 		 * Split into array of lines
 		 */
 		$data = explode("\n", $data);
