@@ -63,10 +63,8 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				title				= "<h3>#{L.modules_disabling_of_module(component)}</h3>"
 				message				= ''
 				if Object.keys(dependent_packages).length
-					# TODO: type is not needed here anymore, simplify data structure
-					for type, packages of dependent_packages
-						for _package in packages
-							message += "<p>#{L.this_package_is_used_by_module(_package)}</p>"
+					for p in dependent_packages
+						message += "<p>#{L.this_package_is_used_by_module(p)}</p>"
 					message += "<p>#{L.dependencies_not_satisfied}</p>"
 					if settings.simple_admin_mode
 						cs.ui.notify(message, 'error', 5)

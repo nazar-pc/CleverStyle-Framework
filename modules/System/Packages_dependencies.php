@@ -352,7 +352,7 @@ class Packages_dependencies {
 				isset($module_meta['require'][$meta['package']]) ||
 				array_intersect(array_keys($module_meta['require']), $meta['provide'])
 			) {
-				$used_by['modules'][] = $module;
+				$used_by[] = $module;
 			}
 		}
 		return $used_by;

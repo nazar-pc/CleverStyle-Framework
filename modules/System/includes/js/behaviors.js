@@ -55,17 +55,14 @@
       _disable_module: function(component){
         var this$ = this;
         Promise.all([cs.api(["get			api/System/admin/modules/" + component + "/dependent_packages", 'get_settings	api/System/admin/system']), cs.Language('system_admin_').ready()]).then(function(arg$){
-          var ref$, dependent_packages, settings, L, title, message, type, packages, i$, len$, _package, modal, p;
+          var ref$, dependent_packages, settings, L, title, message, i$, len$, p, modal;
           ref$ = arg$[0], dependent_packages = ref$[0], settings = ref$[1], L = arg$[1];
           title = "<h3>" + L.modules_disabling_of_module(component) + "</h3>";
           message = '';
           if (Object.keys(dependent_packages).length) {
-            for (type in dependent_packages) {
-              packages = dependent_packages[type];
-              for (i$ = 0, len$ = packages.length; i$ < len$; ++i$) {
-                _package = packages[i$];
-                message += "<p>" + L.this_package_is_used_by_module(_package) + "</p>";
-              }
+            for (i$ = 0, len$ = dependent_packages.length; i$ < len$; ++i$) {
+              p = dependent_packages[i$];
+              message += "<p>" + L.this_package_is_used_by_module(p) + "</p>";
             }
             message += "<p>" + L.dependencies_not_satisfied + "</p>";
             if (settings.simple_admin_mode) {
