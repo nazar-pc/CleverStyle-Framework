@@ -6,12 +6,20 @@
  */
 # TODO: Remove in 6.x when translations will be loaded asynchronously
 translations	= cs.Language
+is_ready		= false
 function Language (prefix)
 	prefix_length	= prefix.length
 	prefixed		= Object.create(Language)
-	for key of Language
-		if key.indexOf(prefix) == 0
-			prefixed[key.substr(prefix_length)] = Language[key]
+	prefixed.ready	= ->
+		Language.ready().then -> prefixed
+	fill_prefixed	= !->
+		for key of Language
+			if key.indexOf(prefix) == 0
+				prefixed[key.substr(prefix_length)] = Language[key]
+	if is_ready
+		fill_prefixed()
+	else
+		Language.ready().then(fill_prefixed)
 	prefixed
 cs.Language	= Language
 	..get	= (key) ->
@@ -25,6 +33,7 @@ cs.Language	= Language
 					vsprintf(value, [...&])
 				Language[key].toString	= ->
 					value
+			is_ready	:= true
 			resolve(Language)
 		@ready	= -> ready
 		ready

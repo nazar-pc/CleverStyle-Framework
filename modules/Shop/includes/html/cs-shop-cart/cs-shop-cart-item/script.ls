@@ -49,10 +49,11 @@ Polymer(
 	recalculate	: (price, units) !->
 		@price_formatted		= sprintf(price_formatting, price)
 		discount				= units * @unit_price - price
-		@$.discount.textContent	=
-			if discount
-				discount	= sprintf(price_formatting, discount)
-				"(#{cs.Language.shop_discount}: #{discount})"
-			else
-				''
+		cs.Language('shop_').ready().then (L) !~>
+			@$.discount.textContent	=
+				if discount
+					discount	= sprintf(price_formatting, discount)
+					"(#{L.discount}: #{discount})"
+				else
+					''
 );

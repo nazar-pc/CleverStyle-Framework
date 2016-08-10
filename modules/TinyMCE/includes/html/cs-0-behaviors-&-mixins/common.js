@@ -14,16 +14,17 @@
     if (load_promise) {
       return load_promise;
     }
-    load_promise = new Promise(function(resolve, reject){
-      var x$, script;
-      x$ = script = document.createElement("script");
-      x$.async = true;
-      x$.src = '/modules/TinyMCE/includes/js/tinymce.min.js';
-      x$.onload = resolve;
-      x$.onerror = reject;
-      document.head.appendChild(script);
-    });
-    return load_promise = load_promise.then(function(){
+    return load_promise = Promise.all([
+      cs.Language.ready(), new Promise(function(resolve, reject){
+        var x$, script;
+        x$ = script = document.createElement("script");
+        x$.async = true;
+        x$.src = '/modules/TinyMCE/includes/js/tinymce.min.js';
+        x$.onload = resolve;
+        x$.onerror = reject;
+        document.head.appendChild(script);
+      })
+    ]).then(function(L){
       var uploader_callback, button, uploader, base_config, x$;
       uploader_callback = undefined;
       button = document.createElement('button');
@@ -57,7 +58,7 @@
         doctype: '<!doctype html>',
         theme: cs.tinymce && cs.tinymce.theme !== undefined ? cs.tinymce.theme : 'modern',
         skin: cs.tinymce && cs.tinymce.skin !== undefined ? cs.tinymce.skin : 'lightgray',
-        language: cs.Language.clang !== undefined ? cs.Language.clang : 'en',
+        language: cs.Language.clang,
         menubar: false,
         plugins: 'advlist anchor charmap code codesample colorpicker contextmenu fullscreen hr image link lists media nonbreaking noneditable pagebreak paste preview searchreplace tabfocus table textcolor visualblocks visualchars wordcount',
         resize: 'both',

@@ -16,7 +16,7 @@
       units: Number
     },
     ready: function(){
-      var img, href, discount;
+      var img, href, discount, this$ = this;
       img = this.querySelector('#img');
       this.$.img.src = img.src;
       this.$.img.title = img.title;
@@ -31,7 +31,9 @@
       discount = this.units * this.unit_price - this.price;
       if (discount) {
         discount = sprintf(cs.shop.settings.price_formatting, discount);
-        this.$.discount.textContent = "(" + cs.Language.shop_discount + ": " + discount + ")";
+        cs.Language('shop_').ready().then(function(L){
+          this$.$.discount.textContent = "(" + L.discount + ": " + discount + ")";
+        });
       }
     }
   });

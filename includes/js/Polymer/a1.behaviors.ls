@@ -18,8 +18,7 @@ window.{}cs.{}Polymer.behaviors =
 				.._set_language_properties	= .._set_language_properties
 				.._compute__				= .._compute__
 				..ready						= !->
-					cs.Language.ready().then (L) !~>
-						L	= L(prefix)
+					cs.Language(prefix).ready().then (L) !~>
 						@_set_language_properties(L)
 		Language
 			..properties				=

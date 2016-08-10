@@ -9,9 +9,8 @@
 (function(){
   require(['jquery'], function($){
     $(function(){
-      var L, make_modal;
-      L = cs.Language('shop_');
-      make_modal = function(types, title, action){
+      var make_modal;
+      make_modal = function(types, L, title, action){
         var res$, index, type, modal;
         res$ = [];
         for (index in types) {
@@ -30,9 +29,10 @@
         return modal;
       };
       $('html').on('mousedown', '.cs-shop-order-status-add', function(){
-        cs.api('get api/Shop/admin/order_statuses/types').then(function(types){
-          var modal;
-          modal = make_modal(types, L.order_status_addition, L.add);
+        Promise.all([cs.api('get api/Shop/admin/order_statuses/types'), cs.Language('shop_').ready()]).then(function(arg$){
+          var types, L, modal;
+          types = arg$[0], L = arg$[1];
+          modal = make_modal(types, L, L.order_status_addition, L.add);
           modal.find('form').submit(function(){
             cs.api('post api/Shop/admin/order_statuses', this).then(function(){
               return cs.ui.alert(L.added_successfully);
@@ -43,10 +43,10 @@
       }).on('mousedown', '.cs-shop-order-status-edit', function(){
         var id;
         id = $(this).data('id');
-        cs.api(['get api/Shop/admin/order_statuses/types', "get api/Shop/admin/order_statuses/" + id]).then(function(arg$){
-          var types, type, modal;
-          types = arg$[0], type = arg$[1];
-          modal = make_modal(types, L.order_status_edition, L.edit);
+        Promise.all([cs.api(['get api/Shop/admin/order_statuses/types', "get api/Shop/admin/order_statuses/" + id]), cs.Language('shop_').ready()]).then(function(arg$){
+          var ref$, types, type, L, modal;
+          ref$ = arg$[0], types = ref$[0], type = ref$[1], L = arg$[1];
+          modal = make_modal(types, L, L.order_status_edition, L.edit);
           modal.find('form').submit(function(){
             cs.api("put api/Shop/admin/order_statuses/" + id, this).then(function(){
               return cs.ui.alert(L.edited_successfully);
@@ -63,11 +63,13 @@
       }).on('mousedown', '.cs-shop-order-status-delete', function(){
         var id;
         id = $(this).data('id');
-        cs.ui.confirm(L.sure_want_to_delete).then(function(){
-          return cs.api("delete api/Shop/admin/order_statuses/" + id);
-        }).then(function(){
-          return cs.ui.alert(L.deleted_successfully);
-        }).then(bind$(location, 'reload'));
+        cs.Language('shop_').ready().then(function(L){
+          cs.ui.confirm(L.sure_want_to_delete).then(function(){
+            return cs.api("delete api/Shop/admin/order_statuses/" + id);
+          }).then(function(){
+            return cs.ui.alert(L.deleted_successfully);
+          }).then(bind$(location, 'reload'));
+        });
       });
     });
   });

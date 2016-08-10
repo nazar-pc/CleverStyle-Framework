@@ -7,11 +7,10 @@
  */
 $ <-! require(['jquery'], _)
 <-! $
-L							= cs.Language('shop_')
 set_attribute_types			= [1, 2, 6, 9]	# Attributes types that represents sets: TYPE_INT_SET, TYPE_FLOAT_SET, TYPE_STRING_SET, TYPE_COLOR_SET
 color_set_attribute_type	= [1, 2, 6, 9]	# Attributes types that represents color set: TYPE_COLOR_SET
 string_attribute_types		= [5]			# Attributes types that represents string: TYPE_STRING
-make_modal = (attributes, categories, title, action) ->
+make_modal = (attributes, categories, L, title, action) ->
 	attributes		= do ->
 		attributes_ = {}
 		for attribute, attribute of attributes
@@ -304,11 +303,14 @@ make_modal = (attributes, categories, title, action) ->
 	modal
 $('html')
 	.on('mousedown', '.cs-shop-item-add', !->
-		cs.api([
-			'get api/Shop/admin/attributes'
-			'get api/Shop/admin/categories'
-		]).then ([attributes, categories]) !->
-			modal = make_modal(attributes, categories, L.item_addition, L.add)
+		Promise.all([
+			cs.api([
+				'get api/Shop/admin/attributes'
+				'get api/Shop/admin/categories'
+			])
+			cs.Language('shop_').ready()
+		]).then ([[attributes, categories], L]) !->
+			modal = make_modal(attributes, categories, L, L.item_addition, L.add)
 			modal.find("[name=category]").change()
 			modal.find('form').submit ->
 				cs.api('post api/Shop/admin/items', @)
@@ -318,12 +320,15 @@ $('html')
 	)
 	.on('mousedown', '.cs-shop-item-edit', !->
 		id = $(@).data('id')
-		cs.api([
-			'get api/Shop/admin/attributes'
-			'get api/Shop/admin/categories'
-			"get api/Shop/admin/items/#id"
-		]).then ([attributes, categories, item]) !->
-			modal = make_modal(attributes, categories, L.item_edition, L.edit)
+		Promise.all([
+			cs.api([
+				'get api/Shop/admin/attributes'
+				'get api/Shop/admin/categories'
+				"get api/Shop/admin/items/#id"
+			])
+			cs.Language('shop_').ready()
+		]).then ([[attributes, categories, item], L]) !->
+			modal = make_modal(attributes, categories, L, L.item_edition, L.edit)
 			modal.find('form').submit ->
 				cs.api("put api/Shop/admin/items/#id", @)
 					.then -> cs.ui.alert(L.edited_successfully)
@@ -334,8 +339,9 @@ $('html')
 	)
 	.on('mousedown', '.cs-shop-item-delete', !->
 		id = $(@).data('id')
-		cs.ui.confirm(L.sure_want_to_delete)
-			.then -> cs.api("delete api/Shop/admin/items/#id")
-			.then -> cs.ui.alert(L.deleted_successfully)
-			.then(location~reload)
+		cs.Language('shop_').ready().then (L) !->
+			cs.ui.confirm(L.sure_want_to_delete)
+				.then -> cs.api("delete api/Shop/admin/items/#id")
+				.then -> cs.ui.alert(L.deleted_successfully)
+				.then(location~reload)
 	)

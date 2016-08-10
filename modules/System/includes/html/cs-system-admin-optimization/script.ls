@@ -6,7 +6,6 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L = cs.Language('system_admin_optimization_')
 Polymer(
 	'is'		: 'cs-system-admin-optimization'
 	behaviors	: [
@@ -25,9 +24,9 @@ Polymer(
 			<progress is="cs-progress" infinite></progress>
 		""")
 		cs.api("#method " + @settings_api_url, {@path_prefix})
-			.then !->
-				modal.innerHTML = """<p class="cs-block-success cs-text-success">#{L.done}</p>"""
-			.catch (o) !->
+			.then !~>
+				modal.innerHTML = """<p class="cs-block-success cs-text-success">#{@L.done}</p>"""
+			.catch (o) !~>
 				clearTimeout(o.timeout)
-				modal.innerHTML = """<p class="cs-block-error cs-text-error">#{L.error}</p>"""
+				modal.innerHTML = """<p class="cs-block-error cs-text-error">#{@L.error}</p>"""
 )

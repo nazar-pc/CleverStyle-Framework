@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language('system_admin_storages_');
   Polymer({
     'is': 'cs-system-admin-storages-form',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_storages_')],
@@ -43,21 +41,21 @@
       });
     },
     _save: function(){
-      var method, suffix;
+      var method, suffix, this$ = this;
       method = this.add ? 'post' : 'patch';
       suffix = !this.add ? '/' + this.storageIndex : '';
       cs.api(method + " api/System/admin/storages" + suffix, this.storage).then(function(){
-        cs.ui.notify(L.changes_saved, 'success', 5);
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
     },
     _test_connection: function(e){
-      var $modal;
-      $modal = cs.ui.simple_modal("<div>\n	<h3 class=\"cs-text-center\">" + L.test_connection + "</h3>\n	<progress is=\"cs-progress\" infinite></progress>\n</div>");
+      var modal, this$ = this;
+      modal = cs.ui.simple_modal("<div>\n	<h3 class=\"cs-text-center\">" + this.L.test_connection + "</h3>\n	<progress is=\"cs-progress\" infinite></progress>\n</div>");
       cs.api('test api/System/admin/storages', this.storage).then(function(){
-        modal.querySelector('progress').outerHTML = "<p class=\"cs-text-center cs-block-success cs-text-success\" style=text-transform:capitalize;\">" + L.success + "</p>";
+        modal.querySelector('progress').outerHTML = "<p class=\"cs-text-center cs-block-success cs-text-success\" style=text-transform:capitalize;\">" + this$.L.success + "</p>";
       })['catch'](function(o){
         clearTimeout(o.timeout);
-        modal.querySelector('progress').outerHTML = "<p class=\"cs-text-center cs-block-error cs-text-error\" style=text-transform:capitalize;\">" + L.failed + "</p>";
+        modal.querySelector('progress').outerHTML = "<p class=\"cs-text-center cs-block-error cs-text-error\" style=text-transform:capitalize;\">" + this$.L.failed + "</p>";
       });
     }
   });

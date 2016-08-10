@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language('system_admin_users_');
   Polymer({
     'is': 'cs-system-admin-users-add-user-form',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_users_')],
@@ -17,10 +15,11 @@
       email: ''
     },
     save: function(){
+      var this$ = this;
       cs.api('post api/System/admin/users', {
         email: this.email
       }).then(function(result){
-        cs.ui.alert("<p class=\"cs-block-success cs-text-success\">" + L.user_was_added(result.login, result.password) + "</p>");
+        cs.ui.alert("<p class=\"cs-block-success cs-text-success\">" + this$.L.user_was_added(result.login, result.password) + "</p>");
       });
     }
   });

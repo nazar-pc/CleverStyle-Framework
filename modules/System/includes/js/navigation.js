@@ -8,7 +8,7 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var url_map, buttons, links, i$, len$, link, title_format, L;
+  var url_map, buttons, links, i$, len$, link, title_format;
   url_map = {
     "admin/System/components/modules": "cs-system-admin-modules-list",
     "admin/System/components/blocks": "cs-system-admin-blocks-list",
@@ -35,11 +35,12 @@
     link.addEventListener('click', fn1$);
   }
   title_format = document.title;
-  L = cs.Language('system_admin_');
   function go(href){
     var href_splitted, i$, ref$, len$, button, link;
     href_splitted = href.split('/');
-    document.title = sprintf(title_format, L[href_splitted[2]], L[href_splitted[3]]);
+    cs.Language('system_admin_').ready().then(function(L){
+      document.title = sprintf(title_format, L[href_splitted[2]], L[href_splitted[3]]);
+    });
     document.querySelector('#main_content > div').innerHTML = '<' + url_map[href] + '/>';
     for (i$ = 0, len$ = (ref$ = buttons).length; i$ < len$; ++i$) {
       button = ref$[i$];

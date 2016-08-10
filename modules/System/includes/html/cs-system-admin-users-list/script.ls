@@ -10,7 +10,6 @@ const STATUS_ACTIVE		= 1
 const STATUS_INACTIVE	= 0
 const GUEST_ID			= 1
 const ROOT_ID			= 2
-L	= cs.Language('system_admin_users_')
 Polymer(
 	'is'		: 'cs-system-admin-users-list'
 	behaviors	: [
@@ -69,15 +68,18 @@ Polymer(
 		searching_timeout	= setTimeout (!~>
 			@searching_loader	= true
 		), 200
-		cs.api(
-			'search api/System/admin/users'
-			column	: @search_column
-			mode	: @search_mode
-			text	: @search_text
-			page	: @search_page
-			limit	: @search_limit
-		)
-			.then (data) !~>
+		Promise.all([
+			cs.api(
+				'search api/System/admin/users'
+				column	: @search_column
+				mode	: @search_mode
+				text	: @search_text
+				page	: @search_page
+				limit	: @search_limit
+			)
+			cs.Language.ready()
+		])
+			.then ([data]) !~>
 				clearTimeout(searching_timeout)
 				@searching			= false
 				@searching_loader	= false
@@ -100,7 +102,7 @@ Polymer(
 									value.join(', ')
 								else
 									value
-					do ->
+					do ~>
 						type			=
 							if user.is_root || user.is_admin
 								'admin'
@@ -108,8 +110,8 @@ Polymer(
 								'user'
 							else
 								'guest'
-						user.type		= L[type]
-						user.type_info	= L[type + '_info']
+						user.type		= @L[type]
+						user.type_info	= @L[type + '_info']
 				@set('users', data.users)
 			.catch !~>
 				clearTimeout(searching_timeout)
@@ -140,7 +142,7 @@ Polymer(
 		Math.ceil(users_count / search_limit)
 	add_user : !->
 		cs.ui.simple_modal("""
-			<h3>#{L.adding_a_user}</h3>
+			<h3>#{@L.adding_a_user}</h3>
 			<cs-system-admin-users-add-user-form/>
 		""").addEventListener('close', @~search)
 	edit_user : (e) !->
@@ -149,7 +151,7 @@ Polymer(
 			data	= data.parentElement
 		index	= data.dataset.user-index
 		user	= @users[index]
-		title	= L.editing_of_user_information(
+		title	= @L.editing_of_user_information(
 			user.username || user.login
 		)
 		cs.ui.simple_modal("""
@@ -162,7 +164,7 @@ Polymer(
 			data	= data.parentElement
 		index	= data.dataset.user-index
 		user	= @users[index]
-		title	= L.user_groups(user.username || user.login)
+		title	= @L.user_groups(user.username || user.login)
 		cs.ui.simple_modal("""
 			<h2>#{title}</h2>
 			<cs-system-admin-users-groups-form user="#{user.id}" for="user"/>
@@ -173,7 +175,7 @@ Polymer(
 			data	= data.parentElement
 		index	= data.dataset.user-index
 		user	= @users[index]
-		title	= L.permissions_for_user(
+		title	= @L.permissions_for_user(
 			user.username || user.login
 		)
 		cs.ui.simple_modal("""

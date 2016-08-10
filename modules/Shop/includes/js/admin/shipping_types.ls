@@ -7,8 +7,7 @@
  */
 $ <-! require(['jquery'], _)
 <-! $
-L			= cs.Language('shop_')
-make_modal	= (title, action) ->
+make_modal	= (L, title, action) ->
 	$(cs.ui.simple_modal("""<form is="cs-form">
 		<h3 class="cs-text-center">#title</h3>
 		<label>#{L.title}</label>
@@ -32,17 +31,21 @@ make_modal	= (title, action) ->
 	</form>"""))
 $('html')
 	.on('mousedown', '.cs-shop-shipping-type-add', !->
-		$modal = make_modal(L.shipping_type_addition, L.add)
-		$modal.find('form').submit ->
-			cs.api('post api/Shop/admin/shipping_types', @)
-				.then -> cs.ui.alert(L.added_successfully)
-				.then(location~reload)
-			false
+		cs.Language('shop_').ready().then (L) !->
+			$modal = make_modal(L, L.shipping_type_addition, L.add)
+			$modal.find('form').submit ->
+				cs.api('post api/Shop/admin/shipping_types', @)
+					.then -> cs.ui.alert(L.added_successfully)
+					.then(location~reload)
+				false
 	)
 	.on('mousedown', '.cs-shop-shipping-type-edit', !->
 		id = $(@).data('id')
-		cs.api("get api/Shop/admin/shipping_types/#id").then (shipping_type) !->
-			$modal = make_modal(L.shipping_type_edition, L.edit)
+		Promise.all([
+			cs.api("get api/Shop/admin/shipping_types/#id")
+			cs.Language('shop_').ready()
+		]).then ([shipping_type, L]) !->
+			$modal = make_modal(L, L.shipping_type_edition, L.edit)
 			$modal.find('form').submit ->
 				cs.api("put api/Shop/admin/shipping_types/#id", @)
 					.then -> cs.ui.alert(L.edited_successfully)
@@ -56,8 +59,9 @@ $('html')
 	)
 	.on('mousedown', '.cs-shop-shipping-type-delete', !->
 		id = $(@).data('id')
-		cs.ui.confirm(L.sure_want_to_delete)
-			.then -> cs.api("delete api/Shop/admin/shipping_types/#id")
-			.then -> cs.ui.alert(L.deleted_successfully)
-			.then(location~reload)
+		cs.Language('shop_').ready().then (L) !->
+			cs.ui.confirm(L.sure_want_to_delete)
+				.then -> cs.api("delete api/Shop/admin/shipping_types/#id")
+				.then -> cs.ui.alert(L.deleted_successfully)
+				.then(location~reload)
 	)

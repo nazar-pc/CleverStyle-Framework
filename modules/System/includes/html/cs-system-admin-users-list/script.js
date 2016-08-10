@@ -8,12 +8,11 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var STATUS_ACTIVE, STATUS_INACTIVE, GUEST_ID, ROOT_ID, L;
+  var STATUS_ACTIVE, STATUS_INACTIVE, GUEST_ID, ROOT_ID;
   STATUS_ACTIVE = 1;
   STATUS_INACTIVE = 0;
   GUEST_ID = 1;
   ROOT_ID = 2;
-  L = cs.Language('system_admin_users_');
   Polymer({
     'is': 'cs-system-admin-users-list',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_users_')],
@@ -76,13 +75,17 @@
       searching_timeout = setTimeout(function(){
         this$.searching_loader = true;
       }, 200);
-      cs.api('search api/System/admin/users', {
-        column: this.search_column,
-        mode: this.search_mode,
-        text: this.search_text,
-        page: this.search_page,
-        limit: this.search_limit
-      }).then(function(data){
+      Promise.all([
+        cs.api('search api/System/admin/users', {
+          column: this.search_column,
+          mode: this.search_mode,
+          text: this.search_text,
+          page: this.search_page,
+          limit: this.search_limit
+        }), cs.Language.ready()
+      ]).then(function(arg$){
+        var data;
+        data = arg$[0];
         clearTimeout(searching_timeout);
         this$.searching = false;
         this$.searching_loader = false;
@@ -116,8 +119,8 @@
             type = user.is_root || user.is_admin
               ? 'admin'
               : user.is_user ? 'user' : 'guest';
-            user.type = L[type];
-            return user.type_info = L[type + '_info'];
+            user.type = this$.L[type];
+            return user.type_info = this$.L[type + '_info'];
           })();
           function fn$(value){
             value == null && (value = user[column]);
@@ -175,7 +178,7 @@
       return Math.ceil(users_count / search_limit);
     },
     add_user: function(){
-      cs.ui.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>").addEventListener('close', bind$(this, 'search'));
+      cs.ui.simple_modal("<h3>" + this.L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>").addEventListener('close', bind$(this, 'search'));
     },
     edit_user: function(e){
       var data, index, user, title;
@@ -185,7 +188,7 @@
       }
       index = data.dataset.userIndex;
       user = this.users[index];
-      title = L.editing_of_user_information(user.username || user.login);
+      title = this.L.editing_of_user_information(user.username || user.login);
       cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>").addEventListener('close', bind$(this, 'search'));
     },
     edit_groups: function(e){
@@ -196,7 +199,7 @@
       }
       index = data.dataset.userIndex;
       user = this.users[index];
-      title = L.user_groups(user.username || user.login);
+      title = this.L.user_groups(user.username || user.login);
       cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-groups-form user=\"" + user.id + "\" for=\"user\"/>");
     },
     edit_permissions: function(e){
@@ -207,7 +210,7 @@
       }
       index = data.dataset.userIndex;
       user = this.users[index];
-      title = L.permissions_for_user(user.username || user.login);
+      title = this.L.permissions_for_user(user.username || user.login);
       cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for user=\"" + user.id + "\" for=\"user\"/>");
     }
   });

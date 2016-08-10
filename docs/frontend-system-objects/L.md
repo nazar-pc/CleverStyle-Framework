@@ -6,8 +6,7 @@ window.cs.Language.ready().then(function (L) {
 ```
 Also there is possibility to simplify getting translations with common prefix:
 ```javascript
-window.cs.Language.ready().then(function (L) {
-	L	= L(prefix);
+window.cs.Language(prefix).ready().then(function (L) {
 	// Use L here
 });
 ```

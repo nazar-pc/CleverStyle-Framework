@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language('system_admin_databases_');
   Polymer({
     'is': 'cs-system-admin-databases-list',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_databases_'), cs.Polymer.behaviors.admin.System.settings],
@@ -28,7 +26,7 @@
     _add: function(e){
       var database;
       database = e.model && e.model.database;
-      cs.ui.simple_modal("<h3>" + L.database_addition + "</h3>\n<cs-system-admin-databases-form add database-index=\"" + (database && database.index) + "\"/>").addEventListener('close', bind$(this, 'reload'));
+      cs.ui.simple_modal("<h3>" + this.L.database_addition + "</h3>\n<cs-system-admin-databases-form add database-index=\"" + (database && database.index) + "\"/>").addEventListener('close', bind$(this, 'reload'));
     },
     _edit: function(e){
       var database_model, database, mirror, name;
@@ -36,7 +34,7 @@
       database = e.model.database || database_model.database;
       mirror = e.model.mirror;
       name = this._database_name(database, mirror);
-      cs.ui.simple_modal("<h3>" + L.editing_database(name) + "</h3>\n<cs-system-admin-databases-form database-index=\"" + database.index + "\" mirror-index=\"" + (mirror && mirror.index) + "\"/>").addEventListener('close', bind$(this, 'reload'));
+      cs.ui.simple_modal("<h3>" + this.L.editing_database(name) + "</h3>\n<cs-system-admin-databases-form database-index=\"" + database.index + "\" mirror-index=\"" + (mirror && mirror.index) + "\"/>").addEventListener('close', bind$(this, 'reload'));
     },
     _database_name: function(database, mirror){
       var master_db_name, this$ = this;
@@ -50,11 +48,11 @@
             }
           }
         }();
-        return L.mirror + ' ' + (database.index
-          ? L.db + ' ' + master_db_name
-          : L.core_db) + (", " + mirror.name + " " + mirror.host + "/" + mirror.type);
+        return this.L.mirror + ' ' + (database.index
+          ? this.L.db + ' ' + master_db_name
+          : this.L.core_db) + (", " + mirror.name + " " + mirror.host + "/" + mirror.type);
       } else {
-        return L.db + " " + database.name + " " + database.host + "/" + database.type;
+        return this.L.db + " " + database.name + " " + database.host + "/" + database.type;
       }
     },
     _delete: function(e){
@@ -64,10 +62,10 @@
       mirror = e.model.mirror;
       name = this._database_name(database, mirror);
       suffix = mirror ? '/' + mirror.index : '';
-      cs.ui.confirm(L.sure_to_delete(name)).then(function(){
+      cs.ui.confirm(this.L.sure_to_delete(name)).then(function(){
         return cs.api('delete api/System/admin/databases/' + database.index + suffix);
       }).then(function(){
-        cs.ui.notify(L.changes_saved, 'success', 5);
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
         this$.reload();
       });
     }

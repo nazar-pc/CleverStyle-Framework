@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language('system_admin_blocks_');
   Polymer({
     'is': 'cs-system-admin-blocks-list',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_blocks_')],
@@ -50,7 +48,7 @@
           cs.api('update_order api/System/admin/blocks', {
             order: order
           }).then(function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
+            cs.ui.notify(this$.L.changes_saved, 'success', 5);
           });
         });
       });
@@ -85,23 +83,23 @@
     },
     _block_permissions: function(e){
       var title;
-      title = L.permissions_for_block(e.model.item.title);
+      title = this.L.permissions_for_block(e.model.item.title);
       cs.ui.simple_modal("<h3>" + title + "</h3>\n<cs-system-admin-permissions-for-item label=\"" + e.model.item.index + "\" group=\"Block\"/>");
     },
     _add_block: function(){
-      cs.ui.simple_modal("<h3>" + L.block_addition + "</h3>\n<cs-system-admin-blocks-form/>").addEventListener('close', bind$(this, '_reload'));
+      cs.ui.simple_modal("<h3>" + this.L.block_addition + "</h3>\n<cs-system-admin-blocks-form/>").addEventListener('close', bind$(this, '_reload'));
     },
     _edit_block: function(e){
       var title;
-      title = L.editing_block(e.model.item.title);
+      title = this.L.editing_block(e.model.item.title);
       cs.ui.simple_modal("<h3>" + title + "</h3>\n<cs-system-admin-blocks-form index=\"" + e.model.item.index + "\"/>").addEventListener('close', bind$(this, '_reload'));
     },
     _delete_block: function(e){
       var this$ = this;
-      cs.ui.confirm(L.sure_to_delete_block(e.model.item.title)).then(function(){
+      cs.ui.confirm(this.L.sure_to_delete_block(e.model.item.title)).then(function(){
         return cs.api('delete api/System/admin/blocks/' + e.model.item.index);
       }).then(function(){
-        cs.ui.notify(L.changes_saved, 'success', 5);
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
         this$._reload();
       });
     }

@@ -6,15 +6,17 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L										= cs.Language('system_admin_')
 cs.{}Polymer.{}behaviors.{}admin.System	=
 	components	:
 		# Module enabling
 		_enable_module : (component, meta) !->
-			cs.api([
-				"get			api/System/admin/modules/#component/dependencies"
-				'get_settings	api/System/admin/system'
-			]).then ([dependencies, settings]) !~>
+			Promise.all([
+				cs.api([
+					"get			api/System/admin/modules/#component/dependencies"
+					'get_settings	api/System/admin/system'
+				])
+				cs.Language('system_admin_').ready()
+			]).then ([[dependencies, settings], L]) !~>
 				# During enabling we don't care about those since module should be already installed
 				delete dependencies.db_support
 				delete dependencies.storage_support
@@ -22,7 +24,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				message			= ''
 				message_more	= ''
 				if Object.keys(dependencies).length
-					message	= @_compose_dependencies_message(component, meta.category, dependencies)
+					message	= @_compose_dependencies_message(L, component, meta.category, dependencies)
 					if settings.simple_admin_mode
 						cs.ui.notify(message, 'error', 5)
 						return
@@ -51,10 +53,13 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 					p.classList.add('cs-text-error', 'cs-block-error')
 		# Module disabling
 		_disable_module : (component) !->
-			cs.api([
-				"get			api/System/admin/modules/#component/dependent_packages"
-				'get_settings	api/System/admin/system'
-			]).then ([dependent_packages, settings]) !~>
+			Promise.all([
+				cs.api([
+					"get			api/System/admin/modules/#component/dependent_packages"
+					'get_settings	api/System/admin/system'
+				])
+				cs.Language('system_admin_').ready()
+			]).then ([[dependent_packages, settings], L]) !~>
 				title				= "<h3>#{L.modules_disabling_of_module(component)}</h3>"
 				message				= ''
 				if Object.keys(dependent_packages).length
@@ -91,10 +96,13 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 		_update_component : (existing_meta, new_meta) !->
 			component		= new_meta.package
 			category		= new_meta.category
-			cs.api([
-				"get			api/System/admin/#category/#component/update_dependencies"
-				'get_settings	api/System/admin/system'
-			]).then ([dependencies, settings]) !~>
+			Promise.all([
+				cs.api([
+					"get			api/System/admin/#category/#component/update_dependencies"
+					'get_settings	api/System/admin/system'
+				])
+				cs.Language('system_admin_').ready()
+			]).then ([[dependencies, settings], L]) !~>
 				# During update we don't care about those since module should be already installed
 				delete dependencies.db_support
 				delete dependencies.storage_support
@@ -113,7 +121,7 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 						| 'themes'	=> 'appearance_update_theme'
 					message_more	= '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>'
 				if Object.keys(dependencies).length
-					message	= @_compose_dependencies_message(component, category, dependencies)
+					message	= @_compose_dependencies_message(L, component, category, dependencies)
 					if settings.simple_admin_mode
 						cs.ui.notify(message, 'error', 5)
 						return
@@ -154,13 +162,14 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				switch category
 				| 'modules' => 'modules_completely_remove_module'
 				| 'themes'	=> 'appearance_completely_remove_theme'
-			cs.ui.confirm(L[translation_key](component))
-				.then -> cs.api("delete api/System/admin/#category/#component")
-				.then !~>
-					@reload()
-					cs.ui.notify(L.changes_saved, 'success', 5)
+			cs.Language('system_admin_').ready().then (L) !~>
+				cs.ui.confirm(L[translation_key](component))
+					.then -> cs.api("delete api/System/admin/#category/#component")
+					.then !~>
+						@reload()
+						cs.ui.notify(L.changes_saved, 'success', 5)
 		# Compose HTML representation of dependencies details
-		_compose_dependencies_message : (component, category, dependencies) ->
+		_compose_dependencies_message : (L, component, category, dependencies) ->
 			message = ''
 			for what, details of dependencies
 				if !(details instanceof Array) || what in ['db_support', 'storage_support']
@@ -229,14 +238,23 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				@simple_admin_mode	= system_settings.simple_admin_mode == 1
 				@set('settings', settings)
 		_apply : !->
-			cs.api('apply_settings ' + @settings_api_url, @settings).then !~>
+			Promise.all([
+				cs.Language('system_admin_').ready()
+				cs.api('apply_settings ' + @settings_api_url, @settings)
+			]).then ([L]) !~>
 				@_reload_settings()
 				cs.ui.notify(L.changes_applied, 'warning', 5)
 		_save : !->
-			cs.api('save_settings ' + @settings_api_url, @settings).then  !~>
+			Promise.all([
+				cs.Language('system_admin_').ready()
+				cs.api('save_settings ' + @settings_api_url, @settings)
+			]).then ([L]) !~>
 				@_reload_settings()
 				cs.ui.notify(L.changes_saved, 'success', 5)
 		_cancel : !->
-			cs.api('cancel_settings ' + @settings_api_url).then !~>
+			Promise.all([
+				cs.Language('system_admin_').ready()
+				cs.api('cancel_settings ' + @settings_api_url)
+			]).then ([L]) !~>
 				@_reload_settings()
 				cs.ui.notify(L.changes_canceled, 'success', 5)

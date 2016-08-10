@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language('system_admin_mail_');
   Polymer({
     'is': 'cs-system-admin-mail',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_mail_'), cs.Polymer.behaviors.admin.System.settings],
@@ -31,16 +29,16 @@
       return smtp == 1 && smtp_auth == 1;
     },
     _test_email: function(){
-      var email;
+      var email, this$ = this;
       email = prompt('Email');
       if (email) {
         cs.api('send_test_email api/System/admin/mail', {
           email: email
         }).then(function(){
-          cs.ui.simple_modal("<p class=\"cs-text-center cs-block-success cs-text-success\">" + L.done + "</p>");
+          cs.ui.simple_modal("<p class=\"cs-text-center cs-block-success cs-text-success\">" + this$.L.done + "</p>");
         })['catch'](function(o){
           clearTimeout(o.timeout);
-          cs.ui.simple_modal("<p class=\"cs-text-center cs-block-error cs-text-error\">" + L.test_email_sending_failed + "</p>");
+          cs.ui.simple_modal("<p class=\"cs-text-center cs-block-error cs-text-error\">" + this$.L.test_email_sending_failed + "</p>");
         });
       }
     }

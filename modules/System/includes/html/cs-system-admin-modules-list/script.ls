@@ -6,7 +6,6 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L				= cs.Language('system_admin_modules_')
 active_switch	= (uninstalled, disabled, enabled) ->
 	switch @active
 	| -1	=> uninstalled
@@ -24,13 +23,16 @@ Polymer(
 	ready : !->
 		@reload()
 	reload : !->
-		cs.api([
-			'get			api/System/admin/modules'
-			'get			api/System/admin/modules/default'
-			'get_settings	api/System/admin/system'
-		]).then ([modules, default_module, settings]) !~>
+		Promise.all([
+			cs.api([
+				'get			api/System/admin/modules'
+				'get			api/System/admin/modules/default'
+				'get_settings	api/System/admin/system'
+			])
+			cs.Language.ready()
+		]).then ([[modules, default_module, settings]]) !~>
 			@default_module	= default_module
-			modules.forEach (module) !->
+			modules.forEach (module) !~>
 				active_switch_local		= active_switch.bind(module)
 				module.class			= active_switch_local(
 					'cs-block-error cs-text-error'
@@ -43,11 +45,11 @@ Polymer(
 					if module.name == default_module then 'home' else 'check'
 				)
 				module.icon_text		= active_switch_local(
-					L.uninstalled
-					L.disabled
-					if module.name == default_module then L.default_module else L.enabled
+					@L.uninstalled
+					@L.disabled
+					if module.name == default_module then @L.default_module else @L.enabled
 				)
-				module.name_localized			= L[module.name] || module.name.replace(/_/g, ' ')
+				module.name_localized			= @L[module.name] || module.name.replace(/_/g, ' ')
 				enabled							= module.active ~= 1
 				installed						= module.active !~= -1
 				module.can_disable				= enabled && module.name != 'System'
@@ -61,7 +63,7 @@ Polymer(
 							tag						= if module[prop].type == 'txt' then 'pre' else 'div'
 							module[prop].content	= "<#tag>#{module[prop].content}</#tag>"
 				if module.meta
-					module.info	= let (@ = module.meta)
+					module.info	= let (@ = module.meta, L = @L)
 						L.module_info(
 							@package,
 							@version,
@@ -97,7 +99,7 @@ Polymer(
 			.then -> cs.api('put api/System/admin/modules/default', {module})
 			.then !~>
 				@reload()
-				cs.ui.notify(L.changes_saved, 'success', 5)
+				cs.ui.notify(@L.changes_saved, 'success', 5)
 				cs.Event.fire(
 					'admin/System/modules/default/after'
 					name	: module
@@ -133,24 +135,27 @@ Polymer(
 	_install : (e) !->
 		module	= e.model.module.name
 		meta	= e.model.module.meta
-		cs.api([
-			"get			api/System/admin/modules/#module/dependencies"
-			'get			api/System/admin/databases'
-			'get			api/System/admin/storages'
-			'get_settings	api/System/admin/system'
-		]).then ([dependencies, databases, storages, settings]) !~>
+		Promise.all([
+			cs.api([
+				"get			api/System/admin/modules/#module/dependencies"
+				'get			api/System/admin/databases'
+				'get			api/System/admin/storages'
+				'get_settings	api/System/admin/system'
+			])
+			cs.Language('system_admin_').ready()
+		]).then ([[dependencies, databases, storages, settings], L]) !~>
 			message			= ''
 			message_more	= ''
 			if Object.keys(dependencies).length
-				message	= @_compose_dependencies_message(module, 'modules', dependencies)
+				message	= @_compose_dependencies_message(L, module, 'modules', dependencies)
 				if settings.simple_admin_mode
 					cs.ui.notify(message, 'error', 5)
 					return
 			if meta && meta.optional
-				message_more	+= '<p class="cs-text-success cs-block-success">' + L.system_admin_for_complete_feature_set(meta.optional.join(', ')) + '</p>'
+				message_more	+= '<p class="cs-text-success cs-block-success">' + @L.system_admin_for_complete_feature_set(meta.optional.join(', ')) + '</p>'
 			form	= if meta then @_databases_storages_form(meta, databases, storages, settings) else ''
 			modal	= cs.ui.confirm(
-				"""<h3>#{L.installation_of_module(module)}</h3>
+				"""<h3>#{@L.installation_of_module(module)}</h3>
 				#message
 				#message_more
 				#form"""
@@ -160,15 +165,15 @@ Polymer(
 						name	: module
 					)
 						.then -> cs.api("install api/System/admin/modules/#module", modal.querySelector('form'))
-						.then ->
-							cs.ui.notify(L.changes_saved, 'success', 5)
+						.then ~>
+							cs.ui.notify(@L.changes_saved, 'success', 5)
 							cs.Event.fire(
 								'admin/System/modules/install/after'
 								name	: module
 							)
 						.then(location~reload)
 			)
-			modal.ok.innerHTML		= L[if !message then 'install' else 'force_install_not_recommended']
+			modal.ok.innerHTML		= @L[if !message then 'install' else 'force_install_not_recommended']
 			modal.ok.primary		= !message
 			modal.cancel.primary	= !modal.ok.primary
 	_databases_storages_form : (meta, databases, storages, settings) ->
@@ -179,12 +184,12 @@ Polymer(
 					content	+= """<input type="hidden" name="db[#db_name]" value="0">"""
 			else
 				content	+= """<tr>
-					<th tooltip="#{L.appointment_of_db_info}">
-						#{L.appointment_of_db}
+					<th tooltip="#{@L.appointment_of_db_info}">
+						#{@L.appointment_of_db}
 						<cs-tooltip/>
 					</th>
-					<th tooltip="#{L.system_db_info}">
-						#{L.system_db}
+					<th tooltip="#{@L.system_db_info}">
+						#{@L.system_db}
 						<cs-tooltip/>
 					</th>
 				</tr>"""
@@ -205,12 +210,12 @@ Polymer(
 					content	+= """<input type="hidden" name="storage[#storage_name]" value="0">"""
 			else
 				content	+= """<tr>
-					<th tooltip="#{L.appointment_of_storage_info}">
-						#{L.appointment_of_storage}
+					<th tooltip="#{@L.appointment_of_storage_info}">
+						#{@L.appointment_of_storage}
 						<cs-tooltip/>
 					</th>
-					<th tooltip="#{L.system_storage_info}">
-						#{L.system_storage}
+					<th tooltip="#{@L.system_storage_info}">
+						#{@L.system_storage}
 						<cs-tooltip/>
 					</th>
 				</tr>"""
@@ -238,7 +243,7 @@ Polymer(
 			if db.index
 				"#{db.host}/#{db.name} (#{db.type})"
 			else
-				L.core_db + " (#{db.type})"
+				@L.core_db + " (#{db.type})"
 		checked	= if db.index then '' else 'checked'
 		"""<option value="#{db.index}" #checked>#name</option>"""
 	_storage_option : (storage) ->
@@ -246,7 +251,7 @@ Polymer(
 			if storage.index
 				"#{storage.host} (#{storage.connection})"
 			else
-				L.core_storage + " (#{storage.connection})"
+				@L.core_storage + " (#{storage.connection})"
 		checked	= if storage.index then '' else 'checked'
 		"""<option value="#{storage.index}" #checked>#name</option>"""
 	/**
@@ -260,22 +265,22 @@ Polymer(
 	_uninstall : (e) !->
 		module	= e.model.module.name
 		modal	= cs.ui.confirm(
-			L.uninstallation_of_module(module)
+			@L.uninstallation_of_module(module)
 			!~>
 				cs.Event.fire(
 					'admin/System/modules/uninstall/before'
 					name	: module
 				)
 					.then -> cs.api("uninstall api/System/admin/modules/#module")
-					.then ->
-						cs.ui.notify(L.changes_saved, 'success', 5)
+					.then ~>
+						cs.ui.notify(@L.changes_saved, 'success', 5)
 						cs.Event.fire(
 							'admin/System/modules/uninstall/after'
 							name	: module
 						)
 					.then(location~reload)
 		)
-		modal.ok.innerHTML		= L.uninstall
+		modal.ok.innerHTML		= @L.uninstall
 		modal.ok.primary		= false
 		modal.cancel.primary	= true
 	_remove_completely : (e) !->
@@ -291,19 +296,19 @@ Polymer(
 	_upload : !->
 		@_upload_package(@$.file).then (meta) !~>
 			if meta.category != 'modules' || !meta.package || !meta.version
-				cs.ui.notify(L.this_is_not_module_installer_file, 'error', 5)
+				cs.ui.notify(@L.this_is_not_module_installer_file, 'error', 5)
 				return
 			# Looking for already present module
 			for module in @modules
 				if module.name == meta.package
 					if meta.version == module.meta.version
-						cs.ui.notify(L.update_module_impossible_same_version(meta.package, meta.version), 'warning', 5)
+						cs.ui.notify(@L.update_module_impossible_same_version(meta.package, meta.version), 'warning', 5)
 						return
 					@_update_component(module.meta, meta)
 					return
 			# If module is not present yet - lets just extract it
-			cs.api('extract api/System/admin/modules').then !->
-				cs.ui.notify(L.changes_saved, 'success', 5)
+			cs.api('extract api/System/admin/modules').then !~>
+				cs.ui.notify(@L.changes_saved, 'success', 5)
 				location.reload()
 	/**
 	 * Provides next events:
@@ -318,7 +323,7 @@ Polymer(
 				break
 		@_upload_package(@$.file_system).then (meta) !~>
 			if meta.category != 'modules' || meta.package != 'System' || !meta.version
-				cs.ui.notify(L.this_is_not_system_installer_file, 'error', 5)
+				cs.ui.notify(@L.this_is_not_system_installer_file, 'error', 5)
 				return
 			@_update_component(module.meta, meta)
 	_db_settings : (e) !->
@@ -331,12 +336,12 @@ Polymer(
 		]).then ([databases, databases_mapping, settings]) !~>
 			form	= if meta then @_databases_storages_form(meta, databases, [], settings) else ''
 			modal	= cs.ui.confirm(
-				"""<h3>#{L.db_settings_for_module(module)}</h3>
-				<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
+				"""<h3>#{@L.db_settings_for_module(module)}</h3>
+				<p class="cs-block-error cs-text-error">#{@L.changing_settings_warning}</p>
 				#form"""
 				!~>
 					cs.api("put api/System/admin/modules/#module/db", modal.querySelector('form')).then !->
-						cs.ui.notify(L.changes_saved, 'success', 5)
+						cs.ui.notify(@L.changes_saved, 'success', 5)
 			)
 			for db_name, index of databases_mapping
 				modal.querySelector("[name='db[#db_name]']").selected = index
@@ -350,17 +355,17 @@ Polymer(
 		]).then ([storages, storages_mapping, settings]) !~>
 			form	= if meta then @_databases_storages_form(meta, [], storages, settings) else ''
 			modal	= cs.ui.confirm(
-				"""<h3>#{L.storage_settings_for_module(module)}</h3>
-				<p class="cs-block-error cs-text-error">#{L.changing_settings_warning}</p>
+				"""<h3>#{@L.storage_settings_for_module(module)}</h3>
+				<p class="cs-block-error cs-text-error">#{@L.changing_settings_warning}</p>
 				#form"""
 				!~>
 					cs.api("put api/System/admin/modules/#module/storage", modal.querySelector('form')).then !->
-						cs.ui.notify(L.changes_saved, 'success', 5)
+						cs.ui.notify(@L.changes_saved, 'success', 5)
 			)
 			for storage_name, index of storages_mapping
 				modal.querySelector("[name='storage[#storage_name]']").selected = index
 	_update_modules_list : !->
 		cs.api('update_list api/System/admin/modules').then !~>
-			cs.ui.notify(L.changes_saved, 'success', 5)
+			cs.ui.notify(@L.changes_saved, 'success', 5)
 			@reload()
 )

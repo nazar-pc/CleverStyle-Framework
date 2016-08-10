@@ -7,20 +7,25 @@
  */
 $ <-! require(['jquery'], _)
 <-! $
-L			= cs.Language('photo_gallery_')
 add_button	= document.querySelector('.cs-photo-gallery-add-images')
 if add_button
 	cs.file_upload(
 		add_button
 		(files) !->
 			gallery	= add_button.dataset.gallery
-			cs.api('post api/Photo_gallery/images', {files, gallery}).then (result) !->
+			Promise.all([
+				cs.api('post api/Photo_gallery/images', {files, gallery})
+				cs.Language('photo_gallery_').ready()
+			]).then ([result, L]) !->
 				if !result.length || !result
-					alert L.images_not_supported
+					cs.ui.alert(L.images_not_supported)
 					return
+				href	= 'Photo_gallery/edit_images/' + result.join(',')
 				if files.length != result.length
-					alert L.some_images_not_supported
-				location.href	= 'Photo_gallery/edit_images/' + result.join(',')
+					cs.ui.alert(L.some_images_not_supported).then !->
+						location.href	= href
+				else
+					location.href	= href
 		null
 		null
 		true
@@ -45,7 +50,8 @@ if images_section
 		'click',
 		'.cs-photo-gallery-image-delete'
 		!->
-			cs.ui.confirm(L.sure_to_delete_image)
+			cs.Language('photo_gallery_').ready()
+				.then (L) -> cs.ui.confirm(L.sure_to_delete_image)
 				.then ~> cs.api('delete api/Photo_gallery/images/' + $(@).data('image'))
 				.then(location~reload)
 	)

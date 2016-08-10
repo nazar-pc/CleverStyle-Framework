@@ -6,9 +6,8 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L				= cs.Language('system_admin_groups_')
-ADMIN_GROUP_ID	= 1
-USER_GROUP_ID	= 2
+const ADMIN_GROUP_ID	= 1
+const USER_GROUP_ID		= 2
 Polymer(
 	'is'		: 'cs-system-admin-groups-list'
 	behaviors	: [
@@ -25,25 +24,25 @@ Polymer(
 			@set('groups', groups)
 	add_group : !->
 		cs.ui.simple_modal("""
-			<h3>#{L.group_addition}</h3>
+			<h3>#{@L.group_addition}</h3>
 			<cs-system-admin-groups-form/>
 		""").addEventListener('close', @~reload)
 	edit_group : (e) !->
 		group	= e.model.group
 		cs.ui.simple_modal("""
-			<h3>#{L.editing_group(group.title)}</h3>
+			<h3>#{@L.editing_group(group.title)}</h3>
 			<cs-system-admin-groups-form group_id="#{group.id}"/>
 		""").addEventListener('close', @~reload)
 	delete_group : (e) !->
 		group	= e.model.group
-		cs.ui.confirm(L.sure_delete_group(group.title))
+		cs.ui.confirm(@L.sure_delete_group(group.title))
 			.then -> cs.api('delete api/System/admin/groups/' + group.id)
 			.then !~>
-				cs.ui.notify(L.changes_saved, 'success', 5)
+				cs.ui.notify(@L.changes_saved, 'success', 5)
 				@splice('groups', e.model.index, 1)
 	edit_permissions : (e) !->
 		group	= e.model.group
-		title	= L.permissions_for_group(group.title)
+		title	= @L.permissions_for_group(group.title)
 		cs.ui.simple_modal("""
 			<h2>#{title}</h2>
 			<cs-system-admin-permissions-for group="#{group.id}" for="group"/>

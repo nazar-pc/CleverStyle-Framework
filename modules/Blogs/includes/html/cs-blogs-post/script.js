@@ -16,10 +16,15 @@
       can_delete: false,
       show_comments: false,
       preview: false,
-      url_prefix: location.pathname.indexOf('/' + cs.Language.clang) === 0 ? '/' + cs.Language.clang : ''
+      url_prefix: ''
     },
     ready: function(){
       var this$ = this;
+      cs.Language.ready().then(function(L){
+        if (location.pathname.indexOf('/' + L.clang) === 0) {
+          this$.url_prefix = '/' + L.clang;
+        }
+      });
       this.jsonld = JSON.parse(this.children[0].innerHTML);
       cs.api(['get_settings	api/Blogs', 'get			api/System/profile']).then(function(arg$){
         var profile;

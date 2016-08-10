@@ -26,5 +26,6 @@ Polymer(
 		discount				= @units * @unit_price - @price
 		if discount
 			discount				= sprintf(cs.shop.settings.price_formatting, discount)
-			@$.discount.textContent	= "(#{cs.Language.shop_discount}: #{discount})"
+			cs.Language('shop_').ready().then (L) !~>
+				@$.discount.textContent	= "(#{L.discount}: #{discount})"
 );

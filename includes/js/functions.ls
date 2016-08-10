@@ -4,7 +4,6 @@
  * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-L = cs.Language('system_profile_')
 /**
  * Simple function for XHR requests to API wrapped in promise
  *
@@ -29,14 +28,19 @@ cs.api = (method_path, data) ->
 				resolve(JSON.parse(@responseText))
 		xhr.onerror	= !->
 			timeout	= setTimeout(!~>
-				cs.ui.notify(
-					if @responseText
+				if @responseText
+					cs.ui.notify(
 						JSON.parse(@responseText).error_description
-					else
-						L.system_server_connection_error
-					'warning'
-					5
-				)
+						'warning'
+						5
+					)
+				else
+					cs.Language.ready().then (L) !->
+						cs.ui.notify(
+							L.system_server_connection_error
+							'warning'
+							5
+						)
 			)
 			reject({timeout, xhr})
 		xhr.onabort	= xhr.onerror
@@ -105,45 +109,47 @@ cs.sign_out = !->
  * @param {string} email
  */
 cs.registration = (email) !->
-	if !email
-		cs.ui.alert(L.registration_please_type_your_email)
-		return
-	email		= String(email).toLowerCase()
-	xhr			= new XMLHttpRequest()
-	xhr.onload	= !->
-		switch @status
-		| 201		=> cs.ui.simple_modal('<div>' + L.registration_success + '</div>')
-		| 202		=> cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>')
-		| otherwise	=> @onerror()
-	xhr.onerror	= !->
-		cs.ui.notify(
-			if @responseText
-				JSON.parse(@responseText).error_description
-			else
-				L.system_server_connection_error
-			'warning'
-			5
-		)
-	xhr.onabort	= xhr.onerror
-	xhr.open('registration'.toUpperCase(), 'api/System/profile')
-	xhr.setRequestHeader('Content-Type', 'application/json')
-	xhr.send(JSON.stringify({email}))
+	cs.Language('system_profile_').ready().then (L) !->
+		if !email
+			cs.ui.alert(L.registration_please_type_your_email)
+			return
+		email		= String(email).toLowerCase()
+		xhr			= new XMLHttpRequest()
+		xhr.onload	= !->
+			switch @status
+			| 201		=> cs.ui.simple_modal('<div>' + L.registration_success + '</div>')
+			| 202		=> cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>')
+			| otherwise	=> @onerror()
+		xhr.onerror	= !->
+			cs.ui.notify(
+				if @responseText
+					JSON.parse(@responseText).error_description
+				else
+					L.system_server_connection_error
+				'warning'
+				5
+			)
+		xhr.onabort	= xhr.onerror
+		xhr.open('registration'.toUpperCase(), 'api/System/profile')
+		xhr.setRequestHeader('Content-Type', 'application/json')
+		xhr.send(JSON.stringify({email}))
 /**
  * Password restoring
  *
  * @param {string} email
  */
 cs.restore_password = (email) !->
-	if !email
-		cs.ui.alert(L.restore_password_please_type_your_email)
-		return
-	email	= String(email).toLowerCase()
-	require(['jssha'])
-		.then ([jssha]) ->
-			email := cs.hash(jssha, 'sha224', email)
-			cs.api('restore_password api/System/profile', {email})
-		.then !->
-			cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>')
+	cs.Language('system_profile_').ready().then (L) !->
+		if !email
+			cs.ui.alert(L.restore_password_please_type_your_email)
+			return
+		email	= String(email).toLowerCase()
+		require(['jssha'])
+			.then ([jssha]) ->
+				email := cs.hash(jssha, 'sha224', email)
+				cs.api('restore_password api/System/profile', {email})
+			.then !->
+				cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>')
 /**
  * Password changing
  *
@@ -153,38 +159,39 @@ cs.restore_password = (email) !->
  * @param {Function} error
  */
 cs.change_password = (current_password, new_password, success, error) !->
-	if !current_password
-		cs.ui.alert(L.please_type_current_password)
-		return
-	else if !new_password
-		cs.ui.alert(L.please_type_new_password)
-		return
-	else if current_password == new_password
-		cs.ui.alert(L.current_new_password_equal)
-		return
-	Promise.all([
-		require(['jssha'])
-		cs.api('configuration api/System/profile')
-	])
-		.then ([[jssha], configuration]) ->
-			if String(new_password).length < configuration.password_min_length
-				cs.ui.alert(L.password_too_short)
-				return
-			else if cs.password_check(new_password) < configuration.password_min_strength
-				cs.ui.alert(L.password_too_easy)
-				return
-			current_password	:= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + configuration.public_key)
-			new_password		:= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + configuration.public_key)
-			cs.api('change_password api/System/profile', {current_password, new_password})
-		.then !->
-			if success
-				success()
-			else
-				cs.ui.alert(L.password_changed_successfully)
-		.catch (o) !->
-			if error
-				clearTimeout(o.timeout)
-				error()
+	cs.Language('system_profile_').ready().then (L) !->
+		if !current_password
+			cs.ui.alert(L.please_type_current_password)
+			return
+		else if !new_password
+			cs.ui.alert(L.please_type_new_password)
+			return
+		else if current_password == new_password
+			cs.ui.alert(L.current_new_password_equal)
+			return
+		Promise.all([
+			require(['jssha'])
+			cs.api('configuration api/System/profile')
+		])
+			.then ([[jssha], configuration]) ->
+				if String(new_password).length < configuration.password_min_length
+					cs.ui.alert(L.password_too_short)
+					return
+				else if cs.password_check(new_password) < configuration.password_min_strength
+					cs.ui.alert(L.password_too_easy)
+					return
+				current_password	:= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + configuration.public_key)
+				new_password		:= cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + configuration.public_key)
+				cs.api('change_password api/System/profile', {current_password, new_password})
+			.then !->
+				if success
+					success()
+				else
+					cs.ui.alert(L.password_changed_successfully)
+			.catch (o) !->
+				if error
+					clearTimeout(o.timeout)
+					error()
 /**
  * Check password strength
  *
@@ -306,7 +313,7 @@ cs.{}ui
 			..bind		= modal
 			..addEventListener('click', ok_callback || ->)
 		cancel	= document.createElement('button', 'cs-button')
-			..innerHTML	= L.system_admin_cancel
+			..innerHTML	= 'Cancel'
 			..action	= 'close'
 			..bind		= modal
 			..addEventListener('click', cancel_callback || ->)
@@ -317,6 +324,9 @@ cs.{}ui
 			..appendChild(cancel)
 			..open()
 		ok.focus()
+		cs.Language.ready().then (L) !->
+			if cancel.innerHTML == 'Cancel'
+				cancel.innerHTML = L.system_admin_cancel
 		if ok_callback
 			modal
 		else

@@ -21,8 +21,7 @@
         x$._compute__ = x$._compute__;
         x$.ready = function(){
           var this$ = this;
-          cs.Language.ready().then(function(L){
-            L = L(prefix);
+          cs.Language(prefix).ready().then(function(L){
             this$._set_language_properties(L);
           });
         };

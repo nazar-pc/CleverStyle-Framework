@@ -7,10 +7,9 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var GUEST_ID, DEFAULT_IMAGE, L, shop, cart, params, method, details, slice$ = [].slice;
+  var GUEST_ID, DEFAULT_IMAGE, shop, cart, params, method, details, slice$ = [].slice;
   GUEST_ID = 1;
   DEFAULT_IMAGE = '/modules/Shop/includes/img/no-image.svg';
-  L = cs.Language('shop_');
   shop = cs.shop;
   cart = shop.cart;
   params = cart.params;
@@ -121,7 +120,7 @@
     finish_order: function(){
       var data, this$ = this;
       if (!this.shipping_username) {
-        cs.ui.alert(L.shipping_username_is_required);
+        cs.ui.alert(this.L.shipping_username_is_required);
         return;
       }
       data = {
@@ -137,12 +136,12 @@
         var id, modal;
         cart.clean();
         if (this$.payment_method === 'shop:cash') {
-          cs.ui.simple_modal("<h1 class=\"cs-text-center\">" + L.thanks_for_order + "</h1>").addEventListener('close', function(){
+          cs.ui.simple_modal("<h1 class=\"cs-text-center\">" + this$.L.thanks_for_order + "</h1>").addEventListener('close', function(){
             location.href = 'Shop/orders_';
           });
         } else {
           id = result.split('/').pop();
-          modal = cs.ui.simple_modal("<h1 class=\"cs-text-center\">" + L.thanks_for_order + "</h1>\n<p class=\"cs-text-center\">\n	<button is=\"cs-button\" primary type=\"button\" class=\"pay-now\">" + L.pay_now + "</button>\n	<button is=\"cs-button\" type=\"button\" class=\"pay-later\">" + L.pay_later + "</button>\n</p>");
+          modal = cs.ui.simple_modal("<h1 class=\"cs-text-center\">" + this$.L.thanks_for_order + "</h1>\n<p class=\"cs-text-center\">\n	<button is=\"cs-button\" primary type=\"button\" class=\"pay-now\">" + this$.L.pay_now + "</button>\n	<button is=\"cs-button\" type=\"button\" class=\"pay-later\">" + this$.L.pay_later + "</button>\n</p>");
           modal.addEventListener('close', function(){
             location.href = 'Shop/orders_';
           });

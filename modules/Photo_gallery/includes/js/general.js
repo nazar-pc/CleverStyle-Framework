@@ -9,25 +9,32 @@
 (function(){
   require(['jquery'], function($){
     $(function(){
-      var L, add_button, images_section;
-      L = cs.Language('photo_gallery_');
+      var add_button, images_section;
       add_button = document.querySelector('.cs-photo-gallery-add-images');
       if (add_button) {
         cs.file_upload(add_button, function(files){
           var gallery;
           gallery = add_button.dataset.gallery;
-          cs.api('post api/Photo_gallery/images', {
-            files: files,
-            gallery: gallery
-          }).then(function(result){
+          Promise.all([
+            cs.api('post api/Photo_gallery/images', {
+              files: files,
+              gallery: gallery
+            }), cs.Language('photo_gallery_').ready()
+          ]).then(function(arg$){
+            var result, L, href;
+            result = arg$[0], L = arg$[1];
             if (!result.length || !result) {
-              alert(L.images_not_supported);
+              cs.ui.alert(L.images_not_supported);
               return;
             }
+            href = 'Photo_gallery/edit_images/' + result.join(',');
             if (files.length !== result.length) {
-              alert(L.some_images_not_supported);
+              cs.ui.alert(L.some_images_not_supported).then(function(){
+                location.href = href;
+              });
+            } else {
+              location.href = href;
             }
-            location.href = 'Photo_gallery/edit_images/' + result.join(',');
           });
         }, null, null, true);
       }
@@ -50,7 +57,9 @@
         });
         $('body').on('click', '.cs-photo-gallery-image-delete', function(){
           var this$ = this;
-          cs.ui.confirm(L.sure_to_delete_image).then(function(){
+          cs.Language('photo_gallery_').ready().then(function(L){
+            return cs.ui.confirm(L.sure_to_delete_image);
+          }).then(function(){
             return cs.api('delete api/Photo_gallery/images/' + $(this$).data('image'));
           }).then(bind$(location, 'reload'));
         });

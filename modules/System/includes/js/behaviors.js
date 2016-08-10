@@ -8,22 +8,21 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L, ref$, ref1$;
-  L = cs.Language('system_admin_');
+  var ref$, ref1$;
   ((ref$ = (ref1$ = cs.Polymer || (cs.Polymer = {})).behaviors || (ref1$.behaviors = {})).admin || (ref$.admin = {})).System = {
     components: {
       _enable_module: function(component, meta){
         var this$ = this;
-        cs.api(["get			api/System/admin/modules/" + component + "/dependencies", 'get_settings	api/System/admin/system']).then(function(arg$){
-          var dependencies, settings, title, message, message_more, modal, i$, ref$, len$, p;
-          dependencies = arg$[0], settings = arg$[1];
+        Promise.all([cs.api(["get			api/System/admin/modules/" + component + "/dependencies", 'get_settings	api/System/admin/system']), cs.Language('system_admin_').ready()]).then(function(arg$){
+          var ref$, dependencies, settings, L, title, message, message_more, modal, i$, len$, p;
+          ref$ = arg$[0], dependencies = ref$[0], settings = ref$[1], L = arg$[1];
           delete dependencies.db_support;
           delete dependencies.storage_support;
           title = "<h3>" + L.modules_enabling_of_module(component) + "</h3>";
           message = '';
           message_more = '';
           if (Object.keys(dependencies).length) {
-            message = this$._compose_dependencies_message(component, meta.category, dependencies);
+            message = this$._compose_dependencies_message(L, component, meta.category, dependencies);
             if (settings.simple_admin_mode) {
               cs.ui.notify(message, 'error', 5);
               return;
@@ -55,9 +54,9 @@
       },
       _disable_module: function(component){
         var this$ = this;
-        cs.api(["get			api/System/admin/modules/" + component + "/dependent_packages", 'get_settings	api/System/admin/system']).then(function(arg$){
-          var dependent_packages, settings, title, message, type, packages, i$, len$, _package, modal, ref$, p;
-          dependent_packages = arg$[0], settings = arg$[1];
+        Promise.all([cs.api(["get			api/System/admin/modules/" + component + "/dependent_packages", 'get_settings	api/System/admin/system']), cs.Language('system_admin_').ready()]).then(function(arg$){
+          var ref$, dependent_packages, settings, L, title, message, type, packages, i$, len$, _package, modal, p;
+          ref$ = arg$[0], dependent_packages = ref$[0], settings = ref$[1], L = arg$[1];
           title = "<h3>" + L.modules_disabling_of_module(component) + "</h3>";
           message = '';
           if (Object.keys(dependent_packages).length) {
@@ -99,9 +98,9 @@
         var component, category, this$ = this;
         component = new_meta['package'];
         category = new_meta.category;
-        cs.api(["get			api/System/admin/" + category + "/" + component + "/update_dependencies", 'get_settings	api/System/admin/system']).then(function(arg$){
-          var dependencies, settings, translation_key, title, message, message_more, modal, i$, ref$, len$, p;
-          dependencies = arg$[0], settings = arg$[1];
+        Promise.all([cs.api(["get			api/System/admin/" + category + "/" + component + "/update_dependencies", 'get_settings	api/System/admin/system']), cs.Language('system_admin_').ready()]).then(function(arg$){
+          var ref$, dependencies, settings, L, translation_key, title, message, message_more, modal, i$, len$, p;
+          ref$ = arg$[0], dependencies = ref$[0], settings = ref$[1], L = arg$[1];
           delete dependencies.db_support;
           delete dependencies.storage_support;
           translation_key = (function(){
@@ -133,7 +132,7 @@
             message_more = '<p class>' + L[translation_key](component, existing_meta.version, new_meta.version) + '</p>';
           }
           if (Object.keys(dependencies).length) {
-            message = this$._compose_dependencies_message(component, category, dependencies);
+            message = this$._compose_dependencies_message(L, component, category, dependencies);
             if (settings.simple_admin_mode) {
               cs.ui.notify(message, 'error', 5);
               return;
@@ -179,14 +178,16 @@
             return 'appearance_completely_remove_theme';
           }
         }());
-        cs.ui.confirm(L[translation_key](component)).then(function(){
-          return cs.api("delete api/System/admin/" + category + "/" + component);
-        }).then(function(){
-          this$.reload();
-          cs.ui.notify(L.changes_saved, 'success', 5);
+        cs.Language('system_admin_').ready().then(function(L){
+          cs.ui.confirm(L[translation_key](component)).then(function(){
+            return cs.api("delete api/System/admin/" + category + "/" + component);
+          }).then(function(){
+            this$.reload();
+            cs.ui.notify(L.changes_saved, 'success', 5);
+          });
         });
       },
-      _compose_dependencies_message: function(component, category, dependencies){
+      _compose_dependencies_message: function(L, component, category, dependencies){
         var message, what, details, i$, len$, detail, translation_key, required_version;
         message = '';
         for (what in dependencies) {
@@ -290,21 +291,27 @@
       },
       _apply: function(){
         var this$ = this;
-        cs.api('apply_settings ' + this.settings_api_url, this.settings).then(function(){
+        Promise.all([cs.Language('system_admin_').ready(), cs.api('apply_settings ' + this.settings_api_url, this.settings)]).then(function(arg$){
+          var L;
+          L = arg$[0];
           this$._reload_settings();
           cs.ui.notify(L.changes_applied, 'warning', 5);
         });
       },
       _save: function(){
         var this$ = this;
-        cs.api('save_settings ' + this.settings_api_url, this.settings).then(function(){
+        Promise.all([cs.Language('system_admin_').ready(), cs.api('save_settings ' + this.settings_api_url, this.settings)]).then(function(arg$){
+          var L;
+          L = arg$[0];
           this$._reload_settings();
           cs.ui.notify(L.changes_saved, 'success', 5);
         });
       },
       _cancel: function(){
         var this$ = this;
-        cs.api('cancel_settings ' + this.settings_api_url).then(function(){
+        Promise.all([cs.Language('system_admin_').ready(), cs.api('cancel_settings ' + this.settings_api_url)]).then(function(arg$){
+          var L;
+          L = arg$[0];
           this$._reload_settings();
           cs.ui.notify(L.changes_canceled, 'success', 5);
         });

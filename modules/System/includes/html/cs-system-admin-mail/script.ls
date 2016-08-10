@@ -6,7 +6,6 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L = cs.Language('system_admin_mail_')
 Polymer(
 	'is'		: 'cs-system-admin-mail'
 	behaviors	: [
@@ -29,9 +28,9 @@ Polymer(
 		email = prompt('Email')
 		if email
 			cs.api('send_test_email api/System/admin/mail', {email})
-				.then !->
-					cs.ui.simple_modal("""<p class="cs-text-center cs-block-success cs-text-success">#{L.done}</p>""")
-				.catch (o) !->
+				.then !~>
+					cs.ui.simple_modal("""<p class="cs-text-center cs-block-success cs-text-success">#{@L.done}</p>""")
+				.catch (o) !~>
 					clearTimeout(o.timeout)
-					cs.ui.simple_modal("""<p class="cs-text-center cs-block-error cs-text-error">#{L.test_email_sending_failed}</p>""")
+					cs.ui.simple_modal("""<p class="cs-text-center cs-block-error cs-text-error">#{@L.test_email_sending_failed}</p>""")
 )

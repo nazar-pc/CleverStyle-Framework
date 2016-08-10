@@ -6,8 +6,6 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language;
   Polymer({
     'is': 'cs-system-sign-in',
     behaviors: [cs.Polymer.behaviors.Language('system_profile_')],

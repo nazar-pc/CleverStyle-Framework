@@ -21,7 +21,7 @@ Event::instance()
 			if (!Config::instance()->module('Shop')->enabled()) {
 				return;
 			}
-			if ($data['current_module'] != 'Shop') {
+			if ($data['current_module'] != 'Shop' || !$data['regular_path']) {
 				return;
 			}
 			$rc = explode('/', $data['rc']);

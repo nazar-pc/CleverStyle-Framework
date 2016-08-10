@@ -7,8 +7,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var L, uploader, files_handler, _on, _off;
-  L = cs.Language('uploader_');
+  var uploader, files_handler, _on, _off;
   uploader = function(file, progress, state){
     return new Promise(function(resolve, reject){
       var form_data, xhr;
@@ -41,34 +40,37 @@
     });
   };
   files_handler = function(files, success, error, progress, state){
-    var uploaded_files, next_upload;
+    var uploaded_files;
     uploaded_files = [];
-    next_upload = function(uploaded_file){
-      var file;
-      if (uploaded_file) {
-        uploaded_files.push(uploaded_file);
-      }
-      file = files.shift();
-      if (file) {
-        uploader(file, progress, state).then(function(data){
-          next_upload(data.url);
-        })['catch'](function(e){
-          if (error) {
-            error.call(error, L.file_uploading_failed(file.name, e.error_description), state.xhr, file);
-          } else {
-            cs.ui.notify(L.file_uploading_failed(file.name, e.error_description), 'error');
-          }
-          next_upload();
-        });
-      } else {
-        if (uploaded_files.length) {
-          success(uploaded_files);
-        } else {
-          cs.ui.notify(L.no_files_uploaded, 'error');
+    cs.Language('uploader_').ready().then(function(L){
+      var next_upload;
+      next_upload = function(uploaded_file){
+        var file;
+        if (uploaded_file) {
+          uploaded_files.push(uploaded_file);
         }
-      }
-    };
-    next_upload();
+        file = files.shift();
+        if (file) {
+          uploader(file, progress, state).then(function(data){
+            next_upload(data.url);
+          })['catch'](function(e){
+            if (error) {
+              error.call(error, L.file_uploading_failed(file.name, e.error_description), state.xhr, file);
+            } else {
+              cs.ui.notify(L.file_uploading_failed(file.name, e.error_description), 'error');
+            }
+            next_upload();
+          });
+        } else {
+          if (uploaded_files.length) {
+            success(uploaded_files);
+          } else {
+            cs.ui.notify(L.no_files_uploaded, 'error');
+          }
+        }
+      };
+      next_upload();
+    });
   };
   _on = function(element, event, callback){
     if (element.addEventListener) {

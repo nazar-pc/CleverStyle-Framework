@@ -4,7 +4,6 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-L	= cs.Language
 Polymer(
 	'is'		: 'cs-system-registration'
 	behaviors	: [

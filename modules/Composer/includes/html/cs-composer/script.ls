@@ -5,7 +5,6 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-L	= cs.Language('composer_')
 Polymer(
 	'is'		: 'cs-composer'
 	behaviors	: [
@@ -25,13 +24,16 @@ Polymer(
 		data	=
 			name		: @package
 			force		: @force
-		cs.api("#method api/Composer", data).then (result) !~>
+		Promise.all([
+			cs.api("#method api/Composer", data)
+			cs.Language.ready()
+		]).then ([result]) !~>
 			@_save_scroll_position()
 			@status =
 				switch result.code
-				| 0 => L.updated_successfully
-				| 1 => L.update_failed
-				| 2 => L.dependencies_conflict
+				| 0 => @L.updated_successfully
+				| 1 => @L.update_failed
+				| 2 => @L.dependencies_conflict
 			if result.description
 				@$.result.innerHTML	= result.description
 				@_restore_scroll_position()

@@ -6,7 +6,6 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-L = cs.Language('system_admin_blocks_')
 Polymer(
 	'is'		: 'cs-system-admin-blocks-list'
 	behaviors	: [
@@ -41,8 +40,8 @@ Polymer(
 					floating	: get_indexes('floating')
 					right		: get_indexes('right')
 					bottom		: get_indexes('bottom')
-				cs.api('update_order api/System/admin/blocks', {order}).then !->
-					cs.ui.notify(L.changes_saved, 'success', 5)
+				cs.api('update_order api/System/admin/blocks', {order}).then !~>
+					cs.ui.notify(@L.changes_saved, 'success', 5)
 			)
 	_status_class : (active) ->
 		if active ~= 1 then 'cs-block-success cs-text-success' else 'cs-block-warning cs-text-warning'
@@ -60,26 +59,26 @@ Polymer(
 			@set('blocks', blocks_grouped)
 			@_init_sortable()
 	_block_permissions : (e) !->
-		title	= L.permissions_for_block(e.model.item.title)
+		title	= @L.permissions_for_block(e.model.item.title)
 		cs.ui.simple_modal("""
 			<h3>#title</h3>
 			<cs-system-admin-permissions-for-item label="#{e.model.item.index}" group="Block"/>
 		""")
 	_add_block : !->
 		cs.ui.simple_modal("""
-			<h3>#{L.block_addition}</h3>
+			<h3>#{@L.block_addition}</h3>
 			<cs-system-admin-blocks-form/>
 		""").addEventListener('close', @~_reload)
 	_edit_block : (e) !->
-		title	= L.editing_block(e.model.item.title)
+		title	= @L.editing_block(e.model.item.title)
 		cs.ui.simple_modal("""
 			<h3>#title</h3>
 			<cs-system-admin-blocks-form index="#{e.model.item.index}"/>
 		""").addEventListener('close', @~_reload)
 	_delete_block : (e) !->
-		cs.ui.confirm(L.sure_to_delete_block(e.model.item.title))
+		cs.ui.confirm(@L.sure_to_delete_block(e.model.item.title))
 			.then -> cs.api('delete api/System/admin/blocks/' + e.model.item.index)
 			.then !~>
-				cs.ui.notify(L.changes_saved, 'success', 5)
+				cs.ui.notify(@L.changes_saved, 'success', 5)
 				@_reload()
 )

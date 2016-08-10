@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language('system_admin_databases_');
   Polymer({
     'is': 'cs-system-admin-databases-form',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_databases_')],
@@ -58,28 +56,28 @@
       });
     },
     _save: function(){
-      var method, suffix;
+      var method, suffix, this$ = this;
       method = this.add ? 'post' : 'patch';
       suffix = !isNaN(this.databaseIndex) ? '/' + this.databaseIndex + (!isNaN(this.mirrorIndex) ? '/' + this.mirrorIndex : '') : '';
       cs.api(method + " api/System/admin/databases" + suffix, this.database).then(function(){
-        cs.ui.notify(L.changes_saved, 'success', 5);
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
     },
     _db_name: function(index, host, name){
       if (index) {
         return host + "/" + name;
       } else {
-        return L.core_db;
+        return this.L.core_db;
       }
     },
     _test_connection: function(e){
-      var modal;
-      modal = cs.ui.simple_modal("<div>\n	<h3 class=\"cs-text-center\">" + L.test_connection + "</h3>\n	<progress is=\"cs-progress\" infinite></progress>\n</div>");
+      var modal, this$ = this;
+      modal = cs.ui.simple_modal("<div>\n	<h3 class=\"cs-text-center\">" + this.L.test_connection + "</h3>\n	<progress is=\"cs-progress\" infinite></progress>\n</div>");
       cs.api('test api/System/admin/databases', this.database).then(function(){
-        modal.querySelector('progress').outerHTML = "<p class=\"cs-text-center cs-block-success cs-text-success\" style=text-transform:capitalize;\">" + L.success + "</p>";
+        modal.querySelector('progress').outerHTML = "<p class=\"cs-text-center cs-block-success cs-text-success\" style=text-transform:capitalize;\">" + this$.L.success + "</p>";
       })['catch'](function(o){
         clearTimeout(o.timeout);
-        modal.querySelector('progress').outerHTML = "<p class=\"cs-text-center cs-block-error cs-text-error\" style=text-transform:capitalize;\">" + L.failed + "</p>";
+        modal.querySelector('progress').outerHTML = "<p class=\"cs-text-center cs-block-error cs-text-error\" style=text-transform:capitalize;\">" + this$.L.failed + "</p>";
       });
     }
   });

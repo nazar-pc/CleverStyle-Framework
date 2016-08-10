@@ -7,8 +7,7 @@
  */
 $ <-! require(['jquery'], _)
 <-! $
-L			= cs.Language('shop_')
-make_modal	= (types, title, action) ->
+make_modal	= (types, L, title, action) ->
 	types	=
 		for index, type of types
 			"""<option value="#index">#type</option>"""
@@ -43,8 +42,11 @@ make_modal	= (types, title, action) ->
 	modal
 $('html')
 	.on('mousedown', '.cs-shop-order-status-add', !->
-		cs.api('get api/Shop/admin/order_statuses/types').then (types) !->
-			modal = make_modal(types, L.order_status_addition, L.add)
+		Promise.all([
+			cs.api('get api/Shop/admin/order_statuses/types')
+			cs.Language('shop_').ready()
+		]).then ([types, L]) !->
+			modal = make_modal(types, L, L.order_status_addition, L.add)
 			modal.find('form').submit ->
 				cs.api('post api/Shop/admin/order_statuses', @)
 					.then -> cs.ui.alert(L.added_successfully)
@@ -53,11 +55,14 @@ $('html')
 	)
 	.on('mousedown', '.cs-shop-order-status-edit', !->
 		id = $(@).data('id')
-		cs.api([
-			'get api/Shop/admin/order_statuses/types'
-			"get api/Shop/admin/order_statuses/#id"
-		]).then ([types, type]) !->
-			modal = make_modal(types, L.order_status_edition, L.edit)
+		Promise.all([
+			cs.api([
+				'get api/Shop/admin/order_statuses/types'
+				"get api/Shop/admin/order_statuses/#id"
+			])
+			cs.Language('shop_').ready()
+		]).then ([[types, type], L]) !->
+			modal = make_modal(types, L, L.order_status_edition, L.edit)
 			modal.find('form').submit ->
 				cs.api("put api/Shop/admin/order_statuses/#id", @)
 					.then -> cs.ui.alert(L.edited_successfully)
@@ -72,8 +77,9 @@ $('html')
 	)
 	.on('mousedown', '.cs-shop-order-status-delete', !->
 		id = $(@).data('id')
-		cs.ui.confirm(L.sure_want_to_delete)
-			.then -> cs.api("delete api/Shop/admin/order_statuses/#id")
-			.then -> cs.ui.alert(L.deleted_successfully)
-			.then(location~reload)
+		cs.Language('shop_').ready().then (L) !->
+			cs.ui.confirm(L.sure_want_to_delete)
+				.then -> cs.api("delete api/Shop/admin/order_statuses/#id")
+				.then -> cs.ui.alert(L.deleted_successfully)
+				.then(location~reload)
 	)

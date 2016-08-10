@@ -7,8 +7,7 @@
  */
 $ <-! require(['jquery'], _)
 <-! $
-L			= cs.Language('shop_')
-make_modal	= (attributes, categories, title, action) ->
+make_modal	= (attributes, categories, L, title, action) ->
 	attributes	= do ->
 		attributes_	= {}
 		keys		= []
@@ -128,11 +127,14 @@ make_modal	= (attributes, categories, title, action) ->
 	modal
 $('html')
 	.on('mousedown', '.cs-shop-category-add', !->
-		cs.api([
-			'get api/Shop/admin/attributes'
-			'get api/Shop/admin/categories'
-		]).then ([attributes, categories]) !->
-			modal = make_modal(attributes, categories, L.category_addition, L.add)
+		Promise.all([
+			cs.api([
+				'get api/Shop/admin/attributes'
+				'get api/Shop/admin/categories'
+			])
+			cs.Language('shop_').ready()
+		]).then ([[attributes, categories], L]) !->
+			modal = make_modal(attributes, categories, L, L.category_addition, L.add)
 			modal.find('form').submit ->
 				cs.api('post api/Shop/admin/categories', @)
 					.then -> cs.ui.alert(L.added_successfully)
@@ -141,12 +143,15 @@ $('html')
 	)
 	.on('mousedown', '.cs-shop-category-edit', !->
 		id = $(@).data('id')
-		cs.api([
-			'get api/Shop/admin/attributes'
-			'get api/Shop/admin/categories'
-			"get api/Shop/admin/categories/#id"
-		]).then ([attributes, categories, category]) !->
-			modal = make_modal(attributes, categories, L.category_edition, L.edit)
+		Promise.all([
+			cs.api([
+				'get api/Shop/admin/attributes'
+				'get api/Shop/admin/categories'
+				"get api/Shop/admin/categories/#id"
+			])
+			cs.Language('shop_').ready()
+		]).then ([[attributes, categories, category], L]) !->
+			modal = make_modal(attributes, categories, L, L.category_edition, L.edit)
 			modal.find('form').submit ->
 				cs.api("put api/Shop/admin/categories/#id", @)
 					.then -> cs.ui.alert(L.edited_successfully)
@@ -164,8 +169,9 @@ $('html')
 	)
 	.on('mousedown', '.cs-shop-category-delete', !->
 		id = $(@).data('id')
-		cs.ui.confirm(L.sure_want_to_delete_category)
-			.then -> cs.api("delete api/Shop/admin/categories/#id")
-			.then -> cs.ui.alert(L.deleted_successfully)
-			.then(location~reload)
+		cs.Language('shop_').ready().then (L) !->
+			cs.ui.confirm(L.sure_want_to_delete_category)
+				.then -> cs.api("delete api/Shop/admin/categories/#id")
+				.then -> cs.ui.alert(L.deleted_successfully)
+				.then(location~reload)
 	)

@@ -10,21 +10,22 @@
   Polymer({
     is: 'cs-shop-order-paid-notification',
     created: function(){
-      var L, query;
       if (!location.search) {
         return;
       }
-      L = cs.Language('shop_');
-      query = location.search.substr(1).split('&');
-      query.forEach(function(q){
-        q = q.split('=');
-        switch (q[0]) {
-        case 'paid_success':
-          cs.ui.notify(L.paid_success_notification(q[1]), 'success');
-          break;
-        case 'paid_error':
-          cs.ui.notify(L.paid_error_notification(q[1]), 'error');
-        }
+      cs.Language('shop_').ready().then(function(L){
+        var query;
+        query = location.search.substr(1).split('&');
+        query.forEach(function(q){
+          q = q.split('=');
+          switch (q[0]) {
+          case 'paid_success':
+            cs.ui.notify(L.paid_success_notification(q[1]), 'success');
+            break;
+          case 'paid_error':
+            cs.ui.notify(L.paid_error_notification(q[1]), 'error');
+          }
+        });
       });
     }
   });

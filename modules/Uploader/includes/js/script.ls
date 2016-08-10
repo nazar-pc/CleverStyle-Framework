@@ -5,7 +5,6 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-L				= cs.Language('uploader_')
 uploader		= (file, progress, state) ->
 	new Promise (resolve, reject) !->
 		form_data	= new FormData
@@ -26,26 +25,27 @@ uploader		= (file, progress, state) ->
 		xhr.send(form_data)
 files_handler	= (files, success, error, progress, state) !->
 	uploaded_files = []
-	next_upload = (uploaded_file) !->
-		if uploaded_file
-			uploaded_files.push(uploaded_file)
-		file = files.shift()
-		if file
-			uploader(file, progress, state)
-				.then (data) !->
-					next_upload(data.url)
-				.catch (e) !->
-					if error
-						error.call(error, L.file_uploading_failed(file.name, e.error_description), state.xhr, file)
-					else
-						cs.ui.notify(L.file_uploading_failed(file.name, e.error_description), 'error')
-					next_upload()
-		else
-			if uploaded_files.length
-				success(uploaded_files)
+	cs.Language('uploader_').ready().then (L) !->
+		next_upload = (uploaded_file) !->
+			if uploaded_file
+				uploaded_files.push(uploaded_file)
+			file = files.shift()
+			if file
+				uploader(file, progress, state)
+					.then (data) !->
+						next_upload(data.url)
+					.catch (e) !->
+						if error
+							error.call(error, L.file_uploading_failed(file.name, e.error_description), state.xhr, file)
+						else
+							cs.ui.notify(L.file_uploading_failed(file.name, e.error_description), 'error')
+						next_upload()
 			else
-				cs.ui.notify(L.no_files_uploaded, 'error')
-	next_upload()
+				if uploaded_files.length
+					success(uploaded_files)
+				else
+					cs.ui.notify(L.no_files_uploaded, 'error')
+		next_upload()
 _on				= (element, event, callback) !->
 	if element.addEventListener
 		element.addEventListener(event, callback)

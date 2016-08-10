@@ -16,8 +16,11 @@ Polymer(
 		can_delete		: false
 		show_comments	: false
 		preview			: false
-		url_prefix		: if location.pathname.indexOf('/' + cs.Language.clang) == 0 then '/' + cs.Language.clang else ''
+		url_prefix		: ''
 	ready			: !->
+		cs.Language.ready().then (L) !~>
+			if location.pathname.indexOf('/' + L.clang) == 0
+				@url_prefix	= '/' + L.clang
 		@jsonld	= JSON.parse(@children[0].innerHTML)
 		cs.api([
 			'get_settings	api/Blogs'

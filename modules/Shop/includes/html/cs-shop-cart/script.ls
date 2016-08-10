@@ -7,7 +7,6 @@
  */
 const GUEST_ID		= 1
 const DEFAULT_IMAGE	= '/modules/Shop/includes/img/no-image.svg'
-L		= cs.Language('shop_')
 shop	= cs.shop
 cart	= shop.cart
 params	= cart.params
@@ -86,7 +85,7 @@ Polymer(
 		params.comment	= @comment
 	finish_order				: !->
 		if !@shipping_username
-			cs.ui.alert(L.shipping_username_is_required)
+			cs.ui.alert(@L.shipping_username_is_required)
 			return
 		data	=
 			shipping_type		: @shipping_type
@@ -100,17 +99,17 @@ Polymer(
 			cart.clean()
 			if @payment_method == 'shop:cash' # Default payment method (Orders::PAYMENT_METHOD_CASH)
 				cs.ui.simple_modal("""
-					<h1 class="cs-text-center">#{L.thanks_for_order}</h1>
+					<h1 class="cs-text-center">#{@L.thanks_for_order}</h1>
 				""").addEventListener('close', !->
 					location.href	= 'Shop/orders_'
 				)
 			else
 				id		= result.split('/').pop()
 				modal	= cs.ui.simple_modal("""
-					<h1 class="cs-text-center">#{L.thanks_for_order}</h1>
+					<h1 class="cs-text-center">#{@L.thanks_for_order}</h1>
 					<p class="cs-text-center">
-						<button is="cs-button" primary type="button" class="pay-now">#{L.pay_now}</button>
-						<button is="cs-button" type="button" class="pay-later">#{L.pay_later}</button>
+						<button is="cs-button" primary type="button" class="pay-now">#{@L.pay_now}</button>
+						<button is="cs-button" type="button" class="pay-later">#{@L.pay_later}</button>
 					</p>
 				""")
 				modal.addEventListener('close', !->

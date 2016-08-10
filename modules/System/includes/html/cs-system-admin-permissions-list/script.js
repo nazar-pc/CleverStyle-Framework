@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language('system_admin_permissions_');
   Polymer({
     'is': 'cs-system-admin-permissions-list',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_permissions_')],
@@ -47,20 +45,20 @@
       });
     },
     add_permission: function(){
-      cs.ui.simple_modal("<h3>" + L.adding_permission + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form/>").addEventListener('close', bind$(this, 'reload'));
+      cs.ui.simple_modal("<h3>" + this.L.adding_permission + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + this.L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form/>").addEventListener('close', bind$(this, 'reload'));
     },
     edit_permission: function(e){
       var permission;
       permission = e.model.permission;
-      cs.ui.simple_modal("<h3>" + L.editing_permission(permission.group + '/' + permission.label) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form permission_id=\"" + permission.id + "\"/>").addEventListener('close', bind$(this, 'reload'));
+      cs.ui.simple_modal("<h3>" + this.L.editing_permission(permission.group + '/' + permission.label) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + this.L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form permission_id=\"" + permission.id + "\"/>").addEventListener('close', bind$(this, 'reload'));
     },
     delete_permission: function(e){
       var permission, this$ = this;
       permission = e.model.permission;
-      cs.ui.confirm("<h3>" + L.sure_delete_permission(permission.group + '/' + permission.label) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>").then(function(){
+      cs.ui.confirm("<h3>" + this.L.sure_delete_permission(permission.group + '/' + permission.label) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + this.L.changing_settings_warning + "</p>").then(function(){
         return cs.api('delete api/System/admin/permissions/' + permission.id);
       }).then(function(){
-        cs.ui.notify(L.changes_saved, 'success', 5);
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
         this$.splice('permissions', e.model.index, 1);
       });
     }

@@ -7,22 +7,21 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language('blockchain_payment_');
   Polymer({
     is: 'cs-blockchain-payment-pay',
     properties: {
       description: '',
       address: '',
       amount: Number,
-      progress_text: {
-        type: String,
-        value: L.waiting_for_payment
-      }
+      progress_text: String
     },
     ready: function(){
-      this.set('description', JSON.parse(this.description));
-      this.set('text', L.scan_or_transfer(this.amount, this.address));
+      var this$ = this;
+      cs.Language('blockchain_payment_').ready().then(function(L){
+        this$.progress_text = L.waiting_for_payment;
+        this$.text = L.scan_or_transfer(this$.amount, this$.address);
+      });
+      this.description(JSON.parse(this.description));
       new QRCode(this.$.qr, {
         height: 512,
         text: 'bitcoin:' + this.address + '?amount=' + this.amount,
@@ -38,7 +37,9 @@
           return;
         }
         if (parseInt(data.paid)) {
-          this$.set('progress_text', L.waiting_for_confirmations);
+          cs.Language('blockchain_payment_').ready().then(function(L){
+            this$.progress_text = L.waiting_for_confirmations;
+          });
         }
         setTimeout(bind$(this$, 'update_status'), 5000);
       });

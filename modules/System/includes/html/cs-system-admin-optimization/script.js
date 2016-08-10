@@ -8,8 +8,6 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language('system_admin_optimization_');
   Polymer({
     'is': 'cs-system-admin-optimization',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_optimization_'), cs.Polymer.behaviors.admin.System.settings],
@@ -24,15 +22,15 @@
       this._clean_cache_common('clean_pcache');
     },
     _clean_cache_common: function(method){
-      var modal;
+      var modal, this$ = this;
       modal = cs.ui.simple_modal("<progress is=\"cs-progress\" infinite></progress>");
       cs.api((method + " ") + this.settings_api_url, {
         path_prefix: this.path_prefix
       }).then(function(){
-        modal.innerHTML = "<p class=\"cs-block-success cs-text-success\">" + L.done + "</p>";
+        modal.innerHTML = "<p class=\"cs-block-success cs-text-success\">" + this$.L.done + "</p>";
       })['catch'](function(o){
         clearTimeout(o.timeout);
-        modal.innerHTML = "<p class=\"cs-block-error cs-text-error\">" + L.error + "</p>";
+        modal.innerHTML = "<p class=\"cs-block-error cs-text-error\">" + this$.L.error + "</p>";
       });
     }
   });

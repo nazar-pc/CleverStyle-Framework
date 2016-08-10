@@ -6,16 +6,30 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var translations, x$, slice$ = [].slice;
+  var translations, is_ready, x$, slice$ = [].slice;
   translations = cs.Language;
+  is_ready = false;
   function Language(prefix){
-    var prefix_length, prefixed, key;
+    var prefix_length, prefixed, fill_prefixed;
     prefix_length = prefix.length;
     prefixed = Object.create(Language);
-    for (key in Language) {
-      if (key.indexOf(prefix) === 0) {
-        prefixed[key.substr(prefix_length)] = Language[key];
+    prefixed.ready = function(){
+      return Language.ready().then(function(){
+        return prefixed;
+      });
+    };
+    fill_prefixed = function(){
+      var key;
+      for (key in Language) {
+        if (key.indexOf(prefix) === 0) {
+          prefixed[key.substr(prefix_length)] = Language[key];
+        }
       }
+    };
+    if (is_ready) {
+      fill_prefixed();
+    } else {
+      Language.ready().then(fill_prefixed);
     }
     return prefixed;
   }
@@ -35,6 +49,7 @@
       for (i$ in ref$ = translations) {
         (fn$.call(this, i$, ref$[i$]));
       }
+      is_ready = true;
       resolve(Language);
       function fn$(key, value){
         Language[key] = function(){

@@ -7,9 +7,8 @@
  */
 $ <-! require(['jquery'], _)
 <-! $
-L					= cs.Language('shop_')
 set_attribute_types	= [1, 2, 6, 9] # Attributes types that represents sets: TYPE_INT_SET, TYPE_FLOAT_SET, TYPE_STRING_SET, TYPE_COLOR_SET
-make_modal			= (types, title, action) ->
+make_modal			= (types, L, title, action) ->
 	types		= for index, type of types
 		"""<option value="#index">#type</option>"""
 	types		= types.join('')
@@ -28,8 +27,11 @@ make_modal			= (types, title, action) ->
 	</form>""")
 $('html')
 	.on('mousedown', '.cs-shop-attribute-add', !->
-		cs.api('get api/Shop/admin/attributes/types').then (types) !->
-			$modal	= $(make_modal(types, L.attribute_addition, L.add))
+		Promise.all([
+			cs.api('get api/Shop/admin/attributes/types')
+			cs.Language('shop_').ready()
+		]).then ([types, L]) !->
+			$modal	= $(make_modal(types, L, L.attribute_addition, L.add))
 			$modal
 				.on('submit', 'form', !->
 					type	= $modal.find('[name=type]').val()
@@ -59,11 +61,14 @@ $('html')
 	)
 	.on('mousedown', '.cs-shop-attribute-edit', !->
 		id = $(@).data('id')
-		cs.api([
-			'get api/Shop/admin/attributes/types'
-			"get api/Shop/admin/attributes/#id"
-		]).then ([types, attribute]) !->
-			$modal	= $(make_modal(types, L.attribute_edition, L.edit))
+		Promise.all([
+			cs.api([
+				'get api/Shop/admin/attributes/types'
+				"get api/Shop/admin/attributes/#id"
+			])
+			cs.Language('shop_').ready()
+		]).then ([[types, attribute], L]) !->
+			$modal	= $(make_modal(types, L, L.attribute_edition, L.edit))
 			$modal
 				.on('submit', 'form', !->
 					type	= $modal.find('[name=type]').val()
@@ -97,8 +102,9 @@ $('html')
 	)
 	.on('mousedown', '.cs-shop-attribute-delete', !->
 		id = $(@).data('id')
-		cs.ui.confirm(L.sure_want_to_delete)
-			.then -> cs.api("delete api/Shop/admin/attributes/#id")
-			.then -> cs.ui.alert(L.deleted_successfully)
-			.then(location~reload)
+		cs.Language('shop_').ready().then (L) !->
+			cs.ui.confirm(L.sure_want_to_delete)
+				.then -> cs.api("delete api/Shop/admin/attributes/#id")
+				.then -> cs.ui.alert(L.deleted_successfully)
+				.then(location~reload)
 	)

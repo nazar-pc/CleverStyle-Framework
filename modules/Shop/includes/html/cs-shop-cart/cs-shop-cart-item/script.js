@@ -58,10 +58,13 @@
       }, !this.price_formatted ? 0 : 100);
     },
     recalculate: function(price, units){
-      var discount;
+      var discount, this$ = this;
       this.price_formatted = sprintf(price_formatting, price);
       discount = units * this.unit_price - price;
-      this.$.discount.textContent = discount ? (discount = sprintf(price_formatting, discount), "(" + cs.Language.shop_discount + ": " + discount + ")") : '';
+      cs.Language('shop_').ready().then(function(L){
+        var discount;
+        this$.$.discount.textContent = discount ? (discount = sprintf(price_formatting, discount), "(" + L.discount + ": " + discount + ")") : '';
+      });
     }
   });
 }).call(this);

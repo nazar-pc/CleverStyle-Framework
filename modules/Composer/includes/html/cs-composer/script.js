@@ -7,8 +7,6 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language('composer_');
   Polymer({
     'is': 'cs-composer',
     behaviors: [cs.Polymer.behaviors.Language('composer_')],
@@ -29,18 +27,20 @@
         name: this['package'],
         force: this.force
       };
-      cs.api(method + " api/Composer", data).then(function(result){
+      Promise.all([cs.api(method + " api/Composer", data), cs.Language.ready()]).then(function(arg$){
+        var result;
+        result = arg$[0];
         this$._save_scroll_position();
         this$.status = (function(){
           switch (result.code) {
           case 0:
-            return L.updated_successfully;
+            return this.L.updated_successfully;
           case 1:
-            return L.update_failed;
+            return this.L.update_failed;
           case 2:
-            return L.dependencies_conflict;
+            return this.L.dependencies_conflict;
           }
-        }());
+        }.call(this$));
         if (result.description) {
           this$.$.result.innerHTML = result.description;
           this$._restore_scroll_position();

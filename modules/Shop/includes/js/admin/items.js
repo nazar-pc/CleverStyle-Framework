@@ -9,12 +9,11 @@
 (function(){
   require(['jquery'], function($){
     $(function(){
-      var L, set_attribute_types, color_set_attribute_type, string_attribute_types, make_modal;
-      L = cs.Language('shop_');
+      var set_attribute_types, color_set_attribute_type, string_attribute_types, make_modal;
       set_attribute_types = [1, 2, 6, 9];
       color_set_attribute_type = [1, 2, 6, 9];
       string_attribute_types = [5];
-      make_modal = function(attributes, categories, title, action){
+      make_modal = function(attributes, categories, L, title, action){
         var categories_list, modal;
         attributes = function(){
           var attributes_, attribute, ref$;
@@ -283,10 +282,10 @@
         return modal;
       };
       $('html').on('mousedown', '.cs-shop-item-add', function(){
-        cs.api(['get api/Shop/admin/attributes', 'get api/Shop/admin/categories']).then(function(arg$){
-          var attributes, categories, modal;
-          attributes = arg$[0], categories = arg$[1];
-          modal = make_modal(attributes, categories, L.item_addition, L.add);
+        Promise.all([cs.api(['get api/Shop/admin/attributes', 'get api/Shop/admin/categories']), cs.Language('shop_').ready()]).then(function(arg$){
+          var ref$, attributes, categories, L, modal;
+          ref$ = arg$[0], attributes = ref$[0], categories = ref$[1], L = arg$[1];
+          modal = make_modal(attributes, categories, L, L.item_addition, L.add);
           modal.find("[name=category]").change();
           modal.find('form').submit(function(){
             cs.api('post api/Shop/admin/items', this).then(function(){
@@ -298,10 +297,10 @@
       }).on('mousedown', '.cs-shop-item-edit', function(){
         var id;
         id = $(this).data('id');
-        cs.api(['get api/Shop/admin/attributes', 'get api/Shop/admin/categories', "get api/Shop/admin/items/" + id]).then(function(arg$){
-          var attributes, categories, item, modal;
-          attributes = arg$[0], categories = arg$[1], item = arg$[2];
-          modal = make_modal(attributes, categories, L.item_edition, L.edit);
+        Promise.all([cs.api(['get api/Shop/admin/attributes', 'get api/Shop/admin/categories', "get api/Shop/admin/items/" + id]), cs.Language('shop_').ready()]).then(function(arg$){
+          var ref$, attributes, categories, item, L, modal;
+          ref$ = arg$[0], attributes = ref$[0], categories = ref$[1], item = ref$[2], L = arg$[1];
+          modal = make_modal(attributes, categories, L, L.item_edition, L.edit);
           modal.find('form').submit(function(){
             cs.api("put api/Shop/admin/items/" + id, this).then(function(){
               return cs.ui.alert(L.edited_successfully);
@@ -314,11 +313,13 @@
       }).on('mousedown', '.cs-shop-item-delete', function(){
         var id;
         id = $(this).data('id');
-        cs.ui.confirm(L.sure_want_to_delete).then(function(){
-          return cs.api("delete api/Shop/admin/items/" + id);
-        }).then(function(){
-          return cs.ui.alert(L.deleted_successfully);
-        }).then(bind$(location, 'reload'));
+        cs.Language('shop_').ready().then(function(L){
+          cs.ui.confirm(L.sure_want_to_delete).then(function(){
+            return cs.api("delete api/Shop/admin/items/" + id);
+          }).then(function(){
+            return cs.ui.alert(L.deleted_successfully);
+          }).then(bind$(location, 'reload'));
+        });
       });
     });
   });

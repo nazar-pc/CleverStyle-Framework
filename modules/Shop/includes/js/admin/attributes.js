@@ -9,10 +9,9 @@
 (function(){
   require(['jquery'], function($){
     $(function(){
-      var L, set_attribute_types, make_modal;
-      L = cs.Language('shop_');
+      var set_attribute_types, make_modal;
       set_attribute_types = [1, 2, 6, 9];
-      make_modal = function(types, title, action){
+      make_modal = function(types, L, title, action){
         var res$, index, type;
         res$ = [];
         for (index in types) {
@@ -24,9 +23,10 @@
         return cs.ui.simple_modal("<form is=\"cs-form\">\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<label>" + L.attribute_type + "</label>\n	<select is=\"cs-select\" name=\"type\" required>" + types + "</select>\n	<label>" + L.possible_values + "</label>\n	<textarea is=\"cs-textarea\" autosize name=\"value\"></textarea>\n	<label>" + L.title + "</label>\n	<input is=\"cs-input-text\" name=\"title\" required>\n	<label>" + L.title_internal + "</label>\n	<input is=\"cs-input-text\" name=\"title_internal\" required>\n	<br>\n	<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n</form>");
       };
       $('html').on('mousedown', '.cs-shop-attribute-add', function(){
-        cs.api('get api/Shop/admin/attributes/types').then(function(types){
-          var $modal;
-          $modal = $(make_modal(types, L.attribute_addition, L.add));
+        Promise.all([cs.api('get api/Shop/admin/attributes/types'), cs.Language('shop_').ready()]).then(function(arg$){
+          var types, L, $modal;
+          types = arg$[0], L = arg$[1];
+          $modal = $(make_modal(types, L, L.attribute_addition, L.add));
           $modal.on('submit', 'form', function(){
             var type, value, data;
             type = $modal.find('[name=type]').val();
@@ -55,10 +55,10 @@
       }).on('mousedown', '.cs-shop-attribute-edit', function(){
         var id;
         id = $(this).data('id');
-        cs.api(['get api/Shop/admin/attributes/types', "get api/Shop/admin/attributes/" + id]).then(function(arg$){
-          var types, attribute, $modal;
-          types = arg$[0], attribute = arg$[1];
-          $modal = $(make_modal(types, L.attribute_edition, L.edit));
+        Promise.all([cs.api(['get api/Shop/admin/attributes/types', "get api/Shop/admin/attributes/" + id]), cs.Language('shop_').ready()]).then(function(arg$){
+          var ref$, types, attribute, L, $modal;
+          ref$ = arg$[0], types = ref$[0], attribute = ref$[1], L = arg$[1];
+          $modal = $(make_modal(types, L, L.attribute_edition, L.edit));
           $modal.on('submit', 'form', function(){
             var type, value, data;
             type = $modal.find('[name=type]').val();
@@ -91,11 +91,13 @@
       }).on('mousedown', '.cs-shop-attribute-delete', function(){
         var id;
         id = $(this).data('id');
-        cs.ui.confirm(L.sure_want_to_delete).then(function(){
-          return cs.api("delete api/Shop/admin/attributes/" + id);
-        }).then(function(){
-          return cs.ui.alert(L.deleted_successfully);
-        }).then(bind$(location, 'reload'));
+        cs.Language('shop_').ready().then(function(L){
+          cs.ui.confirm(L.sure_want_to_delete).then(function(){
+            return cs.api("delete api/Shop/admin/attributes/" + id);
+          }).then(function(){
+            return cs.ui.alert(L.deleted_successfully);
+          }).then(bind$(location, 'reload'));
+        });
       });
     });
   });

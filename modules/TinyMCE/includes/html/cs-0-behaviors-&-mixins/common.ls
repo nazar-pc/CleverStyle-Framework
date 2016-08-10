@@ -10,14 +10,16 @@ change_timeout	= null
 load_tinymce	= ->
 	if load_promise
 		return load_promise
-	load_promise := new Promise (resolve, reject) !->
-		script	= document.createElement("script")
-			..async		= true
-			..src		= '/modules/TinyMCE/includes/js/tinymce.min.js'
-			..onload	= resolve
-			..onerror	= reject
-		document.head.appendChild(script)
-	load_promise := load_promise.then !->
+	load_promise := Promise.all([
+		cs.Language.ready()
+		new Promise (resolve, reject) !->
+			script	= document.createElement("script")
+				..async		= true
+				..src		= '/modules/TinyMCE/includes/js/tinymce.min.js'
+				..onload	= resolve
+				..onerror	= reject
+			document.head.appendChild(script)
+	]).then (L) !->
 		uploader_callback	= undefined
 		button				= document.createElement('button')
 		uploader			= cs.file_upload?(
@@ -43,7 +45,7 @@ load_tinymce	= ->
 			doctype					: '<!doctype html>'
 			theme					: if cs.tinymce && cs.tinymce.theme != undefined then cs.tinymce.theme else 'modern'
 			skin					: if cs.tinymce && cs.tinymce.skin != undefined then cs.tinymce.skin else 'lightgray'
-			language				: if cs.Language.clang != undefined then cs.Language.clang else 'en'
+			language				: cs.Language.clang
 			menubar					: false
 			plugins					: 'advlist anchor charmap code codesample colorpicker contextmenu fullscreen hr image link lists media nonbreaking noneditable pagebreak paste preview searchreplace tabfocus table textcolor visualblocks visualchars wordcount'
 			resize					: 'both'

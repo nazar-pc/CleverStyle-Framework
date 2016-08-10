@@ -17,67 +17,14 @@ Promise.all([
 	cs.ui.ready
 ])
 	.then ([is_admin]) !->
-		L	= cs.Language('content_')
 		document.querySelector('body')
 			..addEventListener('click', (e) !->
 				if !e.target.matches('.cs-content-add')
 					return
-				modal_body	= html_to_node("""<form is="cs-form">
-					<label>#{L.key}</label>
-					<input is="cs-input-text" type="text" name="key">
-					<label>#{L.title}</label>
-					<input is="cs-input-text" type="text" name="title">
-					<label>#{L.content}</label>
-					<textarea is="cs-textarea" autosize class="text cs-margin-bottom"></textarea>
-					<cs-editor class="html cs-margin-bottom" hidden>
-						<textarea is="cs-textarea" autosize></textarea>
-					</cs-editor>
-					<label>#{L.type}</label>
-					<select is="cs-select" name="type">
-						<option value="text">text</option>
-						<option value="html">html</option>
-					</select>
-					<div>
-						<button is="cs-button" type="button" primary>#{L.save}</button>
-					</div>
-				</form>""")
-				key		= modal_body.querySelector('[name=key]')
-				title	= modal_body.querySelector('[name=title]')
-				content	= modal_body.querySelector('.text')
-				type	= modal_body.querySelector('[name=type]')
-				type.addEventListener('selected', !->
-					if @value == 'text'
-						text			= modal_body.querySelector('.text')
-						text.value		= content.value
-						content.hidden	= true
-						content			:= text
-						content.hidden	= false
-					else
-						html									= modal_body.querySelector('.html')
-						html.value								= content.value
-						html.querySelector('textarea').value	= content.value
-						content.hidden							= true
-						content									:= html
-						content.hidden							= false
-				)
-				cs.ui.simple_modal(modal_body)
-				modal_body.querySelector('button').addEventListener('click', !->
-					data	=
-						key		: key.value
-						title	: title.value
-						content	: content.value
-						type	: type.selected
-					cs.api('post api/Content', data).then(location~reload)
-				)
-			)
-			..addEventListener('click', (e) !->
-				if !e.target.matches('.cs-content-edit')
-					return
-				key = e.target.dataset.key
-				cs.api("get api/Content/#key").then (data) !->
+				cs.Language('content_').ready().then (L) !->
 					modal_body	= html_to_node("""<form is="cs-form">
 						<label>#{L.key}</label>
-						<input is="cs-input-text" readonly value="#{data.key}">
+						<input is="cs-input-text" type="text" name="key">
 						<label>#{L.title}</label>
 						<input is="cs-input-text" type="text" name="title">
 						<label>#{L.content}</label>
@@ -94,10 +41,9 @@ Promise.all([
 							<button is="cs-button" type="button" primary>#{L.save}</button>
 						</div>
 					</form>""")
+					key		= modal_body.querySelector('[name=key]')
 					title	= modal_body.querySelector('[name=title]')
-						..value	= data.title
 					content	= modal_body.querySelector('.text')
-						..value	= data.content
 					type	= modal_body.querySelector('[name=type]')
 					type.addEventListener('selected', !->
 						if @value == 'text'
@@ -114,36 +60,93 @@ Promise.all([
 							content									:= html
 							content.hidden							= false
 					)
-					type.selected	= data.type
 					cs.ui.simple_modal(modal_body)
 					modal_body.querySelector('button').addEventListener('click', !->
 						data	=
+							key		: key.value
 							title	: title.value
 							content	: content.value
 							type	: type.selected
-						cs.api("put api/Content/#key", data).then(location~reload)
+						cs.api('post api/Content', data).then(location~reload)
 					)
+			)
+			..addEventListener('click', (e) !->
+				if !e.target.matches('.cs-content-edit')
+					return
+				cs.Language('content_').ready().then (L) !->
+					key = e.target.dataset.key
+					cs.api("get api/Content/#key").then (data) !->
+						modal_body	= html_to_node("""<form is="cs-form">
+							<label>#{L.key}</label>
+							<input is="cs-input-text" readonly value="#{data.key}">
+							<label>#{L.title}</label>
+							<input is="cs-input-text" type="text" name="title">
+							<label>#{L.content}</label>
+							<textarea is="cs-textarea" autosize class="text cs-margin-bottom"></textarea>
+							<cs-editor class="html cs-margin-bottom" hidden>
+								<textarea is="cs-textarea" autosize></textarea>
+							</cs-editor>
+							<label>#{L.type}</label>
+							<select is="cs-select" name="type">
+								<option value="text">text</option>
+								<option value="html">html</option>
+							</select>
+							<div>
+								<button is="cs-button" type="button" primary>#{L.save}</button>
+							</div>
+						</form>""")
+						title	= modal_body.querySelector('[name=title]')
+							..value	= data.title
+						content	= modal_body.querySelector('.text')
+							..value	= data.content
+						type	= modal_body.querySelector('[name=type]')
+						type.addEventListener('selected', !->
+							if @value == 'text'
+								text			= modal_body.querySelector('.text')
+								text.value		= content.value
+								content.hidden	= true
+								content			:= text
+								content.hidden	= false
+							else
+								html									= modal_body.querySelector('.html')
+								html.value								= content.value
+								html.querySelector('textarea').value	= content.value
+								content.hidden							= true
+								content									:= html
+								content.hidden							= false
+						)
+						type.selected	= data.type
+						cs.ui.simple_modal(modal_body)
+						modal_body.querySelector('button').addEventListener('click', !->
+							data	=
+								title	: title.value
+								content	: content.value
+								type	: type.selected
+							cs.api("put api/Content/#key", data).then(location~reload)
+						)
 			)
 			..addEventListener('click', (e) !->
 				if !e.target.matches('.cs-content-delete')
 					return
-				key = e.target.dataset.key
-				cs.ui.confirm("#{L.delete}?")
-					.then -> cs.api("delete api/Content/#key")
-					.then(location~reload)
+				cs.Language('content_').ready().then (L) !->
+					key = e.target.dataset.key
+					cs.ui.confirm("#{L.delete}?")
+						.then -> cs.api("delete api/Content/#key")
+						.then(location~reload)
 			)
 		do !->
 			mousemove_timeout	= 0
 			showed_button		= false
 			show_edit_button	= (key, x, y, container) !->
-				button = html_to_node("""
-					<button is="cs-button" class="cs-content-edit" data-key="#key" style="position: absolute; left: #x; top: #y;">#{L.edit}</button>
-				""")
-				container.appendChild(button)
-				container.addEventListener('mousemove', !->
-					showed_button	:= false
-					button.parentNode.removeChild(button)
-				)
+				cs.Language('content_').ready().then (L) !->
+					button = html_to_node("""
+						<button is="cs-button" class="cs-content-edit" data-key="#key" style="position: absolute; left: #x; top: #y;">#{L.edit}</button>
+					""")
+					container.appendChild(button)
+					container.addEventListener('mousemove', !->
+						showed_button	:= false
+						button.parentNode.removeChild(button)
+					)
 			document.querySelector('body')
 				..addEventListener('mousemove', (e) !->
 					if !e.target.matches('[data-cs-content]')

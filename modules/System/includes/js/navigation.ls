@@ -43,14 +43,14 @@ for link in links
 			e.stopPropagation()
 	)
 title_format	= document.title
-L				= cs.Language('system_admin_')
 !function go (href)
 	href_splitted	= href.split('/')
-	document.title	= sprintf(
-		title_format
-		L[href_splitted[2]]
-		L[href_splitted[3]]
-	)
+	cs.Language('system_admin_').ready().then (L) !->
+		document.title	= sprintf(
+			title_format
+			L[href_splitted[2]]
+			L[href_splitted[3]]
+		)
 	document.querySelector('#main_content > div').innerHTML	= '<' + url_map[href] + '/>'
 	for button in buttons
 		button.primary	= false

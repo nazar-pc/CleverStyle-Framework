@@ -5,20 +5,19 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-L	= cs.Language('blogs_')
 Polymer(
-	is				: 'cs-blogs-add-edit-post'
-	behaviors		: [
+	is			: 'cs-blogs-add-edit-post'
+	behaviors	: [
 		cs.Polymer.behaviors.Language('blogs_')
 	]
-	properties		:
+	properties	:
 		post			: Object
 		original_title	: String
 		sections		: Array
 		settings		: Object
 		local_tags		: String
 		user_id			: Number
-	observers		: [
+	observers	: [
 		'_add_close_tab_handler(post.*, local_tags)'
 	]
 	ready : !->
@@ -45,6 +44,7 @@ Polymer(
 			@settings					= settings
 			@user_id					= profile.id
 		@$.title.addEventListener('keydown', @~_add_close_tab_handler)
+		@_close_tab_handler	= @_close_tab_handler.bind(@)
 	_add_close_tab_handler : !->
 		# user_id presence means that element was initialized properly
 		if @user_id && !@_close_tab_handler_installed && !window.onbeforeunload
@@ -54,8 +54,8 @@ Polymer(
 		if @_close_tab_handler_installed
 			removeEventListener('beforeunload', @_close_tab_handler)
 			@_close_tab_handler_installed	= false
-	_close_tab_handler : (e) !->
-		e.returnValue = L.sure_want_to_exit
+	_close_tab_handler : (e) ->
+		e.returnValue = @L.sure_want_to_exit.toString()
 	_prepare_sections : (sections) ->
 		sections_parents	= {}
 		for section in sections
@@ -102,7 +102,7 @@ Polymer(
 			@_remove_close_tab_handler()
 			location.href = result.url
 	_delete : !->
-		cs.ui.confirm(L.sure_to_delete_post(@original_title))
+		cs.ui.confirm(@L.sure_to_delete_post(@original_title))
 			.then ~> cs.api('delete api/Blogs/posts/' + @post.id)
 			.then !~>
 				@_remove_close_tab_handler()

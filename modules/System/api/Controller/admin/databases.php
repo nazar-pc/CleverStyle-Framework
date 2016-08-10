@@ -168,7 +168,7 @@ trait databases {
 	 * @return string[]
 	 */
 	protected static function admin_databases_get_engines () {
-		return _mb_substr(get_files_list(DIR.'/engines/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4);
+		return _mb_substr(get_files_list(DIR.'/core/engines/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4);
 	}
 	/**
 	 * Test database connection

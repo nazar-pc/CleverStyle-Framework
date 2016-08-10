@@ -6,8 +6,6 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var L, x$, slice$ = [].slice;
-  L = cs.Language('system_profile_');
   /**
    * Simple function for XHR requests to API wrapped in promise
    *
@@ -16,6 +14,7 @@
    *
    * @return {Promise}
    */
+  var x$, slice$ = [].slice;
   cs.api = function(method_path, data){
     var mp, ref$, method, path;
     if (method_path instanceof Array) {
@@ -42,9 +41,13 @@
       xhr.onerror = function(){
         var timeout, this$ = this;
         timeout = setTimeout(function(){
-          cs.ui.notify(this$.responseText
-            ? JSON.parse(this$.responseText).error_description
-            : L.system_server_connection_error, 'warning', 5);
+          if (this$.responseText) {
+            cs.ui.notify(JSON.parse(this$.responseText).error_description, 'warning', 5);
+          } else {
+            cs.Language.ready().then(function(L){
+              cs.ui.notify(L.system_server_connection_error, 'warning', 5);
+            });
+          }
         });
         reject({
           timeout: timeout,
@@ -139,36 +142,38 @@
    * @param {string} email
    */
   cs.registration = function(email){
-    var xhr;
-    if (!email) {
-      cs.ui.alert(L.registration_please_type_your_email);
-      return;
-    }
-    email = String(email).toLowerCase();
-    xhr = new XMLHttpRequest();
-    xhr.onload = function(){
-      switch (this.status) {
-      case 201:
-        cs.ui.simple_modal('<div>' + L.registration_success + '</div>');
-        break;
-      case 202:
-        cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>');
-        break;
-      default:
-        this.onerror();
+    cs.Language('system_profile_').ready().then(function(L){
+      var email, xhr;
+      if (!email) {
+        cs.ui.alert(L.registration_please_type_your_email);
+        return;
       }
-    };
-    xhr.onerror = function(){
-      cs.ui.notify(this.responseText
-        ? JSON.parse(this.responseText).error_description
-        : L.system_server_connection_error, 'warning', 5);
-    };
-    xhr.onabort = xhr.onerror;
-    xhr.open('registration'.toUpperCase(), 'api/System/profile');
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({
-      email: email
-    }));
+      email = String(email).toLowerCase();
+      xhr = new XMLHttpRequest();
+      xhr.onload = function(){
+        switch (this.status) {
+        case 201:
+          cs.ui.simple_modal('<div>' + L.registration_success + '</div>');
+          break;
+        case 202:
+          cs.ui.simple_modal('<div>' + L.registration_confirmation + '</div>');
+          break;
+        default:
+          this.onerror();
+        }
+      };
+      xhr.onerror = function(){
+        cs.ui.notify(this.responseText
+          ? JSON.parse(this.responseText).error_description
+          : L.system_server_connection_error, 'warning', 5);
+      };
+      xhr.onabort = xhr.onerror;
+      xhr.open('registration'.toUpperCase(), 'api/System/profile');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify({
+        email: email
+      }));
+    });
   };
   /**
    * Password restoring
@@ -176,20 +181,23 @@
    * @param {string} email
    */
   cs.restore_password = function(email){
-    if (!email) {
-      cs.ui.alert(L.restore_password_please_type_your_email);
-      return;
-    }
-    email = String(email).toLowerCase();
-    require(['jssha']).then(function(arg$){
-      var jssha;
-      jssha = arg$[0];
-      email = cs.hash(jssha, 'sha224', email);
-      return cs.api('restore_password api/System/profile', {
-        email: email
+    cs.Language('system_profile_').ready().then(function(L){
+      var email;
+      if (!email) {
+        cs.ui.alert(L.restore_password_please_type_your_email);
+        return;
+      }
+      email = String(email).toLowerCase();
+      require(['jssha']).then(function(arg$){
+        var jssha;
+        jssha = arg$[0];
+        email = cs.hash(jssha, 'sha224', email);
+        return cs.api('restore_password api/System/profile', {
+          email: email
+        });
+      }).then(function(){
+        cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>');
       });
-    }).then(function(){
-      cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>');
     });
   };
   /**
@@ -201,43 +209,45 @@
    * @param {Function} error
    */
   cs.change_password = function(current_password, new_password, success, error){
-    if (!current_password) {
-      cs.ui.alert(L.please_type_current_password);
-      return;
-    } else if (!new_password) {
-      cs.ui.alert(L.please_type_new_password);
-      return;
-    } else if (current_password === new_password) {
-      cs.ui.alert(L.current_new_password_equal);
-      return;
-    }
-    Promise.all([require(['jssha']), cs.api('configuration api/System/profile')]).then(function(arg$){
-      var jssha, configuration;
-      jssha = arg$[0][0], configuration = arg$[1];
-      if (String(new_password).length < configuration.password_min_length) {
-        cs.ui.alert(L.password_too_short);
+    cs.Language('system_profile_').ready().then(function(L){
+      if (!current_password) {
+        cs.ui.alert(L.please_type_current_password);
         return;
-      } else if (cs.password_check(new_password) < configuration.password_min_strength) {
-        cs.ui.alert(L.password_too_easy);
+      } else if (!new_password) {
+        cs.ui.alert(L.please_type_new_password);
+        return;
+      } else if (current_password === new_password) {
+        cs.ui.alert(L.current_new_password_equal);
         return;
       }
-      current_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + configuration.public_key);
-      new_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + configuration.public_key);
-      return cs.api('change_password api/System/profile', {
-        current_password: current_password,
-        new_password: new_password
+      Promise.all([require(['jssha']), cs.api('configuration api/System/profile')]).then(function(arg$){
+        var jssha, configuration;
+        jssha = arg$[0][0], configuration = arg$[1];
+        if (String(new_password).length < configuration.password_min_length) {
+          cs.ui.alert(L.password_too_short);
+          return;
+        } else if (cs.password_check(new_password) < configuration.password_min_strength) {
+          cs.ui.alert(L.password_too_easy);
+          return;
+        }
+        current_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(current_password)) + configuration.public_key);
+        new_password = cs.hash(jssha, 'sha512', cs.hash(jssha, 'sha512', String(new_password)) + configuration.public_key);
+        return cs.api('change_password api/System/profile', {
+          current_password: current_password,
+          new_password: new_password
+        });
+      }).then(function(){
+        if (success) {
+          success();
+        } else {
+          cs.ui.alert(L.password_changed_successfully);
+        }
+      })['catch'](function(o){
+        if (error) {
+          clearTimeout(o.timeout);
+          error();
+        }
       });
-    }).then(function(){
-      if (success) {
-        success();
-      } else {
-        cs.ui.alert(L.password_changed_successfully);
-      }
-    })['catch'](function(o){
-      if (error) {
-        clearTimeout(o.timeout);
-        error();
-      }
     });
   };
   /**
@@ -386,7 +396,7 @@
     y$.bind = modal;
     y$.addEventListener('click', ok_callback || function(){});
     z$ = cancel = document.createElement('button', 'cs-button');
-    z$.innerHTML = L.system_admin_cancel;
+    z$.innerHTML = 'Cancel';
     z$.action = 'close';
     z$.bind = modal;
     z$.addEventListener('click', cancel_callback || function(){});
@@ -397,6 +407,11 @@
     z1$.appendChild(cancel);
     z1$.open();
     ok.focus();
+    cs.Language.ready().then(function(L){
+      if (cancel.innerHTML === 'Cancel') {
+        cancel.innerHTML = L.system_admin_cancel;
+      }
+    });
     if (ok_callback) {
       return modal;
     } else {

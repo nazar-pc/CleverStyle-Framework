@@ -8,8 +8,7 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L, active_switch;
-  L = cs.Language('system_admin_modules_');
+  var active_switch;
   active_switch = function(uninstalled, disabled, enabled){
     switch (this.active) {
     case -1:
@@ -31,19 +30,19 @@
     },
     reload: function(){
       var this$ = this;
-      cs.api(['get			api/System/admin/modules', 'get			api/System/admin/modules/default', 'get_settings	api/System/admin/system']).then(function(arg$){
-        var modules, default_module, settings;
-        modules = arg$[0], default_module = arg$[1], settings = arg$[2];
+      Promise.all([cs.api(['get			api/System/admin/modules', 'get			api/System/admin/modules/default', 'get_settings	api/System/admin/system']), cs.Language.ready()]).then(function(arg$){
+        var ref$, modules, default_module, settings;
+        ref$ = arg$[0], modules = ref$[0], default_module = ref$[1], settings = ref$[2];
         this$.default_module = default_module;
         modules.forEach(function(module){
           var active_switch_local, enabled, installed;
           active_switch_local = active_switch.bind(module);
           module['class'] = active_switch_local('cs-block-error cs-text-error', 'cs-block-warning cs-text-warning', 'cs-block-success cs-text-success');
           module.icon = active_switch_local('times', 'minus', module.name === default_module ? 'home' : 'check');
-          module.icon_text = active_switch_local(L.uninstalled, L.disabled, module.name === default_module
-            ? L.default_module
-            : L.enabled);
-          module.name_localized = L[module.name] || module.name.replace(/_/g, ' ');
+          module.icon_text = active_switch_local(this$.L.uninstalled, this$.L.disabled, module.name === default_module
+            ? this$.L.default_module
+            : this$.L.enabled);
+          module.name_localized = this$.L[module.name] || module.name.replace(/_/g, ' ');
           enabled = module.active == 1;
           installed = module.active != -1;
           module.can_disable = enabled && module.name !== 'System';
@@ -62,7 +61,7 @@
             }
           })();
           if (module.meta) {
-            module.info = (function(){
+            module.info = (function(L){
               return L.module_info(this['package'], this.version, this.description, this.author, this.website || L.none, this.license, this.db_support
                 ? this.db_support.join(', ')
                 : L.none, this.storage_support
@@ -82,7 +81,7 @@
                 : L.no, this.languages
                 ? this.languages.join(', ')
                 : L.none);
-            }.call(module.meta));
+            }.call(module.meta, this$.L));
           }
         });
         this$.set('modules', modules);
@@ -107,7 +106,7 @@
         });
       }).then(function(){
         this$.reload();
-        cs.ui.notify(L.changes_saved, 'success', 5);
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
         cs.Event.fire('admin/System/modules/default/after', {
           name: module
         });
@@ -147,35 +146,35 @@
       var module, meta, this$ = this;
       module = e.model.module.name;
       meta = e.model.module.meta;
-      cs.api(["get			api/System/admin/modules/" + module + "/dependencies", 'get			api/System/admin/databases', 'get			api/System/admin/storages', 'get_settings	api/System/admin/system']).then(function(arg$){
-        var dependencies, databases, storages, settings, message, message_more, form, modal;
-        dependencies = arg$[0], databases = arg$[1], storages = arg$[2], settings = arg$[3];
+      Promise.all([cs.api(["get			api/System/admin/modules/" + module + "/dependencies", 'get			api/System/admin/databases', 'get			api/System/admin/storages', 'get_settings	api/System/admin/system']), cs.Language('system_admin_').ready()]).then(function(arg$){
+        var ref$, dependencies, databases, storages, settings, L, message, message_more, form, modal;
+        ref$ = arg$[0], dependencies = ref$[0], databases = ref$[1], storages = ref$[2], settings = ref$[3], L = arg$[1];
         message = '';
         message_more = '';
         if (Object.keys(dependencies).length) {
-          message = this$._compose_dependencies_message(module, 'modules', dependencies);
+          message = this$._compose_dependencies_message(L, module, 'modules', dependencies);
           if (settings.simple_admin_mode) {
             cs.ui.notify(message, 'error', 5);
             return;
           }
         }
         if (meta && meta.optional) {
-          message_more += '<p class="cs-text-success cs-block-success">' + L.system_admin_for_complete_feature_set(meta.optional.join(', ')) + '</p>';
+          message_more += '<p class="cs-text-success cs-block-success">' + this$.L.system_admin_for_complete_feature_set(meta.optional.join(', ')) + '</p>';
         }
         form = meta ? this$._databases_storages_form(meta, databases, storages, settings) : '';
-        modal = cs.ui.confirm("<h3>" + L.installation_of_module(module) + "</h3>\n" + message + "\n" + message_more + "\n" + form, function(){
+        modal = cs.ui.confirm("<h3>" + this$.L.installation_of_module(module) + "</h3>\n" + message + "\n" + message_more + "\n" + form, function(){
           cs.Event.fire('admin/System/modules/install/before', {
             name: module
           }).then(function(){
             return cs.api("install api/System/admin/modules/" + module, modal.querySelector('form'));
           }).then(function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
+            cs.ui.notify(this$.L.changes_saved, 'success', 5);
             return cs.Event.fire('admin/System/modules/install/after', {
               name: module
             });
           }).then(bind$(location, 'reload'));
         });
-        modal.ok.innerHTML = L[!message ? 'install' : 'force_install_not_recommended'];
+        modal.ok.innerHTML = this$.L[!message ? 'install' : 'force_install_not_recommended'];
         modal.ok.primary = !message;
         modal.cancel.primary = !modal.ok.primary;
       });
@@ -190,7 +189,7 @@
             content += "<input type=\"hidden\" name=\"db[" + db_name + "]\" value=\"0\">";
           }
         } else {
-          content += "<tr>\n	<th tooltip=\"" + L.appointment_of_db_info + "\">\n		" + L.appointment_of_db + "\n		<cs-tooltip/>\n	</th>\n	<th tooltip=\"" + L.system_db_info + "\">\n		" + L.system_db + "\n		<cs-tooltip/>\n	</th>\n</tr>";
+          content += "<tr>\n	<th tooltip=\"" + this.L.appointment_of_db_info + "\">\n		" + this.L.appointment_of_db + "\n		<cs-tooltip/>\n	</th>\n	<th tooltip=\"" + this.L.system_db_info + "\">\n		" + this.L.system_db + "\n		<cs-tooltip/>\n	</th>\n</tr>";
           db_options = '';
           for (i$ = 0, len$ = databases.length; i$ < len$; ++i$) {
             db = databases[i$];
@@ -211,7 +210,7 @@
             content += "<input type=\"hidden\" name=\"storage[" + storage_name + "]\" value=\"0\">";
           }
         } else {
-          content += "<tr>\n	<th tooltip=\"" + L.appointment_of_storage_info + "\">\n		" + L.appointment_of_storage + "\n		<cs-tooltip/>\n	</th>\n	<th tooltip=\"" + L.system_storage_info + "\">\n		" + L.system_storage + "\n		<cs-tooltip/>\n	</th>\n</tr>";
+          content += "<tr>\n	<th tooltip=\"" + this.L.appointment_of_storage_info + "\">\n		" + this.L.appointment_of_storage + "\n		<cs-tooltip/>\n	</th>\n	<th tooltip=\"" + this.L.system_storage_info + "\">\n		" + this.L.system_storage + "\n		<cs-tooltip/>\n	</th>\n</tr>";
           storage_options = '';
           for (i$ = 0, len$ = storages.length; i$ < len$; ++i$) {
             storage = storages[i$];
@@ -235,7 +234,7 @@
       var name, checked;
       name = db.index
         ? db.host + "/" + db.name + " (" + db.type + ")"
-        : L.core_db + (" (" + db.type + ")");
+        : this.L.core_db + (" (" + db.type + ")");
       checked = db.index ? '' : 'checked';
       return "<option value=\"" + db.index + "\" " + checked + ">" + name + "</option>";
     },
@@ -243,7 +242,7 @@
       var name, checked;
       name = storage.index
         ? storage.host + " (" + storage.connection + ")"
-        : L.core_storage + (" (" + storage.connection + ")");
+        : this.L.core_storage + (" (" + storage.connection + ")");
       checked = storage.index ? '' : 'checked';
       return "<option value=\"" + storage.index + "\" " + checked + ">" + name + "</option>";
     }
@@ -258,19 +257,19 @@
     _uninstall: function(e){
       var module, modal, this$ = this;
       module = e.model.module.name;
-      modal = cs.ui.confirm(L.uninstallation_of_module(module), function(){
+      modal = cs.ui.confirm(this.L.uninstallation_of_module(module), function(){
         cs.Event.fire('admin/System/modules/uninstall/before', {
           name: module
         }).then(function(){
           return cs.api("uninstall api/System/admin/modules/" + module);
         }).then(function(){
-          cs.ui.notify(L.changes_saved, 'success', 5);
+          cs.ui.notify(this$.L.changes_saved, 'success', 5);
           return cs.Event.fire('admin/System/modules/uninstall/after', {
             name: module
           });
         }).then(bind$(location, 'reload'));
       });
-      modal.ok.innerHTML = L.uninstall;
+      modal.ok.innerHTML = this.L.uninstall;
       modal.ok.primary = false;
       modal.cancel.primary = true;
     },
@@ -290,14 +289,14 @@
       this._upload_package(this.$.file).then(function(meta){
         var i$, ref$, len$, module;
         if (meta.category !== 'modules' || !meta['package'] || !meta.version) {
-          cs.ui.notify(L.this_is_not_module_installer_file, 'error', 5);
+          cs.ui.notify(this$.L.this_is_not_module_installer_file, 'error', 5);
           return;
         }
         for (i$ = 0, len$ = (ref$ = this$.modules).length; i$ < len$; ++i$) {
           module = ref$[i$];
           if (module.name === meta['package']) {
             if (meta.version === module.meta.version) {
-              cs.ui.notify(L.update_module_impossible_same_version(meta['package'], meta.version), 'warning', 5);
+              cs.ui.notify(this$.L.update_module_impossible_same_version(meta['package'], meta.version), 'warning', 5);
               return;
             }
             this$._update_component(module.meta, meta);
@@ -305,7 +304,7 @@
           }
         }
         cs.api('extract api/System/admin/modules').then(function(){
-          cs.ui.notify(L.changes_saved, 'success', 5);
+          cs.ui.notify(this$.L.changes_saved, 'success', 5);
           location.reload();
         });
       });
@@ -326,7 +325,7 @@
       }
       this._upload_package(this.$.file_system).then(function(meta){
         if (meta.category !== 'modules' || meta['package'] !== 'System' || !meta.version) {
-          cs.ui.notify(L.this_is_not_system_installer_file, 'error', 5);
+          cs.ui.notify(this$.L.this_is_not_system_installer_file, 'error', 5);
           return;
         }
         this$._update_component(module.meta, meta);
@@ -340,9 +339,9 @@
         var databases, databases_mapping, settings, form, modal, db_name, index;
         databases = arg$[0], databases_mapping = arg$[1], settings = arg$[2];
         form = meta ? this$._databases_storages_form(meta, databases, [], settings) : '';
-        modal = cs.ui.confirm("<h3>" + L.db_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n" + form, function(){
+        modal = cs.ui.confirm("<h3>" + this$.L.db_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + this$.L.changing_settings_warning + "</p>\n" + form, function(){
           cs.api("put api/System/admin/modules/" + module + "/db", modal.querySelector('form')).then(function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
+            cs.ui.notify(this.L.changes_saved, 'success', 5);
           });
         });
         for (db_name in databases_mapping) {
@@ -359,9 +358,9 @@
         var storages, storages_mapping, settings, form, modal, storage_name, index;
         storages = arg$[0], storages_mapping = arg$[1], settings = arg$[2];
         form = meta ? this$._databases_storages_form(meta, [], storages, settings) : '';
-        modal = cs.ui.confirm("<h3>" + L.storage_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + L.changing_settings_warning + "</p>\n" + form, function(){
+        modal = cs.ui.confirm("<h3>" + this$.L.storage_settings_for_module(module) + "</h3>\n<p class=\"cs-block-error cs-text-error\">" + this$.L.changing_settings_warning + "</p>\n" + form, function(){
           cs.api("put api/System/admin/modules/" + module + "/storage", modal.querySelector('form')).then(function(){
-            cs.ui.notify(L.changes_saved, 'success', 5);
+            cs.ui.notify(this.L.changes_saved, 'success', 5);
           });
         });
         for (storage_name in storages_mapping) {
@@ -373,7 +372,7 @@
     _update_modules_list: function(){
       var this$ = this;
       cs.api('update_list api/System/admin/modules').then(function(){
-        cs.ui.notify(L.changes_saved, 'success', 5);
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
         this$.reload();
       });
     }

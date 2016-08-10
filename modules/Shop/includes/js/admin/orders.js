@@ -9,9 +9,8 @@
 (function(){
   require(['jquery'], function($){
     $(function(){
-      var L, make_modal;
-      L = cs.Language('shop_');
-      make_modal = function(shipping_types, order_statuses, payment_methods, title, action){
+      var make_modal;
+      make_modal = function(shipping_types, order_statuses, payment_methods, L, title, action){
         var shipping_types_list, payment_methods_list, res$, method, details, modal;
         shipping_types = function(){
           var shipping_types_, shipping_type, ref$;
@@ -149,10 +148,10 @@
         });
       };
       $('html').on('mousedown', '.cs-shop-order-add', function(){
-        cs.api(['get api/Shop/admin/shipping_types', 'get api/Shop/admin/order_statuses', 'get api/Shop/payment_methods']).then(function(arg$){
-          var shipping_types, order_statuses, payment_methods, modal;
-          shipping_types = arg$[0], order_statuses = arg$[1], payment_methods = arg$[2];
-          modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_addition, L.add);
+        Promise.all([cs.api(['get api/Shop/admin/shipping_types', 'get api/Shop/admin/order_statuses', 'get api/Shop/payment_methods']), cs.Language('shop_').ready()]).then(function(arg$){
+          var ref$, shipping_types, order_statuses, payment_methods, L, modal;
+          ref$ = arg$[0], shipping_types = ref$[0], order_statuses = ref$[1], payment_methods = ref$[2], L = arg$[1];
+          modal = make_modal(shipping_types, order_statuses, payment_methods, L, L.order_addition, L.add);
           modal.find('form').submit(function(){
             var this$ = this;
             cs.api('post api/Shop/admin/orders', this).then(function(url){
@@ -195,10 +194,10 @@
         id = $this.data('id');
         username = $this.data('username');
         date = $this.data('date');
-        cs.api(['get api/Shop/admin/shipping_types', 'get api/Shop/admin/order_statuses', 'get api/Shop/payment_methods', "get api/Shop/admin/orders/" + id, "get api/Shop/admin/orders/" + id + "/items"]).then(function(arg$){
-          var shipping_types, order_statuses, payment_methods, order, items, modal;
-          shipping_types = arg$[0], order_statuses = arg$[1], payment_methods = arg$[2], order = arg$[3], items = arg$[4];
-          modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_edition, L.edit);
+        Primise.all([cs.api(['get api/Shop/admin/shipping_types', 'get api/Shop/admin/order_statuses', 'get api/Shop/payment_methods', "get api/Shop/admin/orders/" + id, "get api/Shop/admin/orders/" + id + "/items"])]).then(function(arg$){
+          var ref$, shipping_types, order_statuses, payment_methods, order, items, L, modal;
+          ref$ = arg$[0], shipping_types = ref$[0], order_statuses = ref$[1], payment_methods = ref$[2], order = ref$[3], items = ref$[4], L = arg$[1];
+          modal = make_modal(shipping_types, order_statuses, payment_methods, L, L.order_edition, L.edit);
           modal.find('form').submit(function(){
             var this$ = this;
             cs.api("put api/Shop/admin/orders/" + id, this).then(function(){
@@ -227,11 +226,13 @@
       }).on('mousedown', '.cs-shop-order-delete', function(){
         var id;
         id = $(this).data('id');
-        cs.ui.confirm(L.sure_want_to_delete).then(function(){
-          return cs.api("delete api/Shop/admin/orders/" + id);
-        }).then(function(){
-          return cs.ui.alert(L.deleted_successfully);
-        }).then(bind$(location, 'reload'));
+        cs.Language('shop_').ready().then(function(L){
+          cs.ui.confirm(L.sure_want_to_delete).then(function(){
+            return cs.api("delete api/Shop/admin/orders/" + id);
+          }).then(function(){
+            return cs.ui.alert(L.deleted_successfully);
+          }).then(bind$(location, 'reload'));
+        });
       });
     });
   });

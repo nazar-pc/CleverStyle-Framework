@@ -5,19 +5,18 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-L = cs.Language('blockchain_payment_')
 Polymer(
 	is			: 'cs-blockchain-payment-pay'
 	properties	:
 		description		: ''
 		address			: ''
 		amount			: Number
-		progress_text	:
-			type	: String
-			value	: L.waiting_for_payment
+		progress_text	: String
 	ready : !->
-		@set('description', JSON.parse(@description))
-		@set('text', L.scan_or_transfer(@amount, @address))
+		cs.Language('blockchain_payment_').ready().then (L) !~>
+			@progress_text	= L.waiting_for_payment
+			@text			= L.scan_or_transfer(@amount, @address)
+		@description	JSON.parse(@description)
 		new QRCode(
 			@$.qr
 			height	: 512
@@ -31,6 +30,7 @@ Polymer(
 				location.reload()
 				return
 			if parseInt(data.paid)
-				@set('progress_text', L.waiting_for_confirmations)
+				cs.Language('blockchain_payment_').ready().then (L) !~>
+					@progress_text	= L.waiting_for_confirmations
 			setTimeout(@~update_status, 5000)
 );

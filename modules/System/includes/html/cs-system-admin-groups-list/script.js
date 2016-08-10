@@ -8,8 +8,7 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L, ADMIN_GROUP_ID, USER_GROUP_ID;
-  L = cs.Language('system_admin_groups_');
+  var ADMIN_GROUP_ID, USER_GROUP_ID;
   ADMIN_GROUP_ID = 1;
   USER_GROUP_ID = 2;
   Polymer({
@@ -31,27 +30,27 @@
       });
     },
     add_group: function(){
-      cs.ui.simple_modal("<h3>" + L.group_addition + "</h3>\n<cs-system-admin-groups-form/>").addEventListener('close', bind$(this, 'reload'));
+      cs.ui.simple_modal("<h3>" + this.L.group_addition + "</h3>\n<cs-system-admin-groups-form/>").addEventListener('close', bind$(this, 'reload'));
     },
     edit_group: function(e){
       var group;
       group = e.model.group;
-      cs.ui.simple_modal("<h3>" + L.editing_group(group.title) + "</h3>\n<cs-system-admin-groups-form group_id=\"" + group.id + "\"/>").addEventListener('close', bind$(this, 'reload'));
+      cs.ui.simple_modal("<h3>" + this.L.editing_group(group.title) + "</h3>\n<cs-system-admin-groups-form group_id=\"" + group.id + "\"/>").addEventListener('close', bind$(this, 'reload'));
     },
     delete_group: function(e){
       var group, this$ = this;
       group = e.model.group;
-      cs.ui.confirm(L.sure_delete_group(group.title)).then(function(){
+      cs.ui.confirm(this.L.sure_delete_group(group.title)).then(function(){
         return cs.api('delete api/System/admin/groups/' + group.id);
       }).then(function(){
-        cs.ui.notify(L.changes_saved, 'success', 5);
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
         this$.splice('groups', e.model.index, 1);
       });
     },
     edit_permissions: function(e){
       var group, title;
       group = e.model.group;
-      title = L.permissions_for_group(group.title);
+      title = this.L.permissions_for_group(group.title);
       cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for group=\"" + group.id + "\" for=\"group\"/>");
     }
   });

@@ -7,8 +7,6 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var L;
-  L = cs.Language('blogs_');
   Polymer({
     is: 'cs-blogs-add-edit-post',
     behaviors: [cs.Polymer.behaviors.Language('blogs_')],
@@ -50,6 +48,7 @@
         this$.user_id = profile.id;
       });
       this.$.title.addEventListener('keydown', bind$(this, '_add_close_tab_handler'));
+      this._close_tab_handler = this._close_tab_handler.bind(this);
     },
     _add_close_tab_handler: function(){
       if (this.user_id && !this._close_tab_handler_installed && !window.onbeforeunload) {
@@ -64,7 +63,7 @@
       }
     },
     _close_tab_handler: function(e){
-      e.returnValue = L.sure_want_to_exit;
+      return e.returnValue = this.L.sure_want_to_exit.toString();
     },
     _prepare_sections: function(sections){
       var sections_parents, i$, len$, section;
@@ -123,7 +122,7 @@
     },
     _delete: function(){
       var this$ = this;
-      cs.ui.confirm(L.sure_to_delete_post(this.original_title)).then(function(){
+      cs.ui.confirm(this.L.sure_to_delete_post(this.original_title)).then(function(){
         return cs.api('delete api/Blogs/posts/' + this$.post.id);
       }).then(function(){
         this$._remove_close_tab_handler();

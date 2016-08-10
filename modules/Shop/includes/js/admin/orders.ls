@@ -7,8 +7,7 @@
  */
 $ <-! require(['jquery'], _)
 <-! $
-L			= cs.Language('shop_')
-make_modal	= (shipping_types, order_statuses, payment_methods, title, action) ->
+make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action) ->
 	shipping_types	= do ->
 		shipping_types_ = {}
 		for shipping_type, shipping_type of shipping_types
@@ -162,12 +161,15 @@ make_modal	= (shipping_types, order_statuses, payment_methods, title, action) ->
 		)
 $('html')
 	.on('mousedown', '.cs-shop-order-add', !->
-		cs.api([
-			'get api/Shop/admin/shipping_types'
-			'get api/Shop/admin/order_statuses'
-			'get api/Shop/payment_methods'
-		]).then ([shipping_types, order_statuses, payment_methods]) !->
-			modal = make_modal(shipping_types, order_statuses, payment_methods, L.order_addition, L.add)
+		Promise.all([
+			cs.api([
+				'get api/Shop/admin/shipping_types'
+				'get api/Shop/admin/order_statuses'
+				'get api/Shop/payment_methods'
+			])
+			cs.Language('shop_').ready()
+		]).then ([[shipping_types, order_statuses, payment_methods], L]) !->
+			modal = make_modal(shipping_types, order_statuses, payment_methods, L, L.order_addition, L.add)
 			modal.find('form').submit ->
 				cs.api('post api/Shop/admin/orders', @)
 					.then (url) -> url.split('/')
@@ -220,14 +222,16 @@ $('html')
 		id			= $this.data('id')
 		username	= $this.data('username')
 		date		= $this.data('date')
-		cs.api([
-			'get api/Shop/admin/shipping_types'
-			'get api/Shop/admin/order_statuses'
-			'get api/Shop/payment_methods'
-			"get api/Shop/admin/orders/#id"
-			"get api/Shop/admin/orders/#id/items"
-		]).then ([shipping_types, order_statuses, payment_methods, order, items]) !->
-			modal	= make_modal(shipping_types, order_statuses, payment_methods, L.order_edition, L.edit)
+		Primise.all([
+			cs.api([
+				'get api/Shop/admin/shipping_types'
+				'get api/Shop/admin/order_statuses'
+				'get api/Shop/payment_methods'
+				"get api/Shop/admin/orders/#id"
+				"get api/Shop/admin/orders/#id/items"
+			])
+		]).then ([[shipping_types, order_statuses, payment_methods, order, items], L]) !->
+			modal	= make_modal(shipping_types, order_statuses, payment_methods, L, L.order_edition, L.edit)
 			modal.find('form').submit ->
 				cs.api("put api/Shop/admin/orders/#id", @)
 					.then ~> cs.api("put api/Shop/admin/orders/#id/items", @)
@@ -251,8 +255,9 @@ $('html')
 	)
 	.on('mousedown', '.cs-shop-order-delete', !->
 		id = $(@).data('id')
-		cs.ui.confirm(L.sure_want_to_delete)
-			.then -> cs.api("delete api/Shop/admin/orders/#id")
-			.then -> cs.ui.alert(L.deleted_successfully)
-			.then(location~reload)
+		cs.Language('shop_').ready().then (L) !->
+			cs.ui.confirm(L.sure_want_to_delete)
+				.then -> cs.api("delete api/Shop/admin/orders/#id")
+				.then -> cs.ui.alert(L.deleted_successfully)
+				.then(location~reload)
 	)
