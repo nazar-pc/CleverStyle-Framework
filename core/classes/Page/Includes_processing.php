@@ -8,12 +8,12 @@
 namespace cs\Page;
 
 /**
- * Class includes few methods used for processing CSS and HTML files before putting into cache.
+ * Class includes few methods used for processing CSS, JS and HTML files before putting into cache
  *
  * This is because CSS and HTML files may contain other includes of other CSS, JS files, images, fonts and so on with absolute and relative paths.
- * Methods of this class handles all this includes and put them into single resulting file compressed with gzip.
- * This allows to decrease number of HTTP requests on page and avoid breaking of relative paths for fonts, images and other includes
- * after putting them into cache directory.
+ * Methods of this class handle all this includes, applies basic minification to CSS and JS files and produce single resulting file (relative paths to
+ * files that can't be embedded are converted to absolute). This allows to decrease number of HTTP requests on page and avoid breaking of relative paths for
+ * fonts, images and other includes after putting them into cache directory as well as minimize contents size by removing comments and other redundant stuff.
  */
 class Includes_processing {
 	/**
