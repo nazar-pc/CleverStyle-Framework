@@ -33,7 +33,11 @@ class Packages_dependencies {
 		}
 		$meta         = self::normalize_meta($meta);
 		$Config       = Config::instance();
-		$dependencies = [];
+		$dependencies = [
+			'provide'  => [],
+			'require'  => [],
+			'conflict' => []
+		];
 		/**
 		 * Check for compatibility with modules
 		 */
@@ -62,7 +66,7 @@ class Packages_dependencies {
 		 * If some required packages still missing
 		 */
 		foreach ($meta['require'] as $package => $details) {
-			$dependencies['require']['unknown'][] = [
+			$dependencies['require'][] = [
 				'name'     => $package,
 				'required' => $details
 			];
@@ -74,7 +78,7 @@ class Packages_dependencies {
 		if (!self::check_dependencies_storage($meta['storage_support'])) {
 			$dependencies['storage_support'] = $meta['storage_support'];
 		}
-		return $dependencies;
+		return array_filter($dependencies);
 	}
 	/**
 	 * @param array $dependencies
@@ -85,25 +89,18 @@ class Packages_dependencies {
 	protected static function common_checks (&$dependencies, &$meta, $component_meta, $update) {
 		$component_meta = self::normalize_meta($component_meta);
 		$package        = $component_meta['package'];
-		$category       = $component_meta['category'];
 		/**
 		 * Do not compare component with itself
 		 */
 		if (self::check_dependencies_are_the_same($meta, $component_meta)) {
 			if (version_compare($meta['version'], $component_meta['version'], '<')) {
-				$dependencies['update_older'][$meta['category']] = [
-					[
-						'from' => $component_meta['version'],
-						'to'   => $meta['version']
-					]
+				$dependencies['update_older'] = [
+					'from' => $component_meta['version'],
+					'to'   => $meta['version']
 				];
 				return;
 			} elseif ($update && $meta['version'] == $component_meta['version']) {
-				$dependencies['update_same'][$meta['category']] = [
-					[
-						'version' => $meta['version']
-					]
-				];
+				$dependencies['update_same'] = $meta['version'];
 				return;
 			}
 			/**
@@ -125,7 +122,7 @@ class Packages_dependencies {
 		 * If component already provides the same functionality
 		 */
 		if ($already_provided = self::also_provided_by($meta, $component_meta)) {
-			$dependencies['provide'][$category][] = [
+			$dependencies['provide'][] = [
 				'name'     => $package,
 				'features' => $already_provided
 			];
@@ -133,12 +130,8 @@ class Packages_dependencies {
 		/**
 		 * Check if component is required and satisfies requirement condition
 		 */
-		if ($dependencies_conflicts = self::check_requirement_satisfaction($meta, $component_meta)) {
-			$dependencies['require'][$category][] = [
-				'name'     => $package,
-				'existing' => $component_meta['version'],
-				'required' => $dependencies_conflicts
-			];
+		if ($dependencies_conflicts = self::check_requirement($meta, $component_meta)) {
+			array_push($dependencies['require'], ...$dependencies_conflicts);
 		}
 		unset($meta['require'][$package]);
 		/**
@@ -150,11 +143,8 @@ class Packages_dependencies {
 		/**
 		 * Check for conflicts
 		 */
-		if ($dependencies_conflicts = self::conflicts($meta, $component_meta)) {
-			$dependencies['conflict'][$category][] = [
-				'name'      => $package,
-				'conflicts' => $dependencies_conflicts
-			];
+		if ($dependencies_conflicts = self::check_conflicts($meta, $component_meta)) {
+			array_push($dependencies['conflict'], ...$dependencies_conflicts);
 		}
 	}
 	/**
@@ -241,8 +231,16 @@ class Packages_dependencies {
 	 *
 	 * @return array
 	 */
-	protected static function check_requirement_satisfaction ($new_meta, $existing_meta) {
-		return self::check_conflicts($new_meta['require'], $existing_meta['package'], $existing_meta['version']);
+	protected static function check_requirement ($new_meta, $existing_meta) {
+		$conflicts = self::check_conflicts_or_requirements($new_meta['require'], $existing_meta['package'], $existing_meta['version'], false);
+		foreach ($conflicts as &$conflict) {
+			$conflict = [
+				'package'          => $existing_meta['package'],
+				'existing_version' => $existing_meta['version'],
+				'required_version' => $conflict
+			];
+		}
+		return $conflicts;
 	}
 	/**
 	 * Check whether other component is required and have satisfactory version
@@ -250,10 +248,11 @@ class Packages_dependencies {
 	 * @param array  $requirements
 	 * @param string $component
 	 * @param string $version
+	 * @param bool   $should_satisfy `true` for conflicts detection and `false` for requirements to fail
 	 *
 	 * @return array
 	 */
-	protected static function check_conflicts ($requirements, $component, $version) {
+	protected static function check_conflicts_or_requirements ($requirements, $component, $version, $should_satisfy) {
 		/**
 		 * If we are not interested in component - we are good
 		 */
@@ -265,7 +264,7 @@ class Packages_dependencies {
 		 */
 		$conflicts = [];
 		foreach ($requirements[$component] as $details) {
-			if (!version_compare($version, $details[1], $details[0])) {
+			if (version_compare($version, $details[1], $details[0]) === $should_satisfy) {
 				$conflicts[] = $details;
 			}
 		}
@@ -279,15 +278,15 @@ class Packages_dependencies {
 	 *
 	 * @return array
 	 */
-	protected static function conflicts ($new_meta, $existing_meta) {
+	protected static function check_conflicts ($new_meta, $existing_meta) {
 		/**
 		 * Check whether two components conflict in any direction by direct conflicts
 		 */
 		return array_filter(
-			[
+			array_merge(
 				self::conflicts_one_step($new_meta, $existing_meta),
 				self::conflicts_one_step($existing_meta, $new_meta)
-			]
+			)
 		);
 	}
 	/**
@@ -297,13 +296,16 @@ class Packages_dependencies {
 	 * @return array
 	 */
 	protected static function conflicts_one_step ($meta_from, $meta_to) {
-		$conflicts = self::check_conflicts($meta_from['conflict'], $meta_to['package'], $meta_to['version']);
+		$conflicts = self::check_conflicts_or_requirements($meta_from['conflict'], $meta_to['package'], $meta_to['version'], true);
 		if ($conflicts) {
-			return [
-				'package'        => $meta_from['package'],
-				'conflicts_with' => $meta_to['package'],
-				'of_versions'    => $conflicts
-			];
+			foreach ($conflicts as &$conflict) {
+				$conflict = [
+					'package'        => $meta_from['package'],
+					'conflicts_with' => $meta_to['package'],
+					'of_version'     => $conflict
+				];
+			}
+			return $conflicts;
 		}
 		return [];
 	}
@@ -387,7 +389,7 @@ class Packages_dependencies {
 			/** @noinspection NestedTernaryOperatorInspection */
 			$return[$d[1]][] = [
 				isset($d[2]) && $d[2] ? $d[2] : (isset($d[3]) && $d[3] ? '=' : '>='),
-				isset($d[3]) && $d[3] ? $d[3] : 0
+				isset($d[3]) && $d[3] ? (float)$d[3] : 0
 			];
 		}
 		return $return;

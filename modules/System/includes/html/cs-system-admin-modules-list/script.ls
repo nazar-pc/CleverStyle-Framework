@@ -142,7 +142,7 @@ Polymer(
 			message			= ''
 			message_more	= ''
 			if Object.keys(dependencies).length
-				message	= @_compose_dependencies_message(module, dependencies)
+				message	= @_compose_dependencies_message(module, 'modules', dependencies)
 				if settings.simple_admin_mode
 					cs.ui.notify(message, 'error', 5)
 					return
