@@ -1,5 +1,11 @@
 @import 'imported.css';
+@import url('imported.css');
 @import "imported-2.css";
+@import url("imported-2.css");
+@import 'imported.css' screen and (orientation:landscape);
+@import url('imported.css') screen and (orientation:landscape);
+@import "imported-2.css" screen and (orientation:landscape);
+@import url("imported-2.css") screen and (orientation:landscape);
 
 /**
  * Some comment

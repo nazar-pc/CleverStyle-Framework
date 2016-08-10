@@ -29,8 +29,7 @@ class Includes_processing {
 		'svg'  => 'image/svg+xml',
 		'svgz' => 'image/svg+xml',
 		'woff' => 'application/font-woff',
-		//'woff2' => 'application/font-woff2',
-		'css'  => 'text/css'
+		//'woff2' => 'application/font-woff2'
 	];
 	/**
 	 * Analyses file for images, fonts and css links and include they content into single resulting css file.
@@ -94,19 +93,21 @@ class Includes_processing {
 		 * Includes processing
 		 */
 		$data = preg_replace_callback(
-			'/url\((.*?)\)|@import\s*[\'"](.*?)[\'"]\s*;/',
+			'/url\((.*)\)|@import\s*(?:url\()?\s*([\'"].*[\'"])\s*\)??(.*);/U',
 			function ($match) use ($dir, &$not_embedded_resources) {
-				$path = @$match[2] ?: $match[1];
-				$path = trim($path, '\'" ');
-				$link = explode('?', $path, 2)[0];
+				$path_matched = @$match[2] ?: $match[1];
+				$path         = trim($path_matched, '\'" ');
+				$link         = explode('?', $path, 2)[0];
 				if (!static::is_relative_path_and_exists($link, $dir)) {
 					return $match[0];
 				}
 				$extension = file_extension($link);
-				if ($extension == 'css') {
+				/**
+				 * Only process CSS imports without media queries, imports with media queries will just be corrected to absolute paths
+				 */
+				if ($extension == 'css' && @$match[2] && !trim(@$match[3])) {
 					/**
 					 * For recursive includes processing, if CSS file includes others CSS files
-					 * TODO: Support for `@import` with media queries
 					 */
 					return static::css(file_get_contents("$dir/$link"), "$dir/$link", $not_embedded_resources);
 				}
@@ -114,10 +115,10 @@ class Includes_processing {
 				if (!isset(static::$extension_to_mime[$extension]) || filesize("$dir/$link") > static::MAX_EMBEDDING_SIZE) {
 					$path_relatively_to_the_root = str_replace(getcwd(), '', realpath("$dir/$link"));
 					$path_relatively_to_the_root .= '?'.substr(md5($content), 0, 5);
-					if (strpos($path, '?') === false) {
+					if (isset(static::$extension_to_mime[$extension]) && strpos($path, '?') === false) {
 						$not_embedded_resources[] = $path_relatively_to_the_root;
 					}
-					return str_replace($path, "'".str_replace("'", "\\'", $path_relatively_to_the_root)."'", $match[0]);
+					return str_replace($path_matched, "'".str_replace("'", "\\'", $path_relatively_to_the_root)."'", $match[0]);
 				}
 				$mime_type = static::$extension_to_mime[$extension];
 				$content   = base64_encode($content);
