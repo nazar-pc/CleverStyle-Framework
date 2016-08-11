@@ -2364,3 +2364,67 @@ Dropped backward compatibility:
 * SimpleImage module removed, hacks in it were not actually used anywhere, so better use upstream version from Composer, it will not make any practical difference
 
 Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
+
+# 5.28.3+build-2384: Lighter frontend
+
+This release is a small incremental update over previous release.
+
+Major improvements are focused on decreasing frontend overhead:
+* added possibility to disable Web Components support (with all related features) if it is not needed
+* added asynchronous interface for translations (translations will only be loaded when actually used), but under the hood they are synchronous till 6.x to avoid BC break
+
+Small but handy improvements done for CSS/JS minifiers, important fixes for TinyMCE editor and Web Components polyfill (not upstreamed yet).
+
+On backend side there is improved code coverage (96%+ for `core` directory, 66%+ for system in general).
+Added support for native server-side prepared statements in database interfaces in addition to already present client-side placeholders.
+
+Last thing worth mentioning is support for upcoming PHP 7.1.
+
+Security fixes:
+* None
+
+New components:
+* None
+
+New features:
+* Added support for server-side prepared statements
+* `cs.Language.ready()` method added, will be used in upcoming asynchronous translations loading, returns Promise
+* `cs.Polymer.behaviors.Language` behavior is now ready for `cs.Language` being asynchronous
+* Added optimization option to disable Web Components usage, only available for advanced users (Administration > General > System > Simple mode of administration == Off)
+* All components and system ported to asynchronous translations interface on frontend
+* CSS minified improvements:
+  * added support for `@import url(...)` in addition to `@import ...`
+  * added support for CSS imports with media queries
+* JS minified improvement:
+  * added support to ES2015 template strings (minifier does nothing in this case to avoid breaking good code)
+
+Updates:
+* Rebased Polymer against new upstream version 1.6.1, patch accepted upstream
+* Git version of WebComponents.js with https://github.com/webcomponents/webcomponentsjs/pull/589 on top
+
+Fixes and small improvements:
+* System:
+  * Old already removed from docs event actually removed from code
+  * Update APCu version for Travis CI
+  * Add PHP 7.1 in Travis CI and make it mandatory for test to succeed
+  * `cs.Language` implementation rewritten (more code, but require less brain power to read)
+  * `cs.Polymer.behaviors.Language` implementation rewritten (more code, but require less brain power to read)
+  * Polymer-related files moved into own directory
+  * Use single quotes where possible
+  * Small fixes and docs update for `cs\CRUD_helpers` trait
+  * Small fixes for `cs\CRUD` trait
+  * Unnecessary condition removed in `cs\Page` class
+  * Simplified and normalized structure of dependencies determination results
+  * Simplified structure for dependent packages
+  * Improved tests coverage, small fixes, optimizations and docs updates
+
+Deprecations (will be dropped right after release):
+* Synchronous use of `cs.Language` is deprecated and will be removed in 6.x
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* None
+
+Dropped backward compatibility:
+* None
+
+Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
