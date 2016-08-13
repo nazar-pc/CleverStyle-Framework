@@ -118,6 +118,16 @@ class CRUD_helpers_basic {
 			)
 		);
 
+		var_dump('Exact match search (main table, multiple choice, count)');
+		var_dump(
+			$this->search(
+				[
+					'title'       => ['Title 1', 'Title 2'],
+					'total_count' => 1
+				]
+			)
+		);
+
 		var_dump('Range search (main table)');
 		var_dump(
 			$this->search(
@@ -159,6 +169,18 @@ class CRUD_helpers_basic {
 			)
 		);
 
+		var_dump('Exact match search (joined table, count)');
+		var_dump(
+			$this->search(
+				[
+					'joined_table' => [
+						'value' => 1
+					],
+					'total_count'  => 1
+				]
+			)
+		);
+
 		var_dump('Exact match search (joined table, multiple choice)');
 		var_dump(
 			$this->search(
@@ -166,6 +188,18 @@ class CRUD_helpers_basic {
 					'joined_table' => [
 						'value' => [1, 2]
 					]
+				]
+			)
+		);
+
+		var_dump('Exact match search (joined table, multiple choice, count)');
+		var_dump(
+			$this->search(
+				[
+					'joined_table' => [
+						'value' => [1, 2]
+					],
+					'total_count'  => 1
 				]
 			)
 		);
@@ -246,6 +280,15 @@ class CRUD_helpers_basic {
 			)
 		);
 
+		var_dump('Total count');
+		var_dump(
+			$this->search(
+				[
+					'total_count' => 1
+				]
+			)
+		);
+
 		$this->db_prime()->q(
 			array_filter(
 				explode(';', file_get_contents(__DIR__."/basic.cleanup.sql")),
@@ -280,6 +323,8 @@ array(2) {
   [1]=>
   int(1)
 }
+string(55) "Exact match search (main table, multiple choice, count)"
+int(2)
 string(25) "Range search (main table)"
 array(3) {
   [0]=>
@@ -308,6 +353,8 @@ array(1) {
   [0]=>
   int(1)
 }
+string(40) "Exact match search (joined table, count)"
+int(1)
 string(50) "Exact match search (joined table, multiple choice)"
 array(3) {
   [0]=>
@@ -317,6 +364,8 @@ array(3) {
   [2]=>
   int(1)
 }
+string(57) "Exact match search (joined table, multiple choice, count)"
+int(3)
 string(27) "Range search (joined table)"
 array(1) {
   [0]=>
@@ -372,3 +421,5 @@ array(4) {
   [3]=>
   int(1)
 }
+string(11) "Total count"
+int(4)

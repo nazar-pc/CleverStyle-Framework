@@ -66,11 +66,13 @@ trait CRUD_helpers {
 		$where        = $where ? 'WHERE '.implode(' AND ', $where) : '';
 		if ($total_count) {
 			return (int)$this->db()->qfs(
-				"SELECT COUNT(`$table_alias`.`$first_column`)
-				FROM `$this->table` AS `$table_alias`
-				$joins
-				$where
-				GROUP BY `$table_alias`.`$first_column`",
+				"SELECT COUNT(*) FROM (
+					SELECT `$table_alias`.`$first_column`
+					FROM `$this->table` AS `$table_alias`
+					$joins
+					$where
+					GROUP BY `$table_alias`.`$first_column`
+				) AS `count`",
 				array_merge($join_params, $where_params)
 			);
 		}
