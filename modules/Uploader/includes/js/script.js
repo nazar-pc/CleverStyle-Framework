@@ -36,6 +36,7 @@
         }
       };
       xhr.open('post'.toUpperCase(), 'api/Uploader');
+      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
       xhr.send(form_data);
     });
   };

@@ -22,6 +22,7 @@ uploader		= (file, progress, state) ->
 		xhr.onprogress	= (e) !->
 			progress?(e, file)
 		xhr.open('post'.toUpperCase(), 'api/Uploader')
+		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
 		xhr.send(form_data)
 files_handler	= (files, success, error, progress, state) !->
 	uploaded_files = []

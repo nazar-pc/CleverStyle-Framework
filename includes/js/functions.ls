@@ -51,13 +51,13 @@ cs.api = (method_path, data) ->
 			).join('&')
 			data := undefined
 		xhr.open(method.toUpperCase(), path)
+		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
 		if data instanceof HTMLFormElement
 			xhr.send(new FormData(data))
 		else if data instanceof FormData
 			xhr.send(data)
 		else if data
 			xhr.setRequestHeader('Content-Type', 'application/json')
-			xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
 			xhr.send(JSON.stringify(data))
 		else
 			xhr.send()
@@ -131,6 +131,7 @@ cs.registration = (email) !->
 			)
 		xhr.onabort	= xhr.onerror
 		xhr.open('registration'.toUpperCase(), 'api/System/profile')
+		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
 		xhr.setRequestHeader('Content-Type', 'application/json')
 		xhr.send(JSON.stringify({email}))
 /**

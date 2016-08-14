@@ -45,7 +45,7 @@ Event::instance()
 			 */
 			if (
 				$Request->header('x-requested-with') !== 'XMLHttpRequest' &&
-				!$Request->data('session') != $Session->get_id() &&
+				$Request->data('session') != $Session->get_id() &&
 				$Request->header('origin') != $Config->core_url()
 			) {
 				$Request->data = [];
