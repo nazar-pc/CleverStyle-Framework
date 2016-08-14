@@ -1,30 +1,38 @@
-XHR requests are primary done through `$.ajax()` method.
+XHR requests are primary done through `cs.api()` method.
 
-For convenience purposes some defaults of `$.ajax()` were set using `$.ajaxSetup()`:
+There are few ways to use this function.
 
-#### contents.script
-`contents.script` is set to `false` by default to avoid interpreting response as JS code.
+#### cs.api(method_path : string, data : object) : Promise
+`method_path` is whitespace-separated HTTP method and path. `data` is optional object, that can be plain key-value object, `HTMLFormElement` node or `FormData` instance.
 
-#### error
-Error handler is specified by default and will result in warning notification with error message if error happens.
-
-Also if you want to capture only some specific error code and show default notification for others, you can provide custom `error_{code}` property to `$.ajax()` call:
+Examples:
 ```javascript
-$.ajax({
-    ...
-    error_404 : function () {
-        // custom handler for "404 Not Found" only
-    }
-});
+cs.api('get api/System/languages')
+cs.api('post api/Articles', document.querySelector('#form'))
+````
+
+Promise will be resolved with decoded JSON response or rejected with object `{timeout: timeout, xhr: xhr}`.
+`timeout` can be used to stop default error handler (user notification) with `clearTimeout(result.timeout)`, `xhr` can be used to get necessary data from response to handle error properly.
+
+Example of error suppression (user will not see error notification):
+```javascript
+cs.api('get api/System/languages')
+    .then(function (result) {
+        // Do stuff
+    })
+    .catch(function (result) {
+        clearTimeout(result.timeout);
+    });
 ```
+#### cs.api(methods_paths : string[]) : Promise
+Similar to previous, but will resolve with array of results or will be rejected completely. Data cannot be passed in this format.
 
-### success
-If you want to capture only some specific success code, you can provide custom `success_{code}` property to `$.ajax()` call:
+Example:
 ```javascript
-$.ajax({
-    ...
-    success_201 : function () {
-        // custom handler if item was successfully created
-    }
+cs.api([
+    'get_settings api/Blogs',
+    'get          api/System/profile'
+]).then(function ([settings, user_profile]) {
+	// Do stuff
 });
 ```
