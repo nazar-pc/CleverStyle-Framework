@@ -80,7 +80,7 @@ trait Controller {
 		}
 		$unknown_method_handler = $Request->api_path ? 'options' : 'cli';
 		if (method_exists($controller_class, "{$method_name}_$unknown_method_handler")) {
-			$controller_class->{"{$method_name}_$unknown_method_handler"}($Request, $Response);
+			$controller_class::{"{$method_name}_$unknown_method_handler"}($Request, $Response);
 			return;
 		}
 		$this->handler_not_found(
