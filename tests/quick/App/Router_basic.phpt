@@ -263,14 +263,14 @@ array(2) {
   [0]=>
   string(30) "Module_with_controller_routing"
   [1]=>
-  string(7) "level20"
+  string(15) "level10/level20"
 }
 string(37) "cs\User::get_permission() called with"
 array(2) {
   [0]=>
   string(30) "Module_with_controller_routing"
   [1]=>
-  string(7) "level30"
+  string(23) "level10/level20/level30"
 }
 string(28) "cs\Event::fire() called with"
 array(1) {
@@ -306,14 +306,14 @@ array(2) {
   [0]=>
   string(25) "Module_with_files_routing"
   [1]=>
-  string(7) "level20"
+  string(15) "level10/level20"
 }
 string(37) "cs\User::get_permission() called with"
 array(2) {
   [0]=>
   string(25) "Module_with_files_routing"
   [1]=>
-  string(7) "level30"
+  string(23) "level10/level20/level30"
 }
 string(28) "cs\Event::fire() called with"
 array(1) {
@@ -349,14 +349,14 @@ array(2) {
   [0]=>
   string(25) "Module_with_files_routing"
   [1]=>
-  string(7) "level20"
+  string(15) "level10/level20"
 }
 string(37) "cs\User::get_permission() called with"
 array(2) {
   [0]=>
   string(25) "Module_with_files_routing"
   [1]=>
-  string(7) "level30"
+  string(23) "level10/level20/level30"
 }
 string(28) "cs\Event::fire() called with"
 array(1) {

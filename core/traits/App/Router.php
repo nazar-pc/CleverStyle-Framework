@@ -101,6 +101,7 @@ trait Router {
 		if (!$structure) {
 			return;
 		}
+		$full_path = [];
 		for ($nesting_level = 0; $structure; ++$nesting_level) {
 			/**
 			 * Next level of routing path
@@ -109,7 +110,7 @@ trait Router {
 			/**
 			 * If path not specified - take first from structure
 			 */
-			$this->check_and_normalize_route_internal($Request, $path, $structure, $Request->cli_path || $Request->api_path);
+			$this->check_and_normalize_route_internal($Request, $path, $full_path, $structure, $Request->cli_path || $Request->api_path);
 			$Request->route_path[$nesting_level] = $path;
 			/**
 			 * Fill paths array intended for controller's usage
@@ -124,12 +125,13 @@ trait Router {
 	/**
 	 * @param \cs\Request $Request
 	 * @param string      $path
+	 * @param string[]    $full_path
 	 * @param array       $structure
 	 * @param bool        $cli_or_api_path
 	 *
 	 * @throws ExitException
 	 */
-	protected function check_and_normalize_route_internal ($Request, &$path, $structure, $cli_or_api_path) {
+	protected function check_and_normalize_route_internal ($Request, &$path, &$full_path, $structure, $cli_or_api_path) {
 		/**
 		 * If path not specified - take first from structure
 		 */
@@ -144,7 +146,8 @@ trait Router {
 		} elseif (!isset($structure[$path]) && !in_array($path, $structure)) {
 			throw new ExitException(404);
 		}
-		if (!$this->check_permission($Request, $path)) {
+		$full_path[] = $path;
+		if (!$this->check_permission($Request, implode('/', $full_path))) {
 			throw new ExitException(403);
 		}
 	}
