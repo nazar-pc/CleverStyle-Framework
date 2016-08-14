@@ -63,6 +63,11 @@ trait Files {
 		if ($included || !$required) {
 			return;
 		}
+		$unknown_method_handler = $Request->api_path ? 'options' : 'cli';
+		if (file_exists("$dir/$basename.$unknown_method_handler.php")) {
+			include "$dir/$basename.$unknown_method_handler.php";
+			return;
+		}
 		$this->handler_not_found(
 			$this->files_router_available_methods($dir, $basename),
 			$request_method,
