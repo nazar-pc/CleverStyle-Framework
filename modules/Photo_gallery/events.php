@@ -24,20 +24,20 @@ Event::instance()
 			if ($data['current_module'] != 'Photo_gallery' || !$data['rc'] || !$data['regular_path']) {
 				return;
 			}
-			$rc = explode('/', $data['rc']);
+			$route = &$data['route'];
 			if (
-				!isset($rc[1]) &&
-				!in_array($rc[0], ['gallery', 'edit_image'])
+				isset($route[0]) &&
+				!isset($route[1]) &&
+				!in_array(@$route[0], ['gallery', 'edit_image'])
 			) {
-				$rc[1]         = $rc[0];
-				$rc[0]         = 'gallery';
+				$route[1]      = $route[0];
+				$route[0]      = 'gallery';
 				$Photo_gallery = Photo_gallery::instance();
 				$galleries     = $Photo_gallery->get_galleries_list();
-				if (!isset($galleries[$rc[1]])) {
+				if (!isset($galleries[$route[1]])) {
 					throw new ExitException(404);
 				}
-				$rc[1]      = $galleries[$rc[1]];
-				$data['rc'] = implode('/', $rc);
+				$route[1] = $galleries[$route[1]];
 			}
 		}
 	)

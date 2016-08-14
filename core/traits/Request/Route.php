@@ -119,17 +119,9 @@ trait Route {
 			$results = $this->analyze_route_path($this->path);
 			$this->handle_redirect($Config, $results['path_normalized']);
 		}
-		$this->route = $results['route'];
-		/**
-		 * Separate numeric and other parts of route
-		 */
-		foreach ($this->route as $item) {
-			if (is_numeric($item)) {
-				$this->route_ids[] = $item;
-			} else {
-				$this->route_path[] = $item;
-			}
-		}
+		$this->route           = $results['route'];
+		$this->route_path      = $results['route_path'];
+		$this->route_ids       = $results['route_ids'];
 		$this->path_normalized = $results['path_normalized'];
 		$this->cli_path        = $results['cli_path'];
 		$this->admin_path      = $results['admin_path'];
@@ -169,21 +161,21 @@ trait Route {
 	 * @return array Array contains next elements: `route`, `path_normalized`, `cli_path`, `admin_path`, `api_path`, `current_module`, `home_page`
 	 */
 	public function analyze_route_path ($path) {
-		$rc = trim($path, '/');
+		$route = trim($path, '/');
 		Event::instance()->fire(
 			'System/Request/routing_replace/before',
 			[
-				'rc' => &$rc
+				'rc' => &$route
 			]
 		);
-		if (Language::instance()->url_language($rc)) {
-			$rc = explode('/', $rc, 2);
-			$rc = isset($rc[1]) ? $rc[1] : '';
+		if (Language::instance()->url_language($route)) {
+			$route = explode('/', $route, 2);
+			$route = isset($route[1]) ? $route[1] : '';
 		}
 		/**
 		 * Obtaining page path in form of array
 		 */
-		$rc         = $rc ? explode('/', $rc) : [];
+		$route      = $route ? explode('/', $route) : [];
 		$cli_path   = '';
 		$admin_path = '';
 		$api_path   = '';
@@ -191,25 +183,33 @@ trait Route {
 		/**
 		 * If url is cli, admin or API page - set corresponding variables to corresponding path prefix
 		 */
-		if ($this->cli && @mb_strtolower($rc[0]) == 'cli') {
+		if ($this->cli && @mb_strtolower($route[0]) == 'cli') {
 			$cli_path = 'cli/';
-			array_shift($rc);
-		} elseif (@mb_strtolower($rc[0]) == 'admin') {
+			array_shift($route);
+		} elseif (@mb_strtolower($route[0]) == 'admin') {
 			$admin_path = 'admin/';
-			array_shift($rc);
-		} elseif (@mb_strtolower($rc[0]) == 'api') {
+			array_shift($route);
+		} elseif (@mb_strtolower($route[0]) == 'api') {
 			$api_path = 'api/';
-			array_shift($rc);
+			array_shift($route);
 		}
 		/**
 		 * Module detection
 		 */
-		$current_module = $this->determine_page_module($rc, $home_page, $cli_path, $admin_path, $api_path);
-		$rc             = implode('/', $rc);
+		$current_module = $this->determine_page_module($route, $home_page, $cli_path, $admin_path, $api_path);
+		list($route_path, $route_ids) = $this->split_route($route);
+		$rc             = implode('/', $route);
+		$old_rc         = $rc;
+		$old_route      = $route;
+		$old_route_path = $route_path;
+		$old_route_ids  = $route_ids;
 		Event::instance()->fire(
 			'System/Request/routing_replace/after',
 			[
-				'rc'             => &$rc,
+				'rc'             => &$rc, // TODO: Deprecated key, remove in 6.x
+				'route'          => &$route,
+				'route_path'     => &$route_path,
+				'route_ids'      => &$route_ids,
 				'cli_path'       => &$cli_path,
 				'admin_path'     => &$admin_path,
 				'api_path'       => &$api_path,
@@ -218,8 +218,18 @@ trait Route {
 				'home_page'      => &$home_page
 			]
 		);
+		// TODO: Deprecated, remove in 6.x
+		if ($rc != $old_rc) {
+			$route = explode('/', $rc);
+			list($route_path, $route_ids) = $this->split_route($route);
+		}
+		if ($route != $old_route && $route_path == $old_route_path && $route_ids == $old_route_ids) {
+			list($route_path, $route_ids) = $this->split_route($route);
+		}
 		return [
-			'route'           => explode('/', $rc),
+			'route'           => $route,
+			'route_path'      => $route_path,
+			'route_ids'       => $route_ids,
 			'path_normalized' => trim(
 				"$cli_path$admin_path$api_path$current_module/$rc",
 				'/'
@@ -230,6 +240,26 @@ trait Route {
 			'current_module'  => $current_module,
 			'home_page'       => $home_page
 		];
+	}
+	/**
+	 * @param array $route
+	 *
+	 * @return array[] Key `0` contains array of paths, key `1` contains array of identifiers
+	 */
+	protected function split_route ($route) {
+		$route_path = [];
+		$route_ids  = [];
+		/**
+		 * Separate numeric and other parts of route
+		 */
+		foreach ($route as $item) {
+			if (is_numeric($item)) {
+				$route_ids[] = $item;
+			} else {
+				$route_path[] = $item;
+			}
+		}
+		return [$route_path, $route_ids];
 	}
 	/**
 	 * @param Config $Config

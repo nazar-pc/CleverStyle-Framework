@@ -22,12 +22,12 @@ Event::instance()
 			if (!$data['regular_path']) {
 				return;
 			}
-			$rc = explode('/', $data['rc']);
-			if ($data['current_module'] == 'Static_pages' && !$rc[0]) {
-				$rc = ['index'];
+			$route = &$data['route'];
+			if ($data['current_module'] == 'Static_pages' && !isset($route[0])) {
+				$route = ['index'];
 			}
 			$structure  = Pages::instance()->get_structure();
-			$categories = array_slice($rc, 0, -1);
+			$categories = array_slice($route, 0, -1);
 			if (!empty($categories)) {
 				foreach ($categories as $category) {
 					if (isset($structure['categories'][$category])) {
@@ -35,10 +35,10 @@ Event::instance()
 					}
 				}
 			}
-			$page = array_slice($rc, -1)[0];
+			$page = array_slice($route, -1)[0];
 			if (isset($structure['pages'][$page])) {
 				$data['current_module'] = 'Static_pages';
-				$data['rc']             = $structure['pages'][$page];
+				$route                  = [$structure['pages'][$page]];
 			}
 		}
 	)

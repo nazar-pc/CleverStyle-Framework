@@ -25,15 +25,15 @@ Event::instance()
 			if (!Config::instance()->module('Blogs')->enabled()) {
 				return;
 			}
-			$rc = explode('/', $data['rc']);
+			$route = &$data['route'];
 			if ($data['current_module'] != 'Blogs' || !$data['regular_path']) {
 				return;
 			}
-			if (!$rc[0]) {
-				$rc[0] = 'latest_posts';
+			if (!isset($route[0])) {
+				$route[0] = 'latest_posts';
 			}
 			$L = new Prefix('blogs_');
-			switch ($rc[0]) {
+			switch ($route[0]) {
 				case 'latest_posts':
 				case 'section':
 				case 'tag':
@@ -44,29 +44,28 @@ Event::instance()
 				case 'atom.xml':
 					break;
 				case path($L->latest_posts):
-					$rc[0] = 'latest_posts';
+					$route[0] = 'latest_posts';
 					break;
 				case path($L->section):
-					$rc[0] = 'section';
+					$route[0] = 'section';
 					break;
 				case path($L->tag):
-					$rc[0] = 'tag';
+					$route[0] = 'tag';
 					break;
 				case path($L->new_post):
-					$rc[0] = 'new_post';
+					$route[0] = 'new_post';
 					break;
 				case path($L->drafts):
-					$rc[0] = 'drafts';
+					$route[0] = 'drafts';
 					break;
 				default:
-					if (mb_strpos($rc[0], ':') !== false) {
-						$rc[1] = $rc[0];
-						$rc[0] = 'post';
+					if (mb_strpos($route[0], ':') !== false) {
+						$route[1] = $route[0];
+						$route[0] = 'post';
 					} else {
 						throw new ExitException(404);
 					}
 			}
-			$data['rc'] = implode('/', $rc);
 		}
 	)
 	->on(

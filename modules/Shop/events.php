@@ -24,26 +24,25 @@ Event::instance()
 			if ($data['current_module'] != 'Shop' || !$data['regular_path']) {
 				return;
 			}
-			$rc = explode('/', $data['rc']);
-			if (!$rc[0]) {
-				$rc[0] = 'categories_';
+			$route = &$data['route'];
+			if (!isset($route[0])) {
+				$route[0] = 'categories_';
 			}
 			$L = new Prefix('shop_');
-			switch ($rc[0]) {
+			switch ($route[0]) {
 				case path($L->categories):
-					$rc[0] = 'categories_';
+					$route[0] = 'categories_';
 					break;
 				case path($L->items):
-					$rc[0] = 'items_';
+					$route[0] = 'items_';
 					break;
 				case path($L->orders):
-					$rc[0] = 'orders_';
+					$route[0] = 'orders_';
 					break;
 				case path($L->cart):
-					$rc[0] = 'cart';
+					$route[0] = 'cart';
 					break;
 			}
-			$data['rc'] = implode('/', $rc);
 		}
 	)
 	->on(

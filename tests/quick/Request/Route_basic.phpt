@@ -365,9 +365,18 @@ array(1) {
   &string(0) ""
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -383,13 +392,9 @@ array(7) {
 }
 int(0)
 string(6) "System"
-array(1) {
-  [0]=>
-  string(0) ""
+array(0) {
 }
-array(1) {
-  [0]=>
-  string(0) ""
+array(0) {
 }
 array(0) {
 }
@@ -405,9 +410,18 @@ array(1) {
   &string(2) "en"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -422,9 +436,7 @@ array(7) {
   &bool(true)
 }
 string(6) "System"
-array(1) {
-  [0]=>
-  string(0) ""
+array(0) {
 }
 string(6) "System"
 bool(true)
@@ -435,9 +447,18 @@ array(1) {
   &string(14) "Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -453,13 +474,9 @@ array(7) {
 }
 int(0)
 string(14) "Enabled_module"
-array(1) {
-  [0]=>
-  string(0) ""
+array(0) {
 }
-array(1) {
-  [0]=>
-  string(0) ""
+array(0) {
 }
 array(0) {
 }
@@ -475,9 +492,18 @@ array(1) {
   &string(17) "en/Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -492,9 +518,7 @@ array(7) {
   &bool(false)
 }
 string(14) "Enabled_module"
-array(1) {
-  [0]=>
-  string(0) ""
+array(0) {
 }
 string(14) "Enabled_module"
 bool(false)
@@ -505,9 +529,18 @@ array(1) {
   &string(18) "api/Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -522,9 +555,7 @@ array(7) {
   &bool(false)
 }
 string(18) "api/Enabled_module"
-array(1) {
-  [0]=>
-  string(0) ""
+array(0) {
 }
 string(14) "Enabled_module"
 bool(true)
@@ -537,9 +568,18 @@ array(1) {
   &string(21) "en/api/Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -554,9 +594,7 @@ array(7) {
   &bool(false)
 }
 string(18) "api/Enabled_module"
-array(1) {
-  [0]=>
-  string(0) ""
+array(0) {
 }
 string(14) "Enabled_module"
 bool(true)
@@ -569,9 +607,18 @@ array(1) {
   &string(20) "admin/Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -586,9 +633,7 @@ array(7) {
   &bool(false)
 }
 string(20) "admin/Enabled_module"
-array(1) {
-  [0]=>
-  string(0) ""
+array(0) {
 }
 string(14) "Enabled_module"
 bool(false)
@@ -601,9 +646,18 @@ array(1) {
   &string(23) "en/admin/Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -618,9 +672,7 @@ array(7) {
   &bool(false)
 }
 string(20) "admin/Enabled_module"
-array(1) {
-  [0]=>
-  string(0) ""
+array(0) {
 }
 string(14) "Enabled_module"
 bool(false)
@@ -633,9 +685,18 @@ array(1) {
   &string(18) "cli/Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(4) "cli/"
   ["admin_path"]=>
@@ -650,9 +711,7 @@ array(7) {
   &bool(false)
 }
 string(18) "cli/Enabled_module"
-array(1) {
-  [0]=>
-  string(0) ""
+array(0) {
 }
 string(14) "Enabled_module"
 bool(false)
@@ -665,9 +724,18 @@ array(1) {
   &string(27) "en/Enabled_module_localized"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -690,9 +758,18 @@ array(1) {
   &string(5) "admin"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -718,9 +795,18 @@ array(1) {
   &string(3) "api"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -746,9 +832,18 @@ array(1) {
   &string(3) "cli"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(4) "cli/"
   ["admin_path"]=>
@@ -774,9 +869,22 @@ array(1) {
   &string(15) "Disabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(15) "Disabled_module"
+  ["route"]=>
+  &array(1) {
+    [0]=>
+    string(15) "Disabled_module"
+  }
+  ["route_path"]=>
+  &array(1) {
+    [0]=>
+    string(15) "Disabled_module"
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -802,9 +910,18 @@ array(1) {
   &string(21) "admin/Disabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(0) ""
+  ["route"]=>
+  &array(0) {
+  }
+  ["route_path"]=>
+  &array(0) {
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -830,9 +947,22 @@ array(1) {
   &string(18) "Uninstalled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(18) "Uninstalled_module"
+  ["route"]=>
+  &array(1) {
+    [0]=>
+    string(18) "Uninstalled_module"
+  }
+  ["route_path"]=>
+  &array(1) {
+    [0]=>
+    string(18) "Uninstalled_module"
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -858,9 +988,22 @@ array(1) {
   &string(24) "admin/Uninstalled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(18) "Uninstalled_module"
+  ["route"]=>
+  &array(1) {
+    [0]=>
+    string(18) "Uninstalled_module"
+  }
+  ["route_path"]=>
+  &array(1) {
+    [0]=>
+    string(18) "Uninstalled_module"
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -886,9 +1029,34 @@ array(1) {
   &string(37) "api/Enabled_module/path/subpath/10/15"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(18) "path/subpath/10/15"
+  ["route"]=>
+  &array(4) {
+    [0]=>
+    string(4) "path"
+    [1]=>
+    string(7) "subpath"
+    [2]=>
+    string(2) "10"
+    [3]=>
+    string(2) "15"
+  }
+  ["route_path"]=>
+  &array(2) {
+    [0]=>
+    string(4) "path"
+    [1]=>
+    string(7) "subpath"
+  }
+  ["route_ids"]=>
+  &array(2) {
+    [0]=>
+    string(2) "10"
+    [1]=>
+    string(2) "15"
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -940,9 +1108,34 @@ array(1) {
   &string(26) "redirect/http://google.com"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(26) "redirect/http://google.com"
+  ["route"]=>
+  &array(4) {
+    [0]=>
+    string(8) "redirect"
+    [1]=>
+    string(5) "http:"
+    [2]=>
+    string(0) ""
+    [3]=>
+    string(10) "google.com"
+  }
+  ["route_path"]=>
+  &array(4) {
+    [0]=>
+    string(8) "redirect"
+    [1]=>
+    string(5) "http:"
+    [2]=>
+    string(0) ""
+    [3]=>
+    string(10) "google.com"
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -972,9 +1165,34 @@ array(1) {
   &string(26) "redirect/http://google.com"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(26) "redirect/http://google.com"
+  ["route"]=>
+  &array(4) {
+    [0]=>
+    string(8) "redirect"
+    [1]=>
+    string(5) "http:"
+    [2]=>
+    string(0) ""
+    [3]=>
+    string(10) "google.com"
+  }
+  ["route_path"]=>
+  &array(4) {
+    [0]=>
+    string(8) "redirect"
+    [1]=>
+    string(5) "http:"
+    [2]=>
+    string(0) ""
+    [3]=>
+    string(10) "google.com"
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -997,9 +1215,34 @@ array(1) {
   &string(26) "redirect/http://google.com"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(26) "redirect/http://google.com"
+  ["route"]=>
+  &array(4) {
+    [0]=>
+    string(8) "redirect"
+    [1]=>
+    string(5) "http:"
+    [2]=>
+    string(0) ""
+    [3]=>
+    string(10) "google.com"
+  }
+  ["route_path"]=>
+  &array(4) {
+    [0]=>
+    string(8) "redirect"
+    [1]=>
+    string(5) "http:"
+    [2]=>
+    string(0) ""
+    [3]=>
+    string(10) "google.com"
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
@@ -1022,9 +1265,34 @@ array(1) {
   &string(26) "redirect/http://google.com"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(7) {
+array(10) {
   ["rc"]=>
   &string(26) "redirect/http://google.com"
+  ["route"]=>
+  &array(4) {
+    [0]=>
+    string(8) "redirect"
+    [1]=>
+    string(5) "http:"
+    [2]=>
+    string(0) ""
+    [3]=>
+    string(10) "google.com"
+  }
+  ["route_path"]=>
+  &array(4) {
+    [0]=>
+    string(8) "redirect"
+    [1]=>
+    string(5) "http:"
+    [2]=>
+    string(0) ""
+    [3]=>
+    string(10) "google.com"
+  }
+  ["route_ids"]=>
+  &array(0) {
+  }
   ["cli_path"]=>
   &string(0) ""
   ["admin_path"]=>
