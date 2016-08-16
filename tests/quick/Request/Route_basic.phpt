@@ -356,6 +356,21 @@ try {
 	var_dump($e->getCode(), $e->getMessage());
 }
 
+var_dump('Update route in System/Request/routing_replace/after without updating path and ids should cause path and ids re-calculation');
+Event::instance()->once(
+	'System/Request/routing_replace/after',
+	function ($data) {
+		$data['route'] = [
+			'path',
+			'1',
+			'page',
+			'2'
+		];
+	}
+);
+$Request->init_server(['REQUEST_URI' => '/path/1/page/2/part/3'] + $server);
+$Request->init_route();
+var_dump($Request->route_path, $Request->route_ids);
 ?>
 --EXPECT--
 string(9) "Home page"
@@ -1308,3 +1323,71 @@ array(10) {
 }
 int(400)
 string(0) ""
+string(123) "Update route in System/Request/routing_replace/after without updating path and ids should cause path and ids re-calculation"
+string(54) "System/Request/routing_replace/before event fired with"
+array(1) {
+  ["rc"]=>
+  &string(20) "path/1/page/2/part/3"
+}
+string(53) "System/Request/routing_replace/after event fired with"
+array(10) {
+  ["rc"]=>
+  &string(20) "path/1/page/2/part/3"
+  ["route"]=>
+  &array(6) {
+    [0]=>
+    string(4) "path"
+    [1]=>
+    string(1) "1"
+    [2]=>
+    string(4) "page"
+    [3]=>
+    string(1) "2"
+    [4]=>
+    string(4) "part"
+    [5]=>
+    string(1) "3"
+  }
+  ["route_path"]=>
+  &array(3) {
+    [0]=>
+    string(4) "path"
+    [1]=>
+    string(4) "page"
+    [2]=>
+    string(4) "part"
+  }
+  ["route_ids"]=>
+  &array(3) {
+    [0]=>
+    string(1) "1"
+    [1]=>
+    string(1) "2"
+    [2]=>
+    string(1) "3"
+  }
+  ["cli_path"]=>
+  &string(0) ""
+  ["admin_path"]=>
+  &string(0) ""
+  ["api_path"]=>
+  &string(0) ""
+  ["regular_path"]=>
+  bool(true)
+  ["current_module"]=>
+  &string(6) "System"
+  ["home_page"]=>
+  &bool(false)
+}
+array(2) {
+  [0]=>
+  string(4) "path"
+  [1]=>
+  string(4) "page"
+}
+array(2) {
+  [0]=>
+  string(1) "1"
+  [1]=>
+  string(1) "2"
+}
