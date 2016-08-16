@@ -440,34 +440,6 @@ array(2) {
 Some content here
 "
 }
-string(37) "cs\User::get_permission() called with"
-array(2) {
-  [0]=>
-  string(5) "Block"
-  [1]=>
-  int(%d)
-}
-string(28) "cs\Event::fire() called with"
-array(2) {
-  [0]=>
-  string(23) "System/App/block_render"
-  [1]=>
-  array(2) {
-    ["index"]=>
-    int(%d)
-    ["blocks_array"]=>
-    &array(4) {
-      ["top"]=>
-      string(0) ""
-      ["left"]=>
-      string(18) "HTML block content"
-      ["right"]=>
-      string(22) "Raw HTML block content"
-      ["bottom"]=>
-      string(0) ""
-    }
-  }
-}
 string(0) ""
 string(18) "HTML block content"
 string(22) "Raw HTML block content"
