@@ -10,14 +10,5 @@
 			"level31"
 		]
 	},
-	"level11" : {
-		"level20" : [
-			"level30",
-			"level31"
-		],
-		"level21" : [
-			"level30",
-			"level31"
-		]
-	}
+	"level11" : []
 }

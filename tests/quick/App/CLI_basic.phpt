@@ -58,11 +58,13 @@ namespace cs {
 string(25) "Print CLI structure (all)"
 string(54) "cs\Page::content('%yAll paths and methods:%n
 ') called"
-string(580) "cs\Page::content('+--------------------------------------------------------+-------------------+
+string(738) "cs\Page::content('+--------------------------------------------------------+-------------------+
 | Path                                                   | Methods available |
 +--------------------------------------------------------+-------------------+
 | Module_with_controller_routing/level10/level21/level30 | get, post         |
+| Module_with_controller_routing/level11                 | cli               |
 | Module_with_files_routing/level10/level21/level30      | get, post         |
+| Module_with_files_routing/level11                      | cli               |
 | Module_with_cli_index_php                              | get               |
 +--------------------------------------------------------+-------------------+
 ') called"

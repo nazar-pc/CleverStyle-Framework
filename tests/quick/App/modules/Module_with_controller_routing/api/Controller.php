@@ -23,4 +23,7 @@ class Controller {
 	public static function level10_level21_level30_post () {
 		var_dump(__METHOD__);
 	}
+	public static function level11_options () {
+		var_dump(__METHOD__);
+	}
 }

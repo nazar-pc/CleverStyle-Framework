@@ -133,6 +133,31 @@ namespace cs {
 			$Request->current_module   = 'Module_with_controller_routing_custom';
 			$Router->working_directory = $Router->get_working_directory($Request);
 			$Router->controller_router($Request);
+
+			var_dump('API request (PUT, method does not exists, but exists OPTIONS)');
+			$Request->api_path         = true;
+			$Request->method           = 'PUT';
+			$Request->current_module   = 'Module_with_controller_routing';
+			$Router->working_directory = $Router->get_working_directory($Request);
+			$Router->controller_path   = [
+				'index',
+				'level11'
+			];
+			try {
+				$Router->controller_router($Request);
+			} catch (ExitException $e) {
+				var_dump($e->getCode());
+			}
+
+			var_dump('CLI request (PUT, method does not exists, but exists CLI)');
+			$Request->api_path         = false;
+			$Request->cli_path         = true;
+			$Router->working_directory = $Router->get_working_directory($Request);
+			try {
+				$Router->controller_router($Request);
+			} catch (ExitException $e) {
+				var_dump($e->getCode());
+			}
 		}
 	}
 	App_test::test();
@@ -199,3 +224,10 @@ string(100) "cs\Page::content('cs\custom\modules\Module_with_controller_routing_
 string(75) "cs\custom\modules\Module_with_controller_routing_custom\Controller::level10"
 string(83) "cs\custom\modules\Module_with_controller_routing_custom\Controller::level10_level21"
 string(91) "cs\custom\modules\Module_with_controller_routing_custom\Controller::level10_level21_level30"
+string(61) "API request (PUT, method does not exists, but exists OPTIONS)"
+string(27) "cs\Page::json() called with"
+string(63) "cs\modules\Module_with_controller_routing\api\Controller::index"
+string(73) "cs\modules\Module_with_controller_routing\api\Controller::level11_options"
+string(57) "CLI request (PUT, method does not exists, but exists CLI)"
+string(90) "cs\Page::content('cs\modules\Module_with_controller_routing\cli\Controller::index') called"
+string(69) "cs\modules\Module_with_controller_routing\cli\Controller::level11_cli"

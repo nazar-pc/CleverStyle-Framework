@@ -99,6 +99,31 @@ namespace cs {
 			} catch (ExitException $e) {
 				var_dump($e->getCode());
 			}
+
+			var_dump('API request (PUT, method does not exists, but exists OPTIONS)');
+			$Request->cli_path         = false;
+			$Request->api_path         = true;
+			$Request->method           = 'PUT';
+			$Router->working_directory = $Router->get_working_directory($Request);
+			$Router->controller_path   = [
+				'index',
+				'level11'
+			];
+			try {
+				$Router->files_router($Request);
+			} catch (ExitException $e) {
+				var_dump($e->getCode());
+			}
+
+			var_dump('CLI request (PUT, method does not exists, but exists CLI)');
+			$Request->api_path         = false;
+			$Request->cli_path         = true;
+			$Router->working_directory = $Router->get_working_directory($Request);
+			try {
+				$Router->files_router($Request);
+			} catch (ExitException $e) {
+				var_dump($e->getCode());
+			}
 		}
 	}
 	App_test::test();
@@ -157,3 +182,9 @@ string(41) "CLI request (CLI, method does not exists)"
 string(%d) "%s/tests/quick/App/modules/Module_with_files_routing/cli/index.php"
 string(%d) "%s/tests/quick/App/modules/Module_with_files_routing/cli/level10/level21.php"
 string(49) "cs\App\Router\CLI::print_cli_structure('') called"
+string(61) "API request (PUT, method does not exists, but exists OPTIONS)"
+string(82) "%s/tests/quick/App/modules/Module_with_files_routing/api/index.php"
+string(92) "%s/tests/quick/App/modules/Module_with_files_routing/api/level11.options.php"
+string(57) "CLI request (PUT, method does not exists, but exists CLI)"
+string(82) "%s/tests/quick/App/modules/Module_with_files_routing/cli/index.php"
+string(88) "%s/tests/quick/App/modules/Module_with_files_routing/cli/level11.cli.php"
