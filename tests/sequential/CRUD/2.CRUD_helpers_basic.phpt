@@ -289,6 +289,38 @@ class CRUD_helpers_basic {
 			)
 		);
 
+		var_dump('Pagination test');
+		var_dump($this->search([], 1, 3));
+		var_dump($this->search([], 2, 2));
+		var_dump($this->search([], 99, 1));
+		var_dump(
+			$this->search(
+				[
+					'total_count' => 1
+				],
+				1,
+				3
+			)
+		);
+		var_dump(
+			$this->search(
+				[
+					'total_count' => 1
+				],
+				2,
+				2
+			)
+		);
+		var_dump(
+			$this->search(
+				[
+					'total_count' => 1
+				],
+				99,
+				1
+			)
+		);
+
 		$this->db_prime()->q(
 			array_filter(
 				explode(';', file_get_contents(__DIR__."/basic.cleanup.sql")),
@@ -422,4 +454,24 @@ array(4) {
   int(1)
 }
 string(11) "Total count"
+int(4)
+string(15) "Pagination test"
+array(3) {
+  [0]=>
+  int(4)
+  [1]=>
+  int(3)
+  [2]=>
+  int(2)
+}
+array(2) {
+  [0]=>
+  int(2)
+  [1]=>
+  int(1)
+}
+array(0) {
+}
+int(4)
+int(4)
 int(4)
