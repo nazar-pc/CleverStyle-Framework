@@ -217,7 +217,7 @@ namespace cs {
 					'type'     => 'html',
 					'active'   => 1,
 					'start'    => 0,
-					'expire'   => time(),
+					'expire'   => time() - 1,
 					'content'  => '',
 					'position' => 'left',
 					'index'    => intval(substr(round(microtime(true) * 1000), 3), 10)
@@ -226,7 +226,7 @@ namespace cs {
 					'title'    => 'Block not started',
 					'type'     => 'html',
 					'active'   => 1,
-					'start'    => time() + 2,
+					'start'    => time() + 99,
 					'expire'   => 0,
 					'content'  => '',
 					'position' => 'left',
