@@ -80,9 +80,11 @@ class MySQLi extends _Abstract {
 		for ($i = 0; $i < 2; ++$i) {
 			if ($parameters) {
 				$stmt = $this->instance->prepare($query);
+				// Allows to provide more parameters for prepared statements than needed
+				$local_parameters = array_slice($parameters, 0, substr_count($query, '?'));
 				$stmt->bind_param(
-					str_repeat('s', count($parameters)),
-					...$parameters
+					str_repeat('s', count($local_parameters)),
+					...$local_parameters
 				);
 				$stmt->execute();
 				$result = $stmt->get_result();

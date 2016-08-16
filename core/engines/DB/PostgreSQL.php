@@ -121,8 +121,10 @@ class PostgreSQL extends _Abstract {
 			return false;
 		}
 		if ($parameters) {
-			$query = $this->convert_prepared_statements_syntax($query);
-			return $this->query_result = pg_query_params($this->handler, $query, $parameters);
+			// Allows to provide more parameters for prepared statements than needed
+			$local_parameters = array_slice($parameters, 0, substr_count($query, '?'));
+			$query            = $this->convert_prepared_statements_syntax($query);
+			return $this->query_result = pg_query_params($this->handler, $query, $local_parameters);
 		}
 		return $this->query_result = pg_query($this->handler, $query);
 	}

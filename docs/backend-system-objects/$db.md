@@ -116,6 +116,23 @@ $query = $db->db(0)->q(
 );
 ```
 
+You can even provide more arguments for prepared statements than needed (which is especially useful when dealing with arrays of queries):
+```php
+<?php
+$db    = \cs\DB::instance();
+$query = $db->db_prime(0)->q(
+    [
+        "DELETE FROM FROM `[prefix]articles` WHERE `id` = ?",
+        "DELETE FROM FROM `[prefix]articles_comments` WHERE `article` = ? OR `date` < ?",
+        "DELETE FROM FROM `[prefix]articles_tags` WHERE `article` = ?"
+    ],
+    [
+        $article_to_delete,
+        time() - 24 * 3600
+    ]
+);
+```
+
 #### f($query_result : object|resource, $single_column = false : bool, $array = false : bool, $indexed = false : bool) : array[]|false|int|int[]|string|string[]
 Fetch a result row
 

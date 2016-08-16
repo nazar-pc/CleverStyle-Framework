@@ -102,6 +102,7 @@ var_dump('multiple rows indexed array single column', $u);
 var_dump('->qf()', $db->qf("SELECT * FROM `[prefix]test`"));
 var_dump('->qf(..., 2)', $db->qf("SELECT * FROM `[prefix]test` WHERE `id` = '%d'", 2));
 var_dump('->qf(..., 2), prepared statement', $db->qf("SELECT * FROM `[prefix]test` WHERE `id` = ?", 2));
+var_dump('->qf(..., 2), prepared statement, more arguments than needed', $db->qf("SELECT * FROM `[prefix]test` WHERE `id` = ?", 2, 1, 3));
 var_dump('->qfs()', $db->qfs("SELECT * FROM `[prefix]test`"));
 var_dump('->qfa()', $db->qfa("SELECT * FROM `[prefix]test`"));
 var_dump('->qfas()', $db->qfas("SELECT * FROM `[prefix]test`"));
@@ -381,6 +382,17 @@ array(4) {
   ["value"]=>
   string(4) "11.5"
 }
+string(60) "->qf(..., 2), prepared statement, more arguments than needed"
+array(4) {
+  ["id"]=>
+  string(1) "2"
+  ["title"]=>
+  string(7) "Title 2"
+  ["description"]=>
+  string(13) "Description 2"
+  ["value"]=>
+  string(4) "11.5"
+}
 string(7) "->qfs()"
 string(1) "1"
 string(7) "->qfa()"
@@ -523,7 +535,7 @@ string(6) "travis"
 string(7) "Queries"
 array(3) {
   ["num"]=>
-  int(36)
+  int(37)
   ["time"]=>
   array(0) {
   }
