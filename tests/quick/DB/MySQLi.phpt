@@ -107,7 +107,7 @@ var_dump('multiple rows indexed array single column', $r);
 var_dump('->qf()', $db->qf("SELECT * FROM `[prefix]test`"));
 var_dump('->qf(..., 2)', $db->qf("SELECT * FROM `[prefix]test` WHERE `id` = '%d'", 2));
 var_dump('->qf(..., 2), prepared statement', $db->qf("SELECT * FROM `[prefix]test` WHERE `id` = ?", 2));
-var_dump('->qf(..., 2), prepared statement, more arguments than needed', $db->qf("SELECT * FROM `[prefix]test` WHERE `id` = ?", 2, 1, 3));
+var_dump('->qf(..., 2), prepared statement, more arguments than needed', $db->qf("SELECT * FROM `[prefix]test` WHERE `id` = ? LIMIT ?", 2, 1, 3));
 var_dump('->qfs()', $db->qfs("SELECT * FROM `[prefix]test`"));
 var_dump('->qfa()', $db->qfa("SELECT * FROM `[prefix]test`"));
 var_dump('->qfas()', $db->qfas("SELECT * FROM `[prefix]test`"));

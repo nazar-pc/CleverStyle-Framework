@@ -139,7 +139,7 @@ class PostgreSQL extends _Abstract {
 		}
 		$i = 1;
 		while ($q_pos = strpos($query, '?')) {
-			$query = substr($query, 0, $q_pos).'$1'.substr($query, $q_pos + 1);
+			$query = substr($query, 0, $q_pos)."$$i".substr($query, $q_pos + 1);
 			++$i;
 		}
 		return $query;
