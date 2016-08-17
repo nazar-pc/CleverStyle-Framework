@@ -57,7 +57,7 @@ trait CRUD {
 			$update_needed
 		);
 		$columns = '`'.implode('`,`', array_keys($prepared_arguments)).'`';
-		$values  = implode(',', array_fill(0, count($prepared_arguments), "?"));
+		$values  = implode(',', array_fill(0, count($prepared_arguments), '?'));
 		$return  = $this->db_prime()->q(
 			"INSERT IGNORE INTO `$table`
 				(
@@ -136,7 +136,7 @@ trait CRUD {
 				$values .= ",'$clang'";
 			}
 			$fields .= '`'.implode('`,`', array_keys($model['fields'])).'`';
-			$values .= str_repeat(",?", count($model['fields']));
+			$values .= str_repeat(',?', count($model['fields']));
 			$this->db_prime()->insert(
 				"INSERT INTO `{$this->table}_$table`
 					(

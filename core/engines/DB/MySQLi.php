@@ -77,34 +77,41 @@ class MySQLi extends _Abstract {
 		if (!$query) {
 			return false;
 		}
-		for ($i = 0; $i < 2; ++$i) {
-			if ($parameters) {
-				$stmt = $this->instance->prepare($query);
-				// Allows to provide more parameters for prepared statements than needed
-				$local_parameters = array_slice($parameters, 0, substr_count($query, '?'));
-				$stmt->bind_param(
-					str_repeat('s', count($local_parameters)),
-					...$local_parameters
-				);
-				$result = $stmt->execute();
-				/**
-				 * Return result only for SELECT queries, boolean otherwise
-				 */
-				$result = $stmt->get_result() ?: $result;
-			} else {
-				$result = $this->instance->query($query);
-			}
-			// In case of MySQL Client error - try to fix everything, but only once
-			if (
-				$result ||
-				$this->instance->errno < 2000 ||
-				!$this->instance->ping()
-			) {
-				break;
-			}
+		$result = $this->q_internal_internal($query, $parameters);
+		/*
+		 * In case of MySQL Client error try once again
+		 */
+		if (
+			!$result &&
+			$this->instance->errno >= 2000 &&
+			$this->instance->ping()
+		) {
+			$result = $this->q_internal_internal($query, $parameters);
 		}
-		/** @noinspection PhpUndefinedVariableInspection */
 		return $result;
+	}
+	/**
+	 * @param string $query
+	 * @param array  $parameters
+	 *
+	 * @return bool|mysqli_result
+	 */
+	protected function q_internal_internal ($query, $parameters) {
+		if (!$parameters) {
+			return $this->instance->query($query);
+		}
+		$stmt = $this->instance->prepare($query);
+		// Allows to provide more parameters for prepared statements than needed
+		$local_parameters = array_slice($parameters, 0, substr_count($query, '?'));
+		$stmt->bind_param(
+			str_repeat('s', count($local_parameters)),
+			...$local_parameters
+		);
+		$result = $stmt->execute();
+		/**
+		 * Return result only for SELECT queries, boolean otherwise
+		 */
+		return $stmt->get_result() ?: $result;
 	}
 	/**
 	 * @inheritdoc

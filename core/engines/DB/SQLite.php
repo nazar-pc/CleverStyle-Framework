@@ -41,9 +41,20 @@ class SQLite extends _Abstract {
 	 * @inheritdoc
 	 */
 	public function q ($query, ...$params) {
-		// Hack to convert small subset of MySQL queries into SQLite-compatible syntax
-		$query = str_replace('INSERT IGNORE', 'INSERT OR IGNORE', $query);
-		return parent::q($query, ...$params);
+		return parent::q(
+			$this->convert_sql($query),
+			...$params
+		);
+	}
+	/**
+	 * Convert small subset of MySQL queries into SQLite-compatible syntax
+	 *
+	 * @param string $query
+	 *
+	 * @return string
+	 */
+	protected function convert_sql ($query) {
+		return str_replace('INSERT IGNORE', 'INSERT OR IGNORE', $query);
 	}
 	/**
 	 * @inheritdoc

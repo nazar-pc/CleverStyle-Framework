@@ -70,9 +70,21 @@ class PostgreSQL extends _Abstract {
 	 * @inheritdoc
 	 */
 	public function q ($query, ...$params) {
-		// Hack to convert small subset of MySQL queries into PostgreSQL-compatible syntax
+		return parent::q(
+			$this->convert_sql($query),
+			...$params
+		);
+	}
+	/**
+	 * Convert small subset of MySQL queries into PostgreSQL-compatible syntax
+	 *
+	 * @param string $query
+	 *
+	 * @return string
+	 */
+	protected function convert_sql ($query) {
 		$query = str_replace('`', '"', $query);
-		$query = preg_replace_callback(
+		return preg_replace_callback(
 			'/(INSERT IGNORE INTO|REPLACE INTO)(.+)(;|$)/Uis',
 			function ($matches) {
 				// Only support simplest cases
@@ -108,8 +120,6 @@ class PostgreSQL extends _Abstract {
 			},
 			$query
 		);
-		// Hack: Prepared statements will be converted right before execution
-		return parent::q($query, ...$params);
 	}
 	/**
 	 * @inheritdoc
