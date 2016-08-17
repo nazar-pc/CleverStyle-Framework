@@ -86,6 +86,18 @@ if (!$db->q(
 ) {
 	die('Multi query failed');
 }
+
+var_dump('Multi query with prepared statements');
+var_dump(
+	$db->q(
+		[
+			'SELECT `id`, `title` FROM `[prefix]test` WHERE `id` = ?',
+			'SELECT `id`, `title` FROM `[prefix]test` WHERE `id` = ?'
+		],
+		1
+	)
+);
+
 $u = $db->f($result);
 var_dump('single row', $u);
 $u = $db->f($result, true);
@@ -237,6 +249,8 @@ string(18) "multiple insert id"
 int(2)
 string(31) "multiple insert id without join"
 int(1)
+string(36) "Multi query with prepared statements"
+bool(true)
 string(10) "single row"
 array(2) {
   ["id"]=>
@@ -539,7 +553,7 @@ string(0) ""
 string(7) "Queries"
 array(3) {
   ["num"]=>
-  int(37)
+  int(39)
   ["time"]=>
   array(0) {
   }

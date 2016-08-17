@@ -139,14 +139,11 @@ class PostgreSQL extends _Abstract {
 		return $this->query_result = pg_query($this->handler, $query);
 	}
 	/**
-	 * @param string|string[] $query
+	 * @param string $query
 	 *
-	 * @return string|string[]
+	 * @return string
 	 */
 	protected function convert_prepared_statements_syntax ($query) {
-		if (is_array($query)) {
-			return array_map([$this, 'convert_prepared_statements_syntax'], $query);
-		}
 		$i = 1;
 		while ($q_pos = strpos($query, '?')) {
 			$query = substr($query, 0, $q_pos)."$$i".substr($query, $q_pos + 1);
