@@ -125,7 +125,7 @@ abstract class _Abstract {
 		}
 		return [
 			$query,
-			$parameters
+			array_values($parameters)
 		];
 	}
 	/**
@@ -197,7 +197,7 @@ abstract class _Abstract {
 	 * @param string   $query
 	 * @param string[] $parameters If not empty, than server-side prepared statements should be used
 	 *
-	 * @return false|object|resource
+	 * @return bool|object|resource
 	 */
 	abstract protected function q_internal ($query, $parameters = []);
 	/**

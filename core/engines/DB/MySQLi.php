@@ -71,7 +71,7 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 *
-	 * @return false|mysqli_result
+	 * @return bool|mysqli_result
 	 */
 	protected function q_internal ($query, $parameters = []) {
 		if (!$query) {
@@ -86,8 +86,11 @@ class MySQLi extends _Abstract {
 					str_repeat('s', count($local_parameters)),
 					...$local_parameters
 				);
-				$stmt->execute();
-				$result = $stmt->get_result();
+				$result = $stmt->execute();
+				/**
+				 * Return result only for SELECT queries, boolean otherwise
+				 */
+				$result = $stmt->get_result() ?: $result;
 			} else {
 				$result = $this->instance->query($query);
 			}

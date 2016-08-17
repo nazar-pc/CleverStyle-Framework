@@ -87,7 +87,7 @@ trait CRUD_helpers {
 			$where
 			GROUP BY `$table_alias`.`$first_column`, $order_by
 			ORDER BY $order_by $asc
-			LIMIT %d OFFSET %d",
+			LIMIT ? OFFSET ?",
 			array_merge($join_params, $where_params)
 		);
 		return $this->read_field_post_processing($return, array_values($this->data_model)[0]);
@@ -101,24 +101,24 @@ trait CRUD_helpers {
 	 */
 	private function search_conditions ($table_alias, $key, $details, &$where, &$where_params) {
 		if (is_scalar($details)) {
-			$where[]        = "`$table_alias`.`$key` = '%s'";
+			$where[]        = "`$table_alias`.`$key` = ?";
 			$where_params[] = $details;
 		} elseif (is_array($details) && $details) {
 			if (is_array_indexed($details)) {
 				$where_tmp = [];
 				foreach ($details as $d) {
-					$where_tmp[]    = "`$table_alias`.`$key` = '%s'";
+					$where_tmp[]    = "`$table_alias`.`$key` = ?";
 					$where_params[] = $d;
 				}
 				$where[] = '('.implode(' OR ', $where_tmp).')';
 				return;
 			}
 			if (isset($details['from'])) {
-				$where[]        = "`$table_alias`.`$key` >= '%s'";
+				$where[]        = "`$table_alias`.`$key` >= ?";
 				$where_params[] = $details['from'];
 			}
 			if (isset($details['to'])) {
-				$where[]        = "`$table_alias`.`$key` <= '%s'";
+				$where[]        = "`$table_alias`.`$key` <= ?";
 				$where_params[] = $details['to'];
 			}
 		}

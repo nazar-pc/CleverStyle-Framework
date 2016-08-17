@@ -57,7 +57,7 @@ trait CRUD {
 			$update_needed
 		);
 		$columns = '`'.implode('`,`', array_keys($prepared_arguments)).'`';
-		$values  = implode(',', array_fill(0, count($prepared_arguments), "'%s'"));
+		$values  = implode(',', array_fill(0, count($prepared_arguments), "?"));
 		$return  = $this->db_prime()->q(
 			"INSERT IGNORE INTO `$table`
 				(
@@ -115,7 +115,7 @@ trait CRUD {
 			$this->db_prime()->q(
 				"DELETE FROM `{$this->table}_$table`
 				WHERE
-					`$id_field`	= '%s'
+					`$id_field`	= ?
 					$language_field_condition",
 				$id
 			);
@@ -136,7 +136,7 @@ trait CRUD {
 				$values .= ",'$clang'";
 			}
 			$fields .= '`'.implode('`,`', array_keys($model['fields'])).'`';
-			$values .= str_repeat(",'%s'", count($model['fields']));
+			$values .= str_repeat(",?", count($model['fields']));
 			$this->db_prime()->insert(
 				"INSERT INTO `{$this->table}_$table`
 					(
@@ -191,7 +191,7 @@ trait CRUD {
 		$data         = $this->db()->qf(
 			"SELECT $columns
 			FROM `$table`
-			WHERE `$first_column` = '%s'
+			WHERE `$first_column` = ?
 			LIMIT 1",
 			$id
 		);
@@ -264,7 +264,7 @@ trait CRUD {
 			"SELECT $fields
 			FROM `{$this->table}_$table`
 			WHERE
-				`$id_field`	= '%s'
+				`$id_field`	= ?
 				$language_field_condition",
 			$id
 		) ?: [];
@@ -276,7 +276,7 @@ trait CRUD {
 			$new_clang = $this->db_prime()->qfs(
 				"SELECT `$language_field`
 				FROM `{$this->table}_$table`
-				WHERE `$id_field`	= '%s'
+				WHERE `$id_field`	= ?
 				LIMIT 1",
 				$id
 			);
@@ -347,7 +347,7 @@ trait CRUD {
 			',',
 			array_map(
 				function ($column) {
-					return "`$column` = '%s'";
+					return "`$column` = ?";
 				},
 				array_keys($prepared_arguments)
 			)
@@ -357,7 +357,7 @@ trait CRUD {
 		if (!$this->db_prime()->q(
 			"UPDATE `$table`
 			SET $columns
-			WHERE `$first_column` = '%s'",
+			WHERE `$first_column` = ?",
 			$prepared_arguments
 		)
 		) {
@@ -405,7 +405,7 @@ trait CRUD {
 				$this->read_internal($table, $data_model, $i) &&
 				$this->db_prime()->q(
 					"DELETE FROM `$table`
-					WHERE `$first_column` = '%s'",
+					WHERE `$first_column` = ?",
 					$i
 				);
 			/**
