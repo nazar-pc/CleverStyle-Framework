@@ -56,7 +56,11 @@ trait CRUD_helpers {
 		if (isset($data_model['data_model'])) {
 			$this->search_conditions_join_table('t', $key, $details, $joins, $join_params, $join_index);
 		} else {
-			list($where_local, $params_local) = $this->search_conditions('t', $key, $details);
+			if (strpos($data_model, 'ml:') === 0) {
+				list($where_local, $params_local) = $this->search_conditions_multilingual('t', $key, $details);
+			} else {
+				list($where_local, $params_local) = $this->search_conditions('t', $key, $details);
+			}
 			if ($where_local) {
 				$where[] = $where_local;
 				array_push($params, ...$params_local);
@@ -139,6 +143,24 @@ trait CRUD_helpers {
 				$params[] = $details['to'];
 			}
 			return [implode(' AND ', $where), $params];
+		}
+		return ['', []];
+	}
+	/**
+	 * @param string $table_alias
+	 * @param string $key
+	 * @param array  $details
+	 *
+	 * @return array First element is string `where` clause, second is an array of parameters
+	 */
+	private function search_conditions_multilingual ($table_alias, $key, $details) {
+		list($where1, $params1) = $this->search_conditions($table_alias, $key, $details);
+		if ($where1) {
+			list($where2, $params2) = $this->search_conditions('td', 'text', $details);
+			return [
+				"($where1 OR `$table_alias`.`$key` IN (SELECT `td`.`id_` FROM `xyz_texts_data` AS `td` WHERE $where2))",
+				array_merge($params1, $params2)
+			];
 		}
 		return ['', []];
 	}

@@ -60,29 +60,45 @@ class CRUD_helpers_advanced {
 			var_dump("create English $i");
 			$L->change('English');
 			$id = $this->create(
-				"Title $L->clang",
+				"Title $L->clang $i",
 				'',
 				$i,
 				$i
 			);
-//			var_dump($this->read($id));
 
 			var_dump("change Ukrainian $i");
 			$L->change('Ukrainian');
 			$this->update(
 				[
 					$id,
-					"Title $L->clang",
+					"Title $L->clang $i",
 					'',
 					5 - $i,
 					5 - $i
 				]
 			);
-//			var_dump($this->read($id));
 		}
 
 		foreach ($Config->core['active_languages'] as $clang) {
 			$L->change($clang);
+
+			var_dump("Exact match search (main table, multilingual column, $clang)");
+			var_dump(
+				$this->search(
+					[
+						'title' => "Title $L->clang 1"
+					]
+				)
+			);
+
+			var_dump("Exact match search (main table, multilingual column, $clang, multiple choice)");
+			var_dump(
+				$this->search(
+					[
+						'title' => ["Title $L->clang 1", "Title $L->clang 4"]
+					]
+				)
+			);
 
 			var_dump("Exact match search (joined table, multilingual, $clang)");
 			var_dump(
@@ -227,6 +243,18 @@ string(16) "create English 4"
 string(18) "change Ukrainian 4"
 string(16) "create English 5"
 string(18) "change Ukrainian 5"
+string(61) "Exact match search (main table, multilingual column, English)"
+array(1) {
+  [0]=>
+  int(1)
+}
+string(78) "Exact match search (main table, multilingual column, English, multiple choice)"
+array(2) {
+  [0]=>
+  int(4)
+  [1]=>
+  int(1)
+}
 string(56) "Exact match search (joined table, multilingual, English)"
 array(1) {
   [0]=>
@@ -267,6 +295,18 @@ array(1) {
 }
 string(95) "Exact match search (joined table, multilingual, English, explicitly specified language English)"
 array(0) {
+}
+string(63) "Exact match search (main table, multilingual column, Ukrainian)"
+array(1) {
+  [0]=>
+  int(1)
+}
+string(80) "Exact match search (main table, multilingual column, Ukrainian, multiple choice)"
+array(2) {
+  [0]=>
+  int(4)
+  [1]=>
+  int(1)
 }
 string(58) "Exact match search (joined table, multilingual, Ukrainian)"
 array(1) {
