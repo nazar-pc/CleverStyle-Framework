@@ -30,11 +30,11 @@ trait CRUD_helpers {
 	 * @return false|int|int[]|string[] Array of `id` or number of elements
 	 */
 	protected function search ($search_parameters = [], $page = 1, $count = 100, $order_by = 'id', $asc = false) {
-		$joins        = '';
-		$join_params  = [];
-		$join_index   = 0;
-		$where        = [];
-		$where_params = [];
+		$joins       = '';
+		$join_params = [];
+		$join_index  = 0;
+		$where       = [];
+		$params      = [];
 		foreach ($search_parameters as $key => $details) {
 			if (!isset($this->data_model[$key])) {
 				continue;
@@ -42,10 +42,14 @@ trait CRUD_helpers {
 			if (isset($this->data_model[$key]['data_model'])) {
 				$this->search_conditions_join_table('t', $key, $details, $joins, $join_params, $join_index);
 			} else {
-				$this->search_conditions('t', $key, $details, $where, $where_params);
+				list($where_local, $params_local) = $this->search_conditions('t', $key, $details);
+				if ($where_local) {
+					$where[] = $where_local;
+					array_push($params, ...$params_local);
+				}
 			}
 		}
-		return $this->search_do('t', @$search_parameters['total_count'], $where, $where_params, $joins, $join_params, $page, $count, $order_by, $asc);
+		return $this->search_do('t', @$search_parameters['total_count'], $where, $params, $joins, $join_params, $page, $count, $order_by, $asc);
 	}
 	/**
 	 * @param string   $table_alias
@@ -93,35 +97,38 @@ trait CRUD_helpers {
 		return $this->read_field_post_processing($return, array_values($this->data_model)[0]);
 	}
 	/**
-	 * @param string   $table_alias
-	 * @param string   $key
-	 * @param array    $details
-	 * @param string[] $where
-	 * @param array    $where_params
+	 * @param string $table_alias
+	 * @param string $key
+	 * @param array  $details
+	 *
+	 * @return array First element is string `where` clause, second is an array of parameters
 	 */
-	private function search_conditions ($table_alias, $key, $details, &$where, &$where_params) {
+	private function search_conditions ($table_alias, $key, $details) {
 		if (is_scalar($details)) {
-			$where[]        = "`$table_alias`.`$key` = ?";
-			$where_params[] = $details;
-		} elseif (is_array($details) && $details) {
+			return ["`$table_alias`.`$key` = ?", [$details]];
+		}
+		if (is_array($details) && $details) {
+			$where  = [];
+			$params = [];
 			if (is_array_indexed($details)) {
-				$where_tmp = [];
 				foreach ($details as $d) {
-					$where_tmp[]    = "`$table_alias`.`$key` = ?";
-					$where_params[] = $d;
+					$where[]  = "`$table_alias`.`$key` = ?";
+					$params[] = $d;
 				}
-				$where[] = '('.implode(' OR ', $where_tmp).')';
-				return;
+				$where = implode(' OR ', $where);
+				return ["($where)", $params];
 			}
 			if (isset($details['from'])) {
-				$where[]        = "`$table_alias`.`$key` >= ?";
-				$where_params[] = $details['from'];
+				$where[]  = "`$table_alias`.`$key` >= ?";
+				$params[] = $details['from'];
 			}
 			if (isset($details['to'])) {
-				$where[]        = "`$table_alias`.`$key` <= ?";
-				$where_params[] = $details['to'];
+				$where[]  = "`$table_alias`.`$key` <= ?";
+				$params[] = $details['to'];
 			}
+			return [implode(' AND ', $where), $params];
 		}
+		return ['', []];
 	}
 	/**
 	 * @param string           $table_alias
@@ -140,9 +147,6 @@ trait CRUD_helpers {
 				array_keys($data_model['data_model'])[1] => $details
 			];
 		}
-		/**
-		 * @var array $details
-		 */
 		++$join_index;
 		$joins .=
 			"INNER JOIN `{$this->table}_$table` AS `j$join_index`
@@ -153,12 +157,13 @@ trait CRUD_helpers {
 			if ($language_field === $field) {
 				continue;
 			}
-			$where_tmp = [];
-			$this->search_conditions("j$join_index", $field, $value, $where_tmp, $join_params);
-			$joins .= ' AND '.implode(' AND ', $where_tmp);
+			list($where, $params) = $this->search_conditions("j$join_index", $field, $value);
+			if ($where) {
+				$joins .= " AND $where";
+				array_push($join_params, ...$params);
+			}
 		}
 		if ($language_field) {
-			/** @noinspection OffsetOperationsInspection */
 			$clang = isset($details[$language_field]) ? $details[$language_field] : Language::instance()->clang;
 			$joins .=
 				" AND
