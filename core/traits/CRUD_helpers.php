@@ -36,26 +36,38 @@ trait CRUD_helpers {
 		$where       = [];
 		$params      = [];
 		foreach ($search_parameters as $key => $details) {
-			if (!isset($this->data_model[$key])) {
-				continue;
-			}
-			if (isset($this->data_model[$key]['data_model'])) {
-				$this->search_conditions_join_table('t', $key, $details, $joins, $join_params, $join_index);
-			} else {
-				list($where_local, $params_local) = $this->search_conditions('t', $key, $details);
-				if ($where_local) {
-					$where[] = $where_local;
-					array_push($params, ...$params_local);
-				}
+			if (isset($this->data_model[$key])) {
+				$this->search_process_parameter($this->data_model[$key], $key, $details, $where, $params, $joins, $join_params, $join_index);
 			}
 		}
 		return $this->search_do('t', @$search_parameters['total_count'], $where, $params, $joins, $join_params, $page, $count, $order_by, $asc);
 	}
 	/**
+	 * @param          $data_model
+	 * @param          $key
+	 * @param          $details
+	 * @param string[] $where
+	 * @param array    $params
+	 * @param string   $joins
+	 * @param array    $join_params
+	 * @param int      $join_index
+	 */
+	private function search_process_parameter ($data_model, $key, $details, &$where, &$params, &$joins, &$join_params, &$join_index) {
+		if (isset($data_model['data_model'])) {
+			$this->search_conditions_join_table('t', $key, $details, $joins, $join_params, $join_index);
+		} else {
+			list($where_local, $params_local) = $this->search_conditions('t', $key, $details);
+			if ($where_local) {
+				$where[] = $where_local;
+				array_push($params, ...$params_local);
+			}
+		}
+	}
+	/**
 	 * @param string   $table_alias
 	 * @param bool     $total_count
 	 * @param string[] $where
-	 * @param array    $where_params
+	 * @param array    $params
 	 * @param string   $joins
 	 * @param array    $join_params
 	 * @param int      $page
@@ -65,7 +77,7 @@ trait CRUD_helpers {
 	 *
 	 * @return false|int|int[]|string[]
 	 */
-	private function search_do ($table_alias, $total_count, $where, $where_params, $joins, $join_params, $page, $count, $order_by, $asc) {
+	private function search_do ($table_alias, $total_count, $where, $params, $joins, $join_params, $page, $count, $order_by, $asc) {
 		$first_column = array_keys($this->data_model)[0];
 		$where        = $where ? 'WHERE '.implode(' AND ', $where) : '';
 		if ($total_count) {
@@ -77,14 +89,14 @@ trait CRUD_helpers {
 					$where
 					GROUP BY `$table_alias`.`$first_column`
 				) AS `count`",
-				array_merge($join_params, $where_params)
+				array_merge($join_params, $params)
 			);
 		}
-		$where_params[] = $count;
-		$where_params[] = ($page - 1) * $count;
-		$order_by       = $this->search_order_by($table_alias, $order_by, $joins, $join_index);
-		$asc            = $asc ? 'ASC' : 'DESC';
-		$return         = $this->db()->qfas(
+		$params[] = $count;
+		$params[] = ($page - 1) * $count;
+		$order_by = $this->search_order_by($table_alias, $order_by, $joins, $join_index);
+		$asc      = $asc ? 'ASC' : 'DESC';
+		$return   = $this->db()->qfas(
 			"SELECT `$table_alias`.`$first_column`
 			FROM `$this->table` AS `$table_alias`
 			$joins
@@ -92,7 +104,7 @@ trait CRUD_helpers {
 			GROUP BY `$table_alias`.`$first_column`, $order_by
 			ORDER BY $order_by $asc
 			LIMIT ? OFFSET ?",
-			array_merge($join_params, $where_params)
+			array_merge($join_params, $params)
 		);
 		return $this->read_field_post_processing($return, array_values($this->data_model)[0]);
 	}
@@ -132,14 +144,14 @@ trait CRUD_helpers {
 	}
 	/**
 	 * @param string           $table_alias
-	 * @param string           $table
+	 * @param string           $key
 	 * @param array|int|string $details
 	 * @param string           $joins
 	 * @param array            $join_params
 	 * @param int              $join_index
 	 */
-	private function search_conditions_join_table ($table_alias, $table, $details, &$joins, &$join_params, &$join_index) {
-		$data_model        = $this->data_model[$table];
+	private function search_conditions_join_table ($table_alias, $key, $details, &$joins, &$join_params, &$join_index) {
+		$data_model        = $this->data_model[$key];
 		$first_column      = array_keys($this->data_model)[0];
 		$first_column_join = array_keys($data_model['data_model'])[0];
 		if (is_scalar($details)) {
@@ -149,7 +161,7 @@ trait CRUD_helpers {
 		}
 		++$join_index;
 		$joins .=
-			"INNER JOIN `{$this->table}_$table` AS `j$join_index`
+			"INNER JOIN `{$this->table}_$key` AS `j$join_index`
 			ON
 				`$table_alias`.`$first_column` = `j$join_index`.`$first_column_join`";
 		$language_field = isset($data_model['language_field']) ? $data_model['language_field'] : false;
@@ -172,6 +184,7 @@ trait CRUD_helpers {
 					`j$join_index`.`lang`	= ''
 				)";
 		}
+		$joins .= "\n";
 	}
 	/**
 	 * @param string $table_alias
