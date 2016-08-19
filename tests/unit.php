@@ -7,7 +7,9 @@
  * @license    MIT License, see license.txt
  */
 namespace cs;
-
+if (!defined('CORE')) {
+	define('CORE', realpath(__DIR__.'/../core'));
+}
 require_once __DIR__.'/code_coverage.php';
 
 require_once __DIR__.'/../core/traits/Singleton/Base.php';

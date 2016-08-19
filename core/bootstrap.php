@@ -12,6 +12,7 @@ define('MICROTIME', microtime(true)); //In seconds (float)
 define('TIME', floor(MICROTIME));     //In seconds (integer)
 //Root directory
 defined('DIR') || define('DIR', realpath(__DIR__.'/..'));
+defined('CORE') || define('CORE', DIR.'/core');
 chdir(DIR);
 /**
  * Defining of basic constants with paths to system directories
@@ -30,7 +31,7 @@ defined('THEMES') || define('THEMES', DIR.'/themes');
 /**
  * Useful PHP Functions
  */
-require_once DIR.'/core/thirdparty/upf.php';
+require_once CORE.'/thirdparty/upf.php';
 /**
  * `vendor/autoload.php` might be created or might now be there - include if only present
  */
@@ -38,7 +39,7 @@ file_exists(DIR.'/vendor/autoload.php') && require_once DIR.'/vendor/autoload.ph
 /**
  * Common system functions and system-specific autoloader
  */
-require_once DIR.'/core/functions.php';
+require_once CORE.'/functions.php';
 
 error_reporting(E_ALL);
 

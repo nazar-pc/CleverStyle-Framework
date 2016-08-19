@@ -55,11 +55,11 @@ spl_autoload_register(
 		 * Try to load classes from different places. If not found in one place - try in another.
 		 */
 		if (
-			file_exists($file = __DIR__."/classes/$namespace/$class_name.php") ||    //Core classes
-			file_exists($file = __DIR__."/thirdparty/$namespace/$class_name.php") || //Third party classes
-			file_exists($file = __DIR__."/traits/$namespace/$class_name.php") ||     //Core traits
-			file_exists($file = __DIR__."/engines/$namespace/$class_name.php") ||    //Core engines
-			file_exists($file = MODULES."/../$namespace/$class_name.php")            //Classes in modules
+			file_exists($file = CORE."/classes/$namespace/$class_name.php") ||    //Core classes
+			file_exists($file = CORE."/thirdparty/$namespace/$class_name.php") || //Third party classes
+			file_exists($file = CORE."/traits/$namespace/$class_name.php") ||     //Core traits
+			file_exists($file = CORE."/engines/$namespace/$class_name.php") ||    //Core engines
+			file_exists($file = MODULES."/../$namespace/$class_name.php")             //Classes in modules
 		) {
 			$cache[$class] = realpath($file);
 			$put_into_cache('autoload', $cache);
