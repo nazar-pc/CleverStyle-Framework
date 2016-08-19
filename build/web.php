@@ -7,8 +7,6 @@
  * @license    MIT License, see license.txt
  */
 namespace cs;
-use
-	h;
 
 require_once __DIR__.'/functions.php';
 time_limit_pause();
@@ -22,7 +20,7 @@ if ($mode == 'core') {
 	$content = $Builder->core(@$_POST['modules'] ?: [], @$_POST['themes'] ?: [], @$_POST['suffix']);
 } elseif (in_array($mode, ['core', 'module', 'theme'])) {
 	foreach (@$_POST[$mode.'s'] ?: [] as $component) {
-		$content .= $Builder->$mode($component, @$_POST['suffix']).h::br();
+		$content .= $Builder->$mode($component, @$_POST['suffix']).'<br>';
 	}
 	if (!$content) {
 		$content = 'Nothing was selected';

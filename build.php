@@ -6,6 +6,10 @@
  * @copyright  Copyright (c) 2011-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
+namespace cs;
+use
+	Phar;
+
 if (!Phar::canWrite()) {
 	echo "CleverStyle Framework Builder can't work, set, please, \"phar.readonly=off\" option in \"php.ini\"";
 	return;
