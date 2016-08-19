@@ -38,7 +38,7 @@ spl_autoload_register(
 		}
 		if (isset($aliases[$class])) {
 			spl_autoload_call($aliases[$class]);
-			return class_exists($aliases[$class]) || class_alias($aliases[$class], $class);
+			return class_exists($class, false) || (class_exists($aliases[$class], false) && class_alias($aliases[$class], $class));
 		}
 		if (isset($cache[$class])) {
 			return $cache[$class] ? require_once $cache[$class] : false;
@@ -59,7 +59,7 @@ spl_autoload_register(
 			file_exists($file = CORE."/thirdparty/$namespace/$class_name.php") || //Third party classes
 			file_exists($file = CORE."/traits/$namespace/$class_name.php") ||     //Core traits
 			file_exists($file = CORE."/engines/$namespace/$class_name.php") ||    //Core engines
-			file_exists($file = MODULES."/../$namespace/$class_name.php")             //Classes in modules
+			file_exists($file = MODULES."/../$namespace/$class_name.php")         //Classes in modules
 		) {
 			$cache[$class] = realpath($file);
 			$put_into_cache('autoload', $cache);
@@ -87,7 +87,7 @@ spl_autoload_register(
 						$aliases[$class]   = $alias;
 						$put_into_cache('aliases', $aliases);
 						spl_autoload_call($alias);
-						return class_exists($alias) || class_alias($alias, $class);
+						return class_exists($class, false) || (class_exists($alias, false) && class_alias($alias, $class));
 					}
 				}
 			}

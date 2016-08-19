@@ -1,0 +1,4 @@
+{
+	"package" : "Test_module",
+	"provide" : "functionality_alias"
+}
