@@ -259,8 +259,7 @@ abstract class Base extends BananaHTML {
 			self::array_flip_3d($in) ?: [],
 			function ($carry, $item) use ($callable) {
 				return $carry.$callable($item);
-			},
-			''
+			}
 		);
 	}
 }

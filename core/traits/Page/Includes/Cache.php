@@ -157,7 +157,7 @@ trait Cache {
 				}
 		}
 		/** @noinspection PhpUndefinedVariableInspection */
-		$content = array_reduce($files, $callback, $content);
+		$content .= array_reduce($files, $callback);
 		if ($extension == 'html') {
 			$file_path = "$target_file_path-$extension";
 			$content   = Includes_processing::html($content, $file_path, $file_path, $vulcanization);
