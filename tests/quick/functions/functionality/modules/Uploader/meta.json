@@ -1,0 +1,4 @@
+{
+	"package" : "Uploader",
+	"provide" : "file_upload"
+}

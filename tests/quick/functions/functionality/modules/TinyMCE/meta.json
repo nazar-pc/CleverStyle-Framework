@@ -1,0 +1,9 @@
+{
+	"package" : "TinyMCE",
+	"provide" : [
+		"editor",
+		"simple_editor",
+		"inline_editor",
+		"simple_inline_editor"
+	]
+}

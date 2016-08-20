@@ -551,8 +551,7 @@ function functionality ($functionality) {
 		function () {
 			$functionality = [];
 			$Config        = Config::instance();
-			$components    = $Config->components;
-			foreach (array_keys($components['modules']) as $module) {
+			foreach (array_keys($Config->components['modules']) as $module) {
 				if (!$Config->module($module)->enabled() || !file_exists(MODULES."/$module/meta.json")) {
 					continue;
 				}
