@@ -22,7 +22,6 @@ class SQLite extends _Abstract {
 	 * @param string $prefix
 	 */
 	public function __construct ($database, $user = '', $password = '', $host = '', $prefix = '') {
-		// Hack for HHVM: https://github.com/facebook/hhvm/issues/7225
 		if (!$host) {
 			return;
 		}
