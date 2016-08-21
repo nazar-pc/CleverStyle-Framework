@@ -32,10 +32,10 @@ include __DIR__.'/../_clean.php';
 <section><form method="post">
 	<nav>
 		<label is="cs-label-button">
-			<input checked name="mode" onclick="var items = document.querySelectorAll(&apos;expert&apos;), i; for (i = 0; i &lt; items.length; i++) items[i].style.display = this.value == &apos;0&apos; ? &apos;table-row&apos; : &apos;&apos;;" type="radio" value="1"> <span>Regular user</span>
+			<input checked name="mode" onclick="var items = document.querySelectorAll(&apos;.expert&apos;), i; for (i = 0; i &lt; items.length; i++) items[i].style.display = this.value == &apos;0&apos; ? &apos;table-row&apos; : &apos;&apos;;" type="radio" value="1"> <span>Regular user</span>
 		</label>
 		<label is="cs-label-button">
-			<input name="mode" onclick="var items = document.querySelectorAll(&apos;expert&apos;), i; for (i = 0; i &lt; items.length; i++) items[i].style.display = this.value == &apos;0&apos; ? &apos;table-row&apos; : &apos;&apos;;" type="radio" value="0"> <span>Expert</span>
+			<input name="mode" onclick="var items = document.querySelectorAll(&apos;.expert&apos;), i; for (i = 0; i &lt; items.length; i++) items[i].style.display = this.value == &apos;0&apos; ? &apos;table-row&apos; : &apos;&apos;;" type="radio" value="0"> <span>Expert</span>
 		</label>
 	</nav>
 	<table>
