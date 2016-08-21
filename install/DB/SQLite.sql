@@ -8,7 +8,7 @@ CREATE TABLE `[prefix]config` (
 );
 
 CREATE TABLE `[prefix]groups` (
-  `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   `title` varchar(1024) NOT NULL,
   `description` TEXT NOT NULL
 );
@@ -25,14 +25,14 @@ CREATE TABLE `[prefix]groups_permissions` (
 INSERT INTO `[prefix]groups_permissions` (`id`, `permission`, `value`) VALUES (1, 2, 1), (2, 2, 0);
 
 CREATE TABLE `[prefix]keys` (
-  `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   `key` varbinary(56) NOT NULL,
   `expire` bigint(20) NOT NULL DEFAULT '0',
   `data` mediumtext NOT NULL
 );
 
 CREATE TABLE `[prefix]permissions` (
-  `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   `label` varchar(1024) NOT NULL,
   `group` varchar(1024) NOT NULL
 );
@@ -123,7 +123,7 @@ CREATE INDEX `[prefix]users_login_hash` ON `[prefix]users` (`login_hash`);
 CREATE INDEX `[prefix]users_email_hash` ON `[prefix]users` (`email_hash`);
 CREATE INDEX `[prefix]users_language` ON `[prefix]users` (`language`);
 CREATE INDEX `[prefix]users_status` ON `[prefix]users` (`status`);
-CREATE INDEX `[prefix]sign_ins_id` ON `[prefix]sign_ins` (`id`);
+CREATE UNIQUE INDEX `[prefix]sign_ins_id` ON `[prefix]sign_ins` (`id`);
 CREATE INDEX `[prefix]permissions_label` ON `[prefix]permissions` (`label`);
 CREATE INDEX `[prefix]permissions_group` ON `[prefix]permissions` (`group`);
 CREATE INDEX `[prefix]users_groups_group` ON `[prefix]users_groups` (`group`);
