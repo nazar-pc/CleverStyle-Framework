@@ -194,9 +194,9 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 									| 'themes'	=> 'appearance_update_theme_impossible_same_version'
 								L[translation_key](component, detail.version)
 							case 'provide'
-								L.module_already_provides_functionality(detail.name, detail.features.join('", "'))
+								L.module_already_provides_functionality(detail.package, detail.features.join('", "'))
 							case 'require'
-								required_version	= if detail.required_version[1] then ' ' + detail.required_version.join(' ') else ''
+								required_version	= if detail.required_version?[1] then ' ' + detail.required_version.join(' ') else ''
 								if detail.existing_version
 									L.modules_unsatisfactory_version_of_the_module(detail.package, required_version, detail.existing_version)
 								else

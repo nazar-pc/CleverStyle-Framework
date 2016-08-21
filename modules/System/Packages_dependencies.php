@@ -67,7 +67,7 @@ class Packages_dependencies {
 		 */
 		foreach ($meta['require'] as $package => $details) {
 			$dependencies['require'][] = [
-				'name'     => $package,
+				'package'  => $package,
 				'required' => $details
 			];
 		}
@@ -123,7 +123,7 @@ class Packages_dependencies {
 		 */
 		if ($already_provided = self::also_provided_by($meta, $component_meta)) {
 			$dependencies['provide'][] = [
-				'name'     => $package,
+				'package'  => $package,
 				'features' => $already_provided
 			];
 		}

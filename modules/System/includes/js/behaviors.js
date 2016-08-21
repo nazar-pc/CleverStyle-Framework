@@ -199,6 +199,7 @@
         }
         return message + "<p class=\"cs-block-error cs-text-error\">" + L.dependencies_not_satisfied + "</p>";
         function fn$(){
+          var ref$;
           switch (what) {
           case 'update_from':
             if (component === 'System') {
@@ -238,9 +239,9 @@
             }());
             return L[translation_key](component, detail.version);
           case 'provide':
-            return L.module_already_provides_functionality(detail.name, detail.features.join('", "'));
+            return L.module_already_provides_functionality(detail['package'], detail.features.join('", "'));
           case 'require':
-            required_version = detail.required_version[1] ? ' ' + detail.required_version.join(' ') : '';
+            required_version = (ref$ = detail.required_version) != null && ref$[1] ? ' ' + detail.required_version.join(' ') : '';
             if (detail.existing_version) {
               return L.modules_unsatisfactory_version_of_the_module(detail['package'], required_version, detail.existing_version);
             } else {
