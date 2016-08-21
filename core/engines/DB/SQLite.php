@@ -67,6 +67,9 @@ class SQLite extends _Abstract {
 		}
 		if ($parameters) {
 			$stmt = $this->instance->prepare($query);
+			if (!$stmt) {
+				return false;
+			}
 			// Allows to provide more parameters for prepared statements than needed
 			$local_parameters = array_slice($parameters, 0, substr_count($query, '?'));
 			foreach ($local_parameters as $index => $parameter) {

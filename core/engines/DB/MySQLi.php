@@ -101,6 +101,9 @@ class MySQLi extends _Abstract {
 			return $this->instance->query($query);
 		}
 		$stmt = $this->instance->prepare($query);
+		if (!$stmt) {
+			return false;
+		}
 		// Allows to provide more parameters for prepared statements than needed
 		$local_parameters = array_slice($parameters, 0, substr_count($query, '?'));
 		$stmt->bind_param(
