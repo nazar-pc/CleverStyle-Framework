@@ -213,8 +213,18 @@ Returns number of row affected by last query
 #### transaction($callback : callable) : bool
 Execute transaction
 
-All queries done inside callback will be within single transaction, throwing any exception or returning boolean `false` from callback will cause
-rollback. Nested transaction calls will be wrapped into single big outer transaction, so you might call it safely if needed.
+All queries done inside callback will be within single transaction.
+
+```php
+$write_connection->transaction(function ($c) { // `$c` is the same as `$write_connection`
+	$c->insert(...);
+	// Nested transaction calls will be wrapped into single big outer transaction, so you might call it safely if needed.
+	$c->transaction(function ($c) {
+		$c->id();
+	});
+	// Throwing any exception or returning boolean `false` from callback will cause rollback, exception will be re-thrown
+});
+```
 
 #### free($query_result : object|resource)
 Free result memory
