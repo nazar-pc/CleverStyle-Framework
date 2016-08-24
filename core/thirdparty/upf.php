@@ -748,10 +748,17 @@ function xap ($in, $html = 'text', $iframe = false) {
 			$item = xap($item, $html, $iframe);
 		}
 		return $in;
-		/**
-		 * Make safe HTML
-		 */
-	} elseif ($html === true) {
+	}
+	/**
+	 * Text mode
+	 */
+	if ($html === 'text') {
+		return htmlspecialchars($in, ENT_NOQUOTES | ENT_HTML5 | ENT_DISALLOWED | ENT_SUBSTITUTE | ENT_HTML5);
+	}
+	/**
+	 * Make safe HTML
+	 */
+	if ($html === true) {
 		$in = preg_replace(
 			'/
 				<[^a-z=>]*(link|script|object|applet|embed|[a-z0-9]+-[a-z0-9]+)[^>]*>?	# Open tag
@@ -759,7 +766,7 @@ function xap ($in, $html = 'text', $iframe = false) {
 					.*																	# Some content
 					<\/[^>]*\\1[^>]*>													# Close tag (with reference for tag name to open tag)
 				)?																		# Section is optional
-			/xims',
+			/uxims',
 			'',
 			$in
 		);
@@ -774,7 +781,7 @@ function xap ($in, $html = 'text', $iframe = false) {
 						.*						# Some content
 						<\/[^>]*iframe[^>]*>	# Close tag
 					)?							# Section is optional
-				/xims',
+				/uxims',
 				'',
 				$in
 			);
@@ -787,16 +794,16 @@ function xap ($in, $html = 'text', $iframe = false) {
 					(<[^a-z=>]*iframe[^>]*>\s*)	# Open tag
 					[^<\s]+						# Search if there something that is not space or < character
 					(<\/[^>]*iframe[^>]*>)?		# Optional close tag
-				/xims',
+				/uxims',
 				'',
 				$in
 			);
 			$in = preg_replace_callback(
 				'/
 					<[^\/a-z=>]*iframe[^>]*>
-				/xims',
+				/uxims',
 				function ($matches) {
-					$result = preg_replace('/sandbox\s*=\s*([\'"])?[^\\1>]*\\1?/ims', '', $matches[0]);
+					$result = preg_replace('/sandbox\s*=\s*([\'"])?[^\\1>]*\\1?/uims', '', $matches[0]);
 					$result = str_replace(
 						'>',
 						' sandbox="allow-same-origin allow-forms allow-popups allow-scripts">',
@@ -808,31 +815,35 @@ function xap ($in, $html = 'text', $iframe = false) {
 			);
 		}
 		$in = preg_replace(
-			'/(script|data|vbscript):/i',
+			'/(script|data|vbscript):/ui',
 			'\\1&#58;',
 			$in
 		);
 		$in = preg_replace(
-			'/(expression[\s]*)\(/i',
+			'/(expression[\s]*)\(/ui',
 			'\\1&#40;',
 			$in
 		);
 		$in = preg_replace(
-			'/<[^>]*\s(on[a-z]+|dynsrc|lowsrc|formaction|is)=[^>]*>?/ims',
+			'/<[^>]*\s(on[a-z]+|dynsrc|lowsrc|formaction|is)=[^>]*>?/uims',
 			'',
 			$in
 		);
 		$in = preg_replace(
-			'/(href[\s\t\r\n]*=[\s\t\r\n]*["\'])((?:http|https|ftp)\:\/\/.*?["\'])/ims',
+			'/(href[\s\t\r\n]*=[\s\t\r\n]*["\'])((?:http|https|ftp)\:\/\/.*?["\'])/uims',
 			'\\1redirect/\\2',
 			$in
 		);
-		return $in;
 	} elseif ($html === false) {
-		return strip_tags($in);
-	} else {
-		return htmlspecialchars($in, ENT_NOQUOTES | ENT_HTML5 | ENT_DISALLOWED | ENT_SUBSTITUTE | ENT_HTML5);
+		$in = strip_tags($in);
 	}
+	// When input is crafted for stored XSS number of opened and closed braces should be the same as well as they order should be correct
+	$open  = mb_strpos($in, '<');
+	$close = mb_strpos($in, '>');
+	if ($close !== false && $open > $close) {
+		return mb_substr($in, $open);
+	}
+	return $in;
 }
 
 /**
@@ -1033,8 +1044,33 @@ function password_check ($password, $min_length = 4) {
  */
 function password_generate ($length = 10, $strength = 5) {
 	static $special = [
-		'~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_',
-		'=', '+', '|', '\\', '/', ';', ':', ',', '.', '?', '[', ']', '{', '}'
+		'~',
+		'!',
+		'@',
+		'#',
+		'$',
+		'%',
+		'^',
+		'&',
+		'*',
+		'(',
+		')',
+		'-',
+		'_',
+		'=',
+		'+',
+		'|',
+		'\\',
+		'/',
+		';',
+		':',
+		',',
+		'.',
+		'?',
+		'[',
+		']',
+		'{',
+		'}'
 	];
 	static $small, $capital;
 	if ($length < 4) {
