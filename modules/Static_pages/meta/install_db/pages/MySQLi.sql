@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS `[prefix]static_pages_categories` (
   `title` varchar(1024) NOT NULL,
   `path` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `path` (`path`),
-  KEY `parent` (`parent`(191))
+  UNIQUE KEY `path` (`path`(191)),
+  KEY `parent` (`parent`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]texts` (

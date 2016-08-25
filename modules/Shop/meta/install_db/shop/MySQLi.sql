@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]texts_data` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ALTER TABLE `[prefix]shop_attributes`
-ADD PRIMARY KEY (`id`), ADD KEY `type` (`type`), ADD KEY `title_internal` (`title_internal`(255));
+ADD PRIMARY KEY (`id`), ADD KEY `type` (`type`), ADD KEY `title_internal` (`title_internal`(191));
 
 ALTER TABLE `[prefix]shop_categories`
 ADD PRIMARY KEY (`id`), ADD KEY `parent` (`parent`), ADD KEY `visible` (`visible`);
@@ -142,7 +142,7 @@ ALTER TABLE `[prefix]shop_items`
 ADD PRIMARY KEY (`id`), ADD KEY `date` (`date`), ADD KEY `category` (`category`), ADD KEY `in_stock` (`in_stock`), ADD KEY `listed` (`listed`);
 
 ALTER TABLE `[prefix]shop_items_attributes`
-ADD PRIMARY KEY (`id`,`attribute`,`lang`), ADD KEY `numeric_value` (`numeric_value`), ADD KEY `string_value` (`string_value`(255)), ADD KEY `lang` (`lang`), ADD FULLTEXT KEY `text_value` (`text_value`);
+ADD PRIMARY KEY (`id`,`attribute`,`lang`), ADD KEY `numeric_value` (`numeric_value`), ADD KEY `string_value` (`string_value`(191)), ADD KEY `lang` (`lang`), ADD FULLTEXT KEY `text_value` (`text_value`);
 
 ALTER TABLE `[prefix]shop_items_images`
 ADD KEY `id` (`id`);

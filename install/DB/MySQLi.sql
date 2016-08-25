@@ -99,7 +99,7 @@ CREATE TABLE `[prefix]users` (
   `language` varchar(255) NOT NULL DEFAULT '',
   `timezone` varchar(255) NOT NULL DEFAULT '',
   `reg_date` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `reg_ip` varchar(32) NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
+  `reg_ip` varchar(32) NOT NULL DEFAULT '' COMMENT 'hex value, obtained by function ip2hex()',
   `reg_key` varchar(32) NOT NULL DEFAULT '',
   `status` tinyint(1) NOT NULL DEFAULT '-1' COMMENT '''-1'' - not activated (for example after registration), 0 - inactive, 1 - active',
   `block_until` bigint(20) unsigned NOT NULL DEFAULT '0',

@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]blockchain_payment_transactions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ALTER TABLE `[prefix]blockchain_payment_transactions`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `module` (`module`(191),`purpose`(191)), ADD KEY `user` (`user`), ADD KEY `created` (`created`), ADD KEY `paid` (`paid`), ADD KEY `confirmed` (`confirmed`), ADD KEY `secret` (`secret`);
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `module` (`module`(191),`purpose`(191)), ADD KEY `user` (`user`), ADD KEY `created` (`created`), ADD KEY `paid` (`paid`), ADD KEY `confirmed` (`confirmed`), ADD KEY `secret` (`secret`(191));
 
 
 ALTER TABLE `[prefix]blockchain_payment_transactions`
