@@ -468,15 +468,29 @@ abstract class _Abstract {
 	 * <li>time - array with time of each query execution
 	 * <li>text - array with text text of each query
 	 *
+	 * @deprecated
+	 * @todo Remove in 6.x
+	 *
 	 * @return array
 	 */
 	public function queries () {
 		return $this->queries;
 	}
 	/**
+	 * Number of made SQL queries
+	 *
+	 * @return int
+	 */
+	public function queries_count () {
+		return $this->queries['num'];
+	}
+	/**
 	 * Last query information, has 2 properties:<ul>
 	 * <li>time - execution time
 	 * <li>text - query text
+	 *
+	 * @deprecated
+	 * @todo Remove in 6.x
 	 *
 	 * @return array
 	 */

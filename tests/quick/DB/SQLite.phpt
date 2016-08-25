@@ -228,8 +228,7 @@ var_dump($db->columns('[prefix]test', '%tle'));
 
 var_dump('DB type', $db->db_type());
 var_dump('Database name', $db->database());
-var_dump('Queries', $db->queries());
-var_dump('Last query', $db->query());
+var_dump('Queries count', $db->queries_count());
 var_dump('Time', $db->time());
 var_dump('Connecting time', $db->connecting_time());
 
@@ -550,24 +549,8 @@ string(7) "DB type"
 string(6) "sqlite"
 string(13) "Database name"
 string(0) ""
-string(7) "Queries"
-array(3) {
-  ["num"]=>
-  int(39)
-  ["time"]=>
-  array(0) {
-  }
-  ["text"]=>
-  array(0) {
-  }
-}
-string(10) "Last query"
-array(2) {
-  ["time"]=>
-  float(%f)
-  ["text"]=>
-  string(%d) "%s"
-}
+string(13) "Queries count"
+int(39)
 string(4) "Time"
 float(%f)
 string(15) "Connecting time"
