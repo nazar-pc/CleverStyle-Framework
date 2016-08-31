@@ -19,7 +19,7 @@ trait site_info {
 	public static function admin_site_info_get_settings () {
 		$Config = Config::instance();
 		return [
-			'site_name'     => get_core_ml_text('name'),
+			'site_name'     => get_core_ml_text('site_name'),
 			'url'           => implode("\n", $Config->core['url']),
 			'cookie_domain' => implode("\n", $Config->core['cookie_domain']),
 			'cookie_prefix' => $Config->core['cookie_prefix'],
@@ -52,7 +52,7 @@ trait site_info {
 			throw new ExitException(400);
 		}
 		$Config                        = Config::instance();
-		$Config->core['name']          = set_core_ml_text('name', xap($data['site_name']));
+		$Config->core['site_name']     = set_core_ml_text('site_name', xap($data['site_name']));
 		$Config->core['url']           = static::admin_site_info_settings_common_multiline($data['url']);
 		$Config->core['cookie_domain'] = static::admin_site_info_settings_common_multiline($data['cookie_domain']);
 		$Config->core['cookie_prefix'] = xap($data['cookie_prefix']);

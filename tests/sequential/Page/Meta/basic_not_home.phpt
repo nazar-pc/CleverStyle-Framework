@@ -5,14 +5,14 @@ use cs\Page\Meta;
 include __DIR__.'/../../../bootstrap.php';
 Config::instance_stub(
 	[
-		'core'		=> [
-			'multilingual'	=> false,
-			'name'			=> ''
+		'core' => [
+			'multilingual' => false,
+			'site_name'    => ''
 		]
 	],
 	[
-		'base_url'	=> 'http://cscms.travis',
-		'module'	=> False_class::instance()
+		'base_url' => 'http://cscms.travis',
+		'module'   => False_class::instance()
 	]
 );
 Request::instance_stub(
@@ -23,9 +23,12 @@ Request::instance_stub(
 $Page	= Page::instance_stub([
 	'canonical_url'	=> false
 ]);
-Text::instance_stub([], [
-	'process'	=> 'Web-site'
-]);
+Text::instance_stub(
+	[],
+	[
+		'process' => 'Web-site'
+	]
+);
 Meta::instance()
 	->article()
 	->article('section', 'Framework')

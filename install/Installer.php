@@ -264,7 +264,7 @@ CONFIG;
 	 */
 	protected static function initialize_system_config ($cdb, $source, $site_name, $url, $admin_email, $language, $domain, $timezone, $mode) {
 		$config     = [
-			'name'                              => $site_name,
+			'site_name'                         => $site_name,
 			'url'                               => [$url],
 			'admin_email'                       => $admin_email,
 			'closed_title'                      => 'Site closed',

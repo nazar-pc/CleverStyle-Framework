@@ -392,10 +392,10 @@ class Controller {
 			$id                    = $User->get_id(hash('sha224', strtolower($_POST['email'])));
 			$HybridAuth_data['id'] = $id;
 			$confirmation_code     = self::set_data_generate_confirmation_code($HybridAuth_data);
-			$title                 = $L->merge_confirmation_mail_title(get_core_ml_text('name'));
+			$title                 = $L->merge_confirmation_mail_title(get_core_ml_text('site_name'));
 			$body                  = $L->merge_confirmation_mail_body(
 				$User->username($id) ?: strstr($_POST['email'], '@', true),
-				get_core_ml_text('name'),
+				get_core_ml_text('site_name'),
 				$L->$provider,
 				"$core_url/HybridAuth/merge_confirmation/$confirmation_code",
 				$L->time($Config->core['registration_confirmation_time'], 'd')
@@ -421,10 +421,10 @@ class Controller {
 		/**
 		 * Registration is successful, but confirmation is needed
 		 */
-		$title = $L->registration_need_confirmation_mail(get_core_ml_text('name'));
+		$title = $L->registration_need_confirmation_mail(get_core_ml_text('site_name'));
 		$body  = $L->registration_need_confirmation_mail_body(
 			self::get_adapter($provider)->getUserProfile()->displayName ?: strstr($result['email'], '@', true),
-			get_core_ml_text('name'),
+			get_core_ml_text('site_name'),
 			"$core_url/profile/registration_confirmation/$result[reg_key]",
 			$L->time($Config->core['registration_confirmation_time'], 'd')
 		);
@@ -537,10 +537,10 @@ class Controller {
 		$User      = User::instance();
 		$user_data = $User->$user_id;
 		$base_url  = Config::instance()->base_url();
-		$title     = $L->registration_success_mail(get_core_ml_text('name'));
+		$title     = $L->registration_success_mail(get_core_ml_text('site_name'));
 		$body      = $L->registration_success_mail_body(
 			self::get_adapter($provider)->getUserProfile()->displayName ?: $user_data->username(),
-			get_core_ml_text('name'),
+			get_core_ml_text('site_name'),
 			"$base_url/profile/settings",
 			$user_data->login,
 			$password

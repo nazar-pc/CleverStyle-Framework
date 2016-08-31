@@ -240,7 +240,7 @@ class Page {
 		 * Forming page title
 		 */
 		$this->Title = array_filter($this->Title, 'trim');
-		array_unshift($this->Title, get_core_ml_text('name'));
+		array_unshift($this->Title, get_core_ml_text('site_name'));
 		$this->Title = $Config->core['title_reverse'] ? array_reverse($this->Title) : $this->Title;
 		$this->Title = implode($Config->core['title_delimiter'] ?: '|', $this->Title);
 		/**

@@ -6,22 +6,25 @@ include __DIR__.'/../../../bootstrap.php';
 Request::instance()->home_page = true;
 Config::instance_stub(
 	[
-		'core'		=> [
-			'multilingual'	=> false,
-			'name'			=> ''
+		'core' => [
+			'multilingual' => false,
+			'site_name'    => ''
 		]
 	],
 	[
-		'base_url'	=> 'http://cscms.travis',
-		'module'	=> False_class::instance()
+		'base_url' => 'http://cscms.travis',
+		'module'   => False_class::instance()
 	]
 );
 $Page	= Page::instance_stub([
 	'canonical_url'	=> false
 ]);
-Text::instance_stub([], [
-	'process'	=> 'Web-site'
-]);
+Text::instance_stub(
+	[],
+	[
+		'process' => 'Web-site'
+	]
+);
 Meta::instance()
 	->article()
 	->article('section', 'Framework')

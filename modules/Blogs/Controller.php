@@ -388,7 +388,7 @@ class Controller {
 		$Page     = Page::instance();
 		$User     = User::instance();
 		$title    = [
-			get_core_ml_text('name'),
+			get_core_ml_text('site_name'),
 			$L->Blogs
 		];
 		$Posts    = Posts::instance();

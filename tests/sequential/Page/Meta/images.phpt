@@ -8,7 +8,7 @@ Config::instance_stub(
 	[
 		'core' => [
 			'multilingual' => 0,
-			'name'         => ''
+			'site_name'    => ''
 		]
 	],
 	[
