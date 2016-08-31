@@ -18,35 +18,23 @@ class FileSystem extends _Abstract {
 	 * @return string
 	 */
 	protected function get_absolute_path ($path) {
-		$path      = str_replace(['/', '\\'], '/', $path);
-		$parts     = array_filter(explode('/', $path), 'strlen');
-		$absolutes = [];
-		foreach ($parts as $part) {
-			if ('.' == $part) {
-				continue;
-			}
-			if ('..' == $part) {
-				array_pop($absolutes);
-			} else {
-				$absolutes[] = $part;
-			}
+		$path = str_replace(['/', '\\'], '/', $path);
+		if (strpos($path, '/..') !== false) {
+			return false;
 		}
-		return CACHE.'/'.implode('/', $absolutes);
+		return CACHE.'/'.$path;
 	}
 	/**
 	 * @inheritdoc
 	 */
 	public function get ($item) {
 		$path_in_filesystem = $this->get_absolute_path($item);
-		if (
-			strpos($path_in_filesystem, CACHE) !== 0 ||
-			!is_file($path_in_filesystem)
-		) {
+		if (!$path_in_filesystem || !is_file($path_in_filesystem)) {
 			return false;
 		}
 		$cache = file_get_contents($path_in_filesystem);
 		$cache = _json_decode($cache);
-		if ($cache !== false) {
+		if (json_last_error() === JSON_ERROR_NONE) {
 			return $cache;
 		}
 		unlink($path_in_filesystem);
@@ -57,7 +45,7 @@ class FileSystem extends _Abstract {
 	 */
 	public function set ($item, $data) {
 		$path_in_filesystem = $this->get_absolute_path($item);
-		if (strpos($path_in_filesystem, CACHE) !== 0) {
+		if (!$path_in_filesystem) {
 			return false;
 		}
 		$data = _json_encode($data);
@@ -80,7 +68,7 @@ class FileSystem extends _Abstract {
 	 */
 	public function del ($item) {
 		$path_in_filesystem = $this->get_absolute_path($item);
-		if (strpos($path_in_filesystem, CACHE) !== 0) {
+		if (!$path_in_filesystem) {
 			return false;
 		}
 		if (is_dir($path_in_filesystem)) {
