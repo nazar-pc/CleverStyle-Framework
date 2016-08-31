@@ -15,7 +15,7 @@ class FileSystem extends _Abstract {
 	 *
 	 * @param string $path
 	 *
-	 * @return string
+	 * @return false|string
 	 */
 	protected function get_absolute_path ($path) {
 		$path = str_replace(['/', '\\'], '/', $path);
