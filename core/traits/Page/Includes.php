@@ -457,17 +457,18 @@ trait Includes {
 			).
 			h::style($this->css['plain'] ?: false);
 		if ($this->page_compression_usage($Config, $Request) && $Config->core['frontend_load_optimization']) {
-			$this->add_includes_on_page_manually_added_frontend_load_optimization($Config);
+			$this->add_includes_on_page_manually_added_frontend_load_optimization($Config, $Request);
 		} else {
-			$this->add_includes_on_page_manually_added_normal($Config, $preload);
+			$this->add_includes_on_page_manually_added_normal($Config, $Request, $preload);
 		}
 	}
 	/**
 	 * @param Config   $Config
+	 * @param Request  $Request
 	 * @param string[] $preload
 	 */
-	protected function add_includes_on_page_manually_added_normal ($Config, $preload) {
-		$this->add_preload($preload);
+	protected function add_includes_on_page_manually_added_normal ($Config, $Request, $preload) {
+		$this->add_preload($preload, $Request);
 		$configs      = $this->core_config.$this->config;
 		$scripts      =
 			array_reduce(
@@ -490,9 +491,14 @@ trait Includes {
 	}
 	/**
 	 * @param string[] $preload
+	 * @param Request  $Request
 	 */
-	protected function add_preload ($preload) {
+	protected function add_preload ($preload, $Request) {
+		if ($Request->cookie('pushed')) {
+			return;
+		}
 		$Response = Response::instance();
+		$Response->cookie('pushed', 1, 0, true);
 		foreach ($preload as $resource) {
 			$extension = explode('?', file_extension($resource))[0];
 			$as        = $this->extension_to_as[$extension];
@@ -501,9 +507,10 @@ trait Includes {
 		}
 	}
 	/**
-	 * @param Config $Config
+	 * @param Config  $Config
+	 * @param Request $Request
 	 */
-	protected function add_includes_on_page_manually_added_frontend_load_optimization ($Config) {
+	protected function add_includes_on_page_manually_added_frontend_load_optimization ($Config, $Request) {
 		list($optimized_includes, $preload) = file_get_json("$this->pcache_basename_path.optimized.json");
 		$this->add_preload(
 			array_unique(
@@ -512,7 +519,8 @@ trait Includes {
 					$this->core_css['path'],
 					$this->css['path']
 				)
-			)
+			),
+			$Request
 		);
 		$system_scripts    = '';
 		$optimized_scripts = [];
