@@ -10,6 +10,7 @@ class Page_test extends Page {
 
 		var_dump('No compression, head');
 		Response::instance_reset();
+		Request::instance_reset();
 		clean_tmp_dir(PUBLIC_CACHE);
 		$Config->core['cache_compress_js_css'] = 0;
 		$Config->core['put_js_after_body']     = 0;
@@ -22,6 +23,7 @@ class Page_test extends Page {
 
 		var_dump('No compression, after body');
 		Response::instance_reset();
+		Request::instance_reset();
 		clean_tmp_dir(PUBLIC_CACHE);
 		$Config->core['cache_compress_js_css'] = 0;
 		$Config->core['put_js_after_body']     = 1;
@@ -34,6 +36,7 @@ class Page_test extends Page {
 
 		var_dump('Compression, no load optimization, head');
 		Response::instance_reset();
+		Request::instance_reset();
 		clean_tmp_dir(PUBLIC_CACHE);
 		$Config->core['cache_compress_js_css']      = 1;
 		$Config->core['put_js_after_body']          = 0;
@@ -47,6 +50,7 @@ class Page_test extends Page {
 
 		var_dump('Compression, no load optimization, after body');
 		Response::instance_reset();
+		Request::instance_reset();
 		clean_tmp_dir(PUBLIC_CACHE);
 		$Config->core['cache_compress_js_css']      = 1;
 		$Config->core['put_js_after_body']          = 1;
@@ -60,6 +64,7 @@ class Page_test extends Page {
 
 		var_dump('Compression, load optimization, head');
 		Response::instance_reset();
+		Request::instance_reset();
 		clean_tmp_dir(PUBLIC_CACHE);
 		$Config->core['cache_compress_js_css']      = 1;
 		$Config->core['put_js_after_body']          = 0;
@@ -73,6 +78,7 @@ class Page_test extends Page {
 
 		var_dump('Compression, load optimization, after body');
 		Response::instance_reset();
+		Request::instance_reset();
 		clean_tmp_dir(PUBLIC_CACHE);
 		$Config->core['cache_compress_js_css']      = 1;
 		$Config->core['put_js_after_body']          = 1;
@@ -152,7 +158,13 @@ string(%d) "<script src="/includes/js/WebComponents-polyfill/webcomponents-custo
 string(9) "post_Body"
 string(0) ""
 string(7) "headers"
-NULL
+array(1) {
+  ["set-cookie"]=>
+  array(1) {
+    [0]=>
+    string(47) "pushed=1; path=/; domain=cscms.travis; HttpOnly"
+  }
+}
 string(26) "No compression, after body"
 string(4) "Head"
 string(%d) "<link href="/includes/css/unresolved.css?%s" rel="stylesheet">
@@ -217,7 +229,13 @@ string(%d) "<script src="/includes/js/WebComponents-polyfill/webcomponents-custo
 <link href="/themes/CleverStyle/html/widgets styling.html?%s" rel="import">
 "
 string(7) "headers"
-NULL
+array(1) {
+  ["set-cookie"]=>
+  array(1) {
+    [0]=>
+    string(47) "pushed=1; path=/; domain=cscms.travis; HttpOnly"
+  }
+}
 string(39) "Compression, no load optimization, head"
 string(4) "Head"
 string(%d) "<script src="/storage/pcache/webcomponents.js?%s"></script>
@@ -228,15 +246,20 @@ string(%d) "<script src="/storage/pcache/webcomponents.js?%s"></script>
 string(9) "post_Body"
 string(0) ""
 string(7) "headers"
-array(1) {
+array(2) {
+  ["set-cookie"]=>
+  array(1) {
+    [0]=>
+    string(47) "pushed=1; path=/; domain=cscms.travis; HttpOnly"
+  }
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
+    string(76) "</storage/pcache/CleverStyle_en:System.html?2ba5c>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
+    string(72) "</storage/pcache/CleverStyle_en:System.js?88b3d>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
+    string(72) "</storage/pcache/CleverStyle_en:System.css?d9045>; rel=preload; as=style"
   }
 }
 string(45) "Compression, no load optimization, after body"
@@ -249,15 +272,20 @@ string(%d) "<script src="/storage/pcache/webcomponents.js?%s"></script>
 <link href="/storage/pcache/CleverStyle_en:System.html?%s" rel="import">
 "
 string(7) "headers"
-array(1) {
+array(2) {
+  ["set-cookie"]=>
+  array(1) {
+    [0]=>
+    string(47) "pushed=1; path=/; domain=cscms.travis; HttpOnly"
+  }
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
+    string(76) "</storage/pcache/CleverStyle_en:System.html?2ba5c>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
+    string(72) "</storage/pcache/CleverStyle_en:System.js?88b3d>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
+    string(72) "</storage/pcache/CleverStyle_en:System.css?d9045>; rel=preload; as=style"
   }
 }
 string(36) "Compression, load optimization, head"
@@ -271,15 +299,20 @@ string(%d) "<script src="/storage/pcache/webcomponents.js?%s"></script>
 string(9) "post_Body"
 string(0) ""
 string(7) "headers"
-array(1) {
+array(2) {
+  ["set-cookie"]=>
+  array(1) {
+    [0]=>
+    string(47) "pushed=1; path=/; domain=cscms.travis; HttpOnly"
+  }
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
+    string(76) "</storage/pcache/CleverStyle_en:System.html?2ba5c>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
+    string(72) "</storage/pcache/CleverStyle_en:System.js?88b3d>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
+    string(72) "</storage/pcache/CleverStyle_en:System.css?d9045>; rel=preload; as=style"
   }
 }
 string(42) "Compression, load optimization, after body"
@@ -293,14 +326,19 @@ string(%d) "<script src="/storage/pcache/webcomponents.js?%s"></script>
 <link href="/storage/pcache/CleverStyle_en:System.html?%s" rel="import">
 "
 string(7) "headers"
-array(1) {
+array(2) {
+  ["set-cookie"]=>
+  array(1) {
+    [0]=>
+    string(47) "pushed=1; path=/; domain=cscms.travis; HttpOnly"
+  }
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
+    string(76) "</storage/pcache/CleverStyle_en:System.html?2ba5c>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
+    string(72) "</storage/pcache/CleverStyle_en:System.js?88b3d>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
+    string(72) "</storage/pcache/CleverStyle_en:System.css?d9045>; rel=preload; as=style"
   }
 }
