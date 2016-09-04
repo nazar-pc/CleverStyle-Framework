@@ -302,6 +302,9 @@ function get_timezones_list () {
 /**
  * Get multilingual value from $Config->core array
  *
+ * @deprecated
+ * @todo Remove in 6.x
+ *
  * @param string $item
  *
  * @return false|string
@@ -311,11 +314,14 @@ function get_core_ml_text ($item) {
 	if (!$Config) {
 		return false;
 	}
-	return Text::instance()->process($Config->module('System')->db('texts'), $Config->core[$item], true);
+	return $Config->core[$item];
 }
 
 /**
  * Set multilingual value from $Config->core array
+ *
+ * @deprecated
+ * @todo Remove in 6.x
  *
  * @param string $item
  * @param string $value
@@ -327,7 +333,7 @@ function set_core_ml_text ($item, $value) {
 	if (!$Config || !isset($Config->core[$item])) {
 		return false;
 	}
-	return Text::instance()->set($Config->module('System')->db('texts'), 'System/Config/core', $item, $value);
+	return $value;
 }
 
 /**

@@ -5,15 +5,32 @@ include __DIR__.'/../../bootstrap.php';
 $Config = Config::instance();
 var_dump('Default module initially');
 var_dump($Config->core['default_module']);
-$Config->core['default_module'] = 'Non_existent';
 
-var_dump('Changed default module');
+/** @noinspection MkdirRaceConditionInspection */
+mkdir(MODULES.'/Existing_module');
+file_put_contents(MODULES.'/Existing_module/index.php', '');
+$Config->components['modules']['Existing_module'] = [
+	'active'  => Config\Module_Properties::ENABLED,
+	'db'      => [],
+	'storage' => []
+];
+
+var_dump('Changed default module (existing)');
+$Config->core['default_module'] = 'Existing_module';
 var_dump($Config->save());
 var_dump($Config->core['default_module']);
+rmdir_recursive(MODULES.'/Existing_module');
 
 Config::instance_reset();
-var_dump('Default module changed from non-existent automatically');
+var_dump('Default module changed from non-existent module automatically');
 $Config = Config::instance();
+var_dump($Config->core['default_module']);
+unset($Config->components['modules']['Existing_module']);
+$Config->save();
+
+var_dump('Changed default module (non-existing)');
+$Config->core['default_module'] = 'Non_existent';
+var_dump($Config->save());
 var_dump($Config->core['default_module']);
 
 var_dump('Apply config');
@@ -48,7 +65,7 @@ var_dump($Config->apply());
 
 var_dump('Failed to load configuration');
 Cache::instance_reset();
-Cache::instance()->del('config');
+Cache::instance()->del('/');
 DB::instance_stub(
 	[],
 	[
@@ -128,10 +145,13 @@ var_dump($Config->module('Non_existent') instanceof False_class);
 --EXPECT--
 string(24) "Default module initially"
 string(6) "System"
-string(22) "Changed default module"
+string(33) "Changed default module (existing)"
 bool(true)
-string(12) "Non_existent"
-string(54) "Default module changed from non-existent automatically"
+string(15) "Existing_module"
+string(61) "Default module changed from non-existent module automatically"
+string(6) "System"
+string(37) "Changed default module (non-existing)"
+bool(true)
 string(6) "System"
 string(12) "Apply config"
 bool(true)

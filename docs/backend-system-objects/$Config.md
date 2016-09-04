@@ -195,7 +195,7 @@ Property, that stores configuration of storages, except the main storage, parame
 	}
 }
 ```
-#### components : array
+#### components : array[]
 Internal structure of components parameters (JSON only for presentation, property returns regular php array):
 ```json
 {

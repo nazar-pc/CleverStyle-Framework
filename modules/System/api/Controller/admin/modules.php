@@ -656,7 +656,7 @@ trait modules {
 		$modules_list  = array_fill_keys(
 			$modules_in_fs,
 			[
-				'active'  => -1,
+				'active'  => Config\Module_Properties::UNINSTALLED,
 				'db'      => [],
 				'storage' => []
 			]

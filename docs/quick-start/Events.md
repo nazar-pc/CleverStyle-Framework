@@ -23,7 +23,7 @@ It is a good practice to put into file, that runs event such comment section:
 ```
 /**
  * Provides next events:
- *  System/general/languages/load
+ *  System/Language/load
  *  [
  *   'clanguage'        => clanguage
  *   'clang'            => clang
@@ -134,7 +134,9 @@ Backend events:
 * System/Config/init/before
 * System/Config/init/after
 * System/Config/changed
-* System/general/languages/load
+* System/Language/change/before
+* System/Language/change/after
+* System/Language/load
 * System/Page/render/before
 * System/Page/render/after
 * System/Page/rebuild_cache

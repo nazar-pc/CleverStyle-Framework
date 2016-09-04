@@ -12,7 +12,11 @@ use
 
 /**
  * Provides next events:
- *  System/general/languages/load
+ *  System/Language/change/before
+ *
+ *  System/Language/change/after
+ *
+ *  System/Language/load
  *  [
  *   'clanguage'        => clanguage
  *   'clang'            => clang
@@ -229,6 +233,12 @@ class Language implements JsonSerializable {
 	 * @return string
 	 */
 	public function get ($item, $language = false, $prefix = '') {
+		/**
+		 * Small optimization, we can actually return value without translations
+		 */
+		if ($item == 'clanguage' && $this->current_language && $language === false && !$prefix) {
+			return $this->current_language;
+		}
 		$language = $language ?: $this->current_language;
 		if (isset($this->translation[$language])) {
 			$translation = $this->translation[$language];
@@ -304,6 +314,8 @@ class Language implements JsonSerializable {
 		if (!$this->can_be_changed_to($Config, $language)) {
 			return false;
 		}
+		$Event = Event::instance();
+		$Event->fire('System/Language/change/before');
 		if (!isset($this->translation[$language])) {
 			$this->translation[$language] = $this->get_translation($language);
 		}
@@ -315,6 +327,7 @@ class Language implements JsonSerializable {
 		if ($Config->core['multilingual']) {
 			Response::instance()->header('content-language', $this->content_language);
 		}
+		$Event->fire('System/Language/change/after');
 		return true;
 	}
 	/**
@@ -369,6 +382,15 @@ class Language implements JsonSerializable {
 				$translation = $this->get_translation_from_json("$module_dir/languages/$language.json") + $translation;
 			}
 		}
+		Event::instance()->fire(
+			'System/Language/load',
+			[
+				'clanguage' => $language,
+				'clang'     => $translation['clang'],
+				'cregion'   => $translation['cregion']
+			]
+		);
+		// TODO: Remove in 6.x
 		Event::instance()->fire(
 			'System/general/languages/load',
 			[

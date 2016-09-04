@@ -6,6 +6,8 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
+use
+	cs\Config\Options;
 
 /**
  * Provides next events:
@@ -21,14 +23,23 @@ class Config {
 	use
 		CRUD,
 		Singleton;
-	const SYSTEM_MODULE = 'System';
-	const SYSTEM_THEME  = 'CleverStyle';
+	const INIT_STATE_METHOD = 'init';
+	const SYSTEM_MODULE     = 'System';
+	const SYSTEM_THEME      = 'CleverStyle';
+	/**
+	 * @var Cache\Prefix
+	 */
+	protected $cache;
 	/**
 	 * Most of general configuration properties
 	 *
-	 * @var mixed[]
+	 * @var array
 	 */
 	public $core = [];
+	/**
+	 * @var array
+	 */
+	protected $core_internal = [];
 	/**
 	 * Configuration of databases, except the main database, parameters of which are stored in configuration file
 	 *
@@ -44,7 +55,7 @@ class Config {
 	/**
 	 * Internal structure of components parameters
 	 *
-	 * @var mixed[]
+	 * @var array[]
 	 */
 	public $components = [];
 	/**
@@ -69,12 +80,22 @@ class Config {
 	protected function cdb () {
 		return 0;
 	}
+	protected function init () {
+		Event::instance()->on(
+			'System/Language/change/after',
+			function () {
+				$this->read_core_update_multilingual();
+			}
+		);
+	}
 	/**
 	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
 	 *
 	 * @throws ExitException
 	 */
 	protected function construct () {
+		// TODO: Change `config2` to `config` in 6.x
+		$this->cache = Cache::prefix('config2');
 		Event::instance()->fire('System/Config/init/before');
 		$this->load_configuration();
 		date_default_timezone_set($this->core['timezone']);
@@ -107,8 +128,11 @@ class Config {
 	 * @throws ExitException
 	 */
 	protected function load_configuration () {
-		$config = Cache::instance()->get(
-			'config',
+		/**
+		 * @var array[] $config
+		 */
+		$config = $this->cache->get(
+			'source',
 			function () {
 				return $this->read(Core::instance()->domain);
 			}
@@ -116,12 +140,31 @@ class Config {
 		if (!$config) {
 			throw new ExitException('Failed to load system configuration', 500);
 		}
-		foreach ($config as $part => $value) {
-			$this->$part = $value;
-		}
-		$this->core += file_get_json(MODULES.'/System/core_settings_defaults.json');
+		$this->core_internal = $config['core'];
+		$this->core          = $this->core_internal;
+		$this->db            = $config['db'];
+		$this->storage       = $config['storage'];
+		$this->components    = $config['components'];
+		$this->core += Options::get_defaults();
+		$this->read_core_update_multilingual();
 		date_default_timezone_set($this->core['timezone']);
 		$this->fill_mirrors();
+	}
+	protected function read_core_update_multilingual () {
+		$language             = Language::instance()->clanguage;
+		$multilingual_options = $this->cache->get(
+			$language,
+			function () use ($language) {
+				$db_id                = $this->module('System')->db('texts');
+				$Text                 = Text::instance();
+				$multilingual_options = [];
+				foreach (Options::get_multilingual() as $option) {
+					$multilingual_options[$option] = $Text->process($db_id, $this->core_internal[$option], true);
+				}
+				return $multilingual_options;
+			}
+		);
+		$this->core           = $multilingual_options + $this->core;
 	}
 	/**
 	 * Applying settings without saving changes into db
@@ -131,6 +174,20 @@ class Config {
 	 * @throws ExitException
 	 */
 	public function apply () {
+		$this->core = Options::apply_formatting($this->core) + Options::get_defaults();
+		/**
+		 * Update multilingual cache manually to avoid actually storing changes in database
+		 */
+		$multilingual_options_list = Options::get_multilingual();
+		$multilingual_options      = [];
+		foreach ($this->core as $option => $value) {
+			if (in_array($option, $multilingual_options_list)) {
+				$multilingual_options[$option] = $this->core[$option];
+			} else {
+				$this->core_internal[$option] = $value;
+			}
+		}
+		$this->cache->set(Language::instance()->clanguage, $multilingual_options);
 		return $this->apply_internal();
 	}
 	/**
@@ -144,15 +201,14 @@ class Config {
 	 */
 	protected function apply_internal ($cache_not_saved_mark = true) {
 		if ($cache_not_saved_mark) {
-			$this->core['cache_not_saved'] = true;
+			$this->core_internal['cache_not_saved'] = true;
 		} else {
-			unset($this->core['cache_not_saved']);
+			unset($this->core_internal['cache_not_saved']);
 		}
-		$Cache = Cache::instance();
-		if (!$Cache->set(
-			'config',
+		if (!$this->cache->set(
+			'source',
 			[
-				'core'       => $this->core,
+				'core'       => $this->core_internal,
 				'db'         => $this->db,
 				'storage'    => $this->storage,
 				'components' => $this->components
@@ -161,11 +217,18 @@ class Config {
 		) {
 			return false;
 		}
-		$Cache->del('languages');
 		date_default_timezone_set($this->core['timezone']);
 		$this->fill_mirrors();
 		Event::instance()->fire('System/Config/changed');
 		return true;
+	}
+	protected function write_core_update_multilingual () {
+		$db_id = $this->module('System')->db('texts');
+		$Text  = Text::instance();
+		foreach (Options::get_multilingual() as $option) {
+			$this->core_internal[$option] = $Text->set($db_id, 'System/Config/core', $option, $this->core[$option]);
+		}
+		$this->cache->del(Language::instance()->clanguage);
 	}
 	/**
 	 * Saving settings
@@ -175,17 +238,12 @@ class Config {
 	 * @throws ExitException
 	 */
 	public function save () {
-		if ($this->cancel_available()) {
-			unset($this->core['cache_not_saved']);
-		}
-		$core_settings_defaults = file_get_json(MODULES.'/System/core_settings_defaults.json');
-		$this->core += $core_settings_defaults;
-		foreach ($this->core as $key => $value) {
-			if (!isset($core_settings_defaults[$key])) {
-				unset($this->core[$key]);
-			}
-		}
-		if (!$this->update(Core::instance()->domain, $this->core, $this->db, $this->storage, $this->components)) {
+		unset($this->core_internal['cache_not_saved']);
+		// TODO: Remove `modules/System/core_settings_defaults.json` file in 6.x
+		$core_settings_defaults = Options::get_defaults();
+		$this->core             = Options::apply_formatting($this->core) + $core_settings_defaults;
+		$this->write_core_update_multilingual();
+		if (!$this->update(Core::instance()->domain, $this->core_internal, $this->db, $this->storage, $this->components)) {
 			return false;
 		}
 		return $this->apply_internal(false);
@@ -196,7 +254,7 @@ class Config {
 	 * @return bool
 	 */
 	public function cancel_available () {
-		return isset($this->core['cache_not_saved']);
+		return isset($this->core_internal['cache_not_saved']);
 	}
 	/**
 	 * Canceling of applied settings
@@ -204,7 +262,7 @@ class Config {
 	 * @throws ExitException
 	 */
 	public function cancel () {
-		Cache::instance()->del('config');
+		$this->cache->del('/');
 		$this->load_configuration();
 	}
 	/**
@@ -241,6 +299,7 @@ class Config {
 	 */
 	public function module ($module_name) {
 		if (!isset($this->components['modules'][$module_name])) {
+			/** @noinspection PhpIncompatibleReturnTypeInspection */
 			return False_class::instance();
 		}
 		return new Config\Module_Properties($this->components['modules'][$module_name], $module_name);

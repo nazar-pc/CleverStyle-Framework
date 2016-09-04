@@ -255,11 +255,11 @@ array(2) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?2ba5c>; rel=preload; as=document"
+    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?88b3d>; rel=preload; as=script"
+    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?d9045>; rel=preload; as=style"
+    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
   }
 }
 string(45) "Compression, no load optimization, after body"
@@ -281,11 +281,11 @@ array(2) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?2ba5c>; rel=preload; as=document"
+    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?88b3d>; rel=preload; as=script"
+    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?d9045>; rel=preload; as=style"
+    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
   }
 }
 string(36) "Compression, load optimization, head"
@@ -308,11 +308,11 @@ array(2) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?2ba5c>; rel=preload; as=document"
+    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?88b3d>; rel=preload; as=script"
+    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?d9045>; rel=preload; as=style"
+    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
   }
 }
 string(42) "Compression, load optimization, after body"
@@ -335,10 +335,10 @@ array(2) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?2ba5c>; rel=preload; as=document"
+    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?88b3d>; rel=preload; as=script"
+    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?d9045>; rel=preload; as=style"
+    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
   }
 }

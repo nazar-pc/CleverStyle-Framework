@@ -146,10 +146,18 @@ Object implements `JsonSerializable` interface and allows getting of all transla
 ###[Up](#) Events
 
 `$L` object supports only one event:
-* System/general/languages/load
+* System/Language/change/before
+* System/Language/change/after
+* System/Language/load
 
-#### System/general/languages/load
-This event is running at language changing to allow third-party components add their own translations. Array:
+#### System/Language/change/before
+Is fired before language change
+
+#### System/Language/change/after
+Is fired after language change
+
+#### System/Language/load
+This event is fired when loading language translations to allow third-party components to add their own translations. Array:
 ```
 [
     'clanguage'    => clanguage,

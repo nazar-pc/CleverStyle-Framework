@@ -55,8 +55,9 @@ Event::instance()
 	->on(
 		'System/User/construct/after',
 		function () {
-			$Config = Config::instance();
-			if (!$Config->core['multilingual']) {
+			$Config  = Config::instance();
+			$Request = Request::instance();
+			if ($Request->api_path || $Request->admin_path || $Request->cli_path || !$Config->core['multilingual']) {
 				return;
 			}
 			$Request          = Request::instance();

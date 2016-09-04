@@ -7,7 +7,7 @@ Config::instance_stub(
 	[
 		'core' => [
 			'multilingual' => false,
-			'site_name'    => ''
+			'site_name'    => 'Web-site'
 		]
 	],
 	[
@@ -23,12 +23,6 @@ Request::instance_stub(
 $Page	= Page::instance_stub([
 	'canonical_url'	=> false
 ]);
-Text::instance_stub(
-	[],
-	[
-		'process' => 'Web-site'
-	]
-);
 Meta::instance()
 	->article()
 	->article('section', 'Framework')
