@@ -189,7 +189,7 @@ class Posts {
 				'image'          => $images,
 				'inLanguage'     => $L->clang,
 				'url'            => $url,
-				'datetime'       => $L->to_locale(date($L->_datetime_long, $post['date'] ?: TIME)),
+				'datetime'       => $L->to_locale(date($L->_datetime_long, $post['date'] ?: time())),
 				'sections_paths' => array_map(
 					function ($section) use ($section_path, $Sections) {
 						$section = $Sections->get($section);

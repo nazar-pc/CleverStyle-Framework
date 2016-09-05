@@ -316,7 +316,7 @@ trait profile {
 		/**
 		 * Hack for 403 after sign out in administration
 		 */
-		$Response->cookie('sign_out', 1, TIME + 5, true);
+		$Response->cookie('sign_out', 1, time() + 5, true);
 	}
 	public static function profile_configuration () {
 		$Config = Config::instance();

@@ -243,7 +243,7 @@ results
 $Meta = \cs\Page\Meta::instance();
 $Meta
     ->article()
-    ->article('published_time', date('Y-m-d', $post['date'] ?: TIME))
+    ->article('published_time', date('Y-m-d', $post['date'] ?: time()))
     ->article('tag', ['magic'. 'awesome']);
 ```
 results

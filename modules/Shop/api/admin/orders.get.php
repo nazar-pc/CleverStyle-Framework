@@ -31,7 +31,7 @@ if (isset($Request->route_ids[0], $Request->route_path[2])) {
 			$Page->json(
 				array_map(
 					function ($status) use ($Language) {
-						if (TIME - $status['date'] < 24 * 3600) {
+						if (time() - $status['date'] < 24 * 3600) {
 							$status['date_formatted'] = $Language->to_locale(
 								date($Language->_time, $status['date'])
 							);

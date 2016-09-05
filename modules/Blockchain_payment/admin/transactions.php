@@ -76,19 +76,20 @@ Page::instance()
 			h::tr(
 				array_map(
 					function ($transaction) use ($L) {
+						$time      = time();
 						$created   = $transaction['created']
 							? $L->to_locale(
-								date($L->{TIME - $transaction['created'] < 24 * 3600 ? '_time' : '_datetime_long'}, $transaction['created'])
+								date($L->{$time - $transaction['created'] < 24 * 3600 ? '_time' : '_datetime_long'}, $transaction['created'])
 							)
 							: '-';
 						$paid      = $transaction['paid']
 							? $L->to_locale(
-								date($L->{TIME - $transaction['paid'] < 24 * 3600 ? '_time' : '_datetime_long'}, $transaction['paid'])
+								date($L->{$time - $transaction['paid'] < 24 * 3600 ? '_time' : '_datetime_long'}, $transaction['paid'])
 							)
 							: '-';
 						$confirmed = $transaction['confirmed']
 							? $L->to_locale(
-								date($L->{TIME - $transaction['confirmed'] < 24 * 3600 ? '_time' : '_datetime_long'}, $transaction['confirmed'])
+								date($L->{$time - $transaction['confirmed'] < 24 * 3600 ? '_time' : '_datetime_long'}, $transaction['confirmed'])
 							)
 							: '-';
 						$username  = User::instance()->username($transaction['user']);

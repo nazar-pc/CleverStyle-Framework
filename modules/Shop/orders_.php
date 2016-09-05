@@ -65,7 +65,7 @@ $Page->content(
 				function ($order) use ($L, $Categories, $Items, $Order_statuses, $Orders, $Shipping_types, $module_path, $items_path) {
 					$order_status  = $Order_statuses->get($order['status']);
 					$shipping_type = $Shipping_types->get($order['shipping_type']);
-					if (TIME - $order['date'] < 24 * 3600) {
+					if (time() - $order['date'] < 24 * 3600) {
 						$date = $L->to_locale(
 							date($L->_time, $order['date'])
 						);

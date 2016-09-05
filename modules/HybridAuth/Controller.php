@@ -471,7 +471,7 @@ class Controller {
 			Config::instance()->module('HybridAuth')->db('integration'),
 			false,
 			$data,
-			TIME + Config::instance()->core['registration_confirmation_time'] * 86400
+			time() + Config::instance()->core['registration_confirmation_time'] * 86400
 		);
 		if (!$code) {
 			throw new ExitException(500);

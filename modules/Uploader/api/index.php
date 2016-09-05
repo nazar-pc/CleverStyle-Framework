@@ -93,7 +93,7 @@ if (!$cdb->q(
 	VALUES
 		('%s', '%s', '%s', '%s')",
 	$User->id,
-	TIME,
+	time(),
 	$destination_file,
 	$url = $storage->url_by_source($destination_file)
 )

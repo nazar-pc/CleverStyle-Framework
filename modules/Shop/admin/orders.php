@@ -85,7 +85,7 @@ Page::instance()
 					function ($order) use ($L, $Categories, $Items, $Order_statuses, $Orders, $Shipping_types, $module_path, $items_path) {
 						$order_status = $Order_statuses->get($order['status']);
 						$date         = $L->to_locale(
-							date($L->{TIME - $order['date'] < 24 * 3600 ? '_time' : '_datetime_long'}, $order['date'])
+							date($L->{time() - $order['date'] < 24 * 3600 ? '_time' : '_datetime_long'}, $order['date'])
 						);
 						$username     = User::instance()->username($order['user']);
 						return h::td(
