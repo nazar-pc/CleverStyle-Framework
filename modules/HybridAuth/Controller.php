@@ -117,7 +117,7 @@ class Controller {
 		 * If user did not specified email
 		 */
 		if (!isset($_POST['email'])) {
-			self::email_not_specified($provider, $Social_integration, $User, $Page, $L);
+			self::email_not_specified($Config, $provider, $Social_integration, $User, $Page, $L);
 			return;
 		}
 		/**
@@ -220,6 +220,7 @@ class Controller {
 		);
 	}
 	/**
+	 * @param Config             $Config
 	 * @param string             $provider
 	 * @param Social_integration $Social_integration
 	 * @param User               $User
@@ -228,7 +229,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	protected static function email_not_specified ($provider, $Social_integration, $User, $Page, $L) {
+	protected static function email_not_specified ($Config, $provider, $Social_integration, $User, $Page, $L) {
 		$profile = self::authenticate_hybridauth($provider);
 		/**
 		 * Check whether this account was already registered in system. If registered - make login
@@ -277,7 +278,7 @@ class Controller {
 		/**
 		 * Registration is successful, confirmation is not needed
 		 */
-		self::finish_registration_send_email($result['id'], $result['password'], $provider);
+		self::finish_registration_send_email($Config, $result['id'], $result['password'], $provider);
 	}
 	/**
 	 * Returns profile
@@ -392,10 +393,10 @@ class Controller {
 			$id                    = $User->get_id(hash('sha224', strtolower($_POST['email'])));
 			$HybridAuth_data['id'] = $id;
 			$confirmation_code     = self::set_data_generate_confirmation_code($HybridAuth_data);
-			$title                 = $L->merge_confirmation_mail_title(get_core_ml_text('site_name'));
+			$title                 = $L->merge_confirmation_mail_title($Config->core['site_name']);
 			$body                  = $L->merge_confirmation_mail_body(
 				$User->username($id) ?: strstr($_POST['email'], '@', true),
-				get_core_ml_text('site_name'),
+				$Config->core['site_name'],
 				$L->$provider,
 				"$core_url/HybridAuth/merge_confirmation/$confirmation_code",
 				$L->time($Config->core['registration_confirmation_time'], 'd')
@@ -415,16 +416,16 @@ class Controller {
 		 */
 		if ($result['reg_key'] === true) {
 			$Social_integration->add($result['id'], $provider, $profile->identifier, $profile->profileURL);
-			self::finish_registration_send_email($result['id'], $result['password'], $provider);
+			self::finish_registration_send_email($Config, $result['id'], $result['password'], $provider);
 			return;
 		}
 		/**
 		 * Registration is successful, but confirmation is needed
 		 */
-		$title = $L->registration_need_confirmation_mail(get_core_ml_text('site_name'));
+		$title = $L->registration_need_confirmation_mail($Config->core['site_name']);
 		$body  = $L->registration_need_confirmation_mail_body(
 			self::get_adapter($provider)->getUserProfile()->displayName ?: strstr($result['email'], '@', true),
-			get_core_ml_text('site_name'),
+			$Config->core['site_name'],
 			"$core_url/profile/registration_confirmation/$result[reg_key]",
 			$L->time($Config->core['registration_confirmation_time'], 'd')
 		);
@@ -528,19 +529,20 @@ class Controller {
 		}
 	}
 	/**
+	 * @param Config $Config
 	 * @param int    $user_id
 	 * @param string $password
 	 * @param string $provider
 	 */
-	protected static function finish_registration_send_email ($user_id, $password, $provider) {
+	protected static function finish_registration_send_email ($Config, $user_id, $password, $provider) {
 		$L         = new Prefix('hybridauth_');
 		$User      = User::instance();
 		$user_data = $User->$user_id;
 		$base_url  = Config::instance()->base_url();
-		$title     = $L->registration_success_mail(get_core_ml_text('site_name'));
+		$title     = $L->registration_success_mail($Config->core['site_name']);
 		$body      = $L->registration_success_mail_body(
 			self::get_adapter($provider)->getUserProfile()->displayName ?: $user_data->username(),
-			get_core_ml_text('site_name'),
+			$Config->core['site_name'],
 			"$base_url/profile/settings",
 			$user_data->login,
 			$password

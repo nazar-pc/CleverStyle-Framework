@@ -38,7 +38,8 @@ class Mail {
 		if (!$email || !$subject || !$body) {
 			return false;
 		}
-		$PHPMailer = $this->phpmailer_instance();
+		$Config    = Config::instance();
+		$PHPMailer = $this->phpmailer_instance($Config);
 		foreach ($this->normalize_email($email) as $e) {
 			$PHPMailer->addAddress(...$e);
 		}
@@ -53,7 +54,7 @@ class Mail {
 			}
 		}
 		$PHPMailer->Subject = $subject;
-		$signature          = $this->make_signature($signature);
+		$signature          = $this->make_signature($Config, $signature);
 		$PHPMailer->Body    = $this->normalize_body($body, $signature);
 		if ($body_text) {
 			$PHPMailer->AltBody = $body_text.strip_tags($signature);
@@ -71,9 +72,8 @@ class Mail {
 	 *
 	 * @return PHPMailer
 	 */
-	protected function phpmailer_instance () {
+	protected function phpmailer_instance ($Config) {
 		$PHPMailer = new PHPMailer(true);
-		$Config    = Config::instance();
 		if ($Config->core['smtp']) {
 			$PHPMailer->isSMTP();
 			$PHPMailer->Host       = $Config->core['smtp_host'];
@@ -86,7 +86,7 @@ class Mail {
 			}
 		}
 		$PHPMailer->From     = $Config->core['mail_from'];
-		$PHPMailer->FromName = get_core_ml_text('mail_from_name');
+		$PHPMailer->FromName = $Config->core['mail_from_name'];
 		$PHPMailer->CharSet  = 'utf-8';
 		$PHPMailer->isHTML();
 		return $PHPMailer;
@@ -108,13 +108,14 @@ class Mail {
 		return _array($email);
 	}
 	/**
+	 * @param Config      $Config
 	 * @param bool|string $signature
 	 *
 	 * @return string
 	 */
-	protected function make_signature ($signature) {
+	protected function make_signature ($Config, $signature) {
 		if ($signature === true) {
-			$signature = get_core_ml_text('mail_signature');
+			$signature = $Config->core['mail_signature'];
 			return $signature ? "<br>\n<br>\n-- \n<br>$signature" : '';
 		}
 		return $signature ? "<br>\n<br>\n-- \n<br>".xap($signature, true) : '';

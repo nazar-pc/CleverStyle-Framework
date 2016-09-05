@@ -45,10 +45,11 @@ class Controller {
 			$Page->warning($L->invalid_confirmation_code);
 			return;
 		}
+		$Config = Config::instance();
 		if ($result['password']) {
 			$body = $L->success_mail_with_password_body(
 				strstr($result['email'], '@', true),
-				get_core_ml_text('site_name'),
+				$Config->core['site_name'],
 				Config::instance()->core_url().'/profile/settings',
 				$User->get('login', $result['id']),
 				$result['password']
@@ -56,14 +57,14 @@ class Controller {
 		} else {
 			$body = $L->success_mail_body(
 				strstr($result['email'], '@', true),
-				get_core_ml_text('site_name'),
+				$Config->core['site_name'],
 				Config::instance()->core_url().'/profile/settings',
 				$User->get('login', $result['id'])
 			);
 		}
 		if (Mail::instance()->send_to(
 			$result['email'],
-			$L->success_mail(get_core_ml_text('site_name')),
+			$L->success_mail($Config->core['site_name']),
 			$body
 		)
 		) {
@@ -103,12 +104,13 @@ class Controller {
 			$Page->warning($L->invalid_confirmation_code);
 			return;
 		}
+		$Config = Config::instance();
 		if (Mail::instance()->send_to(
 			$User->get('email', $result['id']),
-			$L->success_mail(get_core_ml_text('site_name')),
+			$L->success_mail($Config->core['site_name']),
 			$L->success_mail_body(
 				$User->username($result['id']),
-				get_core_ml_text('site_name'),
+				$Config->core['site_name'],
 				Config::instance()->core_url().'/profile/settings',
 				$User->get('login', $result['id']),
 				$result['password']

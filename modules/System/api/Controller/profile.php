@@ -134,25 +134,25 @@ trait profile {
 		$result  = static::try_to_register($User, $L, $email);
 		$confirm = $result['reg_key'] !== true;
 		static::fill_optional_profile_data($Request, $User, $result['id']);
-		$title = $L->success_mail(get_core_ml_text('site_name'));
+		$title = $L->success_mail($Config->core['site_name']);
 		$body  = $L->success_mail(
 			$User->username($result['id']),
-			get_core_ml_text('site_name'),
+			$Config->core['site_name'],
 			$Config->core_url().'/profile/settings',
 			$User->get('login', $result['id'])
 		);
 		if ($confirm) {
-			$title = $L->need_confirmation_mail(get_core_ml_text('site_name'));
+			$title = $L->need_confirmation_mail($Config->core['site_name']);
 			$body  = $L->need_confirmation_mail_body(
 				$User->username($result['id']),
-				get_core_ml_text('site_name'),
+				$Config->core['site_name'],
 				$Config->core_url()."/profile/registration_confirmation/$result[reg_key]",
 				$L->time($Config->core['registration_confirmation_time'], 'd')
 			);
 		} elseif (!$Request->data('password') && $result['password']) {
 			$body = $L->success_mail_with_password_body(
 				$User->username($result['id']),
-				get_core_ml_text('site_name'),
+				$Config->core['site_name'],
 				$Config->core_url().'/profile/settings',
 				$User->get('login', $result['id']),
 				$result['password']
@@ -234,10 +234,10 @@ trait profile {
 			!$key ||
 			!Mail::instance()->send_to(
 				$User->get('email', $id),
-				$L->confirmation_mail(get_core_ml_text('site_name')),
+				$L->confirmation_mail($Config->core['site_name']),
 				$L->confirmation_mail_body(
 					$User->username($id),
-					get_core_ml_text('site_name'),
+					$Config->core['site_name'],
 					$Config->core_url()."/profile/restore_password_confirmation/$key",
 					$L->time($Config->core['registration_confirmation_time'], 'd')
 				)

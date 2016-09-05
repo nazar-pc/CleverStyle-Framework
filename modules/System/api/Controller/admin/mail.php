@@ -20,17 +20,17 @@ trait mail {
 	public static function admin_mail_get_settings () {
 		$Config = Config::instance();
 		return [
-			'smtp'              => $Config->core['smtp'],
-			'smtp_host'         => $Config->core['smtp_host'],
-			'smtp_port'         => $Config->core['smtp_port'],
-			'smtp_secure'       => $Config->core['smtp_secure'],
-			'smtp_auth'         => $Config->core['smtp_auth'],
-			'smtp_user'         => $Config->core['smtp_user'],
-			'smtp_password'     => $Config->core['smtp_password'],
-			'mail_from'         => $Config->core['mail_from'],
-			'mail_from_name'    => get_core_ml_text('mail_from_name'),
-			'mail_signature'    => get_core_ml_text('mail_signature'),
-			'applied'           => $Config->cancel_available()
+			'smtp'           => $Config->core['smtp'],
+			'smtp_host'      => $Config->core['smtp_host'],
+			'smtp_port'      => $Config->core['smtp_port'],
+			'smtp_secure'    => $Config->core['smtp_secure'],
+			'smtp_auth'      => $Config->core['smtp_auth'],
+			'smtp_user'      => $Config->core['smtp_user'],
+			'smtp_password'  => $Config->core['smtp_password'],
+			'mail_from'      => $Config->core['mail_from'],
+			'mail_from_name' => $Config->core['mail_from_name'],
+			'mail_signature' => $Config->core['mail_signature'],
+			'applied'        => $Config->cancel_available()
 		];
 	}
 	/**
@@ -45,7 +45,7 @@ trait mail {
 		if (!$email) {
 			throw new ExitException(400);
 		}
-		if (!System_mail::instance()->send_to($email, 'Email testing on '.get_core_ml_text('name'), 'Test email')) {
+		if (!System_mail::instance()->send_to($email, 'Email testing on '.Config::instance()->core['site_name'], 'Test email')) {
 			throw new ExitException(500);
 		}
 	}
@@ -92,8 +92,8 @@ trait mail {
 		$Config->core['smtp_user']      = $data['smtp_user'];
 		$Config->core['smtp_password']  = $data['smtp_password'];
 		$Config->core['mail_from']      = $data['mail_from'];
-		$Config->core['mail_from_name'] = set_core_ml_text('mail_from_name', xap($data['mail_from_name']));
-		$Config->core['mail_signature'] = set_core_ml_text('mail_signature', xap($data['mail_signature'], true));
+		$Config->core['mail_from_name'] = xap($data['mail_from_name']);
+		$Config->core['mail_signature'] = xap($data['mail_signature'], true);
 	}
 	/**
 	 * Save mail settings

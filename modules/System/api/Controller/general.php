@@ -12,6 +12,9 @@ use
 	cs\Config;
 
 trait general {
+	/**
+	 * @return string[]
+	 */
 	public static function languages_get () {
 		return Config::instance()->core['active_languages'];
 	}

@@ -158,7 +158,7 @@ class Meta {
 			);
 		}
 		if (!@$og['site_name']) {
-			$this->og('site_name', get_core_ml_text('site_name'));
+			$this->og('site_name', $Config->core['site_name']);
 		}
 		if (!@$og['type']) {
 			$this->og('type', 'website');

@@ -8,6 +8,7 @@
  */
 namespace cs\themes\CleverStyle;
 use
+	cs\Config,
 	cs\Menu,
 	cs\Request,
 	cs\User,
@@ -31,7 +32,7 @@ $user_block = h::cs_cleverstyle_header_user_block(
 <!--pre_Body-->
 	<header>
 		<div>
-			<a href="/" class="cs-text-lead"><?=get_core_ml_text('site_name')?></a>
+			<a href="/" class="cs-text-lead"><?=Config::instance()->core['site_name']?></a>
 			<?=level($main_menu, 3)?>
 			<?=$user_block?>
 		</div>

@@ -48,7 +48,7 @@ class App {
 		if (!preg_match('/^[0-9a-z_]+$/i', $Request->method)) {
 			throw new ExitException(400);
 		}
-		$this->handle_closed_site(!$Config->core['site_mode'], $Request);
+		$this->handle_closed_site($Config, $Request);
 		if (!$this->check_permission($Request, 'index')) {
 			throw new ExitException(403);
 		}
@@ -58,13 +58,13 @@ class App {
 		Page::instance()->render();
 	}
 	/**
-	 * @param bool    $closed_site
+	 * @param Config  $Config
 	 * @param Request $Request
 	 *
 	 * @throws ExitException
 	 */
-	protected function handle_closed_site ($closed_site, $Request) {
-		if (!$closed_site) {
+	protected function handle_closed_site ($Config, $Request) {
+		if ($Config->core['site_mode']) {
 			return;
 		}
 		/**
@@ -73,8 +73,8 @@ class App {
 		if (!$this->allow_closed_site_request($Request)) {
 			throw new ExitException(
 				[
-					get_core_ml_text('closed_title'),
-					get_core_ml_text('closed_text')
+					$Config->core['closed_title'],
+					$Config->core['closed_text']
 				],
 				503
 			);
@@ -82,7 +82,7 @@ class App {
 		/**
 		 * Warning about closed site for administrator
 		 */
-		Page::instance()->warning(get_core_ml_text('closed_title'));
+		Page::instance()->warning($Config->core['closed_title']);
 	}
 	/**
 	 * Check if visitor is allowed to make current request to closed site

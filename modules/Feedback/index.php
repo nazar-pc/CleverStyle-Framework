@@ -51,7 +51,7 @@ if (isset($_POST['name'], $_POST['email'], $_POST['text'])) {
 	}
 	$result = Mail::instance()->send_to(
 		$Config->core['admin_email'],
-		$L->feedback_email_from(xap($_POST['name']), get_core_ml_text('site_name')),
+		$L->feedback_email_from(xap($_POST['name']), $Config->core['site_name']),
 		xap($_POST['text']),
 		null,
 		null,
