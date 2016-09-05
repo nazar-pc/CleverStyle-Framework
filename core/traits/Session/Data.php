@@ -29,8 +29,7 @@ trait Data {
 	 * @return array|false
 	 */
 	protected function get_data_internal ($session_id) {
-		$session_id = $session_id ?: $this->session_id;
-		return is_md5($session_id) ? $this->get_internal($session_id) : false;
+		return $this->get_internal($session_id);
 	}
 	/**
 	 * Store data with session

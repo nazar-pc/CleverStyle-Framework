@@ -324,7 +324,7 @@ trait Management {
 	public function add ($user, $delete_current_session = true) {
 		$user = (int)$user ?: User::GUEST_ID;
 		if ($delete_current_session && is_md5($this->session_id)) {
-			$this->del_internal($this->session_id, false);
+			$this->del($this->session_id);
 		}
 		if (!$this->is_user_active($user)) {
 			/**
@@ -391,17 +391,6 @@ trait Management {
 	 * @return bool
 	 */
 	public function del ($session_id = null) {
-		return (bool)$this->del_internal($session_id);
-	}
-	/**
-	 * Deletion of the session
-	 *
-	 * @param string|null $session_id
-	 * @param bool        $create_guest_session
-	 *
-	 * @return bool
-	 */
-	protected function del_internal ($session_id = null, $create_guest_session = true) {
 		$session_id = $session_id ?: $this->session_id;
 		if (!is_md5($session_id)) {
 			return false;
@@ -412,17 +401,16 @@ trait Management {
 				'id' => $session_id
 			]
 		);
-		unset($this->cache->$session_id);
+		$this->cache->del($session_id);
 		if ($session_id == $this->session_id) {
 			$this->session_id = false;
 			$this->user_id    = User::GUEST_ID;
 		}
-		Response::instance()->cookie('session', '');
+		if (Request::instance()->cookie('session') === $session_id) {
+			Response::instance()->cookie('session', '');
+		}
 		$result = $this->delete($session_id);
 		if ($result) {
-			if ($create_guest_session) {
-				return (bool)$this->add(User::GUEST_ID);
-			}
 			Event::instance()->fire(
 				'System/Session/del/after',
 				[
@@ -449,7 +437,7 @@ trait Management {
 	 * @return bool
 	 */
 	public function del_all ($user = false) {
-		$user = $user ?: $this->user_id;
+		$user = (int)$user ?: $this->user_id;
 		if ($user == User::GUEST_ID) {
 			return false;
 		}
@@ -459,12 +447,12 @@ trait Management {
 				'id' => $user
 			]
 		);
-		$sessions = $this->db_prime()->qfas(
+		$cdb   = $this->db_prime();
+		$query =
 			"SELECT `id`
 			FROM `[prefix]sessions`
-			WHERE `user` = '$user'"
-		);
-		foreach ($sessions ?: [] as $session) {
+			WHERE `user` = '$user'";
+		while ($session = $cdb->qfs($query)) {
 			if (!$this->del($session)) {
 				return false;
 			}
