@@ -40,22 +40,21 @@ namespace {
 namespace cs {
 	include __DIR__.'/../../unit.php';
 
-	function get_core_ml_text ($name) {
-		return $name;
-	}
 	class Test_mail extends Mail {
 		public static function test () {
 			$Config = Config::instance_stub(
 				[
 					'core' => [
-						'smtp'          => 0,
-						'smtp_host'     => 'smtp.test.com',
-						'smtp_port'     => 587,
-						'smtp_secure'   => 'tls',
-						'smtp_auth'     => 0,
-						'smtp_user'     => 'admin@test.com',
-						'smtp_password' => 'smtp password',
-						'mail_from'     => 'admin@test.com'
+						'smtp'           => 0,
+						'smtp_host'      => 'smtp.test.com',
+						'smtp_port'      => 587,
+						'smtp_secure'    => 'tls',
+						'smtp_auth'      => 0,
+						'smtp_user'      => 'admin@test.com',
+						'smtp_password'  => 'smtp password',
+						'mail_from'      => 'admin@test.com',
+						'mail_from_name' => 'mail_from_name',
+						'mail_signature' => 'mail_signature'
 					]
 				]
 			);
@@ -115,9 +114,9 @@ namespace cs {
 			);
 
 			var_dump('Making signature');
-			var_dump($Mail->make_signature(true));
-			var_dump($Mail->make_signature(false));
-			var_dump($Mail->make_signature('Custom signature'));
+			var_dump($Mail->make_signature($Config, true));
+			var_dump($Mail->make_signature($Config, false));
+			var_dump($Mail->make_signature($Config, 'Custom signature'));
 
 			var_dump('Body normalization');
 			var_dump($Mail->normalize_body('Just html', ''));

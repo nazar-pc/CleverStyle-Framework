@@ -15,9 +15,6 @@ namespace cs\App {
 namespace cs {
 	include __DIR__.'/../../unit.php';
 	define('BLOCKS', __DIR__.'/blocks');
-	function get_core_ml_text ($item) {
-		return $item;
-	}
 
 	class App_test extends App {
 		public static function test () {
@@ -27,7 +24,9 @@ namespace cs {
 						'blocks' => []
 					],
 					'core'       => [
-						'site_mode' => 1
+						'site_mode'    => 1,
+						'closed_title' => 'closed_title',
+						'closed_text'  => 'closed_text'
 					]
 				],
 				[
@@ -52,7 +51,7 @@ namespace cs {
 					'System'                      => 'System'
 				]
 			);
-			$Page    = Page::instance_stub(
+			$Page               = Page::instance_stub(
 				[
 					'interface' => true
 				],
@@ -68,7 +67,7 @@ namespace cs {
 					}
 				]
 			);
-			$Request = Request::instance_stub(
+			$Request            = Request::instance_stub(
 				[
 					'method'         => 'GET',
 					'cli_path'       => false,
@@ -79,17 +78,9 @@ namespace cs {
 					'home_page'      => true
 				]
 			);
-			Text::instance_stub(
-				[],
-				[
-					'process' => function ($database, $data) {
-						return $data;
-					}
-				]
-			);
 			$is_admin           = false;
 			$permission_allowed = true;
-			$User               = User::instance_stub(
+			User::instance_stub(
 				[],
 				[
 					'admin'          => &$is_admin,
