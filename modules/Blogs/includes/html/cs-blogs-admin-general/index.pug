@@ -1,13 +1,13 @@
 mixin input (name, type, min)
-	label(tooltip="[[L.#{name}_info]]")
-		[[L.#{name}]]
+	label(tooltip=`[[L.${name}_info]]`)
+		| [[L.#{name}]]
 		cs-tooltip
-	input(is="cs-input-text" type=type value="{{settings.#{name}}}" min=min)
+	input(is="cs-input-text" type=type value=`{{settings.${name}}}` min=min)
 mixin on-off-switcher (name)
 	- values = [0,1]
 	- translations = ['[[L.no]]', '[[L.yes]]']
-	label(tooltip="[[L.#{name}_info]]")
-		[[L.#{name}]]
+	label(tooltip=`[[L.${name}_info]]`)
+		| [[L.#{name}]]
 		cs-tooltip
 	nav(is="cs-nav-button-group")
 		each value, index in values
@@ -16,7 +16,7 @@ mixin on-off-switcher (name)
 					input(type="radio" value=value)
 					= translations[index]
 			else
-				label(is="cs-label-button" value="{{settings.#{name}}}")
+				label(is="cs-label-button" value=`{{settings.${name}}}`)
 					input(type="radio" value=value)
 					= translations[index]
 dom-module#cs-blogs-admin-general

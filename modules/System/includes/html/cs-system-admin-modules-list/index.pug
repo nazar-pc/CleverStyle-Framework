@@ -10,10 +10,10 @@ dom-module#cs-system-admin-modules-list
 				tr(class$="[[module.class]]")
 					td
 						a(href="/admin/[[module.name]]" tooltip="[[module.info]]" hidden="[[!module.administration]]")
-							[[module.name_localized]]
+							| [[module.name_localized]]
 							cs-tooltip
 						span(tooltip="[[module.info]]" hidden="[[module.administration]]")
-							[[module.name_localized]]
+							| [[module.name_localized]]
 							cs-tooltip
 					td
 						cs-icon(icon="[[module.icon]]" tooltip="[[module.icon_text]]")

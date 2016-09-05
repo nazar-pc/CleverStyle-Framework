@@ -36,15 +36,15 @@ dom-module#cs-system-admin-users-edit-user-form
 			nav(is="cs-nav-button-group")
 				label(is="cs-label-button" value="{{user_data.status}}")
 					input(checked="[[equal(user_data.status, -1)]]" type="radio" value="-1")
-					[[L.is_not_activated]]
+					| [[L.is_not_activated]]
 				label(is="cs-label-button")
 					input(checked="[[equal(user_data.status, 0)]]" type="radio" value="0")
-					[[L.inactive]]
+					| [[L.inactive]]
 				label(is="cs-label-button")
 					input(checked="[[equal(user_data.status, 1)]]" type="radio" value="1")
-					[[L.active]]
+					| [[L.active]]
 			label(tooltip="[[L.block_until_info]]")
-				[[L.block_until]]
+				| [[L.block_until]]
 				cs-tooltip
 			input(is="cs-input-text" type="datetime-local" value="{{block_until}}")
 			label [[L.avatar]]

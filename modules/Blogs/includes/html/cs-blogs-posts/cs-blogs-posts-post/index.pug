@@ -9,7 +9,7 @@ dom-module#cs-blogs-posts-post
 					p
 						cs-icon(icon="bookmark")
 						template(is="dom-repeat" items="[[post.articleSection]]" as="section")
-							[[if(index, '\, ', ' ')]]
+							| [[if(index, '\, ', ' ')]]
 							a(href="[[sections_path(index)]]") [[section]]
 			div(inner-h-t-m-l="[[post.short_content]]")
 			footer
@@ -19,7 +19,7 @@ dom-module#cs-blogs-posts-post
 					= ' '
 					cs-icon(icon="user")
 					= ' '
-					[[post.author.name]]
+					| [[post.author.name]]
 					= ' '
 					template(is="dom-if" if="[[settings.comments_enabled]]")
 						a(href="[[post.url]]#comments")
@@ -30,5 +30,5 @@ dom-module#cs-blogs-posts-post
 					a(href="[[post.url]]")
 						cs-icon(icon="angle-double-right")
 						= ' '
-						[[L.read_more]]
+						| [[L.read_more]]
 	script(src="script.js")

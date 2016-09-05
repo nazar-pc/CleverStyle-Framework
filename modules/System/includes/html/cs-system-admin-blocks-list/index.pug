@@ -1,7 +1,7 @@
 mixin blocks-container (position)
 	div(group=position)
 		.cs-block-primary.cs-text-primary [[L.#{position}_blocks]]
-		template(is="dom-repeat" items="[[blocks.#{position}]]")
+		template(is="dom-repeat" items=`[[blocks.${position}]]`)
 			div(index="[[item.index]]" class$="[[_status_class(item.active)]]")
 				.title [[item.title]]
 				div

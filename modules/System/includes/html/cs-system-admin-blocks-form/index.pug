@@ -6,7 +6,7 @@ dom-module#cs-system-admin-blocks-form
 			tr
 				td
 					span(tooltip="[[L.block_type_info]]")
-						[[L.block_type]]
+						| [[L.block_type]]
 						cs-tooltip
 				td
 					select(is="cs-select" name="block[type]" size="5" selected="{{block.type}}")
@@ -15,41 +15,41 @@ dom-module#cs-system-admin-blocks-form
 			tr
 				td
 					span(tooltip="[[L.block_title_info]]")
-						[[L.block_title]]
+						| [[L.block_title]]
 						cs-tooltip
 				td
 					input(is="cs-input-text" name="block[title]" type="text" value="{{block.title}}")
 			tr
 				td
 					span(tooltip="[[L.block_active_info]]")
-						[[L.block_active]]
+						| [[L.block_active]]
 						cs-tooltip
 				td
 					label(is="cs-label-button" value="{{block.active}}")
 						input(name="block[active]" type="radio" value="1")
-						[[L.yes]]
+						| [[L.yes]]
 					label(is="cs-label-button")
 						input(name="block[active]" type="radio" value="0")
-						[[L.no]]
+						| [[L.no]]
 			tr
 				td
 					span(tooltip="[[L.block_start_info]]")
-						[[L.block_start]]
+						| [[L.block_start]]
 						cs-tooltip
 				td
 					input(is="cs-input-text" name="block[start]" type="datetime-local" value="{{block.start}}")
 			tr
 				td
 					span(tooltip="[[L.block_expire_info]]")
-						[[L.block_expire]]
+						| [[L.block_expire]]
 						cs-tooltip
 				td
 					label(is="cs-label-button" value="{{block.expire.state}}")
 						input(name="block[expire][state]" type="radio" value="0")
-						[[L.never]]
+						| [[L.never]]
 					label(is="cs-label-button")
 						input(name="block[expire][state]" type="radio" value="1")
-						[[L.as_specified]]
+						| [[L.as_specified]]
 					br
 					br
 					input(is="cs-input-text" name="block[expire][date]" type="datetime-local" value="{{block.expire.date}}")

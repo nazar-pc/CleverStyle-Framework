@@ -5,9 +5,9 @@ dom-module#cs-system-admin-permissions-form
 				label id
 				input(is="cs-input-text" readonly value="[[permission_id]]")
 			label [[L.group]]
-			input(is="cs-input-text" type="text" value="{{group}}")/
+			input(is="cs-input-text" type="text" value="{{group}}")
 			label [[L.label]]
-			input(is="cs-input-text" type="text" value="{{label}}")/
+			input(is="cs-input-text" type="text" value="{{label}}")
 			div
 				button(is="cs-button" type="button" primary on-tap="save" disabled="[[!and(group, label)]]") [[L.save]]
 	script(src="script.js")

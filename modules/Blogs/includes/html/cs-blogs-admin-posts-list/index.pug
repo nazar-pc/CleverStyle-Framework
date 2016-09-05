@@ -15,16 +15,16 @@ dom-module#cs-blogs-admin-posts-list
 						a(href="/Blogs/[[item.path]]:[[item.id]]" target="_blank") [[item.title]]
 					td
 						template(is="dom-repeat" items="[[item.sections]]")
-							[[if(index, '\, ')]]
+							| [[if(index, '\, ')]]
 							a(href="/Blogs/section/[[item.full_path]]" target="_blank") [[item.title]]
 					td
 						template(is="dom-repeat" items="[[item.tags]]")
-							[[if(index, '\, ')]]
+							| [[if(index, '\, ')]]
 							a(href="/Blogs/tag/[[item]]" target="_blank") [[item]]
 					td
-						[[item.username]]
+						| [[item.username]]
 						br
-						[[item.date_formatted]]
+						| [[item.date_formatted]]
 					td
 						a(is="cs-link-button" icon="pencil" href="/Blogs/edit_post/[[item.id]]" tooltip="[[L.edit]]")
 						= ' '

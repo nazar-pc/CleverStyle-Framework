@@ -20,25 +20,25 @@ dom-module#cs-system-admin-about-server
 						tr
 							td OpenSSL:
 							td(class$="[[if(server_config.php_extensions.openssl, 'cs-block-success cs-text-success', 'cs-block-error cs-text-error')]]")
-								[[if(server_config.php_extensions.openssl, L.yes, L.no)]]
+								| [[if(server_config.php_extensions.openssl, L.yes, L.no)]]
 								= ' '
 								cs-icon(icon="info-circle" tooltip="[[L.openssl_warning]]" hidden="[[server_config.php_extensions.openssl]]")
 						tr
 							td cURL:
 							td(class$="[[if(server_config.php_extensions.curl, 'cs-block-success cs-text-success', 'cs-block-error cs-text-error')]]")
-								[[if(server_config.php_extensions.curl, L.yes, L.no)]]
+								| [[if(server_config.php_extensions.curl, L.yes, L.no)]]
 						tr
 							td APC:
 							td
-								[[if(server_config.php_extensions.apc, L.yes, L.no)]]
+								| [[if(server_config.php_extensions.apc, L.yes, L.no)]]
 						tr
 							td APCu:
 							td
-								[[if(server_config.php_extensions.apcu, L.yes, L.no)]]
+								| [[if(server_config.php_extensions.apcu, L.yes, L.no)]]
 						tr
 							td Memcached:
 							td
-								[[if(server_config.php_extensions.memcached, L.yes, L.no)]]
+								| [[if(server_config.php_extensions.memcached, L.yes, L.no)]]
 			tr
 				td [[L.php_ini_settings]]:
 				td
@@ -46,7 +46,7 @@ dom-module#cs-system-admin-about-server
 						tr
 							td [[L.allow_file_upload]]:
 							td(class$="[[if(server_config.php_ini.allow_file_uploads, 'cs-block-success cs-text-success', 'cs-block-error cs-text-error')]]")
-								[[if(server_config.php_ini.allow_file_uploads, L.yes, L.no)]]
+								| [[if(server_config.php_ini.allow_file_uploads, L.yes, L.no)]]
 						tr
 							td [[L.max_file_uploads]]:
 							td [[server_config.php_ini.max_file_uploads]]
@@ -68,11 +68,11 @@ dom-module#cs-system-admin-about-server
 						tr
 							td [[L.allow_url_fopen]]:
 							td(class$="[[if(server_config.php_ini.allow_url_fopen, 'cs-block-success cs-text-success', 'cs-block-error cs-text-error')]]")
-								[[if(server_config.php_ini.allow_url_fopen, L.yes, L.no)]]
+								| [[if(server_config.php_ini.allow_url_fopen, L.yes, L.no)]]
 						tr
 							td [[L.display_errors]]:
 							td(class$="[[if(server_config.php_ini.display_errors, 'cs-block-error cs-text-error', 'cs-block-success cs-text-success')]]")
-								[[if(server_config.php_ini.display_errors, L.yes, L.no)]]
+								| [[if(server_config.php_ini.display_errors, L.yes, L.no)]]
 			tr
 				td [[L.main_db]]:
 				td [[server_config.main_db.type]] [[server_config.main_db.version]]

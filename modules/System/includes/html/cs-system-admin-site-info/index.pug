@@ -8,7 +8,7 @@ dom-module#cs-system-admin-site-info
 			+textarea("cookie_domain", "simple_admin_mode")
 			+input("cookie_prefix", "simple_admin_mode")
 			label(tooltip="[[L.timezone_info]]")
-				[[L.timezone]]
+				| [[L.timezone]]
 				cs-tooltip
 			template(is="dom-if" if="[[timezones]]")
 				select(is="cs-select" selected="{{settings.timezone}}" size="7")

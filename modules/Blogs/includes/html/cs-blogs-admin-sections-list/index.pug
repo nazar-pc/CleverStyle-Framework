@@ -12,7 +12,7 @@ dom-module#cs-blogs-admin-sections-list
 						a(href="/Blogs/section/[[item.full_path]]") [[item.full_title]]
 						a(href="/Blogs/section/[[item.full_path]]")
 							span(tooltip="[[L.posts_in_section]]")
-								[[item.posts]]
+								| [[item.posts]]
 								cs-tooltip
 					td
 						a(is="cs-link-button" icon="pencil" on-tap="_edit" tooltip="[[L.edit]]")

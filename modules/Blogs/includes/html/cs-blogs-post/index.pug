@@ -11,7 +11,7 @@ dom-module#cs-blogs-post
 				p
 					cs-icon(icon="bookmark")
 					template(is="dom-repeat" items="[[jsonld.articleSection]]" as="section")
-						[[if(index, '\, ', ' ')]]
+						| [[if(index, '\, ', ' ')]]
 						a(href="[[sections_path(index)]]") [[section]]
 		div(inner-h-t-m-l="[[jsonld.content]]")
 		footer
@@ -19,7 +19,7 @@ dom-module#cs-blogs-post
 				p
 					cs-icon(icon="tags")
 					template(is="dom-repeat" items="[[jsonld.tags]]" as="tag")
-						[[if(index, '\, ', ' ')]]
+						| [[if(index, '\, ', ' ')]]
 						a(href="[[tags_path(index)]]" rel="tag") [[tag]]
 			hr
 			p
@@ -27,7 +27,7 @@ dom-module#cs-blogs-post
 				= ' '
 				cs-icon(icon="user")
 				= ' '
-				[[jsonld.author.name]]
+				| [[jsonld.author.name]]
 				= ' '
 				template(is="dom-if" if="[[show_comments]]")
 					cs-icon(icon="comments")

@@ -8,8 +8,8 @@ mixin radio-single (target, value)
 			}
 		}();
 	label(is="cs-label-button")
-		input(type="radio" value="#{value}" checked="[[#{target}_permission_state(#{target}.id, #{value})]]" name$="[[concat('#{target}s[', #{target}.id, ']')]]")
-		[[L.#{text}]]
+		input(type="radio" value=value checked=`[[${target}_permission_state(${target}.id, ${value})]]` name$=`[[concat('${target}s[', ${target}.id, ']')]]`)
+		| [[L.#{text}]]
 mixin radio-group(target)
 	+radio-single(target, -1)
 	+radio-single(target, 0)
@@ -17,7 +17,7 @@ mixin radio-group(target)
 mixin user-row
 	tr
 		td.cs-padding-right(tooltip="[[user.email]]")
-			[[username(user)]]
+			| [[username(user)]]
 			= ' '
 			cs-tooltip
 		td
@@ -45,7 +45,7 @@ dom-module#cs-system-admin-permissions-for-item
 						template(is="dom-repeat" items="[[groups]]" as="group")
 							tr
 								td(tooltip="[[group.description]]")
-									[[group.title]]
+									| [[group.title]]
 									cs-tooltip
 								td
 									+radio-group('group')
