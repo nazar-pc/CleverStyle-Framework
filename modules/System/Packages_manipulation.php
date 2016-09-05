@@ -184,8 +184,16 @@ class Packages_manipulation {
 			$db_type  = $index == 0 ? $Core->db_type : $Config->db[$index]['type'];
 			$sql_file = "$directory/$db_name/$version/$db_type.sql";
 			if (file_exists($sql_file)) {
-				$db->db_prime($index)->q(
-					explode(';', file_get_contents($sql_file))
+				/** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+				$db->db_prime($index)->transaction(
+					function ($cdb) use ($sql_file) {
+						/**
+						 * @var DB\_Abstract $cdb
+						 */
+						$cdb->q(
+							explode(';', file_get_contents($sql_file))
+						);
+					}
 				);
 			}
 		}
