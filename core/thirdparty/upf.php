@@ -803,7 +803,7 @@ function xap ($in, $html = 'text', $iframe = false) {
 					<[^\/a-z=>]*iframe[^>]*>
 				/uxims',
 				function ($matches) {
-					$result = preg_replace('/sandbox\s*=\s*([\'"])?[^\\1>]*\\1?/uims', '', $matches[0]);
+					$result = preg_replace('/sandbox\s*=\s*([\'"])?[^\\1>]*\\1?/uim', '', $matches[0]);
 					$result = str_replace(
 						'>',
 						' sandbox="allow-same-origin allow-forms allow-popups allow-scripts">',
@@ -825,7 +825,7 @@ function xap ($in, $html = 'text', $iframe = false) {
 			$in
 		);
 		$in = preg_replace(
-			'/<[^>]*\s(on[a-z]+|dynsrc|lowsrc|formaction|is)=[^>]*>?/uims',
+			'/<[^>]*\s(on[a-z]+|dynsrc|lowsrc|formaction|is)=[^>]*>?/uim',
 			'',
 			$in
 		);
@@ -838,10 +838,15 @@ function xap ($in, $html = 'text', $iframe = false) {
 		$in = strip_tags($in);
 	}
 	// When input is crafted for stored XSS number of opened and closed braces should be the same as well as they order should be correct
-	$open  = mb_strpos($in, '<');
-	$close = mb_strpos($in, '>');
-	if ($close !== false && $open > $close) {
-		return mb_substr($in, $open);
+	$first_open  = mb_strpos($in, '<');
+	$first_close = mb_strpos($in, '>');
+	if ($first_close !== false && $first_open > $first_close) {
+		return mb_substr($in, $first_open);
+	}
+	$last_open  = mb_strrpos($in, '<');
+	$last_close = mb_strrpos($in, '>');
+	if ($last_open !== false && $last_open > $last_close) {
+		return mb_substr($in, 0, $last_close + 1);
 	}
 	return $in;
 }
@@ -1044,33 +1049,8 @@ function password_check ($password, $min_length = 4) {
  */
 function password_generate ($length = 10, $strength = 5) {
 	static $special = [
-		'~',
-		'!',
-		'@',
-		'#',
-		'$',
-		'%',
-		'^',
-		'&',
-		'*',
-		'(',
-		')',
-		'-',
-		'_',
-		'=',
-		'+',
-		'|',
-		'\\',
-		'/',
-		';',
-		':',
-		',',
-		'.',
-		'?',
-		'[',
-		']',
-		'{',
-		'}'
+		'~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_',
+		'=', '+', '|', '\\', '/', ';', ':', ',', '.', '?', '[', ']', '{', '}'
 	];
 	static $small, $capital;
 	if ($length < 4) {
@@ -1150,7 +1130,7 @@ function xor_string ($string1, $string2) {
  * @return bool
  */
 function is_md5 ($string) {
-	return is_string($string) && preg_match('/^[0-9a-z]{32}$/', $string);
+	return is_string($string) && preg_match('/^[0-9a-f]{32}$/', $string);
 }
 
 /**
