@@ -41,6 +41,10 @@ class Config {
 	 */
 	protected $core_internal = [];
 	/**
+	 * @var string
+	 */
+	protected $last_language;
+	/**
 	 * Configuration of databases, except the main database, parameters of which are stored in configuration file
 	 *
 	 * @var mixed[]
@@ -151,7 +155,11 @@ class Config {
 		$this->fill_mirrors();
 	}
 	protected function read_core_update_multilingual () {
-		$language             = Language::instance()->clanguage;
+		$language = Language::instance()->clanguage;
+		if ($language == $this->last_language) {
+			return;
+		}
+		$this->last_language  = $language;
 		$multilingual_options = $this->cache->get(
 			$language,
 			function () {

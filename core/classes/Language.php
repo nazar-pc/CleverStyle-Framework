@@ -214,7 +214,10 @@ class Language implements JsonSerializable {
 		return Cache::instance()->get(
 			'languages/aliases',
 			function () {
-				$aliases      = [];
+				$aliases = [];
+				/**
+				 * @var string[] $aliases_list
+				 */
 				$aliases_list = _strtolower(get_files_list(LANGUAGES.'/aliases'));
 				foreach ($aliases_list as $alias) {
 					$aliases[$alias] = trim(file_get_contents(LANGUAGES."/aliases/$alias"));
