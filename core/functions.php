@@ -13,8 +13,7 @@ use
 	cs\Cache,
 	cs\Config,
 	cs\Language,
-	cs\Page,
-	cs\Text;
+	cs\Page;
 
 /**
  * Auto Loading of classes

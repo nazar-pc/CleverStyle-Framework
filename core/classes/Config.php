@@ -154,7 +154,7 @@ class Config {
 		$language             = Language::instance()->clanguage;
 		$multilingual_options = $this->cache->get(
 			$language,
-			function () use ($language) {
+			function () {
 				$db_id                = $this->module('System')->db('texts');
 				$Text                 = Text::instance();
 				$multilingual_options = [];
