@@ -2,6 +2,7 @@
 <?php
 namespace cs;
 include __DIR__.'/../../unit.php';
+define('MODULES', make_tmp_dir());
 function header (...$arguments) {
 	var_dump('header() called with', $arguments);
 }

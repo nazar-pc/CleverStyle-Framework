@@ -84,7 +84,11 @@ class Config {
 	protected function cdb () {
 		return 0;
 	}
+	/**
+	 * Update multilingual options when language changes
+	 */
 	protected function init () {
+		$this->read_core_update_multilingual();
 		Event::instance()->on(
 			'System/Language/change/after',
 			function () {
@@ -102,29 +106,11 @@ class Config {
 		$this->cache = Cache::prefix('config2');
 		Event::instance()->fire('System/Config/init/before');
 		$this->load_configuration();
-		date_default_timezone_set($this->core['timezone']);
-		$this->fill_mirrors();
 		Event::instance()->fire('System/Config/init/after');
 		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
 			$this->core['default_module'] = self::SYSTEM_MODULE;
 			$this->save();
 		}
-	}
-	/**
-	 * Is used to fill `$this->mirrors` using current configuration
-	 */
-	protected function fill_mirrors () {
-		$this->mirrors = [
-			'count' => 0,
-			'http'  => [],
-			'https' => []
-		];
-		foreach ($this->core['url'] as $i => $address) {
-			list($protocol, $urls) = explode('://', $address, 2);
-			$urls                       = explode(';', $urls);
-			$this->mirrors[$protocol][] = $urls[0];
-		}
-		$this->mirrors['count'] = count($this->mirrors['http']) + count($this->mirrors['https']);
 	}
 	/**
 	 * Reloading of settings cache
@@ -150,13 +136,28 @@ class Config {
 		$this->storage       = $config['storage'];
 		$this->components    = $config['components'];
 		$this->core += Options::get_defaults();
-		$this->read_core_update_multilingual();
 		date_default_timezone_set($this->core['timezone']);
 		$this->fill_mirrors();
 	}
+	/**
+	 * Is used to fill `$this->mirrors` using current configuration
+	 */
+	protected function fill_mirrors () {
+		$this->mirrors = [
+			'count' => 0,
+			'http'  => [],
+			'https' => []
+		];
+		foreach ($this->core['url'] as $i => $address) {
+			list($protocol, $urls) = explode('://', $address, 2);
+			$urls                       = explode(';', $urls);
+			$this->mirrors[$protocol][] = $urls[0];
+		}
+		$this->mirrors['count'] = count($this->mirrors['http']) + count($this->mirrors['https']);
+	}
 	protected function read_core_update_multilingual () {
-		$language = Language::instance()->clanguage;
-		if ($language == $this->last_language) {
+		$language = Language::instance(true)->clanguage;
+		if (!$language || $language == $this->last_language) {
 			return;
 		}
 		$this->last_language  = $language;

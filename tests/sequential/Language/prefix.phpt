@@ -2,6 +2,20 @@
 <?php
 namespace cs;
 include __DIR__.'/../../bootstrap.php';
+Config::instance_stub(
+	[
+		'core' => [
+			'multilingual'     => true,
+			'language'         => 'English',
+			'active_languages' => array_unique(
+				array_merge(
+					_mb_substr(get_files_list(LANGUAGES, '/^.*?\.php$/i', 'f'), 0, -4) ?: [],
+					_mb_substr(get_files_list(LANGUAGES, '/^.*?\.json$/i', 'f'), 0, -5) ?: []
+				)
+			)
+		]
+	]
+);
 $L	= new Language\Prefix('system_');
 echo $L->system_home."\n";
 echo $L->home."\n";

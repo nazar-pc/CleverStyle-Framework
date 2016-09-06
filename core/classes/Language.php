@@ -35,7 +35,9 @@ use
  * @property string $_time
  */
 class Language implements JsonSerializable {
-	use Singleton;
+	use
+		Singleton;
+	const INIT_STATE_METHOD = 'init';
 	/**
 	 * Callable for time processing
 	 *
@@ -46,12 +48,6 @@ class Language implements JsonSerializable {
 	 * @var string
 	 */
 	protected $current_language;
-	/**
-	 * For single initialization
-	 *
-	 * @var bool
-	 */
-	protected $init = false;
 	/**
 	 * Local cache of translations
 	 *
@@ -64,13 +60,11 @@ class Language implements JsonSerializable {
 	 * @var array
 	 */
 	protected $localized_url = [];
-	/**
-	 * Set basic language
-	 */
-	protected function construct () {
-		$Config                 = Config::instance(true);
-		$Core                   = Core::instance();
-		$this->current_language = $Core->language;
+	protected function init () {
+		/**
+		 * Initialization: set default language based on system configuration and request-specific parameters
+		 */
+		$Config = Config::instance(true);
 		/**
 		 * We need Config for initialization
 		 */
@@ -78,35 +72,32 @@ class Language implements JsonSerializable {
 			Event::instance()->once(
 				'System/Config/init/after',
 				function () {
-					$this->init();
+					$this->init_internal();
 				}
 			);
 		} else {
-			$this->init();
+			$this->init_internal();
 		}
+		/**
+		 * Change language when configuration changes
+		 */
 		Event::instance()->on(
 			'System/Config/changed',
 			function () {
-				$Config = Config::instance();
-				if ($Config->core['multilingual'] && User::instance(true)) {
-					$this->current_language = User::instance()->language;
-				} else {
-					$this->current_language = $Config->core['language'];
-				}
+				$this->init_internal();
 			}
 		);
 	}
-	/**
-	 * Initialization: set default language based on system configuration and request-specific parameters
-	 */
-	protected function init () {
-		$Config = Config::instance();
+	protected function init_internal () {
+		$Config   = Config::instance();
+		$language = '';
 		if ($Config->core['multilingual']) {
+			$language = User::instance(true)->language;
 			/**
 			 * Highest priority - `-Locale` header
 			 */
 			/** @noinspection PhpParamsInspection */
-			$language = $this->check_locale_header($Config->core['active_languages']);
+			$language = $language ?: $this->check_locale_header($Config->core['active_languages']);
 			/**
 			 * Second priority - URL
 			 */
@@ -116,10 +107,8 @@ class Language implements JsonSerializable {
 			 */
 			/** @noinspection PhpParamsInspection */
 			$language = $language ?: $this->check_accept_header($Config->core['active_languages']);
-		} else {
-			$language = $Config->core['language'];
 		}
-		$this->current_language = $language ?: '';
+		$this->current_language = $language ?: $Config->core['language'];
 	}
 	/**
 	 * Returns instance for simplified work with translations, when using common prefix

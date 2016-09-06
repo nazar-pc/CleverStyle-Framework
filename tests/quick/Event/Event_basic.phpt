@@ -58,14 +58,16 @@ class Event_test extends Event {
 		Request::$id = 2;
 		self::instance()->fire('reset_test');
 
-		$Event = new self;
+		Request::$id = 1;
+		$Event       = new self;
 		Event::instance_replace($Event);
 		var_dump('Initial callbacks and cache', $Event->callbacks, $Event->callbacks_cache);
-		$Event->ensure_events_registered();
-		var_dump('Callbacks and cache after ensuring they are registered', $Event->callbacks, $Event->callbacks_cache);
-		$Event->callbacks = [];
-		$Event->ensure_events_registered();
-		var_dump('Callbacks and cache after resetting callbacks and ensuring they are registered', $Event->callbacks, $Event->callbacks_cache);
+		$Event->construct();
+		$Event->init();
+		var_dump('Callbacks and cache construction and initialization (request id #1)', $Event->callbacks, $Event->callbacks_cache);
+		Request::$id = 2;
+		$Event->init();
+		var_dump('Callbacks and cache after initialization (request id #2)', $Event->callbacks, $Event->callbacks_cache);
 
 		$Event->once('', function () {
 			die('Empty event name not allowed');
@@ -146,7 +148,7 @@ string(27) "Initial callbacks and cache"
 array(0) {
 }
 NULL
-string(54) "Callbacks and cache after ensuring they are registered"
+string(67) "Callbacks and cache construction and initialization (request id #1)"
 array(1) {
   ["xyz"]=>
   array(1) {
@@ -161,7 +163,7 @@ array(1) {
     string(15) "module_xyz_test"
   }
 }
-string(78) "Callbacks and cache after resetting callbacks and ensuring they are registered"
+string(56) "Callbacks and cache after initialization (request id #2)"
 array(1) {
   ["xyz"]=>
   array(1) {

@@ -94,6 +94,7 @@ try {
 
 var_dump('Failed saving');
 // Fill cache first
+Language::instance_reset();
 Config::instance_reset();
 DB::instance_reset();
 Config::instance();

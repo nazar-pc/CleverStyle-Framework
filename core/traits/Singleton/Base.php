@@ -84,8 +84,8 @@ trait Base {
 			return $final_class::instance();
 		}
 		$instance = new $called_class;
-		static::instance_prototype_state_init($instance);
 		$instance->construct();
+		static::instance_prototype_state_init($instance);
 		return $instance;
 	}
 	/**

@@ -10,7 +10,9 @@ Config::instance_stub(
 			'url'            => [
 				'http://cscms.travis'
 			],
-			'default_module' => Config::SYSTEM_MODULE
+			'default_module' => Config::SYSTEM_MODULE,
+			'language'       => 'English',
+			'multilingual'   => 0
 		],
 		'components' => [
 			'modules' => [

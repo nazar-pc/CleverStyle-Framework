@@ -7,10 +7,6 @@
  */
 namespace cs;
 /**
- * Event class
- *
- * Provides events subscribing and dispatching
- *
  * @method static $this instance($check = false)
  */
 class Event {
@@ -25,10 +21,25 @@ class Event {
 	 * @var callable[][]
 	 */
 	protected $callbacks_cache;
+	protected function construct () {
+		foreach ($this->events_files_paths() as $path) {
+			include $path;
+		}
+	}
 	protected function init () {
+		/**
+		 * All events handlers registered before first request processing was started should be cached for further requests
+		 */
+		/** @noinspection PhpUndefinedFieldInspection */
+		if ($this->__request_id === 1) {
+			$this->callbacks_cache = $this->callbacks;
+		}
+		/**
+		 * Starting from seconds request we'll take cache and use it as reference set of events handlers
+		 */
 		/** @noinspection PhpUndefinedFieldInspection */
 		if ($this->__request_id > 1) {
-			$this->callbacks = [];
+			$this->callbacks = $this->callbacks_cache;
 		}
 	}
 	/**
@@ -99,7 +110,6 @@ class Event {
 	 * @return bool
 	 */
 	public function fire ($event, ...$arguments) {
-		$this->ensure_events_registered();
 		if (
 			!$event ||
 			!isset($this->callbacks[$event])
@@ -112,25 +122,6 @@ class Event {
 			}
 		}
 		return true;
-	}
-	/**
-	 * Before firing events we need to ensure that events callbacks were registered
-	 */
-	protected function ensure_events_registered () {
-		if (!$this->callbacks_cache) {
-			$this->register_events();
-			$this->callbacks_cache = $this->callbacks;
-		} elseif (!$this->callbacks) {
-			$this->callbacks = $this->callbacks_cache;
-		}
-	}
-	/**
-	 * Initialize all events handlers
-	 */
-	protected function register_events () {
-		foreach ($this->events_files_paths() as $path) {
-			include $path;
-		}
 	}
 	/**
 	 * @return string[]
