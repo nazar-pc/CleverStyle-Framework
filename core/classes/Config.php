@@ -156,7 +156,7 @@ class Config {
 		$this->mirrors['count'] = count($this->mirrors['http']) + count($this->mirrors['https']);
 	}
 	protected function read_core_update_multilingual () {
-		$language = Language::instance(true)->clanguage;
+		$language = Language::instance(true)->clanguage ?: @$this->core['language'];
 		if (!$language || $language == $this->last_language) {
 			return;
 		}
