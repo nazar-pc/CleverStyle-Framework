@@ -241,7 +241,7 @@ class Options {
 				$format = $options[$option];
 				switch ($format['type']) {
 					case 'array':
-						$value = (array)$value;
+						$value = xap((array)$value);
 						break;
 					case 'int_bool':
 						$value = (int)(bool)$value;
