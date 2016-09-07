@@ -159,7 +159,7 @@ class Language implements JsonSerializable {
 			explode(
 				',',
 				strtolower(
-					strtr(Request::instance()->header('accept-language'), '-', '_')
+					str_replace('-', '_', Request::instance()->header('accept-language'))
 				)
 			)
 		);
@@ -278,8 +278,6 @@ class Language implements JsonSerializable {
 	 *
 	 * @param array|string $item
 	 * @param null|string  $value
-	 *
-	 * @return string
 	 */
 	public function __set ($item, $value = null) {
 		$this->set($item, $value);
