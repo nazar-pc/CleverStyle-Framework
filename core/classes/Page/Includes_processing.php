@@ -242,8 +242,6 @@ class Includes_processing {
 	 * @param string   $base_target_file_path  Base filename for resulting combined files
 	 * @param bool     $vulcanization          Whether to put combined files separately or to make includes built-in (vulcanization)
 	 * @param string[] $not_embedded_resources Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because of CSP
-	 *
-	 * @return string
 	 */
 	protected static function html_process_scripts (&$data, $file, $base_target_file_path, $vulcanization, &$not_embedded_resources) {
 		if (!preg_match_all('/<script(.*)<\/script>/Uims', $data, $scripts)) {
@@ -296,8 +294,6 @@ class Includes_processing {
 	 * @param string   $base_target_file_path  Base filename for resulting combined files
 	 * @param bool     $vulcanization          Whether to put combined files separately or to make includes built-in (vulcanization)
 	 * @param string[] $not_embedded_resources Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because of CSP
-	 *
-	 * @return string
 	 */
 	protected static function html_process_links_and_styles (&$data, $file, $base_target_file_path, $vulcanization, &$not_embedded_resources) {
 		// Drop Polymer inclusion, since it is already present

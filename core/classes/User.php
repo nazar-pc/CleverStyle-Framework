@@ -210,8 +210,6 @@ class User {
 	 *
 	 * @param array|int|string $item Item-value array may be specified for setting several items at once
 	 * @param mixed|null       $value
-	 *
-	 * @return bool
 	 */
 	public function __set ($item, $value = null) {
 		$this->set($item, $value);

@@ -48,7 +48,7 @@ class False_class extends SimpleXMLElement implements ArrayAccess {
 	 *
 	 * @param string $item
 	 *
-	 * @return False_class
+	 * @return false
 	 */
 	public function __isset ($item) {
 		return false;

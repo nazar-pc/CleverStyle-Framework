@@ -110,9 +110,19 @@ class Local extends _Abstract {
 	public function source_by_url ($url) {
 		return $this->relative_path(source_by_url($url));
 	}
+	/**
+	 * @param string $path
+	 *
+	 * @return string
+	 */
 	protected function absolute_path ($path) {
 		return preg_match('#^(([a-z]+:)?//|/)#i', $path) ? $path : PUBLIC_STORAGE.'/'.ltrim($path);
 	}
+	/**
+	 * @param string $path
+	 *
+	 * @return string
+	 */
 	protected function relative_path ($path) {
 		return strpos($path, PUBLIC_STORAGE.'/') === 0 ? $path : substr($path, strlen(PUBLIC_STORAGE.'/'));
 	}
