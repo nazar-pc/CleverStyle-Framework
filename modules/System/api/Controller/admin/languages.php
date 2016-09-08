@@ -19,6 +19,8 @@ trait languages {
 	];
 	/**
 	 * Get languages settings
+	 *
+	 * @return array
 	 */
 	public static function admin_languages_get_settings () {
 		$Config = Config::instance();

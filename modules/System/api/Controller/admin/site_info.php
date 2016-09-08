@@ -22,6 +22,8 @@ trait site_info {
 	];
 	/**
 	 * Get site info settings
+	 *
+	 * @return array
 	 */
 	public static function admin_site_info_get_settings () {
 		$Config = Config::instance();

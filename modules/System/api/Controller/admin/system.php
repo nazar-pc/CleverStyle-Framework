@@ -22,6 +22,8 @@ trait system {
 	];
 	/**
 	 * Get system settings
+	 *
+	 * @return array
 	 */
 	public static function admin_system_get_settings () {
 		$Config = Config::instance();

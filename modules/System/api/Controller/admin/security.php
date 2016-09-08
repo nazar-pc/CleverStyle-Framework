@@ -18,6 +18,8 @@ trait security {
 	];
 	/**
 	 * Get security settings
+	 *
+	 * @return array
 	 */
 	public static function admin_security_get_settings () {
 		$Config = Config::instance();

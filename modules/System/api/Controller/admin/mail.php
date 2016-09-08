@@ -28,6 +28,8 @@ trait mail {
 	];
 	/**
 	 * Get mail settings
+	 *
+	 * @return array
 	 */
 	public static function admin_mail_get_settings () {
 		$Config = Config::instance();

@@ -26,6 +26,8 @@ trait optimization {
 	];
 	/**
 	 * Get optimization settings
+	 *
+	 * @return array
 	 */
 	public static function admin_optimization_get_settings () {
 		$Config = Config::instance();

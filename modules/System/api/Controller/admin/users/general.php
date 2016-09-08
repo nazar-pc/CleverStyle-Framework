@@ -26,6 +26,8 @@ trait general {
 	];
 	/**
 	 * Get general users settings
+	 *
+	 * @return array
 	 */
 	public static function admin_users_general_get_settings () {
 		$Config = Config::instance();
