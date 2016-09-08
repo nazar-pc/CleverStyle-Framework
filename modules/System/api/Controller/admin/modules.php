@@ -284,23 +284,15 @@ trait modules {
 	 * @throws ExitException
 	 */
 	protected static function set_default_module ($module) {
-		$Config      = Config::instance();
-		$module_data = $Config->module($module);
-		if (!$module_data) {
-			throw new ExitException(404);
-		}
-		if (
-			$module == $Config->core['default_module'] ||
-			!$module_data->enabled() ||
-			!file_exists_with_extension(MODULES."/$module/index", ['php', 'html', 'json'])
-		) {
-			throw new ExitException(400);
-		}
+		$Config = Config::instance();
 		if (!Event::instance()->fire('admin/System/modules/default', ['name' => $module])) {
 			throw new ExitException(500);
 		}
 		$Config->core['default_module'] = $module;
 		static::admin_modules_save();
+		if ($Config->core['default_module'] != $module) {
+			throw new ExitException(400);
+		}
 	}
 	/**
 	 * Enable module
@@ -596,11 +588,9 @@ trait modules {
 		/**
 		 * Temporary close site
 		 */
-		$site_mode = $Config->core['site_mode'];
-		if ($site_mode) {
-			$Config->core['site_mode'] = 0;
-			static::admin_modules_save();
-		}
+		$site_mode                 = $Config->core['site_mode'];
+		$Config->core['site_mode'] = 0;
+		static::admin_modules_save();
 		if (!static::is_same_module($new_meta, Config::SYSTEM_MODULE)) {
 			throw new ExitException($L->this_is_not_system_installer_file, 400);
 		}
@@ -617,10 +607,8 @@ trait modules {
 		/**
 		 * Restore previous site mode
 		 */
-		if ($site_mode) {
-			$Config->core['site_mode'] = 1;
-			static::admin_modules_save();
-		}
+		$Config->core['site_mode'] = $site_mode;
+		static::admin_modules_save();
 		static::admin_modules_cleanup();
 	}
 	/**
