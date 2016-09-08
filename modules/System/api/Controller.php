@@ -15,6 +15,7 @@ use
 
 class Controller {
 	use
+		admin\core_options_common,
 		admin\about_server,
 		admin\blocks,
 		admin\databases,

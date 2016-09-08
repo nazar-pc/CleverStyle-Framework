@@ -9,23 +9,24 @@
  */
 namespace cs\modules\System\api\Controller\admin;
 use
-	cs\Config,
-	cs\ExitException;
+	cs\Config;
 
 trait site_info {
+	protected static $site_info_options_keys = [
+		'site_name',
+		'url',
+		'cookie_domain',
+		'cookie_prefix',
+		'timezone',
+		'admin_email'
+	];
 	/**
 	 * Get site info settings
 	 */
 	public static function admin_site_info_get_settings () {
 		$Config = Config::instance();
-		return [
-			'site_name'     => $Config->core['site_name'],
-			'url'           => implode("\n", $Config->core['url']),
-			'cookie_domain' => implode("\n", $Config->core['cookie_domain']),
-			'cookie_prefix' => $Config->core['cookie_prefix'],
-			'timezone'      => $Config->core['timezone'],
-			'admin_email'   => $Config->core['admin_email'],
-			'applied'       => $Config->cancel_available()
+		return $Config->core(static::$site_info_options_keys) + [
+			'applied' => $Config->cancel_available()
 		];
 	}
 	/**
@@ -33,63 +34,27 @@ trait site_info {
 	 *
 	 * @param \cs\Request $Request
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	public static function admin_site_info_apply_settings ($Request) {
-		static::admin_site_info_settings_common($Request);
-		if (!Config::instance()->apply()) {
-			throw new ExitException(500);
-		}
-	}
-	/**
-	 * @param \cs\Request $Request
-	 *
-	 * @throws ExitException
-	 */
-	protected static function admin_site_info_settings_common ($Request) {
-		$data = $Request->data('site_name', 'url', 'cookie_domain', 'cookie_prefix', 'timezone', 'admin_email');
-		if (!$data || !in_array($data['timezone'], get_timezones_list(), true)) {
-			throw new ExitException(400);
-		}
-		$Config                        = Config::instance();
-		$Config->core['site_name']     = xap($data['site_name']);
-		$Config->core['url']           = static::admin_site_info_settings_common_multiline($data['url']);
-		$Config->core['cookie_domain'] = static::admin_site_info_settings_common_multiline($data['cookie_domain']);
-		$Config->core['cookie_prefix'] = xap($data['cookie_prefix']);
-		$Config->core['timezone']      = $data['timezone'];
-		$Config->core['admin_email']   = xap($data['admin_email'], true);
-	}
-	/**
-	 * @param string $value
-	 *
-	 * @return string[]
-	 */
-	protected static function admin_site_info_settings_common_multiline ($value) {
-		$value = _trim(explode("\n", $value));
-		if ($value[0] == '') {
-			$value = [];
-		}
-		return $value;
+		static::admin_core_options_apply($Request, static::$site_info_options_keys);
 	}
 	/**
 	 * Save site info settings
 	 *
 	 * @param \cs\Request $Request
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	public static function admin_site_info_save_settings ($Request) {
-		static::admin_site_info_settings_common($Request);
-		if (!Config::instance()->save()) {
-			throw new ExitException(500);
-		}
+		static::admin_core_options_save($Request, static::$site_info_options_keys);
 	}
 	/**
 	 * Cancel site info settings
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	public static function admin_site_info_cancel_settings () {
-		Config::instance()->cancel();
+		static::admin_core_options_cancel();
 	}
 }

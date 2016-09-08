@@ -11,9 +11,18 @@
   Polymer({
     'is': 'cs-system-admin-site-info',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_site_info_'), cs.Polymer.behaviors.admin.System.settings],
+    observers: ['_url_changed(settings.url)', '_cookie_domain_changed(settings.cookie_domain)'],
     properties: {
       settings_api_url: 'api/System/admin/site_info',
-      timezones: Array
+      timezones: Array,
+      url_string: {
+        observer: '_url_string_changed',
+        type: String
+      },
+      cookie_domain_string: {
+        observer: '_cookie_domain_string_changed',
+        type: String
+      }
     },
     ready: function(){
       var this$ = this;
@@ -29,6 +38,108 @@
         }
         this$.timezones = res$;
       });
+    },
+    _url_changed: function(url){
+      url = url.join('\n');
+      if (!deepEq$(this.url_string, url, '===')) {
+        this.url_string = url;
+      }
+    },
+    _cookie_domain_changed: function(cookie_domain){
+      cookie_domain = cookie_domain.join('\n');
+      if (!deepEq$(this.cookie_domain_string, cookie_domain, '===')) {
+        this.cookie_domain_string = cookie_domain;
+      }
+    },
+    _url_string_changed: function(){
+      this.set('settings.url', this.url_string.split('\n'));
+    },
+    _cookie_domain_string_changed: function(){
+      this.set('settings.cookie_domain', this.cookie_domain_string.split('\n'));
     }
   });
+  function deepEq$(x, y, type){
+    var toString = {}.toString, hasOwnProperty = {}.hasOwnProperty,
+        has = function (obj, key) { return hasOwnProperty.call(obj, key); };
+    var first = true;
+    return eq(x, y, []);
+    function eq(a, b, stack) {
+      var className, length, size, result, alength, blength, r, key, ref, sizeB;
+      if (a == null || b == null) { return a === b; }
+      if (a.__placeholder__ || b.__placeholder__) { return true; }
+      if (a === b) { return a !== 0 || 1 / a == 1 / b; }
+      className = toString.call(a);
+      if (toString.call(b) != className) { return false; }
+      switch (className) {
+        case '[object String]': return a == String(b);
+        case '[object Number]':
+          return a != +a ? b != +b : (a == 0 ? 1 / a == 1 / b : a == +b);
+        case '[object Date]':
+        case '[object Boolean]':
+          return +a == +b;
+        case '[object RegExp]':
+          return a.source == b.source &&
+                 a.global == b.global &&
+                 a.multiline == b.multiline &&
+                 a.ignoreCase == b.ignoreCase;
+      }
+      if (typeof a != 'object' || typeof b != 'object') { return false; }
+      length = stack.length;
+      while (length--) { if (stack[length] == a) { return true; } }
+      stack.push(a);
+      size = 0;
+      result = true;
+      if (className == '[object Array]') {
+        alength = a.length;
+        blength = b.length;
+        if (first) {
+          switch (type) {
+          case '===': result = alength === blength; break;
+          case '<==': result = alength <= blength; break;
+          case '<<=': result = alength < blength; break;
+          }
+          size = alength;
+          first = false;
+        } else {
+          result = alength === blength;
+          size = alength;
+        }
+        if (result) {
+          while (size--) {
+            if (!(result = size in a == size in b && eq(a[size], b[size], stack))){ break; }
+          }
+        }
+      } else {
+        if ('constructor' in a != 'constructor' in b || a.constructor != b.constructor) {
+          return false;
+        }
+        for (key in a) {
+          if (has(a, key)) {
+            size++;
+            if (!(result = has(b, key) && eq(a[key], b[key], stack))) { break; }
+          }
+        }
+        if (result) {
+          sizeB = 0;
+          for (key in b) {
+            if (has(b, key)) { ++sizeB; }
+          }
+          if (first) {
+            if (type === '<<=') {
+              result = size < sizeB;
+            } else if (type === '<==') {
+              result = size <= sizeB
+            } else {
+              result = size === sizeB;
+            }
+          } else {
+            first = false;
+            result = size === sizeB;
+          }
+        }
+      }
+      stack.pop();
+      return result;
+    }
+  }
 }).call(this);

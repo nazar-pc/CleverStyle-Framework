@@ -9,19 +9,20 @@
  */
 namespace cs\modules\System\api\Controller\admin;
 use
-	cs\Config,
-	cs\ExitException;
+	cs\Config;
 
 trait security {
+	protected static $security_options_keys = [
+		'key_expire',
+		'gravatar_support'
+	];
 	/**
 	 * Get security settings
 	 */
 	public static function admin_security_get_settings () {
 		$Config = Config::instance();
-		return [
-			'key_expire'       => $Config->core['key_expire'],
-			'gravatar_support' => $Config->core['gravatar_support'],
-			'applied'          => $Config->cancel_available()
+		return $Config->core(static::$security_options_keys) + [
+			'applied' => $Config->cancel_available()
 		];
 	}
 	/**
@@ -29,59 +30,27 @@ trait security {
 	 *
 	 * @param \cs\Request $Request
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	public static function admin_security_apply_settings ($Request) {
-		static::admin_security_settings_common($Request);
-		if (!Config::instance()->apply()) {
-			throw new ExitException(500);
-		}
-	}
-	/**
-	 * @param \cs\Request $Request
-	 *
-	 * @throws ExitException
-	 */
-	protected static function admin_security_settings_common ($Request) {
-		$data = $Request->data('key_expire', 'gravatar_support');
-		if (!$data) {
-			throw new ExitException(400);
-		}
-		$Config                           = Config::instance();
-		$Config->core['key_expire']       = (int)$data['key_expire'];
-		$Config->core['gravatar_support'] = (int)(bool)$data['gravatar_support'];
-	}
-	/**
-	 * @param string $value
-	 *
-	 * @return string[]
-	 */
-	protected static function admin_security_settings_common_multiline ($value) {
-		$value = _trim(explode("\n", $value));
-		if ($value[0] == '') {
-			$value = [];
-		}
-		return $value;
+		static::admin_core_options_apply($Request, static::$security_options_keys);
 	}
 	/**
 	 * Save security settings
 	 *
 	 * @param \cs\Request $Request
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	public static function admin_security_save_settings ($Request) {
-		static::admin_security_settings_common($Request);
-		if (!Config::instance()->save()) {
-			throw new ExitException(500);
-		}
+		static::admin_core_options_save($Request, static::$security_options_keys);
 	}
 	/**
 	 * Cancel security settings
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	public static function admin_security_cancel_settings () {
-		Config::instance()->cancel();
+		static::admin_core_options_cancel();
 	}
 }

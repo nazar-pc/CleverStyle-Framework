@@ -11,6 +11,7 @@ This object allow to get configuration of any module/block, and also general sys
 ###[Up](#) Methods
 
 `$Config` object has next public methods:
+* core()
 * base_url()
 * core_url()
 * apply()
@@ -18,6 +19,9 @@ This object allow to get configuration of any module/block, and also general sys
 * save()
 * module()
 * cancel_available()
+
+#### core(...$name : string[]|string[][]) : mixed|mixed[]|null
+Get core options item, if item (or least one in case of many) not present - returns `null`
 
 #### base_url() : string
 Method returns string with base URL of current mirror. For example:

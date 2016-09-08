@@ -176,6 +176,34 @@ class Config {
 		$this->core           = $multilingual_options + $this->core;
 	}
 	/**
+	 * Get core options item
+	 *
+	 * @param string[]|string[][] $item
+	 *
+	 * @return mixed|mixed[]|null Core options items (or associative array of items) if exists or `null` otherwise (in case if `$item` is an array even one
+	 *                            missing key will cause the whole thing to fail)
+	 */
+	public function core (...$item) {
+		if (count($item) === 1) {
+			$item = $item[0];
+		}
+		/**
+		 * @var string|string[] $item
+		 */
+		if (is_array($item)) {
+			$result = [];
+			foreach ($item as &$i) {
+				if (!isset($this->core[$i])) {
+					return null;
+				}
+				$result[$i] = $this->core[$i];
+			}
+			return $result;
+		}
+		/** @noinspection OffsetOperationsInspection */
+		return @$this->core[$item];
+	}
+	/**
 	 * Applying settings without saving changes into db
 	 *
 	 * @return bool
@@ -231,14 +259,6 @@ class Config {
 		Event::instance()->fire('System/Config/changed');
 		return true;
 	}
-	protected function write_core_update_multilingual () {
-		$db_id = $this->module('System')->db('texts');
-		$Text  = Text::instance();
-		foreach (Options::get_multilingual() as $option) {
-			$this->core_internal[$option] = $Text->set($db_id, 'System/Config/core', $option, $this->core[$option]);
-		}
-		$this->cache->del(Language::instance()->clanguage);
-	}
 	/**
 	 * Saving settings
 	 *
@@ -251,7 +271,20 @@ class Config {
 		// TODO: Remove `modules/System/core_settings_defaults.json` file in 6.x
 		$core_settings_defaults = Options::get_defaults();
 		$this->core             = Options::apply_formatting($this->core) + $core_settings_defaults;
-		$this->write_core_update_multilingual();
+
+		/**
+		 * Persist multilingual options and copy the rest to `$this->core_internal` as is
+		 */
+		$multilingual_options_list = Options::get_multilingual();
+		$db_id                     = $this->module('System')->db('texts');
+		$Text                      = Text::instance();
+		foreach ($this->core as $option => $value) {
+			if (in_array($option, $multilingual_options_list)) {
+				$this->core_internal[$option] = $Text->set($db_id, 'System/Config/core', $option, $this->core[$option]);
+			} else {
+				$this->core_internal[$option] = $value;
+			}
+		}
 		if (!$this->update(Core::instance()->domain, $this->core_internal, $this->db, $this->storage, $this->components)) {
 			return false;
 		}

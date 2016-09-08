@@ -15,21 +15,23 @@ use
 	cs\ExitException;
 
 trait optimization {
+	protected static $optimization_options_keys = [
+		'cache_compress_js_css',
+		'frontend_load_optimization',
+		'vulcanization',
+		'put_js_after_body',
+		'disable_webcomponents',
+		'inserts_limit',
+		'update_ratio'
+	];
 	/**
 	 * Get optimization settings
 	 */
 	public static function admin_optimization_get_settings () {
 		$Config = Config::instance();
-		return [
-			'cache_compress_js_css'      => $Config->core['cache_compress_js_css'],
-			'frontend_load_optimization' => $Config->core['frontend_load_optimization'],
-			'vulcanization'              => $Config->core['vulcanization'],
-			'put_js_after_body'          => $Config->core['put_js_after_body'],
-			'disable_webcomponents'      => $Config->core['disable_webcomponents'],
-			'inserts_limit'              => $Config->core['inserts_limit'],
-			'update_ratio'               => $Config->core['update_ratio'],
-			'cache_state'                => Cache::instance()->cache_state(),
-			'applied'                    => $Config->cancel_available()
+		return $Config->core(static::$optimization_options_keys) + [
+			'cache_state' => Cache::instance()->cache_state(),
+			'applied'     => $Config->cancel_available()
 		];
 	}
 	/**
@@ -74,39 +76,8 @@ trait optimization {
 	 * @throws ExitException
 	 */
 	public static function admin_optimization_apply_settings ($Request) {
-		static::admin_optimization_settings_common($Request);
-		$Config = Config::instance();
-		if (!$Config->apply()) {
-			throw new ExitException(500);
-		}
+		static::admin_core_options_apply($Request, static::$optimization_options_keys);
 		static::admin_optimization_clean_pcache();
-	}
-	/**
-	 * @param \cs\Request $Request
-	 *
-	 * @throws ExitException
-	 */
-	protected static function admin_optimization_settings_common ($Request) {
-		$data = $Request->data(
-			'cache_compress_js_css',
-			'frontend_load_optimization',
-			'vulcanization',
-			'put_js_after_body',
-			'disable_webcomponents',
-			'inserts_limit',
-			'update_ratio'
-		);
-		if (!$data) {
-			throw new ExitException(400);
-		}
-		$Config                                     = Config::instance();
-		$Config->core['cache_compress_js_css']      = (int)(bool)$data['cache_compress_js_css'];
-		$Config->core['frontend_load_optimization'] = (int)(bool)$data['frontend_load_optimization'];
-		$Config->core['vulcanization']              = (int)(bool)$data['vulcanization'];
-		$Config->core['put_js_after_body']          = (int)(bool)$data['put_js_after_body'];
-		$Config->core['disable_webcomponents']      = (int)(bool)$data['disable_webcomponents'];
-		$Config->core['inserts_limit']              = (int)$data['inserts_limit'];
-		$Config->core['update_ratio']               = (int)$data['update_ratio'];
 	}
 	/**
 	 * Save optimization settings
@@ -116,11 +87,7 @@ trait optimization {
 	 * @throws ExitException
 	 */
 	public static function admin_optimization_save_settings ($Request) {
-		static::admin_optimization_settings_common($Request);
-		$Config = Config::instance();
-		if (!$Config->save()) {
-			throw new ExitException(500);
-		}
+		static::admin_core_options_save($Request, static::$optimization_options_keys);
 		static::admin_optimization_clean_pcache();
 	}
 	/**
@@ -129,6 +96,6 @@ trait optimization {
 	 * @throws ExitException
 	 */
 	public static function admin_optimization_cancel_settings () {
-		Config::instance()->cancel();
+		static::admin_core_options_cancel();
 	}
 }

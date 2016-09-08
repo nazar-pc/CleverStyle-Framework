@@ -89,7 +89,7 @@ trait Data_and_files {
 	 * @param string[]|string[][] $name
 	 *
 	 * @return mixed|mixed[]|null Data items (or associative array of data items) if exists or `null` otherwise (in case if `$name` is an array even one
-	 *                             missing key will cause the whole thing to fail)
+	 *                            missing key will cause the whole thing to fail)
 	 */
 	public function data (...$name) {
 		if (count($name) === 1) {

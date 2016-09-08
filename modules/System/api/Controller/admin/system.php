@@ -9,23 +9,24 @@
  */
 namespace cs\modules\System\api\Controller\admin;
 use
-	cs\Config,
-	cs\ExitException;
+	cs\Config;
 
 trait system {
+	protected static $system_options_keys = [
+		'site_mode',
+		'closed_title',
+		'closed_text',
+		'title_delimiter',
+		'title_reverse',
+		'simple_admin_mode'
+	];
 	/**
 	 * Get system settings
 	 */
 	public static function admin_system_get_settings () {
 		$Config = Config::instance();
-		return [
-			'site_mode'         => $Config->core['site_mode'],
-			'closed_title'      => $Config->core['closed_title'],
-			'closed_text'       => $Config->core['closed_text'],
-			'title_delimiter'   => $Config->core['title_delimiter'],
-			'title_reverse'     => $Config->core['title_reverse'],
-			'simple_admin_mode' => $Config->core['simple_admin_mode'],
-			'applied'           => $Config->cancel_available()
+		return $Config->core(static::$system_options_keys) + [
+			'applied' => $Config->cancel_available()
 		];
 	}
 	/**
@@ -33,51 +34,27 @@ trait system {
 	 *
 	 * @param \cs\Request $Request
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	public static function admin_system_apply_settings ($Request) {
-		static::admin_system_settings_common($Request);
-		if (!Config::instance()->apply()) {
-			throw new ExitException(500);
-		}
-	}
-	/**
-	 * @param \cs\Request $Request
-	 *
-	 * @throws ExitException
-	 */
-	protected static function admin_system_settings_common ($Request) {
-		$data = $Request->data('site_mode', 'closed_title', 'closed_text', 'title_delimiter', 'title_reverse', 'simple_admin_mode');
-		if (!$data) {
-			throw new ExitException(400);
-		}
-		$Config                            = Config::instance();
-		$Config->core['site_mode']         = (int)(bool)$data['site_mode'];
-		$Config->core['closed_title']      = xap($data['closed_title']);
-		$Config->core['closed_text']       = xap($data['closed_text'], true);
-		$Config->core['title_delimiter']   = xap($data['title_delimiter']);
-		$Config->core['title_reverse']     = (int)(bool)$data['title_reverse'];
-		$Config->core['simple_admin_mode'] = (int)(bool)$data['simple_admin_mode'];
+		static::admin_core_options_apply($Request, static::$system_options_keys);
 	}
 	/**
 	 * Save system settings
 	 *
 	 * @param \cs\Request $Request
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	public static function admin_system_save_settings ($Request) {
-		static::admin_system_settings_common($Request);
-		if (!Config::instance()->save()) {
-			throw new ExitException(500);
-		}
+		static::admin_core_options_save($Request, static::$system_options_keys);
 	}
 	/**
 	 * Cancel system settings
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	public static function admin_system_cancel_settings () {
-		Config::instance()->cancel();
+		static::admin_core_options_cancel();
 	}
 }

@@ -9,21 +9,22 @@
  */
 namespace cs\modules\System\api\Controller\admin;
 use
-	cs\Config,
-	cs\ExitException;
+	cs\Config;
 
 trait languages {
+	protected static $languages_options_keys = [
+		'language',
+		'active_languages',
+		'multilingual'
+	];
 	/**
 	 * Get languages settings
 	 */
 	public static function admin_languages_get_settings () {
 		$Config = Config::instance();
-		return [
-			'language'         => $Config->core['language'],
-			'active_languages' => $Config->core['active_languages'],
-			'languages'        => static::get_languages_array(),
-			'multilingual'     => $Config->core['multilingual'],
-			'applied'          => $Config->cancel_available()
+		return $Config->core(static::$languages_options_keys) + [
+			'languages' => static::get_languages_array(),
+			'applied'   => $Config->cancel_available()
 		];
 	}
 	/**
@@ -44,53 +45,27 @@ trait languages {
 	 *
 	 * @param \cs\Request $Request
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	public static function admin_languages_apply_settings ($Request) {
-		static::admin_languages_settings_common($Request);
-		if (!Config::instance()->apply()) {
-			throw new ExitException(500);
-		}
-	}
-	/**
-	 * @param \cs\Request $Request
-	 *
-	 * @throws ExitException
-	 */
-	protected static function admin_languages_settings_common ($Request) {
-		$data = $Request->data('language', 'active_languages', 'multilingual');
-		if (
-			!$data ||
-			!is_array($data['active_languages']) ||
-			!in_array($data['language'], $data['active_languages'], true) ||
-			array_diff($data['active_languages'], static::get_languages_array())
-		) {
-			throw new ExitException(400);
-		}
-		$Config                           = Config::instance();
-		$Config->core['language']         = $data['language'];
-		$Config->core['active_languages'] = $data['active_languages'];
-		$Config->core['multilingual']     = (int)(bool)$data['multilingual'];
+		static::admin_core_options_apply($Request, static::$languages_options_keys);
 	}
 	/**
 	 * Save language settings
 	 *
 	 * @param \cs\Request $Request
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	public static function admin_languages_save_settings ($Request) {
-		static::admin_languages_settings_common($Request);
-		if (!Config::instance()->save()) {
-			throw new ExitException(500);
-		}
+		static::admin_core_options_save($Request, static::$languages_options_keys);
 	}
 	/**
 	 * Cancel language settings
 	 *
-	 * @throws ExitException
+	 * @throws \cs\ExitException
 	 */
 	public static function admin_languages_cancel_settings () {
-		Config::instance()->cancel();
+		static::admin_core_options_cancel();
 	}
 }

@@ -51,10 +51,10 @@ Initializes route, required to be called after `::init_server()`
 Get header by name, if header not present - returns `false`
 
 #### query(...$name : string[]|string[][]) : mixed|mixed[]|null
-Get query parameter by name, if parameter (ar least one in case of many) not present - returns `null`
+Get query parameter by name, if parameter (or least one in case of many) not present - returns `null`
 
 #### data(...$name : string[]|string[][]) : mixed|mixed[]|null
-Get data item by name, if item (ar least one in case of many) not present - returns `null`
+Get data item by name, if item (or least one in case of many) not present - returns `null`
 
 #### files($name : string) : array|null
 Get file item by name

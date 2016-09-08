@@ -28,12 +28,13 @@ mixin input (name, hidden, type, min, max)
 		| [[L.#{name}]]
 		cs-tooltip
 	input(is="cs-input-text" type=type value=`{{settings.${name}}}` hidden=hidden min=min max=max)
-mixin textarea (name, hidden)
+mixin textarea (name, hidden, bind_name)
 	- hidden = hidden && '[[' + hidden + ']]'
+	- bind_name = bind_name || `settings.${name}`
 	label(tooltip=`[[L.${name}_info]]` hidden=hidden)
 		| [[L.#{name}]]
 		cs-tooltip
-	textarea(is="cs-textarea" autosize value=`{{settings.${name}}}` hidden=hidden)
+	textarea(is="cs-textarea" autosize value=`{{${bind_name}}}` hidden=hidden)
 mixin editor (name, simple)
 	label(tooltip=`[[L.${name}_info]]`)
 		| [[L.#{name}]]

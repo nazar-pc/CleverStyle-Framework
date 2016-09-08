@@ -14,23 +14,25 @@ use
 	cs\Mail as System_mail;
 
 trait mail {
+	protected static $mail_options_keys = [
+		'smtp',
+		'smtp_host',
+		'smtp_port',
+		'smtp_secure',
+		'smtp_auth',
+		'smtp_user',
+		'smtp_password',
+		'mail_from',
+		'mail_from_name',
+		'mail_signature'
+	];
 	/**
 	 * Get mail settings
 	 */
 	public static function admin_mail_get_settings () {
 		$Config = Config::instance();
-		return [
-			'smtp'           => $Config->core['smtp'],
-			'smtp_host'      => $Config->core['smtp_host'],
-			'smtp_port'      => $Config->core['smtp_port'],
-			'smtp_secure'    => $Config->core['smtp_secure'],
-			'smtp_auth'      => $Config->core['smtp_auth'],
-			'smtp_user'      => $Config->core['smtp_user'],
-			'smtp_password'  => $Config->core['smtp_password'],
-			'mail_from'      => $Config->core['mail_from'],
-			'mail_from_name' => $Config->core['mail_from_name'],
-			'mail_signature' => $Config->core['mail_signature'],
-			'applied'        => $Config->cancel_available()
+		return $Config->core(static::$mail_options_keys) + [
+			'applied' => $Config->cancel_available()
 		];
 	}
 	/**
@@ -57,43 +59,7 @@ trait mail {
 	 * @throws ExitException
 	 */
 	public static function admin_mail_apply_settings ($Request) {
-		static::admin_mail_settings_common($Request);
-		if (!Config::instance()->apply()) {
-			throw new ExitException(500);
-		}
-	}
-	/**
-	 * @param \cs\Request $Request
-	 *
-	 * @throws ExitException
-	 */
-	protected static function admin_mail_settings_common ($Request) {
-		$data = $Request->data(
-			'smtp',
-			'smtp_host',
-			'smtp_port',
-			'smtp_secure',
-			'smtp_auth',
-			'smtp_user',
-			'smtp_password',
-			'mail_from',
-			'mail_from_name',
-			'mail_signature'
-		);
-		if (!$data || !in_array($data['smtp_secure'], ['', 'ssl', 'tls'], true)) {
-			throw new ExitException(400);
-		}
-		$Config                         = Config::instance();
-		$Config->core['smtp']           = (int)(bool)$data['smtp'];
-		$Config->core['smtp_host']      = $data['smtp_host'];
-		$Config->core['smtp_port']      = (int)$data['smtp_port'];
-		$Config->core['smtp_secure']    = $data['smtp_secure'];
-		$Config->core['smtp_auth']      = (int)(bool)$data['smtp_auth'];
-		$Config->core['smtp_user']      = $data['smtp_user'];
-		$Config->core['smtp_password']  = $data['smtp_password'];
-		$Config->core['mail_from']      = $data['mail_from'];
-		$Config->core['mail_from_name'] = xap($data['mail_from_name']);
-		$Config->core['mail_signature'] = xap($data['mail_signature'], true);
+		static::admin_core_options_apply($Request, static::$mail_options_keys);
 	}
 	/**
 	 * Save mail settings
@@ -103,10 +69,7 @@ trait mail {
 	 * @throws ExitException
 	 */
 	public static function admin_mail_save_settings ($Request) {
-		static::admin_mail_settings_common($Request);
-		if (!Config::instance()->save()) {
-			throw new ExitException(500);
-		}
+		static::admin_core_options_save($Request, static::$mail_options_keys);
 	}
 	/**
 	 * Cancel mail settings
@@ -114,6 +77,6 @@ trait mail {
 	 * @throws ExitException
 	 */
 	public static function admin_mail_cancel_settings () {
-		Config::instance()->cancel();
+		static::admin_core_options_cancel();
 	}
 }
