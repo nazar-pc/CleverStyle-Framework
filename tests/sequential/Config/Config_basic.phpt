@@ -141,6 +141,7 @@ var_dump($Config->base_url());
 var_dump('Base url (multilingual)');
 $Config->core['multilingual'] = 1;
 var_dump($Config->base_url());
+$Config->core['multilingual'] = 0;
 
 var_dump('Base url (Request not initialized)');
 Request::instance()->mirror_index = -1;
@@ -169,6 +170,11 @@ var_dump($Config->core('non_existing', 'site_mode'));
 
 var_dump('->core() array (non-existing)');
 var_dump($Config->core(['non_existing', 'site_mode']));
+
+var_dump('Save some non-standard key in config');
+$Config->core['something_odd'] = 1;
+var_dump($Config->save());
+var_dump(isset($Config->core['something_odd']));
 ?>
 --EXPECT--
 string(24) "Default module initially"
@@ -237,3 +243,6 @@ string(32) "->core() multiple (non-existing)"
 NULL
 string(29) "->core() array (non-existing)"
 NULL
+string(36) "Save some non-standard key in config"
+bool(true)
+bool(false)
