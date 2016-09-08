@@ -33,14 +33,23 @@ $Config->core['default_module'] = 'Non_existent';
 var_dump($Config->save());
 var_dump($Config->core['default_module']);
 
+var_dump('Check if cancel available (before apply)');
+var_dump($Config->cancel_available());
+
 var_dump('Apply config');
 $Config->core['site_mode'] = 0;
 var_dump($Config->apply());
 var_dump($Config->core['site_mode']);
 
+var_dump('Check if cancel available (after apply)');
+var_dump($Config->cancel_available());
+
 var_dump('Cancel applied changes');
 $Config->cancel();
 var_dump($Config->core['site_mode']);
+
+var_dump('Check if cancel available (after cancel)');
+var_dump($Config->cancel_available());
 
 var_dump('Apply and save config');
 $Config->core['site_mode'] = 0;
@@ -142,6 +151,24 @@ var_dump($Config->module('System') instanceof Config\Module_Properties);
 
 var_dump('Get non-existing module');
 var_dump($Config->module('Non_existent') instanceof False_class);
+
+var_dump('->core() single');
+var_dump($Config->core('site_name'));
+
+var_dump('->core() multiple');
+var_dump($Config->core('site_name', 'site_mode'));
+
+var_dump('->core() array');
+var_dump($Config->core(['site_name', 'site_mode']));
+
+var_dump('->core() single (non-existing)');
+var_dump($Config->core('non_existing'));
+
+var_dump('->core() multiple (non-existing)');
+var_dump($Config->core('non_existing', 'site_mode'));
+
+var_dump('->core() array (non-existing)');
+var_dump($Config->core(['non_existing', 'site_mode']));
 ?>
 --EXPECT--
 string(24) "Default module initially"
@@ -154,11 +181,17 @@ string(6) "System"
 string(37) "Changed default module (non-existing)"
 bool(true)
 string(6) "System"
+string(40) "Check if cancel available (before apply)"
+bool(false)
 string(12) "Apply config"
 bool(true)
 int(0)
+string(39) "Check if cancel available (after apply)"
+bool(true)
 string(22) "Cancel applied changes"
 int(1)
+string(40) "Check if cancel available (after cancel)"
+bool(false)
 string(21) "Apply and save config"
 bool(true)
 bool(true)
@@ -182,3 +215,25 @@ string(10) "Get module"
 bool(true)
 string(23) "Get non-existing module"
 bool(true)
+string(15) "->core() single"
+string(8) "Web-site"
+string(17) "->core() multiple"
+array(2) {
+  ["site_name"]=>
+  string(8) "Web-site"
+  ["site_mode"]=>
+  int(1)
+}
+string(14) "->core() array"
+array(2) {
+  ["site_name"]=>
+  string(8) "Web-site"
+  ["site_mode"]=>
+  int(1)
+}
+string(30) "->core() single (non-existing)"
+NULL
+string(32) "->core() multiple (non-existing)"
+NULL
+string(29) "->core() array (non-existing)"
+NULL
