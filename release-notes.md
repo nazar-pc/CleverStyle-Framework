@@ -2347,7 +2347,7 @@ Fixes and small improvements:
     * `cs\Storage::CONNECTIONS_FAILED`
   * Small refactorings and fixes
 
-Deprecations (will be dropped right after release):
+Deprecations:
 * `cs\Storage\_Abstract::move_uploaded_file()` method deprecated and is just an alias to `::copy()` now
 
 Possible partial compatibility breaking (very unlikely, but still possible):
@@ -2418,11 +2418,114 @@ Fixes and small improvements:
   * Simplified structure for dependent packages
   * Improved tests coverage, small fixes, optimizations and docs updates
 
-Deprecations (will be dropped right after release):
+Deprecations:
 * Synchronous use of `cs.Language` is deprecated and will be removed in 6.x
 
 Possible partial compatibility breaking (very unlikely, but still possible):
 * None
+
+Dropped backward compatibility:
+* None
+
+Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
+
+# 5.43.2+build-2442: Strict mode MySQL, better multilingual search
+
+This release is a small incremental update over previous release.
+
+Major changes are SQLite support in Blogs module, using strict mode for MySQL database and real search for multilingual columns in `cs\CRUD_helpers` trait (previously it didn't take into account some multilingual features).
+
+Other smaller changes include XSS protection improvements with newer UPF version, lots of simplifications and refactoring, many more tests were added or extended (74%+ for system in general).
+
+Security fixes:
+* XSS protection improvements in UPF
+
+New components:
+* None
+
+New features:
+* `System/Request/routing_replace/after` event extended to allow changing `route_path` and `route_ids` in event handler
+* Allow to specify more parameters than needed for prepared statement
+* True search even in multilingual columns in `cs\CRUD_helpers` trait
+* Added SQLite support in Blogs module
+* New backend events added:
+  * `System/Language/change/before`
+  * `System/Language/change/after`
+  * `System/Language/load` (replaces `System/general/languages/load`)
+
+Updates:
+* New upstream version of UPF with fixes for stored XSS
+* New upstream version of alameda
+* New version of TinyMCE
+
+Fixes and small improvements:
+* System:
+  * Fix for `cs\CRUD_helpers` trait
+  * Try calling `OPTIONS`/`CLI` method handler if available instead of collecting available methods manually
+  * Fix for nested paths not being included in permissions check
+  * Corrected documentation about XHR, since jQuery is not used there anymore
+  * Always add `X-Requested-With` header when making API requests
+  * Added pagination tests for `cs\CRUD_helpers`
+  * Tiny fix for prepared statements conversion in PostgreSQL engine (when number of statements > 1)
+  * Added documentation about SQL compatibility and conversion done to support this compatibility
+  * Use server-side prepared statements in `cs\CRUD` and `cs\CRUD_helpers` traits
+  * Return boolean value from non-select query with prepared statements in `MySQLi` DB engine
+  * Handle nicely non-indexed arrays of parameters for prepared statements
+  * Refactoring in `cs\CRUD_helpers` trait
+  * Small tweaks to builder
+  * Small fix for autoloader when working with aliases
+  * Fix for arguments parsing in CLI interface
+  * Replace `CREATE TABLE IF NOT EXISTS` with `CREATE TABLE` in installation MySQL scheme to ensure DB was empty before installation
+  * Fix for non-unique index for SQLite DB scheme
+  * Small installer fix (expert switch didn't work)
+  * Fix for packages dependencies conflicts not always printed
+  * Return `false` gracefully when prepared statement preparation fails
+  * `cs\DB\_Abstract::queries_count()` method added for getting number of made SQL queries
+  * Do not Push resources if they were pushed already
+  * Simplification and small fix for FileSystem cache engine
+  * Typo in translations
+  * Tiny UI improvement
+  * Simplified external usage of multilingual options from `cs\Config` class - now they do not differ externally from other options
+  * `cs\Config\Options` class added as centralized source of information about each core option: option type, default value, supported values or ranges, whether option is password or is multilingual
+  * `cs\Config` is now responsible itself for checking and formatting options according to defined rules (using `cs\Config\Options`)
+  * Do not generate unnecessary content in `<head>` sections with multilingual meta information for API, administration interface and CLI
+  * `get_core_ml_text()` and `set_core_ml_text()` functions are not used anymore
+  * Jade files refactored to Pug
+  * Never create guest session when deleting one (new session will be created on demand anyway)
+  * Do not remove session cookie if session in cookie doesn't match session being deleted
+  * Small fix for potential memory exhaustion when deleting large amount of user sessions - fetch and delete sessions one by one
+  * Some redundant checks removed in sessions processing
+  * Stop using `TIME` constant as the source of current time
+  * Run database upgrade scripts in transactions
+  * Fix for `$L->clang` property being undefined (because of getting property second time inside of getting it for the first time with empty cache)
+  * Reduce ambiguity of events handlers registration when working with multiple requests under Http server
+  * Fix for multilingual `cs\Config` options not following language when working with multiple requests under Http server
+  * Simplifications in`cs\Language` class
+  * Removed redundant code from `cs\Language` class
+  * `INIT_STATE_METHOD` method is now called after constructor, rather than before, which actually makes much more sense
+  * Fix for multilingual options might not be processed in `cs\Config` in API requests, since `cs\Language` was not used otherwise
+  * `cs\Config::core()` method added
+  * Administration settings API simplified a lot and now relies on data normalization in `cs\Config` (`url` and `cookie_domain` options are now return as is, in form of arrays, rather than strings)
+  * Small fix for `cs\modules\System\Packages_dependencies` class when handling updates from too old versions
+  * Small tweak for `cs\modules\System\Packages_manipulation` (do not remove installer file when update failed)
+  * Getting array of properties decoupled into new trait `cs\Properties_getter`
+  * Common packages extraction code in `cs\modules\System\Packages_manipulation` decoupled into separate method
+* Http server:
+  * Http server is now using CLI interface for starting server
+* TinyMCE:
+  * Incorrect functionality removed from `TinyMCE` module
+
+Deprecations:
+* `cs\DB\_Abstract::query()` and `cs\DB\_Abstract::queries()` methods are now deprecated
+* Deprecated backend events:
+  * `System/general/languages/load` (replaced with `System/Language/load`)
+* Deprecated functions (they do nothing now, since `cs\Config` handles everything itself):
+  * `get_core_ml_text()`
+  * `set_core_ml_text()`
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* MySQL strict SQL mode is now enforced! (some modules failed to install with strict SQL mode and have been corrected)
+* Potentially partially breaking change: for consistency `$Config->core['name']` renamed into `$Config->core['site_name']`
 
 Dropped backward compatibility:
 * None
