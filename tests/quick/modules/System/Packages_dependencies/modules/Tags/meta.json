@@ -1,0 +1,9 @@
+{
+	"package"  : "Tags",
+	"category" : "modules",
+	"version"  : "1.99",
+	"require"  : [
+		"System>=1.0",
+		"System<2.0"
+	]
+}

@@ -1,0 +1,17 @@
+{
+	"package"         : "Comments",
+	"category"        : "modules",
+	"version"         : "1.0.1",
+	"db_support"      : [
+		"MySQLi"
+	],
+	"storage_support" : [
+		"S3"
+	],
+	"provide"         : "comments",
+	"require"         : "magic",
+	"conflict"        : "System<10",
+	"optional"        : [
+		"simple_editor"
+	]
+}

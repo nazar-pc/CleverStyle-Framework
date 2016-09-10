@@ -92,14 +92,14 @@ class Packages_dependencies {
 		/**
 		 * Do not compare component with itself
 		 */
-		if (self::check_dependencies_are_the_same($meta, $component_meta)) {
+		if ($update && self::check_dependencies_are_the_same($meta, $component_meta)) {
 			if (version_compare($meta['version'], $component_meta['version'], '<')) {
 				$dependencies['update_older'] = [
 					'from' => $component_meta['version'],
 					'to'   => $meta['version']
 				];
 				return;
-			} elseif ($update && $meta['version'] == $component_meta['version']) {
+			} elseif ($meta['version'] == $component_meta['version']) {
 				$dependencies['update_same'] = $meta['version'];
 				return;
 			}
@@ -107,7 +107,7 @@ class Packages_dependencies {
 			 * If update is supported - check whether update is possible from current version
 			 */
 			if (
-				isset($meta['update_from']) &&
+				isset($meta['update_from_version']) &&
 				version_compare($meta['update_from_version'], $component_meta['version'], '>')
 			) {
 				$dependencies['update_from'] = [

@@ -1,0 +1,22 @@
+{
+	"package"         : "Blogs",
+	"category"        : "modules",
+	"version"         : "2.0.0+build-10",
+	"provide"         : "blogs",
+	"require"         : [
+		"System>=1.0",
+		"System<2.0",
+		"Tags>=1.0",
+		"Tags<2.0"
+	],
+	"optional"        : [
+		"comments>=2.0",
+		"editor",
+		"inline_editor"
+	],
+	"db_support"      : [
+		"MySQLi",
+		"SQLite"
+	],
+	"storage_support" : "Local"
+}

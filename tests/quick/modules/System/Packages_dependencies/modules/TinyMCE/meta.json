@@ -1,0 +1,16 @@
+{
+	"package"  : "TinyMCE",
+	"category" : "modules",
+	"version"  : "1.0.0+custom-patches+cs-1.0.0",
+	"provide"  : [
+		"editor",
+		"simple_editor",
+		"inline_editor",
+		"simple_inline_editor"
+	],
+	"require"  : "System>=2.0",
+	"optional" : [
+		"Plupload",
+		"file_upload"
+	]
+}
