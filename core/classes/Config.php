@@ -22,6 +22,7 @@ use
 class Config {
 	use
 		CRUD,
+		Properties_getter,
 		Singleton;
 	const INIT_STATE_METHOD = 'init';
 	const SYSTEM_MODULE     = 'System';
@@ -184,24 +185,7 @@ class Config {
 	 *                            missing key will cause the whole thing to fail)
 	 */
 	public function core (...$item) {
-		if (count($item) === 1) {
-			$item = $item[0];
-		}
-		/**
-		 * @var string|string[] $item
-		 */
-		if (is_array($item)) {
-			$result = [];
-			foreach ($item as &$i) {
-				if (!isset($this->core[$i])) {
-					return null;
-				}
-				$result[$i] = $this->core[$i];
-			}
-			return $result;
-		}
-		/** @noinspection OffsetOperationsInspection */
-		return @$this->core[$item];
+		return $this->get_property_items('core', $item);
 	}
 	/**
 	 * Applying settings without saving changes into db

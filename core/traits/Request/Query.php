@@ -29,23 +29,6 @@ trait Query {
 	 *                             even one missing key will cause the whole thing to fail)
 	 */
 	public function query (...$name) {
-		if (count($name) === 1) {
-			$name = $name[0];
-		}
-		/**
-		 * @var string|string[] $name
-		 */
-		if (is_array($name)) {
-			$result = [];
-			foreach ($name as &$n) {
-				if (!array_key_exists($n, $this->query)) {
-					return null;
-				}
-				$result[$n] = $this->query[$n];
-			}
-			return $result;
-		}
-		/** @noinspection OffsetOperationsInspection */
-		return @$this->query[$name];
+		return $this->get_property_items('query', $name);
 	}
 }

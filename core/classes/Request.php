@@ -39,6 +39,7 @@ use
  */
 class Request {
 	use
+		Properties_getter,
 		Singleton,
 		Cookie,
 		Data_and_files,

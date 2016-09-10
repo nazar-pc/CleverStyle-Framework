@@ -92,24 +92,7 @@ trait Data_and_files {
 	 *                            missing key will cause the whole thing to fail)
 	 */
 	public function data (...$name) {
-		if (count($name) === 1) {
-			$name = $name[0];
-		}
-		/**
-		 * @var string|string[] $name
-		 */
-		if (is_array($name)) {
-			$result = [];
-			foreach ($name as &$n) {
-				if (!array_key_exists($n, $this->data)) {
-					return null;
-				}
-				$result[$n] = $this->data[$n];
-			}
-			return $result;
-		}
-		/** @noinspection OffsetOperationsInspection */
-		return @$this->data[$name];
+		return $this->get_property_items('data', $name);
 	}
 	/**
 	 * Get file item by name
