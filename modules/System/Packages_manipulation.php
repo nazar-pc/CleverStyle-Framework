@@ -32,6 +32,22 @@ class Packages_manipulation {
 		}
 		$tmp_dir   = "phar://$source_phar";
 		$fs        = file_get_json("$tmp_dir/fs.json");
+		$extracted = static::generic_extract($fs, $tmp_dir, $target_directory);
+		if ($extracted) {
+			unlink($source_phar);
+			file_put_json("$target_directory/fs.json", array_keys($fs));
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * @param array  $fs
+	 * @param string $tmp_dir
+	 * @param string $target_directory
+	 *
+	 * @return bool
+	 */
+	protected static function generic_extract ($fs, $tmp_dir, $target_directory) {
 		$extracted = array_filter(
 			array_map(
 				function ($index, $file) use ($tmp_dir, $target_directory) {
@@ -47,12 +63,7 @@ class Packages_manipulation {
 				array_keys($fs)
 			)
 		);
-		unlink($source_phar);
-		if (count($extracted) === count($fs)) {
-			file_put_json("$target_directory/fs.json", array_keys($fs));
-			return true;
-		}
-		return false;
+		return count($extracted) === count($fs);
 	}
 	/**
 	 * Generic extraction of files from phar distributive for CleverStyle Framework (system and components update)
@@ -77,26 +88,11 @@ class Packages_manipulation {
 		 */
 		$tmp_dir   = "phar://$source_phar";
 		$fs        = file_get_json("$tmp_dir/fs.json");
-		$extracted = array_filter(
-			array_map(
-				function ($index, $file) use ($tmp_dir, $target_directory) {
-					if (
-						!@mkdir(dirname("$target_directory/$file"), 0770, true) &&
-						!is_dir(dirname("$target_directory/$file"))
-					) {
-						return false;
-					}
-					return copy("$tmp_dir/fs/$index", "$target_directory/$file");
-				},
-				$fs,
-				array_keys($fs)
-			)
-		);
-		if (count($extracted) !== count($fs)) {
+		$extracted = static::generic_extract($fs, $tmp_dir, $target_directory);
+		if (!$extracted) {
 			return false;
 		}
 		unlink($source_phar);
-		unset($tmp_dir, $extracted);
 		$fs = array_keys($fs);
 		/**
 		 * Removing of old unnecessary files and directories
