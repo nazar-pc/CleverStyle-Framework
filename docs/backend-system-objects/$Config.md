@@ -5,7 +5,7 @@ $Config = \cs\Config::instance();
 
 This object allow to get configuration of any module/block, and also general system parameters, configured databases/storages and others.
 
-### [Methods](#methods) [Properties](#properties) [Events](#events) [Constants](#constants) [\cs\Config\Module_Properties class](#module-properties-class)
+### [Methods](#methods) [Properties](#properties) [Events](#events) [Constants](#constants) [\cs\Config\Module_Properties class](#module-properties-class) [\cs\Config\Options](#options-class)
 
 <a name="methods" />
 ###[Up](#) Methods
@@ -387,3 +387,25 @@ Returns boolean `true` if module is installed, and `false` otherwise
 
 #### uninstalled() : bool
 Returns boolean `true` if module is uninstalled, and `false` otherwise
+
+<a name="options-class" />
+###[Up](#) \cs\Config\Options class
+
+This class has next public methods:
+* get_formatting()
+* get_defaults()
+* get_multilingual()
+* apply_formatting()
+
+#### get_formatting() : array[]
+Get formats for all supported options.
+Format includes option type, default value, supported values or ranges, whether option is password or is multilingual.
+
+#### get_defaults() : array
+Get default values for all supported options
+
+#### get_multilingual() : string[]
+Get list of multilingual options
+
+#### apply_formatting($target_options : array) : array
+Take options and check each value according to needed format, correct value or use default if needed

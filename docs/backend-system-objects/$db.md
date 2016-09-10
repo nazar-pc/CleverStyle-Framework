@@ -4,7 +4,7 @@
 $db    = \cs\DB::instance();
 ```
 
-### [Methods](#methods) [Properties](#properties) [\cs\DB\\_Abstract class](#abstract-class) [\cs\DB\Accessor class](#accessor-trait)
+### [Methods](#methods) [\cs\DB\\_Abstract class](#abstract-class) [\cs\DB\Accessor class](#accessor-trait)
 
 <a name="methods" />
 ###[Up](#) Methods
@@ -13,6 +13,8 @@ $db    = \cs\DB::instance();
 * db()
 * db_prime()
 * get_connections_list()
+* queries()
+* time()
 
 #### db($database_id : int) : cs\\DB\\_Abstract|False_class
 Method returns instance of class for database abstraction. This object guaranteed will have read access to database.
@@ -23,18 +25,10 @@ Similar to `db()`, but guaranteed will have write access to database. These two 
 #### get_connections_list($status : int) : array
 Is used for getting of master, mirror, successful and failed connections.
 
-<a name="properties" />
-###[Up](#) Properties
-
-`$db` object has next public properties:
-
-* queries
-* time
-
-#### queries
+#### queries() : int
 Total number of queries performed to all databases.
 
-#### time
+#### time() : float
 Time taken to perform all queries to all databases.
 
 <a name="abstract-class" />
@@ -60,8 +54,7 @@ This class has next public methods:
 * server()
 * db_type()
 * database()
-* queries()
-* query()
+* queries_count()
 * time()
 * connecting_time()
 
@@ -251,16 +244,8 @@ Database type (lowercase, for example *mysql*)
 #### database() : string
 Database name
 
-#### queries() : array
-Queries array, has 3 properties:
-* num - total number of performed queries
-* time - array with time of each query execution
-* text - array with text text of each query
-
-#### query() : array
-Last query information, has 2 properties:
-* time - execution time
-* text - query text
+#### queries_count() : array
+Total number of performed queries.
 
 #### time() : float
 Total working time (including connection, queries execution and other delays)

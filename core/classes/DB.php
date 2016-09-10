@@ -47,11 +47,14 @@ class DB {
 	 */
 	public function queries () {
 		$queries = 0;
+		/**
+		 * @var DB\_Abstract $c
+		 */
 		foreach ($this->connections[self::CONNECTIONS_MASTER] as $c) {
-			$queries += $c->queries()['num'];
+			$queries += $c->queries_count();
 		}
 		foreach ($this->connections[self::CONNECTIONS_MIRROR] as $c) {
-			$queries += $c->queries()['num'];
+			$queries += $c->queries_count();
 		}
 		return $queries;
 	}

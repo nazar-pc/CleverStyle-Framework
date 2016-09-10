@@ -24,12 +24,8 @@ namespace cs\DB {
 		public function __destruct () { }
 		public function columns ($table, $like = false) { }
 		public function tables ($like = false) { }
-		public function queries () {
-			return [
-				'num'  => 10,
-				'time' => [],
-				'text' => []
-			];
+		public function queries_count () {
+			return 10;
 		}
 		public function connecting_time () {
 			return 3;
