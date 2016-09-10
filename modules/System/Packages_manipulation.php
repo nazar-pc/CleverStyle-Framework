@@ -92,12 +92,11 @@ class Packages_manipulation {
 				array_keys($fs)
 			)
 		);
-		unlink($source_phar);
-		unset($tmp_dir);
 		if (count($extracted) !== count($fs)) {
 			return false;
 		}
-		unset($extract);
+		unlink($source_phar);
+		unset($tmp_dir, $extracted);
 		$fs = array_keys($fs);
 		/**
 		 * Removing of old unnecessary files and directories
