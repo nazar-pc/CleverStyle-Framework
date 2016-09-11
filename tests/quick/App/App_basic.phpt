@@ -151,19 +151,19 @@ namespace cs {
 			var_dump($App->allow_closed_site_request($Request));
 
 			var_dump('Render CLI, API or page without interface');
-			$App->render($Request);
+			$App->render($Request, $Page);
 			$Request->api_path = false;
 			$Request->cli_path = true;
-			$App->render($Request);
+			$App->render($Request, $Page);
 			$Request->cli_path = false;
 			$Page->interface   = false;
-			$App->render($Request);
+			$App->render($Request, $Page);
 
 			var_dump('Admin page should render title');
 			$Request->admin_path = true;
 			$Request->home_page  = false;
 			$Page->interface     = true;
-			$App->render($Request);
+			$App->render($Request, $Page);
 
 			var_dump('Getting $App->controller_path property should work');
 			var_dump($App->__get('controller_path'));

@@ -49,7 +49,7 @@ Is used to display error page, and stop further execution, if error code was giv
 #### canonical_url($url : string) : cs\Page
 Is used for manual specifying of canonical URL of page.
 
-#### json($add : mixed) : cs\Page
+#### json($content : mixed) : cs\Page
 Is used mainly in API, shows specified data (array/string/number) in json format.
 
 #### css($add : string|string[], $mode = 'file' : string) : cs\Page

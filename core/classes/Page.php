@@ -200,14 +200,14 @@ class Page {
 	/**
 	 * Sets body with content, that is transformed into JSON format
 	 *
-	 * @param mixed $add
+	 * @param mixed $content
 	 *
 	 * @return Page
 	 */
-	public function json ($add) {
+	public function json ($content) {
 		Response::instance()->header('content-type', 'application/json; charset=utf-8');
 		$this->interface = false;
-		$this->Content   = _json_encode($add);
+		$this->Content   = _json_encode($content);
 		return $this;
 	}
 	/**
@@ -588,7 +588,7 @@ class Page {
 			 * Processing of replacing in content
 			 */
 			/** @noinspection NestedTernaryOperatorInspection */
-			$Response->body = $this->process_replacing(strlen($this->Content) ? $this->Content : ($Request->api_path ? 'null' : ''));
+			$Response->body = $this->process_replacing($this->Content);
 		} else {
 			Event::instance()->fire('System/Page/render/before');
 			/**

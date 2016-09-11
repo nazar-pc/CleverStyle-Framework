@@ -13,8 +13,8 @@ use
  * Provides next events:
  *  System/App/block_render
  *  [
- *      'index'           => $index,        //Block index
- *      'blocks_array'    => &$blocks_array //Reference to array in form ['top' => '', 'left' => '', 'right' => '', 'bottom' => '']
+ *      'index'        => $index,        //Block index
+ *      'blocks_array' => &$blocks_array //Reference to array in form ['top' => '', 'left' => '', 'right' => '', 'bottom' => '']
  *  ]
  *
  *  System/App/render/before
@@ -53,9 +53,10 @@ class App {
 			throw new ExitException(403);
 		}
 		Event::instance()->fire('System/App/render/before');
-		$this->render($Request);
+		$Page = Page::instance();
+		$this->render($Request, $Page);
 		Event::instance()->fire('System/App/render/after');
-		Page::instance()->render();
+		$Page->render();
 	}
 	/**
 	 * @param Config  $Config
@@ -123,12 +124,13 @@ class App {
 	}
 	/**
 	 * @param Request $Request
-	 *
-	 * @throws ExitException
+	 * @param Page    $Page
 	 */
-	protected function render ($Request) {
-		$Page = Page::instance();
-		if ($Request->cli_path || $Request->api_path || !$Page->interface) {
+	protected function render ($Request, $Page) {
+		if ($Request->api_path) {
+			$Page->json(null);
+			$this->execute_router($Request);
+		} elseif ($Request->cli_path || !$Page->interface) {
 			$this->execute_router($Request);
 		} else {
 			$this->render_title($Request, $Page);
