@@ -2,18 +2,23 @@
 <?php
 namespace cs;
 include __DIR__.'/../../bootstrap.php';
-$_SERVER['REQUEST_URI']           = '/api/System/profile';
-$_SERVER['REQUEST_METHOD']        = 'SIGN_IN';
-$_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
-$_POST['login']                   = hash('sha224', 'admin');
-$_POST['password']                = hash('sha512', hash('sha512', 1111).Core::instance()->public_key);
-Request::instance()->init_from_globals();
-App::instance()->execute();
-$Response = Response::instance();
-var_dump($Response->headers, $Response->body);
+do_api_request(
+	'sign_in',
+	'api/System/profile',
+	[
+		'login'    => hash('sha224', 'admin'),
+		'password' => hash('sha512', hash('sha512', 1111).Core::instance()->public_key)
+	]
+);
 ?>
 --EXPECTF--
-array(1) {
+int(200)
+array(2) {
+  ["content-type"]=>
+  array(1) {
+    [0]=>
+    string(31) "application/json; charset=utf-8"
+  }
   ["set-cookie"]=>
   array(1) {
     [0]=>

@@ -20,6 +20,25 @@ function do_request () {
 	}
 }
 
+function do_api_request ($method, $path, $data = [], $query = []) {
+	$_SERVER['REQUEST_URI']           = "/$path";
+	$_SERVER['REQUEST_METHOD']        = strtoupper($method);
+	$_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
+	$_POST                            = $data;
+	$_GET                             = $query;
+	$Response                         = Response::instance();
+	try {
+		$Response->init();
+		Request::instance()->init_from_globals();
+		App::instance()->execute();
+	} catch (ExitException $e) {
+		if ($e->getCode() >= 400) {
+			Page::instance()->error($e->getMessage() ?: null, $e->getJson());
+		}
+	}
+	var_dump($Response->code, $Response->headers, $Response->body);
+}
+
 /**
  * Create temporary directory and return path to it
  *
