@@ -587,7 +587,6 @@ class Page {
 			/**
 			 * Processing of replacing in content
 			 */
-			/** @noinspection NestedTernaryOperatorInspection */
 			$Response->body = $this->process_replacing($this->Content);
 		} else {
 			Event::instance()->fire('System/Page/render/before');
