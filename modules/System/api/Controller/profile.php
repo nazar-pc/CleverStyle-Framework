@@ -49,24 +49,11 @@ trait profile {
 		) {
 			throw new ExitException(400);
 		}
-		$Config = Config::instance();
-		$User   = User::instance();
+		$User = User::instance();
 		if ($User->guest()) {
 			throw new ExitException(403);
 		}
-		$user_data = xap($user_data, false);
-		if (
-			(
-				$user_data['language'] &&
-				!in_array($user_data['language'], $Config->core['active_languages'])
-			) ||
-			(
-				$user_data['timezone'] &&
-				!in_array($user_data['timezone'], get_timezones_list())
-			)
-		) {
-			throw new ExitException(400);
-		}
+		$user_data          = xap($user_data, false);
 		$user_data['login'] = mb_strtolower($user_data['login']);
 		/**
 		 * Check for changing login to new one and whether it is available
