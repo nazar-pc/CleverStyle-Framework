@@ -20,12 +20,13 @@ function do_request () {
 	}
 }
 
-function do_api_request ($method, $path, $data = [], $query = []) {
+function do_api_request ($method, $path, $data = [], $query = [], $cookie = []) {
 	$_SERVER['REQUEST_URI']           = "/$path";
 	$_SERVER['REQUEST_METHOD']        = strtoupper($method);
 	$_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
 	$_POST                            = $data;
 	$_GET                             = $query;
+	$_COOKIE                          = $cookie;
 	$Response                         = Response::instance();
 	try {
 		$Response->init();
