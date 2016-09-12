@@ -74,6 +74,12 @@ trait Route {
 	 */
 	public $api_path;
 	/**
+	 * Request to regular page (not administration section, not API and not CLI)
+	 *
+	 * @var bool
+	 */
+	public $regular_path;
+	/**
 	 * Current module
 	 *
 	 * @var string
@@ -103,6 +109,7 @@ trait Route {
 		$this->cli_path        = false;
 		$this->admin_path      = false;
 		$this->api_path        = false;
+		$this->regular_path    = true;
 		$this->current_module  = '';
 		$this->home_page       = false;
 		if ($this->cli) {
@@ -126,6 +133,7 @@ trait Route {
 		$this->cli_path        = $results['cli_path'];
 		$this->admin_path      = $results['admin_path'];
 		$this->api_path        = $results['api_path'];
+		$this->regular_path    = $results['regular_path'];
 		$this->current_module  = $results['current_module'];
 		$this->home_page       = $results['home_page'];
 	}
@@ -193,6 +201,7 @@ trait Route {
 			$api_path = 'api/';
 			array_shift($route);
 		}
+		$regular_path = !($cli_path || $admin_path || $api_path);
 		/**
 		 * Module detection
 		 */
@@ -213,7 +222,7 @@ trait Route {
 				'cli_path'       => &$cli_path,
 				'admin_path'     => &$admin_path,
 				'api_path'       => &$api_path,
-				'regular_path'   => !($cli_path || $admin_path || $api_path),
+				'regular_path'   => $regular_path,
 				'current_module' => &$current_module,
 				'home_page'      => &$home_page
 			]
@@ -237,6 +246,7 @@ trait Route {
 			'cli_path'        => (bool)$cli_path,
 			'admin_path'      => (bool)$admin_path,
 			'api_path'        => (bool)$api_path,
+			'regular_path'    => (bool)$regular_path,
 			'current_module'  => $current_module,
 			'home_page'       => $home_page
 		];

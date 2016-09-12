@@ -119,6 +119,7 @@ Example of returned data:
 * admin_path
 * api_path
 * cli_path
+* regular_path
 * current_module
 * home_page
 
@@ -211,6 +212,9 @@ Request to api section
 
 #### cli_path
 Request to cli interface
+
+#### regular_path
+Request to regular page (not administration section, not API and not CLI)
 
 #### current_module
 Current module

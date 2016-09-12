@@ -57,7 +57,7 @@ Event::instance()
 		function () {
 			$Config  = Config::instance();
 			$Request = Request::instance();
-			if ($Request->api_path || $Request->admin_path || $Request->cli_path || !$Config->core['multilingual']) {
+			if (!($Request->regular_path && $Config->core['multilingual'])) {
 				return;
 			}
 			$Request          = Request::instance();

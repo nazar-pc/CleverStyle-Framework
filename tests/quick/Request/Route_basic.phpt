@@ -91,6 +91,7 @@ var_dump(
 	$Request->api_path,
 	$Request->admin_path,
 	$Request->cli_path,
+	$Request->regular_path,
 	$Request->current_module,
 	$Request->home_page
 );
@@ -112,6 +113,7 @@ var_dump(
 	$Request->api_path,
 	$Request->admin_path,
 	$Request->cli_path,
+	$Request->regular_path,
 	$Request->current_module,
 	$Request->home_page
 );
@@ -130,7 +132,8 @@ var_dump(
 	$Request->current_module,
 	$Request->api_path,
 	$Request->admin_path,
-	$Request->cli_path
+	$Request->cli_path,
+	$Request->regular_path
 );
 
 var_dump('API page, language in URL');
@@ -142,7 +145,8 @@ var_dump(
 	$Request->current_module,
 	$Request->api_path,
 	$Request->admin_path,
-	$Request->cli_path
+	$Request->cli_path,
+	$Request->regular_path
 );
 
 var_dump('Admin page');
@@ -154,7 +158,8 @@ var_dump(
 	$Request->current_module,
 	$Request->api_path,
 	$Request->admin_path,
-	$Request->cli_path
+	$Request->cli_path,
+	$Request->regular_path
 );
 
 var_dump('Admin page, language in URL');
@@ -166,7 +171,8 @@ var_dump(
 	$Request->current_module,
 	$Request->api_path,
 	$Request->admin_path,
-	$Request->cli_path
+	$Request->cli_path,
+	$Request->regular_path
 );
 
 var_dump('CLI');
@@ -178,7 +184,8 @@ var_dump(
 	$Request->current_module,
 	$Request->api_path,
 	$Request->admin_path,
-	$Request->cli_path
+	$Request->cli_path,
+	$Request->regular_path
 );
 
 var_dump('Localized module name');
@@ -194,7 +201,8 @@ var_dump(
 	$Request->current_module,
 	$Request->api_path,
 	$Request->admin_path,
-	$Request->cli_path
+	$Request->cli_path,
+	$Request->regular_path
 );
 
 var_dump('API request without module specified');
@@ -205,7 +213,8 @@ var_dump(
 	$Request->current_module,
 	$Request->api_path,
 	$Request->admin_path,
-	$Request->cli_path
+	$Request->cli_path,
+	$Request->regular_path
 );
 
 var_dump('CLI request without module specified');
@@ -216,7 +225,8 @@ var_dump(
 	$Request->current_module,
 	$Request->api_path,
 	$Request->admin_path,
-	$Request->cli_path
+	$Request->cli_path,
+	$Request->regular_path
 );
 
 var_dump('Request to regular page of disabled module');
@@ -227,7 +237,8 @@ var_dump(
 	$Request->current_module,
 	$Request->api_path,
 	$Request->admin_path,
-	$Request->cli_path
+	$Request->cli_path,
+	$Request->regular_path
 );
 
 var_dump('Request to admin page of disabled module');
@@ -238,7 +249,8 @@ var_dump(
 	$Request->current_module,
 	$Request->api_path,
 	$Request->admin_path,
-	$Request->cli_path
+	$Request->cli_path,
+	$Request->regular_path
 );
 
 var_dump('Request to regular page of uninstalled module');
@@ -249,7 +261,8 @@ var_dump(
 	$Request->current_module,
 	$Request->api_path,
 	$Request->admin_path,
-	$Request->cli_path
+	$Request->cli_path,
+	$Request->regular_path
 );
 
 var_dump('Request to admin page of uninstalled module');
@@ -260,7 +273,8 @@ var_dump(
 	$Request->current_module,
 	$Request->api_path,
 	$Request->admin_path,
-	$Request->cli_path
+	$Request->cli_path,
+	$Request->regular_path
 );
 
 var_dump('Page with route');
@@ -418,6 +432,7 @@ array(0) {
 bool(false)
 bool(false)
 bool(false)
+bool(true)
 string(6) "System"
 bool(true)
 string(26) "Home page, language in URL"
@@ -500,6 +515,7 @@ array(0) {
 bool(false)
 bool(false)
 bool(false)
+bool(true)
 string(14) "Enabled_module"
 bool(false)
 string(28) "Module page, language in URL"
@@ -578,6 +594,7 @@ string(14) "Enabled_module"
 bool(true)
 bool(false)
 bool(false)
+bool(false)
 string(25) "API page, language in URL"
 string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
@@ -615,6 +632,7 @@ array(0) {
 }
 string(14) "Enabled_module"
 bool(true)
+bool(false)
 bool(false)
 bool(false)
 string(10) "Admin page"
@@ -656,6 +674,7 @@ string(14) "Enabled_module"
 bool(false)
 bool(true)
 bool(false)
+bool(false)
 string(27) "Admin page, language in URL"
 string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
@@ -694,6 +713,7 @@ array(0) {
 string(14) "Enabled_module"
 bool(false)
 bool(true)
+bool(false)
 bool(false)
 string(3) "CLI"
 string(54) "System/Request/routing_replace/before event fired with"
@@ -734,6 +754,7 @@ string(14) "Enabled_module"
 bool(false)
 bool(false)
 bool(true)
+bool(false)
 string(21) "Localized module name"
 string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
@@ -805,6 +826,7 @@ string(6) "System"
 bool(false)
 bool(true)
 bool(false)
+bool(false)
 string(36) "API request without module specified"
 string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
@@ -840,6 +862,7 @@ array(10) {
 string(10) "api/System"
 string(6) "System"
 bool(true)
+bool(false)
 bool(false)
 bool(false)
 string(36) "CLI request without module specified"
@@ -879,6 +902,7 @@ string(6) "System"
 bool(false)
 bool(false)
 bool(true)
+bool(false)
 string(42) "Request to regular page of disabled module"
 string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
@@ -920,6 +944,7 @@ string(6) "System"
 bool(false)
 bool(false)
 bool(false)
+bool(true)
 string(40) "Request to admin page of disabled module"
 string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
@@ -956,6 +981,7 @@ string(21) "admin/Disabled_module"
 string(15) "Disabled_module"
 bool(false)
 bool(true)
+bool(false)
 bool(false)
 string(45) "Request to regular page of uninstalled module"
 string(54) "System/Request/routing_replace/before event fired with"
@@ -998,6 +1024,7 @@ string(6) "System"
 bool(false)
 bool(false)
 bool(false)
+bool(true)
 string(43) "Request to admin page of uninstalled module"
 string(54) "System/Request/routing_replace/before event fired with"
 array(1) {
@@ -1038,6 +1065,7 @@ string(31) "admin/System/Uninstalled_module"
 string(6) "System"
 bool(false)
 bool(true)
+bool(false)
 bool(false)
 string(15) "Page with route"
 string(54) "System/Request/routing_replace/before event fired with"

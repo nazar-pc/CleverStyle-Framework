@@ -315,7 +315,7 @@ class Language implements JsonSerializable {
 		$this->current_language = $language;
 		_include(LANGUAGES."/$language.php", false, false);
 		$Request = Request::instance();
-		if (!$Request->admin_path && !$Request->api_path && !$Request->cli_path && $Config->core['multilingual']) {
+		if ($Request->regular_path && $Config->core['multilingual']) {
 			Response::instance()->header('content-language', $this->content_language);
 		}
 		$Event->fire('System/Language/change/after');
