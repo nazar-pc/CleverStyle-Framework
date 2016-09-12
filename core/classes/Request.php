@@ -30,7 +30,7 @@ use
  *   'cli_path'       => &$cli_path,
  *   'admin_path'     => &$admin_path,
  *   'api_path'       => &$api_path,
- *   'regular_path'   => !($cli_path || $admin_path || $api_path),
+ *   'regular_path'   => &$regular_path,
  *   'current_module' => &$current_module,
  *   'home_page'      => &$home_page
  *  ]

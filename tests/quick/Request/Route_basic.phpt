@@ -409,13 +409,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(true)
+  &bool(true)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
@@ -455,13 +455,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(true)
+  &bool(true)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
@@ -492,13 +492,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(true)
+  &bool(true)
   ["current_module"]=>
   &string(14) "Enabled_module"
   ["home_page"]=>
@@ -538,13 +538,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(true)
+  &bool(true)
   ["current_module"]=>
   &string(14) "Enabled_module"
   ["home_page"]=>
@@ -575,13 +575,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(4) "api/"
+  &bool(true)
   ["regular_path"]=>
-  bool(false)
+  &bool(false)
   ["current_module"]=>
   &string(14) "Enabled_module"
   ["home_page"]=>
@@ -615,13 +615,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(4) "api/"
+  &bool(true)
   ["regular_path"]=>
-  bool(false)
+  &bool(false)
   ["current_module"]=>
   &string(14) "Enabled_module"
   ["home_page"]=>
@@ -655,13 +655,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(6) "admin/"
+  &bool(true)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(false)
+  &bool(false)
   ["current_module"]=>
   &string(14) "Enabled_module"
   ["home_page"]=>
@@ -695,13 +695,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(6) "admin/"
+  &bool(true)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(false)
+  &bool(false)
   ["current_module"]=>
   &string(14) "Enabled_module"
   ["home_page"]=>
@@ -735,13 +735,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(4) "cli/"
+  &bool(true)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(false)
+  &bool(false)
   ["current_module"]=>
   &string(14) "Enabled_module"
   ["home_page"]=>
@@ -775,13 +775,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(true)
+  &bool(true)
   ["current_module"]=>
   &string(14) "Enabled_module"
   ["home_page"]=>
@@ -809,13 +809,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(6) "admin/"
+  &bool(true)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(false)
+  &bool(false)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
@@ -847,13 +847,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(4) "api/"
+  &bool(true)
   ["regular_path"]=>
-  bool(false)
+  &bool(false)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
@@ -885,13 +885,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(4) "cli/"
+  &bool(true)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(false)
+  &bool(false)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
@@ -927,13 +927,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(true)
+  &bool(true)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
@@ -965,13 +965,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(6) "admin/"
+  &bool(true)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(false)
+  &bool(false)
   ["current_module"]=>
   &string(15) "Disabled_module"
   ["home_page"]=>
@@ -1007,13 +1007,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(true)
+  &bool(true)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
@@ -1049,13 +1049,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(6) "admin/"
+  &bool(true)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(false)
+  &bool(false)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
@@ -1103,13 +1103,13 @@ array(10) {
     string(2) "15"
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(4) "api/"
+  &bool(true)
   ["regular_path"]=>
-  bool(false)
+  &bool(false)
   ["current_module"]=>
   &string(14) "Enabled_module"
   ["home_page"]=>
@@ -1182,13 +1182,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(true)
+  &bool(true)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
@@ -1239,13 +1239,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(true)
+  &bool(true)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
@@ -1289,13 +1289,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(true)
+  &bool(true)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
@@ -1339,13 +1339,13 @@ array(10) {
   &array(0) {
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(true)
+  &bool(true)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
@@ -1397,13 +1397,13 @@ array(10) {
     string(1) "3"
   }
   ["cli_path"]=>
-  &string(0) ""
+  &bool(false)
   ["admin_path"]=>
-  &string(0) ""
+  &bool(false)
   ["api_path"]=>
-  &string(0) ""
+  &bool(false)
   ["regular_path"]=>
-  bool(true)
+  &bool(true)
   ["current_module"]=>
   &string(6) "System"
   ["home_page"]=>
