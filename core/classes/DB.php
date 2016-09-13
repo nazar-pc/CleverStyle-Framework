@@ -228,7 +228,7 @@ class DB {
 	protected function choose_mirror ($database_id, $read_query = true) {
 		$Config = Config::instance(true);
 		/**
-		 * $Config might not be initialized yet
+		 * $Config might not be initialized yet or there might be no mirrors
 		 */
 		if (
 			!@$Config->core['db_balance'] ||
@@ -237,9 +237,6 @@ class DB {
 			return self::MASTER_MIRROR;
 		}
 		$mirrors_count = count($Config->db[$database_id]['mirrors']);
-		if (!$mirrors_count) {
-			return self::MASTER_MIRROR;
-		}
 		if ($Config->core['db_mirror_mode'] == self::MIRROR_MODE_MASTER_SLAVE) {
 			return $read_query ? mt_rand(0, $mirrors_count - 1) : self::MASTER_MIRROR;
 		} else {
