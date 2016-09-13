@@ -130,7 +130,7 @@ trait Profile {
 		$this->set_internal_correct_login($data_set, $user);
 		$update = [];
 		foreach (array_keys($data_set) as $column) {
-			$update[] = "`$column` = '?'";
+			$update[] = "`$column` = ?";
 		}
 		$update = implode(', ', $update);
 		$result = $this->db_prime()->q(
