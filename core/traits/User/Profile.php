@@ -117,12 +117,8 @@ trait Profile {
 		$user     = (int)$user ?: $this->id;
 		$data_set = [];
 		$data     = is_array($item) ? $item : [$item => $value];
-		/**
-		 * @var array $old_data
-		 */
-		$old_data = $this->get(['login', 'email'], $user);
 		$result   = true;
-		foreach ($data as $i => $v) {
+		foreach (xap($data) as $i => $v) {
 			$result = $result && $this->set_internal($i, $v, $user, $data_set);
 		}
 		if (!$result) {
@@ -131,30 +127,17 @@ trait Profile {
 		if (!$data_set) {
 			return true;
 		}
-		/**
-		 * A bit tricky here
-		 *
-		 * User is allowed to change login to own email, but not to any other email. However, when user changes email, it might happen that login will remain to
-		 * be the same as previous email, so we need to change login to new email as well.
-		 */
-		$current_login = isset($data_set['login']) ? $data_set['login'] : $old_data['login'];
-		if (
-			isset($data_set['email']) &&
-			$current_login == $old_data['email']
-		) {
-			$data_set['login']      = $data_set['email'];
-			$data_set['login_hash'] = $data_set['email_hash'];
-		}
+		$this->set_internal_correct_login($data_set, $user);
 		$update = [];
 		foreach (array_keys($data_set) as $column) {
-			$update[] = "`$column` = '%s'";
+			$update[] = "`$column` = '?'";
 		}
 		$update = implode(', ', $update);
 		$result = $this->db_prime()->q(
 			"UPDATE `[prefix]users`
 			SET $update
 			WHERE `id` = '$user'",
-			xap($data_set, false)
+			$data_set
 		);
 		if ($result) {
 			unset($this->data[$user], $this->cache->$user);
@@ -258,6 +241,29 @@ trait Profile {
 			return $value && $existing_user == $user;
 		}
 		return true;
+	}
+	/**
+	 * A bit tricky here
+	 *
+	 * User is allowed to change login to own email, but not to any other email. However, when user changes email, it might happen that login will remain to
+	 * be the same as previous email, so we need to change login to new email as well.
+	 *
+	 * @param array $data_set
+	 * @param int   $user
+	 */
+	protected function set_internal_correct_login (&$data_set, $user) {
+		/**
+		 * @var array $old_data
+		 */
+		$old_data      = $this->get(['login', 'email'], $user);
+		$current_login = isset($data_set['login']) ? $data_set['login'] : $old_data['login'];
+		if (
+			isset($data_set['email']) &&
+			$current_login == $old_data['email']
+		) {
+			$data_set['login']      = $data_set['email'];
+			$data_set['login_hash'] = $data_set['email_hash'];
+		}
 	}
 	/**
 	 * Get user id by login or email hash (sha224) (hash from lowercase string)

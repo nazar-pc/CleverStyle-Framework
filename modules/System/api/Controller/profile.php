@@ -53,7 +53,6 @@ trait profile {
 		if ($User->guest()) {
 			throw new ExitException(403);
 		}
-		$user_data          = xap($user_data, false);
 		$user_data['login'] = mb_strtolower($user_data['login']);
 		/**
 		 * Check for changing login to new one and whether it is available
