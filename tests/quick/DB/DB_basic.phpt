@@ -61,6 +61,15 @@ namespace cs {
 						]
 					]
 				],
+				1 => [
+					'type'     => 'Fake',
+					'host'     => 'localhost',
+					'name'     => 'database1',
+					'user'     => 'user',
+					'password' => 'db 1',
+					'prefix'   => '__prefix1__',
+					'mirrors'  => []
+				],
 				2 => [
 					'mirrors' => [
 						[
@@ -110,6 +119,9 @@ namespace cs {
 	var_dump('Queries number and time spent');
 	var_dump($DB->queries());
 	var_dump($DB->time());
+
+	var_dump('Get DB instance when no mirrors present');
+	var_dump($DB->db_prime(1) instanceof DB\Fake);
 
 	var_dump('Read DB instance, balance, master-slave');
 	for ($i = 0; $i < 100; ++$i) {
@@ -207,6 +219,8 @@ bool(true)
 string(29) "Queries number and time spent"
 int(20)
 int(26)
+string(39) "Get DB instance when no mirrors present"
+bool(true)
 string(39) "Read DB instance, balance, master-slave"
 string(69) "Read DB instance, master-slave, same instance on repeated mirror call"
 bool(true)
