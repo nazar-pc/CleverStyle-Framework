@@ -133,8 +133,6 @@ COMMENT ON COLUMN "[prefix]users_permissions"."permission" IS 'Permission id';
 
 INSERT INTO "[prefix]groups" ("title", "description") VALUES ('Administrators', 'Administrators'), ('Users', 'Users');
 
-INSERT INTO "[prefix]groups_permissions" ("id", "permission", "value") VALUES (1, 2, 1), (2, 2, 0);
-
 INSERT INTO "[prefix]permissions" ("label", "group") VALUES ('index', 'admin/System'), ('index', 'api/System');
 
 INSERT INTO "[prefix]users" ("login", "login_hash", "status") VALUES ('guest', '5cf371cef0648f2656ddc13b773aa642251267dbd150597506e96c3a', '1');

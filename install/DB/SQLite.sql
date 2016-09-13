@@ -22,8 +22,6 @@ CREATE TABLE `[prefix]groups_permissions` (
   PRIMARY KEY (`id`, `permission`)
 );
 
-INSERT INTO `[prefix]groups_permissions` (`id`, `permission`, `value`) VALUES (1, 2, 1), (2, 2, 0);
-
 CREATE TABLE `[prefix]keys` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   `key` varbinary(56) NOT NULL,
