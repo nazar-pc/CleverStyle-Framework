@@ -92,12 +92,24 @@ namespace cs {
 	$write_instance = $DB->db_prime(0);
 	var_dump($write_instance instanceof DB\Fake);
 
+	var_dump('Read DB instance after write created');
+	var_dump(DB::instance()->db(0) === $write_instance);
+
+	var_dump('Read DB instance first');
+	DB::instance_reset();
+	$DB             = DB::instance();
+	$read_instance = $DB->db(0);
+	var_dump($read_instance instanceof DB\Fake);
+
+	var_dump('Write DB instance after read created');
+	$DB             = DB::instance();
+	$write_instance = $DB->db_prime(0);
+	var_dump($write_instance instanceof DB\Fake);
+	var_dump($write_instance !== $read_instance);
+
 	var_dump('Queries number and time spent');
 	var_dump($DB->queries());
 	var_dump($DB->time());
-
-	var_dump('Read DB instance after write created');
-	var_dump(DB::instance()->db(0) === $write_instance);
 
 	var_dump('Read DB instance, balance, master-slave');
 	for ($i = 0; $i < 100; ++$i) {
@@ -185,11 +197,16 @@ namespace cs {
 --EXPECTF--
 string(17) "Write DB instance"
 bool(true)
-string(29) "Queries number and time spent"
-int(10)
-int(13)
 string(36) "Read DB instance after write created"
 bool(true)
+string(22) "Read DB instance first"
+bool(true)
+string(36) "Write DB instance after read created"
+bool(true)
+bool(true)
+string(29) "Queries number and time spent"
+int(20)
+int(26)
 string(39) "Read DB instance, balance, master-slave"
 string(69) "Read DB instance, master-slave, same instance on repeated mirror call"
 bool(true)
