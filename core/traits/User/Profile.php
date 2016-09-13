@@ -116,11 +116,34 @@ trait Profile {
 	public function set ($item, $value = null, $user = false) {
 		$user     = (int)$user ?: $this->id;
 		$data_set = [];
-		if (!$this->set_internal($item, $value, $user, $data_set)) {
+		$data     = is_array($item) ? $item : [$item => $value];
+		/**
+		 * @var array $old_data
+		 */
+		$old_data = $this->get(['login', 'email'], $user);
+		$result   = true;
+		foreach ($data as $i => $v) {
+			$result = $result && $this->set_internal($i, $v, $user, $data_set);
+		}
+		if (!$result) {
 			return false;
 		}
 		if (!$data_set) {
 			return true;
+		}
+		/**
+		 * A bit tricky here
+		 *
+		 * User is allowed to change login to own email, but not to any other email. However, when user changes email, it might happen that login will remain to
+		 * be the same as previous email, so we need to change login to new email as well.
+		 */
+		$current_login = isset($data_set['login']) ? $data_set['login'] : $old_data['login'];
+		if (
+			isset($data_set['email']) &&
+			$current_login == $old_data['email']
+		) {
+			$data_set['login']      = $data_set['email'];
+			$data_set['login_hash'] = $data_set['email_hash'];
 		}
 		$update = [];
 		foreach (array_keys($data_set) as $column) {
@@ -141,21 +164,14 @@ trait Profile {
 	/**
 	 * Set data item of specified user
 	 *
-	 * @param array|string    $item Item-value array may be specified for setting several items at once
-	 * @param int|null|string $value
-	 * @param int             $user If not specified - current user assumed
-	 * @param array           $data_set
+	 * @param string     $item Item-value array may be specified for setting several items at once
+	 * @param int|string $value
+	 * @param int        $user If not specified - current user assumed
+	 * @param array      $data_set
 	 *
 	 * @return bool
 	 */
 	protected function set_internal ($item, $value, $user, &$data_set) {
-		if (is_array($item)) {
-			$result = true;
-			foreach ($item as $i => $v) {
-				$result = $result && $this->set_internal($i, $v, $user, $data_set);
-			}
-			return $result;
-		}
 		if (!$this->set_internal_allowed($user, $item, $value)) {
 			return false;
 		}
