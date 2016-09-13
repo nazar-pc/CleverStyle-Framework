@@ -7,7 +7,9 @@ $Event   = Event::instance();
 $Session = Session::instance();
 $User    = User::instance();
 var_dump('Prepare user');
+/** @noinspection OffsetOperationsInspection */
 $user_id_1 = $User->registration('fi1@test.com', false, true)['id'];
+/** @noinspection OffsetOperationsInspection */
 $user_id_2 = $User->registration('fi2@test.com', false, false)['id'];
 
 var_dump('Get username');
@@ -80,6 +82,14 @@ var_dump('Set login');
 var_dump($User->set('login', 'zyx'));
 var_dump($User->login);
 var_dump($User->login_hash === hash('sha224', 'zyx'));
+
+var_dump('Set login to own email');
+var_dump($User->set('login', $User->email));
+var_dump($User->login);
+
+var_dump("Set login to someone else's email");
+var_dump($User->set('login', 'test@example.com'));
+var_dump($User->login);
 
 var_dump('Set to the same login');
 var_dump($User->set('login', 'zyx'));
@@ -219,6 +229,12 @@ string(9) "Set login"
 bool(true)
 string(3) "zyx"
 bool(true)
+string(22) "Set login to own email"
+bool(true)
+string(12) "fi1@test.com"
+string(33) "Set login to someone else's email"
+bool(false)
+string(12) "fi1@test.com"
 string(21) "Set to the same login"
 bool(true)
 bool(false)

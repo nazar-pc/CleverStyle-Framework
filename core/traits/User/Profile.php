@@ -228,10 +228,18 @@ trait Profile {
 			) {
 				return false;
 			}
+			if (
+				$item == 'login' &&
+				filter_var($value, FILTER_VALIDATE_EMAIL) &&
+				$value != $this->get('email', $user)
+			) {
+				return false;
+			}
 			if ($value == $this->get($item, $user)) {
 				return true;
 			}
-			return $value && !$this->get_id(hash('sha224', $value));
+			$existing_user = $this->get_id(hash('sha224', $value)) ?: $user;
+			return $value && $existing_user == $user;
 		}
 		return true;
 	}

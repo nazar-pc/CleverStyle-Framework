@@ -18,6 +18,7 @@ $permission_2_group = 'User permission testing 2';
 $permission_2       = $Permission->add($permission_2_group, $permission_2_group);
 
 var_dump('Prepare user');
+/** @noinspection OffsetOperationsInspection */
 $user_id = $User->registration('p1@test.com', false, true)['id'];
 var_dump((bool)$user_id);
 
