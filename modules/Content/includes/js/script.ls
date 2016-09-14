@@ -143,25 +143,26 @@ Promise.all([
 						<button is="cs-button" class="cs-content-edit" data-key="#key" style="position: absolute; left: #x; top: #y;">#{L.edit}</button>
 					""")
 					container.appendChild(button)
-					container.addEventListener('mousemove', !->
-						showed_button	:= false
-						button.parentNode.removeChild(button)
+					container.addEventListener(
+						'mousemove'
+						!->
+							showed_button	:= false
+							button.parentNode.removeChild(button)
+						{passive : true}
 					)
 			document.querySelector('body')
-				..addEventListener('mousemove', (e) !->
-					if !e.target.matches('[data-cs-content]')
-						return
-					if showed_button
-						return
-					clearTimeout(mousemove_timeout)
-					mousemove_timeout := setTimeout (!->
-						showed_button	:= true
-						show_edit_button(e.target.dataset.cs-content, e.pageX, e.pageY, e.target)
-					), 200
-				)
-				..addEventListener('mousemove', (e) !->
-					if !e.target.matches('[data-cs-content]')
-						return
-					clearTimeout(mousemove_timeout)
+				..addEventListener(
+					'mousemove'
+					(e) !->
+						if !e.target.matches('[data-cs-content]')
+							return
+						if showed_button
+							return
+						clearTimeout(mousemove_timeout)
+						mousemove_timeout := setTimeout (!->
+							showed_button	:= true
+							show_edit_button(e.target.dataset.cs-content, e.pageX, e.pageY, e.target)
+						), 200
+					{passive : true}
 				)
 	.catch ->

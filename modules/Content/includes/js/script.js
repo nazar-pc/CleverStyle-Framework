@@ -136,6 +136,8 @@
           container.addEventListener('mousemove', function(){
             showed_button = false;
             button.parentNode.removeChild(button);
+          }, {
+            passive: true
           });
         });
       };
@@ -152,12 +154,8 @@
           showed_button = true;
           show_edit_button(e.target.dataset.csContent, e.pageX, e.pageY, e.target);
         }, 200);
-      });
-      x$.addEventListener('mousemove', function(e){
-        if (!e.target.matches('[data-cs-content]')) {
-          return;
-        }
-        clearTimeout(mousemove_timeout);
+      }, {
+        passive: true
       });
     })();
   })['catch'](function(){});
