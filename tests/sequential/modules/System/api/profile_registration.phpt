@@ -5,7 +5,8 @@ include __DIR__.'/../../../../bootstrap.php';
 $Config = Config::instance();
 $User   = User::instance();
 /** @noinspection OffsetOperationsInspection */
-$user_id = $User->registration('cp1@test.com', false, false)['id'];
+$user_id    = $User->registration('cp1@test.com', false, false)['id'];
+$public_key = Core::instance()->public_key;
 
 Mail::instance_stub(
 	[],
@@ -92,15 +93,22 @@ do_api_request(
 	]
 );
 
-var_dump('Registration (confirmation needed)');
+var_dump('Registration (confirmation needed, fill username, password, language, timezone and avatar upfront)');
 $Config->core['require_registration_confirmation'] = 1;
 do_api_request(
 	'registration',
 	'api/System/profile',
 	[
-		'email' => 'cp4@test.com'
+		'email'    => 'cp4@test.com',
+		'username' => 'CP4 user',
+		'password' => hash('sha512', hash('sha512', '123456').$public_key),
+		'language' => 'English',
+		'timezone' => 'UTC',
+		'avatar'   => 'http://example.com/avatar.jpg'
 	]
 );
+var_dump($User->get(['username', 'language', 'timezone', 'avatar'], $user_id + 3));
+var_dump($User->validate_password('123456', $user_id + 3));
 
 var_dump('Registration (mail sending failed)');
 Mail::instance_stub(
@@ -268,7 +276,7 @@ array(1) {
   }
 }
 string(4) "null"
-string(34) "Registration (confirmation needed)"
+string(98) "Registration (confirmation needed, fill username, password, language, timezone and avatar upfront)"
 string(28) "cs\Event::fire() called with"
 array(2) {
   [0]=>
@@ -296,7 +304,7 @@ array(3) {
   [1]=>
   string(43) "Registration on Web-site needs confirmation"
   [2]=>
-  string(511) "<h3>Hello, cp4!</h3><p>This email was used to register on the site Web-site.</p><p>If it was you - follow the link <a href="http://cscms.travis/profile/registration_confirmation/%s">http://cscms.travis/profile/registration_confirmation/%s</a>, otherwise ignore the letter, and after 1 days unconfirmed account on the server will be automatically deleted.</p><p>Do not reply to this letter, it was sent automatically and does not require an answer.</p>"
+  string(516) "<h3>Hello, CP4 user!</h3><p>This email was used to register on the site Web-site.</p><p>If it was you - follow the link <a href="http://cscms.travis/profile/registration_confirmation/%s">http://cscms.travis/profile/registration_confirmation/%s</a>, otherwise ignore the letter, and after 1 days unconfirmed account on the server will be automatically deleted.</p><p>Do not reply to this letter, it was sent automatically and does not require an answer.</p>"
 }
 int(202)
 array(1) {
@@ -307,6 +315,17 @@ array(1) {
   }
 }
 string(4) "null"
+array(4) {
+  ["username"]=>
+  string(8) "CP4 user"
+  ["language"]=>
+  string(7) "English"
+  ["timezone"]=>
+  string(3) "UTC"
+  ["avatar"]=>
+  string(29) "http://example.com/avatar.jpg"
+}
+bool(true)
 string(34) "Registration (mail sending failed)"
 string(28) "cs\Event::fire() called with"
 array(2) {
