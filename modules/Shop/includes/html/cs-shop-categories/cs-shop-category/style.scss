@@ -8,7 +8,7 @@
 @import '../../../../../../includes/css/flexy-plexy';
 
 .nested-categories {
-	@apply (--layout-horizontal);
+	@apply --layout-horizontal;
 }
 
 ::content h1 {

@@ -10,12 +10,12 @@
 	display        : inline-block;
 	vertical-align : middle;
 
-	@apply (--cs-no-selection);
-	@apply (--cs-global);
-	@apply (--cs-label-switcher);
+	@apply --cs-no-selection;
+	@apply --cs-global;
+	@apply --cs-label-switcher;
 
 	cs-icon {
-		@apply (--cs-label-switcher-icon);
+		@apply --cs-label-switcher-icon;
 	}
 }
 
@@ -36,10 +36,10 @@
 
 :host(:active),
 :host([active]) {
-	@apply (--cs-label-switcher-active);
+	@apply --cs-label-switcher-active;
 
 	cs-icon {
-		@apply (--cs-label-switcher-active-icon);
+		@apply --cs-label-switcher-active-icon;
 	}
 }
 
@@ -47,30 +47,30 @@
 :host(:focus) {
 	outline : none;
 
-	@apply (--cs-label-switcher-hover);
-	@apply (--cs-label-switcher-focus);
+	@apply --cs-label-switcher-hover;
+	@apply --cs-label-switcher-focus;
 }
 
 :host([focus]:not(:active):not([active])) cs-icon,
 :host(:focus:not(:active):not([active])) cs-icon {
-	@apply (--cs-label-switcher-hover-icon);
-	@apply (--cs-label-switcher-focus-icon);
+	@apply --cs-label-switcher-hover-icon;
+	@apply --cs-label-switcher-focus-icon;
 }
 
 :host(:hover) {
-	@apply (--cs-label-switcher-hover);
+	@apply --cs-label-switcher-hover;
 }
 
 :host(:hover:not(:active):not([active])) cs-icon {
-	@apply (--cs-label-switcher-hover-icon);
+	@apply --cs-label-switcher-hover-icon;
 }
 
 :host([disabled]) {
 	cursor : not-allowed;
 
-	@apply (--cs-label-switcher-disabled);
+	@apply --cs-label-switcher-disabled;
 
 	cs-icon {
-		@apply (--cs-label-switcher-disabled-icon);
+		@apply --cs-label-switcher-disabled-icon;
 	}
 }

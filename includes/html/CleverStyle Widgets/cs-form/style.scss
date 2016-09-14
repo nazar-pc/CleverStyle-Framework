@@ -5,23 +5,23 @@
  * @license   MIT License, see license.txt
  */
 :host {
-	@apply (--cs-no-selection);
-	@apply (--cs-global);
-	@apply (--cs-form);
+	@apply --cs-no-selection;
+	@apply --cs-global;
+	@apply --cs-form;
 }
 
 ::content {
 	legend {
-		@apply (--cs-form-legend);
+		@apply --cs-form-legend;
 	}
 
 	> label:not([is]):not([hidden]) {
 		display : block;
 
-		@apply (--cs-form-label);
+		@apply --cs-form-label;
 
 		& + * {
-			@apply (--cs-form-after-label);
+			@apply --cs-form-after-label;
 		}
 
 		&[hidden] + * {

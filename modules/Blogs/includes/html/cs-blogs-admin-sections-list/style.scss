@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 td:nth-child(2n+1) {
-	@apply (--layout);
-	@apply (--layout-justified);
+	@apply --layout;
+	@apply --layout-justified;
 
 	span {
 		font-weight : bold;

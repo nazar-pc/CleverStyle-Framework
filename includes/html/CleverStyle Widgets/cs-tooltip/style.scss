@@ -12,28 +12,28 @@
 	top      : 0;
 	z-index  : 800;
 
-	@apply (--cs-global);
-	@apply (--cs-tooltip);
+	@apply --cs-global;
+	@apply --cs-tooltip;
 }
 
 :host([top]) {
-	@apply (--cs-tooltip-top);
+	@apply --cs-tooltip-top;
 }
 
 :host([show]) {
 	display : block;
 
-	@apply (--cs-tooltip-show);
+	@apply --cs-tooltip-show;
 }
 
 :host([show-quick]) {
 	display : block;
 
-	@apply (--cs-tooltip-show-quick);
+	@apply --cs-tooltip-show-quick;
 }
 
 #content {
-	@apply (--cs-tooltip-content);
+	@apply --cs-tooltip-content;
 }
 
 #arrow {
@@ -45,20 +45,20 @@
 	top      : 100%;
 	width    : 0;
 
-	@apply (--cs-tooltip-arrow);
+	@apply --cs-tooltip-arrow;
 
 	&[top] {
 		bottom : 100%;
 		top    : auto;
 
-		@apply (--cs-tooltip-arrow-top);
+		@apply --cs-tooltip-arrow-top;
 	}
 
 	&:before {
-		@apply (--cs-tooltip-arrow-before);
+		@apply --cs-tooltip-arrow-before;
 	}
 
 	&:after {
-		@apply (--cs-tooltip-arrow-after);
+		@apply --cs-tooltip-arrow-after;
 	}
 }

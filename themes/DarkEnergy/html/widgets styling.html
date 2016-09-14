@@ -115,7 +115,7 @@
 			min-height : var(--button-compact-size);
 			min-width  : var(--button-compact-size);
 
-			@apply(--cs-button-compact);
+			@apply --cs-button-compact;
 		};
 
 		--cs-button-icon: {
@@ -211,8 +211,8 @@
 			transition        : opacity var(--transition-duration) var(--transition-duration-short), transform 0s var(--transition-duration), -webkit-transform 0s var(--transition-duration);
 			will-change       : opacity;
 
-			@apply (--layout);
-			@apply (--layout-center-center);
+			@apply --layout;
+			@apply --layout-center-center;
 		};
 
 		--cs-section-modal-open: {
@@ -221,8 +221,8 @@
 			-webkit-transform : scale(1);
 			transition        : opacity var(--transition-duration);
 
-			@apply (--layout);
-			@apply (--layout-center-center);
+			@apply --layout;
+			@apply --layout-center-center;
 		};
 
 		--cs-section-modal-body: {
@@ -297,8 +297,8 @@
 			transition        : opacity var(--transition-duration-short) var(--transition-duration-short), transform 0s var(--transition-duration), -webkit-transform 0s var(--transition-duration);
 			will-change       : opacity, transform, -webkit-transform;
 
-			@apply (--layout);
-			@apply (--layout-center);
+			@apply --layout;
+			@apply --layout-center;
 		};
 
 		--cs-tooltip-top: {
@@ -311,8 +311,8 @@
 			-webkit-transform : scale(1);
 			transition        : opacity var(--transition-duration) var(--transition-duration-short);
 
-			@apply (--layout);
-			@apply (--layout-center);
+			@apply --layout;
+			@apply --layout-center;
 		};
 
 		--cs-tooltip-show-quick: {

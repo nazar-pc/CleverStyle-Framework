@@ -8,7 +8,7 @@
 $avatar-size : 3em;
 $padding : .5em;
 :host {
-	@apply (--layout-horizontal);
+	@apply --layout-horizontal;
 
 	> div > {
 		#img {

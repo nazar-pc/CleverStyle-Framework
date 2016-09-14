@@ -11,20 +11,20 @@
 	position : absolute;
 	z-index  : 800;
 
-	@apply (--cs-global);
-	@apply (--cs-nav-dropdown);
+	@apply --cs-global;
+	@apply --cs-nav-dropdown;
 }
 
 :host([opened]) {
 	display : block;
 
-	@apply (--cs-nav-dropdown-open);
+	@apply --cs-nav-dropdown-open;
 }
 
 #content {
-	@apply (--cs-nav-dropdown-content);
+	@apply --cs-nav-dropdown-content;
 }
 
 :host([as-is]) #content {
-	@apply (--cs-nav-dropdown-content-as-is);
+	@apply --cs-nav-dropdown-content-as-is;
 }

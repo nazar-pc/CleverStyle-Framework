@@ -5,22 +5,22 @@
  * @license   MIT License, see license.txt
  */
 :host {
-	@apply (--cs-global);
-	@apply (--cs-section-switcher);
+	@apply --cs-global;
+	@apply --cs-section-switcher;
 }
 
 ::content > :not(template) {
 	& {
-		@apply (--cs-section-switcher-block);
+		@apply --cs-section-switcher-block;
 	}
 
 	&:not([active]) {
 		display : none;
 
-		@apply (--cs-section-switcher-block-inactive);
+		@apply --cs-section-switcher-block-inactive;
 	}
 
 	&[active] {
-		@apply (--cs-section-switcher-block-active);
+		@apply --cs-section-switcher-block-active;
 	}
 }

@@ -14,7 +14,7 @@
 				font-size   : 1rem;
 				line-height : 1.4286em;
 
-				@apply(--cs-base);
+				@apply --cs-base;
 			}
 
 			/* Headings */
@@ -54,7 +54,7 @@
 				margin-bottom : 2rem;
 				margin-top    : 0;
 
-				@apply(--cs-heading);
+				@apply --cs-heading;
 			}
 
 			:not(style):not(script):not(template) + h1,
@@ -95,7 +95,7 @@
 			/* Blockquote */
 
 			blockquote {
-				@apply(--cs-blockquote);
+				@apply --cs-blockquote;
 			}
 
 			/* Elements with primarily code snippets */
@@ -103,7 +103,7 @@
 			:not(pre) > code,
 			:not(pre) > kbd,
 			:not(pre) > samp {
-				@apply(--cs-code);
+				@apply --cs-code;
 			}
 
 			/* Links */
@@ -113,20 +113,20 @@
 				cursor          : pointer;
 				text-decoration : none;
 
-				@apply(--cs-link);
+				@apply --cs-link;
 			}
 
 			a:not([is]):focus {
 				outline : none;
 
-				@apply(--cs-link-focus);
+				@apply --cs-link-focus;
 			}
 
 			a:not([is]):hover {
 				color           : inherit;
 				text-decoration : none;
 
-				@apply(--cs-link-hover);
+				@apply --cs-link-hover;
 			}
 
 			/* Images */

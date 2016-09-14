@@ -9,9 +9,9 @@
 	cursor         : pointer;
 	vertical-align : middle;
 
-	@apply (--cs-no-selection);
-	@apply (--cs-global);
-	@apply (--cs-button);
+	@apply --cs-no-selection;
+	@apply --cs-global;
+	@apply --cs-button;
 }
 
 #content {
@@ -28,70 +28,70 @@
 
 :host(:active),
 :host([active]) {
-	@apply (--cs-button-active);
+	@apply --cs-button-active;
 }
 
 :host(:focus) {
 	outline : none;
 
-	@apply (--cs-button-hover);
-	@apply (--cs-button-focus);
+	@apply --cs-button-hover;
+	@apply --cs-button-focus;
 }
 
 :host(:hover) {
-	@apply (--cs-button-hover);
+	@apply --cs-button-hover;
 }
 
 :host([disabled]) {
 	cursor : not-allowed;
 
-	@apply (--cs-button-disabled);
+	@apply --cs-button-disabled;
 }
 
 /* Empty button, with icon inside, but empty content */
 :host(:empty:not([force-fullsize])),
 :host([empty]:not([force-fullsize])) {
-	@apply (--cs-button-empty);
+	@apply --cs-button-empty;
 }
 
 /* Compact button */
 :host([force-compact]) {
-	@apply (--cs-button-compact);
+	@apply --cs-button-compact;
 }
 
 /* Button with icon */
 :host([icon]:not(:empty):not([empty])) cs-icon:first-of-type {
-	@apply (--cs-button-icon);
+	@apply --cs-button-icon;
 }
 
 :host([icon-after]:not(:empty):not([empty])) cs-icon:last-of-type {
-	@apply (--cs-button-icon-after);
+	@apply --cs-button-icon-after;
 }
 
 /* The only non-default button type is primary button */
 
 :host([primary]) {
-	@apply (--cs-button-primary);
+	@apply --cs-button-primary;
 }
 
 :host([primary]:active),
 :host([primary][active]) {
-	@apply (--cs-button-primary-active);
+	@apply --cs-button-primary-active;
 }
 
 :host([primary]:focus) {
 	outline : none;
 
-	@apply (--cs-button-primary-hover);
-	@apply (--cs-button-primary-focus);
+	@apply --cs-button-primary-hover;
+	@apply --cs-button-primary-focus;
 }
 
 :host([primary]:hover) {
-	@apply (--cs-button-primary-hover);
+	@apply --cs-button-primary-hover;
 }
 
 :host([primary][disabled]) {
 	cursor : not-allowed;
 
-	@apply (--cs-button-primary-disabled);
+	@apply --cs-button-primary-disabled;
 }

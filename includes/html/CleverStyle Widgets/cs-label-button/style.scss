@@ -10,10 +10,10 @@
 	display        : inline-block;
 	vertical-align : middle;
 
-	@apply (--cs-no-selection);
-	@apply (--cs-global);
-	@apply (--cs-button);
-	@apply (--cs-label-button);
+	@apply --cs-no-selection;
+	@apply --cs-global;
+	@apply --cs-button;
+	@apply --cs-label-button;
 }
 
 :host([hidden]) {
@@ -32,80 +32,80 @@
 }
 
 :host([first]) {
-	@apply (--cs-label-button-first);
+	@apply --cs-label-button-first;
 }
 
 :host([last]) {
-	@apply (--cs-label-button-last);
+	@apply --cs-label-button-last;
 }
 
 :host(:active),
 :host([active]) {
-	@apply (--cs-button-active);
-	@apply (--cs-label-button-active);
+	@apply --cs-button-active;
+	@apply --cs-label-button-active;
 }
 
 :host([focus]),
 :host(:focus) {
 	outline : none;
 
-	@apply (--cs-button-hover);
-	@apply (--cs-label-button-hover);
-	@apply (--cs-button-focus);
-	@apply (--cs-label-button-focus);
+	@apply --cs-button-hover;
+	@apply --cs-label-button-hover;
+	@apply --cs-button-focus;
+	@apply --cs-label-button-focus;
 }
 
 :host(:hover) {
-	@apply (--cs-button-hover);
-	@apply (--cs-label-button-hover);
+	@apply --cs-button-hover;
+	@apply --cs-label-button-hover;
 }
 
 :host([disabled]) {
 	cursor : not-allowed;
 
-	@apply (--cs-button-disabled);
-	@apply (--cs-label-button-disabled);
+	@apply --cs-button-disabled;
+	@apply --cs-label-button-disabled;
 }
 
 /** The only non-default button type is primary button */
 
 :host([primary]) {
-	@apply (--cs-button-primary);
-	@apply (--cs-label-button-primary);
+	@apply --cs-button-primary;
+	@apply --cs-label-button-primary;
 }
 
 :host([primary][first]) {
-	@apply (--cs-label-button-primary-first);
+	@apply --cs-label-button-primary-first;
 }
 
 :host([primary][last]) {
-	@apply (--cs-label-button-primary-last);
+	@apply --cs-label-button-primary-last;
 }
 
 :host([primary]:active),
 :host([primary][active]) {
-	@apply (--cs-button-primary-active);
-	@apply (--cs-label-button-primary-active);
+	@apply --cs-button-primary-active;
+	@apply --cs-label-button-primary-active;
 }
 
 :host([primary][focus]),
 :host([primary]:focus) {
 	outline : none;
 
-	@apply (--cs-button-primary-hover);
-	@apply (--cs-label-button-primary-hover);
-	@apply (--cs-button-primary-focus);
-	@apply (--cs-label-button-primary-focus);
+	@apply --cs-button-primary-hover;
+	@apply --cs-label-button-primary-hover;
+	@apply --cs-button-primary-focus;
+	@apply --cs-label-button-primary-focus;
 }
 
 :host([primary]:hover) {
-	@apply (--cs-button-primary-hover);
-	@apply (--cs-label-button-primary-hover);
+	@apply --cs-button-primary-hover;
+	@apply --cs-label-button-primary-hover;
 }
 
 :host([primary][disabled]) {
 	cursor : not-allowed;
 
-	@apply (--cs-button-primary-disabled);
-	@apply (--cs-label-button-primary-disabled);
+	@apply --cs-button-primary-disabled;
+	@apply --cs-label-button-primary-disabled;
 }

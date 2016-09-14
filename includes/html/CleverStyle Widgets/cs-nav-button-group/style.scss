@@ -8,9 +8,9 @@
 	display        : inline-block;
 	vertical-align : middle;
 
-	@apply (--cs-no-selection);
-	@apply (--cs-global);
-	@apply (--cs-nav-button-group);
+	@apply --cs-no-selection;
+	@apply --cs-global;
+	@apply --cs-nav-button-group;
 }
 
 :host([hidden]) {
@@ -22,7 +22,7 @@
 	display : -ms-flexbox;
 	display : -webkit-flex;
 
-	@apply (--cs-nav-button-group-content);
+	@apply --cs-nav-button-group-content;
 }
 
 :host([vertical]) #content {
@@ -30,33 +30,33 @@
 	-ms-flex-direction     : column;
 	-webkit-flex-direction : column;
 
-	@apply (--cs-nav-button-group-content-vertical);
+	@apply --cs-nav-button-group-content-vertical;
 }
 
 ::content > :not(template) {
 	& {
-		@apply (--cs-nav-button-group-button);
+		@apply --cs-nav-button-group-button;
 	}
 
 	&[first] {
-		@apply (--cs-nav-button-group-button);
+		@apply --cs-nav-button-group-button;
 	}
 
 	&[last] {
-		@apply (--cs-nav-button-group-button);
+		@apply --cs-nav-button-group-button;
 	}
 }
 
 :host([vertical]) ::content > :not(template) {
 	& {
-		@apply (--cs-nav-button-group-button-vertical);
+		@apply --cs-nav-button-group-button-vertical;
 	}
 
 	&[first] {
-		@apply (--cs-nav-button-group-button-vertical);
+		@apply --cs-nav-button-group-button-vertical;
 	}
 
 	&[last] {
-		@apply (--cs-nav-button-group-button-vertical);
+		@apply --cs-nav-button-group-button-vertical;
 	}
 }

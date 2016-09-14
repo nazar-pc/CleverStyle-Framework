@@ -12,7 +12,7 @@
 	padding    : 2px 5px;
 	text-align : center;
 
-	@apply (--layout-horizontal);
+	@apply --layout-horizontal;
 
 	[small-button] {
 		height : 1.8em;

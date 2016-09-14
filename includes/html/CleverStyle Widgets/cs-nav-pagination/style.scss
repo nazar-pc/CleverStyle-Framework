@@ -7,9 +7,9 @@
 :host {
 	display : inline-block;
 
-	@apply (--cs-no-selection);
-	@apply (--cs-global);
-	@apply (--cs-nav-pagination);
+	@apply --cs-no-selection;
+	@apply --cs-global;
+	@apply --cs-nav-pagination;
 }
 
 :host([hidden]) {
@@ -19,14 +19,14 @@
 ::content > :not(template),
 :not(template) {
 	& {
-		@apply (--cs-nav-pagination-button);
+		@apply --cs-nav-pagination-button;
 	}
 
 	&[first] {
-		@apply (--cs-nav-pagination-button);
+		@apply --cs-nav-pagination-button;
 	}
 
 	&[last] {
-		@apply (--cs-nav-pagination-button);
+		@apply --cs-nav-pagination-button;
 	}
 }

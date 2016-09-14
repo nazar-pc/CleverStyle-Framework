@@ -10,8 +10,8 @@
 	color   : inherit;
 	display : inline-block;
 
-	@apply (--cs-global);
-	@apply (--cs-icon);
+	@apply --cs-global;
+	@apply --cs-icon;
 }
 
 :host([hidden]),
