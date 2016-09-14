@@ -77,15 +77,15 @@ trait profile {
 	 * @throws ExitException
 	 */
 	public static function profile_change_password ($Request) {
-		$L    = Language::prefix('system_profile_');
-		$User = User::instance();
 		$data = $Request->data('current_password', 'new_password');
 		if (!$data) {
 			throw new ExitException(400);
 		}
+		$User = User::instance();
 		if (!$User->user()) {
 			throw new ExitException(403);
 		}
+		$L = Language::prefix('system_profile_');
 		if (!$data['new_password']) {
 			throw new ExitException($L->please_type_new_password, 400);
 		}
@@ -96,7 +96,7 @@ trait profile {
 		if ($User->set_password($data['new_password'], $id, true)) {
 			Session::instance()->add($id);
 		} else {
-			throw new ExitException($L->change_password_server_error, 400);
+			throw new ExitException($L->change_password_server_error, 500);
 		}
 	}
 	/**
