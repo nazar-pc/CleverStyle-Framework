@@ -37,11 +37,9 @@
   });
   if (!((ref$ = window.WebComponents) != null && ref$.flags)) {
     addEventListener('load', function(){
-      setTimeout(function(){
-        document.dispatchEvent(new CustomEvent('WebComponentsReady', {
-          bubbles: true
-        }));
-      });
+      document.dispatchEvent(new CustomEvent('WebComponentsReady', {
+        bubbles: true
+      }));
     });
   }
   if (document.cookie.indexOf('shadow_dom=1') === -1) {

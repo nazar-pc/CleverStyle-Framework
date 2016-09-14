@@ -26,11 +26,10 @@ document.addEventListener('WebComponentsReady', !->
 )
 if !window.WebComponents?.flags
 	addEventListener('load', !->
-		setTimeout !->
-			document.dispatchEvent(new CustomEvent(
-				'WebComponentsReady'
-				bubbles	: true
-			))
+		document.dispatchEvent(new CustomEvent(
+			'WebComponentsReady'
+			bubbles	: true
+		))
 	)
 # If there is native Shadow DOM support - lets store cookie so that we can skip loading Shadow DOM polyfill
 if document.cookie.indexOf('shadow_dom=1') == -1
