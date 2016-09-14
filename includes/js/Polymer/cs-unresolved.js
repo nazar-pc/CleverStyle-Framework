@@ -6,23 +6,21 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var registerFeatures_original;
+  var registerFeatures_original, ready;
   registerFeatures_original = Polymer.Base._registerFeatures;
+  ready = false;
   Polymer.Base._addFeature({
     _registerFeatures: function(){
       (this.behaviors || (this.behaviors = [])).push({
-        ready: function(){
-          var t, this$ = this;
-          t = setTimeout(function(){
-            if (this$.is) {
-              this$.setAttribute('cs-resolved', '');
-            }
-          });
+        attached: function(){
+          var this$ = this;
+          if (ready) {
+            return;
+          }
+          this.setAttribute('cs-resolved', '');
           cs.ui.ready.then(function(){
-            clearTimeout(t);
-            if (this$.is) {
-              this$.removeAttribute('cs-resolved');
-            }
+            ready = true;
+            this$.removeAttribute('cs-resolved');
           });
         }
       });

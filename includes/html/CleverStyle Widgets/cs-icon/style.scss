@@ -14,7 +14,8 @@
 	@apply (--cs-icon);
 }
 
-:host([hidden]) {
+:host([hidden]),
+[hidden] {
 	display : none;
 }
 

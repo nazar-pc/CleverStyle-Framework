@@ -43,54 +43,54 @@
           reflectToAttribute: true,
           type: Boolean,
           value: false
-        }
+        },
+        multiple: {
+          type: Boolean,
+          value: false
+        },
+        stacked1: String,
+        stacked2: String,
+        regular: String
       },
-      ready: function(){
-        this.scopeSubtree(this.$.content, true);
+      attached: function(){
         this.hidden = this.icon === undefined;
       },
       _icon_changed: function(icon, flipX, flipY, mono, rotate, spin, spinStep){
-        var content, icons, multiple_icons, i$, len$, index, icon_class;
+        var class_prefix, icons;
         if (!icon) {
           this.hidden = true;
           return;
         } else if (this.hidden) {
           this.hidden = false;
         }
-        content = '';
+        class_prefix = '';
+        if (flipX) {
+          class_prefix += 'fa-flip-horizontal ';
+        }
+        if (flipY) {
+          class_prefix += 'fa-flip-vertical ';
+        }
+        if (mono) {
+          class_prefix += 'fa-fw ';
+        }
+        if (rotate) {
+          class_prefix += "fa-rotate-" + rotate + " ";
+        }
+        if (spin) {
+          class_prefix += 'fa-spin ';
+        }
+        if (spinStep) {
+          class_prefix += 'fa-pulse ';
+        }
+        class_prefix += 'fa fa-';
         icons = icon.split(' ');
-        multiple_icons = icons.length > 1;
-        for (i$ = 0, len$ = icons.length; i$ < len$; ++i$) {
-          index = i$;
-          icon = icons[i$];
-          icon_class = "fa fa-" + icon;
-          if (flipX) {
-            icon_class += ' fa-flip-horizontal';
-          }
-          if (flipY) {
-            icon_class += ' fa-flip-vertical';
-          }
-          if (mono) {
-            icon_class += ' fa-fw';
-          }
-          if (rotate) {
-            icon_class += " fa-rotate-" + rotate;
-          }
-          if (spin) {
-            icon_class += ' fa-spin';
-          }
-          if (spinStep) {
-            icon_class += ' fa-pulse';
-          }
-          if (multiple_icons) {
-            icon_class += index ? ' fa-stack-1x fa-inverse' : ' fa-stack-2x';
-          }
-          content += "<i class=\"" + icon_class + "\"></i>";
+        this.multiple = icons.length > 1;
+        if (this.multiple) {
+          this.stacked1 = class_prefix + icons[0] + 'fa-stack-2x';
+          this.stacked2 = class_prefix + icons[1] + 'fa-stack-1x fa-inverse';
+        } else {
+          this.regular = class_prefix + icons[0];
         }
-        if (multiple_icons) {
-          content = "<span class=\"fa-stack\">" + content + "</span>";
-        }
-        this.$.content.innerHTML = content;
       }
     }
   ];

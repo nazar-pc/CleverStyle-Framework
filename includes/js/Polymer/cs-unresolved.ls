@@ -6,17 +6,17 @@
  */
 # Simplified default value declaration
 registerFeatures_original	= Polymer.Base._registerFeatures
+ready						= false
 Polymer.Base._addFeature(
 	_registerFeatures : !->
 		@[]behaviors.push(
-			ready	: !->
-				t = setTimeout !~>
-					if @is
-						@setAttribute('cs-resolved', '')
+			attached	: !->
+				if ready
+					return
+				@setAttribute('cs-resolved', '')
 				cs.ui.ready.then !~>
-					clearTimeout(t)
-					if @is
-						@removeAttribute('cs-resolved')
+					ready	:= true
+					@removeAttribute('cs-resolved')
 		)
 		registerFeatures_original.call(@)
 )

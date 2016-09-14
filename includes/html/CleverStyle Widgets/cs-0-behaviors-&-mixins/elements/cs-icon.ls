@@ -38,8 +38,13 @@ Polymer.cs.behaviors.cs-icon = [
 			reflectToAttribute	: true
 			type				: Boolean
 			value				: false
-	ready : !->
-		@scopeSubtree(@$.content, true)
+		multiple		:
+			type	: Boolean
+			value	: false
+		stacked1		: String
+		stacked2		: String
+		regular			: String
+	attached : !->
 		@hidden = @icon == undefined
 	_icon_changed : (icon, flipX, flipY, mono, rotate, spin, spinStep) !->
 		if !icon
@@ -47,27 +52,25 @@ Polymer.cs.behaviors.cs-icon = [
 			return
 		else if @hidden
 			@hidden = false
-		content			= ''
+		class_prefix	= ''
+		if flipX
+			class_prefix	+= 'fa-flip-horizontal '
+		if flipY
+			class_prefix	+= 'fa-flip-vertical '
+		if mono
+			class_prefix	+= 'fa-fw '
+		if rotate
+			class_prefix	+= "fa-rotate-#rotate "
+		if spin
+			class_prefix	+= 'fa-spin '
+		if spinStep
+			class_prefix	+= 'fa-pulse '
+		class_prefix	+= 'fa fa-'
 		icons			= icon.split(' ')
-		multiple_icons	= icons.length > 1
-		for icon, index in icons
-			icon_class	= "fa fa-#icon"
-			if flipX
-				icon_class	+= ' fa-flip-horizontal'
-			if flipY
-				icon_class	+= ' fa-flip-vertical'
-			if mono
-				icon_class	+= ' fa-fw'
-			if rotate
-				icon_class	+= " fa-rotate-#rotate"
-			if spin
-				icon_class	+= ' fa-spin'
-			if spinStep
-				icon_class	+= ' fa-pulse'
-			if multiple_icons
-				icon_class	+= if index then ' fa-stack-1x fa-inverse' else ' fa-stack-2x'
-			content += """<i class="#icon_class"></i>"""
-		if multiple_icons
-			content	= """<span class="fa-stack">#content</span>"""
-		@$.content.innerHTML = content
+		@multiple		= icons.length > 1
+		if @multiple
+			@stacked1 = class_prefix + icons[0] + 'fa-stack-2x'
+			@stacked2 = class_prefix + icons[1] + 'fa-stack-1x fa-inverse'
+		else
+			@regular = class_prefix + icons[0]
 ]
