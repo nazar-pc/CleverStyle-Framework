@@ -6,33 +6,36 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var translations, is_ready, x$, slice$ = [].slice;
+  var translations, is_ready, fill_prefixed, get_formatted, x$, slice$ = [].slice;
   translations = cs.Language;
   is_ready = false;
-  function Language(prefix){
-    var prefix_length, prefixed, fill_prefixed;
+  fill_prefixed = function(prefix){
+    var prefix_length, key;
     prefix_length = prefix.length;
+    for (key in Language) {
+      if (key.indexOf(prefix) === 0) {
+        this[key.substr(prefix_length)] = Language[key];
+      }
+    }
+  };
+  function Language(prefix){
+    var prefixed;
     prefixed = Object.create(Language);
     prefixed.ready = function(){
       return Language.ready().then(function(){
         return prefixed;
       });
     };
-    fill_prefixed = function(){
-      var key;
-      for (key in Language) {
-        if (key.indexOf(prefix) === 0) {
-          prefixed[key.substr(prefix_length)] = Language[key];
-        }
-      }
-    };
     if (is_ready) {
-      fill_prefixed();
+      fill_prefixed.call(prefixed, prefix);
     } else {
-      Language.ready().then(fill_prefixed);
+      Language.ready().then(fill_prefixed.bind(prefixed, prefix));
     }
     return prefixed;
   }
+  get_formatted = function(){
+    return '' + (arguments.length ? vsprintf(this, slice$.call(arguments)) : this);
+  };
   x$ = cs.Language = Language;
   x$.get = function(key){
     return this[key].toString();
@@ -45,20 +48,14 @@
   x$.ready = function(){
     var ready;
     ready = new Promise(function(resolve){
-      var i$, ref$;
-      for (i$ in ref$ = translations) {
-        (fn$.call(this, i$, ref$[i$]));
+      var key, ref$, value;
+      for (key in ref$ = translations) {
+        value = ref$[key];
+        Language[key] = get_formatted.bind(value);
+        Language[key].toString = Language[key];
       }
       is_ready = true;
       resolve(Language);
-      function fn$(key, value){
-        Language[key] = function(){
-          return vsprintf(value, slice$.call(arguments));
-        };
-        Language[key].toString = function(){
-          return value;
-        };
-      }
     });
     this.ready = function(){
       return ready;
