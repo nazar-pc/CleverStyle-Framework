@@ -201,13 +201,12 @@ trait profile {
 	 * @throws ExitException
 	 */
 	public static function profile_restore_password ($Request) {
-		$Config = Config::instance();
-		$L      = Language::prefix('system_profile_restore_password_');
-		$User   = User::instance();
-		$email  = $Request->data('email');
+		$User = User::instance();
 		if (!$User->guest()) {
 			throw new ExitException(403);
 		}
+		$L     = Language::prefix('system_profile_restore_password_');
+		$email = $Request->data('email');
 		if (!$email) {
 			throw new ExitException($L->please_type_your_email, 400);
 		}
@@ -215,7 +214,8 @@ trait profile {
 		if (!$id) {
 			throw new ExitException($L->user_with_such_login_email_not_found, 400);
 		}
-		$key = $User->restore_password($id);
+		$key    = $User->restore_password($id);
+		$Config = Config::instance();
 		if (
 			!$key ||
 			!Mail::instance()->send_to(

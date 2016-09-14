@@ -131,7 +131,7 @@ var_dump($User->get_id(hash('sha224', 'cp5@test.com')));
 Event::instance_stub(
 	[],
 	[
-		'fire' => function (...$arguments) {
+		'fire' => function () {
 			return true;
 		}
 	]

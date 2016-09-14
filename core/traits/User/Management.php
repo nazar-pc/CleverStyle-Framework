@@ -412,13 +412,15 @@ trait Management {
 		$this->set_groups([], $user);
 		$this->del_permissions_all($user);
 		$Cache      = $this->cache;
-		$login_hash = hash('sha224', $this->get('login', $user));
+		$login_hash = $this->get('login_hash', $user);
+		$email_hash = $this->get('email_hash', $user);
 		$this->db_prime()->q(
 			"DELETE FROM `[prefix]users`
 			WHERE `id` = $user"
 		);
 		unset(
 			$Cache->$login_hash,
+			$Cache->$email_hash,
 			$Cache->$user
 		);
 		Event::instance()->fire(
