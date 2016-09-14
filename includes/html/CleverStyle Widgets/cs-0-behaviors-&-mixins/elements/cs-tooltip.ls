@@ -47,31 +47,29 @@ Polymer.cs.behaviors.cs-tooltip	= [
 			return
 		if @innerHTML != element.tooltip
 			@innerHTML = element.tooltip
-		tooltip_position		= @_get_tooltip_position(element)
-		@style.top				= tooltip_position.top + 'px'
-		@style.left				= tooltip_position.left + 'px'
-		@top					= tooltip_position.arrow_top
-		@$.arrow.style.left		= -tooltip_position.arrow_left_offset + 'px'
-		@$.arrow.style.right	= tooltip_position.arrow_left_offset + 'px'
-		@show					= true
+		tooltip_position	= @_get_tooltip_position(element)
+		@style
+			..top	= tooltip_position.top + 'px'
+			..left	= tooltip_position.left + 'px'
+		@top				= tooltip_position.arrow_top
+		@$.arrow.style
+			..left	= -tooltip_position.arrow_left_offset + 'px'
+			..right	= tooltip_position.arrow_left_offset + 'px'
+		@show				= true
 	_hide : !->
 		if @show
 			@show	= false
-	_get_tooltip_size : ->
-		@style.left		= -html.clientWidth
-		@style.top		= -html.clientHeight
-		@showQuick		= true
-		tooltip_size	= @getBoundingClientRect()
-		@showQuick		= false
-		tooltip_size
 	_get_tooltip_position : (element) ->
-		tooltip_size		= @_get_tooltip_size()
+		@showQuick			= true
+		tooltip_size		= @getBoundingClientRect()
 		element_position	= element.getBoundingClientRect()
 		tooltip_position	=
 			top					: scrollY
 			left				: scrollX
 			arrow_top			: false
 			arrow_left_offset	: 0
+		client_width		= html.clientWidth
+		@showQuick			= false
 		# Calculation of vertical position
 		if element_position.top > tooltip_size.height
 			tooltip_position.top	+= element_position.top - tooltip_size.height
@@ -81,11 +79,11 @@ Polymer.cs.behaviors.cs-tooltip	= [
 		# Calculation of horizontal position
 		left_offset	= element_position.left + (element_position.width / 2) - (tooltip_size.width / 2)
 		if left_offset >= 0
-			if left_offset + tooltip_size.width <= html.clientWidth
+			if left_offset + tooltip_size.width <= client_width
 				tooltip_position.left += left_offset
 			else
-				tooltip_position.left				+= html.clientWidth - tooltip_size.width
-				tooltip_position.arrow_left_offset	= html.clientWidth - (tooltip_size.width / 2) - element_position.left - (element_position.width / 2)
+				tooltip_position.left				+= client_width - tooltip_size.width
+				tooltip_position.arrow_left_offset	= client_width - (tooltip_size.width / 2) - element_position.left - (element_position.width / 2)
 		else
 			tooltip_position.arrow_left_offset	= (tooltip_size.width / 2) - element_position.left - (element_position.width / 2)
 		tooltip_position

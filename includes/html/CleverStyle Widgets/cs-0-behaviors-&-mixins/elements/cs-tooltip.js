@@ -60,7 +60,7 @@
         this.show = false;
       },
       _show: function(element){
-        var tooltip_position;
+        var tooltip_position, x$, y$;
         this.reset_show = true;
         if (!element.tooltip || this.show) {
           return;
@@ -69,11 +69,13 @@
           this.innerHTML = element.tooltip;
         }
         tooltip_position = this._get_tooltip_position(element);
-        this.style.top = tooltip_position.top + 'px';
-        this.style.left = tooltip_position.left + 'px';
+        x$ = this.style;
+        x$.top = tooltip_position.top + 'px';
+        x$.left = tooltip_position.left + 'px';
         this.top = tooltip_position.arrow_top;
-        this.$.arrow.style.left = -tooltip_position.arrow_left_offset + 'px';
-        this.$.arrow.style.right = tooltip_position.arrow_left_offset + 'px';
+        y$ = this.$.arrow.style;
+        y$.left = -tooltip_position.arrow_left_offset + 'px';
+        y$.right = tooltip_position.arrow_left_offset + 'px';
         this.show = true;
       },
       _hide: function(){
@@ -81,18 +83,10 @@
           this.show = false;
         }
       },
-      _get_tooltip_size: function(){
-        var tooltip_size;
-        this.style.left = -html.clientWidth;
-        this.style.top = -html.clientHeight;
+      _get_tooltip_position: function(element){
+        var tooltip_size, element_position, tooltip_position, client_width, left_offset;
         this.showQuick = true;
         tooltip_size = this.getBoundingClientRect();
-        this.showQuick = false;
-        return tooltip_size;
-      },
-      _get_tooltip_position: function(element){
-        var tooltip_size, element_position, tooltip_position, left_offset;
-        tooltip_size = this._get_tooltip_size();
         element_position = element.getBoundingClientRect();
         tooltip_position = {
           top: scrollY,
@@ -100,6 +94,8 @@
           arrow_top: false,
           arrow_left_offset: 0
         };
+        client_width = html.clientWidth;
+        this.showQuick = false;
         if (element_position.top > tooltip_size.height) {
           tooltip_position.top += element_position.top - tooltip_size.height;
         } else {
@@ -108,11 +104,11 @@
         }
         left_offset = element_position.left + element_position.width / 2 - tooltip_size.width / 2;
         if (left_offset >= 0) {
-          if (left_offset + tooltip_size.width <= html.clientWidth) {
+          if (left_offset + tooltip_size.width <= client_width) {
             tooltip_position.left += left_offset;
           } else {
-            tooltip_position.left += html.clientWidth - tooltip_size.width;
-            tooltip_position.arrow_left_offset = html.clientWidth - tooltip_size.width / 2 - element_position.left - element_position.width / 2;
+            tooltip_position.left += client_width - tooltip_size.width;
+            tooltip_position.arrow_left_offset = client_width - tooltip_size.width / 2 - element_position.left - element_position.width / 2;
           }
         } else {
           tooltip_position.arrow_left_offset = tooltip_size.width / 2 - element_position.left - element_position.width / 2;
