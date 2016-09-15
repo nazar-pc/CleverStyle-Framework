@@ -138,7 +138,7 @@ array(2) {
   ["set-cookie"]=>
   array(2) {
     [0]=>
-    string(76) "session=; path=/; expires=%s, %d-%s-%d %d:%d:%d GMT; domain=cscms.travis"
+    string(76) "session=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT; domain=cscms.travis"
     [1]=>
     string(118) "session=%s; path=/; expires=%s, %d-%s-%d %d:%d:%d GMT; domain=cscms.travis; HttpOnly"
   }
