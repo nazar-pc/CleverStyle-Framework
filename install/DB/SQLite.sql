@@ -50,11 +50,10 @@ CREATE TABLE `[prefix]sessions` (
 );
 
 CREATE TABLE `[prefix]sign_ins` (
-  `id` bigint(20) NOT NULL,
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   `expire` bigint(20) NOT NULL,
   `login_hash` varchar(56) NOT NULL,
-  `ip` varchar(32) NOT NULL,
-  PRIMARY KEY (`expire`,`login_hash`,`ip`)
+  `ip` varchar(32) NOT NULL
 );
 
 CREATE TABLE `[prefix]texts` (
@@ -121,7 +120,7 @@ CREATE INDEX `[prefix]users_login_hash` ON `[prefix]users` (`login_hash`);
 CREATE INDEX `[prefix]users_email_hash` ON `[prefix]users` (`email_hash`);
 CREATE INDEX `[prefix]users_language` ON `[prefix]users` (`language`);
 CREATE INDEX `[prefix]users_status` ON `[prefix]users` (`status`);
-CREATE UNIQUE INDEX `[prefix]sign_ins_id` ON `[prefix]sign_ins` (`id`);
+CREATE INDEX `[prefix]sign_ins_expire` ON `[prefix]sign_ins` (`expire`,`login_hash`,`ip`);
 CREATE INDEX `[prefix]permissions_label` ON `[prefix]permissions` (`label`);
 CREATE INDEX `[prefix]permissions_group` ON `[prefix]permissions` (`group`);
 CREATE INDEX `[prefix]users_groups_group` ON `[prefix]users_groups` (`group`);

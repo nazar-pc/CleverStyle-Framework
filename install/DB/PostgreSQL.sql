@@ -151,7 +151,7 @@ ALTER TABLE ONLY "[prefix]permissions" ADD CONSTRAINT "[prefix]permissions_prima
 
 ALTER TABLE ONLY "[prefix]sessions" ADD CONSTRAINT "[prefix]sessions_primary" PRIMARY KEY ("id");
 
-ALTER TABLE ONLY "[prefix]sign_ins" ADD CONSTRAINT "[prefix]sign_ins_primary" PRIMARY KEY ("expire", "login_hash", "ip");
+ALTER TABLE ONLY "[prefix]sign_ins" ADD CONSTRAINT "[prefix]sign_ins_primary" PRIMARY KEY ("id");
 
 ALTER TABLE ONLY "[prefix]texts" ADD CONSTRAINT "[prefix]texts_primary" PRIMARY KEY ("id");
 
@@ -174,7 +174,7 @@ CREATE INDEX "[prefix]permissions_label" ON "[prefix]permissions" USING btree ("
 CREATE INDEX "[prefix]sessions_expire" ON "[prefix]sessions" USING btree ("expire");
 CREATE INDEX "[prefix]sessions_user" ON "[prefix]sessions" USING btree ("user");
 
-CREATE UNIQUE INDEX "[prefix]sign_ins_id" ON "[prefix]sign_ins" USING btree ("id");
+CREATE INDEX "[prefix]sign_ins_expire" ON "[prefix]sign_ins" USING btree ("expire", "login_hash", "ip");
 
 CREATE INDEX "[prefix]texts_label" ON "[prefix]texts" USING btree ("label", "group");
 

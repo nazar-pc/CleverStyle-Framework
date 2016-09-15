@@ -63,8 +63,8 @@ CREATE TABLE `[prefix]sign_ins` (
   `expire` bigint(20) NOT NULL,
   `login_hash` varchar(56) NOT NULL,
   `ip` varchar(32) NOT NULL,
-  PRIMARY KEY (`expire`,`login_hash`,`ip`),
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY (`id`),
+  KEY `expire` (`expire`,`login_hash`,`ip`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `[prefix]texts` (

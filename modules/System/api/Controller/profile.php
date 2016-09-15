@@ -248,9 +248,10 @@ trait profile {
 		if (!$User->guest()) {
 			return;
 		}
+		$attempts = $User->get_sign_in_attempts_count($data['login']);
 		if (
 			$Config->core['sign_in_attempts_block_count'] &&
-			$User->get_sign_in_attempts_count($data['login']) >= $Config->core['sign_in_attempts_block_count']
+			$attempts >= $Config->core['sign_in_attempts_block_count']
 		) {
 			$User->sign_in_result(false, $data['login']);
 			throw new ExitException($L->attempts_are_over_try_again_in(format_time($Config->core['sign_in_attempts_block_time'])), 403);
@@ -272,12 +273,15 @@ trait profile {
 			$User->sign_in_result(true, $data['login']);
 		} else {
 			$User->sign_in_result(false, $data['login']);
+			++$attempts;
 			$content = $L->authentication_error;
-			if (
-				$Config->core['sign_in_attempts_block_count'] &&
-				$User->get_sign_in_attempts_count($data['login']) >= $Config->core['sign_in_attempts_block_count'] * 2 / 3
-			) {
-				$content .= ' '.$L->attempts_left($Config->core['sign_in_attempts_block_count'] - $User->get_sign_in_attempts_count($data['login']));
+			if ($Config->core['sign_in_attempts_block_count']) {
+				$attempts_left = $Config->core['sign_in_attempts_block_count'] - $attempts;
+				if (!$attempts_left) {
+					throw new ExitException($L->attempts_are_over_try_again_in(format_time($Config->core['sign_in_attempts_block_time'])), 403);
+				} elseif ($attempts >= $Config->core['sign_in_attempts_block_count'] * 2 / 3) {
+					$content .= ' '.$L->attempts_left($attempts_left);
+				}
 			}
 			throw new ExitException($content, 400);
 		}
