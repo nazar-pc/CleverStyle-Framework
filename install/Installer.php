@@ -264,63 +264,25 @@ CONFIG;
 	 */
 	protected static function initialize_system_config ($cdb, $source, $site_name, $url, $admin_email, $language, $domain, $timezone, $mode) {
 		$config     = [
-			'site_name'                         => $site_name,
-			'url'                               => [$url],
-			'admin_email'                       => $admin_email,
-			'closed_title'                      => 'Site closed',
-			'closed_text'                       => '<p>Site closed for maintenance</p>',
-			'site_mode'                         => 1,
-			'title_delimiter'                   => ' | ',
-			'title_reverse'                     => 0,
-			'cache_compress_js_css'             => 1,
-			'frontend_load_optimization'        => 1,
-			'vulcanization'                     => 1,
-			'put_js_after_body'                 => 1,
-			'disable_webcomponents'             => 0,
-			'theme'                             => 'CleverStyle',
-			'language'                          => $language,
-			'active_languages'                  => [$language],
-			'multilingual'                      => 0,
-			'db_balance'                        => 0,
-			'db_mirror_mode'                    => DB::MIRROR_MODE_MASTER_MASTER,
-			'cookie_prefix'                     => '',
-			'cookie_domain'                     => [$domain],
-			'inserts_limit'                     => 1000,
-			'key_expire'                        => 60 * 2,
-			'gravatar_support'                  => 0,
-			'session_expire'                    => 3600 * 24 * 30,
-			'update_ratio'                      => 75,
-			'sign_in_attempts_block_count'      => 0,
-			'sign_in_attempts_block_time'       => 5,
-			'timezone'                          => $timezone,
-			'password_min_length'               => 4,
-			'password_min_strength'             => 3,
-			'smtp'                              => 0,
-			'smtp_host'                         => '',
-			'smtp_port'                         => '',
-			'smtp_secure'                       => '',
-			'smtp_auth'                         => 0,
-			'smtp_user'                         => '',
-			'smtp_password'                     => '',
-			'mail_from'                         => $admin_email,
-			'mail_from_name'                    => "Administrator of $site_name",
-			'allow_user_registration'           => 1,
-			'require_registration_confirmation' => 1,
-			'auto_sign_in_after_registration'   => 1,
-			'registration_confirmation_time'    => 1,
-			'mail_signature'                    => '',
-			'remember_user_ip'                  => 0,
-			'simple_admin_mode'                 => $mode,
-			'default_module'                    => Config::SYSTEM_MODULE
+			'site_name'         => $site_name,
+			'url'               => [$url],
+			'admin_email'       => $admin_email,
+			'language'          => $language,
+			'active_languages'  => [$language],
+			'cookie_domain'     => [$domain],
+			'timezone'          => $timezone,
+			'mail_from'         => $admin_email,
+			'mail_from_name'    => "Administrator of $site_name",
+			'simple_admin_mode' => $mode
 		];
 		$components = [
 			'modules' => [
 				'System' => [
 					'active' => Config\Module_Properties::ENABLED,
 					'db'     => [
-						'keys'  => '0',
-						'users' => '0',
-						'texts' => '0'
+						'keys'  => 0,
+						'users' => 0,
+						'texts' => 0
 					]
 				]
 			],

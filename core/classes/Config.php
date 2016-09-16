@@ -131,12 +131,11 @@ class Config {
 		if (!$config) {
 			throw new ExitException('Failed to load system configuration', 500);
 		}
-		$this->core_internal = $config['core'];
+		$this->core_internal = $config['core'] + Options::get_defaults();
 		$this->core          = $this->core_internal;
 		$this->db            = $config['db'];
 		$this->storage       = $config['storage'];
 		$this->components    = $config['components'];
-		$this->core += Options::get_defaults();
 		date_default_timezone_set($this->core['timezone']);
 		$this->fill_mirrors();
 	}
@@ -253,9 +252,7 @@ class Config {
 	public function save () {
 		unset($this->core_internal['cache_not_saved']);
 		// TODO: Remove `modules/System/core_settings_defaults.json` file in 6.x
-		$core_settings_defaults = Options::get_defaults();
-		$this->core             = Options::apply_formatting($this->core) + $core_settings_defaults;
-
+		$this->core = Options::apply_formatting($this->core) + Options::get_defaults();
 		/**
 		 * Persist multilingual options and copy the rest to `$this->core_internal` as is
 		 */

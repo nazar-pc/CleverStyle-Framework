@@ -22,23 +22,6 @@ class Options {
 	 * @return array[]
 	 */
 	public static function get_formatting () {
-		$Config    = Config::instance();
-		$languages = array_unique(
-			array_merge(
-				_mb_substr(get_files_list(LANGUAGES, '/^.*?\.php$/i', 'f'), 0, -4) ?: [],
-				_mb_substr(get_files_list(LANGUAGES, '/^.*?\.json$/i', 'f'), 0, -5) ?: []
-			)
-		);
-		asort($languages);
-		/** @noinspection PhpParamsInspection */
-		$modules_can_be_default = array_filter(
-			array_keys($Config->components['modules']),
-			function ($module) use ($Config) {
-				return $Config->module($module) && file_exists_with_extension(MODULES."/$module/index", ['php', 'html', 'json']);
-			}
-		);
-		$themes                 = get_files_list(THEMES, false, 'd');
-		asort($themes);
 		return static::get_formatting_normalize(
 			[
 				'array'        => [
@@ -73,11 +56,11 @@ class Options {
 					],
 					'key_expire'                   => [
 						'min'   => 1,
-						'value' => 120
+						'value' => 60 * 2
 					],
 					'session_expire'               => [
 						'min'   => 1,
-						'value' => 2592000
+						'value' => 3600 * 24 * 30
 					],
 					'update_ratio'                 => [
 						'min'   => 0,
@@ -109,7 +92,7 @@ class Options {
 					],
 					'language'       => [
 						'value'  => 'English',
-						'values' => $Config->core['active_languages'],
+						'values' => static::get_active_languages(),
 						'source' => 'active_languages'
 					],
 					'timezone'       => [
@@ -117,12 +100,12 @@ class Options {
 						'values' => get_timezones_list()
 					],
 					'default_module' => [
-						'value'  => 'System',
-						'values' => $modules_can_be_default
+						'value'  => Config::SYSTEM_MODULE,
+						'values' => static::get_modules_that_can_be_default()
 					],
 					'theme'          => [
-						'value'  => 'CleverStyle',
-						'values' => $themes
+						'value'  => Config::SYSTEM_THEME,
+						'values' => static::get_themes()
 					]
 				],
 				'set_multiple' => [
@@ -130,7 +113,7 @@ class Options {
 						'value'  => [
 							'English'
 						],
-						'values' => $languages
+						'values' => static::get_languages()
 					]
 				],
 				'string'       => [
@@ -172,6 +155,56 @@ class Options {
 				]
 			]
 		);
+	}
+	/**
+	 * @return string[]
+	 */
+	protected static function get_languages () {
+		$languages = defined('LANGUAGES')
+			? array_unique(
+				array_merge(
+					_mb_substr(get_files_list(LANGUAGES, '/^.*?\.php$/i', 'f'), 0, -4) ?: [],
+					_mb_substr(get_files_list(LANGUAGES, '/^.*?\.json$/i', 'f'), 0, -5) ?: []
+				)
+			)
+			: ['English'];
+		asort($languages);
+		return $languages;
+	}
+	/**
+	 * @return string[]
+	 */
+	protected static function get_themes () {
+		$themes = defined('THEMES') ? get_files_list(THEMES, false, 'd') : [Config::SYSTEM_THEME];
+		asort($themes);
+		return $themes;
+	}
+	/**
+	 * @return string[]
+	 */
+	protected static function get_modules_that_can_be_default () {
+		$Config = Config::instance(true);
+		if (!defined('MODULES') || !isset($Config->components['modules'])) {
+			return [Config::SYSTEM_MODULE];
+		}
+		/** @noinspection PhpParamsInspection */
+		return array_filter(
+			array_keys($Config->components['modules']),
+			function ($module) use ($Config) {
+				return $Config->module($module) && file_exists_with_extension(MODULES."/$module/index", ['php', 'html', 'json']);
+			}
+		);
+	}
+	/**
+	 * @return string[]
+	 */
+	protected static function get_active_languages () {
+		$Config = Config::instance(true);
+		if (!isset($Config->core['active_languages'])) {
+			return ['English'];
+		}
+		/** @noinspection PhpIncompatibleReturnTypeInspection */
+		return $Config->core['active_languages'];
 	}
 	/**
 	 * @param array[] $format

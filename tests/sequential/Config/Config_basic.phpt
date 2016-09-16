@@ -134,6 +134,7 @@ var_dump($Config->save());
 var_dump('Base url');
 DB::instance_reset();
 Config::instance_reset();
+Language::instance_reset();
 Request::instance()->init_from_globals();
 $Config = Config::instance();
 var_dump($Config->base_url());
