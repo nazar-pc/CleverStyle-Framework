@@ -2531,3 +2531,61 @@ Dropped backward compatibility:
 * None
 
 Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
+
+# 5.50.3+build-2467: Better consistency and minor frontend optimizations
+
+This release is a small incremental update over previous release.
+
+Release is primarily focused on improving tests coverage (76%+ for system in general) and small inconsistencies tweaks as well as usual set of bug fixes.
+There were also some minor performance improvements on frontend (translations initialization, icons and tooltips rendering).
+
+This is likely to be the last release of 5.x branch, see you in 6.x world:)
+
+Security fixes:
+* None
+
+New components:
+* None
+
+New features:
+* Added convenient property `cs\Request::$regular_path`
+
+Updates:
+* New upstream version of Composer
+
+Fixes and small improvements:
+* System:
+  * Always set `Content-Type` header to `application/json` for API requests
+  * Added convenient `do_api_request()` method for usage in tests
+  * Only set Content-Language header for regular pages
+  * Unnecessary validation already present in `cs\User\Profile` removed from API controller
+  * Simplifications and small tweaks in `cs\Request\Route`
+  * Do not forbid API access for users by default (this is really wrong)
+  * Allow to set login to own email (corresponding tests added)
+  * Support tricky situation when login was equal to email and then email changed, now login will be updated to new email as well
+  * Fixed behavior of master-slave mirror selection in `cs\DB` class
+  * Performance improvement in `cs-icon` element and in `cs-unresolved` feature
+  * Reduce painting when showing tooltip
+  * Use modern syntax of `@apply`
+  * Improved performance of `cs.Language` initialization
+  * Fix for email hash left in cache after user deletion
+  * Fix for failed sign ins registration because of incorrect DB indexes
+  * Small tweaks to sign in API
+  * Simplify installer in order to not specify default values explicitly
+  * Update `cs\Config\Options` to be usable even if system is not installed
+  * Optimize modules list rendering
+  * `System/Page/rebuild_cache` event doesn't actually have `key` parameter
+  * Some HTML files converted to Pug
+* Content
+  * Use passive event listener in Content module in order to improve scrolling performance
+
+Deprecations:
+* None
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* `cs-icon` now only supports either one or two icons, but not more
+
+Dropped backward compatibility:
+* None
+
+Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
