@@ -1,0 +1,49 @@
+style(is="custom-style").
+	html /deep/ textarea[is=cs-textarea] {
+		background-color : #fff;
+		border           : none;
+		color            : inherit;
+		vertical-align   : middle;
+
+		@apply --cs-global;
+		@apply --cs-input-text;
+		@apply --cs-textarea;
+	}
+
+	html /deep/ textarea[is=cs-textarea][full-width] {
+		width : 100%;
+	}
+
+	html /deep/ textarea[is=cs-textarea]:active {
+		@apply --cs-input-text-active;
+		@apply --cs-textarea-active;
+	}
+
+	html /deep/ textarea[is=cs-textarea]:focus {
+		outline : none;
+
+		@apply --cs-input-text-hover;
+		@apply --cs-textarea-hover;
+		@apply --cs-input-text-focus;
+		@apply --cs-textarea-focus;
+	}
+
+	html /deep/ textarea[is=cs-textarea]:hover {
+		@apply --cs-input-text-hover;
+		@apply --cs-textarea-hover;
+	}
+
+	html /deep/ textarea[is=cs-textarea][disabled] {
+		cursor : not-allowed;
+
+		@apply --cs-input-text-disabled;
+		@apply --cs-textarea-disabled;
+	}
+
+	html /deep/ textarea[is=cs-textarea][readonly] {
+		cursor : not-allowed;
+
+		@apply --cs-input-text-readonly;
+		@apply --cs-textarea-readonly;
+	}
+script( src="script.js")

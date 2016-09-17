@@ -1,0 +1,17 @@
+style(is="custom-style").
+	body {
+		@apply --cs-section-modal-body;
+	}
+
+	body[modal-opened] {
+		overflow : hidden;
+
+		@apply --cs-section-modal-body-open;
+	}
+dom-module#cs-section-modal
+	link(href="style.css" rel="import" type="css")
+	template
+		#overlay
+		#content
+			content
+	script(src="script.js")

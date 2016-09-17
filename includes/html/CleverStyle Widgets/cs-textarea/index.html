@@ -1,56 +1,47 @@
-<style is="custom-style">
-	/**
-	 * @package   CleverStyle Widgets
-	 * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
-	 * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
-	 * @license   MIT License, see license.txt
-	 */
-	html /deep/ textarea[is=cs-textarea] {
-		background-color : #fff;
-		border           : none;
-		color            : inherit;
-		vertical-align   : middle;
+<style is="custom-style">html /deep/ textarea[is=cs-textarea] {
+	background-color : #fff;
+	border           : none;
+	color            : inherit;
+	vertical-align   : middle;
 
-		@apply --cs-global;
-		@apply --cs-input-text;
-		@apply --cs-textarea;
-	}
+	@apply --cs-global;
+	@apply --cs-input-text;
+	@apply --cs-textarea;
+}
 
-	html /deep/ textarea[is=cs-textarea][full-width] {
-		width : 100%;
-	}
+html /deep/ textarea[is=cs-textarea][full-width] {
+	width : 100%;
+}
 
-	html /deep/ textarea[is=cs-textarea]:active {
-		@apply --cs-input-text-active;
-		@apply --cs-textarea-active;
-	}
+html /deep/ textarea[is=cs-textarea]:active {
+	@apply --cs-input-text-active;
+	@apply --cs-textarea-active;
+}
 
-	html /deep/ textarea[is=cs-textarea]:focus {
-		outline : none;
+html /deep/ textarea[is=cs-textarea]:focus {
+	outline : none;
 
-		@apply --cs-input-text-hover;
-		@apply --cs-textarea-hover;
-		@apply --cs-input-text-focus;
-		@apply --cs-textarea-focus;
-	}
+	@apply --cs-input-text-hover;
+	@apply --cs-textarea-hover;
+	@apply --cs-input-text-focus;
+	@apply --cs-textarea-focus;
+}
 
-	html /deep/ textarea[is=cs-textarea]:hover {
-		@apply --cs-input-text-hover;
-		@apply --cs-textarea-hover;
-	}
+html /deep/ textarea[is=cs-textarea]:hover {
+	@apply --cs-input-text-hover;
+	@apply --cs-textarea-hover;
+}
 
-	html /deep/ textarea[is=cs-textarea][disabled] {
-		cursor : not-allowed;
+html /deep/ textarea[is=cs-textarea][disabled] {
+	cursor : not-allowed;
 
-		@apply --cs-input-text-disabled;
-		@apply --cs-textarea-disabled;
-	}
+	@apply --cs-input-text-disabled;
+	@apply --cs-textarea-disabled;
+}
 
-	html /deep/ textarea[is=cs-textarea][readonly] {
-		cursor : not-allowed;
+html /deep/ textarea[is=cs-textarea][readonly] {
+	cursor : not-allowed;
 
-		@apply --cs-input-text-readonly;
-		@apply --cs-textarea-readonly;
-	}
-</style>
-<script src="script.js"></script>
+	@apply --cs-input-text-readonly;
+	@apply --cs-textarea-readonly;
+}</style><script src="script.js"></script>

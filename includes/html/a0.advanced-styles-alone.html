@@ -1,195 +1,188 @@
-<!-- Capital letter so that it would be possible to override it afterwards -->
-<dom-module id="Advanced-styles-alone">
-	<template>
-		<style>
-			/* Text colors */
+<dom-module id="Advanced-styles-alone"><template><style>/* Text colors */
 
-			.cs-text-primary {
-				color : var(--text-color-primary);
-			}
+.cs-text-primary {
+	color : var(--text-color-primary);
+}
 
-			.cs-text-success {
-				color : var(--text-color-success);
-			}
+.cs-text-success {
+	color : var(--text-color-success);
+}
 
-			.cs-text-warning {
-				color : var(--text-color-warning);
-			}
+.cs-text-warning {
+	color : var(--text-color-warning);
+}
 
-			.cs-text-error {
-				color : var(--text-color-error);
-			}
+.cs-text-error {
+	color : var(--text-color-error);
+}
 
-			/* Text alignment */
+/* Text alignment */
 
-			.cs-text-center {
-				text-align : center;
-			}
+.cs-text-center {
+	text-align : center;
+}
 
-			.cs-text-left {
-				text-align : left;
-			}
+.cs-text-left {
+	text-align : left;
+}
 
-			.cs-text-right {
-				text-align : right;
-			}
+.cs-text-right {
+	text-align : right;
+}
 
-			/* Text size */
+/* Text size */
 
-			.cs-text-lead {
-				font-size : 1.4rem;
-			}
+.cs-text-lead {
+	font-size : 1.4rem;
+}
 
-			/* Text style */
+/* Text style */
 
-			.cs-text-bold {
-				font-weight : bold;
-			}
+.cs-text-bold {
+	font-weight : bold;
+}
 
-			.cs-text-italic {
-				font-style : italic;
-			}
+.cs-text-italic {
+	font-style : italic;
+}
 
-			/* Blocks colors */
+/* Blocks colors */
 
-			.cs-block-primary {
-				background : var(--background-color-primary);
-			}
+.cs-block-primary {
+	background : var(--background-color-primary);
+}
 
-			.cs-block-success {
-				background : var(--background-color-success);
-			}
+.cs-block-success {
+	background : var(--background-color-success);
+}
 
-			.cs-block-warning {
-				background : var(--background-color-warning);
-			}
+.cs-block-warning {
+	background : var(--background-color-warning);
+}
 
-			.cs-block-error {
-				background : var(--background-color-error);
-			}
+.cs-block-error {
+	background : var(--background-color-error);
+}
 
-			.cs-block-primary,
-			.cs-block-success,
-			.cs-block-warning,
-			.cs-block-error {
-				border  : .1em solid currentColor;
-				padding : 1em;
-			}
+.cs-block-primary,
+.cs-block-success,
+.cs-block-warning,
+.cs-block-error {
+	border  : .1em solid currentColor;
+	padding : 1em;
+}
 
-			/* Margin */
+/* Margin */
 
-			.cs-margin {
-				margin-bottom : 1rem;
-				margin-top    : 1rem;
-			}
+.cs-margin {
+	margin-bottom : 1rem;
+	margin-top    : 1rem;
+}
 
-			.cs-margin + .cs-margin {
-				margin-top : 0;
-			}
+.cs-margin + .cs-margin {
+	margin-top : 0;
+}
 
-			.cs-margin-top {
-				margin-top : 1rem;
-			}
+.cs-margin-top {
+	margin-top : 1rem;
+}
 
-			.cs-margin-bottom {
-				margin-bottom : 1rem;
-			}
+.cs-margin-bottom {
+	margin-bottom : 1rem;
+}
 
-			.cs-margin-left {
-				margin-left : 1rem;
-			}
+.cs-margin-left {
+	margin-left : 1rem;
+}
 
-			.cs-margin-right {
-				margin-right : 1rem;
-			}
+.cs-margin-right {
+	margin-right : 1rem;
+}
 
-			.cs-margin-none {
-				margin : 0;
-			}
+.cs-margin-none {
+	margin : 0;
+}
 
-			/* Padding */
+/* Padding */
 
-			.cs-padding {
-				padding-bottom : 1rem;
-				padding-top    : 1rem;
-			}
+.cs-padding {
+	padding-bottom : 1rem;
+	padding-top    : 1rem;
+}
 
-			.cs-padding + .cs-padding {
-				padding-top : 0;
-			}
+.cs-padding + .cs-padding {
+	padding-top : 0;
+}
 
-			.cs-padding-top {
-				padding-top : 1rem;
-			}
+.cs-padding-top {
+	padding-top : 1rem;
+}
 
-			.cs-padding-bottom {
-				padding-bottom : 1rem;
-			}
+.cs-padding-bottom {
+	padding-bottom : 1rem;
+}
 
-			.cs-padding-left {
-				padding-left : 1rem;
-			}
+.cs-padding-left {
+	padding-left : 1rem;
+}
 
-			.cs-padding-right {
-				padding-right : 1rem;
-			}
+.cs-padding-right {
+	padding-right : 1rem;
+}
 
-			.cs-padding-none {
-				padding : 0;
-			}
+.cs-padding-none {
+	padding : 0;
+}
 
-			/* Cursors */
+/* Cursors */
 
-			.cs-cursor-pointer {
-				cursor : pointer;
-			}
+.cs-cursor-pointer {
+	cursor : pointer;
+}
 
-			/* Table */
+/* Table */
 
-			.cs-table {
-				border-collapse : collapse;
-				border-spacing  : 0;
-				display         : table;
-				margin-bottom   : 15px;
-				width           : 100%
-			}
+.cs-table {
+	border-collapse : collapse;
+	border-spacing  : 0;
+	display         : table;
+	margin-bottom   : 15px;
+	width           : 100%
+}
 
-			.cs-table[center] {
-				text-align : center !important
-			}
+.cs-table[center] {
+	text-align : center !important
+}
 
-			.cs-table[left] {
-				text-align : left !important
-			}
+.cs-table[left] {
+	text-align : left !important
+}
 
-			.cs-table[right] {
-				text-align : right !important
-			}
+.cs-table[right] {
+	text-align : right !important
+}
 
-			.cs-table[list] > * > tr {
-				border-bottom : 1px solid #ddd
-			}
+.cs-table[list] > * > tr {
+	border-bottom : 1px solid #ddd
+}
 
-			.cs-table[list] > * > tr:nth-child(n+2):hover {
-				background-color : #f0f0f0
-			}
+.cs-table[list] > * > tr:nth-child(n+2):hover {
+	background-color : #f0f0f0
+}
 
-			.cs-table th {
-				font-weight    : bold;
-				text-transform : uppercase
-			}
+.cs-table th {
+	font-weight    : bold;
+	text-transform : uppercase
+}
 
-			.cs-table[right-left] > * > tr > *:nth-of-type(2n+1) {
-				text-align : right
-			}
+.cs-table[right-left] > * > tr > *:nth-of-type(2n+1) {
+	text-align : right
+}
 
-			.cs-table[right-left] > * > tr > *:nth-of-type(2n+2) {
-				text-align : left
-			}
+.cs-table[right-left] > * > tr > *:nth-of-type(2n+2) {
+	text-align : left
+}
 
-			.cs-table > * > tr > * {
-				padding : .5em
-			}
-		</style>
-	</template>
-</dom-module>
+.cs-table > * > tr > * {
+	padding : .5em
+}</style></template></dom-module>

@@ -1,21 +1,9 @@
-<style is="custom-style">
-	body {
-		@apply --cs-section-modal-body;
-	}
+<style is="custom-style">body {
+	@apply --cs-section-modal-body;
+}
 
-	body[modal-opened] {
-		overflow : hidden;
+body[modal-opened] {
+	overflow : hidden;
 
-		@apply --cs-section-modal-body-open;
-	}
-</style>
-<dom-module id="cs-section-modal">
-	<link href="style.css" rel="import" type="css">
-	<template>
-		<div id="overlay"></div>
-		<div id="content">
-			<content></content>
-		</div>
-	</template>
-	<script src="script.js"></script>
-</dom-module>
+	@apply --cs-section-modal-body-open;
+}</style><dom-module id="cs-section-modal"><link href="style.css" rel="import" type="css"><template><div id="overlay"></div><div id="content"><content></content></div></template><script src="script.js"></script></dom-module>

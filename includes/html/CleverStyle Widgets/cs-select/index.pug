@@ -1,0 +1,74 @@
+style(is="custom-style").
+	html /deep/ select[is=cs-select] {
+		background-color : #fff;
+		border           : none;
+		color            : inherit;
+		vertical-align   : middle;
+
+		@apply --cs-global;
+		@apply --cs-input-text;
+		@apply --cs-select;
+	}
+
+	html /deep/ select[is=cs-select][compact] {
+		width : auto;
+	}
+
+	html /deep/ select[is=cs-select][full-width] {
+		width : 100%;
+	}
+
+	html /deep/ select[is=cs-select][size]:not([size='0']):not([size='1']) {
+		height : auto;
+	}
+
+	html /deep/ select[is=cs-select]:active {
+		@apply --cs-input-text-active;
+		@apply --cs-select-active;
+	}
+
+	html /deep/ select[is=cs-select]:focus {
+		outline : none;
+
+		@apply --cs-input-text-hover;
+		@apply --cs-select-hover;
+		@apply --cs-input-text-focus;
+		@apply --cs-select-focus;
+	}
+
+	html /deep/ select[is=cs-select]:hover {
+		@apply --cs-input-text-hover;
+		@apply --cs-select-hover;
+	}
+
+	html /deep/ select[is=cs-select][disabled] {
+		cursor : not-allowed;
+
+		@apply --cs-input-text-disabled;
+		@apply --cs-select-disabled;
+	}
+
+	html /deep/ select[is=cs-select][readonly] {
+		cursor : not-allowed;
+
+		@apply --cs-input-text-readonly;
+		@apply --cs-select-readonly;
+	}
+
+	html /deep/ select[is=cs-select] option {
+		@apply --cs-select-option;
+	}
+
+	html /deep/ select[is=cs-select] option[selected] {
+		@apply --cs-select-option-selected;
+	}
+
+	html /deep/ select[is=cs-select] > optgroup {
+		@apply --cs-select-option;
+		@apply --cs-select-optgroup;
+	}
+
+	html /deep/ select[is=cs-select] > optgroup > option:first-child {
+		@apply --cs-select-optgroup-first-option;
+	}
+script(src="script.js")
