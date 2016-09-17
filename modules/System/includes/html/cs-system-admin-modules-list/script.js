@@ -9,14 +9,14 @@
  */
 (function(){
   var active_switch;
-  active_switch = function(uninstalled, disabled, enabled){
-    switch (this.active) {
+  active_switch = function(active, if_uninstalled, if_disabled, if_enabled){
+    switch (active) {
     case -1:
-      return uninstalled;
+      return if_uninstalled;
     case 0:
-      return disabled;
+      return if_disabled;
     case 1:
-      return enabled;
+      return if_enabled;
     }
   };
   Polymer({
@@ -31,61 +31,51 @@
     reload: function(){
       var this$ = this;
       Promise.all([cs.api(['get			api/System/admin/modules', 'get			api/System/admin/modules/default', 'get_settings	api/System/admin/system']), cs.Language.ready()]).then(function(arg$){
-        var ref$, modules, default_module, settings;
+        var ref$, modules, default_module, settings, texts, i$, len$, module, is_default, enabled, installed, ref1$, j$, ref2$, len1$, prop, ref3$, tag;
         ref$ = arg$[0], modules = ref$[0], default_module = ref$[1], settings = ref$[2];
-        this$.default_module = default_module;
-        modules.forEach(function(module){
-          var active_switch_local, enabled, installed;
-          active_switch_local = active_switch.bind(module);
-          module['class'] = active_switch_local('cs-block-error cs-text-error', 'cs-block-warning cs-text-warning', 'cs-block-success cs-text-success');
-          module.icon = active_switch_local('times', 'minus', module.name === default_module ? 'home' : 'check');
-          module.icon_text = active_switch_local(this$.L.uninstalled, this$.L.disabled, module.name === default_module
-            ? this$.L.default_module
-            : this$.L.enabled);
+        texts = {
+          uninstalled: this$.L.uninstalled,
+          disabled: this$.L.disabled,
+          default_module: this$.L.default_module,
+          enabled: this$.L.enabled
+        };
+        for (i$ = 0, len$ = modules.length; i$ < len$; ++i$) {
+          module = modules[i$];
+          is_default = module.name === default_module;
+          module['class'] = active_switch(module.active, 'cs-block-error cs-text-error', 'cs-block-warning cs-text-warning', 'cs-block-success cs-text-success');
+          module.icon = active_switch(module.active, 'times', 'minus', is_default ? 'home' : 'check');
+          module.icon_text = active_switch(module.active, texts.uninstalled, texts.disabled, is_default
+            ? texts.default_module
+            : texts.enabled);
           module.name_localized = this$.L[module.name] || module.name.replace(/_/g, ' ');
           enabled = module.active == 1;
           installed = module.active != -1;
           module.can_disable = enabled && module.name !== 'System';
           module.administration = module.has_admin_section && installed;
-          module.db_settings = !settings.simple_admin_mode && installed && module.meta && module.meta.db;
-          module.storage_settings = !settings.simple_admin_mode && installed && module.meta && module.meta.storage;
-          module.can_be_set_as_default = enabled && module.name !== default_module && module.has_user_section;
-          (function(){
-            var i$, ref$, len$, prop, ref1$, tag;
-            for (i$ = 0, len$ = (ref$ = ['api', 'license', 'readme']).length; i$ < len$; ++i$) {
-              prop = ref$[i$];
-              if ((ref1$ = module[prop]) != null && ref1$.type) {
-                tag = module[prop].type === 'txt' ? 'pre' : 'div';
-                module[prop].content = "<" + tag + ">" + module[prop].content + "</" + tag + ">";
-              }
+          module.db_settings = !settings.simple_admin_mode && installed && ((ref$ = module.meta) != null ? ref$.db : void 8);
+          module.storage_settings = !settings.simple_admin_mode && installed && ((ref1$ = module.meta) != null ? ref1$.storage : void 8);
+          module.can_be_set_as_default = enabled && !is_default && module.has_user_section;
+          for (j$ = 0, len1$ = (ref2$ = ['api', 'license', 'readme']).length; j$ < len1$; ++j$) {
+            prop = ref2$[j$];
+            if ((ref3$ = module[prop]) != null && ref3$.type) {
+              tag = module[prop].type === 'txt' ? 'pre' : 'div';
+              module[prop].content = "<" + tag + ">" + module[prop].content + "</" + tag + ">";
             }
-          })();
-          if (module.meta) {
-            module.info = (function(L){
-              return L.module_info(this['package'], this.version, this.description, this.author, this.website || L.none, this.license, this.db_support
-                ? this.db_support.join(', ')
-                : L.none, this.storage_support
-                ? this.storage_support.join(', ')
-                : L.none, this.provide
-                ? [].concat(this.provide).join(', ')
-                : L.none, this.require
-                ? [].concat(this.require).join(', ')
-                : L.none, this.conflict
-                ? [].concat(this.conflict).join(', ')
-                : L.none, this.optional
-                ? [].concat(this.optional).join(', ')
-                : L.none, this.multilingual && this.multilingual.indexOf('interface') !== -1
-                ? L.yes
-                : L.no, this.multilingual && this.multilingual.indexOf('content') !== -1
-                ? L.yes
-                : L.no, this.languages
-                ? this.languages.join(', ')
-                : L.none);
-            }.call(module.meta, this$.L));
           }
-        });
+          if (module.meta) {
+            module.info = this$._get_module_info(module.meta);
+          }
+        }
+        this$.default_module = default_module;
         this$.set('modules', modules);
       });
+    },
+    _get_module_info: function(meta){
+      var none, _yes, _no;
+      none = this.L.none;
+      _yes = this.L.yes;
+      _no = this.L.no;
+      return this.L.module_info(meta['package'], meta.version, meta.description, meta.author, meta.website || none, meta.license, meta.db_support ? meta.db_support.join(', ') : none, meta.storage_support ? meta.storage_support.join(', ') : none, meta.provide ? [].concat(meta.provide).join(', ') : none, meta.require ? [].concat(meta.require).join(', ') : none, meta.conflict ? [].concat(meta.conflict).join(', ') : none, meta.optional ? [].concat(meta.optional).join(', ') : none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? _yes : _no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? _yes : _no, meta.languages ? meta.languages.join(', ') : none);
     }
     /**
      * Provides next events:

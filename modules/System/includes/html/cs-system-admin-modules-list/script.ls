@@ -6,11 +6,11 @@
  * @copyright  Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-active_switch	= (uninstalled, disabled, enabled) ->
-	switch @active
-	| -1	=> uninstalled
-	| 0		=> disabled
-	| 1		=> enabled
+active_switch	= (active, if_uninstalled, if_disabled, if_enabled) ->
+	switch active
+	| -1	=> if_uninstalled
+	| 0		=> if_disabled
+	| 1		=> if_enabled
 Polymer(
 	'is'		: 'cs-system-admin-modules-list'
 	behaviors	: [
@@ -31,57 +31,68 @@ Polymer(
 			])
 			cs.Language.ready()
 		]).then ([[modules, default_module, settings]]) !~>
-			@default_module	= default_module
-			modules.forEach (module) !~>
-				active_switch_local		= active_switch.bind(module)
-				module.class			= active_switch_local(
+			texts			=
+				uninstalled		: @L.uninstalled
+				disabled		: @L.disabled
+				default_module	: @L.default_module
+				enabled			: @L.enabled
+			for module in modules
+				is_default				= module.name == default_module
+				module.class			= active_switch(
+					module.active
 					'cs-block-error cs-text-error'
 					'cs-block-warning cs-text-warning'
 					'cs-block-success cs-text-success'
 				)
-				module.icon				= active_switch_local(
+				module.icon				= active_switch(
+					module.active
 					'times'
 					'minus'
-					if module.name == default_module then 'home' else 'check'
+					if is_default then 'home' else 'check'
 				)
-				module.icon_text		= active_switch_local(
-					@L.uninstalled
-					@L.disabled
-					if module.name == default_module then @L.default_module else @L.enabled
+				module.icon_text		= active_switch(
+					module.active
+					texts.uninstalled
+					texts.disabled
+					if is_default then texts.default_module else texts.enabled
 				)
 				module.name_localized			= @L[module.name] || module.name.replace(/_/g, ' ')
 				enabled							= module.active ~= 1
 				installed						= module.active !~= -1
 				module.can_disable				= enabled && module.name != 'System'
 				module.administration			= module.has_admin_section && installed
-				module.db_settings				= !settings.simple_admin_mode && installed && module.meta && module.meta.db
-				module.storage_settings			= !settings.simple_admin_mode && installed && module.meta && module.meta.storage
-				module.can_be_set_as_default	= enabled && module.name != default_module && module.has_user_section
-				do !->
-					for prop in ['api', 'license', 'readme']
-						if module[prop]?.type
-							tag						= if module[prop].type == 'txt' then 'pre' else 'div'
-							module[prop].content	= "<#tag>#{module[prop].content}</#tag>"
+				module.db_settings				= !settings.simple_admin_mode && installed && module.meta?.db
+				module.storage_settings			= !settings.simple_admin_mode && installed && module.meta?.storage
+				module.can_be_set_as_default	= enabled && !is_default && module.has_user_section
+				for prop in ['api', 'license', 'readme']
+					if module[prop]?.type
+						tag						= if module[prop].type == 'txt' then 'pre' else 'div'
+						module[prop].content	= "<#tag>#{module[prop].content}</#tag>"
 				if module.meta
-					module.info	= let (@ = module.meta, L = @L)
-						L.module_info(
-							@package,
-							@version,
-							@description,
-							@author,
-							@website || L.none,
-							@license,
-							if @db_support then @db_support.join(', ') else L.none,
-							if @storage_support then @storage_support.join(', ') else L.none,
-							if @provide then [].concat(@provide).join(', ') else L.none,
-							if @require then [].concat(@require).join(', ') else L.none,
-							if @conflict then [].concat(@conflict).join(', ') else L.none,
-							if @optional then [].concat(@optional).join(', ') else L.none,
-							if @multilingual && @multilingual.indexOf('interface') != -1 then L.yes else L.no,
-							if @multilingual && @multilingual.indexOf('content') != -1 then L.yes else L.no,
-							if @languages then @languages.join(', ') else L.none
-						)
+					module.info	= @_get_module_info(module.meta)
+			@default_module	= default_module
 			@set('modules', modules)
+	_get_module_info : (meta) ->
+		none	= @L.none
+		_yes	= @L.yes
+		_no		= @L.no
+		@L.module_info(
+			meta.package
+			meta.version
+			meta.description
+			meta.author
+			meta.website || none
+			meta.license
+			if meta.db_support then meta.db_support.join(', ') else none
+			if meta.storage_support then meta.storage_support.join(', ') else none
+			if meta.provide then [].concat(meta.provide).join(', ') else none
+			if meta.require then [].concat(meta.require).join(', ') else none
+			if meta.conflict then [].concat(meta.conflict).join(', ') else none
+			if meta.optional then [].concat(meta.optional).join(', ') else none
+			if meta.multilingual && meta.multilingual.indexOf('interface') != -1 then _yes else _no
+			if meta.multilingual && meta.multilingual.indexOf('content') != -1 then _yes else _no
+			if meta.languages then meta.languages.join(', ') else none
+		)
 	/**
 	 * Provides next events:
 	 *  admin/System/modules/default/before
