@@ -22,9 +22,6 @@ use function
  *  ]
  *
  *  System/Page/rebuild_cache
- *  [
- *    'key' => &$key //Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
- *  ]
  *
  *  System/Page/requirejs
  *  [
