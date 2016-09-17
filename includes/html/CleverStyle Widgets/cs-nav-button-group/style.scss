@@ -19,16 +19,12 @@
 
 #content {
 	display : flex;
-	display : -ms-flexbox;
-	display : -webkit-flex;
 
 	@apply --cs-nav-button-group-content;
 }
 
 :host([vertical]) #content {
-	flex-direction         : column;
-	-ms-flex-direction     : column;
-	-webkit-flex-direction : column;
+	flex-direction : column;
 
 	@apply --cs-nav-button-group-content-vertical;
 }

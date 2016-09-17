@@ -32,8 +32,7 @@ window.Polymer		= class extends Polymer
 	__delay_registration : {}
 already_registered_modules	= {}
 register_original			= Polymer.DomModule.register
-# TODO: __proto__ might be used here, but shitty IE10 doesn't support it
-Object.getPrototypeOf(document.createElement('dom-module')).register = !->
+document.createElement('dom-module').__proto__.register = !->
 	if @id
 		if already_registered_modules[@id]
 			return

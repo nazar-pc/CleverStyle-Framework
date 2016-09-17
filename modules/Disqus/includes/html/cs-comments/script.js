@@ -48,7 +48,7 @@
       if (this._loaded) {
         return;
       }
-      Object.getPrototypeOf(this)._loaded = true;
+      this.__proto__._loaded = true;
       cs.api('get_settings api/Disqus').then(function(arg$){
         var shortname, x$, script;
         shortname = arg$.shortname;

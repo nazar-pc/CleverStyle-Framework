@@ -118,7 +118,7 @@ $Response->output_default();
 --EXPECTF--
 string(34) "Init with typical default settings"
 int(200)
-array(3) {
+array(2) {
   ["content-type"]=>
   array(1) {
     [0]=>
@@ -128,11 +128,6 @@ array(3) {
   array(1) {
     [0]=>
     string(33) "Accept-Language,User-Agent,Cookie"
-  }
-  ["x-ua-compatible"]=>
-  array(1) {
-    [0]=>
-    string(7) "IE=edge"
   }
 }
 string(0) ""
@@ -149,13 +144,6 @@ string(20) "header() called with"
 array(2) {
   [0]=>
   string(39) "Vary: Accept-Language,User-Agent,Cookie"
-  [1]=>
-  bool(false)
-}
-string(20) "header() called with"
-array(2) {
-  [0]=>
-  string(24) "X-Ua-Compatible: IE=edge"
   [1]=>
   bool(false)
 }

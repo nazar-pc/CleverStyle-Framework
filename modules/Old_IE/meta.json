@@ -1,8 +1,8 @@
 {
 	"package"     : "Old_IE",
 	"category"    : "modules",
-	"version"     : "1.11.0+build-12",
-	"description" : "Module to bring frontend polyfills and hacks for IE10 support",
+	"version"     : "2.0.0+build-13",
+	"description" : "Module to bring frontend polyfills and hacks for IE11 support",
 	"author"      : "Nazar Mokrynskyi",
 	"website"     : "cleverstyle.org/Framework",
 	"license"     : "MIT License",

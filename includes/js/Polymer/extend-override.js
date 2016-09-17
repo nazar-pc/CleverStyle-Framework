@@ -44,7 +44,7 @@
   }(Polymer));
   already_registered_modules = {};
   register_original = Polymer.DomModule.register;
-  Object.getPrototypeOf(document.createElement('dom-module')).register = function(){
+  document.createElement('dom-module').__proto__.register = function(){
     if (this.id) {
       if (already_registered_modules[this.id]) {
         return;

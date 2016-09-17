@@ -25,28 +25,26 @@
 			}
 
 			p {
-				background         : rgba(0, 0, 0, .5);
-				bottom             : 0;
-				box-sizing         : border-box;
-				color              : #fff;
-				margin             : 0 !important;
-				opacity            : 0;
-				padding            : 5px;
-				position           : absolute;
-				-webkit-transition : opacity .3s;
-				transition         : opacity .3s;
-				width              : inherit;
+				background : rgba(0, 0, 0, .5);
+				bottom     : 0;
+				box-sizing : border-box;
+				color      : #fff;
+				margin     : 0 !important;
+				opacity    : 0;
+				padding    : 5px;
+				position   : absolute;
+				transition : opacity .3s;
+				width      : inherit;
 			}
 
 			.cs-photo-gallery-gallery-control {
-				min-height         : 1em;
-				min-width          : 1em;
-				opacity            : 0;
-				position           : absolute;
-				right              : 0;
-				top                : 0;
-				-webkit-transition : opacity .3s;
-				transition         : opacity .3s;
+				min-height : 1em;
+				min-width  : 1em;
+				opacity    : 0;
+				position   : absolute;
+				right      : 0;
+				top        : 0;
+				transition : opacity .3s;
 			}
 
 			a:nth-of-type(2) {

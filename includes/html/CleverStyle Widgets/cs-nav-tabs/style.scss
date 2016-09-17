@@ -7,8 +7,6 @@
 :host {
 	border         : none;
 	display        : flex;
-	display        : -ms-flexbox;
-	display        : -webkit-flex;
 	vertical-align : middle;
 
 	@apply --cs-no-selection;

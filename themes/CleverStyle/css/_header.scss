@@ -11,12 +11,8 @@ body > header {
 	background : #f5f5f5;
 
 	> div {
-		display             : flex;
-		display             : -ms-flexbox;
-		display             : -webkit-flex;
-		align-items         : center;
-		-ms-flex-align      : center;
-		-webkit-align-items : center;
+		display     : flex;
+		align-items : center;
 
 		> {
 			* {
@@ -28,13 +24,10 @@ body > header {
 			}
 
 			nav:first-of-type {
-				display            : inline-block;
-				flex               : 1;
-				-ms-flex           : 1 1 0.000000001px;
-				-webkit-flex       : 1;
-				flex-basis         : 0.000000001px;
-				-webkit-flex-basis : 0.000000001px;
-				font-size          : 1.1em;
+				display    : inline-block;
+				flex       : 1;
+				flex-basis : 0.000000001px;
+				font-size  : 1.1em;
 
 				> a {
 					display     : inline-block;

@@ -14,14 +14,13 @@ Event::instance()->on(
 	'System/Page/render/before',
 	function () {
 		if (
-			strpos(Request::instance()->header('user-agent'), 'MSIE 10') !== false &&
+			strpos(Request::instance()->header('user-agent'), 'MSIE 11') !== false &&
 			Config::instance()->module('Old_IE')->enabled()
 		) {
+			Response::instance()->header('x-ua-compatible', 'IE=edge');
 			Page::instance()->Head .=
-				h::{'link[rel=stylesheet][shim-shadowdom]'}(['href' => 'modules/Old_IE/includes/css/normalize.css']).
-				h::script(['src' => 'modules/Old_IE/includes/js/a.WeakMap.js']).
-				h::script(['src' => 'modules/Old_IE/includes/js/b.MutationObserver.js']);
-				h::script(['src' => 'modules/Old_IE/includes/js/c.dataset.js']);
+				h::script(['src' => 'modules/Old_IE/includes/js/a.Promise.min.js']).
+				h::script(['src' => 'modules/Old_IE/includes/js/b.Template.js']);
 		}
 	}
 );

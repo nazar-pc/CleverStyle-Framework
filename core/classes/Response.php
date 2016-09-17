@@ -54,9 +54,9 @@ class Response {
 	 * @return Response
 	 */
 	public function init ($body = '', $body_stream = null, $headers = [], $code = 200) {
-		$this->code     = $code;
-		$this->headers  = _array($headers);
-		$this->body     = $body;
+		$this->code    = $code;
+		$this->headers = _array($headers);
+		$this->body    = $body;
 		if ($this->body_stream) {
 			fclose($this->body_stream);
 		}
@@ -73,9 +73,8 @@ class Response {
 			'',
 			null,
 			[
-				'content-type'    => 'text/html; charset=utf-8',
-				'vary'            => 'Accept-Language,User-Agent,Cookie',
-				'x-ua-compatible' => 'IE=edge' // TODO: I hope some day we'll get rid of this sh*t :(
+				'content-type' => 'text/html; charset=utf-8',
+				'vary'         => 'Accept-Language,User-Agent,Cookie'
 			],
 			200
 		);

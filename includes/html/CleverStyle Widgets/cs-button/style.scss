@@ -15,15 +15,9 @@
 }
 
 #content {
-	align-items             : center;
-	-ms-flex-align          : center;
-	-webkit-align-items     : center;
-	display                 : flex;
-	display                 : -ms-flexbox;
-	display                 : -webkit-flex;
-	justify-content         : center;
-	-ms-flex-pack           : center;
-	-webkit-justify-content : center;
+	align-items     : center;
+	display         : flex;
+	justify-content : center;
 }
 
 :host(:active),

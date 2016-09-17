@@ -201,34 +201,31 @@
 		/* Modal */
 
 		--cs-section-modal: {
-			opacity           : 0;
-			transform         : scale(0);
-			-webkit-transform : scale(0);
-			transition        : opacity var(--transition-duration) var(--transition-duration-short), transform 0s var(--transition-duration), -webkit-transform 0s var(--transition-duration);
-			will-change       : opacity;
+			opacity     : 0;
+			transform   : scale(0);
+			transition  : opacity var(--transition-duration) var(--transition-duration-short), transform 0s var(--transition-duration);
+			will-change : opacity;
 
 			@apply --layout;
 			@apply --layout-center-center;
 		};
 
 		--cs-section-modal-open: {
-			opacity           : 1;
-			transform         : scale(1);
-			-webkit-transform : scale(1);
-			transition        : opacity var(--transition-duration);
+			opacity    : 1;
+			transform  : scale(1);
+			transition : opacity var(--transition-duration);
 
 			@apply --layout;
 			@apply --layout-center-center;
 		};
 
 		--cs-section-modal-body: {
-			transition : filter var(--transition-duration) var(--transition-duration), -webkit-filter var(--transition-duration) var(--transition-duration);
+			transition : filter var(--transition-duration) var(--transition-duration);
 		};
 
 		--cs-section-modal-body-open: {
-			filter         : blur(var(--modal-blur-radius));
-			-webkit-filter : blur(var(--modal-blur-radius));
-			overflow       : hidden;
+			filter   : blur(var(--modal-blur-radius));
+			overflow : hidden;
 		};
 
 		--cs-section-modal-overlay: {
@@ -242,17 +239,15 @@
 			opacity             : 0;
 			padding             : var(--modal-content-padding);
 			transform           : translateY(var(--modal-content-translate));
-			-webkit-transform   : translateY(var(--modal-content-translate));
 			transition          : var(--transition-duration) var(--transition-duration-short);
-			transition-property : opacity, transform, -webkit-transform;
-			will-change         : opacity, transform, -webkit-transform;
+			transition-property : opacity, transform;
+			will-change         : opacity, transform;
 		};
 
 		--cs-section-modal-content-open: {
-			opacity           : 1;
-			transform         : translateY(0);
-			-webkit-transform : translateY(0);
-			transition        : var(--transition-duration);
+			opacity    : 1;
+			transform  : translateY(0);
+			transition : var(--transition-duration);
 		};
 
 		--cs-section-modal-content-as-is: {
@@ -284,14 +279,13 @@
 		/* Tooltip */
 
 		--cs-tooltip: {
-			background        : var(--tooltip-background);
-			color             : var(--tooltip-color);
-			margin-top        : -var(--tooltip-arrow-height);
-			opacity           : 0;
-			transform         : scale(0);
-			-webkit-transform : scale(0);
-			transition        : opacity var(--transition-duration-short) var(--transition-duration-short), transform 0s var(--transition-duration), -webkit-transform 0s var(--transition-duration);
-			will-change       : opacity, transform, -webkit-transform;
+			background  : var(--tooltip-background);
+			color       : var(--tooltip-color);
+			margin-top  : -var(--tooltip-arrow-height);
+			opacity     : 0;
+			transform   : scale(0);
+			transition  : opacity var(--transition-duration-short) var(--transition-duration-short), transform 0s var(--transition-duration);
+			will-change : opacity, transform;
 
 			@apply --layout;
 			@apply --layout-center;
@@ -302,19 +296,17 @@
 		};
 
 		--cs-tooltip-show: {
-			opacity           : 1;
-			transform         : scale(1);
-			-webkit-transform : scale(1);
-			transition        : opacity var(--transition-duration) var(--transition-duration-short);
+			opacity    : 1;
+			transform  : scale(1);
+			transition : opacity var(--transition-duration) var(--transition-duration-short);
 
 			@apply --layout;
 			@apply --layout-center;
 		};
 
 		--cs-tooltip-show-quick: {
-			transform         : scale(1);
-			-webkit-transform : scale(1);
-			transition        : none;
+			transform  : scale(1);
+			transition : none;
 		};
 
 		--cs-tooltip-content: {
@@ -341,7 +333,7 @@
 			display     : inline-block;
 			padding     : var(--block-padding);
 			transition  : all var(--notify-transition-duration) cubic-bezier(0.47, 0, 0.75, 0.72); /* In - Sine */
-			will-change : transform, -webkit-transform;
+			will-change : transform;
 		};
 
 		--cs-notify-content: {
@@ -359,21 +351,19 @@
 		};
 
 		--cs-notify-icon: {
-			cursor            : pointer;
-			opacity           : 0;
-			padding           : var(--block-padding);
-			right             : 0;
-			top               : 0;
-			transform         : scale(0);
-			-webkit-transform : scale(0);
-			transition        : all var(--transition-duration-short);
+			cursor     : pointer;
+			opacity    : 0;
+			padding    : var(--block-padding);
+			right      : 0;
+			top        : 0;
+			transform  : scale(0);
+			transition : all var(--transition-duration-short);
 		};
 
 		--cs-notify-icon-hover: {
-			opacity           : 1;
-			transform         : scale(1);
-			-webkit-transform : scale(1);
-			transition        : all var(--transition-duration-short) var(--transition-duration);
+			opacity    : 1;
+			transform  : scale(1);
+			transition : all var(--transition-duration-short) var(--transition-duration);
 		};
 
 		--cs-notify-content-success: {
@@ -392,26 +382,21 @@
 		};
 
 		--cs-notify-bottom: {
-			transform         : translateY(var(--notify-translate));
-			-webkit-transform : translateY(var(--notify-translate));
+			transform : translateY(var(--notify-translate));
 		};
 
 		--cs-notify-top: {
-			transform         : translateY(-var(--notify-translate));
-			-webkit-transform : translateY(-var(--notify-translate));
+			transform : translateY(-var(--notify-translate));
 		};
 
 		--cs-notify-show: {
-			transform         : translateY(0);
-			-webkit-transform : translateY(0);
-			transition        : all var(--notify-transition-duration) cubic-bezier(0.39, 0.58, 0.57, 1); /* Out - Sine */
+			transform  : translateY(0);
+			transition : all var(--notify-transition-duration) cubic-bezier(0.39, 0.58, 0.57, 1); /* Out - Sine */
 		};
 
 		/* Progress */
 
 		--cs-progress: {
-			/* Stupid IE 10 */
-			color   : var(--background-color-base-disabled);
 			padding : 0;
 			width   : var(--form-element-width);
 		};
@@ -425,15 +410,11 @@
 		};
 
 		--cs-progress-bar: {
-			/* Stupid IE 10 */
-			color      : var(--background-color-base);
 			padding    : 0;
 			transition : width var(--transition-duration-short) ease-out;
 		};
 
 		--cs-progress-primary: {
-			/* Stupid IE 10 */
-			color : var(--button-background-color-primary-disabled);
 		};
 
 		--cs-progress-text-primary: {
@@ -441,27 +422,23 @@
 		};
 
 		--cs-progress-bar-primary: {
-			/* Stupid IE 10 */
-			color : var(--button-background-color-primary);
 		};
 
 		/* Dropdown */
 
 		--cs-nav-dropdown: {
-			display           : block;
-			margin-top        : var(--dropdown-translate);
-			opacity           : 0;
-			transform         : scale(0);
-			-webkit-transform : scale(0);
-			transition        : margin-top var(--transition-duration), opacity var(--transition-duration), transform 0s var(--transition-duration), -webkit-transform 0s var(--transition-duration);
+			display    : block;
+			margin-top : var(--dropdown-translate);
+			opacity    : 0;
+			transform  : scale(0);
+			transition : margin-top var(--transition-duration), opacity var(--transition-duration), transform 0s var(--transition-duration);
 		};
 
 		--cs-nav-dropdown-open: {
-			margin-top        : 0;
-			opacity           : 1;
-			transform         : scale(1);
-			-webkit-transform : scale(1);
-			transition        : margin-top var(--transition-duration), opacity var(--transition-duration);
+			margin-top : 0;
+			opacity    : 1;
+			transform  : scale(1);
+			transition : margin-top var(--transition-duration), opacity var(--transition-duration);
 		};
 
 		--cs-nav-dropdown-content: {
