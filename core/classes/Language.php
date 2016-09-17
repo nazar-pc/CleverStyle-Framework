@@ -381,15 +381,6 @@ class Language implements JsonSerializable {
 				'cregion'   => $translation['cregion']
 			]
 		);
-		// TODO: Remove in 6.x
-		Event::instance()->fire(
-			'System/general/languages/load',
-			[
-				'clanguage' => $language,
-				'clang'     => $translation['clang'],
-				'cregion'   => $translation['cregion']
-			]
-		);
 		/**
 		 * Append translations from core language to fill potentially missing keys
 		 */

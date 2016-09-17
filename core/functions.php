@@ -299,43 +299,6 @@ function get_timezones_list () {
 }
 
 /**
- * Get multilingual value from $Config->core array
- *
- * @deprecated
- * @todo Remove in 6.x
- *
- * @param string $item
- *
- * @return false|string
- */
-function get_core_ml_text ($item) {
-	$Config = Config::instance(true);
-	if (!$Config) {
-		return false;
-	}
-	return $Config->core[$item];
-}
-
-/**
- * Set multilingual value from $Config->core array
- *
- * @deprecated
- * @todo Remove in 6.x
- *
- * @param string $item
- * @param string $value
- *
- * @return false|string
- */
-function set_core_ml_text ($item, $value) {
-	$Config = Config::instance(true);
-	if (!$Config || !isset($Config->core[$item])) {
-		return false;
-	}
-	return $value;
-}
-
-/**
  * String representation of HTTP status code
  *
  * @param int $code

@@ -1,14 +1,14 @@
 {
-	"package"             : "Json_ld",
-	"category"            : "modules",
-	"version"             : "0.7.0+build-12",
-	"description"         : "Useful tools for simplifying generating of JSON-LD snippets",
-	"author"              : "Nazar Mokrynskyi",
-	"website"             : "cleverstyle.org/Framework",
-	"license"             : "MIT License",
-	"provide"             : "json_ld",
-	"require"             : [
-		"System>=5.0",
-		"System<6.0"
+	"package"     : "Json_ld",
+	"category"    : "modules",
+	"version"     : "0.8.0+build-13",
+	"description" : "Useful tools for simplifying generating of JSON-LD snippets",
+	"author"      : "Nazar Mokrynskyi",
+	"website"     : "cleverstyle.org/Framework",
+	"license"     : "MIT License",
+	"provide"     : "json_ld",
+	"require"     : [
+		"System>=6.0",
+		"System<7.0"
 	]
 }

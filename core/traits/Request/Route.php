@@ -204,15 +204,12 @@ trait Route {
 		 */
 		$current_module = $this->determine_page_module($route, $home_page, $admin_path, $regular_path);
 		list($route_path, $route_ids) = $this->split_route($route);
-		$rc             = implode('/', $route);
-		$old_rc         = $rc;
 		$old_route      = $route;
 		$old_route_path = $route_path;
 		$old_route_ids  = $route_ids;
 		Event::instance()->fire(
 			'System/Request/routing_replace/after',
 			[
-				'rc'             => &$rc, // TODO: Deprecated key, remove in 6.x
 				'route'          => &$route,
 				'route_path'     => &$route_path,
 				'route_ids'      => &$route_ids,
@@ -224,11 +221,6 @@ trait Route {
 				'home_page'      => &$home_page
 			]
 		);
-		// TODO: Deprecated, remove in 6.x
-		if ($rc != $old_rc) {
-			$route = explode('/', $rc);
-			list($route_path, $route_ids) = $this->split_route($route);
-		}
 		if ($route != $old_route && $route_path == $old_route_path && $route_ids == $old_route_ids) {
 			list($route_path, $route_ids) = $this->split_route($route);
 		}
@@ -237,7 +229,7 @@ trait Route {
 			'route_path'      => $route_path,
 			'route_ids'       => $route_ids,
 			'path_normalized' => trim(
-				"$path_prefix$current_module/$rc",
+				"$path_prefix$current_module/".implode('/', $route),
 				'/'
 			),
 			'cli_path'        => $cli_path,

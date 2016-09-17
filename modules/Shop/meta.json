@@ -1,12 +1,12 @@
 {
 	"package"             : "Shop",
 	"category"            : "modules",
-	"version"             : "0.174.2+build-281",
+	"version"             : "0.175.0+build-282",
 	"description"         : "Shop functionality",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/Framework",
 	"license"             : "MIT License",
-	"update_from_version" : "0.152",
+	"update_from_version" : "0.174",
 	"db"                  : [
 		"shop"
 	],
@@ -15,8 +15,8 @@
 	],
 	"provide"             : "shop",
 	"require"             : [
-		"System>=5.29",
-		"System<6.0",
+		"System>=6.0",
+		"System<7.0",
 		"Tags>=2.0",
 		"Tags<3.0",
 		"fotorama",

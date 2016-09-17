@@ -150,9 +150,7 @@ trait Cache {
 					return $content.Includes_processing::js(file_get_contents($file));
 				};
 				if (substr($target_file_path, -7) == ':System') {
-					// Hack: BOM is a hack for Chromium that have broken utf-8 detection for `Link: rel=preload; as=script`
-					// TODO: Remove in 6.x
-					$content = "\xEF\xBB\xBFwindow.cs={Language:"._json_encode(Language::instance()).'};';
+					$content = "window.cs={Language:"._json_encode(Language::instance()).'};';
 					$content .= 'window.requirejs={paths:'._json_encode($this->get_requirejs_paths()).'};';
 				}
 		}

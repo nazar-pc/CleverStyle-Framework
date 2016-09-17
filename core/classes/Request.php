@@ -22,9 +22,8 @@ use
  *
  *  System/Request/routing_replace/after
  *  [
- *   'rc'             => &$rc,                                     // Deprecated: Reference to string with current route, this string can be changed
- *   'route'          => &$route,                                  // Reference to an array with current route, if changed without changing `$route_path` and
- *                                                                 // `$route_ids`, they will be automatically updated as well
+ *   'route'          => &$route,          // Reference to an array with current route, if changed without changing `$route_path` and
+ *                                         // `$route_ids`, they will be automatically updated as well
  *   'route_path'     => &$route_path,
  *   'route_ids'      => &$route_ids,
  *   'cli_path'       => &$cli_path,

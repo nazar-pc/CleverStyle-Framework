@@ -103,8 +103,7 @@ class Config {
 	 * @throws ExitException
 	 */
 	protected function construct () {
-		// TODO: Change `config2` to `config` in 6.x
-		$this->cache = Cache::prefix('config2');
+		$this->cache = Cache::prefix('config');
 		Event::instance()->fire('System/Config/init/before');
 		$this->load_configuration();
 		Event::instance()->fire('System/Config/init/after');
@@ -251,7 +250,6 @@ class Config {
 	 */
 	public function save () {
 		unset($this->core_internal['cache_not_saved']);
-		// TODO: Remove `modules/System/core_settings_defaults.json` file in 6.x
 		$this->core = Options::apply_formatting($this->core) + Options::get_defaults();
 		/**
 		 * Persist multilingual options and copy the rest to `$this->core_internal` as is
