@@ -396,9 +396,7 @@ array(1) {
   &string(0) ""
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -442,9 +440,7 @@ array(1) {
   &string(2) "en"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -479,9 +475,7 @@ array(1) {
   &string(14) "Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -525,9 +519,7 @@ array(1) {
   &string(17) "en/Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -562,9 +554,7 @@ array(1) {
   &string(18) "api/Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -602,9 +592,7 @@ array(1) {
   &string(21) "en/api/Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -642,9 +630,7 @@ array(1) {
   &string(20) "admin/Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -682,9 +668,7 @@ array(1) {
   &string(23) "en/admin/Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -722,9 +706,7 @@ array(1) {
   &string(18) "cli/Enabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -762,9 +744,7 @@ array(1) {
   &string(27) "en/Enabled_module_localized"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -796,9 +776,7 @@ array(1) {
   &string(5) "admin"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -834,9 +812,7 @@ array(1) {
   &string(3) "api"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -872,9 +848,7 @@ array(1) {
   &string(3) "cli"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -910,9 +884,7 @@ array(1) {
   &string(15) "Disabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(15) "Disabled_module"
+array(9) {
   ["route"]=>
   &array(1) {
     [0]=>
@@ -952,9 +924,7 @@ array(1) {
   &string(21) "admin/Disabled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(0) ""
+array(9) {
   ["route"]=>
   &array(0) {
   }
@@ -990,9 +960,7 @@ array(1) {
   &string(18) "Uninstalled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(18) "Uninstalled_module"
+array(9) {
   ["route"]=>
   &array(1) {
     [0]=>
@@ -1032,9 +1000,7 @@ array(1) {
   &string(24) "admin/Uninstalled_module"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(18) "Uninstalled_module"
+array(9) {
   ["route"]=>
   &array(1) {
     [0]=>
@@ -1074,9 +1040,7 @@ array(1) {
   &string(37) "api/Enabled_module/path/subpath/10/15"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(18) "path/subpath/10/15"
+array(9) {
   ["route"]=>
   &array(4) {
     [0]=>
@@ -1153,9 +1117,7 @@ array(1) {
   &string(26) "redirect/http://google.com"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(26) "redirect/http://google.com"
+array(9) {
   ["route"]=>
   &array(4) {
     [0]=>
@@ -1210,9 +1172,7 @@ array(1) {
   &string(26) "redirect/http://google.com"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(26) "redirect/http://google.com"
+array(9) {
   ["route"]=>
   &array(4) {
     [0]=>
@@ -1260,9 +1220,7 @@ array(1) {
   &string(26) "redirect/http://google.com"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(26) "redirect/http://google.com"
+array(9) {
   ["route"]=>
   &array(4) {
     [0]=>
@@ -1310,9 +1268,7 @@ array(1) {
   &string(26) "redirect/http://google.com"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(26) "redirect/http://google.com"
+array(9) {
   ["route"]=>
   &array(4) {
     [0]=>
@@ -1360,9 +1316,7 @@ array(1) {
   &string(20) "path/1/page/2/part/3"
 }
 string(53) "System/Request/routing_replace/after event fired with"
-array(10) {
-  ["rc"]=>
-  &string(20) "path/1/page/2/part/3"
+array(9) {
   ["route"]=>
   &array(6) {
     [0]=>
