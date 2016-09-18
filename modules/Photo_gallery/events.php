@@ -21,7 +21,7 @@ Event::instance()
 			if (!Config::instance()->module('Photo_gallery')->enabled()) {
 				return;
 			}
-			if ($data['current_module'] != 'Photo_gallery' || !$data['rc'] || !$data['regular_path']) {
+			if ($data['current_module'] != 'Photo_gallery' || !$data['route'] || !$data['regular_path']) {
 				return;
 			}
 			$route = &$data['route'];
