@@ -54,22 +54,29 @@ trait profile {
 			throw new ExitException(403);
 		}
 		$user_data['login'] = mb_strtolower($user_data['login']);
-		/**
-		 * Check for changing login to new one and whether it is available
-		 */
-		if (
-			$user_data['login'] != $User->login &&
-			$user_data['login'] != $User->email &&
-			(
-				filter_var($user_data['login'], FILTER_VALIDATE_EMAIL) ||
-				$User->get_id(hash('sha224', $user_data['login'])) !== false
-			)
-		) {
+		if (static::can_change_login_to($User, $user_data['login'])) {
 			throw new ExitException(Language::instance()->system_admin_users_login_occupied, 400);
 		}
 		if (!$User->set($user_data)) {
 			throw new ExitException(500);
 		}
+	}
+	/**
+	 * Check for changing login to new one and whether it is available
+	 *
+	 * @param User   $User
+	 * @param string $login
+	 *
+	 * @return bool
+	 */
+	protected static function can_change_login_to ($User, $login) {
+		return
+			$login == $User->login ||
+			$login == $User->email ||
+			(
+				!filter_var($login, FILTER_VALIDATE_EMAIL) &&
+				$User->get_id(hash('sha224', $login)) === false
+			);
 	}
 	/**
 	 * @param \cs\Request $Request
@@ -120,29 +127,21 @@ trait profile {
 		$result  = static::try_to_register($User, $L, $email);
 		$confirm = $result['reg_key'] !== true;
 		static::fill_optional_profile_data($Request, $User, $result['id']);
-		$title = $L->success_mail($Config->core['site_name']);
-		$body  = $L->success_mail(
-			$User->username($result['id']),
-			$Config->core['site_name'],
-			$Config->core_url().'/profile/settings',
-			$User->get('login', $result['id'])
-		);
+		$username  = $User->username($result['id']);
+		$login     = $User->get('login', $result['id']);
+		$site_name = $Config->core['site_name'];
+		$title     = $L->success_mail($site_name);
+		$body      = $L->success_mail($username, $site_name, $Config->core_url().'/profile/settings', $login);
 		if ($confirm) {
-			$title = $L->need_confirmation_mail($Config->core['site_name']);
+			$title = $L->need_confirmation_mail($site_name);
 			$body  = $L->need_confirmation_mail_body(
-				$User->username($result['id']),
-				$Config->core['site_name'],
+				$username,
+				$site_name,
 				$Config->core_url()."/profile/registration_confirmation/$result[reg_key]",
 				$L->time($Config->core['registration_confirmation_time'], 'd')
 			);
 		} elseif (!$Request->data('password') && $result['password']) {
-			$body = $L->success_mail_with_password_body(
-				$User->username($result['id']),
-				$Config->core['site_name'],
-				$Config->core_url().'/profile/settings',
-				$User->get('login', $result['id']),
-				$result['password']
-			);
+			$body = $L->success_mail_with_password_body($username, $site_name, $Config->core_url().'/profile/settings', $login, $result['password']);
 		}
 		if (!Mail::instance()->send_to($email, $title, $body)) {
 			$User->registration_cancel();
