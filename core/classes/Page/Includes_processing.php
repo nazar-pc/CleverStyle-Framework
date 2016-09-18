@@ -137,12 +137,6 @@ class Includes_processing {
 	 */
 	public static function js ($data) {
 		/**
-		 * Handling template strings can be tricky (since they might be multi-line), so better do nothing
-		 */
-		if (strpos($data, '`')) {
-			return $data;
-		}
-		/**
 		 * Split into array of lines
 		 */
 		$data = explode("\n", $data);
@@ -153,9 +147,13 @@ class Includes_processing {
 		/**
 		 * Set of symbols that are safe to be concatenated without new line with anything else
 		 */
-		$regexp = /** @lang PhpRegExp */
+		$regexp                  = /** @lang PhpRegExp */
 			'[:;,.+\-*/{}?><^\'"\[\]=&(]';
+		$continue_after_position = -1;
 		foreach ($data as $index => &$d) {
+			if ($continue_after_position >= $index) {
+				continue;
+			}
 			$next_line = isset($data[$index + 1]) ? trim($data[$index + 1]) : '';
 			/**
 			 * Remove starting and trailing spaces
@@ -174,19 +172,47 @@ class Includes_processing {
 			if (mb_strpos($d, '/*') === 0) {
 				$comment = true;
 			}
-			/**
-			 * Add new line at the end if only needed
-			 */
-			if (
-				$d &&
-				$next_line &&
-				!$comment &&
-				!preg_match("#$regexp\$#", $d) &&
-				!preg_match("#^$regexp#", $next_line)
-			) {
-				$d .= "\n";
-			}
-			if ($comment) {
+			if (!$comment) {
+				$backticks_position = strpos($d, '`');
+				/**
+				 * Handling template strings can be tricky (since they might be multi-line), so let's fast-forward to the last backticks position and continue
+				 * from there
+				 */
+				if ($backticks_position !== false) {
+					$last_item_with_backticks = array_keys(
+						array_filter(
+							$data,
+							function ($d) {
+								return strpos($d, '`') !== false;
+							}
+						)
+					);
+					$last_item_with_backticks = array_pop($last_item_with_backticks);
+					if ($last_item_with_backticks > $index) {
+						$continue_after_position = $last_item_with_backticks;
+						continue;
+					}
+				}
+				/**
+				 * Add new line at the end if only needed
+				 */
+				if (
+					$d &&
+					$next_line &&
+					!preg_match("#$regexp\$#", $d) &&
+					!preg_match("#^$regexp#", $next_line)
+				) {
+					$d .= "\n";
+				}
+				/**
+				 * Single-line comment
+				 */
+				$d = preg_replace('#^\s*//[^\'"]+$#', '', $d);
+				/**
+				 * If we are not sure - just add new like afterwards
+				 */
+				$d = preg_replace('#//.*$#', "\\0\n", $d);
+			} else {
 				/**
 				 * End of multi-line comment
 				 */
@@ -196,15 +222,6 @@ class Includes_processing {
 				} else {
 					$d = '';
 				}
-			} else {
-				/**
-				 * Single-line comment
-				 */
-				$d = preg_replace('#^\s*//[^\'"]+$#', '', $d);
-				/**
-				 * If we are not sure - just add new like afterwards
-				 */
-				$d = preg_replace('#//.*$#', "\\0\n", $d);
 			}
 		}
 		$data = implode('', $data);

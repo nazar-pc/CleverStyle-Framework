@@ -20,3 +20,6 @@ if ( !( bar > foo ) )
 var script_code = `
 <script>JS here</script>
 `;
+
+var some_code_after_template_string =
+	'content here';
