@@ -104,7 +104,7 @@
         if (!items) {
           return;
         }
-        return cs.api('get api/Shop/cart', {
+        cs.api('get api/Shop/cart', {
           items: items,
           shipping_type: params.shipping_type
         }).then(callback);

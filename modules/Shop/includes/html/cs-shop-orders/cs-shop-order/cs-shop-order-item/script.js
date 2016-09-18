@@ -16,7 +16,7 @@
       units: Number
     },
     ready: function(){
-      var img, href, discount, this$ = this;
+      var img, href, this$ = this;
       img = this.querySelector('#img');
       this.$.img.src = img.src;
       this.$.img.title = img.title;
@@ -26,15 +26,17 @@
         this.$.link.href = href;
       }
       this.item_title = this.querySelector('#link').innerHTML;
-      this.unit_price_formatted = sprintf(cs.shop.settings.price_formatting, this.unit_price);
-      this.price_formatted = sprintf(cs.shop.settings.price_formatting, this.price);
-      discount = this.units * this.unit_price - this.price;
-      if (discount) {
-        discount = sprintf(cs.shop.settings.price_formatting, discount);
-        cs.Language('shop_').ready().then(function(L){
+      Promise.all([cs.Language('shop_').ready(), require(['sprintf-js'])]).then(function(arg$){
+        var L, sprintf, discount;
+        L = arg$[0], sprintf = arg$[1][0].sprintf;
+        this$.unit_price_formatted = sprintf(cs.shop.settings.price_formatting, this$.unit_price);
+        this$.price_formatted = sprintf(cs.shop.settings.price_formatting, this$.price);
+        discount = this$.units * this$.unit_price - this$.price;
+        if (discount) {
+          discount = sprintf(cs.shop.settings.price_formatting, discount);
           this$.$.discount.textContent = "(" + L.discount + ": " + discount + ")";
-        });
-      }
+        }
+      });
     }
   });
 }).call(this);

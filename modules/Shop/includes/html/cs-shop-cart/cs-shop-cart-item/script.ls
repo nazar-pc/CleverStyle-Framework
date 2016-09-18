@@ -28,6 +28,7 @@ Polymer(
 		link					= @querySelector('#link')
 		@href					= link.href
 		@item_title				= link.textContent
+		{sprintf} <~! require(['sprintf-js'])
 		@unit_price_formatted	= sprintf(price_formatting, @unit_price)
 	units_changed	: (item_id, units) !->
 		if !item_id
@@ -47,8 +48,9 @@ Polymer(
 						return false
 		), (if !@price_formatted then 0 else 100) # To do it faster for the first time
 	recalculate	: (price, units) !->
-		@price_formatted		= sprintf(price_formatting, price)
-		discount				= units * @unit_price - price
+		{sprintf} <~! require(['sprintf-js'])
+		@price_formatted	= sprintf(price_formatting, price)
+		discount			= units * @unit_price - price
 		cs.Language('shop_').ready().then (L) !~>
 			@$.discount.textContent	=
 				if discount

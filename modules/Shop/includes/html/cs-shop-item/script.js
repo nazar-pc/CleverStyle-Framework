@@ -20,10 +20,10 @@
     ready: function(){
       var this$ = this;
       this.set('header_title', this.querySelector('h1').textContent);
-      this.set('price', sprintf(cs.shop.settings.price_formatting, this.price));
-      require(['jquery']).then(function(arg$){
-        var $, attributes;
-        $ = arg$[0];
+      require(['jquery', 'sprintf-js']).then(function(arg$){
+        var $, sprintf, attributes;
+        $ = arg$[0], sprintf = arg$[1].sprintf;
+        this$.set('price', sprintf(cs.shop.settings.price_formatting, this$.price));
         attributes = $(this$.querySelector('#attributes'));
         if (attributes.length) {
           this$.show_attributes = true;

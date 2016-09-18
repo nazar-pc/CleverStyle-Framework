@@ -93,17 +93,23 @@
     },
     shipping_type_changed: function(shipping_type_selected){
       var this$ = this;
-      params.shipping_type = shipping_type_selected;
-      shop.shipping_types.forEach(function(shipping_type){
-        if (shipping_type.id == shipping_type_selected) {
-          this$.set('shipping_type_details', shipping_type);
-          this$.set('shipping_cost_formatted', sprintf(shop.settings.price_formatting, shipping_type.price));
-          return false;
-        }
+      require(['sprintf-js'], function(arg$){
+        var sprintf;
+        sprintf = arg$.sprintf;
+        params.shipping_type = shipping_type_selected;
+        shop.shipping_types.forEach(function(shipping_type){
+          if (shipping_type.id == shipping_type_selected) {
+            this$.set('shipping_type_details', shipping_type);
+            this$.set('shipping_cost_formatted', sprintf(shop.settings.price_formatting, shipping_type.price));
+            return false;
+          }
+        });
       });
     },
     payment_method_changed: function(payment_method_selected){
-      this.$.payment_method_description.innerHTML = shop.payment_methods[payment_method_selected].description;
+      if (payment_method_selected) {
+        this.$.payment_method_description.innerHTML = shop.payment_methods[payment_method_selected].description;
+      }
     },
     shipping_username_changed: function(){
       params.shipping_username = this.shipping_username;

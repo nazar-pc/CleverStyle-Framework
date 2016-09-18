@@ -23,7 +23,7 @@
     },
     observers: ['units_changed(item_id, units)'],
     attached: function(){
-      var link;
+      var link, this$ = this;
       (function(img){
         this.$.img.src = img.src;
         this.$.img.title = img.title;
@@ -31,7 +31,11 @@
       link = this.querySelector('#link');
       this.href = link.href;
       this.item_title = link.textContent;
-      this.unit_price_formatted = sprintf(price_formatting, this.unit_price);
+      require(['sprintf-js'], function(arg$){
+        var sprintf;
+        sprintf = arg$.sprintf;
+        this$.unit_price_formatted = sprintf(price_formatting, this$.unit_price);
+      });
     },
     units_changed: function(item_id, units){
       var this$ = this;
@@ -58,12 +62,16 @@
       }, !this.price_formatted ? 0 : 100);
     },
     recalculate: function(price, units){
-      var discount, this$ = this;
-      this.price_formatted = sprintf(price_formatting, price);
-      discount = units * this.unit_price - price;
-      cs.Language('shop_').ready().then(function(L){
-        var discount;
-        this$.$.discount.textContent = discount ? (discount = sprintf(price_formatting, discount), "(" + L.discount + ": " + discount + ")") : '';
+      var this$ = this;
+      require(['sprintf-js'], function(arg$){
+        var sprintf, discount;
+        sprintf = arg$.sprintf;
+        this$.price_formatted = sprintf(price_formatting, price);
+        discount = units * this$.unit_price - price;
+        cs.Language('shop_').ready().then(function(L){
+          var discount;
+          this$.$.discount.textContent = discount ? (discount = sprintf(price_formatting, discount), "(" + L.discount + ": " + discount + ")") : '';
+        });
       });
     }
   });

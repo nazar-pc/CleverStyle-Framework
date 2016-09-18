@@ -38,7 +38,9 @@
   function go(href){
     var href_splitted, i$, ref$, len$, button, link;
     href_splitted = href.split('/');
-    cs.Language('system_admin_').ready().then(function(L){
+    Promise.all([cs.Language('system_admin_').ready(), require(['sprintf-js'])]).then(function(arg$){
+      var L, sprintf;
+      L = arg$[0], sprintf = arg$[1][0].sprintf;
       document.title = sprintf(title_format, L[href_splitted[2]], L[href_splitted[3]]);
     });
     document.querySelector('#main_content > div').innerHTML = '<' + url_map[href] + '/>';

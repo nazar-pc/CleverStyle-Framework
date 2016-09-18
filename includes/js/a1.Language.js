@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var translations, is_ready, fill_prefixed, get_formatted, fill_translations, x$, slice$ = [].slice;
+  var translations, is_ready, fill_prefixed, vsprintf, get_formatted, fill_translations, x$, slice$ = [].slice;
   translations = cs.Language;
   is_ready = false;
   fill_prefixed = function(prefix){
@@ -56,17 +56,18 @@
   x$.ready = function(){
     var ready;
     ready = new Promise(function(resolve){
-      if (translations) {
+      Promise.all([
+        translations
+          ? [translations]
+          : require(["storage/pcache/languages-" + cs.current_language.language + "-" + cs.current_language.hash]), require(['sprintf-js'])
+      ]).then(function(arg$){
+        var translations, sprintfjs;
+        translations = arg$[0][0], sprintfjs = arg$[1][0];
         fill_translations(translations);
+        vsprintf = sprintfjs.vsprintf;
         is_ready = true;
         resolve(Language);
-      } else {
-        require(["storage/pcache/languages-" + cs.current_language.language + "-" + cs.current_language.hash], function(translations){
-          fill_translations(translations);
-          is_ready = true;
-          resolve(Language);
-        });
-      }
+      });
     });
     this.ready = function(){
       return ready;

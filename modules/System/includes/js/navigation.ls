@@ -45,7 +45,10 @@ for link in links
 title_format	= document.title
 !function go (href)
 	href_splitted	= href.split('/')
-	cs.Language('system_admin_').ready().then (L) !->
+	Promise.all([
+		cs.Language('system_admin_').ready()
+		require(['sprintf-js'])
+	]).then ([L, [{sprintf}]]) !->
 		document.title	= sprintf(
 			title_format
 			L[href_splitted[2]]

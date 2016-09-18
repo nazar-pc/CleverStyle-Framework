@@ -284,14 +284,14 @@ class Items {
 		$where_params = [];
 		foreach ($search_parameters as $key => $details) {
 			if (isset($this->data_model[$key])) { // Property
-				$where[]        = "`i`.`$key` = '%s'";
+				$where[]        = "`i`.`$key` = ?";
 				$where_params[] = $details;
 			} elseif (is_numeric($key)) { // Tag
 				$joins .=
 					"INNER JOIN `{$this->table}_tags` AS `t`
 					ON
 						`i`.`id`	= `t`.`id` AND
-						`t`.`tag`	= '%s'";
+						`t`.`tag`	= ?";
 				$where_params[] = $details;
 			} else { // Attribute
 				$field = @$this->attribute_type_to_value_field($Attributes->get($key)['type']);
@@ -304,7 +304,7 @@ class Items {
 					"INNER JOIN `{$this->table}_attributes` AS `a$join_index`
 					ON
 						`i`.`id`					= `a$join_index`.`id` AND
-						`a$join_index`.`attribute`	= '%s' AND
+						`a$join_index`.`attribute`	= ? AND
 						(
 							`a$join_index`.`lang`	= '$L->clang' OR
 							`a$join_index`.`lang`	= ''
@@ -313,18 +313,18 @@ class Items {
 					if (isset($details['from']) || isset($details['to'])) {
 						/** @noinspection NotOptimalIfConditionsInspection */
 						if (isset($details['from'])) {
-							$joins .= "AND `a$join_index`.`$field`	>= '%s'";
+							$joins .= "AND `a$join_index`.`$field`	>= ?";
 							$join_params[] = $details['from'];
 						}
 						/** @noinspection NotOptimalIfConditionsInspection */
 						if (isset($details['to'])) {
-							$joins .= "AND `a$join_index`.`$field`	<= '%s'";
+							$joins .= "AND `a$join_index`.`$field`	<= ?";
 							$join_params[] = $details['to'];
 						}
 					} else {
 						$on = [];
 						foreach ($details as $d) {
-							$on[]          = "`a$join_index`.`$field` = '%s'";
+							$on[]          = "`a$join_index`.`$field` = ?";
 							$join_params[] = $d;
 						}
 						$on = implode(' OR ', $on);
@@ -334,15 +334,17 @@ class Items {
 				} else {
 					switch ($field) {
 						case 'numeric_value':
-							$joins .= "AND `a$join_index`.`$field` = '%s'";
+							$joins .= "AND `a$join_index`.`$field` = ?";
+							$join_params[] = $details;
 							break;
 						case 'string_value':
-							$joins .= "AND `a$join_index`.`$field` LIKE '%s%%'";
+							$joins .= "AND `a$join_index`.`$field` LIKE ?";
+							$join_params[] = $details.'%';
 							break;
 						default:
-							$joins .= "AND MATCH (`a$join_index`.`$field`) AGAINST ('%s' IN BOOLEAN MODE) > 0";
+							$joins .= "AND MATCH (`a$join_index`.`$field`) AGAINST (? IN BOOLEAN MODE) > 0";
+							$join_params[] = $details;
 					}
-					$join_params[] = $details;
 				}
 			}
 		}

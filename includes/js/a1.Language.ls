@@ -21,6 +21,7 @@ function Language (prefix)
 	else
 		Language.ready().then(fill_prefixed.bind(prefixed, prefix))
 	prefixed
+var vsprintf
 get_formatted		= ->
 	'' + (if &length then vsprintf(@, [...&]) else @)
 fill_translations	= (translations) !->
@@ -34,13 +35,15 @@ cs.Language		= Language
 		@[key](...args)
 	..ready	= ->
 		ready	= new Promise (resolve) !->
-			if translations
+			Promise.all([
+				if translations
+					[translations]
+				else
+					require(["storage/pcache/languages-#{cs.current_language.language}-#{cs.current_language.hash}"])
+				require(['sprintf-js'])
+			]).then ([[translations], [sprintfjs]]) !->
 				fill_translations(translations)
-				is_ready	:= true
-				resolve(Language)
-			else
-				translations <-! require(["storage/pcache/languages-#{cs.current_language.language}-#{cs.current_language.hash}"], _)
-				fill_translations(translations)
+				vsprintf	:= sprintfjs.vsprintf
 				is_ready	:= true
 				resolve(Language)
 		@ready	= -> ready

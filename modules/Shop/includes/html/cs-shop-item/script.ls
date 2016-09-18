@@ -18,8 +18,8 @@ Polymer(
 		in_stock		: Number
 	ready : !->
 		@set('header_title', @querySelector('h1').textContent)
-		@set('price', sprintf(cs.shop.settings.price_formatting, @price))
-		require(['jquery']).then ([$]) !~>
+		require(['jquery', 'sprintf-js']).then ([$, {sprintf}]) !~>
+			@set('price', sprintf(cs.shop.settings.price_formatting, @price))
 			attributes	= $(@querySelector('#attributes'))
 			if attributes.length
 				@show_attributes	= true

@@ -21,11 +21,14 @@ Polymer(
 			@$['img-link'].href	= href
 			@$.link.href		= href
 		@item_title				= @querySelector('#link').innerHTML
-		@unit_price_formatted	= sprintf(cs.shop.settings.price_formatting, @unit_price)
-		@price_formatted		= sprintf(cs.shop.settings.price_formatting, @price)
-		discount				= @units * @unit_price - @price
-		if discount
-			discount				= sprintf(cs.shop.settings.price_formatting, discount)
-			cs.Language('shop_').ready().then (L) !~>
+		Promise.all([
+			cs.Language('shop_').ready()
+			require(['sprintf-js'])
+		]).then ([L, [{sprintf}]]) !~>
+			@unit_price_formatted	= sprintf(cs.shop.settings.price_formatting, @unit_price)
+			@price_formatted		= sprintf(cs.shop.settings.price_formatting, @price)
+			discount				= @units * @unit_price - @price
+			if discount
+				discount				= sprintf(cs.shop.settings.price_formatting, discount)
 				@$.discount.textContent	= "(#{L.discount}: #{discount})"
 );

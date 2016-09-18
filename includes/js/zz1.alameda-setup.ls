@@ -10,6 +10,6 @@ requirejs.config(
 		jssha			: 'includes/js/modules/jsSHA-2.1.0'
 		autosize		: 'includes/js/modules/autosize.min'
 		html5sortable	: 'includes/js/modules/html5sortable-0.4.0.min'
+		'sprintf-js'	: 'includes/js/modules/sprintf-1.0.3.min'
 	waitSeconds	: 60
 )
-define('sprintf-js', -> {sprintf, vsprintf})

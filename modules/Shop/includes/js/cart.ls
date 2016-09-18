@@ -70,7 +70,7 @@ cs.shop.cart	= do ->
 		items_storage.set({})
 	return {
 		get_all			: get_items
-		get_calculated	: (callback) ->
+		get_calculated	: (callback) !->
 			items	= get_items()
 			if !items
 				return

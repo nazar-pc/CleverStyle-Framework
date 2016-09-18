@@ -21,5 +21,6 @@ Polymer(
 		@$.img.src		= img.src
 		@$.img.title	= img.title
 		@set('href', @querySelector('#link').href)
+		{sprintf} <~! require(['sprintf-js'])
 		@set('price', sprintf(cs.shop.settings.price_formatting, @price))
 );

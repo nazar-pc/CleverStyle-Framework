@@ -18,12 +18,16 @@
       in_stock: String
     },
     ready: function(){
-      var img;
+      var img, this$ = this;
       img = this.querySelector('#img');
       this.$.img.src = img.src;
       this.$.img.title = img.title;
       this.set('href', this.querySelector('#link').href);
-      this.set('price', sprintf(cs.shop.settings.price_formatting, this.price));
+      require(['sprintf-js'], function(arg$){
+        var sprintf;
+        sprintf = arg$.sprintf;
+        this$.set('price', sprintf(cs.shop.settings.price_formatting, this$.price));
+      });
     }
   });
 }).call(this);
