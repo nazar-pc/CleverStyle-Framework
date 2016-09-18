@@ -14,7 +14,25 @@
    *
    * @return {Promise}
    */
-  var x$, slice$ = [].slice;
+  var object_to_query, x$, slice$ = [].slice;
+  object_to_query = function(data, prefix){
+    var query, res$, param, value;
+    res$ = [];
+    for (param in data) {
+      value = data[param];
+      if (value instanceof Object) {
+        res$.push(object_to_query(value, param));
+      } else {
+        if (prefix) {
+          res$.push(encodeURIComponent(prefix + "[" + param + "]") + '=' + encodeURIComponent(value));
+        } else {
+          res$.push(encodeURIComponent(param) + '=' + encodeURIComponent(value));
+        }
+      }
+    }
+    query = res$;
+    return query.join('&');
+  };
   cs.api = function(method_path, data){
     var mp, ref$, method, path;
     if (method_path instanceof Array) {
@@ -29,7 +47,7 @@
     }
     ref$ = method_path.split(/\s+/, 2), method = ref$[0], path = ref$[1];
     return new Promise(function(resolve, reject){
-      var xhr, param, value;
+      var xhr;
       xhr = new XMLHttpRequest();
       xhr.onload = function(){
         if (this.status >= 400) {
@@ -56,14 +74,7 @@
       };
       xhr.onabort = xhr.onerror;
       if (method.toLowerCase() === 'get' && data) {
-        path += '?' + (function(){
-          var ref$, results$ = [];
-          for (param in ref$ = data) {
-            value = ref$[param];
-            results$.push(encodeURIComponent(param) + '=' + encodeURIComponent(value));
-          }
-          return results$;
-        }()).join('&');
+        path += '?' + object_to_query(data);
         data = undefined;
       }
       xhr.open(method.toUpperCase(), path);

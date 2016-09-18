@@ -12,6 +12,16 @@
  *
  * @return {Promise}
  */
+object_to_query = (data, prefix) ->
+	query = for param, value of data
+		if value instanceof Object
+			object_to_query(value, param)
+		else
+			if prefix
+				encodeURIComponent("#prefix[#param]") + '=' + encodeURIComponent(value)
+			else
+				encodeURIComponent(param) + '=' + encodeURIComponent(value)
+	query.join('&')
 cs.api = (method_path, data) ->
 	if method_path instanceof Array
 		return Promise.all(
@@ -45,10 +55,7 @@ cs.api = (method_path, data) ->
 			reject({timeout, xhr})
 		xhr.onabort	= xhr.onerror
 		if method.toLowerCase() == 'get' && data
-			path += '?' + (
-				for param, value of data
-					encodeURIComponent(param) + '=' + encodeURIComponent(value)
-			).join('&')
+			path += '?' + object_to_query(data)
 			data := undefined
 		xhr.open(method.toUpperCase(), path)
 		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
