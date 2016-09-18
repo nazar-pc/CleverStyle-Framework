@@ -37,6 +37,28 @@ namespace cs {
 			var_dump(self::class.' constructed');
 		}
 	}
+
+	class First {
+		use
+			Singleton;
+		const INIT_STATE_METHOD = 'init';
+		protected function init () {
+			var_dump(static::class.'::init()');
+		}
+		protected function construct () {
+			var_dump(static::class.'::construct() #1');
+			Second::instance();
+			var_dump(static::class.'::construct() #2');
+		}
+	}
+
+	class Second extends First {
+		protected function construct () {
+			var_dump(static::class.'::construct() #1');
+			First::instance();
+			var_dump(static::class.'::construct() #2');
+		}
+	}
 }
 namespace cs\nested {
 	define('CUSTOM', __DIR__.'/custom');
@@ -116,6 +138,8 @@ namespace cs {
 	$Extended2 = nested\Extended2::instance();
 	var_dump($Extended2);
 	$Extended2->test();
+
+	First::instance();
 }
 ?>
 --EXPECTF--
@@ -161,3 +185,9 @@ object(cs\nested\Extended2)#%d (1) {
   int(1)
 }
 string(19) "cs\nested\Extended2"
+string(24) "cs\First::construct() #1"
+string(25) "cs\Second::construct() #1"
+string(25) "cs\Second::construct() #2"
+string(17) "cs\Second::init()"
+string(24) "cs\First::construct() #2"
+string(16) "cs\First::init()"

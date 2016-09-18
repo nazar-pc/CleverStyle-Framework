@@ -41,7 +41,12 @@ trait Base {
 	 * @return False_class|static
 	 */
 	protected static function instance_prototype (&$instance, $check = false) {
-		static::instance_prototype_state_init($instance);
+		if ($instance && $instance->__request_id !== Request::$id) {
+			$instance->__request_id = Request::$id;
+			if (defined('static::INIT_STATE_METHOD')) {
+				$instance->{constant('static::INIT_STATE_METHOD')}();
+			}
+		}
 		if (is_object($instance)) {
 			return $instance;
 		}
@@ -83,9 +88,12 @@ trait Base {
 			 */
 			return $final_class::instance();
 		}
-		$instance = new $called_class;
+		$instance               = new $called_class;
+		$instance->__request_id = Request::$id;
 		$instance->construct();
-		static::instance_prototype_state_init($instance);
+		if (defined('static::INIT_STATE_METHOD')) {
+			$instance->{constant('static::INIT_STATE_METHOD')}();
+		}
 		return $instance;
 	}
 	/**
@@ -128,17 +136,6 @@ trait Base {
 			$modified_classes[$class]['aliases'],
 			$modified_classes[$class]['final_class']
 		];
-	}
-	/**
-	 * @param static $instance
-	 */
-	protected static function instance_prototype_state_init (&$instance) {
-		if ($instance && $instance->__request_id !== Request::$id) {
-			$instance->__request_id = Request::$id;
-			if (defined('static::INIT_STATE_METHOD')) {
-				$instance->{constant('static::INIT_STATE_METHOD')}();
-			}
-		}
 	}
 	final protected function __clone () {
 	}
