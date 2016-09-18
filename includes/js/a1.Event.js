@@ -11,8 +11,9 @@
    * Similarly, callbacks may return either boolean result or no result (just like on backend) or Promise instance or any other object that has compatible `then`
    * method (jQuery Deferred as example)
    */
-  var callbacks, Callbacks_resolver, slice$ = [].slice;
-  cs.Event = (callbacks = {}, {
+  var callbacks, x$, slice$ = [].slice;
+  callbacks = {};
+  cs.Event = {
     on: function(event, callback){
       if (event && callback) {
         if (!callbacks[event]) {
@@ -33,10 +34,10 @@
       return this;
     },
     once: function(event, callback){
-      var callback_, this$ = this;
+      var callback_;
       if (event && callback) {
         callback_ = function(){
-          this$.off(event, callback_);
+          cs.Event.off(event, callback_);
           return callback.apply(callback, arguments);
         };
         this.on(event, callback_);
@@ -53,37 +54,31 @@
         return Promise.resolve();
       }
     }
-  });
+  };
   Object.freeze(cs.Event);
   /**
-   * Utility callback resolver class
+   * Utility callback resolver
    */
-  Callbacks_resolver = (function(){
-    Callbacks_resolver.displayName = 'Callbacks_resolver';
-    var prototype = Callbacks_resolver.prototype, constructor = Callbacks_resolver;
-    prototype.index = 0;
-    function Callbacks_resolver(callbacks, params){
-      this.callbacks = callbacks;
-      this.params = params;
-    }
-    prototype.execute = function(){
-      var callback, result;
-      callback = this.callbacks[this.index];
-      ++this.index;
-      if (!callback) {
-        return Promise.resolve();
-      } else {
-        result = callback.apply(callback, this.params);
-        if (result === false) {
-          return Promise.reject();
-        } else {
-          return Promise.resolve(result).then(bind$(this, 'execute'));
-        }
-      }
-    };
-    return Callbacks_resolver;
-  }());
-  function bind$(obj, key, target){
-    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  function Callbacks_resolver(callbacks, params){
+    this.callbacks = callbacks;
+    this.params = params;
+    this.execute = this.execute.bind(this);
   }
+  x$ = Callbacks_resolver.prototype;
+  x$.index = 0;
+  x$.execute = function(){
+    var callback, result;
+    callback = this.callbacks[this.index];
+    ++this.index;
+    if (!callback) {
+      return Promise.resolve();
+    } else {
+      result = callback.apply(callback, this.params);
+      if (result === false) {
+        return Promise.reject();
+      } else {
+        return Promise.resolve(result).then(this.execute);
+      }
+    }
+  };
 }).call(this);

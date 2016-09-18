@@ -9,8 +9,8 @@
  * Similarly, callbacks may return either boolean result or no result (just like on backend) or Promise instance or any other object that has compatible `then`
  * method (jQuery Deferred as example)
  */
-cs.Event = do
-	callbacks	= {}
+callbacks	= {}
+cs.Event	=
 	on : (event, callback) ->
 		if event && callback
 			if !callbacks[event]
@@ -28,8 +28,8 @@ cs.Event = do
 		@
 	once : (event, callback) ->
 		if event && callback
-			callback_ = ~>
-				@off(event, callback_)
+			callback_ = ->
+				cs.Event.off(event, callback_)
 				callback.apply(callback, arguments)
 			@on(event, callback_)
 		@
@@ -41,12 +41,13 @@ cs.Event = do
 			Promise.resolve()
 Object.freeze(cs.Event)
 /**
- * Utility callback resolver class
+ * Utility callback resolver
  */
-Callbacks_resolver = class
-	index	: 0
-	(@callbacks, @params) ->
-	execute : ->
+!function Callbacks_resolver (@callbacks, @params)
+	@execute	= @execute.bind(@)
+Callbacks_resolver.prototype
+	..index		= 0
+	..execute	= ->
 		callback	= @callbacks[@index]
 		++@index
 		if !callback
@@ -56,4 +57,4 @@ Callbacks_resolver = class
 			if result == false
 				Promise.reject()
 			else
-				Promise.resolve(result).then(@~execute)
+				Promise.resolve(result).then(@execute)
