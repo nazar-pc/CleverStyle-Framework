@@ -54,7 +54,7 @@ trait profile {
 			throw new ExitException(403);
 		}
 		$user_data['login'] = mb_strtolower($user_data['login']);
-		if (static::can_change_login_to($User, $user_data['login'])) {
+		if (!static::can_change_login_to($User, $user_data['login'])) {
 			throw new ExitException(Language::instance()->system_admin_users_login_occupied, 400);
 		}
 		if (!$User->set($user_data)) {
