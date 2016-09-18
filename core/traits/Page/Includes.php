@@ -234,26 +234,37 @@ trait Includes {
 		/**
 		 * Base name for cache files
 		 */
-		$this->pcache_basename_path = PUBLIC_CACHE.'/'.$this->theme.'_'.Language::instance()->clang;
+		$this->pcache_basename_path = PUBLIC_CACHE.'/'.$this->theme;
 		// TODO: I hope some day we'll get rid of this sh*t :(
-		$this->ie_edge();
+		$this->edge();
 		$Request = Request::instance();
 		/**
 		 * If CSS and JavaScript compression enabled
 		 */
+		$L = Language::instance();
 		if ($this->page_compression_usage($Config, $Request)) {
 			/**
 			 * Rebuilding HTML, JS and CSS cache if necessary
 			 */
-			$this->rebuild_cache($Config);
+			$this->rebuild_cache($Config, $L);
 			$this->webcomponents_polyfill($Request, $Config, true);
+			$languages_hash = $this->get_hash_of(implode('', $Config->core['active_languages']));
+			$language_hash  = file_get_json(PUBLIC_CACHE."/languages-$languages_hash.json")[$L->clanguage];
+			$this->config_internal(
+				[
+					'language' => $L->clanguage,
+					'hash'     => $language_hash
+				],
+				'cs.current_language',
+				true
+			);
 			list($includes, $preload) = $this->get_includes_and_preload_resource_for_page_with_compression($Request);
 		} else {
 			$this->webcomponents_polyfill($Request, $Config, false);
 			/**
 			 * Language translation is added explicitly only when compression is disabled, otherwise it will be in compressed JS file
 			 */
-			$this->config_internal(Language::instance(), 'cs.Language', true);
+			$this->config_internal($L, 'cs.Language', true);
 			$this->config_internal($this->get_requirejs_paths(), 'requirejs.paths', true);
 			$includes = $this->get_includes_for_page_without_compression($Config, $Request);
 			$preload  = [];
@@ -278,8 +289,8 @@ trait Includes {
 	/**
 	 * Add JS polyfills for IE/Edge
 	 */
-	protected function ie_edge () {
-		if (!preg_match('/Trident|Edge/', Request::instance()->header('user-agent'))) {
+	protected function edge () {
+		if (strpos(Request::instance()->header('user-agent'), 'Edge') === false) {
 			return;
 		}
 		$this->js_internal(
@@ -426,16 +437,16 @@ trait Includes {
 	 * @return string[][]
 	 */
 	protected function add_versions_hash ($includes) {
-		$content     = array_reduce(
+		$content      = array_reduce(
 			get_files_list(DIR.'/components', '/^meta\.json$/', 'f', true, true),
 			function ($content, $file) {
 				return $content.file_get_contents($file);
 			}
 		);
-		$content_md5 = substr(md5($content), 0, 5);
+		$content_hash = $this->get_hash_of($content);
 		foreach ($includes as &$files) {
 			foreach ($files as &$file) {
-				$file .= "?$content_md5";
+				$file .= "?$content_hash";
 			}
 			unset($file);
 		}

@@ -21,8 +21,12 @@ function Language (prefix)
 	else
 		Language.ready().then(fill_prefixed.bind(prefixed, prefix))
 	prefixed
-get_formatted	= ->
+get_formatted		= ->
 	'' + (if &length then vsprintf(@, [...&]) else @)
+fill_translations	= (translations) !->
+	for key, value of translations
+		Language[key]			= get_formatted.bind(value)
+		Language[key].toString	= Language[key]
 cs.Language		= Language
 	..get	= (key) ->
 		@[key].toString()
@@ -30,12 +34,14 @@ cs.Language		= Language
 		@[key](...args)
 	..ready	= ->
 		ready	= new Promise (resolve) !->
-			for key, value of translations
-				Language[key]			= get_formatted.bind(value)
-				Language[key].toString	= Language[key]
-			is_ready	:= true
-			resolve(Language)
+			if translations
+				fill_translations(translations)
+				is_ready	:= true
+				resolve(Language)
+			else
+				translations <-! require(["storage/pcache/languages-#{cs.current_language.language}-#{cs.current_language.hash}"], _)
+				fill_translations(translations)
+				is_ready	:= true
+				resolve(Language)
 		@ready	= -> ready
 		ready
-# TODO: This is a transitional hack till 6.x, when translations will be loaded asynchronously
-	..ready()

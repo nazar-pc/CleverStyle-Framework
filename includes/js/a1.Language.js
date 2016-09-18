@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var translations, is_ready, fill_prefixed, get_formatted, x$, slice$ = [].slice;
+  var translations, is_ready, fill_prefixed, get_formatted, fill_translations, x$, slice$ = [].slice;
   translations = cs.Language;
   is_ready = false;
   fill_prefixed = function(prefix){
@@ -36,6 +36,14 @@
   get_formatted = function(){
     return '' + (arguments.length ? vsprintf(this, slice$.call(arguments)) : this);
   };
+  fill_translations = function(translations){
+    var key, value;
+    for (key in translations) {
+      value = translations[key];
+      Language[key] = get_formatted.bind(value);
+      Language[key].toString = Language[key];
+    }
+  };
   x$ = cs.Language = Language;
   x$.get = function(key){
     return this[key].toString();
@@ -48,19 +56,21 @@
   x$.ready = function(){
     var ready;
     ready = new Promise(function(resolve){
-      var key, ref$, value;
-      for (key in ref$ = translations) {
-        value = ref$[key];
-        Language[key] = get_formatted.bind(value);
-        Language[key].toString = Language[key];
+      if (translations) {
+        fill_translations(translations);
+        is_ready = true;
+        resolve(Language);
+      } else {
+        require(["storage/pcache/languages-" + cs.current_language.language + "-" + cs.current_language.hash], function(translations){
+          fill_translations(translations);
+          is_ready = true;
+          resolve(Language);
+        });
       }
-      is_ready = true;
-      resolve(Language);
     });
     this.ready = function(){
       return ready;
     };
     return ready;
   };
-  x$.ready();
 }).call(this);

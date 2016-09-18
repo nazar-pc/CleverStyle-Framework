@@ -556,6 +556,8 @@ class Language implements JsonSerializable {
 	 * @return string[]
 	 */
 	public function jsonSerialize () {
+		// Ensure translations were loaded
+		$this->change($this->current_language);
 		return $this->translation[$this->current_language];
 	}
 }

@@ -239,9 +239,10 @@ array(1) {
 string(39) "Compression, no load optimization, head"
 string(4) "Head"
 string(%d) "<script src="/storage/pcache/webcomponents.js?%s"></script>
-<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet">
-<script src="/storage/pcache/CleverStyle_en:System.js?%s"></script>
-<link href="/storage/pcache/CleverStyle_en:System.html?%s" rel="import">
+<link href="/storage/pcache/CleverStyle:System.css?%s" rel="stylesheet">
+<script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
+<script src="/storage/pcache/CleverStyle:System.js?%s"></script>
+<link href="/storage/pcache/CleverStyle:System.html?%s" rel="import">
 "
 string(9) "post_Body"
 string(0) ""
@@ -255,21 +256,22 @@ array(2) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
+    string(73) "</storage/pcache/CleverStyle:System.html?%s>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
+    string(69) "</storage/pcache/CleverStyle:System.js?%s>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
+    string(69) "</storage/pcache/CleverStyle:System.css?%s>; rel=preload; as=style"
   }
 }
 string(45) "Compression, no load optimization, after body"
 string(4) "Head"
-string(79) "<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet">
+string(%d) "<link href="/storage/pcache/CleverStyle:System.css?%s" rel="stylesheet">
+<script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
 "
 string(9) "post_Body"
 string(%d) "<script src="/storage/pcache/webcomponents.js?%s"></script>
-<script src="/storage/pcache/CleverStyle_en:System.js?%s"></script>
-<link href="/storage/pcache/CleverStyle_en:System.html?%s" rel="import">
+<script src="/storage/pcache/CleverStyle:System.js?%s"></script>
+<link href="/storage/pcache/CleverStyle:System.html?%s" rel="import">
 "
 string(7) "headers"
 array(2) {
@@ -281,20 +283,21 @@ array(2) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
+    string(73) "</storage/pcache/CleverStyle:System.html?%s>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
+    string(69) "</storage/pcache/CleverStyle:System.js?%s>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
+    string(69) "</storage/pcache/CleverStyle:System.css?%s>; rel=preload; as=style"
   }
 }
 string(36) "Compression, load optimization, head"
 string(4) "Head"
 string(%d) "<script src="/storage/pcache/webcomponents.js?%s"></script>
-<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet">
+<link href="/storage/pcache/CleverStyle:System.css?%s" rel="stylesheet">
+<script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
 <script class="cs-config" target="cs.optimized_includes" type="application/json">[[],[]]</script>
-<script src="/storage/pcache/CleverStyle_en:System.js?%s"></script>
-<link href="/storage/pcache/CleverStyle_en:System.html?%s" rel="import">
+<script src="/storage/pcache/CleverStyle:System.js?%s"></script>
+<link href="/storage/pcache/CleverStyle:System.html?%s" rel="import">
 "
 string(9) "post_Body"
 string(0) ""
@@ -308,22 +311,23 @@ array(2) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
+    string(73) "</storage/pcache/CleverStyle:System.html?%s>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
+    string(69) "</storage/pcache/CleverStyle:System.js?%s>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
+    string(69) "</storage/pcache/CleverStyle:System.css?%s>; rel=preload; as=style"
   }
 }
 string(42) "Compression, load optimization, after body"
 string(4) "Head"
-string(%d) "<link href="/storage/pcache/CleverStyle_en:System.css?%s" rel="stylesheet">
+string(%d) "<link href="/storage/pcache/CleverStyle:System.css?%s" rel="stylesheet">
+<script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
 <script class="cs-config" target="cs.optimized_includes" type="application/json">[[],[]]</script>
 "
 string(9) "post_Body"
 string(%d) "<script src="/storage/pcache/webcomponents.js?%s"></script>
-<script src="/storage/pcache/CleverStyle_en:System.js?%s"></script>
-<link href="/storage/pcache/CleverStyle_en:System.html?%s" rel="import">
+<script src="/storage/pcache/CleverStyle:System.js?%s"></script>
+<link href="/storage/pcache/CleverStyle:System.html?%s" rel="import">
 "
 string(7) "headers"
 array(2) {
@@ -335,10 +339,10 @@ array(2) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(76) "</storage/pcache/CleverStyle_en:System.html?%s>; rel=preload; as=document"
+    string(73) "</storage/pcache/CleverStyle:System.html?%s>; rel=preload; as=document"
     [1]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.js?%s>; rel=preload; as=script"
+    string(69) "</storage/pcache/CleverStyle:System.js?%s>; rel=preload; as=script"
     [2]=>
-    string(72) "</storage/pcache/CleverStyle_en:System.css?%s>; rel=preload; as=style"
+    string(69) "</storage/pcache/CleverStyle:System.css?%s>; rel=preload; as=style"
   }
 }
