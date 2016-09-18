@@ -89,7 +89,6 @@ class Config {
 	 * Update multilingual options when language changes
 	 */
 	protected function init () {
-		$this->read_core_update_multilingual();
 		Event::instance()->on(
 			'System/Language/change/after',
 			function () {
@@ -137,6 +136,7 @@ class Config {
 		$this->components    = $config['components'];
 		date_default_timezone_set($this->core['timezone']);
 		$this->fill_mirrors();
+		$this->read_core_update_multilingual(true);
 	}
 	/**
 	 * Is used to fill `$this->mirrors` using current configuration
@@ -154,8 +154,14 @@ class Config {
 		}
 		$this->mirrors['count'] = count($this->mirrors['http']) + count($this->mirrors['https']);
 	}
-	protected function read_core_update_multilingual () {
-		$language = Language::instance(true)->clanguage ?: @$this->core['language'];
+	/**
+	 * @param bool $force
+	 */
+	protected function read_core_update_multilingual ($force = false) {
+		if ($force) {
+			$this->last_language = null;
+		}
+		$language = Language::instance()->clanguage ?: @$this->core['language'];
 		if (!$language || $language == $this->last_language) {
 			return;
 		}
@@ -267,6 +273,7 @@ class Config {
 		if (!$this->update(Core::instance()->domain, $this->core_internal, $this->db, $this->storage, $this->components)) {
 			return false;
 		}
+		$this->cache->del('/');
 		return $this->apply_internal(false);
 	}
 	/**

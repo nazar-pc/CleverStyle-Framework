@@ -78,15 +78,6 @@ class Language implements JsonSerializable {
 		} else {
 			$this->init_internal();
 		}
-		/**
-		 * Change language when configuration changes
-		 */
-		Event::instance()->on(
-			'System/Config/changed',
-			function () {
-				$this->init_internal();
-			}
-		);
 	}
 	protected function init_internal () {
 		$Config   = Config::instance();
