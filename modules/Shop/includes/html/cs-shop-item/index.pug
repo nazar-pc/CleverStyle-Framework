@@ -17,4 +17,7 @@ dom-module#cs-shop-item
 		template(is="dom-if" if="[[show_attributes]]")
 			h2.cs-margin-top [[L.characteristics]]
 			content(select="#attributes")
+		//- Ugly hack for Firefox because of https://github.com/webcomponents/webcomponentsjs/issues/112
+		div(hidden)
+			content
 	script(src="script.js")
