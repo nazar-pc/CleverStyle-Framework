@@ -107,23 +107,17 @@ namespace cs {
   var_dump($Session->admin(), $Session->user(), $Session->guest());
 
   var_dump('Add session to inactive user');
-  Page::instance_reset();
   $User->set('status', User::STATUS_INACTIVE, $user_id);
   var_dump($Session->add($user_id));
-  var_dump(Page::instance()->Top);
 
   var_dump('Add session to not activated user');
-  Page::instance_reset();
   $User->set('status', User::STATUS_NOT_ACTIVATED, $user_id);
   var_dump($Session->add($user_id));
-  var_dump(Page::instance()->Top);
 
   var_dump('Add session to blocked');
-  Page::instance_reset();
   $User->set('status', User::STATUS_ACTIVE, $user_id);
   $User->set('block_until', Session\time() + 3, $user_id);
   var_dump($Session->add($user_id));
-  var_dump(Page::instance()->Top);
 
   var_dump('Delete session with incorrect id');
   var_dump($Session->del('foo'));
@@ -296,16 +290,10 @@ bool(false)
 bool(true)
 string(28) "Add session to inactive user"
 string(32) "%s"
-string(94) "<div class="cs-text-center cs-block-error cs-text-error">Your account has been disabled</div>
-"
 string(33) "Add session to not activated user"
 string(32) "%s"
-string(113) "<div class="cs-text-center cs-block-error cs-text-error">Your account is not active or awaiting activation</div>
-"
 string(22) "Add session to blocked"
 string(32) "%s"
-string(119) "<div class="cs-text-center cs-block-error cs-text-error">Your account has been blocked until %d.%d.%d %d:%d %s</div>
-"
 string(32) "Delete session with incorrect id"
 bool(false)
 string(28) "Delete all sessions for user"

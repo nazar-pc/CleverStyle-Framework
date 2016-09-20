@@ -285,33 +285,10 @@ trait Management {
 			],
 			$user
 		);
-		if (!$data) {
-			return false;
-		}
-		$L    = Language::prefix('system_profile_sign_in_');
-		$Page = Page::instance();
-		switch ($data['status']) {
-			case User::STATUS_INACTIVE:
-				/**
-				 * If user is disabled
-				 */
-				$Page->warning($L->your_account_disabled);
-				return false;
-			case User::STATUS_NOT_ACTIVATED:
-				/**
-				 * If user is not active
-				 */
-				$Page->warning($L->your_account_is_not_active);
-				return false;
-		}
-		if ($data['block_until'] > time()) {
-			/**
-			 * If user if blocked
-			 */
-			$Page->warning($L->your_account_blocked_until(date($L->_datetime, $data['block_until'])));
-			return false;
-		}
-		return true;
+		return
+			$data &&
+			$data['status'] == User::STATUS_ACTIVE &&
+			$data['block_until'] <= time();
 	}
 	/**
 	 * Create the session for the user with specified id
