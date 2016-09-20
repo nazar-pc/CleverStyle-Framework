@@ -9,8 +9,6 @@ namespace cs\Session;
 use
 	cs\Config,
 	cs\Event,
-	cs\Language,
-	cs\Page,
 	cs\Request,
 	cs\Response,
 	cs\User;
