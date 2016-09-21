@@ -53,7 +53,6 @@ use
  * @property string $reg_ip        hex value, obtained by function ip2hex()
  * @property string $reg_key       random md5 hash, generated during registration
  * @property int    $status        '-1' - not activated (for example after registration), 0 - inactive, 1 - active
- * @property int    $block_until   unix timestamp
  * @property string $avatar
  *
  * @method static $this instance($check = false)

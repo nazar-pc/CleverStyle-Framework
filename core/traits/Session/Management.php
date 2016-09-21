@@ -269,24 +269,12 @@ trait Management {
 	 */
 	protected function is_user_active ($user) {
 		/**
-		 * Optimization, more data requested than actually used here, because data will be requested later, and it would be nice to have that data cached
+		 * Optimization, more data requested than actually used here because data will be requested later, and it would be nice to have that data cached
 		 */
-		$data = User::instance()->get(
-			[
-				'login',
-				'username',
-				'language',
-				'timezone',
-				'status',
-				'block_until',
-				'avatar'
-			],
-			$user
-		);
+		$data = User::instance()->get(['login', 'username', 'language', 'timezone', 'status', 'avatar'], $user);
 		return
 			$data &&
-			$data['status'] == User::STATUS_ACTIVE &&
-			$data['block_until'] <= time();
+			$data['status'] == User::STATUS_ACTIVE;
 	}
 	/**
 	 * Create the session for the user with specified id

@@ -43,10 +43,6 @@ dom-module#cs-system-admin-users-edit-user-form
 				label(is="cs-label-button")
 					input(checked="[[equal(user_data.status, 1)]]" type="radio" value="1")
 					| [[L.active]]
-			label(tooltip="[[L.block_until_info]]")
-				| [[L.block_until]]
-				cs-tooltip
-			input(is="cs-input-text" type="datetime-local" value="{{block_until}}")
 			label [[L.avatar]]
 			label
 				img(src="[[if(user_data.avatar, user_data.avatar, '')]]" hidden="[[!user_data.avatar]]")

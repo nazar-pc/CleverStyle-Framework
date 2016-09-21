@@ -114,11 +114,6 @@ namespace cs {
   $User->set('status', User::STATUS_NOT_ACTIVATED, $user_id);
   var_dump($Session->add($user_id));
 
-  var_dump('Add session to blocked');
-  $User->set('status', User::STATUS_ACTIVE, $user_id);
-  $User->set('block_until', Session\time() + 3, $user_id);
-  var_dump($Session->add($user_id));
-
   var_dump('Delete session with incorrect id');
   var_dump($Session->del('foo'));
 
@@ -291,8 +286,6 @@ bool(true)
 string(28) "Add session to inactive user"
 string(32) "%s"
 string(33) "Add session to not activated user"
-string(32) "%s"
-string(22) "Add session to blocked"
 string(32) "%s"
 string(32) "Delete session with incorrect id"
 bool(false)

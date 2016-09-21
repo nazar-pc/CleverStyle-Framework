@@ -289,7 +289,7 @@ int(21)
 string(39) "Get id by incorrect login or email hash"
 bool(false)
 string(22) "Columns in users table"
-array(15) {
+array(14) {
   [0]=>
   string(2) "id"
   [1]=>
@@ -317,7 +317,5 @@ array(15) {
   [12]=>
   string(6) "status"
   [13]=>
-  string(11) "block_until"
-  [14]=>
   string(6) "avatar"
 }

@@ -62,15 +62,6 @@ do_api_request(
 );
 $User->set('status', User::STATUS_ACTIVE, $user_id);
 
-var_dump('Sign in (user blocked temporarily)');
-$User->set('block_until', time() + 100500, $user_id);
-do_api_request(
-	'sign_in',
-	'api/System/profile',
-	$data
-);
-$User->set('block_until', 0, $user_id);
-
 var_dump('Sign in (wrong password)');
 $Config->core['sign_in_attempts_block_count'] = 3;
 $Config->core['sign_in_attempts_block_time']  = 1000;
@@ -170,16 +161,6 @@ array(1) {
   }
 }
 string(66) "{"error":403,"error_description":"Your account has been disabled"}"
-string(34) "Sign in (user blocked temporarily)"
-int(403)
-array(1) {
-  ["content-type"]=>
-  array(1) {
-    [0]=>
-    string(31) "application/json; charset=utf-8"
-  }
-}
-string(91) "{"error":403,"error_description":"Your account has been blocked until %d.%d.%d %d:%d %s"}"
 string(24) "Sign in (wrong password)"
 int(400)
 array(1) {

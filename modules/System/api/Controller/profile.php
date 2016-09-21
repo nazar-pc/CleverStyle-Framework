@@ -257,32 +257,27 @@ trait profile {
 		}
 		$id = $User->get_id($data['login']);
 		if ($id && $User->validate_password($data['password'], $id, true)) {
-			$status      = $User->get('status', $id);
-			$block_until = $User->get('block_until', $id);
+			$status = $User->get('status', $id);
 			if ($status == User::STATUS_NOT_ACTIVATED) {
 				throw new ExitException($L->your_account_is_not_active, 403);
 			}
 			if ($status == User::STATUS_INACTIVE) {
 				throw new ExitException($L->your_account_disabled, 403);
 			}
-			if ($block_until > time()) {
-				throw new ExitException($L->your_account_blocked_until(date($L->_datetime, $block_until)), 403);
-			}
 			Session::instance()->add($id);
 			$User->sign_in_result(true, $data['login']);
 		} else {
 			$User->sign_in_result(false, $data['login']);
 			++$attempts;
-			$content = $L->authentication_error;
 			if ($Config->core['sign_in_attempts_block_count']) {
 				$attempts_left = $Config->core['sign_in_attempts_block_count'] - $attempts;
 				if (!$attempts_left) {
 					throw new ExitException($L->attempts_are_over_try_again_in(format_time($Config->core['sign_in_attempts_block_time'])), 403);
 				} elseif ($attempts >= $Config->core['sign_in_attempts_block_count'] * 2 / 3) {
-					$content .= ' '.$L->attempts_left($attempts_left);
+					throw new ExitException($L->authentication_error.' '.$L->attempts_left($attempts_left), 400);
 				}
 			}
-			throw new ExitException($content, 400);
+			throw new ExitException($L->authentication_error, 400);
 		}
 	}
 	/**

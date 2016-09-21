@@ -94,7 +94,6 @@ CREATE TABLE "[prefix]users" (
     "reg_ip" text NOT NULL DEFAULT ''::text,
     "reg_key" text DEFAULT ''::text NOT NULL,
     "status" smallint DEFAULT '-1'::numeric NOT NULL,
-    "block_until" numeric DEFAULT '0'::numeric NOT NULL,
     "avatar" text DEFAULT ''::text NOT NULL
 );
 

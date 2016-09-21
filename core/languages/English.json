@@ -430,8 +430,6 @@
 				"is_not_activated"            : "Not activated",
 				"inactive"                    : "Inactive",
 				"active"                      : "Active",
-				"block_until"                 : "Block until",
-				"block_until_info"            : "If you specify the current time or the past - the lock is released",
 				"avatar"                      : "Avatar",
 				"upload_avatar"               : "Upload avatar",
 				"undefined"                   : "Undefined",

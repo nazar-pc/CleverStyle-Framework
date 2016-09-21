@@ -85,7 +85,6 @@ CREATE TABLE `[prefix]users` (
   `reg_ip` varchar(32) NOT NULL DEFAULT '',
   `reg_key` varchar(32) NOT NULL DEFAULT '',
   `status` tinyint(1) NOT NULL DEFAULT '-1',
-  `block_until` bigint(20) NOT NULL DEFAULT '0',
   `avatar` varchar(255) NOT NULL DEFAULT ''
 );
 

@@ -78,7 +78,7 @@ trait users {
 		$user_data = array_filter(
 			$user,
 			function ($item) {
-				return in_array($item, ['login', 'username', 'email', 'language', 'timezone', 'status', 'block_until', 'avatar'], true);
+				return in_array($item, ['login', 'username', 'email', 'language', 'timezone', 'status', 'avatar'], true);
 			},
 			ARRAY_FILTER_USE_KEY
 		);

@@ -18,9 +18,6 @@ Polymer(
 			value	: {}
 		languages	: Array
 		timezones	: Array
-		block_until	:
-			observer	: '_block_until'
-			type		: String
 		can_upload	: 'file_upload' of cs
 	ready : !->
 		cs.api([
@@ -50,16 +47,7 @@ Polymer(
 				)
 			@languages	= languages_list
 			@timezones	= timezones_list
-			block_until	= do ->
-				block_until	:= data.block_until
-				date		= new Date
-				if parseInt(block_until)
-					date.setTime(parseInt(block_until) * 1000)
-				z	= (number) ->
-					('0' + number).substr(-2)
-				date.getFullYear() + '-' + z(date.getMonth() + 1) + '-' + z(date.getDate()) + 'T' + z(date.getHours()) + ':' + z(date.getMinutes())
-			@block_until	= block_until
-			@user_data		= data
+			@user_data	= data
 		cs.file_upload?(
 			@$['upload-avatar']
 			(files) !~>
@@ -75,17 +63,6 @@ Polymer(
 		else
 			password.type	= 'password'
 			lock.icon		= 'lock'
-	_block_until : !->
-		block_until	= @block_until
-		date		= new Date
-		date.setFullYear(block_until.substr(0, 4))
-		date.setMonth(block_until.substr(5, 2) - 1)
-		date.setDate(block_until.substr(8, 2))
-		date.setHours(block_until.substr(11, 2))
-		date.setMinutes(block_until.substr(14, 2))
-		date.setSeconds(0)
-		date.setMilliseconds(0)
-		@set('user_data.block_until', date.getTime() / 1000)
 	save : !->
 		cs.api('patch api/System/admin/users/' + @user_id, {user : @user_data}).then !~>
 			cs.ui.notify(@L.changes_saved, 'success', 5)

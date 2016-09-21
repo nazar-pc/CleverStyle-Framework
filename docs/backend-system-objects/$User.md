@@ -184,7 +184,6 @@ Disable memory cache to decrease RAM usage when working with large number of use
 * reg_ip
 * reg_key
 * status
-* block_until
 * avatar
 
 All properties are accessed through "magic" methods. Every property have PhpDoc section, so, type and format you can see there. All properties have simple scalar values.
@@ -319,7 +318,6 @@ This class has next public properties:
 * reg_ip
 * reg_key
 * status
-* block_until
 * avatar
 
 All properties are accessed through "magic" methods. Every property have PhpDoc section, so, type and format you can see there. All properties have simple scalar values.
