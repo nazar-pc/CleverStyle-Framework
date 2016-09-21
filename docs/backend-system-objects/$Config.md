@@ -93,8 +93,6 @@ Property with most general configuration properties. Example for newly installed
     "key_expire"                        : 120,
     "session_expire"                    : 2592000,
     "update_ratio"                      : 75,
-    "sign_in_attempts_block_count"      : 0,
-    "sign_in_attempts_block_time"       : 30,
     "cookie_prefix"                     : "",
     "timezone"                          : "Europe/Kiev",
     "password_min_length"               : 4,

@@ -32,8 +32,6 @@ $User = \cs\User::instance();
 * get_groups()
 * set_groups()
 * del_groups()
-* get_sign_in_attempts_count()
-* sign_in_result()
 * registration()
 * registration_confirmation()
 * registration_cancel()
@@ -127,12 +125,6 @@ Set user's groups
 
 #### del_groups($group : int|int[], $user = false : false|int) : bool
 Delete user's groups
-
-#### get_sign_in_attempts_count($login_hash : string) : int
-Check number of sign in attempts (is used by system)
-
-#### sign_in_result($success : bool, $login_hash : string) : login_result
-Process sign in result (is used by system)
 
 #### registration($email : string, $confirmation = true : bool, $auto_sign_in = true : bool) : array|false|string
 User registration

@@ -58,15 +58,6 @@ CREATE TABLE `[prefix]sessions` (
   KEY `user` (`user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE `[prefix]sign_ins` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `expire` bigint(20) NOT NULL,
-  `login_hash` varchar(56) NOT NULL,
-  `ip` varchar(32) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `expire` (`expire`,`login_hash`,`ip`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 CREATE TABLE `[prefix]texts` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `label` varchar(1024) NOT NULL,

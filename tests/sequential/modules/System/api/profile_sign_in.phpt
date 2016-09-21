@@ -63,25 +63,22 @@ do_api_request(
 $User->set('status', User::STATUS_ACTIVE, $user_id);
 
 var_dump('Sign in (wrong password)');
-$Config->core['sign_in_attempts_block_count'] = 3;
-$Config->core['sign_in_attempts_block_time']  = 1000;
-do_api_request(
-	'sign_in',
-	'api/System/profile',
-	['password' => 'foo'] + $data
-);
-do_api_request(
-	'sign_in',
-	'api/System/profile',
-	['password' => 'foo'] + $data
-);
 do_api_request(
 	'sign_in',
 	'api/System/profile',
 	['password' => 'foo'] + $data
 );
 
-var_dump('Sign in (already blocked)');
+Request::$id = 0;
+Event::instance_reset();
+Event::instance()->once(
+	'api/System/profile/sign_in/before',
+	function () {
+		return false;
+	}
+);
+
+var_dump('Sign in (rejected by event handler)');
 do_api_request(
 	'sign_in',
 	'api/System/profile',
@@ -171,15 +168,7 @@ array(1) {
   }
 }
 string(126) "{"error":400,"error_description":"Authentication error: sign in information is not correct. Check it, please, and try again."}"
-int(400)
-array(1) {
-  ["content-type"]=>
-  array(1) {
-    [0]=>
-    string(31) "application/json; charset=utf-8"
-  }
-}
-string(151) "{"error":400,"error_description":"Authentication error: sign in information is not correct. Check it, please, and try again. Sign in attempts left: 1"}"
+string(35) "Sign in (rejected by event handler)"
 int(403)
 array(1) {
   ["content-type"]=>
@@ -188,14 +177,4 @@ array(1) {
     string(31) "application/json; charset=utf-8"
   }
 }
-string(86) "{"error":403,"error_description":"Sign in attempts are over, try again in %d minutes"}"
-string(25) "Sign in (already blocked)"
-int(403)
-array(1) {
-  ["content-type"]=>
-  array(1) {
-    [0]=>
-    string(31) "application/json; charset=utf-8"
-  }
-}
-string(86) "{"error":403,"error_description":"Sign in attempts are over, try again in %d minutes"}"
+string(49) "{"error":403,"error_description":"403 Forbidden"}"

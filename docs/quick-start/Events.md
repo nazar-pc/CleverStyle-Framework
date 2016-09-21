@@ -126,6 +126,9 @@ Backend events:
 * admin/System/modules/uninstall/before
 * admin/System/modules/uninstall/after
 * admin/System/Menu
+* api/System/profile/sign_in/before
+* api/System/profile/sign_in/success
+* api/System/profile/sign_in/error
 * System/App/render/before
 * System/App/execute_router/before
 * System/App/execute_router/after

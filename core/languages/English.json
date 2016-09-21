@@ -461,12 +461,6 @@
 			"users_general_"                        : {
 				"session_expire"                         : "Session expires after",
 				"session_expire_info"                    : "Specifies the time after which user session is obsolete",
-				"sign_in_attempts_block_"                : {
-					"count"      : "Failed sign in attempts before blocking",
-					"count_info" : "After a specified number of unsuccessful login attempts ability to sign in will be temporarily locked to complication of password guessing. To remove the restrictions, enter 0.",
-					"time"       : "Time lock after failed sign in attempts",
-					"time_info"  : "After exceeding the number of unsuccessful sign in attempts ability to sign in for user will be locked in a specified time interval"
-				},
 				"remember_user_ip"                       : "Remember user IP",
 				"remember_user_ip_info"                  : "User's session will be valid only for the IP with which user was logged in, at the entrance with another IP user session will be invalid",
 				"password_min_"                          : {
@@ -490,13 +484,10 @@
 			"guest"                         : "Guest",
 			"sign_in"                       : "Sign in",
 			"sign_in_"                      : {
-				"attempts_left"                  : "Sign in attempts left: %d",
-				"attempts_are_over_try_again_in" : "Sign in attempts are over, try again in %s",
-				"authentication_error"           : "Authentication error: sign in information is not correct. Check it, please, and try again.",
-				"your_account_"                  : {
+				"authentication_error" : "Authentication error: sign in information is not correct. Check it, please, and try again.",
+				"your_account_"        : {
 					"disabled"      : "Your account has been disabled",
-					"is_not_active" : "Your account is not active or awaiting activation",
-					"blocked_until" : "Your account has been blocked until %s"
+					"is_not_active" : "Your account is not active or awaiting activation"
 				}
 			},
 			"sign_out"                      : "Sign out",

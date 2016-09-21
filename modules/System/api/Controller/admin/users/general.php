@@ -14,8 +14,6 @@ use
 trait general {
 	protected static $users_general_options_keys = [
 		'session_expire',
-		'sign_in_attempts_block_count',
-		'sign_in_attempts_block_time',
 		'remember_user_ip',
 		'password_min_length',
 		'password_min_strength',

@@ -57,13 +57,6 @@ COMMENT ON COLUMN "[prefix]sessions"."user" IS 'User id';
 COMMENT ON COLUMN "[prefix]sessions"."remote_addr" IS 'hex value, obtained by function ip2hex()';
 COMMENT ON COLUMN "[prefix]sessions"."ip" IS 'hex value, obtained by function ip2hex()';
 
-CREATE TABLE "[prefix]sign_ins" (
-    "id" bigserial,
-    "expire" numeric NOT NULL,
-    "login_hash" text NOT NULL,
-    "ip" text NOT NULL
-);
-
 CREATE TABLE "[prefix]texts" (
     "id" bigserial,
     "label" text NOT NULL,
@@ -150,8 +143,6 @@ ALTER TABLE ONLY "[prefix]permissions" ADD CONSTRAINT "[prefix]permissions_prima
 
 ALTER TABLE ONLY "[prefix]sessions" ADD CONSTRAINT "[prefix]sessions_primary" PRIMARY KEY ("id");
 
-ALTER TABLE ONLY "[prefix]sign_ins" ADD CONSTRAINT "[prefix]sign_ins_primary" PRIMARY KEY ("id");
-
 ALTER TABLE ONLY "[prefix]texts" ADD CONSTRAINT "[prefix]texts_primary" PRIMARY KEY ("id");
 
 ALTER TABLE ONLY "[prefix]texts_data" ADD CONSTRAINT "[prefix]texts_data_primary" PRIMARY KEY ("id", "lang");
@@ -172,8 +163,6 @@ CREATE INDEX "[prefix]permissions_label" ON "[prefix]permissions" USING btree ("
 
 CREATE INDEX "[prefix]sessions_expire" ON "[prefix]sessions" USING btree ("expire");
 CREATE INDEX "[prefix]sessions_user" ON "[prefix]sessions" USING btree ("user");
-
-CREATE INDEX "[prefix]sign_ins_expire" ON "[prefix]sign_ins" USING btree ("expire", "login_hash", "ip");
 
 CREATE INDEX "[prefix]texts_label" ON "[prefix]texts" USING btree ("label", "group");
 

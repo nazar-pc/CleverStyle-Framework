@@ -6,11 +6,6 @@ dom-module#cs-system-admin-users-general
 			+input("session_expire", null, "number", 1)
 			= ' '
 			| [[L.system_time_seconds]]
-			+input("sign_in_attempts_block_count", null, "number")
-			+input("sign_in_attempts_block_time", "equal(settings.sign_in_attempts_block_count, 0)", "number", 1)
-			span(hidden="[[equal(settings.sign_in_attempts_block_count, 0)]]")
-				= ' '
-				| [[L.system_time_seconds]]
 			+on-off-switcher("remember_user_ip")
 			+input("password_min_length", null, "number", 4)
 			+input("password_min_strength", null, "number", 0, 7)

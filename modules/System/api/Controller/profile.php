@@ -11,12 +11,25 @@ namespace cs\modules\System\api\Controller;
 use
 	cs\Config,
 	cs\Core,
+	cs\Event,
 	cs\ExitException,
 	cs\Language,
 	cs\Mail,
 	cs\Session,
 	cs\User;
 
+/**
+ * Provides next events:
+ *  api/System/profile/sign_in/before
+ *  [
+ *    'login'    => $login,   // sha224 hash of login or email actually
+ *    'password' => $password // sha512(sha512(password) + public_key)
+ *  ]
+ *
+ *  api/System/profile/sign_in/success
+ *
+ *  api/System/profile/sign_in/error
+ */
 trait profile {
 	public static function profile_get () {
 		$User         = User::instance();
@@ -237,23 +250,18 @@ trait profile {
 	 * @throws ExitException
 	 */
 	public static function profile_sign_in ($Request) {
-		$Config = Config::instance();
-		$L      = Language::prefix('system_profile_sign_in_');
-		$User   = User::instance();
-		$data   = $Request->data('login', 'password');
+		$L    = Language::prefix('system_profile_sign_in_');
+		$User = User::instance();
+		$data = $Request->data('login', 'password');
 		if (!$data) {
 			throw new ExitException(400);
 		}
 		if (!$User->guest()) {
 			return;
 		}
-		$attempts = $User->get_sign_in_attempts_count($data['login']);
-		if (
-			$Config->core['sign_in_attempts_block_count'] &&
-			$attempts >= $Config->core['sign_in_attempts_block_count']
-		) {
-			$User->sign_in_result(false, $data['login']);
-			throw new ExitException($L->attempts_are_over_try_again_in(format_time($Config->core['sign_in_attempts_block_time'])), 403);
+		$Event = Event::instance();
+		if (!$Event->fire('api/System/profile/sign_in/before', $data)) {
+			throw new ExitException(403);
 		}
 		$id = $User->get_id($data['login']);
 		if ($id && $User->validate_password($data['password'], $id, true)) {
@@ -265,18 +273,9 @@ trait profile {
 				throw new ExitException($L->your_account_disabled, 403);
 			}
 			Session::instance()->add($id);
-			$User->sign_in_result(true, $data['login']);
+			$Event->fire('api/System/profile/sign_in/success');
 		} else {
-			$User->sign_in_result(false, $data['login']);
-			++$attempts;
-			if ($Config->core['sign_in_attempts_block_count']) {
-				$attempts_left = $Config->core['sign_in_attempts_block_count'] - $attempts;
-				if (!$attempts_left) {
-					throw new ExitException($L->attempts_are_over_try_again_in(format_time($Config->core['sign_in_attempts_block_time'])), 403);
-				} elseif ($attempts >= $Config->core['sign_in_attempts_block_count'] * 2 / 3) {
-					throw new ExitException($L->authentication_error.' '.$L->attempts_left($attempts_left), 400);
-				}
-			}
+			$Event->fire('api/System/profile/sign_in/error');
 			throw new ExitException($L->authentication_error, 400);
 		}
 	}

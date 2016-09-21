@@ -50,36 +50,28 @@ class Options {
 					'simple_admin_mode'                 => 1
 				],
 				'int_range'    => [
-					'inserts_limit'                => [
+					'inserts_limit'         => [
 						'min'   => 1,
 						'value' => 1000
 					],
-					'key_expire'                   => [
+					'key_expire'            => [
 						'min'   => 1,
 						'value' => 60 * 2
 					],
-					'session_expire'               => [
+					'session_expire'        => [
 						'min'   => 1,
 						'value' => 3600 * 24 * 30
 					],
-					'update_ratio'                 => [
+					'update_ratio'          => [
 						'min'   => 0,
 						'max'   => 100,
 						'value' => 75
 					],
-					'sign_in_attempts_block_count' => [
-						'min'   => 0,
-						'value' => 0
-					],
-					'sign_in_attempts_block_time'  => [
-						'min'   => 1,
-						'value' => 5
-					],
-					'password_min_length'          => [
+					'password_min_length'   => [
 						'min'   => 1,
 						'value' => 4
 					],
-					'password_min_strength'        => [
+					'password_min_strength' => [
 						'min'   => 0,
 						'max'   => 7,
 						'value' => 3
