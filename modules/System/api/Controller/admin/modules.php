@@ -517,6 +517,8 @@ trait modules {
 		$new_meta      = file_get_json("$tmp_dir/meta.json");
 		if ($module == Config::SYSTEM_MODULE) {
 			static::update_system($module, $existing_meta, $new_meta, $tmp_location);
+			// Clean the whole cache during system update
+			System_cache::instance()->clean();
 		} else {
 			static::update_module($module, $existing_meta, $new_meta, $tmp_location, $Request);
 		}
