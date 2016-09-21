@@ -90,9 +90,6 @@ class Event {
 	 * @return Event
 	 */
 	public function once ($event, callable $callback) {
-		if (!$event) {
-			return $this;
-		}
 		$wrapped_callback = function (...$arguments) use (&$wrapped_callback, $event, $callback) {
 			$this->off($event, $wrapped_callback);
 			return $callback(...$arguments);

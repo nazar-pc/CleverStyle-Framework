@@ -69,32 +69,22 @@ class Event_test extends Event {
 		$Event->init();
 		var_dump('Callbacks and cache after initialization (request id #2)', $Event->callbacks, $Event->callbacks_cache);
 
-		$Event->once('', function () {
+		$Event->on('', function () {
 			die('Empty event name not allowed');
 		});
 		$Event->fire('');
 		var_dump('callbacks after registering empty event', $Event->callbacks);
-		$Event->once('test_not_callable_1', null);
-		$Event->once('test_not_callable_2', 'random_string_not_function');
-		var_dump('callbacks after registering not callable', $Event->callbacks);
 
 		$Event->once('', function () {
 			die('Empty event name not allowed (once)');
 		});
 		$Event->fire('');
 		var_dump('callbacks after registering empty event (once)', $Event->callbacks);
-		$Event->on('test_not_callable_1', null);
-		$Event->on('test_not_callable_2', 'random_string_not_function');
-		var_dump('callbacks after registering not callable (once)', $Event->callbacks);
 
 		// Non-existent un-registering should just return itself
 		if ($Event->off('non-existent') !== $Event) {
 			var_dump('Failed un-registering non-existing event');
 		}
-		var_dump('callbacks after registering empty event', $Event->callbacks);
-		$Event->on('test_not_callable_1', null);
-		$Event->on('test_not_callable_2', 'random_string_not_function');
-		var_dump('callbacks after registering not callable', $Event->callbacks);
 
 		self::instance_reset();
 		$Event = self::instance();
@@ -186,39 +176,7 @@ array(1) {
     string(15) "module_xyz_test"
   }
 }
-string(40) "callbacks after registering not callable"
-array(1) {
-  ["xyz"]=>
-  array(1) {
-    [0]=>
-    string(15) "module_xyz_test"
-  }
-}
 string(46) "callbacks after registering empty event (once)"
-array(1) {
-  ["xyz"]=>
-  array(1) {
-    [0]=>
-    string(15) "module_xyz_test"
-  }
-}
-string(47) "callbacks after registering not callable (once)"
-array(1) {
-  ["xyz"]=>
-  array(1) {
-    [0]=>
-    string(15) "module_xyz_test"
-  }
-}
-string(39) "callbacks after registering empty event"
-array(1) {
-  ["xyz"]=>
-  array(1) {
-    [0]=>
-    string(15) "module_xyz_test"
-  }
-}
-string(40) "callbacks after registering not callable"
 array(1) {
   ["xyz"]=>
   array(1) {
