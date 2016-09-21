@@ -18,7 +18,6 @@ Polymer.{}cs.{}behaviors.label =
 			notify		: true
 			observer	: '_value_changed'
 			type		: String
-	# TODO: Should be `ready` according to Polymer docs, but not working as expected (see https://github.com/Polymer/polymer/issues/2366)
 	attached : !->
 		do !~>
 			next_node	= @nextSibling

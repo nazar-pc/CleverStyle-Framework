@@ -20,7 +20,6 @@ Polymer(
 	observers		: [
 		'units_changed(item_id, units)'
 	]
-	# TODO: Should be `ready` according to Polymer docs, but not working as expected (see https://github.com/Polymer/polymer/issues/2366)
 	attached			: !->
 		let (img = @querySelector('#img'))
 			@$.img.src		= img.src
