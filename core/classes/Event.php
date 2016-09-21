@@ -50,8 +50,8 @@ class Event {
 	 *
 	 * @return Event
 	 */
-	public function on ($event, $callback) {
-		if (!$event || !is_callable($callback)) {
+	public function on ($event, callable $callback) {
+		if (!$event) {
 			return $this;
 		}
 		$this->callbacks[$event][] = $callback;
@@ -89,8 +89,8 @@ class Event {
 	 *
 	 * @return Event
 	 */
-	public function once ($event, $callback) {
-		if (!$event || !is_callable($callback)) {
+	public function once ($event, callable $callback) {
+		if (!$event) {
 			return $this;
 		}
 		$wrapped_callback = function (...$arguments) use (&$wrapped_callback, $event, $callback) {
