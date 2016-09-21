@@ -94,9 +94,9 @@
   /**
    * Supports algorithms sha1, sha224, sha256, sha384, sha512
    *
-   * @param {object} jssha jsSHA object
-   * @param {string} algo Chosen algorithm
-   * @param {string} data String to be hashed
+   * @param {Function} jssha jsSHA object
+   * @param {string}   algo Chosen algorithm
+   * @param {string}   data String to be hashed
    * @return {string}
    */
   cs.hash = function(jssha, algo, data){
@@ -215,8 +215,8 @@
   /**
    * Password changing
    *
-   * @param {string} current_password
-   * @param {string} new_password
+   * @param {string}   current_password
+   * @param {string}   new_password
    * @param {Function} success
    * @param {Function} error
    */
@@ -316,7 +316,7 @@
   /**
    * Modal dialog
    *
-   * @param {HTMLElement}|{jQuery}|{String} content
+   * @param {(HTMLElement|jQuery|string)} content
       *
    * @return {HTMLElement}
    */
@@ -338,7 +338,7 @@
   /**
    * Simple modal dialog that will be opened automatically and destroyed after closing
    *
-   * @param {HTMLElement}|{jQuery}|{String} content
+   * @param {(HTMLElement|jQuery|string)} content
       *
    * @return {HTMLElement}
    */
@@ -352,9 +352,9 @@
   /**
    * Alert modal
    *
-   * @param {HTMLElement}|{jQuery}|{String} content
+   * @param {(HTMLElement|jQuery|string)} content
       *
-   * @return {HTMLElement}
+   * @return {Promise}
    */
   x$.alert = function(content){
     if (content instanceof Function) {
@@ -384,11 +384,11 @@
   /**
    * Confirm modal
    *
-   * @param {HTMLElement}|{jQuery}|{String} content
-   * @param {Function}                      ok_callback
-   * @param {Function}                      cancel_callback
+   * @param {(HTMLElement|jQuery|string)} content
+   * @param {Function}                    ok_callback
+   * @param {Function}                    cancel_callback
       *
-   * @return {HTMLElement}
+   * @return {(HTMLElement|Promise)}
    */
   x$.confirm = function(content, ok_callback, cancel_callback){
     var x$, modal, y$, ok, z$, cancel, z1$;
@@ -436,7 +436,7 @@
   /**
    * Notify
    *
-   * @param {HTMLElement}|{jQuery}|{String} content
+   * @param {(HTMLElement|jQuery|string)} content
       *
    * @return {HTMLElement}
    */
