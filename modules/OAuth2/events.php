@@ -29,14 +29,11 @@ Event::instance()
 					->header('cache-control', 'no-store')
 					->header('pragma', 'no-cache');
 			}
-			// TODO: Remove this hack
-			$POST = (array)$_POST;
-			Event::instance()->on(
+			$request_data = Request::instance()->data;
+			Event::instance()->once(
 				'System/User/construct/after',
-				function () use ($POST) {
-					foreach ($POST as $i => $v) {
-						$_POST[$i] = $v;
-					}
+				function () use ($request_data) {
+					Request::instance()->data = $request_data;
 				}
 			);
 		}
