@@ -2,9 +2,9 @@
 <?php
 namespace cs\Page;
 include __DIR__.'/../../unit.php';
-echo Includes_processing::js(file_get_contents(__DIR__.'/script.js'));
+echo Includes_processing::js(file_get_contents(__DIR__.'/Includes_processing/script.js'));
 echo "\n";
-echo Includes_processing::js(file_get_contents(__DIR__.'/script-with-template-string.js'));
+echo Includes_processing::js(file_get_contents(__DIR__.'/Includes_processing/script-with-template-string.js'));
 ?>
 --EXPECT--
 var bar = 'bar'; /* another comment */var foo = 'foo'; // Single-line after code
