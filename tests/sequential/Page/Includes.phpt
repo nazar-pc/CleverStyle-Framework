@@ -191,7 +191,7 @@ string(%d) "<script src="/includes/js/WebComponents-polyfill/webcomponents-custo
 <script class="cs-config" target="cs.Language" type="application/json">
 	%s
 </script>
-<script class="cs-config" target="requirejs.paths" type="application/json">{"System":"\/modules\/System\/includes\/js"}</script>
+<script class="cs-config" target="requirejs.paths" type="application/json">{"System":"\/modules\/System\/includes\/js","system":"\/modules\/System\/includes\/js"}</script>
 <script src="/includes/js/a0.config.js?%s"></script>
 <script src="/includes/js/a1.Event.js?%s"></script>
 <script src="/includes/js/a1.Language.js?%s"></script>
@@ -260,7 +260,7 @@ string(%d) "<link href="/includes/css/unresolved.css?%s" rel="stylesheet">
 <script class="cs-config" target="cs.Language" type="application/json">
 	%s
 </script>
-<script class="cs-config" target="requirejs.paths" type="application/json">{"System":"\/modules\/System\/includes\/js"}</script>
+<script class="cs-config" target="requirejs.paths" type="application/json">{"System":"\/modules\/System\/includes\/js","system":"\/modules\/System\/includes\/js"}</script>
 "
 string(9) "post_Body"
 string(%d) "<script src="/includes/js/WebComponents-polyfill/webcomponents-custom.min.js"></script>
@@ -457,7 +457,7 @@ string(341) "<link href="/storage/pcache/CleverStyle:System.css?%s" rel="stylesh
 "
 string(9) "post_Body"
 string(277) "<script src="/storage/pcache/webcomponents.js?%s"></script>
-<script src="/storage/pcache/CleverStyle:System.js?9233c"></script>
+<script src="/storage/pcache/CleverStyle:System.js?%s"></script>
 <script src="script.js"></script>
 <link href="/storage/pcache/CleverStyle:System.html?%s" rel="import">
 <link href="import.html" rel="import">
