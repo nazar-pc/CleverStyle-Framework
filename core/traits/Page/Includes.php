@@ -84,105 +84,91 @@ trait Includes {
 	 */
 	protected $pcache_basename_path;
 	protected function init_includes () {
-		$this->core_html            = ['path' => []]; // No plain HTML in core
-		$this->core_js              = ['path' => []]; // No plain JS in core
-		$this->core_css             = ['path' => []]; // No plain CSS in core
+		$this->core_html            = [];
+		$this->core_js              = [];
+		$this->core_css             = [];
 		$this->core_config          = '';
-		$this->html                 = ['path' => [], 'plain' => ''];
-		$this->js                   = ['path' => [], 'plain' => ''];
-		$this->css                  = ['path' => [], 'plain' => ''];
+		$this->html                 = [];
+		$this->js                   = [];
+		$this->css                  = [];
 		$this->config               = '';
 		$this->pcache_basename_path = '';
 	}
 	/**
-	 * Including of Web Components
-	 *
-	 * @param string|string[] $add  Path to including file, or code
-	 * @param string          $mode Can be <b>file</b> or <b>code</b>
+	 * @param string|string[] $add
 	 *
 	 * @return \cs\Page
 	 */
-	public function html ($add, $mode = 'file') {
-		return $this->html_internal($add, $mode);
+	protected function core_html ($add) {
+		return $this->include_common('html', $add, true);
 	}
 	/**
 	 * @param string|string[] $add
-	 * @param string          $mode
-	 * @param bool            $core
 	 *
 	 * @return \cs\Page
 	 */
-	protected function html_internal ($add, $mode = 'file', $core = false) {
-		return $this->include_common('html', $add, $mode, $core);
+	protected function core_js ($add) {
+		return $this->include_common('js', $add, true);
+	}
+	/**
+	 * @param string|string[] $add
+	 *
+	 * @return \cs\Page
+	 */
+	protected function core_css ($add) {
+		return $this->include_common('css', $add, true);
+	}
+	/**
+	 * Including of Web Components
+	 *
+	 * @param string|string[] $add Path to including file, or code
+	 *
+	 * @return \cs\Page
+	 */
+	public function html ($add) {
+		return $this->include_common('html', $add, false);
 	}
 	/**
 	 * Including of JavaScript
 	 *
-	 * @param string|string[] $add  Path to including file, or code
-	 * @param string          $mode Can be <b>file</b> or <b>code</b>
+	 * @param string|string[] $add Path to including file, or code
 	 *
 	 * @return \cs\Page
 	 */
-	public function js ($add, $mode = 'file') {
-		return $this->js_internal($add, $mode);
-	}
-	/**
-	 * @param string|string[] $add
-	 * @param string          $mode
-	 * @param bool            $core
-	 *
-	 * @return \cs\Page
-	 */
-	protected function js_internal ($add, $mode = 'file', $core = false) {
-		return $this->include_common('js', $add, $mode, $core);
+	public function js ($add) {
+		return $this->include_common('js', $add, false);
 	}
 	/**
 	 * Including of CSS
 	 *
-	 * @param string|string[] $add  Path to including file, or code
-	 * @param string          $mode Can be <b>file</b> or <b>code</b>
+	 * @param string|string[] $add Path to including file, or code
 	 *
 	 * @return \cs\Page
 	 */
-	public function css ($add, $mode = 'file') {
-		return $this->css_internal($add, $mode);
-	}
-	/**
-	 * @param string|string[] $add
-	 * @param string          $mode
-	 * @param bool            $core
-	 *
-	 * @return \cs\Page
-	 */
-	protected function css_internal ($add, $mode = 'file', $core = false) {
-		return $this->include_common('css', $add, $mode, $core);
+	public function css ($add) {
+		return $this->include_common('css', $add, false);
 	}
 	/**
 	 * @param string          $what
 	 * @param string|string[] $add
-	 * @param string          $mode
 	 * @param bool            $core
 	 *
 	 * @return \cs\Page
 	 */
-	protected function include_common ($what, $add, $mode, $core) {
+	protected function include_common ($what, $add, $core) {
 		if (!$add) {
 			return $this;
 		}
 		if (is_array($add)) {
-			foreach (array_filter($add) as $style) {
-				$this->include_common($what, $style, $mode, $core);
+			foreach (array_filter($add) as $a) {
+				$this->include_common($what, $a, $core);
 			}
 		} else {
 			if ($core) {
 				$what = "core_$what";
 			}
-			$target = &$this->$what;
-			if ($mode == 'file') {
-				$target['path'][] = $add;
-			} elseif ($mode == 'code') {
-				$target['plain'] .= "$add\n";
-			}
+			$target   = &$this->$what;
+			$target[] = $add;
 		}
 		return $this;
 	}
@@ -269,10 +255,10 @@ trait Includes {
 			$includes = $this->get_includes_for_page_without_compression($Config, $Request);
 			$preload  = [];
 		}
-		$this->css_internal($includes['css'], 'file', true);
-		$this->js_internal($includes['js'], 'file', true);
+		$this->core_css($includes['css']);
+		$this->core_js($includes['js']);
 		if (isset($includes['html'])) {
-			$this->html_internal($includes['html'], 'file', true);
+			$this->core_html($includes['html']);
 		}
 		$this->add_includes_on_page_manually_added($Config, $Request, $preload);
 		return $this;
@@ -293,10 +279,8 @@ trait Includes {
 		if (strpos(Request::instance()->header('user-agent'), 'Edge') === false) {
 			return;
 		}
-		$this->js_internal(
-			get_files_list(DIR.'/includes/js/microsoft_sh*t', '/.*\.js$/i', 'f', 'includes/js/microsoft_sh*t', true),
-			'file',
-			true
+		$this->core_js(
+			get_files_list(DIR.'/includes/js/microsoft_sh*t', '/.*\.js$/i', 'f', 'includes/js/microsoft_sh*t', true)
 		);
 	}
 	/**
@@ -459,14 +443,12 @@ trait Includes {
 	 */
 	protected function add_includes_on_page_manually_added ($Config, $Request, $preload) {
 		/** @noinspection NestedTernaryOperatorInspection */
-		$this->Head .=
-			array_reduce(
-				array_merge($this->core_css['path'], $this->css['path']),
-				function ($content, $href) {
-					return "$content<link href=\"$href\" rel=\"stylesheet\">\n";
-				}
-			).
-			h::style($this->css['plain'] ?: false);
+		$this->Head .= array_reduce(
+			array_merge($this->core_css, $this->css),
+			function ($content, $href) {
+				return "$content<link href=\"$href\" rel=\"stylesheet\">\n";
+			}
+		);
 		if ($this->page_compression_usage($Config, $Request) && $Config->core['frontend_load_optimization']) {
 			$this->add_includes_on_page_manually_added_frontend_load_optimization($Config, $Request);
 		} else {
@@ -481,22 +463,18 @@ trait Includes {
 	protected function add_includes_on_page_manually_added_normal ($Config, $Request, $preload) {
 		$this->add_preload($preload, $Request);
 		$configs      = $this->core_config.$this->config;
-		$scripts      =
-			array_reduce(
-				array_merge($this->core_js['path'], $this->js['path']),
-				function ($content, $src) {
-					return "$content<script src=\"$src\"></script>\n";
-				}
-			).
-			h::script($this->js['plain'] ?: false);
-		$html_imports =
-			array_reduce(
-				array_merge($this->core_html['path'], $this->html['path']),
-				function ($content, $href) {
-					return "$content<link href=\"$href\" rel=\"import\">\n";
-				}
-			).
-			$this->html['plain'];
+		$scripts      = array_reduce(
+			array_merge($this->core_js, $this->js),
+			function ($content, $src) {
+				return "$content<script src=\"$src\"></script>\n";
+			}
+		);
+		$html_imports = array_reduce(
+			array_merge($this->core_html, $this->html),
+			function ($content, $href) {
+				return "$content<link href=\"$href\" rel=\"import\">\n";
+			}
+		);
 		$this->Head .= $configs;
 		$this->add_script_imports_to_document($Config, $scripts.$html_imports);
 	}
@@ -525,11 +503,7 @@ trait Includes {
 		list($optimized_includes, $preload) = file_get_json("$this->pcache_basename_path.optimized.json");
 		$this->add_preload(
 			array_unique(
-				array_merge(
-					$preload,
-					$this->core_css['path'],
-					$this->css['path']
-				)
+				array_merge($preload, $this->core_css, $this->css)
 			),
 			$Request
 		);
@@ -537,24 +511,22 @@ trait Includes {
 		$optimized_scripts = [];
 		$system_imports    = '';
 		$optimized_imports = [];
-		foreach (array_merge($this->core_js['path'], $this->js['path']) as $script) {
+		foreach (array_merge($this->core_js, $this->js) as $script) {
 			if (isset($optimized_includes[$script])) {
 				$optimized_scripts[] = $script;
 			} else {
 				$system_scripts .= "<script src=\"$script\"></script>\n";
 			}
 		}
-		foreach (array_merge($this->core_html['path'], $this->html['path']) as $import) {
+		foreach (array_merge($this->core_html, $this->html) as $import) {
 			if (isset($optimized_includes[$import])) {
 				$optimized_imports[] = $import;
 			} else {
 				$system_imports .= "<link href=\"$import\" rel=\"import\">\n";
 			}
 		}
-		$scripts      = h::script($this->js['plain'] ?: false);
-		$html_imports = $this->html['plain'];
 		$this->config([$optimized_scripts, $optimized_imports], 'cs.optimized_includes');
 		$this->Head .= $this->core_config.$this->config;
-		$this->add_script_imports_to_document($Config, $system_scripts.$system_imports.$scripts.$html_imports);
+		$this->add_script_imports_to_document($Config, $system_scripts.$system_imports);
 	}
 }

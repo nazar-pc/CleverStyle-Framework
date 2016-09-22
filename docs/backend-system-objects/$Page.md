@@ -52,41 +52,25 @@ Is used for manual specifying of canonical URL of page.
 #### json($content : mixed) : cs\Page
 Is used mainly in API, shows specified data (array/string/number) in json format.
 
-#### css($add : string|string[], $mode = 'file' : string) : cs\Page
-Is used to add css to page, can add links to css files and add inline css styles:
+#### css($add : string|string[]) : cs\Page
+Is used to add links to css files to the page:
 ```php
 <?php
-\cs\Page::instance()
-    ->css(
-        'themes/CleverStyle/css/general.css'
-    )
-    ->css(
-        'body { background-color: #fff; }',
-        'code'
-    );
+\cs\Page::instance()->css('themes/CleverStyle/css/general.css');
 ```
 
-#### html($add : string|string[], $mode = 'file' : string) : cs\Page
-Is used to add Web Component (Polymer elements) to page, can add links to html files and add inline html code:
+#### html($add : string|string[]) : cs\Page
+Is used to add links to Web Component (Polymer elements) files to the page:
 ```php
 <?php
-\cs\Page::instance()->html(
-    'themes/CleverStyle/html/general.html'
-);
+\cs\Page::instance()->html('themes/CleverStyle/html/general.html');
 ```
 
-#### js($add : string|string[], $mode = 'file' : string) : cs\Page
-Is used to add js to page, can add links to js files and add inline js code:
+#### js($add : string|string[]) : cs\Page
+Is used to add links to js files to the page:
 ```php
 <?php
-\cs\Page::instance()
-    ->js(
-        'themes/CleverStyle/js/general.js'
-    )
-    ->js(
-        'var test_var = "value";',
-        'code'
-    );
+\cs\Page::instance()->js('themes/CleverStyle/js/general.js');
 ```
 
 #### config($config_structure : mixed, $target : string) : cs\Page
