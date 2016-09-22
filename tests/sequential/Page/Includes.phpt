@@ -89,6 +89,94 @@ class Page_test extends Page {
 		var_dump('Head', $Page->Head);
 		var_dump('post_Body', $Page->post_Body);
 		var_dump('headers', Response::instance()->headers);
+
+		var_dump('Edge 14');
+		Response::instance_reset();
+		Request::instance_reset();
+		Page::instance_reset();
+		Request::instance()->headers['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14928';
+		$Page                                      = Page::instance();
+		$Page->add_includes_on_page();
+		var_dump('post_Body', $Page->post_Body);
+
+		var_dump('Shadow DOM supported');
+		Response::instance_reset();
+		Request::instance_reset();
+		Page::instance_reset();
+		Request::instance()->cookie['shadow_dom'] = 1;
+		$Page                                     = Page::instance();
+		$Page->add_includes_on_page();
+		var_dump('post_Body', $Page->post_Body);
+
+		var_dump('Already pushed');
+		Response::instance_reset();
+		Request::instance_reset();
+		Page::instance_reset();
+		Request::instance()->cookie['pushed'] = 1;
+		Page::instance()->add_includes_on_page();
+		var_dump('headers', Response::instance()->headers);
+
+		var_dump('Custom styles, scripts, html imports');
+		Response::instance_reset();
+		Request::instance_reset();
+		Page::instance_reset();
+		$Page = Page::instance();
+		$Page
+			->html('')
+			->html('import.html')
+			->css('style.css')
+			->js('script.js')
+			->add_includes_on_page();
+		var_dump('Head', $Page->Head);
+		var_dump('post_Body', $Page->post_Body);
+		var_dump('headers', Response::instance()->headers);
+
+		var_dump('Config not initialized');
+		Response::instance_reset();
+		Request::instance_reset();
+		Page::instance_reset();
+		Config::instance_replace(False_class::instance());
+		$Page = Page::instance();
+		$Page->add_includes_on_page();
+		var_dump('Head', $Page->Head);
+		var_dump('post_Body', $Page->post_Body);
+		var_dump('headers', Response::instance()->headers);
+
+		var_dump('Load includes of dependency');
+		Response::instance_reset();
+		Request::instance_reset();
+		Page::instance_reset();
+		Config::instance_reset();
+		Config::instance();
+		$structure                   = file_get_json(PUBLIC_CACHE.'/CleverStyle.json');
+		$structure[0]['System'][]    = 'dependency1';
+		$structure[1]['dependency1'] = [
+			'html' => '/dependency1.html',
+			'js'   => '/dependency1.js',
+			'css'  => '/dependency1.css'
+		];
+		file_put_json(PUBLIC_CACHE.'/CleverStyle.json', $structure);
+		$Page = Page::instance();
+		$Page->add_includes_on_page();
+		var_dump('Head', $Page->Head);
+		var_dump('post_Body', $Page->post_Body);
+		var_dump('headers', Response::instance()->headers);
+
+		var_dump('Load includes of dependency (optimized)');
+		Response::instance_reset();
+		Request::instance_reset();
+		Page::instance_reset();
+		Config::instance_reset();
+		Config::instance();
+		$structure                         = file_get_json(PUBLIC_CACHE.'/CleverStyle.optimized.json');
+		$structure[0]['/dependency1.html'] = 2;
+		$structure[0]['/dependency1.js']   = 3;
+		file_put_json(PUBLIC_CACHE.'/CleverStyle.optimized.json', $structure);
+		$Page = Page::instance();
+		$Page->add_includes_on_page();
+		var_dump('Head', $Page->Head);
+		var_dump('post_Body', $Page->post_Body);
+		var_dump('headers', Response::instance()->headers);
 	}
 }
 Page_test::test();
@@ -342,5 +430,126 @@ array(2) {
     string(69) "</storage/pcache/CleverStyle:System.js?%s>; rel=preload; as=script"
     [2]=>
     string(69) "</storage/pcache/CleverStyle:System.css?%s>; rel=preload; as=style"
+  }
+}
+string(7) "Edge 14"
+string(9) "post_Body"
+string(265) "<script src="/storage/pcache/webcomponents.js?%s"></script>
+<script src="includes/js/microsoft_sh*t/14/URL.js"></script>
+<script src="/storage/pcache/CleverStyle:System.js?%s"></script>
+<link href="/storage/pcache/CleverStyle:System.html?%s" rel="import">
+"
+string(20) "Shadow DOM supported"
+string(9) "post_Body"
+string(141) "<script src="/storage/pcache/CleverStyle:System.js?%s"></script>
+<link href="/storage/pcache/CleverStyle:System.html?%s" rel="import">
+"
+string(14) "Already pushed"
+string(7) "headers"
+array(0) {
+}
+string(36) "Custom styles, scripts, html imports"
+string(4) "Head"
+string(341) "<link href="/storage/pcache/CleverStyle:System.css?%s" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+<script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
+<script class="cs-config" target="cs.optimized_includes" type="application/json">[[],[]]</script>
+"
+string(9) "post_Body"
+string(277) "<script src="/storage/pcache/webcomponents.js?%s"></script>
+<script src="/storage/pcache/CleverStyle:System.js?9233c"></script>
+<script src="script.js"></script>
+<link href="/storage/pcache/CleverStyle:System.html?%s" rel="import">
+<link href="import.html" rel="import">
+"
+string(7) "headers"
+array(2) {
+  ["set-cookie"]=>
+  array(1) {
+    [0]=>
+    string(47) "pushed=1; path=/; domain=cscms.travis; HttpOnly"
+  }
+  ["link"]=>
+  array(4) {
+    [0]=>
+    string(73) "</storage/pcache/CleverStyle:System.html?%s>; rel=preload; as=document"
+    [1]=>
+    string(69) "</storage/pcache/CleverStyle:System.js?%s>; rel=preload; as=script"
+    [2]=>
+    string(69) "</storage/pcache/CleverStyle:System.css?%s>; rel=preload; as=style"
+    [3]=>
+    string(34) "<style.css>; rel=preload; as=style"
+  }
+}
+string(22) "Config not initialized"
+string(4) "Head"
+string(0) ""
+string(9) "post_Body"
+string(0) ""
+string(7) "headers"
+array(0) {
+}
+string(27) "Load includes of dependency"
+string(4) "Head"
+string(348) "<link href="/storage/pcache/CleverStyle:System.css?%s" rel="stylesheet">
+<link href="/dependency1.css" rel="stylesheet">
+<script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
+<script class="cs-config" target="cs.optimized_includes" type="application/json">[[],[]]</script>
+"
+string(9) "post_Body"
+string(289) "<script src="/storage/pcache/webcomponents.js?%s"></script>
+<script src="/storage/pcache/CleverStyle:System.js?%s"></script>
+<script src="/dependency1.js"></script>
+<link href="/storage/pcache/CleverStyle:System.html?%s" rel="import">
+<link href="/dependency1.html" rel="import">
+"
+string(7) "headers"
+array(2) {
+  ["set-cookie"]=>
+  array(1) {
+    [0]=>
+    string(47) "pushed=1; path=/; domain=cscms.travis; HttpOnly"
+  }
+  ["link"]=>
+  array(4) {
+    [0]=>
+    string(73) "</storage/pcache/CleverStyle:System.html?%s>; rel=preload; as=document"
+    [1]=>
+    string(69) "</storage/pcache/CleverStyle:System.js?%s>; rel=preload; as=script"
+    [2]=>
+    string(69) "</storage/pcache/CleverStyle:System.css?%s>; rel=preload; as=style"
+    [3]=>
+    string(41) "</dependency1.css>; rel=preload; as=style"
+  }
+}
+string(39) "Load includes of dependency (optimized)"
+string(4) "Head"
+string(386) "<link href="/storage/pcache/CleverStyle:System.css?%s" rel="stylesheet">
+<link href="/dependency1.css" rel="stylesheet">
+<script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
+<script class="cs-config" target="cs.optimized_includes" type="application/json">[["\/dependency1.js"],["\/dependency1.html"]]</script>
+"
+string(9) "post_Body"
+string(204) "<script src="/storage/pcache/webcomponents.js?%s"></script>
+<script src="/storage/pcache/CleverStyle:System.js?%s"></script>
+<link href="/storage/pcache/CleverStyle:System.html?%s" rel="import">
+"
+string(7) "headers"
+array(2) {
+  ["set-cookie"]=>
+  array(1) {
+    [0]=>
+    string(47) "pushed=1; path=/; domain=cscms.travis; HttpOnly"
+  }
+  ["link"]=>
+  array(4) {
+    [0]=>
+    string(73) "</storage/pcache/CleverStyle:System.html?%s>; rel=preload; as=document"
+    [1]=>
+    string(69) "</storage/pcache/CleverStyle:System.js?%s>; rel=preload; as=script"
+    [2]=>
+    string(69) "</storage/pcache/CleverStyle:System.css?%s>; rel=preload; as=style"
+    [3]=>
+    string(41) "</dependency1.css>; rel=preload; as=style"
   }
 }
