@@ -22,131 +22,146 @@ class Options {
 	 * @return array[]
 	 */
 	public static function get_formatting () {
-		return static::get_formatting_normalize(
-			[
-				'array'        => [
-					'url'           => [],
-					'cookie_domain' => []
+		$formatting                                               = static::get_formatting_const();
+		$formatting['set_single']['language']['values']           = static::get_active_languages();
+		$formatting['set_single']['timezone']['values']           = get_timezones_list();
+		$formatting['set_single']['default_module']['values']     = static::get_modules_that_can_be_default();
+		$formatting['set_single']['theme']['values']              = static::get_themes();
+		$formatting['set_multiple']['active_languages']['values'] = static::get_languages();
+		return static::get_formatting_normalize($formatting);
+	}
+	/**
+	 * @return array[]
+	 */
+	protected static function get_formatting_const () {
+		return [
+			'array'        => [
+				'url'           => [],
+				'cookie_domain' => []
+			],
+			'int_bool'     => [
+				'site_mode'                         => 1,
+				'title_reverse'                     => 0,
+				'cache_compress_js_css'             => 1,
+				'frontend_load_optimization'        => 1,
+				'vulcanization'                     => 1,
+				'put_js_after_body'                 => 1,
+				'disable_webcomponents'             => 0,
+				'multilingual'                      => 0,
+				'db_balance'                        => 0,
+				'db_mirror_mode'                    => DB::MIRROR_MODE_MASTER_MASTER,
+				'gravatar_support'                  => 0,
+				'smtp'                              => 0,
+				'smtp_auth'                         => 0,
+				'allow_user_registration'           => 1,
+				'require_registration_confirmation' => 1,
+				'auto_sign_in_after_registration'   => 1,
+				'registration_confirmation_time'    => 1,
+				'remember_user_ip'                  => 0,
+				'simple_admin_mode'                 => 1
+			],
+			'int_range'    => [
+				'inserts_limit'         => [
+					'min'   => 1,
+					'value' => 1000
 				],
-				'int_bool'     => [
-					'site_mode'                         => 1,
-					'title_reverse'                     => 0,
-					'cache_compress_js_css'             => 1,
-					'frontend_load_optimization'        => 1,
-					'vulcanization'                     => 1,
-					'put_js_after_body'                 => 1,
-					'disable_webcomponents'             => 0,
-					'multilingual'                      => 0,
-					'db_balance'                        => 0,
-					'db_mirror_mode'                    => DB::MIRROR_MODE_MASTER_MASTER,
-					'gravatar_support'                  => 0,
-					'smtp'                              => 0,
-					'smtp_auth'                         => 0,
-					'allow_user_registration'           => 1,
-					'require_registration_confirmation' => 1,
-					'auto_sign_in_after_registration'   => 1,
-					'registration_confirmation_time'    => 1,
-					'remember_user_ip'                  => 0,
-					'simple_admin_mode'                 => 1
+				'key_expire'            => [
+					'min'   => 1,
+					'value' => 60 * 2
 				],
-				'int_range'    => [
-					'inserts_limit'         => [
-						'min'   => 1,
-						'value' => 1000
-					],
-					'key_expire'            => [
-						'min'   => 1,
-						'value' => 60 * 2
-					],
-					'session_expire'        => [
-						'min'   => 1,
-						'value' => 3600 * 24 * 30
-					],
-					'update_ratio'          => [
-						'min'   => 0,
-						'max'   => 100,
-						'value' => 75
-					],
-					'password_min_length'   => [
-						'min'   => 1,
-						'value' => 4
-					],
-					'password_min_strength' => [
-						'min'   => 0,
-						'max'   => 7,
-						'value' => 3
-					]
+				'session_expire'        => [
+					'min'   => 1,
+					'value' => 3600 * 24 * 30
 				],
-				'set_single'   => [
-					'smtp_secure'    => [
-						'value'  => '',
-						'values' => ['', 'ssl', 'tls']
-					],
-					'language'       => [
-						'value'  => 'English',
-						'values' => static::get_active_languages(),
-						'source' => 'active_languages'
-					],
-					'timezone'       => [
-						'value'  => 'UTC',
-						'values' => get_timezones_list()
-					],
-					'default_module' => [
-						'value'  => Config::SYSTEM_MODULE,
-						'values' => static::get_modules_that_can_be_default()
-					],
-					'theme'          => [
-						'value'  => Config::SYSTEM_THEME,
-						'values' => static::get_themes()
-					]
+				'update_ratio'          => [
+					'min'   => 0,
+					'max'   => 100,
+					'value' => 75
 				],
-				'set_multiple' => [
-					'active_languages' => [
-						'value'  => [
-							'English'
-						],
-						'values' => static::get_languages()
-					]
+				'password_min_length'   => [
+					'min'   => 1,
+					'value' => 4
 				],
-				'string'       => [
-					'admin_email'   => '',
-					'cookie_prefix' => '',
-					'smtp_host'     => '',
-					'smtp_port'     => '',
-					'smtp_user'     => '',
-					'smtp_password' => [
-						'value'    => '',
-						'password' => true
-					],
-					'mail_from'     => ''
+				'password_min_strength' => [
+					'min'   => 0,
+					'max'   => 7,
+					'value' => 3
+				]
+			],
+			'set_single'   => [
+				'smtp_secure'    => [
+					'value'  => '',
+					'values' => ['', 'ssl', 'tls']
 				],
-				'text'         => [
-					'title_delimiter' => ' | ',
-					'site_name'       => [
-						'multilingual' => true,
-						'value'        => ''
-					],
-					'closed_title'    => [
-						'multilingual' => true,
-						'value'        => 'Site closed'
-					],
-					'mail_from_name'  => [
-						'multilingual' => true,
-						'value'        => 'Administrator'
-					]
+				'language'       => [
+					'value'  => 'English',
+					'source' => 'active_languages'
 				],
-				'html'         => [
-					'closed_text'    => [
-						'multilingual' => true,
-						'value'        => '<p>Site closed for maintenance</p>'
-					],
-					'mail_signature' => [
-						'multilingual' => true,
-						'value'        => ''
+				'timezone'       => [
+					'value' => 'UTC'
+				],
+				'default_module' => [
+					'value' => Config::SYSTEM_MODULE
+				],
+				'theme'          => [
+					'value' => Config::SYSTEM_THEME
+				]
+			],
+			'set_multiple' => [
+				'active_languages' => [
+					'value' => [
+						'English'
 					]
 				]
+			],
+			'string'       => [
+				'admin_email'   => '',
+				'cookie_prefix' => '',
+				'smtp_host'     => '',
+				'smtp_port'     => '',
+				'smtp_user'     => '',
+				'smtp_password' => [
+					'value'    => '',
+					'password' => true
+				],
+				'mail_from'     => ''
+			],
+			'text'         => [
+				'title_delimiter' => ' | ',
+				'site_name'       => [
+					'multilingual' => true,
+					'value'        => ''
+				],
+				'closed_title'    => [
+					'multilingual' => true,
+					'value'        => 'Site closed'
+				],
+				'mail_from_name'  => [
+					'multilingual' => true,
+					'value'        => 'Administrator'
+				]
+			],
+			'html'         => [
+				'closed_text'    => [
+					'multilingual' => true,
+					'value'        => '<p>Site closed for maintenance</p>'
+				],
+				'mail_signature' => [
+					'multilingual' => true,
+					'value'        => ''
+				]
 			]
-		);
+		];
+	}
+	/**
+	 * @return array[]
+	 */
+	protected static function get_formatting_const_plain () {
+		static $formatting;
+		if (!isset($formatting)) {
+			$formatting = array_merge(...array_values(static::get_formatting_const()));
+		}
+		return $formatting;
 	}
 	/**
 	 * @return string[]
@@ -226,12 +241,13 @@ class Options {
 	 * @return array
 	 */
 	public static function get_defaults () {
-		return array_map(
-			function ($option) {
-				return $option['value'];
-			},
-			static::get_formatting()
-		);
+		$formatting = static::get_formatting_const_plain();
+		foreach ($formatting as &$f) {
+			if (isset($f['value'])) {
+				$f = $f['value'];
+			}
+		}
+		return $formatting;
 	}
 	/**
 	 * Get list of multilingual options
@@ -239,16 +255,14 @@ class Options {
 	 * @return string[]
 	 */
 	public static function get_multilingual () {
-		return array_values(
-			array_keys(
-				array_filter(
-					static::get_formatting(),
-					function ($option) {
-						return @$option['multilingual'];
-					}
-				)
-			)
-		);
+		$formatting = static::get_formatting_const_plain();
+		$result     = [];
+		foreach ($formatting as $key => $f) {
+			if (isset($f['multilingual'])) {
+				$result[] = $key;
+			}
+		}
+		return $result;
 	}
 	/**
 	 * Take options and check each value according to needed format, correct value or use default if needed
