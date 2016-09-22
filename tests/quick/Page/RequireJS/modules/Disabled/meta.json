@@ -1,0 +1,6 @@
+{
+	"provide" : [
+		"disabled_alias1",
+		"disabled_alias2"
+	]
+}

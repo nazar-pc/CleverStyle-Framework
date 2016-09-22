@@ -52,7 +52,7 @@ trait RequireJS {
 			$name         = basename($dir);
 			$paths[$name] = "$dir/includes/js";
 			foreach ((array)@file_get_json("$dir/meta.json")['provide'] as $p) {
-				if (strpos($p, '/') !== false) {
+				if (strpos($p, '/') === false) {
 					$paths[$p] = $paths[$name];
 				}
 			}
@@ -71,7 +71,7 @@ trait RequireJS {
 	/**
 	 * @param string $dir
 	 *
-	 * @return string
+	 * @return false|string
 	 */
 	protected function get_requirejs_paths_find_package_bower ($dir) {
 		$bower = @file_get_json("$dir/bower.json");
@@ -85,7 +85,7 @@ trait RequireJS {
 				}
 			}
 		}
-		return null;
+		return false;
 	}
 	/**
 	 * @param string $dir

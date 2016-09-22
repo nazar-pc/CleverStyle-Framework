@@ -5,7 +5,7 @@ require_once __DIR__.'/../../functions.php';
 define('PUBLIC_CACHE', make_tmp_dir());
 include __DIR__.'/../../bootstrap.php';
 class Page_test extends Page {
-	static function test () {
+	public static function test () {
 		$Config = Config::instance();
 
 		var_dump('No compression, head');
