@@ -77,10 +77,10 @@ namespace cs {
 
 	var_dump('Delete unconfirmed users');
 	$Config->core['require_registration_confirmation'] = true;
-	$Config->core['registration_confirmation_time'] = 1;
+	$Config->core['registration_confirmation_time']    = 1;
 	$result = $User->registration('mr7@test.com', true, true);
 	var_dump($User->get('email', $result['id']));
-	User\time(time() + 86400 + 1);
+	User\time(time() + 86400 + 10);
 	$User->registration('mr8@test.com', true, true);
 	var_dump($User->get('email', $result['id']));
 }
