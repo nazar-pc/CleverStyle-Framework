@@ -26,7 +26,7 @@ class Response {
 	 *
 	 * @var string[][]
 	 */
-	public $headers;
+	public $headers = [];
 	/**
 	 * String body (is used instead of `$this->body_stream` in most cases, ignored if `$this->body_stream` is present)
 	 *
@@ -187,7 +187,7 @@ class Response {
 		}
 	}
 	protected function output_default_web () {
-		foreach ($this->headers ?: [] as $header => $value) {
+		foreach ($this->headers as $header => $value) {
 			$header = ucwords($header, '-');
 			foreach ($value as $v) {
 				header("$header: $v", false);
