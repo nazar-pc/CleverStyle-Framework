@@ -329,7 +329,7 @@ trait modules {
 			$Cache->functionality,
 			$Cache->languages
 		);
-		clean_classes_cache();
+		__classes_clean_cache();
 	}
 	/**
 	 * Disable module

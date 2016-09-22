@@ -16,24 +16,44 @@ use
 	cs\Page;
 
 /**
+ * @param string $file
+ *
+ * @return array
+ */
+function __classes_get_from_cache ($file) {
+	return defined('CACHE') && file_exists(CACHE."/classes/$file") ? file_get_json(CACHE."/classes/$file") : [];
+}
+
+/**
+ * @param string $file
+ * @param array  $content
+ */
+function __classes_put_into_cache ($file, $content) {
+	if (defined('CACHE') && is_dir(CACHE)) {
+		/** @noinspection MkdirRaceConditionInspection */
+		@mkdir(CACHE.'/classes', 0770);
+		file_put_json(CACHE."/classes/$file", $content);
+	}
+}
+
+/**
+ * Clean cache of classes autoload and customization
+ */
+function __classes_clean_cache () {
+	@unlink(CACHE.'/classes/autoload');
+	@unlink(CACHE.'/classes/aliases');
+	@unlink(CACHE.'/classes/modified');
+}
+
+/**
  * Auto Loading of classes
  */
 spl_autoload_register(
 	function ($class) {
 		static $cache, $aliases;
-		$get_from_cache = function ($file) {
-			return defined('CACHE') && file_exists(CACHE."/classes/$file") ? file_get_json(CACHE."/classes/$file") : [];
-		};
-		$put_into_cache = function ($file, $content) {
-			if (defined('CACHE') && is_dir(CACHE)) {
-				/** @noinspection MkdirRaceConditionInspection */
-				@mkdir(CACHE.'/classes', 0770);
-				file_put_json(CACHE."/classes/$file", $content);
-			}
-		};
 		if (!isset($cache)) {
-			$cache   = $get_from_cache('autoload');
-			$aliases = $get_from_cache('aliases');
+			$cache   = __classes_get_from_cache('autoload');
+			$aliases = __classes_get_from_cache('aliases');
 		}
 		if (isset($aliases[$class])) {
 			spl_autoload_call($aliases[$class]);
@@ -61,11 +81,11 @@ spl_autoload_register(
 			file_exists($file = MODULES."/../$namespace/$class_name.php")         //Classes in modules
 		) {
 			$cache[$class] = realpath($file);
-			$put_into_cache('autoload', $cache);
+			__classes_put_into_cache('autoload', $cache);
 			require_once $file;
 			return true;
 		}
-		$put_into_cache('autoload', $cache);
+		__classes_put_into_cache('autoload', $cache);
 		// Processing components aliases
 		if (strpos($namespace, 'modules') === 0) {
 			$Config      = Config::instance();
@@ -84,7 +104,7 @@ spl_autoload_register(
 						$class_exploded[2] = $meta['package'];
 						$alias             = implode('\\', $class_exploded);
 						$aliases[$class]   = $alias;
-						$put_into_cache('aliases', $aliases);
+						__classes_put_into_cache('aliases', $aliases);
 						spl_autoload_call($alias);
 						return class_exists($class, false) || (class_exists($alias, false) && class_alias($alias, $class));
 					}
@@ -96,15 +116,6 @@ spl_autoload_register(
 );
 
 /**
- * Clean cache of classes autoload and customization
- */
-function clean_classes_cache () {
-	@unlink(CACHE.'/classes/autoload');
-	@unlink(CACHE.'/classes/aliases');
-	@unlink(CACHE.'/classes/modified');
-}
-
-/**
  * Get or set modified classes (used in Singleton trait)
  *
  * @param array|null $updated_modified_classes
@@ -113,17 +124,12 @@ function clean_classes_cache () {
  */
 function modified_classes ($updated_modified_classes = null) {
 	static $modified_classes;
-	if (!defined('CACHE')) {
-		return [];
-	}
 	if (!isset($modified_classes)) {
-		$modified_classes = file_exists(CACHE.'/classes/modified') ? file_get_json(CACHE.'/classes/modified') : [];
+		$modified_classes = __classes_get_from_cache('modified');
 	}
 	if ($updated_modified_classes) {
-		/** @noinspection MkdirRaceConditionInspection */
-		@mkdir(CACHE.'/classes', 0770);
 		$modified_classes = $updated_modified_classes;
-		file_put_json(CACHE.'/classes/modified', $modified_classes);
+		__classes_put_into_cache('modified', $modified_classes);
 	}
 	return $modified_classes;
 }

@@ -66,7 +66,7 @@ trait Base {
 				!class_exists($alias['original'], false) ||
 				!file_exists($alias['path'])
 			) {
-				clean_classes_cache();
+				__classes_clean_cache();
 				return static::instance_create($instance, $called_class, $called_class);
 			}
 			class_alias($alias['original'], $alias['alias']);

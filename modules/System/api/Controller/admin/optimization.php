@@ -51,7 +51,7 @@ trait optimization {
 			$result = $Cache->del($path_prefix);
 		} else {
 			$result = $Cache->clean();
-			clean_classes_cache();
+			__classes_clean_cache();
 		}
 		time_limit_pause(false);
 		if (!$result) {

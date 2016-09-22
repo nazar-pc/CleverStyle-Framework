@@ -8,8 +8,8 @@ namespace cs\Singleton {
 		}
 		return $modified_classes;
 	}
-	function clean_classes_cache () {
-		var_dump('clean_classes_cache() called');
+	function __classes_clean_cache () {
+		var_dump('__classes_clean_cache() called');
 	}
 }
 namespace cs {
@@ -179,7 +179,7 @@ string(18) "cs\nested\Extended"
 string(38) "cs\custom\nested\Extended_Module_name1"
 string(38) "cs\custom\nested\Extended_Module_name2"
 string(43) "Multiple class extension non existing files"
-string(28) "clean_classes_cache() called"
+string(30) "__classes_clean_cache() called"
 object(cs\nested\Extended2)#%d (1) {
   ["__request_id":"cs\nested\Extended2":private]=>
   int(1)
