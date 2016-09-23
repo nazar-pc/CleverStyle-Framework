@@ -52,7 +52,7 @@ This class has next public methods:
 * tables()
 * s()
 * server()
-* db_type()
+* db_driver()
 * database()
 * queries_count()
 * time()
@@ -238,7 +238,7 @@ Get information about server
 #### connected() : bool
 Connection state
 
-#### db_type() : string
+#### db_driver() : string
 Database type (lowercase, for example *mysql*)
 
 #### database() : string

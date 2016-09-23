@@ -20,7 +20,7 @@ class Installer {
 	"timezone"			: "@timezone",
 //Settings of main DB
 	"db_host"			: "@db_host",
-	"db_type"			: "@db_type",
+	"db_driver"			: "@db_driver",
 	"db_name"			: "@db_name",
 	"db_user"			: "@db_user",
 	"db_password"		: "@db_password",
@@ -224,7 +224,7 @@ CONFIG;
 	) {
 		$db_password = str_replace('"', '\\"', $db_password);
 		$config      = str_replace(
-			['@domain', '@timezone', '@db_host', '@db_type', '@db_name', '@db_user', '@db_password', '@db_prefix', '@language', '@public_key'],
+			['@domain', '@timezone', '@db_host', '@db_driver', '@db_name', '@db_user', '@db_password', '@db_prefix', '@language', '@public_key'],
 			[$domain, $timezone, $db_host, $db_driver, $db_name, $db_user, $db_password, $db_prefix, $language, $public_key],
 			self::MAIN_CONFIG_STUB
 		);

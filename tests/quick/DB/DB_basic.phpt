@@ -52,7 +52,7 @@ namespace cs {
 				0 => [
 					'mirrors' => [
 						[
-							'type'     => 'Fake',
+							'driver'   => 'Fake',
 							'host'     => 'localhost',
 							'name'     => 'database00',
 							'user'     => 'user',
@@ -62,7 +62,7 @@ namespace cs {
 					]
 				],
 				1 => [
-					'type'     => 'Fake',
+					'driver'   => 'Fake',
 					'host'     => 'localhost',
 					'name'     => 'database1',
 					'user'     => 'user',
@@ -73,7 +73,7 @@ namespace cs {
 				2 => [
 					'mirrors' => [
 						[
-							'type'     => 'Fake',
+							'driver'   => 'Fake',
 							'host'     => 'localhost',
 							'name'     => 'database20',
 							'user'     => 'user',
@@ -87,7 +87,7 @@ namespace cs {
 	);
 	$Core   = Core::instance_stub(
 		[
-			'db_type'     => 'Fake',
+			'db_driver'   => 'Fake',
 			'db_host'     => 'localhost',
 			'db_name'     => 'database0',
 			'db_user'     => 'user',

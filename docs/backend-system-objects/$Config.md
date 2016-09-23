@@ -132,7 +132,7 @@ Property, that stores configuration of databases, except the main database, para
 			{
 				"mirror"   : "0",
 				"host"     : "localhost",
-				"type"     : "MySQL",
+				"driver"   : "MySQLi",
 				"prefix"   : "prefix_",
 				"name"     : "CleverStyle",
 				"user"     : "CleverStyle",
@@ -144,7 +144,7 @@ Property, that stores configuration of databases, except the main database, para
 	"2" : {
 		"mirrors"  : [],
 		"host"     : "localhost",
-		"type"     : "MySQL",
+		"driver"   : "MySQLi",
 		"prefix"   : "prefix_",
 		"name"     : "CS3",
 		"user"     : "CS3",
@@ -156,7 +156,7 @@ Property, that stores configuration of databases, except the main database, para
 			{
 				"mirror"   : "3",
 				"host"     : "localhost",
-				"type"     : "MySQL",
+				"driver"   : "MySQLi",
 				"prefix"   : "prefix_",
 				"name"     : "CS2-mirror",
 				"user"     : "CS2-mirror",
@@ -166,7 +166,7 @@ Property, that stores configuration of databases, except the main database, para
 			{
 				"mirror"   : "3",
 				"host"     : "localhost",
-				"type"     : "MySQL",
+				"driver"   : "MySQLi",
 				"prefix"   : "prefix_",
 				"name"     : "CS2-mirror2",
 				"user"     : "CS2-mirror2",
@@ -175,7 +175,7 @@ Property, that stores configuration of databases, except the main database, para
 			}
 		],
 		"host"     : "localhost",
-		"type"     : "MySQL",
+		"driver"   : "MySQLi",
 		"prefix"   : "prefix_",
 		"name"     : "CS2",
 		"user"     : "CS2",

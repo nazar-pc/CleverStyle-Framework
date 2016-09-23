@@ -42,7 +42,7 @@ $Core->parameter = 'value';
 * domain
 * timezone
 * db_host
-* db_type
+* db_driver
 * db_name
 * db_user
 * db_password

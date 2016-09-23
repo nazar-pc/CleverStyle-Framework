@@ -26,7 +26,7 @@ trait databases {
 			isset($databases[0]) ? $databases[0] : [],
 			[
 				'host'    => $Core->db_host,
-				'type'    => $Core->db_type,
+				'driver'  => $Core->db_driver,
 				'prefix'  => $Core->db_prefix,
 				'name'    => $Core->db_name,
 				'user'    => '',
@@ -52,8 +52,8 @@ trait databases {
 	 * @throws ExitException
 	 */
 	public static function admin_databases_patch ($Request) {
-		$data = $Request->data('host', 'type', 'prefix', 'name', 'user', 'password');
-		if (!$data || !in_array($data['type'], static::admin_databases_get_drivers())) {
+		$data = $Request->data('host', 'driver', 'prefix', 'name', 'user', 'password');
+		if (!$data || !in_array($data['driver'], static::admin_databases_get_drivers())) {
 			throw new ExitException(400);
 		}
 		$Config         = Config::instance();
@@ -86,8 +86,8 @@ trait databases {
 	 * @throws ExitException
 	 */
 	public static function admin_databases_post ($Request) {
-		$data = $Request->data('mirror', 'host', 'type', 'prefix', 'name', 'user', 'password');
-		if (!$data || !in_array($data['type'], static::admin_databases_get_drivers())) {
+		$data = $Request->data('mirror', 'host', 'driver', 'prefix', 'name', 'user', 'password');
+		if (!$data || !in_array($data['driver'], static::admin_databases_get_drivers())) {
 			throw new ExitException(400);
 		}
 		$Config         = Config::instance();
@@ -178,12 +178,12 @@ trait databases {
 	 * @throws ExitException
 	 */
 	public static function admin_databases_test ($Request) {
-		$data    = $Request->data('type', 'name', 'user', 'password', 'host');
+		$data    = $Request->data('driver', 'name', 'user', 'password', 'host');
 		$drivers = static::admin_databases_get_drivers();
-		if (!$data || !in_array($data['type'], $drivers, true)) {
+		if (!$data || !in_array($data['driver'], $drivers, true)) {
 			throw new ExitException(400);
 		}
-		$driver_class = "\\cs\\DB\\$data[type]";
+		$driver_class = "\\cs\\DB\\$data[driver]";
 		/**
 		 * @var \cs\DB\_Abstract $connection
 		 */

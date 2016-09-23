@@ -14,9 +14,9 @@ dom-module#cs-system-admin-databases-form
 				cs-tooltip
 			input(is="cs-input-text" type="text" value="{{database.host}}")
 			label(tooltip="[[L.db_type_info]]")
-				| [[L.db_type]]
+				| [[L.db_driver]]
 				cs-tooltip
-			select(is="cs-select" selected="{{database.type}}" size="5")
+			select(is="cs-select" selected="{{database.driver}}" size="5")
 				template(is="dom-repeat" items="[[drivers]]")
 					option [[item]]
 			label(tooltip="[[L.db_prefix_info]]")
@@ -36,6 +36,6 @@ dom-module#cs-system-admin-databases-form
 				cs-tooltip
 			input(is="cs-input-text" type="text" value="{{database.password}}")
 			div
-				button(is="cs-button" type="button" primary on-tap="_save" disabled="[[!and(database.host, database.type)]]") [[L.save]]
-				button(is="cs-button" type="button" on-tap="_test_connection" icon="signal" disabled="[[!and(database.host, database.type)]]") [[L.test_connection]]
+				button(is="cs-button" type="button" primary on-tap="_save" disabled="[[!and(database.host, database.driver)]]") [[L.save]]
+				button(is="cs-button" type="button" on-tap="_test_connection" icon="signal" disabled="[[!and(database.host, database.driver)]]") [[L.test_connection]]
 	script(src="script.js")

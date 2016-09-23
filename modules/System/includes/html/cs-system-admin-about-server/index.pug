@@ -75,7 +75,7 @@ dom-module#cs-system-admin-about-server
 								| [[if(server_config.php_ini.display_errors, L.yes, L.no)]]
 			tr
 				td [[L.main_db]]:
-				td [[server_config.main_db.type]] [[server_config.main_db.version]]
+				td [[server_config.main_db.driver]] [[server_config.main_db.version]]
 			tr
 				td
 				td
@@ -91,7 +91,7 @@ dom-module#cs-system-admin-about-server
 							td [[server_config.main_db.prefix]]
 			tr
 				td [[L.main_storage]]:
-				td [[server_config.main_storage.type]]
+				td [[server_config.main_storage.driver]]
 			tr
 				td [[L.cache_driver]]:
 				td [[server_config.cache_driver]]

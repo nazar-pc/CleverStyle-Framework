@@ -44,15 +44,15 @@
           for (i$ = 0, len$ = (ref$ = this$.databases).length; i$ < len$; ++i$) {
             db = ref$[i$];
             if (db.index == database.index) {
-              return db.name + " " + db.host + "/" + db.type;
+              return db.name + " " + db.host + "/" + db.driver;
             }
           }
         }();
         return this.L.mirror + ' ' + (database.index
           ? this.L.db + ' ' + master_db_name
-          : this.L.core_db) + (", " + mirror.name + " " + mirror.host + "/" + mirror.type);
+          : this.L.core_db) + (", " + mirror.name + " " + mirror.host + "/" + mirror.driver);
       } else {
-        return this.L.db + " " + database.name + " " + database.host + "/" + database.type;
+        return this.L.db + " " + database.name + " " + database.host + "/" + database.driver;
       }
     },
     _delete: function(e){

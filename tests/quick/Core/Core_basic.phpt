@@ -16,13 +16,13 @@ file_put_contents(
 	"timezone"			: "UTC",
 	//Settings of main DB
 	"db_host"			: "127.0.0.1",
-	"db_type"			: "MySQLi",
+	"db_driver"			: "MySQLi",
 	"db_name"			: "cscms.travis.name",
 	"db_user"			: "cscms.travis.user",
 	"db_password"		: "cscms.travis.password",
 	"db_prefix"			: "[prefix]",
 	//Settings of main Storage
-	"storage_driver"		: "cscms.travis.type",
+	"storage_driver"	: "cscms.travis.driver",
 	"storage_url"		: "cscms.travis.url",
 	"storage_host"		: "cscms.travis.host",
 	"storage_user"		: "cscms.travis.user",
@@ -94,7 +94,7 @@ array(18) {
   string(3) "UTC"
   ["db_host"]=>
   string(9) "127.0.0.1"
-  ["db_type"]=>
+  ["db_driver"]=>
   string(6) "MySQLi"
   ["db_name"]=>
   string(17) "cscms.travis.name"
@@ -105,7 +105,7 @@ array(18) {
   ["db_prefix"]=>
   string(8) "[prefix]"
   ["storage_driver"]=>
-  string(17) "cscms.travis.type"
+  string(19) "cscms.travis.driver"
   ["storage_url"]=>
   string(16) "cscms.travis.url"
   ["storage_host"]=>
@@ -133,7 +133,7 @@ array(20) {
   string(3) "UTC"
   ["db_host"]=>
   string(9) "127.0.0.1"
-  ["db_type"]=>
+  ["db_driver"]=>
   string(6) "MySQLi"
   ["db_name"]=>
   string(17) "cscms.travis.name"
@@ -144,7 +144,7 @@ array(20) {
   ["db_prefix"]=>
   string(8) "[prefix]"
   ["storage_driver"]=>
-  string(17) "cscms.travis.type"
+  string(19) "cscms.travis.driver"
   ["storage_url"]=>
   string(16) "cscms.travis.url"
   ["storage_host"]=>
@@ -176,7 +176,7 @@ array(20) {
   string(3) "UTC"
   ["db_host"]=>
   string(9) "127.0.0.1"
-  ["db_type"]=>
+  ["db_driver"]=>
   string(6) "MySQLi"
   ["db_name"]=>
   string(17) "cscms.travis.name"
@@ -187,7 +187,7 @@ array(20) {
   ["db_prefix"]=>
   string(8) "[prefix]"
   ["storage_driver"]=>
-  string(17) "cscms.travis.type"
+  string(19) "cscms.travis.driver"
   ["storage_url"]=>
   string(16) "cscms.travis.url"
   ["storage_host"]=>

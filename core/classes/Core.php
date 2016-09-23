@@ -16,7 +16,7 @@ namespace cs;
  * @property string $domain
  * @property string $timezone
  * @property string $db_host
- * @property string $db_type
+ * @property string $db_driver
  * @property string $db_name
  * @property string $db_user
  * @property string $db_password

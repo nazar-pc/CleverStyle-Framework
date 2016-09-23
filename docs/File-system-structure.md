@@ -20,7 +20,7 @@
   * **img**
   * **js**
 * **install** [dev] - installation instruments
-  * **DB** - SQL schemas for every supported DB type
+  * **DB** - SQL schemas for every supported DB driver
 * **modules**
 * **storage**
   * **cache** - FileSystem cache

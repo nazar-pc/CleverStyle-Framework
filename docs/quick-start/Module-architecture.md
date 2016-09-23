@@ -200,7 +200,7 @@ And last trick here: `*` is not required, it is used purely for readability purp
 This directory contains subdirectories with files. Subdirectories are called the same as databases are identified in `db` parameter of `meta.json` file (see below). Files are called correspondingly to the names of database drivers, supported by module with extension \*.sql, for example:
 * meta/install_db/posts/MySQLi.sql
 
-Files, that corresponds to configured database type, will be called at module installation. It is useful when module works with database, just put SQL with queries, separated by `;` that will initialize tables structure, needed for module operation. It is enough in most cases.
+Files, that corresponds to configured database driver, will be called at module installation. It is useful when module works with database, just put SQL with queries, separated by `;` that will initialize tables structure, needed for module operation. It is enough in most cases.
 
 #### meta/uninstall_db
 By analogy to `meta/install_db`, but is used to delete database structure of module at its uninstallation.

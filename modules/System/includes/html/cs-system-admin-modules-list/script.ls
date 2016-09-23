@@ -206,7 +206,7 @@ Polymer(
 				</tr>"""
 				db_options	= ''
 				for db in databases
-					if !meta.db_support || meta.db_support.indexOf(db.type) != -1
+					if !meta.db_support || meta.db_support.indexOf(db.driver) != -1
 						db_options	+= @_db_option(db)
 				for db_name in meta.db
 					content	+= """<tr>
@@ -232,7 +232,7 @@ Polymer(
 				</tr>"""
 				storage_options	= ''
 				for storage in storages
-					if !meta.storage_support || meta.storage_support.indexOf(storage.type) != -1
+					if !meta.storage_support || meta.storage_support.indexOf(storage.driver) != -1
 						storage_options	+= @_storage_option(storage)
 				for storage_name in meta.storage
 					content	+= """<tr>

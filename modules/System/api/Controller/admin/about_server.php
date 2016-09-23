@@ -38,14 +38,14 @@ trait about_server {
 				'memcached' => extension_loaded('memcached')
 			],
 			'main_db'          => [
-				'type'    => $Core->db_type,
+				'driver'  => $Core->db_driver,
 				'version' => DB::instance()->db(0)->server(),
 				'host'    => $Core->db_host,
 				'name'    => $Core->db_name,
 				'prefix'  => $Core->db_prefix
 			],
 			'main_storage'     => [
-				'type' => $Core->storage_driver
+				'driver' => $Core->storage_driver
 			],
 			'cache_driver'     => $Core->cache_driver,
 			'free_disk_space'  => format_filesize(disk_free_space('./'), 2),

@@ -21,7 +21,7 @@ copy(__DIR__.'/Packages_manipulation/module_Test_module_2.0.0+build-2.phar.php',
 
 Core::instance_stub(
 	[
-		'db_type' => 'SQLite'
+		'db_driver' => 'SQLite'
 	]
 );
 Config::instance_stub();

@@ -142,7 +142,7 @@ class DB {
 			 *
 			 * @var DB\_Abstract $connection
 			 */
-			$driver_class    = "cs\\DB\\$database_settings[type]";
+			$driver_class    = "cs\\DB\\$database_settings[driver]";
 			$connection      = new $driver_class(
 				$database_settings['name'],
 				$database_settings['user'],
@@ -150,7 +150,7 @@ class DB {
 				$database_settings['host'],
 				$database_settings['prefix']
 			);
-			$connection_name = ($database_id == 0 ? "Core DB ($Core->db_type)" : $database_id)."/$database_settings[host]/$database_settings[type]";
+			$connection_name = ($database_id == 0 ? "Core DB ($Core->db_driver)" : $database_id)."/$database_settings[host]/$database_settings[driver]";
 			unset($driver_class, $database_settings);
 			/**
 			 * If successfully - add connection to the list of success connections and return instance of DB driver object
@@ -198,7 +198,7 @@ class DB {
 		if ($mirror_index === self::MASTER_MIRROR) {
 			if ($database_id == 0) {
 				$database_settings = [
-					'type'     => $Core->db_type,
+					'driver'   => $Core->db_driver,
 					'name'     => $Core->db_name,
 					'user'     => $Core->db_user,
 					'password' => $Core->db_password,

@@ -91,7 +91,7 @@ if (...) {
 }
 ```
 #### Visibility and type
-Visibility may be omitted for method, if it is public, because it is public by default. Visibility is written before method type:
+Visibility should be always specified. Visibility is written before method type:
 ```php
 <?php
 class Example {

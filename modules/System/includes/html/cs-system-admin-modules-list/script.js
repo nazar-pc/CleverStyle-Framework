@@ -183,7 +183,7 @@
           db_options = '';
           for (i$ = 0, len$ = databases.length; i$ < len$; ++i$) {
             db = databases[i$];
-            if (!meta.db_support || meta.db_support.indexOf(db.type) !== -1) {
+            if (!meta.db_support || meta.db_support.indexOf(db.driver) !== -1) {
               db_options += this._db_option(db);
             }
           }
@@ -204,7 +204,7 @@
           storage_options = '';
           for (i$ = 0, len$ = storages.length; i$ < len$; ++i$) {
             storage = storages[i$];
-            if (!meta.storage_support || meta.storage_support.indexOf(storage.type) !== -1) {
+            if (!meta.storage_support || meta.storage_support.indexOf(storage.driver) !== -1) {
               storage_options += this._storage_option(storage);
             }
           }

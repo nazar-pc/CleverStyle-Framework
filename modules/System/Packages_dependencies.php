@@ -163,11 +163,11 @@ class Packages_dependencies {
 		}
 		$Core   = Core::instance();
 		$Config = Config::instance();
-		if (in_array($Core->db_type, $db_support)) {
+		if (in_array($Core->db_driver, $db_support)) {
 			return true;
 		}
 		foreach ($Config->db as $database) {
-			if (isset($database['type']) && in_array($database['type'], $db_support)) {
+			if (isset($database['driver']) && in_array($database['driver'], $db_support)) {
 				return true;
 			}
 		}

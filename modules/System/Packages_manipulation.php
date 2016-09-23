@@ -176,8 +176,8 @@ class Packages_manipulation {
 		$db     = DB::instance();
 		time_limit_pause();
 		foreach ($db_configuration as $db_name => $index) {
-			$db_type  = $index == 0 ? $Core->db_type : $Config->db[$index]['type'];
-			$sql_file = "$directory/$db_name/$version/$db_type.sql";
+			$db_driver = $index == 0 ? $Core->db_driver : $Config->db[$index]['driver'];
+			$sql_file  = "$directory/$db_name/$version/$db_driver.sql";
 			if (file_exists($sql_file)) {
 				/** @noinspection ExceptionsAnnotatingAndHandlingInspection */
 				$db->db_prime($index)->transaction(

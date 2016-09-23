@@ -40,10 +40,10 @@ Polymer(
 			master_db_name = do !~>
 				for db in @databases
 					if db.index ~= database.index
-						return "#{db.name} #{db.host}/#{db.type}"
-			@L.mirror + ' ' + (if database.index then @L.db + ' ' + master_db_name else @L.core_db) + ", #{mirror.name} #{mirror.host}/#{mirror.type}"
+						return "#{db.name} #{db.host}/#{db.driver}"
+			@L.mirror + ' ' + (if database.index then @L.db + ' ' + master_db_name else @L.core_db) + ", #{mirror.name} #{mirror.host}/#{mirror.driver}"
 		else
-			"#{@L.db} #{database.name} #{database.host}/#{database.type}"
+			"#{@L.db} #{database.name} #{database.host}/#{database.driver}"
 	_delete : (e) !->
 		# Hack: ugly, but the only way to do it while https://github.com/Polymer/polymer/issues/1865 not resolved
 		database_model	= @$.databases_list.modelForElement(e.target)

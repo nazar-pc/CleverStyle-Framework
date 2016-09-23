@@ -9,7 +9,7 @@ dom-module#cs-system-admin-databases-list
 			tr
 				th [[L.action]]
 				th [[L.db_host]]
-				th [[L.db_type]]
+				th [[L.db_driver]]
 				th [[L.db_prefix]]
 				th [[L.db_name]]
 				th [[L.db_user]]
@@ -23,7 +23,7 @@ dom-module#cs-system-admin-databases-list
 							= ' '
 							a(is="cs-link-button" on-tap="_delete" icon="trash" tooltip="[[L.delete]] [[L.db]]")
 					td [[database.host]]
-					td [[database.type]]
+					td [[database.driver]]
 					td [[database.prefix]]
 					td [[database.name]]
 					td [[if(index, database.user, '*****')]]
@@ -34,7 +34,7 @@ dom-module#cs-system-admin-databases-list
 							= ' '
 							a(is="cs-link-button" on-tap="_delete" icon="trash" tooltip="[[L.delete]] [[L.mirror]] [[L.of_db]]")
 						td [[mirror.host]]
-						td [[mirror.type]]
+						td [[mirror.driver]]
 						td [[mirror.prefix]]
 						td [[mirror.name]]
 						td [[mirror.user]]

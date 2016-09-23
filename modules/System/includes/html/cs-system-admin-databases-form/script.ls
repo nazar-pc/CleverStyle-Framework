@@ -21,7 +21,7 @@ Polymer(
 			value	:
 				mirror		: -1
 				host		: ''
-				type		: 'MySQLi'
+				driver		: 'MySQLi'
 				prefix		: ''
 				name		: ''
 				user		: ''

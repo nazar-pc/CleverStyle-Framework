@@ -12,7 +12,7 @@ include __DIR__.'/../../../unit.php';
 
 Core::instance_stub(
 	[
-		'db_type'      => 'SQLite',
+		'db_driver'      => 'SQLite',
 		'storage_driver' => 'Local'
 	]
 );
@@ -40,7 +40,7 @@ $Config = Config::instance_stub(
 		],
 		'db'         => [
 			[
-				'type' => 'PostgreSQL'
+				'driver' => 'PostgreSQL'
 			]
 		],
 		'storage'    => [
