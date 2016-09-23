@@ -50,7 +50,7 @@ class Storage {
 			return False_class::instance();
 		}
 		/**
-		 * If connection already exists - return reference on the instance of Storage engine object
+		 * If connection already exists - return reference on the instance of Storage driver object
 		 */
 		if (isset($this->connections[self::CONNECTIONS_ACTIVE][$storage_id])) {
 			return $this->connections[self::CONNECTIONS_ACTIVE][$storage_id];
@@ -75,8 +75,8 @@ class Storage {
 		 *
 		 * @var Storage\_Abstract $connection
 		 */
-		$engine_class    = "\\cs\\Storage\\$storage[connection]";
-		$connection      = new $engine_class(
+		$driver_class    = "\\cs\\Storage\\$storage[connection]";
+		$connection      = new $driver_class(
 			$storage['url'],
 			$storage['host'],
 			$storage['user'],
@@ -84,7 +84,7 @@ class Storage {
 		);
 		$connection_name = "$storage_id/$storage[host]/$storage[connection]";
 		/**
-		 * If successfully - add connection to the list of success connections and return instance of Storage engine object
+		 * If successfully - add connection to the list of success connections and return instance of Storage driver object
 		 */
 		if (is_object($connection) && $connection->connected()) {
 			$this->connections[self::CONNECTIONS_ACTIVE][$storage_id] = $connection;

@@ -6,7 +6,7 @@ $Cache = \cs\Cache::instance();
 
 This object allow to get store/get/delete any number, string or array value in cache. Data may be lost or erased any time, so this is not permanent storage for data, it is used to store some frequently used data for fasted access.
 
-### [Methods](#methods) [Engines](#engines) [Examples](#examples) [\cs\Cache\\_Abstract class](#abstract-class) [\cs\Cache\\_Abstract_with_namespace class](#abstract-with-namespace-class) [\cs\Cache\Prefix class](#prefix-class)
+### [Methods](#methods) [Drivers](#drivers) [Examples](#examples) [\cs\Cache\\_Abstract class](#abstract-class) [\cs\Cache\\_Abstract_with_namespace class](#abstract-with-namespace-class) [\cs\Cache\Prefix class](#prefix-class)
 
 <a name="methods" />
 ###[Up](#) Methods
@@ -82,20 +82,21 @@ Also, if you will try to delete item, that may be considered as directory, for e
 
 This will delete directory, and all subdirectories with items inside.
 
-<a name="engines" />
-###[Up](#) Engines
+<a name="drivers" />
+###[Up](#) Drivers
 
-Cache system is based on engines. They may be different, but provides the same external interface.
+Cache system is based on drivers. They may be different, but provides the same external interface.
 
-As for now, there are 3 built-in cache engines:
+As for now, there are 3 built-in cache drivers:
 * APC
+* APCu
 * BlackHole
-* FileSystem
 * Memcached
+* FileSystem
 
-First uses APC (Alternative PHP Cache) as storage for cache values, actually it uses RAM. Memcached uses memcached as backend. The last uses file system. BlackHole engine works as it is named, namely does nothing, it may be used for debugging purposes, when there are no need to save any data in cache.
+First and second both use APC/APCu (Alternative PHP Cache) as storage for cache values, actually it uses RAM. Memcached uses memcached as backend. The last uses file system. BlackHole driver works as it is named, namely does nothing, it may be used for debugging purposes, when there are no need to save any data in cache.
 
-FileSystem is fastest and most stable cache engine, and it is recommended for production usage as for now.
+FileSystem is fastest and most stable cache driver, and it is recommended for production usage as for now.
 
 <a name="examples" />
 ###[Up](#) Examples
@@ -117,7 +118,7 @@ unset($Cache->dir);
 <a name="abstract-class" />
 ###[Up](#) \cs\Cache\\_Abstract class
 
-This is an abstract class is used as base for cache engine classes. It is described here because it shows major methods of cache abstraction.
+This is an abstract class is used as base for cache driver classes. It is described here because it shows major methods of cache abstraction.
 
 This class has next public methods:
 * false|mixed get($item : string)
@@ -140,7 +141,7 @@ Clean cache by deleting all items
 <a name="abstract-with-namespace-class" />
 ###[Up](#) \cs\Cache\\_Abstract_with_namespace class
 
-This is an abstract class that extends `\cs\Cache\_Abstract`. It exists to provide simplified integration of cache engines without native namespaces support (required by CleverStyle Framework), but which have incrementing support (currently APC and Memcached engines are using this class).
+This is an abstract class that extends `\cs\Cache\_Abstract`. It exists to provide simplified integration of cache drivers without native namespaces support (required by CleverStyle Framework), but which have incrementing support (currently APC/APCu and Memcached drivers are using this class).
 
 Class implements methods `get()`, `set()`, `del()` and `clean()` from ``\cs\Cache\_Abstract`` and requires to implement following methods instead:
 * available_internal()
@@ -150,10 +151,10 @@ Class implements methods `get()`, `set()`, `del()` and `clean()` from ``\cs\Cach
 * increment_internal()
 * clean_internal()
 
-Main benefit is that these methods in most cases are trivial proxy calls to respecting engine-specific methods without any additional checks, which makes engine implementation extremely simple.
+Main benefit is that these methods in most cases are trivial proxy calls to respecting driver-specific methods without any additional checks, which makes driver implementation extremely simple.
 
 #### available_internal() : bool
-Whether current cache engine is available (might be `false` if necessary extension is not installed or something similar)
+Whether current cache driver is available (might be `false` if necessary extension is not installed or something similar)
 
 #### get_internal($item : string) : bool|mixed
 Get item by key

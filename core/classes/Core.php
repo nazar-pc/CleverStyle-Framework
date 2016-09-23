@@ -27,7 +27,7 @@ namespace cs;
  * @property string $storage_user
  * @property string $storage_password
  * @property string $language
- * @property string $cache_engine
+ * @property string $cache_driver
  * @property string $memcache_host
  * @property string $memcache_port
  * @property string $public_key

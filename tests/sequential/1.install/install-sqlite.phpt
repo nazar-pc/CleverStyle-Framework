@@ -1,7 +1,7 @@
 --SKIPIF--
 <?php
 if (getenv('DB') != 'SQLite') {
-	exit('skip only running for database SQLite engine');
+	exit('skip only running for database SQLite driver');
 }
 ?>
 --INI--

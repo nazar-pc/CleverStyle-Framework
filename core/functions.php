@@ -78,7 +78,7 @@ spl_autoload_register(
 			file_exists($file = CORE."/classes/$namespace/$class_name.php") ||    //Core classes
 			file_exists($file = CORE."/thirdparty/$namespace/$class_name.php") || //Third party classes
 			file_exists($file = CORE."/traits/$namespace/$class_name.php") ||     //Core traits
-			file_exists($file = CORE."/engines/$namespace/$class_name.php") ||    //Core engines
+			file_exists($file = CORE."/drivers/$namespace/$class_name.php") ||    //Core drivers
 			file_exists($file = MODULES."/../$namespace/$class_name.php")         //Classes in modules
 		) {
 			$cache[$class] = realpath($file);

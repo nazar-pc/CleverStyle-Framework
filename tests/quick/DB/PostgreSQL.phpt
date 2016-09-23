@@ -1,7 +1,7 @@
 --SKIPIF--
 <?php
 if (getenv('DB') != 'PostgreSQL') {
-	exit('skip only running for database PostgreSQL engine');
+	exit('skip only running for database PostgreSQL driver');
 }
 ?>
 --FILE--

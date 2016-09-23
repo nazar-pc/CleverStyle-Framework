@@ -49,9 +49,9 @@ JS
 				h::{'input[name=site_name]'}()
 			).
 			h::{'tr.expert td'}(
-				'Database engine:',
-				h::{'select[name=db_engine][size=3][selected=MySQLi]'}(
-					file_get_json("$phar_path/db_engines.json")
+				'Database driver:',
+				h::{'select[name=db_driver][size=3][selected=MySQLi]'}(
+					file_get_json("$phar_path/db_drivers.json")
 				)
 			).
 			h::{'tr.expert td'}(
@@ -145,7 +145,7 @@ function install_process ($phar_path) {
 			$url,
 			$_POST['timezone'],
 			$_POST['db_host'],
-			$_POST['db_engine'],
+			$_POST['db_driver'],
 			$_POST['db_name'],
 			$_POST['db_user'],
 			$_POST['db_password'],

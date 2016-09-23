@@ -26,24 +26,24 @@ class Cache {
 	 */
 	protected $init = false;
 	/**
-	 * Name of cache engine
+	 * Name of cache driver
 	 * @var string
 	 */
-	protected $engine;
+	protected $driver;
 	/**
-	 * Instance of cache engine object
+	 * Instance of cache driver object
 	 *
 	 * @var Cache\_Abstract
 	 */
-	protected $engine_instance;
+	protected $driver_instance;
 	/**
-	 * Initialization, creating cache engine instance
+	 * Initialization, creating cache driver instance
 	 */
 	protected function construct () {
 		if (!$this->init && $this->state) {
-			$this->engine          = Core::instance()->cache_engine;
-			$engine_class          = "cs\\Cache\\$this->engine";
-			$this->engine_instance = new $engine_class();
+			$this->driver          = Core::instance()->cache_driver;
+			$driver_class          = "cs\\Cache\\$this->driver";
+			$this->driver_instance = new $driver_class();
 		}
 	}
 	/**
@@ -71,7 +71,7 @@ class Cache {
 			return is_callable($callback) ? $callback() : false;
 		}
 		$item = trim($item, '/');
-		$data = $this->engine_instance->get($item);
+		$data = $this->driver_instance->get($item);
 		if ($data === false && is_callable($callback)) {
 			$data = $callback();
 			if ($data !== false) {
@@ -89,12 +89,12 @@ class Cache {
 	 * @return bool
 	 */
 	public function set ($item, $data) {
-		$this->engine_instance->del($item);
+		$this->driver_instance->del($item);
 		if (!$this->state) {
 			return true;
 		}
 		$item = trim($item, '/');
-		return $this->engine_instance->set($item, $data);
+		return $this->driver_instance->set($item, $data);
 	}
 	/**
 	 * Delete item from cache
@@ -114,7 +114,7 @@ class Cache {
 			return $this->clean();
 		}
 		$item = trim($item, '/');
-		return $this->engine_instance->del($item);
+		return $this->driver_instance->del($item);
 	}
 	/**
 	 * Clean cache by deleting all items
@@ -122,7 +122,7 @@ class Cache {
 	 * @return bool
 	 */
 	public function clean () {
-		return $this->engine_instance->clean();
+		return $this->driver_instance->clean();
 	}
 	/**
 	 * Cache state enabled/disabled

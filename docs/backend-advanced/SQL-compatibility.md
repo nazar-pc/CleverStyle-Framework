@@ -1,6 +1,6 @@
 Primary SQL dialect in CleverStyle Framework is MySQL, however, since other databases are supported (SQLite and PostgreSQL in particular), SQL commands are generally limited to those that can work will all supported databases.
 
-Unfortunately, it is not always possible to write 1 SQL query that will work without any changes in all 3 mentioned databases. To resolve this issue, CleverStyle Framework provides some SQL syntax conversion from MySQL dialect to SQLite and PostgreSQL in corresponding database engines.
+Unfortunately, it is not always possible to write 1 SQL query that will work without any changes in all 3 mentioned databases. To resolve this issue, CleverStyle Framework provides some SQL syntax conversion from MySQL dialect to SQLite and PostgreSQL in corresponding database drivers.
 
 ### SQLite
 SQLite has only one minor incompatibility - it doesn't support `INSERT IGNORE`, so all occurrences will be automatically replaced with similar `INSERT OR IGNORE`:

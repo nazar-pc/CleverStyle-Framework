@@ -10,7 +10,7 @@ use
 	cs\Core;
 
 /**
- * Abstract class that simplifies creating cache engines without namespaces support
+ * Abstract class that simplifies creating cache drivers without namespaces support
  *
  * This class implements methods:
  * * `::get()`
@@ -34,7 +34,7 @@ abstract class _Abstract_with_namespace extends _Abstract {
 	 */
 	protected $root_versions_cache = [];
 	/**
-	 * Whether current cache engine is available (might be `false` if necessary extension is not installed or something similar)
+	 * Whether current cache driver is available (might be `false` if necessary extension is not installed or something similar)
 	 *
 	 * @return bool
 	 */

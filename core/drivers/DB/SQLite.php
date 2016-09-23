@@ -150,7 +150,7 @@ class SQLite extends _Abstract {
 			} elseif (strpos($like, '%') === false) {
 				return in_array($like, $columns) ? [$like] : [];
 			} else {
-				trigger_error("Can't get columns like $like, SQLite engine doesn't support such conditions", E_USER_WARNING);
+				trigger_error("Can't get columns like $like, SQLite driver doesn't support such conditions", E_USER_WARNING);
 				return [];
 			}
 		}

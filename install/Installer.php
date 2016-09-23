@@ -33,9 +33,9 @@ class Installer {
 	"storage_password"	: "",
 //Base language
 	"language"			: "@language",
-//Cache engine
-	"cache_engine"		: "FileSystem",
-//Settings of Memcached cache engine
+//Cache driver
+	"cache_driver"		: "FileSystem",
+//Settings of Memcached cache driver
 	"memcache_host"		: "127.0.0.1",
 	"memcache_port"		: "11211",
 //Any length
@@ -50,7 +50,7 @@ CONFIG;
 	 * @param string $url
 	 * @param string $timezone
 	 * @param string $db_host
-	 * @param string $db_engine
+	 * @param string $db_driver
 	 * @param string $db_name
 	 * @param string $db_user
 	 * @param string $db_password
@@ -69,7 +69,7 @@ CONFIG;
 		$url,
 		$timezone,
 		$db_host,
-		$db_engine,
+		$db_driver,
 		$db_name,
 		$db_user,
 		$db_password,
@@ -79,7 +79,7 @@ CONFIG;
 		$admin_password,
 		$mode
 	) {
-		static::pre_installation_checks($source, $target, $db_engine);
+		static::pre_installation_checks($source, $target, $db_driver);
 		// Needed to be defined before connecting to the database
 		defined('DEBUG') || define('DEBUG', false);
 		$file_index_map = static::initialize_filesystem($source);
@@ -91,7 +91,7 @@ CONFIG;
 			$domain,
 			$timezone,
 			$db_host,
-			$db_engine,
+			$db_driver,
 			$db_name,
 			$db_user,
 			$db_password,
@@ -102,12 +102,12 @@ CONFIG;
 		/**
 		 * @var \cs\DB\_Abstract $cdb
 		 */
-		$cdb = "cs\\DB\\$db_engine";
+		$cdb = "cs\\DB\\$db_driver";
 		$cdb = new $cdb($db_name, $db_user, $db_password, $db_host, $db_prefix);
 		if (!is_object($cdb) || !$cdb->connected()) {
 			throw new RuntimeException("Can't connect to database! Installation aborted.");
 		}
-		static::initialize_db_structure($cdb, $source, $db_engine);
+		static::initialize_db_structure($cdb, $source, $db_driver);
 		static::initialize_system_config($cdb, $source, $site_name, $url, $admin_email, $language, $domain, $timezone, $mode);
 		static::create_root_administrator($cdb, $admin_email, $admin_password, $public_key);
 		unset($cdb);
@@ -115,16 +115,16 @@ CONFIG;
 	/**
 	 * @param string $source
 	 * @param string $target
-	 * @param string $db_engine
+	 * @param string $db_driver
 	 *
 	 * @throws RuntimeException
 	 */
-	protected static function pre_installation_checks ($source, $target, $db_engine) {
+	protected static function pre_installation_checks ($source, $target, $db_driver) {
 		if (file_exists("$target/config/main.json")) {
 			throw new RuntimeException('"config/main.json" file already present! Installation aborted.');
 		}
-		if (!file_exists("$source/DB/$db_engine.sql")) {
-			throw new RuntimeException("Can't find system tables structure for selected database engine! Installation aborted.");
+		if (!file_exists("$source/DB/$db_driver.sql")) {
+			throw new RuntimeException("Can't find system tables structure for selected database driver! Installation aborted.");
 		}
 	}
 	/**
@@ -157,7 +157,7 @@ CONFIG;
 					strlen($file = @$file_index_map[str_replace('//', '/', "core/classes/$namespace/$class_name.php")]) ||    //Core classes
 					strlen($file = @$file_index_map[str_replace('//', '/', "core/thirdparty/$namespace/$class_name.php")]) || //Third party classes
 					strlen($file = @$file_index_map[str_replace('//', '/', "core/traits/$namespace/$class_name.php")]) ||     //Core traits
-					strlen($file = @$file_index_map[str_replace('//', '/', "core/engines/$namespace/$class_name.php")]) ||    //Core engines
+					strlen($file = @$file_index_map[str_replace('//', '/', "core/drivers/$namespace/$class_name.php")]) ||    //Core drivers
 					strlen($file = @$file_index_map[str_replace('//', '/', "$namespace/$class_name.php")])                    //Classes in modules
 				) {
 					require_once "$source/fs/$file";
@@ -177,7 +177,7 @@ CONFIG;
 	 */
 	protected static function extract ($file_index_map, $source, $target) {
 		/**
-		 * Extracting of engine's files
+		 * Extracting of system files
 		 */
 		foreach ($file_index_map as $file_path => $file_index) {
 			$dir = dirname("$target/$file_path");
@@ -199,7 +199,7 @@ CONFIG;
 	 * @param string $domain
 	 * @param string $timezone
 	 * @param string $db_host
-	 * @param string $db_engine
+	 * @param string $db_driver
 	 * @param string $db_name
 	 * @param string $db_user
 	 * @param string $db_password
@@ -214,7 +214,7 @@ CONFIG;
 		$domain,
 		$timezone,
 		$db_host,
-		$db_engine,
+		$db_driver,
 		$db_name,
 		$db_user,
 		$db_password,
@@ -225,7 +225,7 @@ CONFIG;
 		$db_password = str_replace('"', '\\"', $db_password);
 		$config      = str_replace(
 			['@domain', '@timezone', '@db_host', '@db_type', '@db_name', '@db_user', '@db_password', '@db_prefix', '@language', '@public_key'],
-			[$domain, $timezone, $db_host, $db_engine, $db_name, $db_user, $db_password, $db_prefix, $language, $public_key],
+			[$domain, $timezone, $db_host, $db_driver, $db_name, $db_user, $db_password, $db_prefix, $language, $public_key],
 			self::MAIN_CONFIG_STUB
 		);
 		if (!file_put_contents("$target/config/main.json", $config)) {
@@ -236,17 +236,17 @@ CONFIG;
 	/**
 	 * @param DB\_Abstract $cdb
 	 * @param string       $source
-	 * @param string       $db_engine
+	 * @param string       $db_driver
 	 *
 	 * @throws RuntimeException
 	 */
-	protected static function initialize_db_structure ($cdb, $source, $db_engine) {
+	protected static function initialize_db_structure ($cdb, $source, $db_driver) {
 		$query = array_filter(
-			explode(';', file_get_contents("$source/DB/$db_engine.sql")),
+			explode(';', file_get_contents("$source/DB/$db_driver.sql")),
 			'trim'
 		);
 		if (!$cdb->q($query)) {
-			throw new RuntimeException("Can't import system tables structure for selected database engine! Installation aborted.");
+			throw new RuntimeException("Can't import system tables structure for selected database driver! Installation aborted.");
 		}
 	}
 	/**

@@ -16,7 +16,7 @@ If you have all of this - you are ready to run tests:
 php -d variables_order=EGPCS phpt-tests-runner tests
 ```
 
-`SKIP_SLOW_TESTS` and `DB` environment variables are used to skip slow tests and specifying which database engine to use during tests:
+`SKIP_SLOW_TESTS` and `DB` environment variables are used to skip slow tests and specifying which database driver to use during tests:
 
 ```bash
 DB=MySQLi SKIP_SLOW_TESTS=1 php -d variables_order=EGPCS phpt-tests-runner tests
@@ -53,7 +53,7 @@ Returned object will contain only properties and methods you've specified.
 ```php
 <?php
 $Core = \cs\Core::instance_stub([
-    'cache_engine' => 'APC'
+    'cache_driver' => 'APC'
 ]);
 ```
 

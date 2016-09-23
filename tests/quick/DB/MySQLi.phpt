@@ -1,7 +1,7 @@
 --SKIPIF--
 <?php
 if (getenv('DB') != 'MySQLi') {
-	exit('skip only running for database MySQLi engine');
+	exit('skip only running for database MySQLi driver');
 }
 ?>
 --FILE--

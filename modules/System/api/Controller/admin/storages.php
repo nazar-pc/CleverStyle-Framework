@@ -47,7 +47,7 @@ trait storages {
 			!$storage_index ||
 			!$data ||
 			!strlen($data['host']) ||
-			!in_array($data['connection'], static::admin_storages_get_engines())
+			!in_array($data['connection'], static::admin_storages_get_drivers())
 		) {
 			throw new ExitException(400);
 		}
@@ -74,7 +74,7 @@ trait storages {
 		if (
 			!$data ||
 			!strlen($data['host']) ||
-			!in_array($data['connection'], static::admin_storages_get_engines())
+			!in_array($data['connection'], static::admin_storages_get_drivers())
 		) {
 			throw new ExitException(400);
 		}
@@ -127,16 +127,16 @@ trait storages {
 		}
 	}
 	/**
-	 * Get array of available storage engines
+	 * Get array of available storage drivers
 	 */
-	public static function admin_storages_engines () {
-		return static::admin_storages_get_engines();
+	public static function admin_storages_drivers () {
+		return static::admin_storages_get_drivers();
 	}
 	/**
 	 * @return string[]
 	 */
-	protected static function admin_storages_get_engines () {
-		return _mb_substr(get_files_list(DIR.'/core/engines/Storage', '/^[^_].*?\.php$/i', 'f'), 0, -4);
+	protected static function admin_storages_get_drivers () {
+		return _mb_substr(get_files_list(DIR.'/core/drivers/Storage', '/^[^_].*?\.php$/i', 'f'), 0, -4);
 	}
 	/**
 	 * Test storage connection
@@ -147,8 +147,8 @@ trait storages {
 	 */
 	public static function admin_storages_test ($Request) {
 		$data    = $Request->data('url', 'host', 'connection', 'user', 'password');
-		$engines = static::admin_storages_get_engines();
-		if (!$data || !in_array($data['connection'], $engines, true)) {
+		$drivers = static::admin_storages_get_drivers();
+		if (!$data || !in_array($data['connection'], $drivers, true)) {
 			throw new ExitException(400);
 		}
 		$connection_class = "\\cs\\Storage\\$data[connection]";

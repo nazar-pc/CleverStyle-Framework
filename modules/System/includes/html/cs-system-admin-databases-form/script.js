@@ -28,12 +28,12 @@
           password: ''
         }
       },
-      engines: Array
+      drivers: Array
     },
     ready: function(){
       var this$ = this;
-      cs.api(['get		api/System/admin/databases', 'engines	api/System/admin/databases']).then(function(arg$){
-        this$.databases = arg$[0], this$.engines = arg$[1];
+      cs.api(['get		api/System/admin/databases', 'drivers	api/System/admin/databases']).then(function(arg$){
+        this$.databases = arg$[0], this$.drivers = arg$[1];
         if (this$.add) {
           if (!isNaN(this$.databaseIndex)) {
             this$.set('database.mirror', this$.databaseIndex);

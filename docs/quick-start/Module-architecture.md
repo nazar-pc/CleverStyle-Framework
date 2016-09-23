@@ -197,7 +197,7 @@ It is also possible to specify part of path:
 And last trick here: `*` is not required, it is used purely for readability purpose.
 
 #### meta/install_db
-This directory contains subdirectories with files. Subdirectories are called the same as databases are identified in `db` parameter of `meta.json` file (see below). Files are called correspondingly to the names of database engines, supported by module with extension \*.sql, for example:
+This directory contains subdirectories with files. Subdirectories are called the same as databases are identified in `db` parameter of `meta.json` file (see below). Files are called correspondingly to the names of database drivers, supported by module with extension \*.sql, for example:
 * meta/install_db/posts/MySQLi.sql
 
 Files, that corresponds to configured database type, will be called at module installation. It is useful when module works with database, just put SQL with queries, separated by `;` that will initialize tables structure, needed for module operation. It is enough in most cases.
@@ -296,7 +296,7 @@ Other possible properties are:
 [Read about dependencies and conflicts](/docs/backend-advanced/Components-dependencies-and-conflicts.md)
 
 ##### More about `db` property
-Contains array with identifiers for databases. If some tables of module can be completely separated, it may be useful to use different identifiers. In such case if you have several configured databases in system (physically separated, or even with different engines, which is more reliable for some data), every identifier may be connected with any existing configured database.
+Contains array with identifiers for databases. If some tables of module can be completely separated, it may be useful to use different identifiers. In such case if you have several configured databases in system (physically separated, or even with different drivers, which is more reliable for some data), every identifier may be connected with any existing configured database.
 Index of configured database may be obtained from global object `$Config`. Example for module *System*:
 ```php
 <?php

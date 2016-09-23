@@ -106,7 +106,7 @@ For components:
 ```
 \cs\modules\Module_name
 ```
-For engines, following namespaces are used (derivative from names of core classes):
+For drivers, following namespaces are used (derivative from names of core classes):
 ```
 \cs\Cache\Engine_name
 \cs\DB\Engine_name

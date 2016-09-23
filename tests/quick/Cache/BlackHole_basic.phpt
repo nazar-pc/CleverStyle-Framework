@@ -2,7 +2,7 @@
 <?php
 namespace cs;
 include __DIR__.'/../../unit.php';
-Core::instance_stub(['cache_engine' => 'BlackHole']);
+Core::instance_stub(['cache_driver' => 'BlackHole']);
 require __DIR__.'/_test.php';
 ?>
 --EXPECT--

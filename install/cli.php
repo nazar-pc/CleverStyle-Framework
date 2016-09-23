@@ -29,7 +29,7 @@ $interactive = false;
  * @var array $options
  */
 $options = [
-	'db_engine' => 'MySQLi',
+	'db_driver' => 'MySQLi',
 	'db_host'   => 'localhost',
 	'db_prefix' => substr(md5(function_exists('random_bytes') ? random_bytes(1000) : openssl_random_pseudo_bytes(1000)), 0, 5).'_',
 	'timezone'  => 'UTC',
@@ -56,8 +56,8 @@ for ($i = 1; $i < $argc; $i += 2) {
 			$options['site_url'] = $value;
 			break;
 		case '-de':
-		case '--db_engine':
-			$options['db_engine'] = $value;
+		case '--db_driver':
+			$options['db_driver'] = $value;
 			break;
 		case '-dh':
 		case '--db_host':
@@ -149,7 +149,7 @@ Usage: php $argv[0]
          --admin_password <admin_password>
          [--help]
          [--interactive]
-         [--db_engine <db_engine>]
+         [--db_driver <db_driver>]
          [--db_host <db_host>]
          [--db_prefix <db_prefix>]
          [--timezone <timezone>]
@@ -163,7 +163,7 @@ Usage: php $argv[0]
   -su
   --site_url       - Site url with protocol prefix, without final slash
   -de
-  --db_engine      - Database engine, only MySQLi currently supported
+  --db_driver      - Database driver, only MySQLi currently supported
   -dh
   --db_host        - Database host
   -dn
@@ -201,7 +201,7 @@ try {
 		$options['site_url'],
 		$options['timezone'],
 		$options['db_host'],
-		$options['db_engine'],
+		$options['db_driver'],
 		$options['db_name'],
 		$options['db_user'],
 		$options['db_password'],

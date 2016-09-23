@@ -142,8 +142,8 @@ class DB {
 			 *
 			 * @var DB\_Abstract $connection
 			 */
-			$engine_class    = "cs\\DB\\$database_settings[type]";
-			$connection      = new $engine_class(
+			$driver_class    = "cs\\DB\\$database_settings[type]";
+			$connection      = new $driver_class(
 				$database_settings['name'],
 				$database_settings['user'],
 				$database_settings['password'],
@@ -151,9 +151,9 @@ class DB {
 				$database_settings['prefix']
 			);
 			$connection_name = ($database_id == 0 ? "Core DB ($Core->db_type)" : $database_id)."/$database_settings[host]/$database_settings[type]";
-			unset($engine_class, $database_settings);
+			unset($driver_class, $database_settings);
 			/**
-			 * If successfully - add connection to the list of success connections and return instance of DB engine object
+			 * If successfully - add connection to the list of success connections and return instance of DB driver object
 			 */
 			if (is_object($connection) && $connection->connected()) {
 				$this->connections[self::CONNECTIONS_SUCCESSFUL][] = $connection_name;

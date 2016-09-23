@@ -26,12 +26,12 @@ Polymer(
 				name		: ''
 				user		: ''
 				password	: ''
-		engines			: Array
+		drivers			: Array
 	ready : !->
 		cs.api([
 			'get		api/System/admin/databases'
-			'engines	api/System/admin/databases'
-		]).then ([@databases, @engines]) !~>
+			'drivers	api/System/admin/databases'
+		]).then ([@databases, @drivers]) !~>
 			if @add
 				if !isNaN(@database-index)
 					@set('database.mirror', @database-index)

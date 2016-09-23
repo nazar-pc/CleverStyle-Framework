@@ -68,11 +68,11 @@ namespace cs {
 	var_dump('Autoload trait (non-existing)');
 	var_dump(class_exists('cs\Test_trait_non_existing'));
 
-	var_dump('Autoload engine');
-	var_dump(class_exists('cs\DB\Test_engine'));
+	var_dump('Autoload driver');
+	var_dump(class_exists('cs\DB\Test_driver'));
 
-	var_dump('Autoload engine (non-existing)');
-	var_dump(class_exists('cs\DB\Test_engine_non_existing'));
+	var_dump('Autoload driver (non-existing)');
+	var_dump(class_exists('cs\DB\Test_driver_non_existing'));
 
 	var_dump('Autoload module class');
 	var_dump(class_exists('cs\modules\Test_module\Test_class'));
@@ -105,9 +105,9 @@ string(14) "Autoload trait"
 bool(true)
 string(29) "Autoload trait (non-existing)"
 bool(false)
-string(15) "Autoload engine"
+string(15) "Autoload driver"
 bool(true)
-string(30) "Autoload engine (non-existing)"
+string(30) "Autoload driver (non-existing)"
 bool(false)
 string(21) "Autoload module class"
 bool(true)

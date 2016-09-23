@@ -148,7 +148,7 @@ class Packages_dependencies {
 		}
 	}
 	/**
-	 * Check whether there is available supported DB engine
+	 * Check whether there is available supported DB driver
 	 *
 	 * @param string[] $db_support
 	 *
@@ -156,7 +156,7 @@ class Packages_dependencies {
 	 */
 	protected static function check_dependencies_db ($db_support) {
 		/**
-		 * Component doesn't support (and thus use) any DB engines, so we don't care what system have
+		 * Component doesn't support (and thus use) any DB drivers, so we don't care what system have
 		 */
 		if (!$db_support) {
 			return true;
@@ -174,7 +174,7 @@ class Packages_dependencies {
 		return false;
 	}
 	/**
-	 * Check whether there is available supported Storage engine
+	 * Check whether there is available supported Storage driver
 	 *
 	 * @param string[] $storage_support
 	 *
@@ -182,7 +182,7 @@ class Packages_dependencies {
 	 */
 	protected static function check_dependencies_storage ($storage_support) {
 		/**
-		 * Component doesn't support (and thus use) any Storage engines, so we don't care what system have
+		 * Component doesn't support (and thus use) any Storage drivers, so we don't care what system have
 		 */
 		if (!$storage_support) {
 			return true;

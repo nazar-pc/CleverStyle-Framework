@@ -34,7 +34,7 @@ Time taken to perform all queries to all databases.
 <a name="abstract-class" />
 ###[Up](#) \cs\DB\\_Abstract class
 
-This is abstract class is used as base for database engine classes. It is described here because it shows major methods of database abstraction.
+This is abstract class is used as base for database driver classes. It is described here because it shows major methods of database abstraction.
 
 This class has next public methods:
 * q()

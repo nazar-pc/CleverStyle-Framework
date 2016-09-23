@@ -47,7 +47,7 @@ trait about_server {
 			'main_storage'     => [
 				'type' => $Core->storage_type
 			],
-			'cache_engine'     => $Core->cache_engine,
+			'cache_driver'     => $Core->cache_driver,
 			'free_disk_space'  => format_filesize(disk_free_space('./'), 2),
 			'php_ini'          => [
 				'allow_file_uploads'     => (bool)ini_get('file_uploads'),

@@ -25,12 +25,12 @@
           password: ''
         }
       },
-      engines: Array
+      drivers: Array
     },
     ready: function(){
       var this$ = this;
-      cs.api(['get		api/System/admin/storages', 'engines	api/System/admin/storages']).then(function(arg$){
-        this$.storages = arg$[0], this$.engines = arg$[1];
+      cs.api(['get		api/System/admin/storages', 'drivers	api/System/admin/storages']).then(function(arg$){
+        this$.storages = arg$[0], this$.drivers = arg$[1];
         if (!this$.add) {
           this$.storages.forEach(function(storage){
             if (this$.storageIndex == storage.index) {

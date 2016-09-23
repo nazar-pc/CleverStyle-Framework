@@ -34,7 +34,7 @@ namespace cs\Cache {
 namespace cs {
 	Core::instance_stub(
 		[
-			'cache_engine' => 'Unavailable_namespaced'
+			'cache_driver' => 'Unavailable_namespaced'
 		]
 	);
 	require __DIR__.'/_test.php';

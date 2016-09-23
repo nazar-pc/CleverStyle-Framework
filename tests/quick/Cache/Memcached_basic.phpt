@@ -10,7 +10,7 @@ namespace cs;
 include __DIR__.'/../../unit.php';
 Core::instance_stub(
 	[
-		'cache_engine'   => 'Memcached',
+		'cache_driver'   => 'Memcached',
 		'memcached_host' => '127.0.0.1',
 		'11211'          => '11211'
 	]

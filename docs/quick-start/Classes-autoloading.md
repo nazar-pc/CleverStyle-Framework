@@ -3,10 +3,10 @@ System manages autoloading classes of system and components (also system traits)
 
 Autoloader look for classes/traits within namespace `cs` in next directories:
 * `core/classes`
-* `core/engines`
+* `core/drivers`
 * `core/traits`
 
-Subnamespaces are converted into subdirectories, for instance `cs\Cache\FileSystem` class is located in `core/engines/Cache/FileSystem.php`
+Subnamespaces are converted into subdirectories, for instance `cs\Cache\FileSystem` class is located in `core/drivers/Cache/FileSystem.php`
 
 Also autoloader looks for classes inside
 * `core/classes/thirdparty`

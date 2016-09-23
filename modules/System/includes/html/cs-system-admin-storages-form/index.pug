@@ -13,7 +13,7 @@ dom-module#cs-system-admin-storages-form
 				| [[L.storage_connection]]
 				cs-tooltip
 			select(is="cs-select" selected="{{storage.connection}}" size="5")
-				template(is="dom-repeat" items="[[engines]]")
+				template(is="dom-repeat" items="[[drivers]]")
 					option [[item]]
 			label(tooltip="[[L.storage_user_info]]")
 				| [[L.storage_user]]

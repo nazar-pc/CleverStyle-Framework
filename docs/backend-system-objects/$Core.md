@@ -53,7 +53,7 @@ $Core->parameter = 'value';
 * storage_user
 * storage_password
 * language
-* cache_engine
+* cache_driver
 * memcache_host
 * memcache_port
 * public_key

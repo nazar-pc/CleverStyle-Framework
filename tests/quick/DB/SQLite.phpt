@@ -1,7 +1,7 @@
 --SKIPIF--
 <?php
 if (getenv('DB') != 'SQLite') {
-	exit('skip only running for database SQLite engine');
+	exit('skip only running for database SQLite driver');
 }
 ?>
 --FILE--
@@ -542,7 +542,7 @@ string(11) "Server info"
 string(%s) "%d.%d.%d%S"
 string(24) "Unsupported columns call"
 %A
-Warning: Can't get columns like %tle, SQLite engine doesn't support such conditions in %s/core/engines/DB/SQLite.php on line %d
+Warning: Can't get columns like %tle, SQLite driver doesn't support such conditions in %s/core/drivers/DB/SQLite.php on line %d
 array(0) {
 }
 string(7) "DB type"

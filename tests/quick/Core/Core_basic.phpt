@@ -29,9 +29,9 @@ file_put_contents(
 	"storage_password"	: "cscms.travis.password",
 	//Base language
 	"language"			: "cscms.travis.language",
-	//Cache engine
-	"cache_engine"		: "cscms.travis.cache",
-	//Settings of Memcached cache engine
+	//Cache driver
+	"cache_driver"		: "cscms.travis.cache",
+	//Settings of Memcached cache driver
 	"memcache_host"		: "localhost",
 	"memcache_port"		: "11211",
 	//Any length
@@ -116,7 +116,7 @@ array(18) {
   string(21) "cscms.travis.password"
   ["language"]=>
   string(21) "cscms.travis.language"
-  ["cache_engine"]=>
+  ["cache_driver"]=>
   string(18) "cscms.travis.cache"
   ["memcache_host"]=>
   string(9) "localhost"
@@ -155,7 +155,7 @@ array(20) {
   string(21) "cscms.travis.password"
   ["language"]=>
   string(20) "Alternative language"
-  ["cache_engine"]=>
+  ["cache_driver"]=>
   string(18) "cscms.travis.cache"
   ["memcache_host"]=>
   string(9) "localhost"
@@ -198,7 +198,7 @@ array(20) {
   string(21) "cscms.travis.password"
   ["language"]=>
   string(20) "Alternative language"
-  ["cache_engine"]=>
+  ["cache_driver"]=>
   string(18) "cscms.travis.cache"
   ["memcache_host"]=>
   string(9) "localhost"

@@ -2,7 +2,7 @@
 <?php
 namespace cs;
 include __DIR__.'/../../unit.php';
-Core::instance_stub(['cache_engine' => 'FileSystem']);
+Core::instance_stub(['cache_driver' => 'FileSystem']);
 define('CACHE', make_tmp_dir());
 require __DIR__.'/_test.php';
 

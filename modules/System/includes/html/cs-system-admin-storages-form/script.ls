@@ -23,12 +23,12 @@ Polymer(
 				connection	: 'Local'
 				user		: ''
 				password	: ''
-		engines			: Array
+		drivers			: Array
 	ready : !->
 		cs.api([
 			'get		api/System/admin/storages'
-			'engines	api/System/admin/storages'
-		]).then ([@storages, @engines]) !~>
+			'drivers	api/System/admin/storages'
+		]).then ([@storages, @drivers]) !~>
 			if !@add
 				@storages.forEach (storage) !~>
 					if @storage-index ~= storage.index

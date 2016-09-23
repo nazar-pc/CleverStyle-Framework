@@ -29,7 +29,7 @@ Is used for getting of active, successful and failed connections.
 <a name="abstract-class" />
 ###[Up](#) \cs\Storage\\_Abstract class
 
-This is abstract class is used as base for storage engine classes. It is described here because it shows major methods of storage abstraction.
+This is abstract class is used as base for storage driver classes. It is described here because it shows major methods of storage abstraction.
 
 This class has next public methods:
 * connected()

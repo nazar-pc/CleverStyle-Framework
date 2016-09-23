@@ -4,7 +4,7 @@ if (getenv('SKIP_SLOW_TESTS')) {
 	exit('skip slow test');
 }
 if (getenv('DB') != 'MySQLi') {
-	exit('skip only running for database MySQLi engine');
+	exit('skip only running for database MySQLi driver');
 }
 ?>
 --INI--
@@ -46,9 +46,9 @@ include __DIR__.'/../_clean.php';
 			</td>
 		</tr>
 		<tr class="expert">
-			<td>Database engine:</td>
+			<td>Database driver:</td>
 			<td>
-				<select name="db_engine" size="3">
+				<select name="db_driver" size="3">
 					<option selected value="MySQLi">MySQLi</option>
 					<option value="PostgreSQL">PostgreSQL</option>
 					<option value="SQLite">SQLite</option>

@@ -17,7 +17,7 @@ dom-module#cs-system-admin-databases-form
 				| [[L.db_type]]
 				cs-tooltip
 			select(is="cs-select" selected="{{database.type}}" size="5")
-				template(is="dom-repeat" items="[[engines]]")
+				template(is="dom-repeat" items="[[drivers]]")
 					option [[item]]
 			label(tooltip="[[L.db_prefix_info]]")
 				| [[L.db_prefix]]

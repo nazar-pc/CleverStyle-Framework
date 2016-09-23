@@ -53,7 +53,7 @@ trait databases {
 	 */
 	public static function admin_databases_patch ($Request) {
 		$data = $Request->data('host', 'type', 'prefix', 'name', 'user', 'password');
-		if (!$data || !in_array($data['type'], static::admin_databases_get_engines())) {
+		if (!$data || !in_array($data['type'], static::admin_databases_get_drivers())) {
 			throw new ExitException(400);
 		}
 		$Config         = Config::instance();
@@ -87,7 +87,7 @@ trait databases {
 	 */
 	public static function admin_databases_post ($Request) {
 		$data = $Request->data('mirror', 'host', 'type', 'prefix', 'name', 'user', 'password');
-		if (!$data || !in_array($data['type'], static::admin_databases_get_engines())) {
+		if (!$data || !in_array($data['type'], static::admin_databases_get_drivers())) {
 			throw new ExitException(400);
 		}
 		$Config         = Config::instance();
@@ -159,16 +159,16 @@ trait databases {
 		}
 	}
 	/**
-	 * Get array of available database engines
+	 * Get array of available database drivers
 	 */
-	public static function admin_databases_engines () {
-		return static::admin_databases_get_engines();
+	public static function admin_databases_drivers () {
+		return static::admin_databases_get_drivers();
 	}
 	/**
 	 * @return string[]
 	 */
-	protected static function admin_databases_get_engines () {
-		return _mb_substr(get_files_list(DIR.'/core/engines/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4);
+	protected static function admin_databases_get_drivers () {
+		return _mb_substr(get_files_list(DIR.'/core/drivers/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4);
 	}
 	/**
 	 * Test database connection
@@ -179,15 +179,15 @@ trait databases {
 	 */
 	public static function admin_databases_test ($Request) {
 		$data    = $Request->data('type', 'name', 'user', 'password', 'host');
-		$engines = static::admin_databases_get_engines();
-		if (!$data || !in_array($data['type'], $engines, true)) {
+		$drivers = static::admin_databases_get_drivers();
+		if (!$data || !in_array($data['type'], $drivers, true)) {
 			throw new ExitException(400);
 		}
-		$engine_class = "\\cs\\DB\\$data[type]";
+		$driver_class = "\\cs\\DB\\$data[type]";
 		/**
 		 * @var \cs\DB\_Abstract $connection
 		 */
-		$connection = new $engine_class($data['name'], $data['user'], $data['password'], $data['host']);
+		$connection = new $driver_class($data['name'], $data['user'], $data['password'], $data['host']);
 		if (!$connection->connected()) {
 			throw new ExitException(500);
 		}

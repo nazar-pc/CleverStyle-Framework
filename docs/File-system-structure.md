@@ -2,15 +2,14 @@
 
 * **blocks**
 * **build** [dev] - build tools
-* **config** - low level system configuration (DB connection, caching engine, etc.)
+* **config** - low level system configuration (DB connection, caching driver, etc.)
 * **core**
   * **classes** - basic and supplementary classes
     * **thirdparty** - third party classes
-  * **engines** - engines, subdirectories names corresponds to the names of classes, that uses them
+  * **drivers** - drivers, subdirectories names corresponds to the names of classes, that uses them
     * **Cache**
     * **DB**
     * **Storage**
-    * **Text**
   * **languages** - multilingual user interface translation of core and System module
     * **aliases** - additional aliases for languages
   * **traits** - basic traits used by system core

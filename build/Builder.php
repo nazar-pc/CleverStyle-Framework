@@ -96,9 +96,9 @@ class Builder {
 			)
 		);
 		$phar->addFromString(
-			'db_engines.json',
+			'db_drivers.json',
 			_json_encode(
-				_substr(get_files_list("$this->root/core/engines/DB", '/^[^_].*?\.php$/i', 'f'), 0, -4)
+				_substr(get_files_list("$this->root/core/drivers/DB", '/^[^_].*?\.php$/i', 'f'), 0, -4)
 			)
 		);
 		/**

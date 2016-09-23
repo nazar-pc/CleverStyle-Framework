@@ -10,7 +10,7 @@ apc.enable_cli = 1
 <?php
 namespace cs;
 include __DIR__.'/../../unit.php';
-Core::instance_stub(['cache_engine' => 'APCu']);
+Core::instance_stub(['cache_driver' => 'APCu']);
 require __DIR__.'/_test.php';
 ?>
 --EXPECT--
