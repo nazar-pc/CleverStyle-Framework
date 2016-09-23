@@ -26,9 +26,12 @@ Event::instance()
 			if ($data['current_module'] == 'Static_pages' && !isset($route[0])) {
 				$route = ['index'];
 			}
+			if (!$route) {
+				return;
+			}
 			$structure  = Pages::instance()->get_structure();
 			$categories = array_slice($route, 0, -1);
-			if (!empty($categories)) {
+			if (!$categories) {
 				foreach ($categories as $category) {
 					if (isset($structure['categories'][$category])) {
 						$structure = $structure['categories'][$category];
