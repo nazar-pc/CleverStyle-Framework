@@ -260,9 +260,9 @@ Polymer(
 	_storage_option : (storage) ->
 		name	=
 			if storage.index
-				"#{storage.host} (#{storage.connection})"
+				"#{storage.host} (#{storage.driver})"
 			else
-				@L.core_storage + " (#{storage.connection})"
+				@L.core_storage + " (#{storage.driver})"
 		checked	= if storage.index then '' else 'checked'
 		"""<option value="#{storage.index}" #checked>#name</option>"""
 	/**

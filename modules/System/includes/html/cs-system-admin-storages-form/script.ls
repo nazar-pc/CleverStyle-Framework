@@ -20,11 +20,11 @@ Polymer(
 			value	:
 				url			: ''
 				host		: ''
-				connection	: 'Local'
+				driver		: 'Local'
 				user		: ''
 				password	: ''
 		drivers			: Array
-	ready : !->
+	attached : !->
 		cs.api([
 			'get		api/System/admin/storages'
 			'drivers	api/System/admin/storages'

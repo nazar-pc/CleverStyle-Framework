@@ -61,7 +61,7 @@ class Storage {
 		if ($storage_id == 0) {
 			$Core    = Core::instance();
 			$storage = [
-				'connection' => $Core->storage_type,
+				'driver' => $Core->storage_driver,
 				'url'        => $Core->storage_url,
 				'host'       => $Core->storage_host,
 				'user'       => $Core->storage_user,
@@ -75,14 +75,14 @@ class Storage {
 		 *
 		 * @var Storage\_Abstract $connection
 		 */
-		$driver_class    = "\\cs\\Storage\\$storage[connection]";
+		$driver_class    = "\\cs\\Storage\\$storage[driver]";
 		$connection      = new $driver_class(
 			$storage['url'],
 			$storage['host'],
 			$storage['user'],
 			$storage['password']
 		);
-		$connection_name = "$storage_id/$storage[host]/$storage[connection]";
+		$connection_name = "$storage_id/$storage[host]/$storage[driver]";
 		/**
 		 * If successfully - add connection to the list of success connections and return instance of Storage driver object
 		 */

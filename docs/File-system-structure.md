@@ -2,7 +2,7 @@
 
 * **blocks**
 * **build** [dev] - build tools
-* **config** - low level system configuration (DB connection, caching driver, etc.)
+* **config** - low level system configuration (DB driver, caching driver, etc.)
 * **core**
   * **classes** - basic and supplementary classes
     * **thirdparty** - third party classes

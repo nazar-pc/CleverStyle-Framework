@@ -26,7 +26,7 @@ class Installer {
 	"db_password"		: "@db_password",
 	"db_prefix"			: "@db_prefix",
 //Settings of main Storage
-	"storage_type"		: "Local",
+	"storage_driver"		: "Local",
 	"storage_url"		: "",
 	"storage_host"		: "localhost",
 	"storage_user"		: "",

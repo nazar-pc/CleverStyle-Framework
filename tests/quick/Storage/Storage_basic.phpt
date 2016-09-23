@@ -47,18 +47,18 @@ namespace cs {
 		[
 			'storage' => [
 				1 => [
-					'connection' => 'Fake',
-					'url'        => 'http://cscms.travis/storage/public',
-					'host'       => 'localhost',
-					'user'       => 'user',
-					'password'   => 'storage 1'
+					'driver'   => 'Fake',
+					'url'      => 'http://cscms.travis/storage/public',
+					'host'     => 'localhost',
+					'user'     => 'user',
+					'password' => 'storage 1'
 				]
 			]
 		]
 	);
 	Core::instance_stub(
 		[
-			'storage_type'     => 'Fake',
+			'storage_driver'   => 'Fake',
 			'storage_url'      => 'http://cscms.travis/storage/public',
 			'storage_host'     => 'localhost',
 			'storage_user'     => 'user',

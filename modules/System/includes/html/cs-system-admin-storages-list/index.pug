@@ -6,7 +6,7 @@ dom-module#cs-system-admin-storages-list
 				th [[L.action]]
 				th [[L.storage_url]]
 				th [[L.storage_host]]
-				th [[L.storage_connection]]
+				th [[L.storage_driver]]
 				th [[L.storage_user]]
 			template(is="dom-repeat" items="[[storages]]" as="storage" id="storages_list")
 				tr(class$="[[if(index, '', 'cs-text-bold')]]")
@@ -18,7 +18,7 @@ dom-module#cs-system-admin-storages-list
 							a(is="cs-link-button" on-tap="_delete" icon="trash" tooltip="[[L.delete]] [[L.storage]]")
 					td [[storage.url]]
 					td [[storage.host]]
-					td [[storage.connection]]
+					td [[storage.driver]]
 					td [[if(index, storage.user, '*****')]]
 		p
 			a(is="cs-link-button" on-tap="_add") [[L.add_storage]]

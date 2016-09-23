@@ -13,7 +13,7 @@ include __DIR__.'/../../../unit.php';
 Core::instance_stub(
 	[
 		'db_type'      => 'SQLite',
-		'storage_type' => 'Local'
+		'storage_driver' => 'Local'
 	]
 );
 
@@ -45,7 +45,7 @@ $Config = Config::instance_stub(
 		],
 		'storage'    => [
 			[
-				'connection' => 'FTP'
+				'driver' => 'FTP'
 			]
 		]
 	],

@@ -27,14 +27,14 @@
       var storage_model, storage, name;
       storage_model = this.$.storages_list.modelForElement(e.target);
       storage = e.model.storage || storage_model.storage;
-      name = storage.host + '/' + storage.connection;
+      name = storage.host + '/' + storage.driver;
       cs.ui.simple_modal("<h3>" + this.L.editing_of_storage(name) + "</h3>\n<cs-system-admin-storages-form storage-index=\"" + storage.index + "\"/>").addEventListener('close', bind$(this, 'reload'));
     },
     _delete: function(e){
       var storage_model, storage, name, this$ = this;
       storage_model = this.$.storages_list.modelForElement(e.target);
       storage = e.model.storage || storage_model.storage;
-      name = storage.host + '/' + storage.connection;
+      name = storage.host + '/' + storage.driver;
       cs.ui.confirm(this.L.sure_to_delete(name)).then(function(){
         return cs.api('delete api/System/admin/storages/' + storage.index);
       }).then(function(){

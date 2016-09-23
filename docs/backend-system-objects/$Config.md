@@ -189,11 +189,11 @@ Property, that stores configuration of storages, except the main storage, parame
 {
 	"0" : "0",
 	"1" : {
-		"host"       : "cscms.org",
-		"connection" : "HTTP",
-		"user"       : "CleverStyle",
-		"password"   : "CleverStyle",
-		"url"        : "http:\/\/cscms.org"
+		"host"     : "cscms.org",
+		"driver"   : "HTTP",
+		"user"     : "CleverStyle",
+		"password" : "CleverStyle",
+		"url"      : "http:\/\/cscms.org"
 	}
 }
 ```

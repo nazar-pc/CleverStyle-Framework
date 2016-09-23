@@ -20,14 +20,14 @@
         value: {
           url: '',
           host: '',
-          connection: 'Local',
+          driver: 'Local',
           user: '',
           password: ''
         }
       },
       drivers: Array
     },
-    ready: function(){
+    attached: function(){
       var this$ = this;
       cs.api(['get		api/System/admin/storages', 'drivers	api/System/admin/storages']).then(function(arg$){
         this$.storages = arg$[0], this$.drivers = arg$[1];

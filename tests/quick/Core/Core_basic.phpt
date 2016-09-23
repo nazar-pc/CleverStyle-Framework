@@ -22,7 +22,7 @@ file_put_contents(
 	"db_password"		: "cscms.travis.password",
 	"db_prefix"			: "[prefix]",
 	//Settings of main Storage
-	"storage_type"		: "cscms.travis.type",
+	"storage_driver"		: "cscms.travis.type",
 	"storage_url"		: "cscms.travis.url",
 	"storage_host"		: "cscms.travis.host",
 	"storage_user"		: "cscms.travis.user",
@@ -104,7 +104,7 @@ array(18) {
   string(21) "cscms.travis.password"
   ["db_prefix"]=>
   string(8) "[prefix]"
-  ["storage_type"]=>
+  ["storage_driver"]=>
   string(17) "cscms.travis.type"
   ["storage_url"]=>
   string(16) "cscms.travis.url"
@@ -143,7 +143,7 @@ array(20) {
   string(21) "cscms.travis.password"
   ["db_prefix"]=>
   string(8) "[prefix]"
-  ["storage_type"]=>
+  ["storage_driver"]=>
   string(17) "cscms.travis.type"
   ["storage_url"]=>
   string(16) "cscms.travis.url"
@@ -186,7 +186,7 @@ array(20) {
   string(21) "cscms.travis.password"
   ["db_prefix"]=>
   string(8) "[prefix]"
-  ["storage_type"]=>
+  ["storage_driver"]=>
   string(17) "cscms.travis.type"
   ["storage_url"]=>
   string(16) "cscms.travis.url"

@@ -25,7 +25,7 @@ Polymer(
 		# Hack: ugly, but the only way to do it while https://github.com/Polymer/polymer/issues/1865 not resolved
 		storage_model	= @$.storages_list.modelForElement(e.target)
 		storage			= e.model.storage || storage_model.storage
-		name			= storage.host + '/' + storage.connection
+		name			= storage.host + '/' + storage.driver
 		cs.ui.simple_modal("""
 			<h3>#{@L.editing_of_storage(name)}</h3>
 			<cs-system-admin-storages-form storage-index="#{storage.index}"/>
@@ -34,7 +34,7 @@ Polymer(
 		# Hack: ugly, but the only way to do it while https://github.com/Polymer/polymer/issues/1865 not resolved
 		storage_model	= @$.storages_list.modelForElement(e.target)
 		storage			= e.model.storage || storage_model.storage
-		name			= storage.host + '/' + storage.connection
+		name			= storage.host + '/' + storage.driver
 		cs.ui.confirm(@L.sure_to_delete(name))
 			.then -> cs.api('delete api/System/admin/storages/' + storage.index)
 			.then !~>

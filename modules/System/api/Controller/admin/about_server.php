@@ -45,7 +45,7 @@ trait about_server {
 				'prefix'  => $Core->db_prefix
 			],
 			'main_storage'     => [
-				'type' => $Core->storage_type
+				'type' => $Core->storage_driver
 			],
 			'cache_driver'     => $Core->cache_driver,
 			'free_disk_space'  => format_filesize(disk_free_space('./'), 2),

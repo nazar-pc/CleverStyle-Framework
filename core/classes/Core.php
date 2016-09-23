@@ -21,7 +21,7 @@ namespace cs;
  * @property string $db_user
  * @property string $db_password
  * @property string $db_prefix
- * @property string $storage_type
+ * @property string $storage_driver
  * @property string $storage_url
  * @property string $storage_host
  * @property string $storage_user

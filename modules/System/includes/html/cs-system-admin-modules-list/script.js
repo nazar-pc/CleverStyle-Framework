@@ -231,8 +231,8 @@
     _storage_option: function(storage){
       var name, checked;
       name = storage.index
-        ? storage.host + " (" + storage.connection + ")"
-        : this.L.core_storage + (" (" + storage.connection + ")");
+        ? storage.host + " (" + storage.driver + ")"
+        : this.L.core_storage + (" (" + storage.driver + ")");
       checked = storage.index ? '' : 'checked';
       return "<option value=\"" + storage.index + "\" " + checked + ">" + name + "</option>";
     }

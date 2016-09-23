@@ -23,10 +23,10 @@ trait storages {
 		$Core        = Core::instance();
 		$storages    = $Config->storage;
 		$storages[0] = [
-			'host'       => $Core->storage_host,
-			'connection' => $Core->storage_type,
-			'user'       => '',
-			'url'        => $Core->storage_url ?: url_by_source(PUBLIC_STORAGE)
+			'host'   => $Core->storage_host,
+			'driver' => $Core->storage_driver,
+			'user'   => '',
+			'url'    => $Core->storage_url ?: url_by_source(PUBLIC_STORAGE)
 		];
 		foreach ($storages as $i => &$storage) {
 			$storage['index'] = $i;
@@ -42,12 +42,12 @@ trait storages {
 	 */
 	public static function admin_storages_patch ($Request) {
 		$storage_index = $Request->route_ids(0);
-		$data          = $Request->data('url', 'host', 'connection', 'user', 'password');
+		$data          = $Request->data('url', 'host', 'driver', 'user', 'password');
 		if (
 			!$storage_index ||
 			!$data ||
 			!strlen($data['host']) ||
-			!in_array($data['connection'], static::admin_storages_get_drivers())
+			!in_array($data['driver'], static::admin_storages_get_drivers())
 		) {
 			throw new ExitException(400);
 		}
@@ -70,11 +70,11 @@ trait storages {
 	 * @throws ExitException
 	 */
 	public static function admin_storages_post ($Request) {
-		$data = $Request->data('url', 'host', 'connection', 'user', 'password');
+		$data = $Request->data('url', 'host', 'driver', 'user', 'password');
 		if (
 			!$data ||
 			!strlen($data['host']) ||
-			!in_array($data['connection'], static::admin_storages_get_drivers())
+			!in_array($data['driver'], static::admin_storages_get_drivers())
 		) {
 			throw new ExitException(400);
 		}
@@ -146,16 +146,16 @@ trait storages {
 	 * @throws ExitException
 	 */
 	public static function admin_storages_test ($Request) {
-		$data    = $Request->data('url', 'host', 'connection', 'user', 'password');
+		$data    = $Request->data('url', 'host', 'driver', 'user', 'password');
 		$drivers = static::admin_storages_get_drivers();
-		if (!$data || !in_array($data['connection'], $drivers, true)) {
+		if (!$data || !in_array($data['driver'], $drivers, true)) {
 			throw new ExitException(400);
 		}
-		$connection_class = "\\cs\\Storage\\$data[connection]";
+		$driver_class = "\\cs\\Storage\\$data[driver]";
 		/**
 		 * @var \cs\Storage\_Abstract $connection
 		 */
-		$connection = new $connection_class($data['url'], $data['host'], $data['user'], $data['password']);
+		$connection = new $driver_class($data['url'], $data['host'], $data['user'], $data['password']);
 		if (!$connection->connected()) {
 			throw new ExitException(500);
 		}

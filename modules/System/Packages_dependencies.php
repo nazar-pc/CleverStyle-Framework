@@ -189,11 +189,11 @@ class Packages_dependencies {
 		}
 		$Core   = Core::instance();
 		$Config = Config::instance();
-		if (in_array($Core->storage_type, $storage_support)) {
+		if (in_array($Core->storage_driver, $storage_support)) {
 			return true;
 		}
 		foreach ($Config->storage as $storage) {
-			if (in_array($storage['connection'], $storage_support)) {
+			if (in_array($storage['driver'], $storage_support)) {
 				return true;
 			}
 		}
