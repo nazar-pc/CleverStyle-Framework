@@ -12,24 +12,73 @@ use
 
 trait Collecting {
 	/**
-	 * Getting of HTML, JS and CSS files list to be included
+	 * Get dependencies of components between each other (only that contains some HTML, JS and CSS files) and mapping HTML, JS and CSS files to URL paths
 	 *
 	 * @param Config $Config
 	 *
+	 * @return array[] [$dependencies, $includes_map]
+	 */
+	protected function get_includes_dependencies_and_map ($Config) {
+		$installed_modules = array_filter(
+			$Config->components['modules'],
+			function ($module_data) {
+				return $module_data['active'] != Config\Module_Properties::UNINSTALLED;
+			}
+		);
+		/**
+		 * Get all includes
+		 */
+		$all_includes = $this->get_includes_list(array_keys($installed_modules));
+		$includes_map = [];
+		/**
+		 * Array [package => [list of packages it depends on]]
+		 */
+		$dependencies    = [];
+		$functionalities = [];
+		/**
+		 * According to components's maps some files should be included only on specific pages.
+		 * Here we read this rules, and remove from whole includes list such items, that should be included only on specific pages.
+		 * Also collect dependencies.
+		 */
+		foreach ($installed_modules as $module => $module_data) {
+			$this->process_meta(MODULES."/$module", $dependencies, $functionalities, $module_data['active'] != Config\Module_Properties::ENABLED);
+			$this->process_map(MODULES."/$module", $includes_map, $all_includes);
+		}
+		unset($module, $module_data);
+		/**
+		 * For consistency
+		 */
+		$includes_map['System'] = $all_includes;
+		Event::instance()->fire(
+			'System/Page/includes_dependencies_and_map',
+			[
+				'dependencies' => &$dependencies,
+				'includes_map' => &$includes_map
+			]
+		);
+		$includes_map = $this->webcomponents_support_filter($includes_map, (bool)$Config->core['disable_webcomponents']);
+		$dependencies = $this->normalize_dependencies($dependencies, $functionalities);
+		$includes_map = $this->clean_includes_arrays_without_files($dependencies, $includes_map);
+		$dependencies = array_map('array_values', $dependencies);
+		$dependencies = array_filter($dependencies);
+		return [$dependencies, $includes_map];
+	}
+	/**
+	 * Getting of HTML, JS and CSS files list to be included
+	 *
+	 * @param string[] $modules
+	 *
 	 * @return string[][]
 	 */
-	protected function get_includes_list ($Config) {
+	protected function get_includes_list ($modules) {
 		$includes = [];
 		/**
 		 * Get includes of system and theme
 		 */
 		$this->fill_includes(DIR.'/includes', $includes);
 		$this->fill_includes(THEMES."/$this->theme", $includes);
-		foreach ($Config->components['modules'] as $module_name => $module_data) {
-			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
-				continue;
-			}
-			$this->fill_includes(MODULES."/$module_name/includes", $includes);
+		foreach ($modules as $module) {
+			$this->fill_includes(MODULES."/$module/includes", $includes);
 		}
 		return [
 			'html' => array_merge(...$includes['html']),
@@ -54,55 +103,6 @@ trait Collecting {
 	 */
 	protected function fill_includes_internal ($base_dir, $ext) {
 		return get_files_list("$base_dir/$ext", "/.*\\.$ext\$/i", 'f', true, true, 'name', '!include') ?: [];
-	}
-	/**
-	 * Get dependencies of components between each other (only that contains some HTML, JS and CSS files) and mapping HTML, JS and CSS files to URL paths
-	 *
-	 * @param Config $Config
-	 *
-	 * @return array[] [$dependencies, $includes_map]
-	 */
-	protected function get_includes_dependencies_and_map ($Config) {
-		/**
-		 * Get all includes
-		 */
-		$all_includes = $this->get_includes_list($Config);
-		$includes_map = [];
-		/**
-		 * Array [package => [list of packages it depends on]]
-		 */
-		$dependencies    = [];
-		$functionalities = [];
-		/**
-		 * According to components's maps some files should be included only on specific pages.
-		 * Here we read this rules, and remove from whole includes list such items, that should be included only on specific pages.
-		 * Also collect dependencies.
-		 */
-		foreach ($Config->components['modules'] as $module_name => $module_data) {
-			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
-				continue;
-			}
-			$this->process_meta(MODULES."/$module_name", $dependencies, $functionalities, $module_data['active'] != Config\Module_Properties::ENABLED);
-			$this->process_map(MODULES."/$module_name", $includes_map, $all_includes);
-		}
-		unset($module_name, $module_data);
-		/**
-		 * For consistency
-		 */
-		$includes_map['System'] = $all_includes;
-		Event::instance()->fire(
-			'System/Page/includes_dependencies_and_map',
-			[
-				'dependencies' => &$dependencies,
-				'includes_map' => &$includes_map
-			]
-		);
-		$includes_map = $this->webcomponents_support_filter($Config, $includes_map);
-		$dependencies = $this->normalize_dependencies($dependencies, $functionalities);
-		$includes_map = $this->clean_includes_arrays_without_files($dependencies, $includes_map);
-		$dependencies = array_map('array_values', $dependencies);
-		$dependencies = array_filter($dependencies);
-		return [$dependencies, $includes_map];
 	}
 	/**
 	 * Process meta information and corresponding entries to dependencies and functionalities
@@ -281,26 +281,25 @@ trait Collecting {
 	/**
 	 * If system is configured to not use Web Components - all HTML imports and Polymer-related JS code will be removed from includes map
 	 *
-	 * @param Config  $Config
 	 * @param array[] $includes_map
+	 * @param bool    $disable_webcomponents
 	 *
 	 * @return array[]
 	 */
-	protected function webcomponents_support_filter ($Config, $includes_map) {
-		if ($this->theme != Config::SYSTEM_THEME && $Config->core['disable_webcomponents']) {
+	protected function webcomponents_support_filter ($includes_map, $disable_webcomponents) {
+		if ($this->theme != Config::SYSTEM_THEME && $disable_webcomponents) {
 			foreach ($includes_map as &$includes) {
 				unset($includes['html']);
 			}
 			unset($includes);
-			$prefix                                    = DIR.'/includes/js/Polymer';
-			$includes_map[Config::SYSTEM_MODULE]['js'] = array_values(
-				array_filter(
-					$includes_map[Config::SYSTEM_MODULE]['js'],
-					function ($file) use ($prefix) {
-						return strpos($file, $prefix) !== 0;
-					}
-				)
-			);
+			$prefix    = DIR.'/includes/js/Polymer';
+			$system_js = &$includes_map[Config::SYSTEM_MODULE]['js'];
+			foreach ($system_js as $index => $file) {
+				if (strpos($file, $prefix) === 0) {
+					unset($system_js[$index]);
+				}
+			}
+			$system_js = array_values($system_js);
 		}
 		return $includes_map;
 	}
