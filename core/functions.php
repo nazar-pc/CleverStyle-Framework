@@ -12,6 +12,7 @@
 use
 	cs\Cache,
 	cs\Config,
+	cs\HTMLPurifier_Filter_iframe_sandbox,
 	cs\Language,
 	cs\Page;
 
@@ -539,4 +540,68 @@ function functionality ($functionality) {
 		}
 	);
 	return in_array($functionality, $all);
+}
+
+/**
+ * XSS Attack Protection. Returns secure string using several types of filters
+ *
+ * @param string|string[] $in     HTML code
+ * @param bool|string     $html   <b>text</b> - text at output (default)<br>
+ *                                <b>true</b> - processed HTML at output<br>
+ *                                <b>false</b> - HTML tags will be deleted
+ * @param bool            $iframe Whether to allow iframes without inner content (for example, video from youtube)<br>
+ *                                Works only if <i>$html === true</i>
+ *
+ * @return string|string[]
+ */
+function xap ($in, $html = 'text', $iframe = false) {
+	static $purifier, $purifier_iframe, $purifier_no_tags;
+	if (is_array($in)) {
+		foreach ($in as &$item) {
+			$item = xap($item, $html, $iframe);
+		}
+		return $in;
+	}
+	/**
+	 * Text mode
+	 */
+	if ($html === 'text') {
+		return htmlspecialchars($in, ENT_NOQUOTES | ENT_HTML5 | ENT_DISALLOWED | ENT_SUBSTITUTE | ENT_HTML5);
+	}
+	if (!isset($purifier)) {
+		Phar::loadPhar(__DIR__.'/thirdparty/htmlpurifier.tar.gz', 'htmlpurifier.phar');
+		require_once 'phar://htmlpurifier.phar/HTMLPurifier.standalone.php';
+		$config_array = [
+			'HTML.Doctype'         => 'HTML 4.01 Transitional',
+			'Attr.EnableID'        => true,
+			'Attr.ID.HTML5'        => true,
+			'Attr.IDPrefix'        => 'content-',
+			'CSS.MaxImgLength'     => null,
+			'Cache.DefinitionImpl' => null,
+			'Output.Newline'       => "\n",
+			'URI.Munge'            => 'redirect/%s'
+		];
+
+		$config = HTMLPurifier_Config::createDefault();
+		$config->loadArray($config_array);
+		$purifier = new HTMLPurifier($config_array);
+
+		$config_no_tags = HTMLPurifier_Config::createDefault();
+		$config_no_tags->loadArray($config_array);
+		$config_no_tags->set('HTML.AllowedElements', []);
+		$purifier_no_tags = new HTMLPurifier($config_no_tags);
+
+		$config_iframe = HTMLPurifier_Config::createDefault();
+		$config_iframe->loadArray($config_array);
+		$config_iframe->set('Filter.Custom', [new HTMLPurifier_Filter_iframe_sandbox]);
+		$purifier_iframe = new HTMLPurifier($config_iframe);
+	}
+	if ($html === false) {
+		return $purifier_no_tags->purify($in);
+	}
+	if ($iframe) {
+		return $purifier_iframe->purify($in);
+	} else {
+		return $purifier->purify($in);
+	}
 }
