@@ -59,8 +59,13 @@ trait Collecting {
 		$includes_map = $this->webcomponents_support_filter($includes_map, (bool)$Config->core['disable_webcomponents']);
 		$dependencies = $this->normalize_dependencies($dependencies, $functionalities);
 		$includes_map = $this->clean_includes_arrays_without_files($dependencies, $includes_map);
-		$dependencies = array_map('array_values', $dependencies);
-		$dependencies = array_filter($dependencies);
+		$includes_map = array_map(
+			function ($includes) {
+				return array_map('array_values', $includes);
+			},
+			$includes_map
+		);
+		$dependencies = array_filter(array_map('array_values', $dependencies));
 		return [$dependencies, $includes_map];
 	}
 	/**
@@ -122,20 +127,13 @@ trait Collecting {
 			'optional' => [],
 			'provide'  => []
 		];
-		$package = $meta['package'];
-		foreach ((array)$meta['require'] as $r) {
+		$package    = $meta['package'];
+		$depends_on = array_merge((array)$meta['require'], (array)$meta['optional']);
+		foreach ($depends_on as $d) {
 			/**
 			 * Get only name of package or functionality
 			 */
-			$r                        = preg_split('/[=<>]/', $r, 2)[0];
-			$dependencies[$package][] = $r;
-		}
-		foreach ((array)$meta['optional'] as $o) {
-			/**
-			 * Get only name of package or functionality
-			 */
-			$o                        = preg_split('/[=<>]/', $o, 2)[0];
-			$dependencies[$package][] = $o;
+			$dependencies[$package][] = preg_split('/[=<>]/', $d, 2)[0];
 		}
 		if ($skip_functionalities) {
 			return;
@@ -207,8 +205,8 @@ trait Collecting {
 	/**
 	 * Replace functionalities by real packages names, take into account recursive dependencies
 	 *
-	 * @param array $dependencies
-	 * @param array $functionalities
+	 * @param array[] $dependencies
+	 * @param array   $functionalities
 	 *
 	 * @return array
 	 */
@@ -218,26 +216,7 @@ trait Collecting {
 		 */
 		$dependencies = array_filter($dependencies);
 		/**
-		 * First round, process aliases among keys
-		 */
-		foreach (array_keys($dependencies) as $d) {
-			if (isset($functionalities[$d])) {
-				$package = $functionalities[$d];
-				/**
-				 * Add dependencies to existing package dependencies
-				 */
-				foreach ($dependencies[$d] as $dependency) {
-					$dependencies[$package][] = $dependency;
-				}
-				/**
-				 * Drop alias
-				 */
-				unset($dependencies[$d]);
-			}
-		}
-		unset($d, $dependency);
-		/**
-		 * Second round, process aliases among dependencies
+		 * First round, process aliases among dependencies
 		 */
 		foreach ($dependencies as &$depends_on) {
 			foreach ($depends_on as &$dependency) {
@@ -249,7 +228,7 @@ trait Collecting {
 		}
 		unset($depends_on);
 		/**
-		 * Third round, build dependencies tree using references to corresponding recursive dependencies
+		 * Second round, build dependencies tree using references to corresponding recursive dependencies
 		 */
 		foreach ($dependencies as &$depends_on) {
 			foreach ($depends_on as &$dependency) {

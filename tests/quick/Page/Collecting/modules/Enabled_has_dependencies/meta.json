@@ -1,0 +1,5 @@
+{
+	"package"  : "Enabled_has_dependencies",
+	"require"  : "enabled",
+	"optional" : "Enabled3>=0"
+}

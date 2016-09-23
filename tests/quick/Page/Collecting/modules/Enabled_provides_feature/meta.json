@@ -1,0 +1,6 @@
+{
+	"package" : "Enabled_provides_feature",
+	"provide" : [
+		"Enabled3/feature"
+	]
+}
