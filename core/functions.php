@@ -61,7 +61,10 @@ spl_autoload_register(
 			return class_exists($class, false) || (class_exists($aliases[$class], false) && class_alias($aliases[$class], $class));
 		}
 		if (isset($cache[$class])) {
-			return $cache[$class] ? require_once $cache[$class] : false;
+			if ($cache[$class]) {
+				require_once $cache[$class];
+			}
+			return (bool)$cache[$class];
 		}
 		$prepared_class_name = ltrim($class, '\\');
 		if (strpos($prepared_class_name, 'cs\\') === 0) {
