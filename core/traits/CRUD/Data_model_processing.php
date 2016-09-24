@@ -63,22 +63,16 @@ trait Data_model_processing {
 				unset($arguments[$item]);
 				continue;
 			}
-			$model              = explode(':', $model, 2);
-			$type               = $model[0];
+			list($type, $format) = explode(':', $model, 2) + [1 => null];
 			$multilingual_field = false;
 			/**
 			 * If field is multilingual
 			 */
 			if ($type == 'ml') {
 				$multilingual_field = true;
-				$model              = explode(':', $model[1], 2);
-				$type               = $model[0];
+				list($type, $format) = explode(':', $format, 2) + [1 => null];
 			}
-			$argument = $this->crud_argument_preparation(
-				$type,
-				isset($model[1]) ? $model[1] : null,
-				$argument
-			);
+			$argument = $this->crud_argument_preparation($type, $format, $argument);
 			/**
 			 * If field is multilingual - handle multilingual storing of value automatically
 			 */
@@ -126,9 +120,7 @@ trait Data_model_processing {
 				}
 				continue;
 			}
-			$field_model = explode(':', $field_model, 2);
-			$type        = $field_model[0];
-			$format      = isset($field_model[1]) ? $field_model[1] : null;
+			list($type, $format) = explode(':', $field_model, 2) + [1 => null];
 			foreach ($arguments as $index => $arguments_local) {
 				$new_structure['data'][$index][$field_name] = $this->crud_argument_preparation($type, $format, $arguments_local[$key]);
 			}
@@ -176,8 +168,8 @@ trait Data_model_processing {
 					/**
 					 * After this `$format[0]` will contain length to truncation and `$format[1]` if exists - ending
 					 */
-					$format   = explode(':', $format);
-					$argument = truncate($argument, $format[0], isset($format[1]) ? $format[1] : '...', true);
+					list($length, $ending) = explode(':', $format) + [1 => '...'];
+					$argument = truncate($argument, $length, $ending, true);
 				}
 				break;
 			case 'set':
