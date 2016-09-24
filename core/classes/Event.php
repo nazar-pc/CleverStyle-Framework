@@ -22,7 +22,7 @@ class Event {
 	 */
 	protected $callbacks_cache;
 	protected function construct () {
-		foreach ($this->events_files_paths() as $path) {
+		foreach (glob(MODULES.'/*/events.php') as $path) {
 			include $path;
 		}
 	}
@@ -119,17 +119,5 @@ class Event {
 			}
 		}
 		return true;
-	}
-	/**
-	 * @return string[]
-	 */
-	protected function events_files_paths () {
-		$paths = [];
-		foreach (get_files_list(MODULES, false, 'd', true) as $path) {
-			if (file_exists("$path/events.php")) {
-				$paths[] = "$path/events.php";
-			}
-		}
-		return $paths;
 	}
 }
