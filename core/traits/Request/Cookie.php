@@ -21,6 +21,9 @@ trait Cookie {
 	 */
 	public function init_cookie ($cookie = []) {
 		$this->cookie = $cookie;
+		if (!$cookie) {
+			return;
+		}
 		/**
 		 * Fill un-prefixed keys according to system configuration
 		 */

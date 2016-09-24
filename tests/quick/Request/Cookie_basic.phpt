@@ -30,6 +30,10 @@ var_dump($Request->cookie('c3'));
 
 var_dump('Non-existing');
 var_dump($Request->cookie('c4'));
+
+var_dump('Empty cookies list');
+Config::instance_stub();
+$Request->init_cookie();
 ?>
 --EXPECT--
 string(5) "Basic"
@@ -40,3 +44,4 @@ string(11) "V2 prefixed"
 string(11) "V3 prefixed"
 string(12) "Non-existing"
 NULL
+string(18) "Empty cookies list"
