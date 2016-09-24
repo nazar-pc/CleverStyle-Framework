@@ -178,9 +178,24 @@ trait Server {
 	 * @return string
 	 */
 	protected function host ($server) {
+		list($host, $port) = $this->host_parse($server);
+		if (preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host) !== '') {
+			return '';
+		}
+		$expected_port = $this->secure ? 443 : 80;
+		if ($port && $port != $expected_port) {
+			$host .= ':'.(int)$port;
+		}
+		return $host;
+	}
+	/**
+	 * @param string[] $server
+	 *
+	 * @return string[]
+	 */
+	protected function host_parse ($server) {
 		$host                  = @$server['SERVER_NAME'] ?: '';
 		$port                  = '';
-		$expected_port         = $this->secure ? 443 : 80;
 		$forwarded_host_header = $this->header('x-forwarded-host');
 		$host_header           = $this->header('host');
 		if (!$host && $forwarded_host_header) {
@@ -192,13 +207,7 @@ trait Server {
 				$port = explode(':', $host_header)[1];
 			}
 		}
-		if ($port == $expected_port) {
-			$port = '';
-		}
-		if (preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host) !== '') {
-			return '';
-		}
-		return $host.($port ? ':'.(int)$port : '');
+		return [$host, $port];
 	}
 	/**
 	 * Secure protocol detection
