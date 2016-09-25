@@ -83,17 +83,28 @@ trait CRUD {
 		if ($update_needed) {
 			$this->update_internal(
 				$table,
-				array_filter(
-					$data_model,
-					function ($item) {
-						return !is_array($item) || !isset($item['data_model']);
-					}
-				),
+				array_filter($data_model, [$this, 'format_without_data_model']),
 				array_merge([array_keys($data_model)[0] => $id], $prepared_arguments),
 				false
 			);
 		}
 		return $id;
+	}
+	/**
+	 * @param mixed $format
+	 *
+	 * @return bool
+	 */
+	private function format_without_data_model ($format) {
+		return !$this->format_with_data_model($format);
+	}
+	/**
+	 * @param mixed $format
+	 *
+	 * @return bool
+	 */
+	private function format_with_data_model ($format) {
+		return is_array($format) && isset($format['data_model']);
 	}
 	/**
 	 * @param int|string $id
@@ -105,7 +116,7 @@ trait CRUD {
 		 * At first we remove all old data
 		 */
 		foreach ($this->data_model as $table => $model) {
-			if (!is_array($model) || !isset($model['data_model'])) {
+			if ($this->format_without_data_model($model)) {
 				continue;
 			}
 			$id_field                 = array_keys($model['data_model'])[0];
@@ -180,12 +191,7 @@ trait CRUD {
 			}
 			return $id;
 		}
-		$columns      = array_filter(
-			$data_model,
-			function ($column) {
-				return !is_array($column) || !isset($column['data_model']);
-			}
-		);
+		$columns      = array_filter($data_model, [$this, 'format_without_data_model']);
 		$columns      = '`'.implode('`,`', array_keys($columns)).'`';
 		$first_column = array_keys($data_model)[0];
 		$data         = $this->db()->qf(
@@ -199,7 +205,7 @@ trait CRUD {
 			return false;
 		}
 		foreach ($this->data_model as $field => $model) {
-			if (is_array($model) && isset($model['data_model'])) {
+			if ($this->format_with_data_model($model)) {
 				$data[$field] = $this->read_joined_table($id, $field, $model);
 			} else {
 				if (is_string($model)) {
