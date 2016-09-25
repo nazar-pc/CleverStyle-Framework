@@ -74,6 +74,12 @@ var_dump($url);
 
 var_dump('File source by url');
 var_dump($storage->source_by_url($url));
+
+var_dump('File url by source (incorrect)');
+var_dump($storage->url_by_source('/file.txt'));
+
+var_dump('File source by url (incorrect)');
+var_dump($storage->source_by_url('https://google.com'));
 ?>
 --EXPECTF--
 string(8) "Base url"
@@ -140,3 +146,7 @@ string(18) "File url by source"
 string(%d) "http://cscms.travis/%s/file.txt"
 string(18) "File source by url"
 string(%d) "%s/tests/%s/file.txt"
+string(30) "File url by source (incorrect)"
+bool(false)
+string(30) "File source by url (incorrect)"
+bool(false)

@@ -106,9 +106,10 @@ class Local extends _Abstract {
 	 */
 	public function url_by_source ($source) {
 		$source = $this->absolute_path($source);
-		if (strpos($source, PUBLIC_STORAGE) === 0) {
-			$source = Config::instance()->core_url().substr($source, strlen(DIR));
+		if (strpos($source, PUBLIC_STORAGE) !== 0) {
+			return false;
 		}
+		$source = Config::instance()->core_url().substr($source, strlen(DIR));
 		return str_replace('\\', '/', $source);
 	}
 	/**
@@ -116,9 +117,10 @@ class Local extends _Abstract {
 	 */
 	public function source_by_url ($url) {
 		$Config = Config::instance();
-		if (strpos($url, $Config->core_url()) === 0) {
-			$url = DIR.substr($url, strlen($Config->core_url()));
+		if (strpos($url, $Config->core_url()) !== 0) {
+			return false;
 		}
+		$url = DIR.substr($url, strlen($Config->core_url()));
 		return $this->relative_path($url);
 	}
 	/**
@@ -127,7 +129,7 @@ class Local extends _Abstract {
 	 * @return string
 	 */
 	protected function absolute_path ($path) {
-		return preg_match('#^(([a-z]+:)?//|/)#i', $path) ? $path : PUBLIC_STORAGE.'/'.ltrim($path);
+		return preg_match('#^((http[s]?:)?//|/)#i', $path) ? $path : PUBLIC_STORAGE.'/'.ltrim($path);
 	}
 	/**
 	 * @param string $path
