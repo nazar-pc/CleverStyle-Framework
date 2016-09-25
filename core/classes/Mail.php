@@ -40,32 +40,23 @@ class Mail {
 		}
 		$Config    = Config::instance();
 		$PHPMailer = $this->phpmailer_instance($Config);
-		foreach ($this->normalize_email($email) as $e) {
-			$PHPMailer->addAddress(...$e);
-		}
-		foreach ($this->normalize_email($reply_to) as $r) {
-			$PHPMailer->addReplyTo(...$r);
-		}
-		foreach ($this->normalize_attachment($attachments) as $a) {
-			try {
-				$PHPMailer->addAttachment(...$a);
-			} catch (phpmailerException $e) {
-				trigger_error($e->getMessage(), E_USER_WARNING);
-			}
-		}
-		$PHPMailer->Subject = $subject;
-		$signature          = $this->make_signature($Config, $signature);
-		$PHPMailer->Body    = $this->normalize_body($body, $signature);
-		if ($body_text) {
-			$PHPMailer->AltBody = $body_text.strip_tags($signature);
-		}
+		$this->add_email($email, [$PHPMailer, 'addAddress']);
+		$this->add_email($reply_to, [$PHPMailer, 'addReplyTo']);
 		try {
-			$result = $PHPMailer->send();
+			foreach ($this->normalize_attachment($attachments) as $a) {
+				$PHPMailer->addAttachment(...$a);
+			}
+			$PHPMailer->Subject = $subject;
+			$signature          = $this->make_signature($Config, $signature);
+			$PHPMailer->Body    = $this->normalize_body($body, $signature);
+			if ($body_text) {
+				$PHPMailer->AltBody = $body_text.strip_tags($signature);
+			}
+			return $PHPMailer->send();
 		} catch (phpmailerException $e) {
 			trigger_error($e->getMessage(), E_USER_WARNING);
-			$result = false;
 		}
-		return $result;
+		return false;
 	}
 	/**
 	 * Create PHPMailer instance with parameters according to system configuration
@@ -90,6 +81,15 @@ class Mail {
 		$PHPMailer->CharSet  = 'utf-8';
 		$PHPMailer->isHTML();
 		return $PHPMailer;
+	}
+	/**
+	 * @param array|null|string|string[] $email
+	 * @param callable                   $callback
+	 */
+	protected function add_email ($email, callable $callback) {
+		foreach ($this->normalize_email($email) as $e) {
+			$callback(...$e);
+		}
 	}
 	/**
 	 * @param array|null|string|string[] $email

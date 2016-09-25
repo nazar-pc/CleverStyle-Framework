@@ -473,24 +473,4 @@ array(1) {
 PHP Warning:  Attachment file doesn't exists in %s/core/classes/Mail.php on line %d
 
 Warning: Attachment file doesn't exists in %s/core/classes/Mail.php on line %d
-string(25) "PHPMailer->Subject set to"
-string(10) "Test email"
-string(22) "PHPMailer->Body set to"
-string(210) "<!doctype html>
-<html>
-	<head>
-		<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-	</head>
-	<body>
-		<strong>HTML body content</strong><br>
-		<br>
-		--%w
-		<br>mail_signature
-	</body>
-</html>
-"
-string(24) "PHPMailer->send() called"
-PHP Warning:  Sending failed in %s/core/classes/Mail.php on line %d
-
-Warning: Sending failed in %s/core/classes/Mail.php on line %d
 bool(false)
