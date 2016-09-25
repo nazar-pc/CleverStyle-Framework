@@ -45,7 +45,6 @@ trait Permission {
 		if ($user == User::ROOT_ID) {
 			return true;
 		}
-		$group_label_exploded = explode('/', "$group/$label");
 		/**
 		 * Default permissions values:
 		 *
@@ -53,7 +52,7 @@ trait Permission {
 		 * - only administrators have access to `api/{module}/admin/*` URLs by default
 		 * - all other URLs are available to everyone by default
 		 */
-		$admin_section = $group_label_exploded[0] === 'admin' || ($group_label_exploded[0] === 'api' && @$group_label_exploded[2] === 'admin');
+		$admin_section = preg_match('#^(api/[^/]+/)?admin#', "$group/$label");
 		if (!$user || ($admin_section && !$this->admin())) {
 			return false;
 		}
