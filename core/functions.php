@@ -62,7 +62,7 @@ spl_autoload_register(
 		}
 		if (isset($cache[$class])) {
 			if ($cache[$class]) {
-				require_once $cache[$class];
+				require $cache[$class];
 			}
 			return (bool)$cache[$class];
 		}
@@ -86,7 +86,7 @@ spl_autoload_register(
 		) {
 			$cache[$class] = realpath($file);
 			__classes_put_into_cache('autoload', $cache);
-			require_once $file;
+			require $file;
 			return true;
 		}
 		__classes_put_into_cache('autoload', $cache);
