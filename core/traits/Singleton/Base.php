@@ -41,20 +41,12 @@ trait Base {
 	 * @return False_class|static
 	 */
 	protected static function instance_prototype (&$instance, $check = false) {
-		if ($instance && $instance->__request_id !== Request::$id) {
-			$instance->__request_id = Request::$id;
-			if (defined('static::INIT_STATE_METHOD')) {
-				$instance->{constant('static::INIT_STATE_METHOD')}();
-			}
-		}
 		if (is_object($instance)) {
+			static::instance_reinit($instance);
 			return $instance;
 		}
-		if ($check) {
-			return False_class::instance();
-		}
 		$called_class = get_called_class();
-		if (strpos($called_class, 'cs') !== 0) {
+		if ($check || strpos($called_class, 'cs') !== 0) {
 			return False_class::instance();
 		}
 		list($aliases, $final_class) = static::instance_prototype_get_aliases_final_class($called_class);
@@ -73,6 +65,17 @@ trait Base {
 			require_once $alias['path'];
 		}
 		return static::instance_create($instance, $called_class, $final_class);
+	}
+	/**
+	 * @param static $instance
+	 */
+	protected static function instance_reinit (&$instance) {
+		if ($instance && $instance->__request_id !== Request::$id) {
+			$instance->__request_id = Request::$id;
+			if (defined('static::INIT_STATE_METHOD')) {
+				$instance->{constant('static::INIT_STATE_METHOD')}();
+			}
+		}
 	}
 	/**
 	 * @param static $instance
