@@ -6,12 +6,15 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\Storage;
+use
+	cs\Config;
+
 class Local extends _Abstract {
 	/**
 	 * @inheritdoc
 	 */
 	public function __construct ($base_url, $host, $user = '', $password = '') {
-		$this->base_url  = url_by_source(PUBLIC_STORAGE);
+		$this->base_url  = $base_url ?: $this->url_by_source(PUBLIC_STORAGE);
 		$this->connected = true;
 	}
 	/**
@@ -102,13 +105,21 @@ class Local extends _Abstract {
 	 * @inheritdoc
 	 */
 	public function url_by_source ($source) {
-		return url_by_source($this->absolute_path($source));
+		$source = $this->absolute_path($source);
+		if (strpos($source, PUBLIC_STORAGE) === 0) {
+			$source = Config::instance()->core_url().substr($source, strlen(DIR));
+		}
+		return str_replace('\\', '/', $source);
 	}
 	/**
 	 * @inheritdoc
 	 */
 	public function source_by_url ($url) {
-		return $this->relative_path(source_by_url($url));
+		$Config = Config::instance();
+		if (strpos($url, $Config->core_url()) === 0) {
+			$url = DIR.substr($url, strlen($Config->core_url()));
+		}
+		return $this->relative_path($url);
 	}
 	/**
 	 * @param string $path

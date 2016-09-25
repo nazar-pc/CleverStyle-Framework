@@ -195,8 +195,6 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @see url_by_source()
-	 *
 	 * @param string $source
 	 *
 	 * @return false|string
@@ -206,8 +204,6 @@ abstract class _Abstract {
 	 * Get file destination in file system by it's url
 	 *
 	 * @abstract
-	 *
-	 * @see source_by_url()
 	 *
 	 * @param string $url
 	 *

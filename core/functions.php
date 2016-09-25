@@ -156,43 +156,6 @@ function __ ($item, ...$arguments) {
 }
 
 /**
- * Get file url by it's destination in file system
- *
- * @param string $source
- *
- * @return false|string
- */
-function url_by_source ($source) {
-	$Config = Config::instance(true);
-	if (!$Config) {
-		return false;
-	}
-	$source = realpath($source);
-	if (mb_strpos($source, DIR) === 0) {
-		return $Config->core_url().mb_substr($source, mb_strlen(DIR));
-	}
-	return false;
-}
-
-/**
- * Get file destination in file system by it's url
- *
- * @param string $url
- *
- * @return false|string
- */
-function source_by_url ($url) {
-	$Config = Config::instance(true);
-	if (!$Config) {
-		return false;
-	}
-	if (mb_strpos($url, $Config->core_url()) === 0) {
-		return DIR.mb_substr($url, mb_strlen($Config->core_url()));
-	}
-	return false;
-}
-
-/**
  * Public cache cleaning
  *
  * @return bool

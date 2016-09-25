@@ -12,7 +12,8 @@ use
 	cs\Config,
 	cs\Core,
 	cs\ExitException,
-	cs\Language;
+	cs\Language,
+	cs\Storage;
 
 trait storages {
 	/**
@@ -25,8 +26,8 @@ trait storages {
 		$storages[0] = [
 			'host'   => $Core->storage_host,
 			'driver' => $Core->storage_driver,
-			'user'   => '',
-			'url'    => $Core->storage_url ?: url_by_source(PUBLIC_STORAGE)
+			'user'   => $Core->storage_user,
+			'url'    => Storage::instance()->storage(0)->base_url()
 		];
 		foreach ($storages as $i => &$storage) {
 			$storage['index'] = $i;
