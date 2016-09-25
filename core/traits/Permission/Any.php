@@ -20,24 +20,15 @@ use
 trait Any {
 	/**
 	 * @param int    $id
-	 * @param string $type
+	 * @param string $type Either `user` or `group`
 	 *
 	 * @return int[]|false
 	 */
 	protected function get_any_permissions ($id, $type) {
-		$id = (int)$id;
-		if (!$id) {
-			return false;
-		}
-		switch ($type) {
-			case 'user':
-				$table = '[prefix]users_permissions';
-				break;
-			case 'group':
-				$table = '[prefix]groups_permissions';
-				break;
-			default:
-				return false;
+		$id    = (int)$id;
+		$table = '[prefix]users_permissions';
+		if ($type == 'group') {
+			$table = '[prefix]groups_permissions';
 		}
 		return $this->cache->get(
 			"permissions/$id",
@@ -64,24 +55,15 @@ trait Any {
 	/**
 	 * @param array  $data
 	 * @param int    $id
-	 * @param string $type
+	 * @param string $type Either `user` or `group`
 	 *
 	 * @return bool
 	 */
-	protected function set_any_permissions ($data, $id, $type) {
-		$id = (int)$id;
-		if (!is_array($data) || empty($data) || !$id) {
-			return false;
-		}
-		switch ($type) {
-			case 'user':
-				$table = '[prefix]users_permissions';
-				break;
-			case 'group':
-				$table = '[prefix]groups_permissions';
-				break;
-			default:
-				return false;
+	protected function set_any_permissions (array $data, $id, $type) {
+		$id    = (int)$id;
+		$table = '[prefix]users_permissions';
+		if ($type == 'group') {
+			$table = '[prefix]groups_permissions';
 		}
 		$insert_update = [];
 		$delete        = [];
@@ -129,24 +111,15 @@ trait Any {
 	}
 	/**
 	 * @param int    $id
-	 * @param string $type
+	 * @param string $type Either `user` or `group`
 	 *
 	 * @return bool
 	 */
 	protected function del_any_permissions_all ($id, $type) {
-		$id = (int)$id;
-		if (!$id) {
-			return false;
-		}
-		switch ($type) {
-			case 'user':
-				$table = '[prefix]users_permissions';
-				break;
-			case 'group':
-				$table = '[prefix]groups_permissions';
-				break;
-			default:
-				return false;
+		$id    = (int)$id;
+		$table = '[prefix]users_permissions';
+		if ($type == 'group') {
+			$table = '[prefix]groups_permissions';
 		}
 		$return = $this->db_prime()->q(
 			"DELETE FROM `$table`
