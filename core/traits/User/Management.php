@@ -89,24 +89,11 @@ trait Management {
 		$email_hash = hash('sha224', $email);
 		$login      = strstr($email, '@', true);
 		$login_hash = hash('sha224', $login);
-		if (
-			$this->get_id($login_hash) !== false ||
-			(
-				$login &&
-				in_array($login, file_get_json(MODULES.'/System/index.json')['profile'])
-			)
-		) {
+		if ($this->registration_login_already_occupied($login, $login_hash)) {
 			$login      = $email;
 			$login_hash = $email_hash;
 		}
-		if ($this->db_prime()->qf(
-			"SELECT `id`
-			FROM `[prefix]users`
-			WHERE `email_hash` = '%s'
-			LIMIT 1",
-			$email_hash
-		)
-		) {
+		if ($this->get_id($email_hash)) {
 			return 'exists';
 		}
 		$this->delete_unconfirmed_users();
@@ -184,6 +171,20 @@ trait Management {
 		} else {
 			return 'error';
 		}
+	}
+	/**
+	 * @param string $login
+	 * @param string $login_hash
+	 *
+	 * @return bool
+	 */
+	protected function registration_login_already_occupied ($login, $login_hash) {
+		return
+			$this->get_id($login_hash) !== false ||
+			(
+				$login &&
+				in_array($login, file_get_json(MODULES.'/System/index.json')['profile'])
+			);
 	}
 	/**
 	 * Confirmation of registration process
