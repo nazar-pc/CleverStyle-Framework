@@ -165,7 +165,7 @@ function clean_pcache () {
 	$list = get_files_list(PUBLIC_CACHE, false, 'fd', true, true, 'name|desc');
 	foreach ($list as $item) {
 		if (is_writable($item)) {
-			is_dir($item) ? @rmdir($item) : @unlink($item);
+			is_dir($item) ? @rmdir_recursive($item) : @unlink($item);
 		} else {
 			$ok = false;
 		}
