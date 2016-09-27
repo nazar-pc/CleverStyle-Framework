@@ -535,8 +535,6 @@ function xap ($in, $html = 'text', $iframe = false) {
 		return htmlspecialchars($in, ENT_NOQUOTES | ENT_HTML5 | ENT_DISALLOWED | ENT_SUBSTITUTE | ENT_HTML5);
 	}
 	if (!isset($purifier)) {
-		Phar::loadPhar(__DIR__.'/thirdparty/htmlpurifier.tar.gz', 'htmlpurifier.phar');
-		require_once 'phar://htmlpurifier.phar/HTMLPurifier.standalone.php';
 		$config_array = [
 			'HTML.Doctype'         => 'HTML 4.01 Transitional',
 			'Attr.EnableID'        => true,
@@ -571,3 +569,20 @@ function xap ($in, $html = 'text', $iframe = false) {
 		return $purifier->purify($in);
 	}
 }
+
+/**
+ * @param string $class
+ *
+ * @return bool
+ */
+function __htmlpurifier_autoload ($class) {
+	$class = ltrim($class, '\\');
+	if (strpos($class, 'HTMLPurifier_') === 0) {
+		spl_autoload_unregister('__htmlpurifier_autoload');
+		Phar::loadPhar(__DIR__.'/thirdparty/htmlpurifier.tar.gz', 'htmlpurifier.phar');
+		require_once 'phar://htmlpurifier.phar/HTMLPurifier.standalone.php';
+		return true;
+	}
+}
+
+spl_autoload_register('__htmlpurifier_autoload', true, true);

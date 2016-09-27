@@ -3,5 +3,6 @@
 	"nazar-pc/stream-slicer" : "*",
 	"nazar-pc/upf"           : "*",
 	"phpmailer/phpmailer"    : "*",
-	"wp-cli/php-cli-tools"   : "*"
+	"wp-cli/php-cli-tools"   : "*",
+	"ezyang/htmlpurifier"    : "*"
 }
