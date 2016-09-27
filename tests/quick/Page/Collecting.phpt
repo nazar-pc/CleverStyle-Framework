@@ -1,83 +1,77 @@
 --FILE--
 <?php
 namespace cs;
+use
+	cs\Page\Includes\Collecting;
+
 require_once __DIR__.'/../../functions.php';
 define('DIR', __DIR__.'/Collecting');
 define('MODULES', __DIR__.'/Collecting/modules');
 define('THEMES', __DIR__.'/Collecting/themes');
 include __DIR__.'/../../unit.php';
-class Page_test extends Page {
-	public static function test () {
-		$Config = Config::instance_stub(
-			[
-				'components' => [
-					'modules' => [
-						'Disabled_no_map_no_meta'    => [
-							'active' => Config\Module_Properties::DISABLED
-						],
-						'Disabled_with_map_and_meta' => [
-							'active' => Config\Module_Properties::DISABLED
-						],
-						'Enabled_provide'            => [
-							'active' => Config\Module_Properties::ENABLED
-						],
-						'Enabled_no_includes'        => [
-							'active' => Config\Module_Properties::ENABLED
-						],
-						'Enabled_has_dependencies'   => [
-							'active' => Config\Module_Properties::ENABLED
-						],
-						'Enabled_provides_feature'   => [
-							'active' => Config\Module_Properties::ENABLED
-						],
-						'System'                     => [
-							'active' => Config\Module_Properties::ENABLED
-						],
-						'Uninstalled'                => [
-							'active' => Config\Module_Properties::UNINSTALLED
-						]
-					]
+$Config = Config::instance_stub(
+	[
+		'components' => [
+			'modules' => [
+				'Disabled_no_map_no_meta'    => [
+					'active' => Config\Module_Properties::DISABLED
 				],
-				'core'       => [
-					'disable_webcomponents' => 0
+				'Disabled_with_map_and_meta' => [
+					'active' => Config\Module_Properties::DISABLED
+				],
+				'Enabled_provide'            => [
+					'active' => Config\Module_Properties::ENABLED
+				],
+				'Enabled_no_includes'        => [
+					'active' => Config\Module_Properties::ENABLED
+				],
+				'Enabled_has_dependencies'   => [
+					'active' => Config\Module_Properties::ENABLED
+				],
+				'Enabled_provides_feature'   => [
+					'active' => Config\Module_Properties::ENABLED
+				],
+				'System'                     => [
+					'active' => Config\Module_Properties::ENABLED
+				],
+				'Uninstalled'                => [
+					'active' => Config\Module_Properties::UNINSTALLED
 				]
 			]
-		);
-		Event::instance_stub(
-			[],
-			[
-				'fire' => function (...$arguments) {
-					var_dump('cs\Event::fire() called with', $arguments);
-					return true;
-				}
-			]
-		);
+		],
+		'core'       => [
+			'disable_webcomponents' => 0
+		]
+	]
+);
+Event::instance_stub(
+	[],
+	[
+		'fire' => function (...$arguments) {
+			var_dump('cs\Event::fire() called with', $arguments);
+			return true;
+		}
+	]
+);
 
-		$Page        = new self;
-		$Page->theme = Config::SYSTEM_THEME;
+var_dump('Regular includes for system theme');
+echo json_encode(Collecting::get_includes_dependencies_and_map($Config, Config::SYSTEM_THEME), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)."\n";
 
-		var_dump('Regular includes for system theme');
-		echo json_encode($Page->get_includes_dependencies_and_map($Config), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)."\n";
+Event::instance_stub(
+	[],
+	[
+		'fire' => function () {
+			return true;
+		}
+	]
+);
 
-		Event::instance_stub(
-			[],
-			[
-				'fire' => function () {
-					return true;
-				}
-			]
-		);
+var_dump('Regular includes for custom theme');
+echo json_encode(Collecting::get_includes_dependencies_and_map($Config, 'Custom'), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)."\n";
 
-		var_dump('Regular includes for custom theme');
-		$Page->theme = 'Custom';
-		echo json_encode($Page->get_includes_dependencies_and_map($Config), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)."\n";
-
-		var_dump('Regular includes for custom theme (disabled WebComponents)');
-		$Config->core['disable_webcomponents'] = 1;
-		echo json_encode($Page->get_includes_dependencies_and_map($Config), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)."\n";
-	}
-}
-Page_test::test();
+var_dump('Regular includes for custom theme (disabled WebComponents)');
+$Config->core['disable_webcomponents'] = 1;
+echo json_encode(Collecting::get_includes_dependencies_and_map($Config, 'Custom'), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)."\n";
 ?>
 --EXPECTF--
 string(33) "Regular includes for system theme"

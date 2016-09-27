@@ -10,24 +10,26 @@ use
 	cs\Event,
 	cs\Page\Includes_processing;
 
-trait Cache {
+class Cache {
 	/**
 	 * @param \cs\Config   $Config
 	 * @param \cs\Language $L
+	 * @param string       $pcache_basename_path
+	 * @param string       $theme
 	 */
-	protected function rebuild_cache ($Config, $L) {
-		if (!file_exists("$this->pcache_basename_path.json")) {
-			$this->rebuild_cache_normal($Config);
+	public static function rebuild ($Config, $L, $pcache_basename_path, $theme) {
+		if (!file_exists("$pcache_basename_path.json")) {
+			static::rebuild_normal($Config, $pcache_basename_path, $theme);
 			Event::instance()->fire('System/Page/rebuild_cache');
-			$this->rebuild_cache_optimized();
-			$this->rebuild_cache_webcomponents_polyfill();
+			static::rebuild_optimized($pcache_basename_path);
+			static::rebuild_webcomponents_polyfill();
 		}
 		/**
 		 * We take hash of languages in order to take into account when list of active languages has changed (and generate cache for all acive languages)
 		 */
-		$languages_hash = $this->get_hash_of(implode('', $Config->core['active_languages']));
+		$languages_hash = static::get_hash_of(implode('', $Config->core['active_languages']));
 		if (!file_exists(PUBLIC_CACHE."/languages-$languages_hash.json")) {
-			$this->rebuild_cache_languages($Config, $L, $languages_hash);
+			static::rebuild_languages($Config, $L, $languages_hash);
 		}
 	}
 	/**
@@ -35,30 +37,34 @@ trait Cache {
 	 *
 	 * @return string
 	 */
-	protected function get_hash_of ($content) {
+	protected static function get_hash_of ($content) {
 		return substr(md5($content), 0, 5);
 	}
 	/**
 	 * @param \cs\Config $Config
+	 * @param string     $pcache_basename_path
 	 */
-	protected function rebuild_cache_normal ($Config) {
-		list($dependencies, $includes_map) = $this->get_includes_dependencies_and_map($Config);
+	protected static function rebuild_normal ($Config, $pcache_basename_path, $theme) {
+		list($dependencies, $includes_map) = Collecting::get_includes_dependencies_and_map($Config, $theme);
 		$compressed_includes_map    = [];
 		$not_embedded_resources_map = [];
 		/** @noinspection ForeachSourceInspection */
 		foreach ($includes_map as $filename_prefix => $local_includes) {
-			$compressed_includes_map[$filename_prefix] = $this->cache_compressed_includes_files(
-				"$this->pcache_basename_path:".str_replace('/', '+', $filename_prefix),
+			$compressed_includes_map[$filename_prefix] = static::cache_compressed_includes_files(
+				"$pcache_basename_path:".str_replace('/', '+', $filename_prefix),
 				$local_includes,
 				$Config->core['vulcanization'],
 				$not_embedded_resources_map
 			);
 		}
 		unset($includes_map, $filename_prefix, $local_includes);
-		file_put_json("$this->pcache_basename_path.json", [$dependencies, $compressed_includes_map, array_filter($not_embedded_resources_map)]);
+		file_put_json("$pcache_basename_path.json", [$dependencies, $compressed_includes_map, array_filter($not_embedded_resources_map)]);
 	}
-	protected function rebuild_cache_optimized () {
-		list(, $compressed_includes_map, $preload_source) = file_get_json("$this->pcache_basename_path.json");
+	/**
+	 * @param string $pcache_basename_path
+	 */
+	protected static function rebuild_optimized ($pcache_basename_path) {
+		list(, $compressed_includes_map, $preload_source) = file_get_json("$pcache_basename_path.json");
 		$preload = [array_values($compressed_includes_map['System'])];
 		/** @noinspection ForeachSourceInspection */
 		foreach ($compressed_includes_map['System'] as $path) {
@@ -69,19 +75,19 @@ trait Cache {
 		unset($compressed_includes_map['System']);
 		$optimized_includes = array_flip(array_merge(...array_values(array_map('array_values', $compressed_includes_map))));
 		$preload            = array_merge(...$preload);
-		file_put_json("$this->pcache_basename_path.optimized.json", [$optimized_includes, $preload]);
+		file_put_json("$pcache_basename_path.optimized.json", [$optimized_includes, $preload]);
 	}
-	protected function rebuild_cache_webcomponents_polyfill () {
+	protected static function rebuild_webcomponents_polyfill () {
 		$webcomponents_js = file_get_contents(DIR.'/includes/js/WebComponents-polyfill/webcomponents-custom.min.js');
 		file_put_contents(PUBLIC_CACHE.'/webcomponents.js', $webcomponents_js, LOCK_EX | FILE_BINARY);
-		file_put_contents(PUBLIC_CACHE.'/webcomponents.js.hash', $this->get_hash_of($webcomponents_js), LOCK_EX | FILE_BINARY);
+		file_put_contents(PUBLIC_CACHE.'/webcomponents.js.hash', static::get_hash_of($webcomponents_js), LOCK_EX | FILE_BINARY);
 	}
 	/**
 	 * @param \cs\Config   $Config
 	 * @param \cs\Language $L
 	 * @param string       $languages_hash
 	 */
-	protected function rebuild_cache_languages ($Config, $L, $languages_hash) {
+	protected static function rebuild_languages ($Config, $L, $languages_hash) {
 		$current_language = $L->clanguage;
 		$languages_map    = [];
 		/** @noinspection ForeachSourceInspection */
@@ -89,7 +95,7 @@ trait Cache {
 			$L->change($language);
 			/** @noinspection DisconnectedForeachInstructionInspection */
 			$translations             = _json_encode($L);
-			$language_hash            = $this->get_hash_of($translations);
+			$language_hash            = static::get_hash_of($translations);
 			$languages_map[$language] = $language_hash;
 			file_put_contents(PUBLIC_CACHE."/languages-$language-$language_hash.js", "define($translations);");
 		}
@@ -108,11 +114,11 @@ trait Cache {
 	 *
 	 * @return array
 	 */
-	protected function cache_compressed_includes_files ($target_file_path, $includes, $vulcanization, &$not_embedded_resources_map) {
+	protected static function cache_compressed_includes_files ($target_file_path, $includes, $vulcanization, &$not_embedded_resources_map) {
 		$local_includes = [];
 		foreach ($includes as $extension => $files) {
 			$not_embedded_resources = [];
-			$content                = $this->cache_compressed_includes_files_single(
+			$content                = static::cache_compressed_includes_files_single(
 				$extension,
 				$target_file_path,
 				$files,
@@ -127,7 +133,7 @@ trait Cache {
 			unset($resource);
 			$file_path = "$target_file_path.$extension";
 			file_put_contents($file_path, $content, LOCK_EX | FILE_BINARY);
-			$relative_path                              = '/storage/pcache/'.basename($file_path).'?'.$this->get_hash_of($content);
+			$relative_path                              = '/storage/pcache/'.basename($file_path).'?'.static::get_hash_of($content);
 			$local_includes[$extension]                 = $relative_path;
 			$not_embedded_resources_map[$relative_path] = $not_embedded_resources;
 		}
@@ -142,7 +148,7 @@ trait Cache {
 	 *
 	 * @return string
 	 */
-	protected function cache_compressed_includes_files_single ($extension, $target_file_path, $files, $vulcanization, &$not_embedded_resources) {
+	protected static function cache_compressed_includes_files_single ($extension, $target_file_path, $files, $vulcanization, &$not_embedded_resources) {
 		$content = '';
 		switch ($extension) {
 			/**
@@ -193,7 +199,7 @@ trait Cache {
 					return $content.Includes_processing::js(file_get_contents($file));
 				};
 				if (substr($target_file_path, -7) == ':System') {
-					$content = 'window.cs={};window.requirejs={paths:'._json_encode($this->get_requirejs_paths()).'};';
+					$content = 'window.cs={};window.requirejs={paths:'._json_encode(RequireJS::get_paths()).'};';
 				}
 		}
 		/** @noinspection PhpUndefinedVariableInspection */

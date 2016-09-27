@@ -10,11 +10,11 @@ use
 	cs\Config,
 	cs\Event;
 
-trait RequireJS {
+class RequireJS {
 	/**
 	 * @return string[]
 	 */
-	protected function get_requirejs_paths () {
+	public static function get_paths () {
 		$Config                = Config::instance();
 		$paths                 = [];
 		$directories_to_browse = [
@@ -32,21 +32,21 @@ trait RequireJS {
 			if ($module_data['active'] == Config\Module_Properties::UNINSTALLED) {
 				continue;
 			}
-			$paths += $this->get_requirejs_paths_add_aliases(MODULES."/$module_name");
+			$paths += static::add_aliases(MODULES."/$module_name");
 		}
 		foreach ($directories_to_browse as $dir) {
 			foreach (get_files_list($dir, false, 'd', true) as $d) {
-				$paths += $this->get_requirejs_paths_find_package($d);
+				$paths += static::find_package($d);
 			}
 		}
-		return $this->absolute_path_to_relative($paths);
+		return _substr($paths, strlen(DIR));
 	}
 	/**
 	 * @param string $dir
 	 *
 	 * @return string[]
 	 */
-	protected function get_requirejs_paths_add_aliases ($dir) {
+	protected static function add_aliases ($dir) {
 		$paths = [];
 		if (is_dir("$dir/includes/js")) {
 			$name         = basename($dir);
@@ -64,8 +64,8 @@ trait RequireJS {
 	 *
 	 * @return string[]
 	 */
-	protected function get_requirejs_paths_find_package ($dir) {
-		$path = $this->get_requirejs_paths_find_package_bower($dir) ?: $this->get_requirejs_paths_find_package_npm($dir);
+	protected static function find_package ($dir) {
+		$path = static::find_package_bower($dir) ?: static::find_package_npm($dir);
 		return $path ? [basename($dir) => substr($path, 0, -3)] : [];
 	}
 	/**
@@ -73,7 +73,7 @@ trait RequireJS {
 	 *
 	 * @return false|string
 	 */
-	protected function get_requirejs_paths_find_package_bower ($dir) {
+	protected static function find_package_bower ($dir) {
 		$bower = @file_get_json("$dir/bower.json");
 		foreach (@(array)$bower['main'] as $main) {
 			if (preg_match('/\.js$/', $main)) {
@@ -92,7 +92,7 @@ trait RequireJS {
 	 *
 	 * @return false|string
 	 */
-	protected function get_requirejs_paths_find_package_npm ($dir) {
+	protected static function find_package_npm ($dir) {
 		$package = @file_get_json("$dir/package.json");
 		// If we have browser-specific declaration - use it
 		/** @noinspection NestedTernaryOperatorInspection */

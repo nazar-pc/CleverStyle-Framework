@@ -28,10 +28,6 @@ use
  * @property string $theme
  */
 trait Includes {
-	use
-		Cache,
-		Collecting,
-		RequireJS;
 	protected $extension_to_as = [
 		'jpeg' => 'image',
 		'jpe'  => 'image',
@@ -232,7 +228,7 @@ trait Includes {
 			/**
 			 * Rebuilding HTML, JS and CSS cache if necessary
 			 */
-			$this->rebuild_cache($Config, $L);
+			Cache::rebuild($Config, $L, $this->pcache_basename_path, $this->theme);
 			$this->webcomponents_polyfill($Request, $Config, true);
 			$languages_hash = $this->get_hash_of(implode('', $Config->core['active_languages']));
 			$language_hash  = file_get_json(PUBLIC_CACHE."/languages-$languages_hash.json")[$L->clanguage];
@@ -251,7 +247,7 @@ trait Includes {
 			 * Language translation is added explicitly only when compression is disabled, otherwise it will be in compressed JS file
 			 */
 			$this->config_internal($L, 'cs.Language', true);
-			$this->config_internal($this->get_requirejs_paths(), 'requirejs.paths', true);
+			$this->config_internal(RequireJS::get_paths(), 'requirejs.paths', true);
 			$includes = $this->get_includes_for_page_without_compression($Config, $Request);
 			$preload  = [];
 		}
@@ -262,6 +258,14 @@ trait Includes {
 		}
 		$this->add_includes_on_page_manually_added($Config, $Request, $preload);
 		return $this;
+	}
+	/**
+	 * @param string $content
+	 *
+	 * @return string
+	 */
+	protected function get_hash_of ($content) {
+		return substr(md5($content), 0, 5);
 	}
 	/**
 	 * @param Config  $Config
@@ -403,17 +407,9 @@ trait Includes {
 	 */
 	protected function get_includes_for_page_without_compression ($Config, $Request) {
 		// To determine all dependencies and stuff we need `$Config` object to be already created
-		list($dependencies, $includes_map) = $this->get_includes_dependencies_and_map($Config);
+		list($dependencies, $includes_map) = Collecting::get_includes_dependencies_and_map($Config, $this->theme);
 		$includes = $this->get_normalized_includes($dependencies, $includes_map, $Request);
-		return $this->add_versions_hash($this->absolute_path_to_relative($includes));
-	}
-	/**
-	 * @param string[]|string[][] $path
-	 *
-	 * @return string[]|string[][]
-	 */
-	protected function absolute_path_to_relative ($path) {
-		return _substr($path, strlen(DIR));
+		return $this->add_versions_hash(_substr($includes, strlen(DIR)));
 	}
 	/**
 	 * @param string[][] $includes

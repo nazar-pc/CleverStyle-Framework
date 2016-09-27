@@ -10,15 +10,16 @@ use
 	cs\Config,
 	cs\Event;
 
-trait Collecting {
+class Collecting {
 	/**
 	 * Get dependencies of components between each other (only that contains some HTML, JS and CSS files) and mapping HTML, JS and CSS files to URL paths
 	 *
 	 * @param Config $Config
+	 * @param string $theme
 	 *
 	 * @return array[] [$dependencies, $includes_map]
 	 */
-	protected function get_includes_dependencies_and_map ($Config) {
+	public static function get_includes_dependencies_and_map ($Config, $theme) {
 		$installed_modules = array_filter(
 			$Config->components['modules'],
 			function ($module_data) {
@@ -28,7 +29,7 @@ trait Collecting {
 		/**
 		 * Get all includes
 		 */
-		$all_includes = $this->get_includes_list(array_keys($installed_modules));
+		$all_includes = static::get_includes_list(array_keys($installed_modules), $theme);
 		$includes_map = [];
 		/**
 		 * Array [package => [list of packages it depends on]]
@@ -41,8 +42,8 @@ trait Collecting {
 		 * Also collect dependencies.
 		 */
 		foreach ($installed_modules as $module => $module_data) {
-			$this->process_meta(MODULES."/$module", $dependencies, $functionalities, $module_data['active'] != Config\Module_Properties::ENABLED);
-			$this->process_map(MODULES."/$module", $includes_map, $all_includes);
+			static::process_meta(MODULES."/$module", $dependencies, $functionalities, $module_data['active'] != Config\Module_Properties::ENABLED);
+			static::process_map(MODULES."/$module", $includes_map, $all_includes);
 		}
 		unset($module, $module_data);
 		/**
@@ -56,9 +57,9 @@ trait Collecting {
 				'includes_map' => &$includes_map
 			]
 		);
-		$includes_map = $this->webcomponents_support_filter($includes_map, (bool)$Config->core['disable_webcomponents']);
-		$dependencies = $this->normalize_dependencies($dependencies, $functionalities);
-		$includes_map = $this->clean_includes_arrays_without_files($dependencies, $includes_map);
+		$includes_map = static::webcomponents_support_filter($includes_map, $theme, (bool)$Config->core['disable_webcomponents']);
+		$dependencies = static::normalize_dependencies($dependencies, $functionalities);
+		$includes_map = static::clean_includes_arrays_without_files($dependencies, $includes_map);
 		$includes_map = array_map(
 			function ($includes) {
 				return array_map('array_values', $includes);
@@ -72,18 +73,19 @@ trait Collecting {
 	 * Getting of HTML, JS and CSS files list to be included
 	 *
 	 * @param string[] $modules
+	 * @param string   $theme
 	 *
 	 * @return string[][]
 	 */
-	protected function get_includes_list ($modules) {
+	protected static function get_includes_list ($modules, $theme) {
 		$includes = [];
 		/**
 		 * Get includes of system and theme
 		 */
-		$this->fill_includes(DIR.'/includes', $includes);
-		$this->fill_includes(THEMES."/$this->theme", $includes);
+		static::fill_includes(DIR.'/includes', $includes);
+		static::fill_includes(THEMES."/$theme", $includes);
 		foreach ($modules as $module) {
-			$this->fill_includes(MODULES."/$module/includes", $includes);
+			static::fill_includes(MODULES."/$module/includes", $includes);
 		}
 		return [
 			'html' => array_merge(...$includes['html']),
@@ -95,10 +97,10 @@ trait Collecting {
 	 * @param string     $base_dir
 	 * @param string[][] $includes
 	 */
-	protected function fill_includes ($base_dir, &$includes) {
-		$includes['html'][] = $this->fill_includes_internal($base_dir, 'html');
-		$includes['js'][]   = $this->fill_includes_internal($base_dir, 'js');
-		$includes['css'][]  = $this->fill_includes_internal($base_dir, 'css');
+	protected static function fill_includes ($base_dir, &$includes) {
+		$includes['html'][] = static::fill_includes_internal($base_dir, 'html');
+		$includes['js'][]   = static::fill_includes_internal($base_dir, 'js');
+		$includes['css'][]  = static::fill_includes_internal($base_dir, 'css');
 	}
 	/**
 	 * @param string $base_dir
@@ -106,7 +108,7 @@ trait Collecting {
 	 *
 	 * @return array
 	 */
-	protected function fill_includes_internal ($base_dir, $ext) {
+	protected static function fill_includes_internal ($base_dir, $ext) {
 		return get_files_list("$base_dir/$ext", "/.*\\.$ext\$/i", 'f', true, true, 'name', '!include') ?: [];
 	}
 	/**
@@ -117,7 +119,7 @@ trait Collecting {
 	 * @param array  $functionalities
 	 * @param bool   $skip_functionalities
 	 */
-	protected function process_meta ($base_dir, &$dependencies, &$functionalities, $skip_functionalities = false) {
+	protected static function process_meta ($base_dir, &$dependencies, &$functionalities, $skip_functionalities = false) {
 		if (!file_exists("$base_dir/meta.json")) {
 			return;
 		}
@@ -161,11 +163,11 @@ trait Collecting {
 	 * @param array  $includes_map
 	 * @param array  $all_includes
 	 */
-	protected function process_map ($base_dir, &$includes_map, &$all_includes) {
+	protected static function process_map ($base_dir, &$includes_map, &$all_includes) {
 		if (!file_exists("$base_dir/includes/map.json")) {
 			return;
 		}
-		$this->process_map_internal(file_get_json("$base_dir/includes/map.json"), "$base_dir/includes", $includes_map, $all_includes);
+		static::process_map_internal(file_get_json("$base_dir/includes/map.json"), "$base_dir/includes", $includes_map, $all_includes);
 	}
 	/**
 	 * Process map structure, fill includes map and remove files from list of all includes (remaining files will be included on all pages)
@@ -175,7 +177,7 @@ trait Collecting {
 	 * @param array  $includes_map
 	 * @param array  $all_includes
 	 */
-	protected function process_map_internal ($map, $includes_dir, &$includes_map, &$all_includes) {
+	protected static function process_map_internal ($map, $includes_dir, &$includes_map, &$all_includes) {
 		foreach ($map as $path => $files) {
 			foreach ((array)$files as $file) {
 				$extension = file_extension($file);
@@ -197,7 +199,7 @@ trait Collecting {
 					);
 					// Drop first level directory
 					$found_files = _preg_replace('#^[^/]+/(.*)#', '$1', $found_files);
-					$this->process_map_internal([$path => $found_files], $includes_dir, $includes_map, $all_includes);
+					static::process_map_internal([$path => $found_files], $includes_dir, $includes_map, $all_includes);
 				}
 			}
 		}
@@ -210,7 +212,7 @@ trait Collecting {
 	 *
 	 * @return array
 	 */
-	protected function normalize_dependencies ($dependencies, $functionalities) {
+	protected static function normalize_dependencies ($dependencies, $functionalities) {
 		/**
 		 * First of all remove packages without any dependencies
 		 */
@@ -239,7 +241,7 @@ trait Collecting {
 			unset($dependency);
 		}
 		unset($depends_on);
-		$dependencies = array_map([$this, 'array_flatten'], $dependencies);
+		$dependencies = array_map([static::class, 'array_flatten'], $dependencies);
 		return array_map('array_unique', $dependencies);
 	}
 	/**
@@ -249,10 +251,10 @@ trait Collecting {
 	 *
 	 * @return string[]
 	 */
-	protected function array_flatten ($array) {
+	protected static function array_flatten ($array) {
 		foreach ($array as &$a) {
 			if (is_array($a)) {
-				$a = $this->array_flatten($a);
+				$a = static::array_flatten($a);
 			}
 		}
 		return array_merge(..._array($array));
@@ -261,12 +263,13 @@ trait Collecting {
 	 * If system is configured to not use Web Components - all HTML imports and Polymer-related JS code will be removed from includes map
 	 *
 	 * @param array[] $includes_map
+	 * @param string  $theme
 	 * @param bool    $disable_webcomponents
 	 *
 	 * @return array[]
 	 */
-	protected function webcomponents_support_filter ($includes_map, $disable_webcomponents) {
-		if ($this->theme != Config::SYSTEM_THEME && $disable_webcomponents) {
+	protected static function webcomponents_support_filter ($includes_map, $theme, $disable_webcomponents) {
+		if ($theme != Config::SYSTEM_THEME && $disable_webcomponents) {
 			foreach ($includes_map as &$includes) {
 				unset($includes['html']);
 			}
@@ -290,7 +293,7 @@ trait Collecting {
 	 *
 	 * @return array
 	 */
-	protected function clean_includes_arrays_without_files ($dependencies, $includes_map) {
+	protected static function clean_includes_arrays_without_files ($dependencies, $includes_map) {
 		foreach ($dependencies as &$depends_on) {
 			foreach ($depends_on as $index => &$dependency) {
 				if (!isset($includes_map[$dependency])) {

@@ -1,47 +1,44 @@
 --FILE--
 <?php
 namespace cs;
+use
+	cs\Page\Includes\RequireJS;
+
 require_once __DIR__.'/../../functions.php';
 define('DIR', __DIR__.'/RequireJS');
 define('MODULES', __DIR__.'/RequireJS/modules');
 include __DIR__.'/../../unit.php';
-class Page_test extends Page {
-	public static function test () {
-		Config::instance_stub(
-			[
-				'components' => [
-					'modules' => [
-						'Disabled'    => [
-							'active' => Config\Module_Properties::DISABLED
-						],
-						'Enabled'     => [
-							'active' => Config\Module_Properties::ENABLED
-						],
-						'System'      => [
-							'active' => Config\Module_Properties::ENABLED
-						],
-						'Uninstalled' => [
-							'active' => Config\Module_Properties::UNINSTALLED
-						]
-					]
+Config::instance_stub(
+	[
+		'components' => [
+			'modules' => [
+				'Disabled'    => [
+					'active' => Config\Module_Properties::DISABLED
+				],
+				'Enabled'     => [
+					'active' => Config\Module_Properties::ENABLED
+				],
+				'System'      => [
+					'active' => Config\Module_Properties::ENABLED
+				],
+				'Uninstalled' => [
+					'active' => Config\Module_Properties::UNINSTALLED
 				]
 			]
-		);
-		Event::instance_stub(
-			[],
-			[
-				'fire' => function (...$arguments) {
-					var_dump('cs\Event::fire() called with', $arguments);
-					return true;
-				}
-			]
-		);
+		]
+	]
+);
+Event::instance_stub(
+	[],
+	[
+		'fire' => function (...$arguments) {
+			var_dump('cs\Event::fire() called with', $arguments);
+			return true;
+		}
+	]
+);
 
-		$Page = new self;
-		var_dump($Page->get_requirejs_paths());
-	}
-}
-Page_test::test();
+var_dump(RequireJS::get_paths());
 ?>
 --EXPECTF--
 string(28) "cs\Event::fire() called with"
