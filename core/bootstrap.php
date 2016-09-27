@@ -44,10 +44,6 @@ require_once CORE.'/functions.php';
 error_reporting(E_ALL);
 
 /**
- * Request file stream wrappers that is used by system when handling uploaded files
- */
-stream_wrapper_register('request-file', cs\Request\File_stream::class);
-/**
  * Hack: HHVM doesn't have ENT_DISALLOWED constant unfortunately, remove when https://github.com/facebook/hhvm/issues/4938 resolved
  */
 defined('ENT_DISALLOWED') || define('ENT_DISALLOWED', 128);

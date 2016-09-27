@@ -111,6 +111,10 @@ trait Data_and_files {
 	 * @return array[]
 	 */
 	protected function normalize_files ($files, $file_path = '') {
+		if (!$files) {
+			return $files;
+		}
+		$this->register_request_file_stream_wrapper();
 		if (!isset($files['name'])) {
 			foreach ($files as $field => &$file) {
 				$file = $this->normalize_files($file, "$file_path/$field");
@@ -135,6 +139,11 @@ trait Data_and_files {
 			return $result;
 		} else {
 			return $this->normalize_file($files, $file_path);
+		}
+	}
+	protected function register_request_file_stream_wrapper () {
+		if (!in_array('request-file', stream_get_wrappers())) {
+			stream_wrapper_register('request-file', File_stream::class);
 		}
 	}
 	/**
