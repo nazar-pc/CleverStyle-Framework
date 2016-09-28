@@ -69,6 +69,10 @@ var_dump('Blogs dependencies (Tags installed)');
 $Config->components['modules']['Tags']['active'] = Module_Properties::ENABLED;
 var_dump(Packages_dependencies::get_dependencies(file_get_json(MODULES.'/Blogs/meta.json')));
 
+var_dump('Blogs dependencies (Tags installed, Blogs disabled)');
+$Config->components['modules']['Blogs']['active'] = Module_Properties::DISABLED;
+var_dump(Packages_dependencies::get_dependencies(file_get_json(MODULES.'/Blogs/meta.json')));
+
 var_dump('Comments dependencies (Blogs and Tags installed)');
 $Config->components['modules']['Blogs']['active'] = Module_Properties::ENABLED;
 var_dump(Packages_dependencies::get_dependencies(file_get_json(MODULES.'/Comments/meta.json')));
@@ -140,6 +144,9 @@ string(49) "Tags install dependencies (nothing installed yet)"
 array(0) {
 }
 string(35) "Blogs dependencies (Tags installed)"
+array(0) {
+}
+string(51) "Blogs dependencies (Tags installed, Blogs disabled)"
 array(0) {
 }
 string(48) "Comments dependencies (Blogs and Tags installed)"
