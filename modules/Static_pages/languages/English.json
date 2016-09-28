@@ -19,7 +19,6 @@
 		"parent_category"              : "Parent category",
 		"category_path"                : "Category path",
 		"category_path_info"           : "Will be displayed in address bar, if not specified - will be generated automatically",
-		"deletion_of_page_category"    : "Deletion of page category %s",
 		"sure_to_delete_page_category" : "Are you sure want to delete page category %s?",
 		"deletion_of_page"             : "Deletion of page %s",
 		"sure_to_delete_page"          : "Are you sure want to delete page %s?",

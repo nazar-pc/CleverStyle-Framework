@@ -17,7 +17,7 @@ dom-module#cs-static-pages-admin-categories-list
 					td
 						a(is="cs-link-button" icon="pencil" href="/admin/Static_pages/edit_category/[[item.id]]" tooltip="[[L.edit]]" hidden="[[equal(item.id, 0)]]")
 						= ' '
-						a(is="cs-link-button" icon="trash" href="/admin/Static_pages/delete_category/[[item.id]]" tooltip="[[L.delete]]" hidden="[[equal(item.id, 0)]]")
+						button(is="cs-button" type="button" icon="trash" on-tap="_delete" tooltip="[[L.delete]]" hidden="[[equal(item.id, 0)]]")
 		p [[L.index_page_path]]
 		p
 			a(is="cs-link-button" href="/admin/Static_pages/add_category") [[L.add_category]]

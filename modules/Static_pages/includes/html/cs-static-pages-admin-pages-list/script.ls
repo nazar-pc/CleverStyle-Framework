@@ -19,4 +19,10 @@ Polymer(
 	_reload_pages : !->
 		cs.api("get api/Static_pages/admin/categories/#{@category}/pages").then (pages) !~>
 			@set('pages', pages)
+	_delete : (e) !->
+		cs.ui.confirm(@L.sure_to_delete_page(e.model.item.title))
+			.then -> cs.api('delete api/Static_pages/admin/pages/' + e.model.item.id)
+			.then !~>
+				cs.ui.notify(@L.changes_saved, 'success', 5)
+				@_reload_pages()
 )

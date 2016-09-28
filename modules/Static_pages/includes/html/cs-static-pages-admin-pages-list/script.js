@@ -20,6 +20,15 @@
       cs.api("get api/Static_pages/admin/categories/" + this.category + "/pages").then(function(pages){
         this$.set('pages', pages);
       });
+    },
+    _delete: function(e){
+      var this$ = this;
+      cs.ui.confirm(this.L.sure_to_delete_page(e.model.item.title)).then(function(){
+        return cs.api('delete api/Static_pages/admin/pages/' + e.model.item.id);
+      }).then(function(){
+        cs.ui.notify(this$.L.changes_saved, 'success', 5);
+        this$._reload_pages();
+      });
     }
   });
 }).call(this);

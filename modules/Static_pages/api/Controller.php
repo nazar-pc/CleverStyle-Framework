@@ -35,6 +35,16 @@ class Controller {
 	/**
 	 * @param \cs\Request $Request
 	 *
+	 * @throws ExitException
+	 */
+	public static function admin_categories___delete ($Request) {
+		if (!Categories::instance()->del($Request->route_ids(0))) {
+			throw new ExitException(500);
+		}
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
 	 * @return array
 	 *
 	 * @throws ExitException
@@ -46,5 +56,15 @@ class Controller {
 		}
 		$Pages = Pages::instance();
 		return $Pages->get($Pages->get_for_category($category));
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @throws ExitException
+	 */
+	public static function admin_pages_delete ($Request) {
+		if (!Pages::instance()->del($Request->route_ids(0))) {
+			throw new ExitException(500);
+		}
 	}
 }

@@ -12,7 +12,7 @@ dom-module#cs-static-pages-admin-pages-list
 					td
 						a(is="cs-link-button" icon="file-text" href="/admin/Static_pages/edit_page/[[item.id]]" tooltip="[[L.edit]]")
 						= ' '
-						a(is="cs-link-button" icon="trash" href="/admin/Static_pages/delete_page/[[item.id]]" tooltip="[[L.delete]]")
+						button(is="cs-button" icon="trash" on-tap="_delete" tooltip="[[L.delete]]")
 		p
 			a(is="cs-link-button" href="/admin/Static_pages/add_page/[[category]]") [[L.add_page]]
 	script(src="script.js")

@@ -38,13 +38,6 @@ class Controller {
 					$Page->warning($L->changes_save_error);
 				}
 				break;
-			case 'delete_category':
-				if ($Categories->del($Request->data['id'])) {
-					$Page->success($L->changes_saved);
-				} else {
-					$Page->warning($L->changes_save_error);
-				}
-				break;
 			case 'add_page':
 				if ($Pages->add(
 					$Request->data['category'],
@@ -69,13 +62,6 @@ class Controller {
 					$Request->data['interface']
 				)
 				) {
-					$Page->success($L->changes_saved);
-				} else {
-					$Page->warning($L->changes_save_error);
-				}
-				break;
-			case 'delete_page':
-				if ($Pages->del($Request->data['id'])) {
 					$Page->success($L->changes_saved);
 				} else {
 					$Page->warning($L->changes_save_error);
@@ -163,39 +149,6 @@ class Controller {
 							[
 								'tooltip' => $L->save_info
 							]
-						).
-						h::{'button[is=cs-button][type=button]'}(
-							$L->cancel,
-							[
-								'onclick' => 'history.go(-1);'
-							]
-						)
-					)
-				)
-			);
-	}
-	/**
-	 * @param \cs\Request $Request
-	 */
-	public static function delete_category ($Request) {
-		$L     = new Prefix('static_pages_');
-		$id    = (int)$Request->route[1];
-		$title = Categories::instance()->get($id)['title'];
-		Page::instance()
-			->title($L->deletion_of_page_category($title))
-			->content(
-				h::{'form[is=cs-form][action=admin/Static_pages]'}(
-					h::{'h2.cs-text-center'}(
-						$L->sure_to_delete_page_category($title)
-					).
-					h::{'input[type=hidden][name=id]'}(
-						[
-							'value' => $id
-						]
-					).
-					h::p(
-						h::{'button[is=cs-button][type=submit][name=mode][value=delete_category]'}(
-							$L->yes
 						).
 						h::{'button[is=cs-button][type=button]'}(
 							$L->cancel,
@@ -346,39 +299,6 @@ class Controller {
 							[
 								'tooltip' => $L->save_info
 							]
-						).
-						h::{'button[is=cs-button][type=button]'}(
-							$L->cancel,
-							[
-								'onclick' => 'history.go(-1);'
-							]
-						)
-					)
-				)
-			);
-	}
-	/**
-	 * @param \cs\Request $Request
-	 */
-	public static function delete_page ($Request) {
-		$L     = new Prefix('static_pages_');
-		$id    = (int)$Request->route[1];
-		$title = Pages::instance()->get($id)['title'];
-		Page::instance()
-			->title($L->deletion_of_page($title))
-			->content(
-				h::{'form[is=cs-form][action=admin/Static_pages]'}(
-					h::{'h2.cs-text-center'}(
-						$L->sure_to_delete_page($title)
-					).
-					h::{'input[type=hidden][name=id]'}(
-						[
-							'value' => $id
-						]
-					).
-					h::p(
-						h::{'button[is=cs-button][type=submit][name=mode][value=delete_page]'}(
-							$L->yes
 						).
 						h::{'button[is=cs-button][type=button]'}(
 							$L->cancel,
