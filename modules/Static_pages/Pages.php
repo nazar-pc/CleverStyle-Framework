@@ -8,7 +8,7 @@
  */
 namespace cs\modules\Static_pages;
 use
-	cs\CRUD,
+	cs\CRUD_helpers,
 	cs\Singleton,
 	cs\Cache\Prefix,
 	cs\Config,
@@ -19,7 +19,7 @@ use
  */
 class Pages {
 	use
-		CRUD,
+		CRUD_helpers,
 		Singleton;
 	protected $data_model                  = [
 		'id'        => 'int',
@@ -51,11 +51,14 @@ class Pages {
 	/**
 	 * Get data of specified page
 	 *
-	 * @param int $id
+	 * @param int|int[] $id
 	 *
-	 * @return array|false
+	 * @return array|array|false
 	 */
 	public function get ($id) {
+		if (is_array($id)) {
+			return array_map([$this, 'get'], $id);
+		}
 		$L  = Language::instance();
 		$id = (int)$id;
 		return $this->cache->get(
@@ -64,6 +67,33 @@ class Pages {
 				return $this->read($id);
 			}
 		);
+	}
+	/**
+	 * Get pages for category
+	 *
+	 * @param int $category
+	 *
+	 * @return int[]
+	 */
+	public function get_for_category ($category) {
+		$search_parameters = [
+			'category' => $category
+		];
+		return $this->search($search_parameters) ?: [];
+	}
+	/**
+	 * Get number of pages for category
+	 *
+	 * @param int $category
+	 *
+	 * @return int
+	 */
+	public function get_for_category_count ($category) {
+		$search_parameters = [
+			'category'    => $category,
+			'total_count' => true
+		];
+		return $this->search($search_parameters);
 	}
 	/**
 	 * Add new page

@@ -1,7 +1,8 @@
 {
 	"admin/Static_pages" : [
 		"admin.css",
-		"style.css"
+		"style.css",
+		"cs-static-pages-admin-*"
 	],
 	"Static_pages"       : [
 		"style.css",

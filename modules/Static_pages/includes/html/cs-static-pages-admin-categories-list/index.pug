@@ -1,0 +1,26 @@
+dom-module#cs-static-pages-admin-categories-list
+	link(rel="import" href="style.css" type="css")
+	template
+		style(include="advanced-styles")
+		table.cs-table(list)
+			tr
+				th [[L.pages_category]]
+				th [[L.action]]
+			template(is="dom-repeat" items="[[categories]]")
+				tr
+					td
+						a(href="/admin/Static_pages/browse_pages/[[item.id]]") [[item.full_title]]
+						a(href="/admin/Static_pages/browse_pages/[[item.id]]")
+							span(tooltip="[[L.pages_in_category]]")
+								| [[item.pages]]
+								cs-tooltip
+					td
+						a(is="cs-link-button" icon="pencil" href="/admin/Static_pages/edit_category/[[item.id]]" tooltip="[[L.edit]]" hidden="[[equal(item.id, 0)]]")
+						= ' '
+						a(is="cs-link-button" icon="trash" href="/admin/Static_pages/delete_category/[[item.id]]" tooltip="[[L.delete]]" hidden="[[equal(item.id, 0)]]")
+		p [[L.index_page_path]]
+		p
+			a(is="cs-link-button" href="/admin/Static_pages/add_category") [[L.add_category]]
+			= ' '
+			a(is="cs-link-button" href="/admin/Static_pages/add_page") [[L.add_page]]
+	script(src="script.js")

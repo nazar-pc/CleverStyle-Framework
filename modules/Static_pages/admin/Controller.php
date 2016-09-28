@@ -87,42 +87,9 @@ class Controller {
 	 * @return string
 	 */
 	public static function browse_categories () {
-		$L = new Prefix('static_pages_');
-		return
-			h::{'table.cs-table[list]'}(
-				h::{'tr th'}(
-					[
-						$L->pages_category,
-						[
-							'style' => 'width: 80%'
-						]
-					],
-					$L->action
-				).
-				h::{'tr| td'}(
-					static::get_categories_rows()
-				)
-			).
-			h::{'p.cs-text-left'}($L->index_page_path).
-			h::{'p.cs-text-left a[is=cs-link-button]'}(
-				[
-					$L->add_category,
-					[
-						'href' => 'admin/Static_pages/add_category'
-					]
-				],
-				[
-					$L->add_page,
-					[
-						'href' => 'admin/Static_pages/add_page'
-					]
-				]
-			);
+		return h::cs_static_pages_admin_categories_list();
 	}
-	/**
-	 * @param \cs\Request $Request
-	 */
-	public static function add_category ($Request) {
+	public static function add_category () {
 		$L = new Prefix('static_pages_');
 		Page::instance()
 			->title($L->addition_of_page_category)
@@ -131,10 +98,7 @@ class Controller {
 					h::h2($L->addition_of_page_category).
 					h::label($L->parent_category).
 					h::{'select[is=cs-select][name=parent][size=5]'}(
-						static::get_categories_list(),
-						[
-							'selected' => isset($Request->route[1]) ? (int)$Request->route[1] : 0
-						]
+						static::get_categories_list()
 					).
 					h::label($L->category_title).
 					h::{'input[is=cs-input-text][name=title]'}().
@@ -440,77 +404,6 @@ class Controller {
 			);
 	}
 	/**
-	 * @param array|null $structure
-	 * @param int        $level
-	 * @param array      $parent_categories
-	 *
-	 * @return array
-	 */
-	protected static function get_categories_rows ($structure = null, $level = 0, $parent_categories = []) {
-		$L    = new Prefix('static_pages_');
-		$root = false;
-		if ($structure === null) {
-			$structure          = Pages::instance()->get_structure();
-			$structure['title'] = $L->root_category;
-			$root               = true;
-		}
-		$parent_categories[] = $structure['id'];
-		$content             = [
-			[
-				[
-					h::a(
-						$structure['title'].
-						h::{'b.cs-static-pages-count'}(
-							count($structure['pages']),
-							[
-								'tooltip' => $L->pages_in_category
-							]
-						),
-						[
-							'href' => 'admin/Static_pages/browse_pages/'.implode('/', $parent_categories)
-						]
-					),
-					[
-						'class' => "cs-static-pages-padding-left-$level"
-					]
-				],
-				h::{'a[is=cs-link-button][icon=plus]'}(
-					[
-						'href'    => "admin/Static_pages/add_category/$structure[id]",
-						'tooltip' => $L->add_subcategory
-					]
-				).
-				h::{'a[is=cs-link-button][icon=file-text]'}(
-					[
-						'href'    => "admin/Static_pages/add_page/$structure[id]",
-						'tooltip' => $L->add_page
-					]
-				).
-				(!$root ?
-					h::{'a[is=cs-link-button][icon=pencil]'}(
-						[
-							'href'    => "admin/Static_pages/edit_category/$structure[id]",
-							'tooltip' => $L->edit
-						]
-					).
-					h::{'a[is=cs-link-button][icon=trash]'}(
-						[
-							'href'    => "admin/Static_pages/delete_category/$structure[id]",
-							'tooltip' => $L->delete
-						]
-					)
-					: false
-				)
-			]
-		];
-		if (!empty($structure['categories'])) {
-			foreach ($structure['categories'] as $category) {
-				$content = array_merge($content, static::get_categories_rows($category, $level + 1, $parent_categories));
-			}
-		}
-		return $content;
-	}
-	/**
 	 * @param int|null   $current
 	 * @param array|null $structure
 	 * @param int        $level
@@ -550,53 +443,52 @@ class Controller {
 	 */
 	protected static function get_pages_rows ($Request) {
 		$L          = new Prefix('static_pages_');
+		$Page       = Page::instance();
 		$Pages      = Pages::instance();
 		$Categories = Categories::instance();
-		$categories = array_slice($Request->route, 2);
-		$structure  = $Pages->get_structure();
-		$path       = [];
-		if (!empty($categories)) {
-			foreach ($categories as $category) {
-				$category = $Categories->get($category)['path'];
-				if (isset($structure['categories'][$category])) {
-					$structure = $structure['categories'][$category];
-					$path[]    = $structure['path'];
-				}
-			}
+		$category   = $Request->route_ids(0);
+		if (!$category) {
+			$category = [
+				'id'         => 0,
+				'full_title' => $L->root_category,
+				'full_path'  => ''
+			];
+		} else {
+			/**
+			 * @var array $category
+			 */
+			$category = $Categories->get($category);
 		}
-		Page::instance()->title($structure['id'] == 0 ? $L->root_category : $structure['title']);
-		$path    = !empty($path) ? implode('/', $path).'/' : '';
+		$Page->title($category['full_title']);
+		$path    = $category['full_path'];
 		$content = [];
-		if (!empty($structure['pages'])) {
-			foreach ($structure['pages'] as &$page) {
-				$page      = $Pages->get($page);
-				$content[] = [
+		/** @noinspection ForeachSourceInspection */
+		foreach ($Pages->get($Pages->get_for_category($category['id'])) as $page) {
+			$content[] = [
+				[
+					h::a(
+						$page['title'],
+						[
+							'href' => $path.$page['path']
+						]
+					),
 					[
-						h::a(
-							$page['title'],
-							[
-								'href' => $path.$page['path']
-							]
-						),
-						[
-							'class' => 'cs-static-pages-padding-left-0'
-						]
-					],
-					h::{'a[is=cs-link-button][icon=file-text]'}(
-						[
-							'href'    => "admin/Static_pages/edit_page/$page[id]",
-							'tooltip' => $L->edit
-						]
-					).
-					h::{'a[is=cs-link-button][icon=trash]'}(
-						[
-							'href'    => "admin/Static_pages/delete_page/$page[id]",
-							'tooltip' => $L->delete
-						]
-					)
-				];
-			}
-			unset($page);
+						'class' => 'cs-static-pages-padding-left-0'
+					]
+				],
+				h::{'a[is=cs-link-button][icon=file-text]'}(
+					[
+						'href'    => "admin/Static_pages/edit_page/$page[id]",
+						'tooltip' => $L->edit
+					]
+				).
+				h::{'a[is=cs-link-button][icon=trash]'}(
+					[
+						'href'    => "admin/Static_pages/delete_page/$page[id]",
+						'tooltip' => $L->delete
+					]
+				)
+			];
 		}
 		return $content;
 	}

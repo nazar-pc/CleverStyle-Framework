@@ -8,17 +8,18 @@
  */
 namespace cs\modules\Static_pages;
 use
-	cs\CRUD,
-	cs\Singleton,
+	cs\CRUD_helpers,
 	cs\Cache\Prefix,
-	cs\Config;
+	cs\Config,
+	cs\Language,
+	cs\Singleton;
 
 /**
  * @method static $this instance($check = false)
  */
 class Categories {
 	use
-		CRUD,
+		CRUD_helpers,
 		Singleton;
 	protected $data_model          = [
 		'id'     => 'int',
@@ -52,7 +53,68 @@ class Categories {
 	 * @return array|array[]|false
 	 */
 	public function get ($id) {
-		return $this->read($id);
+		if (is_array($id)) {
+			return array_map([$this, 'get'], $id);
+		}
+		$L  = Language::instance();
+		$id = (int)$id;
+		return $this->cache->get(
+			"categories/$id/$L->clang",
+			function () use ($id) {
+				$data = $this->read($id);
+				if ($data) {
+					$data['pages']      = Pages::instance()->get_for_category_count($id);
+					$data['full_title'] = [$data['title']];
+					$data['full_path']  = [$data['path']];
+					$parent             = $data['parent'];
+					while ($parent > 0) {
+						$category             = $this->get($parent);
+						$data['full_title'][] = $category['title'];
+						$data['full_path'][]  = $category['path'];
+						$parent               = $category['parent'];
+					}
+					$data['full_title'] = implode(' :: ', array_reverse($data['full_title']));
+					$data['full_path']  = implode('/', array_reverse($data['full_path']));
+				}
+				return $data;
+			}
+		);
+	}
+	/**
+	 * Get data all categories
+	 *
+	 * @return array[]
+	 */
+	public function get_all () {
+		$L = Language::instance();
+		return $this->cache->get(
+			"categories/all/$L->clang",
+			function () use ($L) {
+				$result = $this->get(
+					$this->search([], 1, PHP_INT_MAX, 'id', true) ?: []
+				);
+				if ($result) {
+					usort(
+						$result,
+						function ($a, $b) {
+							return strcmp($a['full_title'], $b['full_title']);
+						}
+					);
+					array_unshift(
+						$result,
+						[
+							'id'         => 0,
+							'title'      => $L->static_pages_root_category,
+							'full_title' => $L->static_pages_root_category,
+							'path'       => '',
+							'full_path'  => '',
+							'pages'      => Pages::instance()->get_for_category_count(0)
+						]
+					);
+				}
+				return $result;
+			}
+		) ?: [];
 	}
 	/**
 	 * Add new category
@@ -66,7 +128,7 @@ class Categories {
 	public function add ($parent, $title, $path) {
 		$id = $this->create($title, path($path ?: $title), $parent);
 		if ($id) {
-			unset($this->cache->structure);
+			unset($this->cache->structure, $this->cache->categories);
 		}
 		return $id;
 	}
@@ -83,7 +145,7 @@ class Categories {
 	public function set ($id, $parent, $title, $path) {
 		$result = $this->update($id, $title, path($path ?: $title), $parent);
 		if ($result) {
-			unset($this->cache->structure);
+			unset($this->cache->structure, $this->cache->categories);
 		}
 		return $result;
 	}
@@ -97,7 +159,7 @@ class Categories {
 	public function del ($id) {
 		$result = $this->delete($id);
 		if ($result) {
-			unset($this->cache->{'/'});
+			$this->cache->del('/');
 		}
 		return $result;
 	}

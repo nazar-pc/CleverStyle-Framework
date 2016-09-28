@@ -6,7 +6,6 @@
 		"add_page"                     : "Add page",
 		"root_category"                : "Root category",
 		"pages_in_category"            : "Pages in category",
-		"add_subcategory"              : "Add subcategory",
 		"page_title"                   : "Page title",
 		"adding_of_page"               : "Adding of page",
 		"category"                     : "Category",
@@ -33,6 +32,8 @@
 		"changes_saved"                : "Changes saved",
 		"changes_save_error"           : "Unable to save changes",
 		"cancel"                       : "Cancel",
-		"yes"                          : "Yes"
+		"yes"                          : "Yes",
+		"delete"                       : "Delete",
+		"edit"                         : "Edit"
 	}
 }
