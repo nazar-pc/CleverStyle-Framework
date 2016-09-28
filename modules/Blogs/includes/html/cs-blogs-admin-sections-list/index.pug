@@ -15,9 +15,9 @@ dom-module#cs-blogs-admin-sections-list
 								| [[item.posts]]
 								cs-tooltip
 					td
-						a(is="cs-link-button" icon="pencil" on-tap="_edit" tooltip="[[L.edit]]")
+						button(is="cs-button" type="button" icon="pencil" on-tap="_edit" tooltip="[[L.edit]]")
 						= ' '
-						a(is="cs-link-button" icon="trash" on-tap="_delete" tooltip="[[L.delete]]")
+						button(is="cs-button" type="button" icon="trash" on-tap="_delete" tooltip="[[L.delete]]")
 		p
-			a(is="cs-link-button" on-tap="_add") [[L.add_section]]
+			button(is="cs-button" type="button" on-tap="_add") [[L.add_section]]
 	script(src="script.js")
