@@ -11,7 +11,6 @@ use
 	cs\Cache,
 	cs\Config,
 	cs\Language,
-	cs\User,
 	cs\CRUD_helpers,
 	cs\Singleton;
 
