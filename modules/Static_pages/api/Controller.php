@@ -9,6 +9,7 @@
 namespace cs\modules\Static_pages\api;
 use
 	cs\ExitException,
+	cs\modules\Static_pages\Pages,
 	cs\modules\Static_pages\Categories;
 
 class Controller {
@@ -19,7 +20,7 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
-	public static function admin_categories_get ($Request) {
+	public static function admin_categories___get ($Request) {
 		$id         = $Request->route_ids(0);
 		$Categories = Categories::instance();
 		if ($id) {
@@ -30,5 +31,20 @@ class Controller {
 			return $data;
 		}
 		return $Categories->get_all();
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @return array
+	 *
+	 * @throws ExitException
+	 */
+	public static function admin_categories_pages_get ($Request) {
+		$category = $Request->route_ids(0);
+		if ($category === null) {
+			throw new ExitException(400);
+		}
+		$Pages = Pages::instance();
+		return $Pages->get($Pages->get_for_category($category));
 	}
 }

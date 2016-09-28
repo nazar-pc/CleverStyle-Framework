@@ -64,7 +64,16 @@ class Pages {
 		return $this->cache->get(
 			"pages/$id/$L->clang",
 			function () use ($id) {
-				return $this->read($id);
+				$data = $this->read($id);
+				if ($data) {
+					if ($data['category']) {
+						$category          = Categories::instance()->get($data['category']);
+						$data['full_path'] = "$category[full_path]/$data[path]";
+					} else {
+						$data['full_path'] = $data['path'];
+					}
+				}
+				return $data;
 			}
 		);
 	}

@@ -1,5 +1,8 @@
 {
-	"admin" : [
-		"categories"
-	]
+	"admin" : {
+		"categories" : [
+			"_",
+			"pages"
+		]
+	}
 }

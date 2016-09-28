@@ -1,7 +1,7 @@
 {
 	"Static_pages"  : "Статические страницы",
 	"static_pages_" : {
-		"pages_category"               : "Категории страниц",
+		"pages_category"               : "Категория страниц",
 		"add_category"                 : "Добавить категорию",
 		"add_page"                     : "Добавить страницу",
 		"root_category"                : "Корневая категория",

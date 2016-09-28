@@ -213,29 +213,16 @@ class Controller {
 	 * @return string
 	 */
 	public static function browse_pages ($Request) {
-		$L  = new Prefix('static_pages_');
-		$rc = $Request->route;
-		return
-			h::{'table.cs-table[list]'}(
-				h::{'tr th'}(
-					[
-						$L->page_title,
-						[
-							'style' => 'width: 80%'
-						]
-					],
-					$L->action
-				).
-				h::{'tr| td'}(
-					static::get_pages_rows($Request)
-				)
-			).
-			h::{'p.cs-text-left a[is=cs-link-button]'}(
-				$L->add_page,
-				[
-					'href' => 'admin/Static_pages/add_page/'.array_slice($rc, -1)[0]
-				]
-			);
+		$L        = new Prefix('static_pages_');
+		$category = $Request->route_ids(0);
+		Page::instance()->title(
+			$category ? Categories::instance()->get($category)['title'] : $L->root_category
+		);
+		return h::cs_static_pages_admin_pages_list(
+			[
+				'category' => $category
+			]
+		);
 	}
 	/**
 	 * @param \cs\Request $Request
@@ -435,61 +422,5 @@ class Controller {
 			}
 		}
 		return $list;
-	}
-	/**
-	 * @param \cs\Request $Request
-	 *
-	 * @return array
-	 */
-	protected static function get_pages_rows ($Request) {
-		$L          = new Prefix('static_pages_');
-		$Page       = Page::instance();
-		$Pages      = Pages::instance();
-		$Categories = Categories::instance();
-		$category   = $Request->route_ids(0);
-		if (!$category) {
-			$category = [
-				'id'         => 0,
-				'full_title' => $L->root_category,
-				'full_path'  => ''
-			];
-		} else {
-			/**
-			 * @var array $category
-			 */
-			$category = $Categories->get($category);
-		}
-		$Page->title($category['full_title']);
-		$path    = $category['full_path'];
-		$content = [];
-		/** @noinspection ForeachSourceInspection */
-		foreach ($Pages->get($Pages->get_for_category($category['id'])) as $page) {
-			$content[] = [
-				[
-					h::a(
-						$page['title'],
-						[
-							'href' => $path.$page['path']
-						]
-					),
-					[
-						'class' => 'cs-static-pages-padding-left-0'
-					]
-				],
-				h::{'a[is=cs-link-button][icon=file-text]'}(
-					[
-						'href'    => "admin/Static_pages/edit_page/$page[id]",
-						'tooltip' => $L->edit
-					]
-				).
-				h::{'a[is=cs-link-button][icon=trash]'}(
-					[
-						'href'    => "admin/Static_pages/delete_page/$page[id]",
-						'tooltip' => $L->delete
-					]
-				)
-			];
-		}
-		return $content;
 	}
 }
