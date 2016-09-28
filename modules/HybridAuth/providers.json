@@ -1,66 +1,72 @@
 {
-	"AOL"           : {},
-	"BeatsMusic"    : {
+	"AOL"            : {},
+	"BeatsMusic"     : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"BitBucket"     : {
+	"BitBucket"      : {
 		"keys" : [
 			"key",
 			"secret"
 		]
 	},
-	"Citrix"        : {
+	"Citrix"         : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"Deezer"        : {
+	"Dataporten"     : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"DigitalOcean"  : {
+	"Deezer"         : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"Disqus"        : {
+	"DigitalOcean"   : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"DraugiemApi"   : {
+	"Disqus"         : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
+	"DraugiemApi"    : {
 		"keys" : [
 			"key",
 			"secret"
 		]
 	},
-	"Dribbble"      : {
+	"Dribbble"       : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"Dropbox"       : {
+	"Dropbox"        : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"DrupalOAuth2"  : {
+	"DrupalOAuth2"   : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"Facebook"      : {
+	"Facebook"       : {
 		"keys"           : [
 			"id",
 			"secret"
@@ -68,254 +74,272 @@
 		"scope"          : "email",
 		"trustForwarded" : 1
 	},
-	"Foursquare"    : {
+	"Foursquare"     : {
 		"keys" : [
 			"id",
 			"secret"
 		],
 		"info" : "Callback URL: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
-	"Freeagent"     : {
+	"Freeagent"      : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"GitHub"        : {
+	"GitHub"         : {
 		"keys" : [
 			"id",
 			"secret"
 		],
 		"info" : "Callback URL: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
-	"GitLab"        : {
+	"GitLab"         : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"Goodreads"     : {
+	"Goodreads"      : {
 		"keys" : [
 			"key",
 			"secret"
 		]
 	},
-	"Google"        : {
+	"Google"         : {
 		"keys" : [
 			"id",
 			"secret"
 		],
 		"info" : "Authorized Redirect URIs: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
-	"Identica"      : {
+	"HumanitarianId" : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
+	"Identica"       : {
 		"keys" : [
 			"key",
 			"secret"
 		]
 	},
-	"Instagram"     : {
+	"Instagram"      : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"LastFM"        : {
+	"LastFM"         : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"Latch"         : {},
-	"LinkedIn"      : {
+	"Latch"          : {},
+	"LinkedIn"       : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"Live"          : {
+	"Live"           : {
 		"keys" : [
 			"key",
 			"secret"
 		],
 		"info" : "Redirect Domain: {base_url}"
 	},
-	"MailChimp"     : {
+	"MailChimp"      : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"Mailru"        : {
+	"Mailru"         : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"MixCloud"      : {
+	"MixCloud"       : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"Murmur"        : {
+	"Murmur"         : {
 		"keys" : [
 			"key",
 			"secret"
 		]
 	},
-	"Odnoklassniki" : {
+	"Odnoklassniki"  : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"OpenID"        : {},
-	"Paypal"        : {
+	"OpenID"         : {},
+	"Paypal"         : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"PaypalOpenID"  : {},
-	"PixelPin"      : {
+	"PaypalOpenID"   : {},
+	"PixelPin"       : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"Pixnet"        : {
-		"keys" : [
-			"key",
-			"secret"
-		]
-	},
-	"Plurk"         : {
-		"keys" : [
-			"key",
-			"secret"
-		]
-	},
-	"px500"         : {
-		"keys" : [
-			"key",
-			"secret"
-		]
-	},
-	"QQ"            : {
-		"keys" : [
-			"key",
-			"secret"
-		]
-	},
-	"Rdio"          : {
-		"keys" : [
-			"key",
-			"secret"
-		]
-	},
-	"Rhapsody"      : {
-		"keys" : [
-			"key",
-			"secret"
-		]
-	},
-	"Sina"          : {
-		"keys" : [
-			"key",
-			"secret"
-		]
-	},
-	"Skyrock"       : {
-		"keys" : [
-			"key",
-			"secret"
-		]
-	},
-	"Slack"         : {
+	"Pinterest"      : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"SoundCloud"    : {
-		"keys" : [
-			"id",
-			"secret"
-		]
-	},
-	"StackExchange" : {
-		"keys" : [
-			"id",
-			"secret"
-		]
-	},
-	"Steam"         : {},
-	"Tumblr"        : {
+	"Pixnet"         : {
 		"keys" : [
 			"key",
 			"secret"
 		]
 	},
-	"TwitchTV"      : {
+	"Plurk"          : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"px500"          : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"QQ"             : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"Rdio"           : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"Rhapsody"       : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"Sina"           : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"Skyrock"        : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"Slack"          : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
+	"SoundCloud"     : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
+	"StackExchange"  : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
+	"Steam"          : {},
+	"Tumblr"         : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"TwitchTV"       : {
 		"keys" : [
 			"id",
 			"secret"
 		],
 		"info" : "Callback URL: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
-	"Twitter"       : {
+	"Twitter"        : {
 		"keys" : [
 			"key",
 			"secret"
 		],
 		"info" : "Callback URL: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
-	"Vimeo"         : {
+	"Vimeo"          : {
 		"keys" : [
 			"key",
 			"secret"
 		],
 		"info" : "Application Callback URL: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
-	"Vkontakte"     : {
+	"Vkontakte"      : {
 		"keys"  : [
 			"id",
 			"secret"
 		],
 		"scope" : ""
 	},
-	"WarGaming"     : {},
-	"WordPress"     : {
+	"WarGaming"      : {},
+	"Weibo"          : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"XING"          : {
-		"keys" : [
-			"key",
-			"secret"
-		]
-	},
-	"Xuite"         : {
-		"keys" : [
-			"key",
-			"secret"
-		]
-	},
-	"Yahoo"         : {
-		"keys" : [
-			"key",
-			"secret"
-		]
-	},
-	"Yammer"        : {
+	"WordPress"      : {
 		"keys" : [
 			"id",
 			"secret"
 		]
 	},
-	"Yandex"        : {
+	"XING"           : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"Xuite"          : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"Yahoo"          : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"Yammer"         : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
+	"Yandex"         : {
 		"keys" : [
 			"id",
 			"secret"
