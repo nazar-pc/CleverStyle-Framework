@@ -1,7 +1,5 @@
 [
 	"browse_categories",
-	"add_category",
-	"edit_category",
 	"browse_pages",
 	"add_page",
 	"add_page_live",

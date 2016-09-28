@@ -1,7 +1,7 @@
 {
 	"package"             : "Static_pages",
 	"category"            : "modules",
-	"version"             : "1.37.0+build-120",
+	"version"             : "1.38.0+build-121",
 	"description"         : "Creating of simple static pages with categories",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/Framework",

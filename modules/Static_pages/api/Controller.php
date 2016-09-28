@@ -37,6 +37,35 @@ class Controller {
 	 *
 	 * @throws ExitException
 	 */
+	public static function admin_categories___post ($Request) {
+		$data = $Request->data('parent', 'title', 'path');
+		if (!$data) {
+			throw new ExitException(400);
+		}
+		if (!Categories::instance()->add($data['parent'], $data['title'], $data['path'])) {
+			throw new ExitException(500);
+		}
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @throws ExitException
+	 */
+	public static function admin_categories___put ($Request) {
+		$id   = $Request->route_ids(0);
+		$data = $Request->data('parent', 'title', 'path');
+		if (!$id || !$data) {
+			throw new ExitException(400);
+		}
+		if (!Categories::instance()->set($id, $data['parent'], $data['title'], $data['path'])) {
+			throw new ExitException(500);
+		}
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @throws ExitException
+	 */
 	public static function admin_categories___delete ($Request) {
 		if (!Categories::instance()->del($Request->route_ids(0))) {
 			throw new ExitException(500);

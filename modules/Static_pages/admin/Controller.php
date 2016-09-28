@@ -19,25 +19,10 @@ class Controller {
 	 * @param \cs\Request $Request
 	 */
 	public static function index ($Request) {
-		$L          = new Prefix('static_pages_');
-		$Page       = Page::instance();
-		$Pages      = Pages::instance();
-		$Categories = Categories::instance();
+		$L     = new Prefix('static_pages_');
+		$Page  = Page::instance();
+		$Pages = Pages::instance();
 		switch ($Request->data('mode')) {
-			case 'add_category':
-				if ($Categories->add($Request->data['parent'], $Request->data['title'], $Request->data['path'])) {
-					$Page->success($L->changes_saved);
-				} else {
-					$Page->warning($L->changes_save_error);
-				}
-				break;
-			case 'edit_category':
-				if ($Categories->set($Request->data['id'], $Request->data['parent'], $Request->data['title'], $Request->data['path'])) {
-					$Page->success($L->changes_saved);
-				} else {
-					$Page->warning($L->changes_save_error);
-				}
-				break;
 			case 'add_page':
 				if ($Pages->add(
 					$Request->data['category'],
@@ -74,91 +59,6 @@ class Controller {
 	 */
 	public static function browse_categories () {
 		return h::cs_static_pages_admin_categories_list();
-	}
-	public static function add_category () {
-		$L = new Prefix('static_pages_');
-		Page::instance()
-			->title($L->addition_of_page_category)
-			->content(
-				h::{'form[is=cs-form][action=admin/Static_pages]'}(
-					h::h2($L->addition_of_page_category).
-					h::label($L->parent_category).
-					h::{'select[is=cs-select][name=parent][size=5]'}(
-						static::get_categories_list()
-					).
-					h::label($L->category_title).
-					h::{'input[is=cs-input-text][name=title]'}().
-					h::{'label info'}('static_pages_category_path').
-					h::{'input[is=cs-input-text][name=path]'}().
-					h::p(
-						h::{'button[is=cs-button][type=submit][name=mode][value=add_category]'}(
-							$L->save,
-							[
-								'tooltip' => $L->save_info
-							]
-						).
-						h::{'button[is=cs-button][type=button]'}(
-							$L->cancel,
-							[
-								'onclick' => 'history.go(-1);'
-							]
-						)
-					)
-				)
-			);
-	}
-	/**
-	 * @param \cs\Request $Request
-	 */
-	public static function edit_category ($Request) {
-		$L    = new Prefix('static_pages_');
-		$id   = (int)$Request->route[1];
-		$data = Categories::instance()->get($id);
-		Page::instance()
-			->title($L->editing_of_page_category($data['title']))
-			->content(
-				h::{'form[is=cs-form][action=admin/Static_pages]'}(
-					h::h2($L->editing_of_page_category($data['title'])).
-					h::label($L->parent_category).
-					h::{'select[is=cs-select][name=parent][size=5]'}(
-						static::get_categories_list($id),
-						[
-							'selected' => $data['parent']
-						]
-					).
-					h::label($L->category_title).
-					h::{'input[is=cs-input-text][name=title]'}(
-						[
-							'value' => $data['title']
-						]
-					).
-					h::{'label info'}('static_pages_category_path').
-					h::{'input[is=cs-input-text][name=path]'}(
-						[
-							'value' => $data['path']
-						]
-					).
-					h::{'input[type=hidden][name=id]'}(
-						[
-							'value' => $id
-						]
-					).
-					h::p(
-						h::{'button[is=cs-button][type=submit][name=mode][value=edit_category]'}(
-							$L->save,
-							[
-								'tooltip' => $L->save_info
-							]
-						).
-						h::{'button[is=cs-button][type=button]'}(
-							$L->cancel,
-							[
-								'onclick' => 'history.go(-1);'
-							]
-						)
-					)
-				)
-			);
 	}
 	/**
 	 * @param \cs\Request $Request
