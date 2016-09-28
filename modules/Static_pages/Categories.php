@@ -64,7 +64,7 @@ class Categories {
 	 * @return false|int Id of created category on success of `false` on failure
 	 */
 	public function add ($parent, $title, $path) {
-		$id = $this->create($parent, $title, path($path ?: $title));
+		$id = $this->create($title, path($path ?: $title), $parent);
 		if ($id) {
 			unset($this->cache->structure);
 		}
@@ -81,7 +81,7 @@ class Categories {
 	 * @return bool
 	 */
 	public function set ($id, $parent, $title, $path) {
-		$result = $this->update($id, $parent, $title, path($path ?: $title));
+		$result = $this->update($id, $title, path($path ?: $title), $parent);
 		if ($result) {
 			unset($this->cache->structure);
 		}
