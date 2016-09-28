@@ -4,7 +4,6 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-# TODO: Remove in 6.x when translations will be loaded asynchronously
 translations	= cs.Language
 is_ready		= false
 fill_prefixed	= (prefix) !->
