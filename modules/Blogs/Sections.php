@@ -73,7 +73,7 @@ class Sections {
 					$parent             = $data['parent'];
 					while ($parent > 0) {
 						$section              = $this->get($parent);
-						$data['full_title'][] = $section['path'];
+						$data['full_title'][] = $section['title'];
 						$data['full_path'][]  = $section['path'];
 						$parent               = $section['parent'];
 					}
