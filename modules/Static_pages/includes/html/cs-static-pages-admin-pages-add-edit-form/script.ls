@@ -39,6 +39,6 @@ Polymer(
 	_save : !->
 		method	= if @id then 'put' else 'post'
 		suffix	= if @id then '/' + @id else ''
-		cs.api("#method api/Static_pages/admin/pages#suffix", @page).then (result) !~>
+		cs.api("#method api/Static_pages/admin/pages#suffix", @page).then !~>
 			cs.ui.notify(@L.changes_saved, 'success', 5)
 )

@@ -3,7 +3,6 @@
 		"cs-static-pages-admin-*"
 	],
 	"Static_pages"       : [
-		"style.css",
-		"script.js"
+		"cs-static-pages-*"
 	]
 }

@@ -11,14 +11,12 @@ use
 	h,
 	cs\Config,
 	cs\ExitException,
-	cs\Language\Prefix,
 	cs\Page\Meta,
 	cs\Page,
 	cs\Request,
 	cs\User;
 
 $Config     = Config::instance();
-$L          = new Prefix('static_pages_');
 $Page       = Page::instance();
 $Request    = Request::instance();
 $Pages      = Pages::instance();
@@ -33,17 +31,6 @@ if ($Request->home_page) {
 	$page = $Pages->get($Request->route[0]);
 }
 $User = User::instance();
-if (isset($_POST['save'])) {
-	if (!$User->get_permission('admin/Pages', 'edit_page')) {
-		throw new ExitException(403);
-	}
-	if ($Pages->set($page['id'], $page['category'], $_POST['title'], $page['path'], $_POST['content'], $page['interface'])) {
-		$Page->success($L->changes_saved);
-	} else {
-		$Page->warning($L->changes_save_error);
-	}
-	$page = $Pages->get($page['id']);
-}
 if ($page['interface']) {
 	if (!$Request->home_page) {
 		$Page->title($page['title']);
@@ -71,71 +58,15 @@ if ($page['interface']) {
 		$canonical_url   = $Config->base_url().'/'.implode('/', $canonical_url);
 		$Page->canonical_url($canonical_url);
 	}
-	$is_admin = $User->admin();
-	if (isset($_GET['edit'])) {
-		if (!$is_admin) {
-			throw new ExitException(404);
-		}
-		$Page->content(
-			h::{'form[is=cs-form]'}(
-				h::{'h2.cs-text-center'}(
-					$L->editing_of_page($page['title'])
-				).
-				h::{'table.cs-table.cs-static-pages-page-form[right-left] tr| td'}(
-					[
-						$L->page_title,
-						h::{'h1.cs-static-pages-page-title[contenteditable=true]'}(
-							$page['title']
-						)
-					],
-					[
-						$L->page_content,
-						(functionality('inline_editor')
-							? h::{'cs-editor-inline div.cs-static-pages-page-content'}(
-								$page['content']
-							)
-							: h::{'cs-editor textarea.cs-static-pages-page-content[is=cs-textarea][autosize]name=content][required]'}(
-								$page['content']
-							)
-						)
-					]
-				).
-				h::{'p.cs-text-center'}(
-					h::{'button.cs-static-pages-page-save[is=cs-button][type=submit][name=save]'}(
-						$L->save
-					).
-					h::{'button[is=cs-button]'}(
-						$L->cancel,
-						[
-							'onclick' => 'history.go(-1);'
-						]
-					)
-				),
-				[
-					'action' => $canonical_url
-				]
-			)
-		);
-	} else {
-		$Page->content(
-			h::p(
-				$is_admin ?
-					h::{'a[is=cs-link-button][icon=pencil]'}(
-						[
-							'href'    => "$canonical_url?edit",
-							'tooltip' => $L->edit
-						]
-					).
-					h::{'a[is=cs-link-button][icon=trash]'}(
-						[
-							'href'    => "admin/Pages/delete_page/$page[id]",
-							'tooltip' => $L->delete
-						]
-					) : false
-			).
-			h::section($page['content'])
-		);
-	}
+	$Page->content(
+		h::cs_static_pages_page(
+			h::section($page['content']),
+			[
+				'id'    => $page['id'],
+				'admin' => $User->admin()
+			]
+		)
+	);
 } else {
 	$Page->interface = false;
 	$Page->Content   = $page['content'];

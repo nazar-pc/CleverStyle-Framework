@@ -1,0 +1,20 @@
+dom-module#cs-static-pages-page
+	link(rel="import" href="style.css" type="css")
+	template
+		style(include="advanced-styles")
+		div(hidden="[[editing]]")
+			p(hidden="[[!admin]]")
+				button(is="cs-button" type="button" icon="file-text" on-tap="_edit" tooltip="[[L.edit]]")
+				= ' '
+				button(is="cs-button" type="button" icon="trash" on-tap="_delete" tooltip="[[L.delete]]")
+			content
+		div(hidden="[[!editing]]")
+			h1#title(contenteditable="true") [[page.title]]
+			template(is="dom-if" if="[[!inline_editor]]")
+				cs-editor(value="{{page.content}}")
+					textarea(is="cs-textarea" autosize value="{{page.content}}")
+			template(is="dom-if" if="[[inline_editor]]" restamp)
+				cs-editor-inline(value="{{page.content}}")
+					div
+			button(is="cs-button" on-tap="_save" type="button" primary) [[L.save]]
+	script(src="script.js")

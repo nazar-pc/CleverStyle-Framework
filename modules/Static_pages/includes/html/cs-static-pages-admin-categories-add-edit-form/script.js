@@ -36,7 +36,7 @@
       var method, suffix, this$ = this;
       method = this.id ? 'put' : 'post';
       suffix = this.id ? '/' + this.id : '';
-      cs.api(method + " api/Static_pages/admin/categories" + suffix, this.category).then(function(result){
+      cs.api(method + " api/Static_pages/admin/categories" + suffix, this.category).then(function(){
         cs.ui.notify(this$.L.changes_saved, 'success', 5);
       });
     }
