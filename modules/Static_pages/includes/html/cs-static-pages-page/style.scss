@@ -5,7 +5,11 @@
  * @copyright Copyright (c) 2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-cs-editor-inline,
-[contenteditable=true] {
+cs-editor-inline {
+	display : block;
+}
+
+#title,
+cs-editor-inline {
 	outline : #333 dotted 1px
 }

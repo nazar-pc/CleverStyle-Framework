@@ -16,5 +16,6 @@ dom-module#cs-static-pages-page
 			template(is="dom-if" if="[[inline_editor]]" restamp)
 				cs-editor-inline(value="{{page.content}}")
 					div
-			button(is="cs-button" on-tap="_save" type="button" primary) [[L.save]]
+			p
+				button(is="cs-button" on-tap="_save" type="button" primary) [[L.save]]
 	script(src="script.js")
