@@ -44,7 +44,7 @@
       var this$ = this;
       cs.ui.confirm(this.L.sure_to_delete_post(this.jsonld.title)).then(function(){
         return cs.api('delete api/Blogs/posts/' + this$.jsonld.id);
-      }).then(function(result){
+      }).then(function(){
         this$._remove_close_tab_handler();
         location.href = 'Blogs';
       });

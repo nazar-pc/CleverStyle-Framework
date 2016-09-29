@@ -36,7 +36,7 @@ Polymer(
 	_delete : !->
 		cs.ui.confirm(@L.sure_to_delete_post(@jsonld.title))
 			.then ~> cs.api('delete api/Blogs/posts/' + @jsonld.id)
-			.then (result) !~>
+			.then !~>
 				@_remove_close_tab_handler()
 				location.href = 'Blogs'
 )
