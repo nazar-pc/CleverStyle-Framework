@@ -86,7 +86,7 @@ Event::instance()
 				'Static_pages',
 				$L->browse_categories,
 				[
-					'href'    => "admin/Static_pages/browse_categories",
+					'href'    => 'admin/Static_pages/browse_categories',
 					'primary' => Request::instance()->route_path(0) == 'browse_categories'
 				]
 			);
