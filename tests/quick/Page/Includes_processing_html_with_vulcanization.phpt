@@ -15,8 +15,8 @@ var_dump($not_embedded_resources);
 %w
 </dom-module>
 <script src="/external-script.js"></script>
-<style is="custom-style">:root{--my-property:black;}</style>
-<style is="custom-style">:root{--my-property-2:black;}</style>
+<style is="custom-style">html{--my-property:black;}</style>
+<style is="custom-style">html{--my-property-2:black;}</style>
 <script src="/external-imported-script.js"></script>
 <link rel="import" href="/external-import.html" type="html">
 <script>Polymer({is : 'my-element'});;var bar = 'bar'; /* another comment */var foo = 'foo'; // Single-line after code
