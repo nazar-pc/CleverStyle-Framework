@@ -19,16 +19,11 @@ use
 $Config     = Config::instance();
 $Page       = Page::instance();
 $Request    = Request::instance();
-$Pages      = Pages::instance();
 $Categories = Categories::instance();
+$page       = Pages::instance()->get($Request->route(0));
 array_pop($Page->Title);
-if ($Request->home_page) {
-	$page = $Pages->get($Pages->get_structure()['pages']['index']);
-} else {
-	if (!isset($Request->route[0])) {
-		throw new ExitException(404);
-	}
-	$page = $Pages->get($Request->route[0]);
+if (!$page) {
+	throw new ExitException(404);
 }
 $User = User::instance();
 if ($page['interface']) {

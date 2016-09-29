@@ -91,7 +91,7 @@ class Categories {
 			"categories/all/$L->clang",
 			function () use ($L) {
 				$result = $this->get(
-					$this->search([], 1, PHP_INT_MAX, 'id', true) ?: []
+					$this->search([], 1, PHP_INT_MAX, 'title', true) ?: []
 				);
 				if ($result) {
 					usort(
@@ -128,7 +128,7 @@ class Categories {
 	public function add ($parent, $title, $path) {
 		$id = $this->create($title, path($path ?: $title), $parent);
 		if ($id) {
-			unset($this->cache->structure, $this->cache->categories);
+			$this->cache->del('/');
 		}
 		return $id;
 	}
@@ -145,7 +145,7 @@ class Categories {
 	public function set ($id, $parent, $title, $path) {
 		$result = $this->update($id, $title, path($path ?: $title), $parent);
 		if ($result) {
-			unset($this->cache->structure, $this->cache->categories);
+			$this->cache->del('/');
 		}
 		return $result;
 	}

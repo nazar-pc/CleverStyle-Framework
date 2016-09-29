@@ -88,7 +88,7 @@ class Pages {
 		$search_parameters = [
 			'category' => $category
 		];
-		return $this->search($search_parameters) ?: [];
+		return $this->search($search_parameters, 1, PHP_INT_MAX, 'title', true) ?: [];
 	}
 	/**
 	 * Get number of pages for category
@@ -105,6 +105,21 @@ class Pages {
 		return $this->search($search_parameters);
 	}
 	/**
+	 * Get array of pages structure
+	 *
+	 * @return array|false
+	 */
+	public function get_map () {
+		$L = Language::instance();
+		return $this->cache->get(
+			"map/$L->clang",
+			function () {
+				$pages = $this->get($this->search([], 1, PHP_INT_MAX) ?: []);
+				return array_column($pages, 'id', 'full_path');
+			}
+		);
+	}
+	/**
 	 * Add new page
 	 *
 	 * @param int    $category
@@ -118,7 +133,7 @@ class Pages {
 	public function add ($category, $title, $path, $content, $interface) {
 		$id = $this->create($category, $title, path($path ?: $title), $content, $interface);
 		if ($id) {
-			unset($this->cache->{'/'});
+			$this->cache->del('/');
 		}
 		return $id;
 	}
@@ -137,11 +152,7 @@ class Pages {
 	public function set ($id, $category, $title, $path, $content, $interface) {
 		$result = $this->update($id, $category, $title, path($path ?: $title), $content, $interface);
 		if ($result) {
-			$Cache = $this->cache;
-			unset(
-				$Cache->structure,
-				$Cache->{"pages/$id"}
-			);
+			$this->cache->del('/');
 		}
 		return $result;
 	}
@@ -155,60 +166,8 @@ class Pages {
 	public function del ($id) {
 		$result = $this->delete($id);
 		if ($result) {
-			$Cache = $this->cache;
-			unset(
-				$Cache->structure,
-				$Cache->{"pages/$id"}
-			);
+			$this->cache->del('/');
 		}
 		return $result;
-	}
-	/**
-	 * Get array of pages structure
-	 *
-	 * @return array|false
-	 */
-	public function get_structure () {
-		$L = Language::instance();
-		return $this->cache->get(
-			"structure/$L->clang",
-			function () {
-				return $this->get_structure_internal();
-			}
-		);
-	}
-	private function get_structure_internal ($parent = 0) {
-		$Categories = Categories::instance();
-		$structure  = ['id' => $parent];
-		if ($parent != 0) {
-			$structure = array_merge(
-				$structure,
-				$Categories->get($parent)
-			);
-		}
-		$pages              = $this->db()->qfas(
-			"SELECT `id`
-			FROM `$this->table`
-			WHERE `category` = '%s'",
-			$parent
-		) ?: [];
-		$structure['pages'] = [];
-		foreach ($pages as $id) {
-			$structure['pages'][$this->get($id)['path']] = $id;
-		}
-		unset($pages);
-		$categories              = $this->db()->qfa(
-			"SELECT
-				`id`,
-				`path`
-			FROM `{$this->table}_categories`
-			WHERE `parent` = '%s'",
-			$parent
-		) ?: [];
-		$structure['categories'] = [];
-		foreach ($categories as $category) {
-			$structure['categories'][$category['path']] = $this->get_structure_internal($category['id']);
-		}
-		return $structure;
 	}
 }

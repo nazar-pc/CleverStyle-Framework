@@ -32,19 +32,11 @@ Event::instance()
 			if (!$route) {
 				return;
 			}
-			$structure  = Pages::instance()->get_structure();
-			$categories = array_slice($route, 0, -1);
-			if (!$categories) {
-				foreach ($categories as $category) {
-					if (isset($structure['categories'][$category])) {
-						$structure = $structure['categories'][$category];
-					}
-				}
-			}
-			$page = array_slice($route, -1)[0];
-			if (isset($structure['pages'][$page])) {
+			$structure      = Pages::instance()->get_map();
+			$route_imploded = implode('/', $route);
+			if (isset($structure[$route_imploded])) {
 				$data['current_module'] = 'Static_pages';
-				$route                  = [$structure['pages'][$page]];
+				$route                  = [$structure[$route_imploded]];
 			}
 		}
 	)
@@ -57,23 +49,15 @@ Event::instance()
 			time_limit_pause();
 			$Pages      = Pages::instance();
 			$Categories = Categories::instance();
-			$structure  = $Pages->get_structure();
-			while (!empty($structure['categories'])) {
-				foreach ($structure['categories'] as $category) {
-					$Categories->del($category['id']);
-				}
-				$structure = $Pages->get_structure();
-			}
-			unset($category);
-			if (!empty($structure['pages'])) {
-				foreach ($structure['pages'] as $page) {
+			foreach ($Categories->get_all() as $category) {
+				foreach ($Pages->get_for_category($category['id']) as $page) {
 					$Pages->del($page);
 				}
+				if ($category['id']) {
+					$Categories->del($category['id']);
+				}
 			}
-			unset(
-				$structure,
-				Cache::instance()->Static_pages
-			);
+			unset(Cache::instance()->Static_pages);
 			time_limit_pause(false);
 			return true;
 		}
