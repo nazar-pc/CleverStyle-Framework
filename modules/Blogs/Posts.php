@@ -258,18 +258,16 @@ class Posts {
 	 * Get posts for tag
 	 *
 	 * @param int    $tag
-	 * @param string $lang
 	 * @param int    $page
 	 * @param int    $count
 	 *
 	 * @return int[]
 	 */
-	public function get_for_tag ($tag, $lang, $page, $count) {
+	public function get_for_tag ($tag, $page, $count) {
 		$search_parameters = [
 			'draft' => 0,
 			'tags'  => [
-				'tag'  => $tag,
-				'lang' => $lang
+				'tag'  => $tag
 			]
 		];
 		return $this->search($search_parameters, $page, $count, 'date', false) ?: [];
@@ -278,16 +276,14 @@ class Posts {
 	 * Get number of posts for tag
 	 *
 	 * @param int    $tag
-	 * @param string $lang
 	 *
 	 * @return int
 	 */
-	public function get_for_tag_count ($tag, $lang) {
+	public function get_for_tag_count ($tag) {
 		$search_parameters = [
 			'draft'       => 0,
 			'tags'        => [
-				'tag'  => $tag,
-				'lang' => $lang
+				'tag'  => $tag
 			],
 			'total_count' => true
 		];

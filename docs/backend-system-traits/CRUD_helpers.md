@@ -49,28 +49,6 @@ $this->search([], 1, PHP_INT_MAX, 'joined_table');
 ...
 ```
 
-In multilingual table search for language that is different that current (will return items where language field `lang`, specified in data model as `language_field` is `English` or empty string):
-```php
-<?php
-...
-$this->search([
-    'lang' => 'English'
-]);
-...
-```
-
-Similarly, multilingual field is supported in joined tables:
-```php
-<?php
-...
-$this->search([
-    'tags' => [
-        'lang' => 'English'
-    ]
-]);
-...
-```
-
 Special `total_count` key might be used when number of results is needed instead of results themselves:
 ```php
 <?php

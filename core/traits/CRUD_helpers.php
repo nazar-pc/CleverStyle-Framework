@@ -35,6 +35,9 @@ trait CRUD_helpers {
 		$join_index  = 0;
 		$where       = [];
 		$params      = [];
+		/**
+		 * @var $key string
+		 */
 		foreach ($search_parameters as $key => $details) {
 			if (isset($this->data_model[$key])) {
 				$this->search_process_parameter($this->data_model[$key], $key, $details, $where, $params, $joins, $join_params, $join_index);
@@ -43,9 +46,9 @@ trait CRUD_helpers {
 		return $this->search_do('t', @$search_parameters['total_count'], $where, $params, $joins, $join_params, $page, $count, $order_by, $asc);
 	}
 	/**
-	 * @param          $data_model
-	 * @param          $key
-	 * @param          $details
+	 * @param mixed    $data_model
+	 * @param string   $key
+	 * @param string   $details
 	 * @param string[] $where
 	 * @param array    $params
 	 * @param string   $joins
@@ -98,15 +101,15 @@ trait CRUD_helpers {
 		}
 		$params[] = $count;
 		$params[] = ($page - 1) * $count;
-		$order_by = $this->search_order_by($table_alias, $order_by, $joins, $join_index);
-		$asc      = $asc ? 'ASC' : 'DESC';
+		$group_by = $this->search_group_by($table_alias, $order_by, $joins, $join_index);
+		$order_by = $this->search_order_by($group_by, $asc);
 		$return   = $this->db()->qfas(
 			"SELECT `$table_alias`.`$first_column`
 			FROM `$this->table` AS `$table_alias`
 			$joins
 			$where
-			GROUP BY `$table_alias`.`$first_column`, $order_by
-			ORDER BY $order_by $asc
+			GROUP BY `$table_alias`.`$first_column`, $group_by
+			ORDER BY $order_by
 			LIMIT ? OFFSET ?",
 			array_merge($join_params, $params)
 		);
@@ -158,7 +161,7 @@ trait CRUD_helpers {
 		if ($where1) {
 			list($where2, $params2) = $this->search_conditions('td', 'text', $details);
 			return [
-				"($where1 OR `$table_alias`.`$key` IN (SELECT `td`.`id_` FROM `xyz_texts_data` AS `td` WHERE $where2))",
+				"($where1 OR `$table_alias`.`$key` IN (SELECT `td`.`id_` FROM `[prefix]texts_data` AS `td` WHERE $where2))",
 				array_merge($params1, $params2)
 			];
 		}
@@ -187,6 +190,7 @@ trait CRUD_helpers {
 			ON
 				`$table_alias`.`$first_column` = `j$join_index`.`$first_column_join`";
 		$language_field = isset($data_model['language_field']) ? $data_model['language_field'] : false;
+		/** @noinspection ForeachSourceInspection */
 		foreach ($details as $field => $value) {
 			if ($language_field === $field) {
 				continue;
@@ -198,7 +202,7 @@ trait CRUD_helpers {
 			}
 		}
 		if ($language_field) {
-			$clang = isset($details[$language_field]) ? $details[$language_field] : Language::instance()->clang;
+			$clang = Language::instance()->clang;
 			$joins .=
 				" AND
 				(
@@ -216,38 +220,67 @@ trait CRUD_helpers {
 	 *
 	 * @return string
 	 */
-	private function search_order_by ($table_alias, $order_by, &$joins, &$join_index) {
-		$order_by = explode(':', $order_by);
+	private function search_group_by ($table_alias, $order_by, &$joins, &$join_index) {
+		$order_by     = explode(':', $order_by);
+		$first_column = array_keys($this->data_model)[0];
 		if (!isset($this->data_model[$order_by[0]])) {
 			/**
 			 * Non-existing field
 			 */
-			$order_by = ['id'];
-		} elseif (isset($order_by[1])) {
+			$order_by = [$first_column];
+		}
+		$model = $this->data_model[$order_by[0]];
+		if (isset($order_by[1])) {
 			/**
 			 * Non-existing field in joined table
 			 */
-			if (!isset($this->data_model[$order_by[0]]['data_model'][$order_by[1]])) {
-				$order_by = ['id'];
+			if (!isset($model['data_model'][$order_by[1]])) {
+				$order_by = [$first_column];
+				$model    = $this->data_model[$order_by[0]];
 			}
-		} elseif (is_array($this->data_model[$order_by[0]]) && isset($this->data_model[$order_by[0]]['data_model'])) {
+		} elseif (is_array($model) && isset($model['data_model'])) {
 			/**
 			 * Default field in joined table
 			 */
-			$order_by[1] = array_keys($this->data_model[$order_by[0]]['data_model'])[1];
+			$order_by[1] = array_keys($model['data_model'])[1];
 		}
 		if (isset($order_by[1])) {
 			++$join_index;
-			$first_column      = array_keys($this->data_model)[0];
-			$first_column_join = array_keys($this->data_model[$order_by[0]]['data_model'])[0];
+			$first_column_join = array_keys($model['data_model'])[0];
 			$joins .=
 				"INNER JOIN `{$this->table}_$order_by[0]` AS `j$join_index`
 				ON
 					`$table_alias`.`$first_column`	= `j$join_index`.`$first_column_join`";
-			$order_by = "`j$join_index`.`$order_by[1]`";
-		} else {
-			$order_by = "`$table_alias`.`$order_by[0]`";
+			return "`j$join_index`.`$order_by[1]`";
 		}
-		return $order_by;
+		if (is_string($model) && strpos($model, 'ml:') === 0) {
+			$clang = Language::instance()->clang;
+			++$join_index;
+			$joins .=
+				"JOIN `[prefix]texts_data` AS `j$join_index`
+				ON
+					`$table_alias`.`$order_by[0]`	= `j$join_index`.`id_` AND
+					(
+						`j$join_index`.`lang`	= '$clang' OR
+						`j$join_index`.`lang`	= ''
+					)";
+			return "`j$join_index`.`text`, `$table_alias`.`$order_by[0]`";
+		} else {
+			return "`$table_alias`.`$order_by[0]`";
+		}
+	}
+	/**
+	 * @param string $group_by
+	 * @param bool   $asc
+	 *
+	 * @return string
+	 */
+	private function search_order_by ($group_by, $asc) {
+		$direction = $asc ? 'ASC' : 'DESC';
+		$order_by  = explode(', ', $group_by);
+		foreach ($order_by as &$o) {
+			$o = "$o $direction";
+		}
+		return implode(', ', $order_by);
 	}
 }

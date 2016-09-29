@@ -260,8 +260,8 @@ class Controller {
 		 * Get posts for current page in JSON-LD structure format
 		 */
 		$posts_per_page = $Config->module('Blogs')->posts_per_page;
-		$posts          = $Posts->get_for_tag($tag['id'], $L->clang, $page, $posts_per_page);
-		$posts_count    = $Posts->get_for_tag_count($tag['id'], $L->clang);
+		$posts          = $Posts->get_for_tag($tag['id'], $page, $posts_per_page);
+		$posts_count    = $Posts->get_for_tag_count($tag['id']);
 		/**
 		 * Base url (without page number)
 		 */
@@ -412,7 +412,7 @@ class Controller {
 			}
 			$title[] = $L->tag;
 			$title[] = $tag['text'];
-			$posts   = $Posts->get_for_tag($tag['id'], $L->clang, 1, $number);
+			$posts   = $Posts->get_for_tag($tag['id'], 1, $number);
 		} else {
 			$posts = $Posts->get_latest_posts(1, $number);
 		}

@@ -61,7 +61,7 @@ class CRUD_helpers_advanced {
 			$L->change('English');
 			$id = $this->create(
 				"Title $L->clang $i",
-				'',
+				"Title $L->clang $i",
 				$i,
 				$i
 			);
@@ -72,7 +72,7 @@ class CRUD_helpers_advanced {
 				[
 					$id,
 					"Title $L->clang $i",
-					'',
+					"Title $L->clang ".(5 - $i),
 					5 - $i,
 					5 - $i
 				]
@@ -167,15 +167,24 @@ class CRUD_helpers_advanced {
 				)
 			);
 
-			var_dump("Exact match search (joined table, multilingual, $clang, explicitly specified language English)");
+			var_dump("Order by (multilingual column, $clang, desc)");
 			var_dump(
 				$this->search(
-					[
-						'joined_table1' => [
-							'value' => 1,
-							'lang'  => 'English'
-						]
-					]
+					[],
+					1,
+					100,
+					'description'
+				)
+			);
+
+			var_dump("Order by (multilingual column, $clang, asc)");
+			var_dump(
+				$this->search(
+					[],
+					1,
+					100,
+					'description',
+					true
 				)
 			);
 		}
@@ -293,8 +302,31 @@ array(1) {
   [0]=>
   int(1)
 }
-string(95) "Exact match search (joined table, multilingual, English, explicitly specified language English)"
-array(0) {
+string(45) "Order by (multilingual column, English, desc)"
+array(5) {
+  [0]=>
+  int(5)
+  [1]=>
+  int(4)
+  [2]=>
+  int(3)
+  [3]=>
+  int(2)
+  [4]=>
+  int(1)
+}
+string(44) "Order by (multilingual column, English, asc)"
+array(5) {
+  [0]=>
+  int(1)
+  [1]=>
+  int(2)
+  [2]=>
+  int(3)
+  [3]=>
+  int(4)
+  [4]=>
+  int(5)
 }
 string(63) "Exact match search (main table, multilingual column, Ukrainian)"
 array(1) {
@@ -344,8 +376,31 @@ array(1) {
   [0]=>
   int(4)
 }
-string(97) "Exact match search (joined table, multilingual, Ukrainian, explicitly specified language English)"
-array(0) {
+string(47) "Order by (multilingual column, Ukrainian, desc)"
+array(5) {
+  [0]=>
+  int(1)
+  [1]=>
+  int(2)
+  [2]=>
+  int(3)
+  [3]=>
+  int(4)
+  [4]=>
+  int(5)
+}
+string(46) "Order by (multilingual column, Ukrainian, asc)"
+array(5) {
+  [0]=>
+  int(5)
+  [1]=>
+  int(4)
+  [2]=>
+  int(3)
+  [3]=>
+  int(2)
+  [4]=>
+  int(1)
 }
 string(29) "Order by (joined table, desc)"
 array(4) {
