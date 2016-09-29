@@ -19,6 +19,17 @@ Polymer(
 	_reload_pages : !->
 		cs.api("get api/Static_pages/admin/categories/#{@category}/pages").then (pages) !~>
 			@set('pages', pages)
+	_add : !->
+		cs.ui.simple_modal("""
+			<h3>#{@L.adding_of_page}</h3>
+			<cs-static-pages-admin-pages-add-edit-form category="#{@category}"/>
+		""").addEventListener('close', @~_reload_pages)
+	_edit : (e) !->
+		title	= @L.editing_of_page(e.model.item.title)
+		cs.ui.simple_modal("""
+			<h2>#{title}</h2>
+			<cs-static-pages-admin-pages-add-edit-form id="#{e.model.item.id}"/>
+		""").addEventListener('close', @~_reload_pages)
 	_delete : (e) !->
 		cs.ui.confirm(@L.sure_to_delete_page(e.model.item.title))
 			.then -> cs.api('delete api/Static_pages/admin/pages/' + e.model.item.id)

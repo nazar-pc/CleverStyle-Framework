@@ -21,6 +21,14 @@
         this$.set('pages', pages);
       });
     },
+    _add: function(){
+      cs.ui.simple_modal("<h3>" + this.L.adding_of_page + "</h3>\n<cs-static-pages-admin-pages-add-edit-form category=\"" + this.category + "\"/>").addEventListener('close', bind$(this, '_reload_pages'));
+    },
+    _edit: function(e){
+      var title;
+      title = this.L.editing_of_page(e.model.item.title);
+      cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-static-pages-admin-pages-add-edit-form id=\"" + e.model.item.id + "\"/>").addEventListener('close', bind$(this, '_reload_pages'));
+    },
     _delete: function(e){
       var this$ = this;
       cs.ui.confirm(this.L.sure_to_delete_page(e.model.item.title)).then(function(){
@@ -31,4 +39,7 @@
       });
     }
   });
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);

@@ -1,7 +1,4 @@
 [
 	"browse_categories",
-	"browse_pages",
-	"add_page",
-	"add_page_live",
-	"edit_page"
+	"browse_pages"
 ]

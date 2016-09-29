@@ -34,4 +34,9 @@ Polymer(
 			.then !~>
 				cs.ui.notify(@L.changes_saved, 'success', 5)
 				@_reload_categories()
+	_add_page : !->
+		cs.ui.simple_modal("""
+			<h3>#{@L.adding_of_page}</h3>
+			<cs-static-pages-admin-pages-add-edit-form/>
+		""").addEventListener('close', @~_reload_categories)
 )

@@ -74,7 +74,7 @@ class Controller {
 	/**
 	 * @param \cs\Request $Request
 	 *
-	 * @return array
+	 * @return array[]
 	 *
 	 * @throws ExitException
 	 */
@@ -85,6 +85,53 @@ class Controller {
 		}
 		$Pages = Pages::instance();
 		return $Pages->get($Pages->get_for_category($category));
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @return array
+	 *
+	 * @throws ExitException
+	 */
+	public static function admin_pages_get ($Request) {
+		$id = $Request->route_ids(0);
+		if ($id === null) {
+			throw new ExitException(400);
+		}
+		$data = Pages::instance()->get($id);
+		if (!$data) {
+			throw new ExitException(404);
+		}
+		return $data;
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @throws ExitException
+	 */
+	public static function admin_pages_post ($Request) {
+		$data = $Request->data('category', 'title', 'path', 'content', 'interface');
+		if (!$data) {
+			throw new ExitException(400);
+		}
+		if (!Pages::instance()->add($data['category'], $data['title'], $data['path'], $data['content'], $data['interface'])) {
+			throw new ExitException(500);
+		}
+	}
+	/**
+	 * @param \cs\Request $Request
+	 *
+	 * @throws ExitException
+	 */
+	public static function admin_pages_put ($Request) {
+		$id   = $Request->route_ids(0);
+		$data = $Request->data('category', 'title', 'path', 'content', 'interface');
+		if (!$id || !$data) {
+			throw new ExitException(400);
+		}
+		if (!Pages::instance()->set($id, $data['category'], $data['title'], $data['path'], $data['content'], $data['interface'])) {
+			throw new ExitException(500);
+		}
 	}
 	/**
 	 * @param \cs\Request $Request

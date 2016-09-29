@@ -27,12 +27,10 @@
 		"index_page_path"              : "If you want to use this module as default module - add, please, page with path \"index\" to the root category. Content of this page will be displayed on site home page",
 		"action"                       : "Action",
 		"save"                         : "Save",
-		"save_info"                    : "Save changes",
 		"changes_saved"                : "Changes saved",
-		"changes_save_error"           : "Unable to save changes",
-		"cancel"                       : "Cancel",
-		"yes"                          : "Yes",
 		"delete"                       : "Delete",
-		"edit"                         : "Edit"
+		"edit"                         : "Edit",
+		"off"                          : "Off",
+		"on"                           : "On"
 	}
 }

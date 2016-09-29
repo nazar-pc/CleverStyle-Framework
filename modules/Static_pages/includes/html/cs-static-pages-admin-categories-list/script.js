@@ -38,6 +38,9 @@
         cs.ui.notify(this$.L.changes_saved, 'success', 5);
         this$._reload_categories();
       });
+    },
+    _add_page: function(){
+      cs.ui.simple_modal("<h3>" + this.L.adding_of_page + "</h3>\n<cs-static-pages-admin-pages-add-edit-form/>").addEventListener('close', bind$(this, '_reload_categories'));
     }
   });
   function bind$(obj, key, target){

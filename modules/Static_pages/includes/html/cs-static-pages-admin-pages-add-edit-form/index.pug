@@ -1,0 +1,43 @@
+dom-module#cs-static-pages-admin-pages-add-edit-form
+	link(rel="import" href="style.css" type="css")
+	template
+		style(include="advanced-styles")
+		table.cs-table
+			tr
+				th [[L.category]]
+				th [[L.page_title]]
+				th(tooltip="[[L.page_path_info]]")
+					| [[L.page_path]]
+					cs-tooltip
+				th(tooltip="[[L.page_interface_info]]")
+					| [[L.page_interface]]
+					cs-tooltip
+			tr
+				td
+					template(is="dom-if" if="[[categories]]")
+						select(is="cs-select" selected="{{page.category}}" size="5")
+							template(is="dom-repeat" items="[[categories]]")
+								option(value="[[item.id]]") [[item.full_title]]
+				td
+					input(is="cs-input-text" type="text" value="{{page.title}}")
+				td
+					input(is="cs-input-text" type="text" value="{{page.path}}")
+				td
+					nav(is="cs-nav-button-group")
+						label(is="cs-label-button" value="{{page.interface}}")
+							input(type="radio" name="interface" value="0")
+							| [[L.off]]
+						label(is="cs-label-button")
+							input(type="radio" name="interface" value="1")
+							| [[L.on]]
+		table.cs-table(center)
+			tr
+				th [[L.content]]
+				td
+					template(is="dom-if" if="[[equal(page.interface, 1)]]" restamp)
+						cs-editor(value="{{page.content}}")
+							textarea(is="cs-textarea" autosize value="{{page.content}}")
+					template(is="dom-if" if="[[equal(page.interface, 0)]]" restamp)
+						textarea(is="cs-textarea" autosize value="{{page.content}}")
+		button(is="cs-button" on-tap="_save" type="button" primary) [[L.save]]
+	script(src="script.js")
