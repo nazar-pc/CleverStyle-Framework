@@ -5,6 +5,6 @@
  * @copyright Copyright (c) 2016, Nazar Mokrynskyi
  * @license   GNU Lesser General Public License 2.1, see license.txt
  */
-:host {
+:host:not(hidden) {
 	display : inline-block;
 }
