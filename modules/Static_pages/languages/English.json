@@ -1,6 +1,7 @@
 {
 	"Static_pages"  : "Static pages",
 	"static_pages_" : {
+		"browse_categories"            : "Browse categories",
 		"pages_category"               : "Pages category",
 		"add_category"                 : "Add category",
 		"add_page"                     : "Add page",

@@ -2,6 +2,7 @@
 {
 	"Static_pages"  : "Cтатичні сторінки",
 	"static_pages_" : {
+		"browse_categories"            : "Переглянути категорії",
 		"pages_category"               : "Категорія сторінок",
 		"add_category"                 : "Додати категорію",
 		"add_page"                     : "Додати сторінку",

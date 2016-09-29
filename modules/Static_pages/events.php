@@ -10,7 +10,10 @@ namespace cs\modules\Static_pages;
 use
 	cs\Cache,
 	cs\Config,
-	cs\Event;
+	cs\Event,
+	cs\Language\Prefix,
+	cs\Menu,
+	cs\Request;
 
 Event::instance()
 	->on(
@@ -73,5 +76,19 @@ Event::instance()
 			);
 			time_limit_pause(false);
 			return true;
+		}
+	)
+	->on(
+		'admin/System/Menu',
+		function () {
+			$L = new Prefix('static_pages_');
+			Menu::instance()->add_item(
+				'Static_pages',
+				$L->browse_categories,
+				[
+					'href'    => "admin/Static_pages/browse_categories",
+					'primary' => Request::instance()->route_path(0) == 'browse_categories'
+				]
+			);
 		}
 	);

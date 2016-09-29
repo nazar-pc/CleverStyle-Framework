@@ -32,7 +32,8 @@ dom-module#cs-static-pages-admin-pages-add-edit-form
 							| [[L.on]]
 		table.cs-table(center)
 			tr
-				th [[L.content]]
+				th [[L.page_content]]
+			tr
 				td
 					template(is="dom-if" if="[[equal(page.interface, 1)]]" restamp)
 						cs-editor(value="{{page.content}}")

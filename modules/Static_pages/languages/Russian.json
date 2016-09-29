@@ -1,6 +1,7 @@
 {
 	"Static_pages"  : "Статические страницы",
 	"static_pages_" : {
+		"browse_categories"            : "Просмотреть категории",
 		"pages_category"               : "Категория страниц",
 		"add_category"                 : "Добавить категорию",
 		"add_page"                     : "Добавить страницу",
