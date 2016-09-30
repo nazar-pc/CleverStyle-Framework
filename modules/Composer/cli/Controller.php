@@ -55,6 +55,6 @@ HELP;
 		if (!rmdir_recursive(STORAGE.'/Composer')) {
 			throw new ExitException(500);
 		}
-		return "<g>OK</g>";
+		return '<g>OK</g>';
 	}
 }
