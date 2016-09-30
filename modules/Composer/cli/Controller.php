@@ -15,17 +15,17 @@ use
 class Controller {
 	public static function index_help () {
 		return <<<HELP
-%yComposer module%n
+<y>Composer module</y>
 
-%yMethods:%n
-  %gupdate%n  Update Composer using system configuration
-  %gclean%n   Clean Composer's files (composer.json/lock as well as vendor directory, useful if %gupdate%n fails)
+<y>Methods:</y>
+  <g>update</g>  Update Composer using system configuration
+  <g>clean</g>   Clean Composer's files (composer.json/lock as well as vendor directory, useful if <g>update</g> fails)
 
-%yExamples:%n
+<y>Examples:</y>
   Update Composer:
-    %g./cli update:Composer%n
+    <g>./cli update:Composer</g>
   Clean Composer's files:
-    %g./cli clean:Composer%n
+    <g>./cli clean:Composer</g>
 
 HELP;
 	}
@@ -55,6 +55,6 @@ HELP;
 		if (!rmdir_recursive(STORAGE.'/Composer')) {
 			throw new ExitException(500);
 		}
-		return "%gOK%n\n";
+		return "<g>OK</g>";
 	}
 }

@@ -524,7 +524,7 @@ class Page {
 			);
 		} elseif ($Request->cli_path) {
 			$content = $title != $description ? "$title\n$description" : $description;
-			err("%r$content%n");
+			err("<r>$content</r>");
 		} else {
 			$this->Content = $this->error_page($title, $description);
 		}

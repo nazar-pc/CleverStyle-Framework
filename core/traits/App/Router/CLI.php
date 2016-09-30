@@ -31,7 +31,7 @@ trait CLI {
 		// Cut `/cli/` prefix
 		$path = substr($path, 5);
 		if ($path) {
-			$Page->content("%yPaths and methods for \"$path\":%n\n");
+			$Page->content("<y>Paths and methods for \"$path\":</y>\n");
 			$result = array_filter(
 				$result,
 				function ($item) use ($path) {
@@ -39,7 +39,7 @@ trait CLI {
 				}
 			);
 		} else {
-			$Page->content("%yAll paths and methods:%n\n");
+			$Page->content("<y>All paths and methods:</y>\n");
 		}
 		$Page->content(
 			implode("\n", (new Table(['Path', 'Methods available'], $result))->getDisplayLines())."\n"

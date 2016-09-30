@@ -17,22 +17,22 @@ trait optimization {
 	 */
 	public static function optimization_help () {
 		return <<<HELP
-%ySystem optimization%n
+<y>System optimization</y>
 
-%yMethods:%n
-  %gclean_cache%n  Clean system cache
-  %gclean_pcache%n Clear the cache of scripts and styles
+<y>Methods:</y>
+  <g>clean_cache</g>  Clean system cache
+  <g>clean_pcache</g> Clear the cache of scripts and styles
 
-%yArguments:%n
-  %gprefix_path%n If present, will clean only part of cache (%gclean_cache%n only)
+<y>Arguments:</y>
+  <g>prefix_path</g> If present, will clean only part of cache (<g>clean_cache</g> only)
 
-%yExamples:%n
+<y>Examples:</y>
   Clean the whole system cache:
-    %g./cli clean_cache:System/optimization%n
+    <g>./cli clean_cache:System/optimization</g>
   Clean only languages cache:
-    %g./cli clean_cache:System/optimization prefix_path=languages%n
+    <g>./cli clean_cache:System/optimization prefix_path=languages</g>
   Clean the whole system public cache:
-    %g./cli clean_pcache:System/optimization%n
+    <g>./cli clean_pcache:System/optimization</g>
 
 HELP;
 	}
@@ -47,7 +47,7 @@ HELP;
 	 */
 	public static function optimization_clean_cache ($Request) {
 		Api_controller::admin_optimization_clean_cache($Request);
-		return "%gOK%n\n";
+		return "<g>OK</g>cli\n";
 	}
 	/**
 	 * Clean public cache (CSS/JS/HTML)
@@ -58,6 +58,6 @@ HELP;
 	 */
 	public static function optimization_clean_pcache () {
 		Api_controller::admin_optimization_clean_pcache();
-		return "%gOK%n\n";
+		return "<g>OK</g>cli\n";
 	}
 }

@@ -15,21 +15,21 @@ use
 class Controller {
 	public static function index_help () {
 		return <<<HELP
-%yHttp server module%n
+<y>Http server module</y>
 
-%yMethods:%n
-  %grun_server%n Prints all cli paths and methods available for specified path
-  %grun_pool%n   Displays help for module or path (should be provided by developer, otherwise will fallback to %gcli%n)
+<y>Methods:</y>
+  <g>run_server</g> Prints all cli paths and methods available for specified path
+  <g>run_pool</g>   Displays help for module or path (should be provided by developer, otherwise will fallback to <g>cli</g>)
 
-%yArguments:%n
-  %gport%n  Required for %grun_server%n, specifies port on which server will be running
-  %gports%n Required for %grun_pool%n, specifies ports on which server will be running (coma-separated list of ports or ports ranged separated by -)
+<y>Arguments:</y>
+  <g>port</g>  Required for <g>run_server</g>, specifies port on which server will be running
+  <g>ports</g> Required for <g>run_pool</g>, specifies ports on which server will be running (coma-separated list of ports or ports ranged separated by -)
 
-%yExamples:%n
+<y>Examples:</y>
   Run HTTP server on port 8080:
-    %g./cli run_server:Http_server port=8080%n
+    <g>./cli run_server:Http_server port=8080</g>
   Run pool of HTTP servers on ports 8080, 8081 and range of ports 8082-8087:
-    %g./cli run_pool:Http_server ports=8080,8081,8082-8087%n
+    <g>./cli run_pool:Http_server ports=8080,8081,8082-8087</g>
 
 HELP;
 	}

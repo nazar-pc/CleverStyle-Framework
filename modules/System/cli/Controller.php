@@ -17,24 +17,24 @@ class Controller {
 	public static function __help () {
 		$version = file_get_json(__DIR__.'/../meta.json')['version'];
 		return <<<HELP
-%gCleverStyle Framework%n version %y$version%n, CLI interface%n
+<g>CleverStyle Framework</g> version <y>$version</y>, CLI interface
 
-%yUsage:%n
+<y>Usage:</y>
   [method:]path [arguments]
 
-%yUniversal methods:%n
-  %gcli%n  Prints all cli paths and methods available for specified path
-  %ghelp%n Displays help for module or path (should be provided by developer, otherwise will fallback to %gcli%n)
+<y>Universal methods:</y>
+  <g>cli</g>  Prints all cli paths and methods available for specified path
+  <g>help</g> Displays help for module or path (should be provided by developer, otherwise will fallback to <g>cli</g>)
 
-%yExamples:%n
+<y>Examples:</y>
   Print all paths and methods available in the whole system:
-    %g./cli cli:%n
+    <g>./cli cli:</g>
   Print all paths and method available in System module:
-    %g./cli cli:System%n
+    <g>./cli cli:System</g>
   Print all paths and method available in System module, admin sub-path:
-    %g./cli cli:System/admin%n
+    <g>./cli cli:System/admin</g>
   Print help information (this message) for System module:
-    %g./cli help:System%n
+    <g>./cli help:System</g>
 
 HELP;
 	}

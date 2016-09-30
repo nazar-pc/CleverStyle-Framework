@@ -56,7 +56,7 @@ namespace cs {
 ?>
 --EXPECT--
 string(25) "Print CLI structure (all)"
-string(54) "cs\Page::content('%yAll paths and methods:%n
+string(57) "cs\Page::content('<y>All paths and methods:</y>
 ') called"
 string(738) "cs\Page::content('+--------------------------------------------------------+-------------------+
 | Path                                                   | Methods available |
@@ -69,7 +69,7 @@ string(738) "cs\Page::content('+------------------------------------------------
 +--------------------------------------------------------+-------------------+
 ') called"
 string(52) "Print CLI structure (controllers-based routing path)"
-string(95) "cs\Page::content('%yPaths and methods for "Module_with_controller_routing/level10":%n
+string(98) "cs\Page::content('<y>Paths and methods for "Module_with_controller_routing/level10":</y>
 ') called"
 string(422) "cs\Page::content('+--------------------------------------------------------+-------------------+
 | Path                                                   | Methods available |
@@ -78,7 +78,7 @@ string(422) "cs\Page::content('+------------------------------------------------
 +--------------------------------------------------------+-------------------+
 ') called"
 string(46) "Print CLI structure (files-based routing path)"
-string(90) "cs\Page::content('%yPaths and methods for "Module_with_files_routing/level10":%n
+string(93) "cs\Page::content('<y>Paths and methods for "Module_with_files_routing/level10":</y>
 ') called"
 string(397) "cs\Page::content('+---------------------------------------------------+-------------------+
 | Path                                              | Methods available |
