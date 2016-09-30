@@ -74,7 +74,7 @@ class Options {
 	 * @param $poll
 	 * @param $title
 	 *
-	 * @return false|int
+	 * @return bool
 	 */
 	public function set ($id, $poll, $title) {
 		$id   = (int)$id;

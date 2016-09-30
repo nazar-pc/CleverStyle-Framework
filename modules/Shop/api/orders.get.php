@@ -61,8 +61,8 @@ if (isset($Request->route_ids[0], $Request->route_path[1])) {
 				[
 					'user' => $Session->get_user()
 				]
-			)
-		) ?: []
+			) ?: []
+		)
 	);
 } else {
 	$Page->json(

@@ -82,7 +82,7 @@ class Polls {
 	 * @param int    $id
 	 * @param string $title
 	 *
-	 * @return false|int
+	 * @return bool
 	 */
 	public function set ($id, $title) {
 		$id     = (int)$id;

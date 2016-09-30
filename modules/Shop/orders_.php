@@ -34,7 +34,7 @@ if ($Session->user()) {
 			$count,
 			@$_GET['order_by'] ?: 'date',
 			@$_GET['asc']
-		)
+		) ?: []
 	);
 	$orders_total = $Orders->search(
 		[

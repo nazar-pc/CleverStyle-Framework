@@ -21,8 +21,6 @@ class Helpers {
 	 * @param int    $posts_count
 	 * @param int    $page
 	 * @param string $base_url
-	 *
-	 * @return string
 	 */
 	public static function show_posts_list ($posts, $posts_count, $page, $base_url) {
 		$module_data = Config::instance()->module('Blogs');

@@ -221,7 +221,7 @@ class Orders {
 	 * @param string  $order_by
 	 * @param bool    $asc
 	 *
-	 * @return array|false|string
+	 * @return false|int|int[]
 	 */
 	public function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'date', $asc = false) {
 		return $this->crud_search($search_parameters, $page, $count, $order_by, $asc);

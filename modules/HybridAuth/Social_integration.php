@@ -30,10 +30,10 @@ class Social_integration {
 	 * @param string $identifier
 	 * @param string $profile
 	 *
-	 * @return false|int|string
+	 * @return bool
 	 */
 	public function add ($user_id, $provider, $identifier, $profile) {
-		return $this->db_prime()->q(
+		return (bool)$this->db_prime()->q(
 			"REPLACE INTO `[prefix]users_social_integration`
 				(
 					`id`,

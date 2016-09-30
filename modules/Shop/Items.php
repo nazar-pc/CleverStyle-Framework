@@ -353,7 +353,7 @@ class Items {
 	/**
 	 * @param int $type
 	 *
-	 * @return string
+	 * @return false|string
 	 */
 	protected function attribute_type_to_value_field ($type) {
 		switch ($type) {

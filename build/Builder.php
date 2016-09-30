@@ -314,6 +314,12 @@ HTACCESS;
 		}
 		return $this->generic_package_creation("$this->root/themes/$theme", $suffix);
 	}
+	/**
+	 * @param string      $source_dir
+	 * @param null|string $suffix
+	 *
+	 * @return string
+	 */
 	protected function generic_package_creation ($source_dir, $suffix = null) {
 		if (!file_exists("$source_dir/meta.json")) {
 			$component = basename($source_dir);

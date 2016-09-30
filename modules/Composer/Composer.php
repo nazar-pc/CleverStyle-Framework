@@ -67,8 +67,8 @@ class Composer {
 	/**
 	 * Update composer
 	 *
-	 * @param string $component_name Is specified if called before component actually installed (to satisfy dependencies)
-	 * @param int    $mode           Composer::MODE_ADD or Composer::MODE_DELETE
+	 * @param null|string $component_name Is specified if called before component actually installed (to satisfy dependencies)
+	 * @param int         $mode           Composer::MODE_ADD or Composer::MODE_DELETE
 	 *
 	 * @return array Array with `code` and `description` elements, first represents status code returned by composer, second contains ANSI text returned by
 	 *               composer
