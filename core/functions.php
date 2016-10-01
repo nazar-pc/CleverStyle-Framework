@@ -184,35 +184,22 @@ function format_time ($time) {
 	if (!is_numeric($time)) {
 		return $time;
 	}
-	$L   = Language::instance();
-	$res = [];
-	if ($time >= 31536000) {
-		$time_x = round($time / 31536000);
-		$time -= $time_x * 31536000;
-		$res[] = $L->time($time_x, 'y');
-	}
-	if ($time >= 2592000) {
-		$time_x = round($time / 2592000);
-		$time -= $time_x * 2592000;
-		$res[] = $L->time($time_x, 'M');
-	}
-	if ($time >= 86400) {
-		$time_x = round($time / 86400);
-		$time -= $time_x * 86400;
-		$res[] = $L->time($time_x, 'd');
-	}
-	if ($time >= 3600) {
-		$time_x = round($time / 3600);
-		$time -= $time_x * 3600;
-		$res[] = $L->time($time_x, 'h');
-	}
-	if ($time >= 60) {
-		$time_x = round($time / 60);
-		$time -= $time_x * 60;
-		$res[] = $L->time($time_x, 'm');
-	}
-	if ($time > 0 || empty($res)) {
-		$res[] = $L->time($time, 's');
+	$L     = Language::instance();
+	$res   = [];
+	$units = [
+		60 * 60 * 24 * 30 * 365 => 'y',
+		60 * 60 * 24 * 30       => 'M',
+		60 * 60 * 24            => 'd',
+		60 * 60                 => 'h',
+		60                      => 'm',
+		1                       => 's'
+	];
+	foreach ($units as $time_frame => $key) {
+		if ($time >= $time_frame) {
+			$time_full = floor($time / $time_frame);
+			$time -= $time_full * $time_frame;
+			$res[] = $L->time($time_full, $key);
+		}
 	}
 	return implode(' ', $res);
 }
