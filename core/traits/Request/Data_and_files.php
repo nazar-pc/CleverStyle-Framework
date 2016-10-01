@@ -57,23 +57,15 @@ trait Data_and_files {
 		if (is_resource($this->data_stream)) {
 			fclose($this->data_stream);
 		}
-		$this->data        = $data;
-		$this->files       = $this->normalize_files($files);
-		$this->data_stream = null;
 		if (in_array($this->method, ['GET', 'HEAD', 'OPTIONS'])) {
+			$this->data        = [];
+			$this->files       = [];
+			$this->data_stream = null;
 			return;
 		}
-		$data_stream = is_string($data_stream) ? fopen($data_stream, 'rb') : $data_stream;
-		if (is_resource($data_stream)) {
-			rewind($data_stream);
-			if ($copy_stream) {
-				$this->data_stream = fopen('php://temp', 'w+b');
-				stream_copy_to_stream($data_stream, $this->data_stream);
-				fclose($data_stream);
-			} else {
-				$this->data_stream = $data_stream;
-			}
-		}
+		$this->data        = $data;
+		$this->files       = $this->normalize_files($files);
+		$this->data_stream = $this->prepare_data_stream($data_stream, $copy_stream);
 		/**
 		 * If we don't appear to have any data or files detected - probably, we need to parse request ourselves
 		 */
@@ -167,6 +159,26 @@ trait Data_and_files {
 			$file['error'] = UPLOAD_ERR_NO_FILE;
 		}
 		return $file;
+	}
+	/**
+	 * @param null|resource|string $data_stream
+	 * @param bool                 $copy_stream
+	 *
+	 * @return null|resource
+	 */
+	protected function prepare_data_stream ($data_stream, $copy_stream) {
+		$data_stream = is_string($data_stream) ? fopen($data_stream, 'rb') : $data_stream;
+		if (!is_resource($data_stream)) {
+			return null;
+		}
+		if (!$copy_stream) {
+			return $data_stream;
+		}
+		$new_data_stream = fopen('php://temp', 'w+b');
+		rewind($data_stream);
+		stream_copy_to_stream($data_stream, $new_data_stream);
+		fclose($data_stream);
+		return $new_data_stream;
 	}
 	/**
 	 * Parsing request body for following Content-Type: `application/json`, `application/x-www-form-urlencoded` and `multipart/form-data`
