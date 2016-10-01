@@ -207,33 +207,32 @@ function format_time ($time) {
 /**
  * Formatting of data size in bytes to human-readable form
  *
- * @param int      $size
- * @param bool|int $round
+ * @param int       $size
+ * @param false|int $round
  *
- * @return float|string
+ * @return string
  */
 function format_filesize ($size, $round = false) {
 	if (!is_numeric($size)) {
 		return $size;
 	}
-	$L    = Language::prefix('system_filesize_');
-	$unit = '';
-	if ($size >= 1099511627776) {
-		$size /= 1099511627776;
-		$unit = " $L->TiB";
-	} elseif ($size >= 1073741824) {
-		$size /= 1073741824;
-		$unit = " $L->GiB";
-	} elseif ($size >= 1048576) {
-		$size /= 1048576;
-		$unit = " $L->MiB";
-	} elseif ($size >= 1024) {
-		$size /= 1024;
-		$unit = " $L->KiB";
-	} else {
-		$size = "$size $L->Bytes";
+	$L     = Language::prefix('system_filesize_');
+	$units = [
+		1024 * 1024 * 1024 * 1024 => $L->TiB,
+		1024 * 1024 * 1024        => $L->GiB,
+		1024 * 1024               => $L->MiB,
+		1024                      => $L->KiB,
+		0                         => $L->Bytes
+	];
+	foreach ($units as $size_frame => $unit) {
+		if ($size >= $size_frame) {
+			$size /= $size_frame;
+			if ($round) {
+				$size = round($size, $round);
+			}
+			return "$size $unit";
+		}
 	}
-	return $round ? round($size, $round).$unit : $size.$unit;
 }
 
 /**
