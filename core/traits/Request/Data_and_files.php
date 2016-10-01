@@ -308,43 +308,65 @@ trait Data_and_files {
 			$headers = $this->parse_multipart_headers(
 				stream_get_contents($stream, $part['headers']['size'], $part['headers']['offset'])
 			);
-			if (
-				!isset($headers['content-disposition'][0], $headers['content-disposition']['name']) ||
-				$headers['content-disposition'][0] != 'form-data'
-			) {
+			if (!$this->parse_multipart_analyze_parts_is_valid($headers)) {
 				continue;
 			}
 			$name = $headers['content-disposition']['name'];
 			if (isset($headers['content-disposition']['filename'])) {
-				$file = [
-					'name'   => $headers['content-disposition']['filename'],
-					'type'   => @$headers['content-type'] ?: 'application/octet-stream',
-					'size'   => $part['body']['size'],
-					'stream' => Stream_slicer::slice($stream, $part['body']['offset'], $part['body']['size']),
-					'error'  => UPLOAD_ERR_OK
-				];
-				if ($file['name'] === '') {
-					$file['type']   = '';
-					$file['stream'] = null;
-					$file['error']  = UPLOAD_ERR_NO_FILE;
-				} elseif ($file['size'] > $this->upload_max_file_size()) {
-					$file['stream'] = null;
-					$file['error']  = UPLOAD_ERR_INI_SIZE;
-				}
+				$file = $this->parse_multipart_analyze_parts_file($headers, $stream, $part['body']['offset'], $part['body']['size']);
 				$this->parse_multipart_set_target($files, $name, $file);
 			} else {
-				if ($part['body']['size'] == 0) {
-					$this->parse_multipart_set_target($data, $name, '');
-				} else {
-					$this->parse_multipart_set_target(
-						$data,
-						$name,
-						stream_get_contents($stream, $part['body']['size'], $part['body']['offset'])
-					);
-				}
+				$content = $this->parse_multipart_analyze_parts_content($stream, $part['body']['offset'], $part['body']['size']);
+				$this->parse_multipart_set_target($data, $name, $content);
 			}
 		}
 		return [$data, $files];
+	}
+	/**
+	 * @param array $headers
+	 *
+	 * @return bool
+	 */
+	protected function parse_multipart_analyze_parts_is_valid ($headers) {
+		return
+			isset($headers['content-disposition'][0], $headers['content-disposition']['name']) &&
+			$headers['content-disposition'][0] == 'form-data';
+	}
+	/**
+	 * @param array    $headers
+	 * @param resource $stream
+	 * @param int      $offset
+	 * @param int      $size
+	 *
+	 * @return array
+	 */
+	protected function parse_multipart_analyze_parts_file ($headers, $stream, $offset, $size) {
+		$file = [
+			'name'   => $headers['content-disposition']['filename'],
+			'type'   => @$headers['content-type'] ?: 'application/octet-stream',
+			'size'   => $size,
+			'stream' => Stream_slicer::slice($stream, $offset, $size),
+			'error'  => UPLOAD_ERR_OK
+		];
+		if ($file['name'] === '') {
+			$file['type']   = '';
+			$file['stream'] = null;
+			$file['error']  = UPLOAD_ERR_NO_FILE;
+		} elseif ($file['size'] > $this->upload_max_file_size()) {
+			$file['stream'] = null;
+			$file['error']  = UPLOAD_ERR_INI_SIZE;
+		}
+		return $file;
+	}
+	/**
+	 * @param resource $stream
+	 * @param int      $offset
+	 * @param int      $size
+	 *
+	 * @return string
+	 */
+	protected function parse_multipart_analyze_parts_content ($stream, $offset, $size) {
+		return $size ? stream_get_contents($stream, $size, $offset) : '';
 	}
 	/**
 	 * @return int
