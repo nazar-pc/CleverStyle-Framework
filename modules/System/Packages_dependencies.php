@@ -10,6 +10,7 @@
 namespace cs\modules\System;
 use
 	cs\Config,
+	cs\Config\Module_Properties,
 	cs\Core;
 
 /**
@@ -324,38 +325,43 @@ class Packages_dependencies {
 			return [];
 		}
 		$meta    = self::normalize_meta($meta);
-		$Config  = Config::instance();
 		$used_by = [];
 		/**
 		 * Checking for backward dependencies of modules
 		 */
-		foreach (array_keys($Config->components['modules']) as $module) {
-			/**
-			 * If module is not enabled, we compare module with itself or there is no `meta.json` - we do not care about it
-			 */
-			if (
-				(
-					$meta['category'] == 'modules' &&
-					$meta['package'] == $module
-				) ||
-				!file_exists(MODULES."/$module/meta.json") ||
-				!$Config->module($module)->enabled()
-			) {
-				continue;
-			}
-			$module_meta = file_get_json(MODULES."/$module/meta.json");
-			$module_meta = self::normalize_meta($module_meta);
-			/**
-			 * Check if component provided something important here
-			 */
-			if (
-				isset($module_meta['require'][$meta['package']]) ||
-				array_intersect(array_keys($module_meta['require']), $meta['provide'])
-			) {
+		foreach (Config::instance()->components['modules'] as $module => $module_data) {
+			if (self::is_used_by($meta, $module, $module_data['active'])) {
 				$used_by[] = $module;
 			}
 		}
 		return $used_by;
+	}
+	/**
+	 * @param array  $meta
+	 * @param string $module
+	 * @param int    $active
+	 *
+	 * @return bool
+	 */
+	protected static function is_used_by ($meta, $module, $active) {
+		/**
+		 * If module is not enabled, we compare module with itself or there is no `meta.json` - we do not care about it
+		 */
+		if (
+			$active != Module_Properties::ENABLED ||
+			self::check_dependencies_are_the_same($meta, ['category' => 'modules', 'package' => $module]) ||
+			!file_exists(MODULES."/$module/meta.json")
+		) {
+			return false;
+		}
+		$module_meta = file_get_json(MODULES."/$module/meta.json");
+		$module_meta = self::normalize_meta($module_meta);
+		/**
+		 * Check if component provided something important here
+		 */
+		return
+			isset($module_meta['require'][$meta['package']]) ||
+			array_intersect(array_keys($module_meta['require']), $meta['provide']);
 	}
 	/**
 	 * Normalize structure of `meta.json`
