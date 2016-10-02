@@ -18,7 +18,7 @@ $L = Language::instance_stub(
 	]
 );
 
-var_dump(format_time('not a number'));
+var_dump(format_filesize('not a number'));
 
 var_dump('TiB', format_filesize(25 + 1024 * 2 + 1024 * 1024 * 3 + 1024 * 1024 * 1024 * 5 + 1024 * 1024 * 1024 * 1024 * 7, 3));
 var_dump('GiB', format_filesize(25 + 1024 * 2 + 1024 * 1024 * 3 + 1024 * 1024 * 1024 * 5, 3));
