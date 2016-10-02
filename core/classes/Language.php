@@ -432,9 +432,9 @@ class Language implements JsonSerializable {
 	/**
 	 * Time formatting according to the current language (adding correct endings)
 	 *
-	 * @param int    $in          time (number)
-	 * @param string $type        Type of formatting<br>
-	 *                            s - seconds<br>m - minutes<br>h - hours<br>d - days<br>M - months<br>y - years
+	 * @param int    $in   time (number)
+	 * @param string $type Type of formatting<br>
+	 *                     s - seconds<br>m - minutes<br>h - hours<br>d - days<br>M - months<br>y - years
 	 *
 	 * @return string
 	 */
@@ -442,23 +442,16 @@ class Language implements JsonSerializable {
 		if (is_callable($this->time)) {
 			$time = $this->time;
 			return $time($in, $type);
-		} else {
-			switch ($type) {
-				case 's':
-					return "$in $this->system_time_seconds";
-				case 'm':
-					return "$in $this->system_time_minutes";
-				case 'h':
-					return "$in $this->system_time_hours";
-				case 'd':
-					return "$in $this->system_time_days";
-				case 'M':
-					return "$in $this->system_time_months";
-				case 'y':
-					return "$in $this->system_time_years";
-			}
 		}
-		return $in;
+		$types = [
+			's' => $this->system_time_seconds,
+			'm' => $this->system_time_minutes,
+			'h' => $this->system_time_hours,
+			'd' => $this->system_time_days,
+			'M' => $this->system_time_months,
+			'y' => $this->system_time_years
+		];
+		return $in.' '.$types[$type];
 	}
 	/**
 	 * Allows to use formatted strings in translations

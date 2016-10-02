@@ -187,12 +187,12 @@ function format_time ($time) {
 	$L     = Language::instance();
 	$res   = [];
 	$units = [
-		60 * 60 * 24 * 30 * 365 => 'y',
-		60 * 60 * 24 * 30       => 'M',
-		60 * 60 * 24            => 'd',
-		60 * 60                 => 'h',
-		60                      => 'm',
-		1                       => 's'
+		60 * 60 * 24 * 365 => 'y',
+		60 * 60 * 24 * 30  => 'M',
+		60 * 60 * 24       => 'd',
+		60 * 60            => 'h',
+		60                 => 'm',
+		1                  => 's'
 	];
 	foreach ($units as $time_frame => $key) {
 		if ($time >= $time_frame) {
@@ -226,7 +226,7 @@ function format_filesize ($size, $round = false) {
 	];
 	foreach ($units as $size_frame => $unit) {
 		if ($size >= $size_frame) {
-			$size /= $size_frame;
+			$size /= max($size_frame, 1);
 			if ($round) {
 				$size = round($size, $round);
 			}
