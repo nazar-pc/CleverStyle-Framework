@@ -128,6 +128,7 @@ class Collecting {
 		}
 		$meta = file_get_json("$base_dir/meta.json");
 		$meta += [
+			'assets'   => [],
 			'require'  => [],
 			'optional' => [],
 			'provide'  => []
@@ -157,9 +158,7 @@ class Collecting {
 				}
 			}
 		}
-		if (isset($meta['assets'])) {
-			static::process_assets_map($meta['assets'], "$base_dir/assets", $assets_map, $all_assets);
-		}
+		static::process_assets_map($meta['assets'], "$base_dir/assets", $assets_map, $all_assets);
 	}
 	/**
 	 * Process map structure, fill assets map and remove files from list of all assets (remaining files will be included on all pages)
