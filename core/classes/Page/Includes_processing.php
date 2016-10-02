@@ -143,14 +143,9 @@ class Includes_processing {
 		/**
 		 * Flag that is `true` when inside comment
 		 */
-		$comment = false;
-		/**
-		 * Set of symbols that are safe to be concatenated without new line with anything else
-		 */
-		$regexp                  = /** @lang PhpRegExp */
-			'[:;,.+\-*/{}?><^\'"\[\]=&(]';
+		$in_comment              = false;
 		$continue_after_position = -1;
-		foreach ($data as $index => &$d) {
+		foreach ($data as $index => &$current_line) {
 			if ($continue_after_position >= $index) {
 				continue;
 			}
@@ -158,22 +153,22 @@ class Includes_processing {
 			/**
 			 * Remove starting and trailing spaces
 			 */
-			$d = trim($d);
+			$current_line = trim($current_line);
 			/**
 			 * Remove single-line comments
 			 */
-			if (mb_strpos($d, '//') === 0) {
-				$d = '';
+			if (mb_strpos($current_line, '//') === 0) {
+				$current_line = '';
 				continue;
 			}
 			/**
 			 * Starts with multi-line comment
 			 */
-			if (mb_strpos($d, '/*') === 0) {
-				$comment = true;
+			if (mb_strpos($current_line, '/*') === 0) {
+				$in_comment = true;
 			}
-			if (!$comment) {
-				$backticks_position = strpos($d, '`');
+			if (!$in_comment) {
+				$backticks_position = strpos($current_line, '`');
 				/**
 				 * Handling template strings can be tricky (since they might be multi-line), so let's fast-forward to the last backticks position and continue
 				 * from there
@@ -196,37 +191,50 @@ class Includes_processing {
 				/**
 				 * Add new line at the end if only needed
 				 */
-				if (
-					$d &&
-					$next_line &&
-					!preg_match("#$regexp\$#", $d) &&
-					!preg_match("#^$regexp#", $next_line)
-				) {
-					$d .= "\n";
+				if (static::new_line_needed($current_line, $next_line)) {
+					$current_line .= "\n";
 				}
 				/**
 				 * Single-line comment
 				 */
-				$d = preg_replace('#^\s*//[^\'"]+$#', '', $d);
+				$current_line = preg_replace('#^\s*//[^\'"]+$#', '', $current_line);
 				/**
-				 * If we are not sure - just add new like afterwards
+				 * If we are not sure - just add new line afterwards
 				 */
-				$d = preg_replace('#//.*$#', "\\0\n", $d);
+				$current_line = preg_replace('#//.*$#', "\\0\n", $current_line);
 			} else {
 				/**
 				 * End of multi-line comment
 				 */
-				if (strpos($d, '*/') !== false) {
-					$d       = explode('*/', $d)[1];
-					$comment = false;
+				if (strpos($current_line, '*/') !== false) {
+					$current_line = explode('*/', $current_line)[1];
+					$in_comment   = false;
 				} else {
-					$d = '';
+					$current_line = '';
 				}
 			}
 		}
 		$data = implode('', $data);
 		$data = str_replace('</script>', '<\/script>', $data);
 		return trim($data, ';').';';
+	}
+	/**
+	 * @param string $current_line
+	 * @param string $next_line
+	 *
+	 * @return bool
+	 */
+	protected static function new_line_needed ($current_line, $next_line) {
+		/**
+		 * Set of symbols that are safe to be concatenated without new line with anything else
+		 */
+		$regexp = /** @lang PhpRegExp */
+			'[:;,.+\-*/{}?><^\'"\[\]=&(]';
+		return
+			$current_line &&
+			$next_line &&
+			!preg_match("#$regexp\$#", $current_line) &&
+			!preg_match("#^$regexp#", $next_line);
 	}
 	/**
 	 * Analyses file for scripts and styles, combines them into resulting files in order to optimize loading process
