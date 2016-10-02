@@ -4,7 +4,7 @@
 $Page = \cs\Page::instance();
 ```
 
-### [Methods](#methods) [Properties](#properties) [Events](#events) [\cs\Page\Includes_processing class](#includes-processing-class) [\cs\Page\Meta class](#meta-class)
+### [Methods](#methods) [Properties](#properties) [Events](#events) [\cs\Page\Assets_processing class](#includes-processing-class) [\cs\Page\Meta class](#meta-class)
 
 <a name="methods" />
 ###[Up](#) Methods
@@ -180,8 +180,8 @@ Usage example (from Composer assets module):
 );
 ```
 
-<a name="includes-processing-class" />
-###[Up](#) \cs\Page\Includes_processing class
+<a name="assets-processing-class" />
+###[Up](#) \cs\Page\Assets_processing class
 Class includes few methods used for processing CSS and HTML files before putting into cache. Is used by `cs\Page` and most of times there is no need to use it manually.
 
 This class has next public static methods:

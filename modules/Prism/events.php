@@ -16,6 +16,6 @@ Event::instance()->on(
 		if (!Config::instance()->module('Prism')->enabled()) {
 			return;
 		}
-		Page::instance()->Head .= h::{'link[rel=stylesheet][shim-shadowdom]'}(['href' => 'modules/Prism/includes/css/final.css']);
+		Page::instance()->Head .= h::{'link[rel=stylesheet][shim-shadowdom]'}(['href' => 'modules/Prism/assets/css/final.css']);
 	}
 );

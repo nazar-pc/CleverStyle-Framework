@@ -53,23 +53,23 @@ var_dump('Static public storage');
 test_serving_path('/storage/public/file.php');
 test_serving_path('/storage/public/file.xyz');
 
-var_dump('System includes');
-test_serving_path('/includes/html/file.html');
-test_serving_path('/includes/html/file.js');
-test_serving_path('/includes/js/file.js');
-test_serving_path('/includes/html/file.css');
-test_serving_path('/includes/css/file.css');
-test_serving_path('/includes/img/file.jpg');
+var_dump('System assets');
+test_serving_path('/assets/html/file.html');
+test_serving_path('/assets/html/file.js');
+test_serving_path('/assets/js/file.js');
+test_serving_path('/assets/html/file.css');
+test_serving_path('/assets/css/file.css');
+test_serving_path('/assets/img/file.jpg');
 
-var_dump('Module includes');
-test_serving_path('/modules/Module_name/includes/html/file.html');
-test_serving_path('/modules/Module_name/includes/html/file.js');
-test_serving_path('/modules/Module_name/includes/js/file.js');
-test_serving_path('/modules/Module_name/includes/html/file.css');
-test_serving_path('/modules/Module_name/includes/css/file.css');
-test_serving_path('/modules/Module_name/includes/img/file.jpg');
+var_dump('Module assets');
+test_serving_path('/modules/Module_name/assets/html/file.html');
+test_serving_path('/modules/Module_name/assets/html/file.js');
+test_serving_path('/modules/Module_name/assets/js/file.js');
+test_serving_path('/modules/Module_name/assets/html/file.css');
+test_serving_path('/modules/Module_name/assets/css/file.css');
+test_serving_path('/modules/Module_name/assets/img/file.jpg');
 
-var_dump('Theme includes');
+var_dump('Theme assets');
 test_serving_path('/themes/Theme_name/html/file.html');
 test_serving_path('/themes/Theme_name/html/file.js');
 test_serving_path('/themes/Theme_name/js/file.js');
@@ -78,13 +78,13 @@ test_serving_path('/themes/Theme_name/css/file.css');
 test_serving_path('/themes/Theme_name/img/file.jpg');
 
 var_dump('PHP files not allowed');
-test_serving_path('/includes/html/file.php');
-test_serving_path('/modules/includes/html/file.php');
+test_serving_path('/assets/html/file.php');
+test_serving_path('/modules/assets/html/file.php');
 test_serving_path('/themes/Theme_name/html/file.php');
 
 var_dump('Other files not allowed');
 test_serving_path('/.htaccess');
-test_serving_path('/includes/html/.htaccess');
+test_serving_path('/assets/html/.htaccess');
 test_serving_path('/config/main.json');
 test_serving_path('/core/fs.json');
 
@@ -164,9 +164,9 @@ array(3) {
     string(23) "max-age=2592000, public"
   }
 }
-string(15) "System includes"
+string(13) "System assets"
 int(200)
-string(24) "/includes/html/file.html"
+string(22) "/assets/html/file.html"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -175,7 +175,7 @@ array(1) {
   }
 }
 int(200)
-string(22) "/includes/html/file.js"
+string(20) "/assets/html/file.js"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -184,7 +184,7 @@ array(1) {
   }
 }
 int(200)
-string(20) "/includes/js/file.js"
+string(18) "/assets/js/file.js"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -193,7 +193,7 @@ array(1) {
   }
 }
 int(200)
-string(23) "/includes/html/file.css"
+string(21) "/assets/html/file.css"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -202,7 +202,7 @@ array(1) {
   }
 }
 int(200)
-string(22) "/includes/css/file.css"
+string(20) "/assets/css/file.css"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -211,7 +211,7 @@ array(1) {
   }
 }
 int(200)
-string(22) "/includes/img/file.jpg"
+string(20) "/assets/img/file.jpg"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -219,18 +219,9 @@ array(1) {
     string(23) "max-age=2592000, public"
   }
 }
-string(15) "Module includes"
+string(13) "Module assets"
 int(200)
-string(44) "/modules/Module_name/includes/html/file.html"
-array(1) {
-  ["cache-control"]=>
-  array(1) {
-    [0]=>
-    string(23) "max-age=2592000, public"
-  }
-}
-int(200)
-string(42) "/modules/Module_name/includes/html/file.js"
+string(42) "/modules/Module_name/assets/html/file.html"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -239,7 +230,7 @@ array(1) {
   }
 }
 int(200)
-string(40) "/modules/Module_name/includes/js/file.js"
+string(40) "/modules/Module_name/assets/html/file.js"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -248,7 +239,7 @@ array(1) {
   }
 }
 int(200)
-string(43) "/modules/Module_name/includes/html/file.css"
+string(38) "/modules/Module_name/assets/js/file.js"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -257,7 +248,7 @@ array(1) {
   }
 }
 int(200)
-string(42) "/modules/Module_name/includes/css/file.css"
+string(41) "/modules/Module_name/assets/html/file.css"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -266,7 +257,7 @@ array(1) {
   }
 }
 int(200)
-string(42) "/modules/Module_name/includes/img/file.jpg"
+string(40) "/modules/Module_name/assets/css/file.css"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -274,7 +265,16 @@ array(1) {
     string(23) "max-age=2592000, public"
   }
 }
-string(14) "Theme includes"
+int(200)
+string(40) "/modules/Module_name/assets/img/file.jpg"
+array(1) {
+  ["cache-control"]=>
+  array(1) {
+    [0]=>
+    string(23) "max-age=2592000, public"
+  }
+}
+string(12) "Theme assets"
 int(200)
 string(33) "/themes/Theme_name/html/file.html"
 array(1) {

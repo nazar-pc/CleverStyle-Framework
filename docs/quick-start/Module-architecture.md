@@ -10,15 +10,15 @@ Every described below element is optional, even empty directory in `modules` wil
   * index.json
   * index.php
   * index.{http_method_lowercase}.php
+* assets
+  * css
+  * html
+  * js
 * cli
   * Controller.php
   * index.json
   * index.php
   * index.{http_method_lowercase}.php
-* includes
-  * css
-  * html
-  * js
 * meta
   * install_db
   * uninstall_db
@@ -138,6 +138,9 @@ Usually is used for simple api.
 May be one or several files (like `api/index.get.php`, `api/index.post.php`, `api/index.put.php`, `api/index.delete.php`) that corresponds to request with different http methods. Methods can be standardized or custom, but always lowercase.
 Every is included after `api/index.php` only for its http method.
 
+#### assets/css assets/html assets/js
+CSS/Web Components (Polymer elements)/JS files in these directories will be automatically included on necessary pages of website (including dependencies between components), and compressed (if was chosen in configuration)
+
 #### cli/index.json
 Completely the same as for `api/index.json`, but for CLI.
 
@@ -146,9 +149,6 @@ Completely the same as for `api/index.php`, but for CLI.
 
 #### cli/index.{http_method_lowercase}.php
 Completely the same as for `api/index.{http_method_lowercase}.php`, but for CLI.
-
-#### includes/css includes/html includes/js
-CSS/Web Components (Polymer elements)/JS files in these directories will be automatically included on necessary pages of website (including dependencies between components), and compressed (if was chosen in configuration)
 
 #### meta/install_db
 This directory contains subdirectories with files. Subdirectories are called the same as databases are identified in `db` parameter of `meta.json` file (see below). Files are called correspondingly to the names of database drivers, supported by module with extension \*.sql, for example:

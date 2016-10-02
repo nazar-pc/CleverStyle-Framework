@@ -19,8 +19,8 @@ Event::instance()->on(
 		) {
 			Response::instance()->header('x-ua-compatible', 'IE=edge');
 			Page::instance()->Head .=
-				h::script(['src' => 'modules/Old_IE/includes/js/a.Promise.min.js']).
-				h::script(['src' => 'modules/Old_IE/includes/js/b.Template.js']);
+				h::script(['src' => 'modules/Old_IE/assets/js/a.Promise.min.js']).
+				h::script(['src' => 'modules/Old_IE/assets/js/b.Template.js']);
 		}
 	}
 );

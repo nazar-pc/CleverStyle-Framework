@@ -56,7 +56,7 @@ if (count($galleries) > 1) {
 						h::a(
 							h::img(
 								[
-									'src'   => $gallery['preview'] ?: 'modules/Photo_gallery/includes/img/empty.gif',
+									'src'   => $gallery['preview'] ?: 'modules/Photo_gallery/assets/img/empty.gif',
 									'title' => $gallery['title'],
 									'alt'   => $gallery['title']
 								]

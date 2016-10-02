@@ -35,7 +35,7 @@
 | Class                          | Description                                                                                                            |
 |--------------------------------|------------------------------------------------------------------------------------------------------------------------|
 | `\cs\False_class`              | is used in some classes for chaining calls                                                                             |
-| `\cs\Page\Includes_processing` | includes few methods used for processing CSS and HTML files before putting into cache                                  |
+| `\cs\Page\Assets_processing` | includes few methods used for processing CSS and HTML files before putting into cache                                  |
 | `\cs\Request\File_stream`      | stream wrapper for request files                                                                                       |
 
 ### Traits

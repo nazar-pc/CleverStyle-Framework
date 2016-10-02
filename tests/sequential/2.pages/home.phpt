@@ -14,7 +14,7 @@ echo Response::instance()->body;
 	<base href="http://cscms.travis/">
 	<link href="/storage/public_cache/CleverStyle:System.css?%s" rel="stylesheet">
 	<script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
-	<script class="cs-config" target="cs.optimized_includes" type="application/json">[[],[]]</script>
+	<script class="cs-config" target="cs.optimized_assets" type="application/json">[[],[]]</script>
 	<link href="/favicon.ico" rel="shortcut icon">
 	<meta content="Web-site | Home" property="og:title">
 	<meta content="http://cscms.travis" property="og:url">
@@ -30,7 +30,7 @@ echo Response::instance()->body;
 			<nav>
 				<a href="/">Home</a>
 			</nav>
-			<cs-cleverstyle-header-user-block avatar="http://cscms.travis/includes/img/guest.svg" guest username="Guest"></cs-cleverstyle-header-user-block>
+			<cs-cleverstyle-header-user-block avatar="http://cscms.travis/assets/img/guest.svg" guest username="Guest"></cs-cleverstyle-header-user-block>
 		</div>
 		<hr>
 		%w

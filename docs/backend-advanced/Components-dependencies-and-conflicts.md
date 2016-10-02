@@ -118,4 +118,4 @@ In this example `Main_module` can be updated to version `3.0.0` from version `2.
 Components dependencies are only effective on installation/updating/deletion stages, but also for files inclusion.
 
 For example from **Reverse dependencies** section above at first JS/CSS/HTML files from `main_dependency` and `Main_module_patch` will be included, and only then ones of `Main_module` itself.
-This gives both flexibility and control over includes order in source code of generated HTML for current page.
+This gives both flexibility and control over assets order in source code of generated HTML for current page.

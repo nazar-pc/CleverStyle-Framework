@@ -101,7 +101,7 @@ Event::instance()
 		}
 	)
 	->on(
-		'System/Page/includes_dependencies_and_map',
+		'System/Page/assets_dependencies_and_map',
 		function ($data) {
 			if (!Config::instance()->module('Composer_assets')->enabled()) {
 				return;
@@ -116,7 +116,7 @@ Event::instance()
 			/** @noinspection MkdirRaceConditionInspection */
 			@mkdir($composer_assets_dir, 0770);
 			$dependencies = [];
-			$includes_map = [];
+			$assets_map = [];
 			foreach ($composer_lock['packages'] as $package) {
 				$package_name = $package['name'];
 				if (preg_match('#^modules/#', $package_name)) {
@@ -147,11 +147,11 @@ Event::instance()
 				 * If current package is Bower or NPM package (we will analyse both configurations)
 				 */
 				if (strpos($package['name'], '-asset/') !== false) {
-					$includes_map[$package_name] = Assets_processing::run($package['name'], "$composer_dir/vendor/$package[name]", $composer_assets_dir);
+					$assets_map[$package_name] = Assets_processing::run($package['name'], "$composer_dir/vendor/$package[name]", $composer_assets_dir);
 				}
 			}
 			$data['dependencies'] = array_merge_recursive($data['dependencies'], $dependencies);
-			$data['includes_map'] = array_merge_recursive($data['includes_map'], $includes_map);
+			$data['assets_map'] = array_merge_recursive($data['assets_map'], $assets_map);
 		}
 	)
 	->on(

@@ -42,7 +42,7 @@ array(1) {
     string(31) "application/json; charset=utf-8"
   }
 }
-string(125) "{"id":1,"login":"guest","username":"Guest","language":"","timezone":"","avatar":"http://cscms.travis/includes/img/guest.svg"}"
+string(123) "{"id":1,"login":"guest","username":"Guest","language":"","timezone":"","avatar":"http://cscms.travis/assets/img/guest.svg"}"
 string(22) "Get guest profile (uk)"
 int(200)
 array(1) {
@@ -52,7 +52,7 @@ array(1) {
     string(31) "application/json; charset=utf-8"
   }
 }
-string(130) "{"id":1,"login":"guest","username":"Гість","language":"","timezone":"","avatar":"http://cscms.travis/includes/img/guest.svg"}"
+string(128) "{"id":1,"login":"guest","username":"Гість","language":"","timezone":"","avatar":"http://cscms.travis/assets/img/guest.svg"}"
 string(17) "Root user profile"
 int(200)
 array(1) {

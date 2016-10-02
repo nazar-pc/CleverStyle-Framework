@@ -2,7 +2,7 @@
 <?php
 namespace cs;
 use
-	cs\Page\Includes\RequireJS;
+	cs\Page\Assets\RequireJS;
 
 require_once __DIR__.'/../../functions.php';
 define('DIR', __DIR__.'/RequireJS');
@@ -61,13 +61,13 @@ array(2) {
 }
 array(11) {
   ["Disabled"]=>
-  string(29) "/modules/Disabled/includes/js"
+  string(27) "/modules/Disabled/assets/js"
   ["disabled_alias1"]=>
-  string(29) "/modules/Disabled/includes/js"
+  string(27) "/modules/Disabled/assets/js"
   ["disabled_alias2"]=>
-  string(29) "/modules/Disabled/includes/js"
+  string(27) "/modules/Disabled/assets/js"
   ["System"]=>
-  string(27) "/modules/System/includes/js"
+  string(25) "/modules/System/assets/js"
   ["package-js"]=>
   string(36) "/bower_components/package-js/package"
   ["package-min-js"]=>

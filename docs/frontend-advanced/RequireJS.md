@@ -4,7 +4,7 @@ All other third-party libraries bundled with system like jsSHA and html5sortable
 
 Besides [Bower & NPM](/docs/frontend-advanced/Bower-and-NPM.md) integration, RequireJS can be used with CleverStyle Framework components.
 
-For instance, you have module called `Experiment` and AMD module in `includes/js/some-module.js`, then this module can be conveniently consumed as:
+For instance, you have module called `Experiment` and AMD module in `assets/js/some-module.js`, then this module can be conveniently consumed as:
 
 ```javascript
 require(['Experiment/some-module'], function (some_module) {
@@ -12,6 +12,6 @@ require(['Experiment/some-module'], function (some_module) {
 });
 ```
 
-So in this case you don't need to specify full path to module like `modules/Experiment/includes/js/some-module`, but instead can use nice short syntax.
+So in this case you don't need to specify full path to module like `modules/Experiment/assets/js/some-module`, but instead can use nice short syntax.
 
 RequireJS mappings and Bower/NPM directories can be tweaked using [special event](/docs/backend-system-objects/$Page.md#systempagerequirejs).

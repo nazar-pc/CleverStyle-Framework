@@ -202,7 +202,7 @@ For page `admin/System/general/system`:
 Like `$route` property, but excludes numerical items
 
 #### route_ids
-Like `$route` property, but only includes numerical items (opposite to route_path property)
+Like `$route` property, but only contains numerical items (opposite to route_path property)
 
 #### admin_path
 Request to administration section

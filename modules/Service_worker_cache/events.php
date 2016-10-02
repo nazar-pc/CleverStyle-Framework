@@ -14,7 +14,7 @@ Event::instance()->on(
 			$version = file_get_json(__DIR__.'/meta.json')['version'];
 			Page::instance()
 				->config($version, 'cs.service_worker_cache.version')
-				->js("/modules/Service_worker_cache/includes/js/register.js?$version");
+				->js("/modules/Service_worker_cache/assets/js/register.js?$version");
 		}
 	}
 );

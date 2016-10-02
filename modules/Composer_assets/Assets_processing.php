@@ -10,7 +10,7 @@ namespace cs\modules\Composer_assets;
 use
 	cs\Config,
 	Exception,
-	cs\Page\Includes_processing,
+	cs\Page\Assets_processing as System_assets_processing,
 	Less_Parser,
 	Leafo\ScssPhp\Compiler as Scss_compiler;
 
@@ -93,10 +93,10 @@ HTACCESS
 					$content['js'][] = file_get_contents($file);
 					break;
 				case 'css':
-					$content['css'][] = Includes_processing::css(file_get_contents($file), $file);
+					$content['css'][] = System_assets_processing::css(file_get_contents($file), $file);
 					break;
 				case 'html':
-					$content['html'][] = Includes_processing::html(
+					$content['html'][] = System_assets_processing::html(
 						file_get_contents($file),
 						$file,
 						"$target_dir/$package_name",
@@ -104,10 +104,10 @@ HTACCESS
 					);
 					break;
 				case 'less':
-					$content['css'][] = Includes_processing::css(self::compile_less($file), $file);
+					$content['css'][] = System_assets_processing::css(self::compile_less($file), $file);
 					break;
 				case 'scss':
-					$content['css'][] = Includes_processing::css(self::compile_scss($file), $file);
+					$content['css'][] = System_assets_processing::css(self::compile_scss($file), $file);
 					break;
 			}
 		}

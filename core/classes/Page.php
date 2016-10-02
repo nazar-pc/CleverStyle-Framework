@@ -8,17 +8,17 @@
 namespace cs;
 use
 	h,
-	cs\Page\Includes,
+	cs\Page\Assets,
 	cs\Page\Meta;
 use function
 	cli\err;
 
 /**
  * Provides next events:
- *  System/Page/includes_dependencies_and_map
+ *  System/Page/assets_dependencies_and_map
  *  [
  *    'dependencies' => &$dependencies,
- *    'includes_map' => &$includes_map
+ *    'assets_map'   => &$assets_map
  *  ]
  *
  *  System/Page/rebuild_cache
@@ -34,7 +34,7 @@ use function
 class Page {
 	use
 		Singleton,
-		Includes;
+		Assets;
 	const INIT_STATE_METHOD = 'init';
 	/**
 	 * Complete page contents
@@ -156,7 +156,7 @@ class Page {
 		$this->search_replace = [];
 		$this->canonical_url  = false;
 		$this->theme          = null;
-		$this->init_includes();
+		$this->init_assets();
 		$Config = Config::instance(true);
 		/**
 		 * We need Config for initialization
@@ -241,9 +241,9 @@ class Page {
 		$this->Title = $Config->core['title_reverse'] ? array_reverse($this->Title) : $this->Title;
 		$this->Title = implode($Config->core['title_delimiter'] ?: '|', $this->Title);
 		/**
-		 * Addition of CSS, JavaScript and Web Components includes
+		 * Addition of CSS, JavaScript and Web Components assets
 		 */
-		$this->add_includes_on_page();
+		$this->add_assets_on_page();
 		/**
 		 * Forming <head> content
 		 */

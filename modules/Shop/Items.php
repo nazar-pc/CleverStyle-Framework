@@ -53,7 +53,7 @@ class Items {
 	use
 		Singleton;
 
-	const DEFAULT_IMAGE = 'modules/Shop/includes/img/no-image.svg';
+	const DEFAULT_IMAGE = 'modules/Shop/assets/img/no-image.svg';
 
 	protected $data_model                  = [
 		'id'         => 'int:0',

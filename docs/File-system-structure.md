@@ -1,5 +1,10 @@
 ### Directories tree
 
+* **assets** - css/web components/js/images/fonts
+  * **css**
+  * **html**
+  * **img**
+  * **js**
 * **blocks**
 * **build** [dev] - build tools
 * **config** - low level system configuration (DB driver, caching driver, etc.)
@@ -14,11 +19,6 @@
     * **aliases** - additional aliases for languages
   * **traits** - basic traits used by system core
 * **custom** - contains files that are used for system classes customization; can be used for custom system builds; can be created manually for by components
-* **includes** - css/web components/js/images/fonts
-  * **css**
-  * **html**
-  * **img**
-  * **js**
 * **install** [dev] - installation instruments
   * **DB** - SQL schemas for every supported DB driver
 * **modules**

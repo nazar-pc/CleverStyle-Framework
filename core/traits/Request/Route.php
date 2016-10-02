@@ -50,7 +50,7 @@ trait Route {
 	 */
 	public $route_path;
 	/**
-	 * Like `$route` property, but only includes numerical items (opposite to route_path property)
+	 * Like `$route` property, but only contains numerical items (opposite to route_path property)
 	 *
 	 * @var int[]
 	 */

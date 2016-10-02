@@ -22,11 +22,11 @@ NOTE: CSS is always inlined currently, this is because Polymer only supports `st
 
 #### Frontend loading
 CleverStyle Framework uses dependencies between components to load files in following order:
-* system files from `/includes/{css|js|html}`
+* system files from `/assets/{css|js|html}`
 * theme files from `/themes/{theme_name}/{css|js|html}`
 * globally used files of components (files that are not listed in [assets key of meta.json](/docs/quick-start/Module-architecture.md#more-about-assets-property) file and included on any page)
 * files from all dependencies of current module (preserving order between dependencies themselves if any as well)
-* module files from `/modules/{module_name}/includes/{css|js|html}`
+* module files from `/modules/{module_name}/assets/{css|js|html}`
 
 #### Optimized frontend loading
 In this mode system files, theme files and globally used files of components are loaded first and when they finish loading completely the rest of files are loaded afterwards.
@@ -41,5 +41,5 @@ This feature takes into account optimized frontend loading and if used will only
 Preloading feature is smart enough to preload images and fonts from within CSS files that are not inlined (but skips files that had `?` in URL, you can use this to avoid preloading non-critical fonts and images).
 
 #### Bundled third-party libraries
-System includes few third-party libraries that are available as AMD modules, they can be found in [/includes/js/modules](/includes/js/modules) directory.
+System includes few third-party libraries that are available as AMD modules, they can be found in [/assets/js/modules](/assets/js/modules) directory.
 Also Polymer, Alameda and sprintf.js are always present unconditionally.

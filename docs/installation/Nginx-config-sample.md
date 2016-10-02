@@ -64,7 +64,7 @@ server {
 		return 404;
 	}
 	# Exclude html imports (for Web Components) from next rule
-	location ~ ^/modules/.*includes/html/.*\.html$ {}
+	location ~ ^/modules/.*assets/html/.*\.html$ {}
 	# Deny access to other *.json, *.html, *.txt files inside components directory
 	location ~ ^/modules/.*\.(json|html|txt)$ {
 		return 404;

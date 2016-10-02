@@ -55,7 +55,7 @@ class Builder {
 			$phar->addFile("$this->root/install/$file", $file);
 		}
 		unset($file);
-		$phar->addFile("$this->root/includes/img/logo.svg", 'logo.svg');
+		$phar->addFile("$this->root/assets/img/logo.svg", 'logo.svg');
 		/**
 		 * Core files to be included into installation package
 		 */
@@ -171,11 +171,11 @@ STUB
 	 */
 	protected function get_core_files () {
 		$files_to_include = [
-			"$this->root/modules/System",
+			"$this->root/assets",
 			"$this->root/blocks/.gitkept",
 			"$this->root/core",
 			"$this->root/custom",
-			"$this->root/includes",
+			"$this->root/modules/System",
 			"$this->root/storage/.htaccess",
 			"$this->root/storage/public_cache/.htaccess",
 			"$this->root/storage/public/.htaccess",

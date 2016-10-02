@@ -16,6 +16,6 @@ Event::instance()->on(
 		if (!Config::instance()->module('Fotorama')->enabled()) {
 			return;
 		}
-		Page::instance()->Head .= h::{'link[rel=stylesheet][shim-shadowdom]'}(['href' => 'modules/Fotorama/includes/css/style.css']);
+		Page::instance()->Head .= h::{'link[rel=stylesheet][shim-shadowdom]'}(['href' => 'modules/Fotorama/assets/css/style.css']);
 	}
 );

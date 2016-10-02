@@ -57,7 +57,7 @@ trait Static_files {
 		/**
 		 * System, modules and themes includes
 		 */
-		if (preg_match('#^/((modules/\w+/)?includes|themes/\w+)/.+#', $path)) {
+		if (preg_match('#^/((modules/\w+/)?assets|themes/\w+)/.+#', $path)) {
 			$this->serve_static_file($path);
 		}
 		throw new ExitException(404);

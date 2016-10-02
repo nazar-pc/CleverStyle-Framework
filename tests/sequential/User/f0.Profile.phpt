@@ -176,11 +176,11 @@ string(10) "Username 2"
 string(6) "Avatar"
 string(0) ""
 string(0) ""
-string(42) "http://cscms.travis/includes/img/guest.svg"
-string(42) "http://cscms.travis/includes/img/guest.svg"
+string(40) "http://cscms.travis/assets/img/guest.svg"
+string(40) "http://cscms.travis/assets/img/guest.svg"
 string(17) "Avatar (gravatar)"
-string(129) "https://www.gravatar.com/avatar/89beedc929f0adf64bf48c0f9131c4f0?d=mm&s=&d=http%3A%2F%2Fcscms.travis%2Fincludes%2Fimg%2Fguest.svg"
-string(132) "https://www.gravatar.com/avatar/89beedc929f0adf64bf48c0f9131c4f0?d=mm&s=256&d=http%3A%2F%2Fcscms.travis%2Fincludes%2Fimg%2Fguest.svg"
+string(127) "https://www.gravatar.com/avatar/89beedc929f0adf64bf48c0f9131c4f0?d=mm&s=&d=http%3A%2F%2Fcscms.travis%2Fassets%2Fimg%2Fguest.svg"
+string(130) "https://www.gravatar.com/avatar/89beedc929f0adf64bf48c0f9131c4f0?d=mm&s=256&d=http%3A%2F%2Fcscms.travis%2Fassets%2Fimg%2Fguest.svg"
 string(10) "Set avatar"
 string(44) "System/upload_files/del_tag event fired with"
 array(2) {
@@ -198,7 +198,7 @@ array(2) {
 }
 bool(true)
 string(18) "http://xyz.xyz/xyz"
-string(129) "https://www.gravatar.com/avatar/0f7026e1d8521d8cf179aab4533b85f2?d=mm&s=&d=http%3A%2F%2Fcscms.travis%2Fincludes%2Fimg%2Fguest.svg"
+string(127) "https://www.gravatar.com/avatar/0f7026e1d8521d8cf179aab4533b85f2?d=mm&s=&d=http%3A%2F%2Fcscms.travis%2Fassets%2Fimg%2Fguest.svg"
 string(53) "Set incorrect avatar (not absolute URL with protocol)"
 string(44) "System/upload_files/del_tag event fired with"
 array(2) {
