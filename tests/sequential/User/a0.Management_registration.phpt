@@ -69,11 +69,16 @@ namespace cs {
 	);
 	var_dump($User->registration('mr6@test.com', false, true), $User->id);
 
+	$Config->core['auto_sign_in_after_registration'] = true;
+
 	var_dump('Incorrect email');
 	var_dump($User->registration('1 2 3', false, true), $User->id);
 
 	var_dump('Existing email');
 	var_dump($User->registration('mr1@test.com', false, true), $User->id);
+
+	var_dump('Existing login');
+	var_dump($User->registration('mr1@test2.com', false, true), $User->id, $User->login);
 
 	var_dump('Delete unconfirmed users');
 	$Config->core['require_registration_confirmation'] = true;
@@ -95,7 +100,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(4)
+  int(%d)
 }
 array(3) {
   ["reg_key"]=>
@@ -103,7 +108,7 @@ array(3) {
   ["password"]=>
   string(4) "%s"
   ["id"]=>
-  int(4)
+  int(%d)
 }
 int(1)
 string(116) "Register new user without confirmation necessary and with automatic sign-in according to system configuration (true)"
@@ -115,7 +120,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(5)
+  int(%d)
 }
 array(3) {
   ["reg_key"]=>
@@ -123,7 +128,7 @@ array(3) {
   ["password"]=>
   string(4) "%s"
   ["id"]=>
-  int(5)
+  int(%d)
 }
 int(5)
 string(12) "mr2@test.com"
@@ -136,7 +141,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(6)
+  int(%d)
 }
 array(3) {
   ["reg_key"]=>
@@ -144,7 +149,7 @@ array(3) {
   ["password"]=>
   string(4) "%s"
   ["id"]=>
-  int(6)
+  int(%d)
 }
 int(1)
 string(88) "Register new user with system confirmation settings (true) and without automatic sign-in"
@@ -156,7 +161,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(7)
+  int(%d)
 }
 array(3) {
   ["reg_key"]=>
@@ -164,7 +169,7 @@ array(3) {
   ["password"]=>
   string(0) ""
   ["id"]=>
-  int(7)
+  int(%d)
 }
 int(1)
 string(89) "Register new user with system confirmation settings (false) and without automatic sign-in"
@@ -176,7 +181,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(8)
+  int(%d)
 }
 array(3) {
   ["reg_key"]=>
@@ -184,7 +189,7 @@ array(3) {
   ["password"]=>
   string(4) "%s"
   ["id"]=>
-  int(8)
+  int(%d)
 }
 int(1)
 string(60) "Cancel registration in System/User/registration/before event"
@@ -204,7 +209,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(9)
+  int(%d)
 }
 bool(false)
 int(1)
@@ -214,6 +219,27 @@ int(1)
 string(14) "Existing email"
 string(6) "exists"
 int(1)
+string(14) "Existing login"
+string(42) "System/User/registration/before fired with"
+array(1) {
+  ["email"]=>
+  string(13) "mr1@test2.com"
+}
+string(41) "System/User/registration/after fired with"
+array(1) {
+  ["id"]=>
+  int(%d)
+}
+array(3) {
+  ["reg_key"]=>
+  bool(true)
+  ["password"]=>
+  string(4) "%s"
+  ["id"]=>
+  int(%d)
+}
+int(%d)
+string(13) "mr1@test2.com"
 string(24) "Delete unconfirmed users"
 string(42) "System/User/registration/before fired with"
 array(1) {
@@ -223,7 +249,7 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(10)
+  int(%d)
 }
 string(12) "mr7@test.com"
 string(42) "System/User/registration/before fired with"
@@ -234,6 +260,6 @@ array(1) {
 string(41) "System/User/registration/after fired with"
 array(1) {
   ["id"]=>
-  int(11)
+  int(%d)
 }
 bool(false)

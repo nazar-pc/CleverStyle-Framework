@@ -93,7 +93,7 @@ string(16) "Restore password"
 string(32) "%s"
 array(2) {
   ["id"]=>
-  int(16)
+  int(%d)
   ["password"]=>
   string(4) "%s"
 }

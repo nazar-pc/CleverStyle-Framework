@@ -159,7 +159,7 @@ var_dump($User->get_id('foo'));
 var_dump('Columns in users table');
 var_dump($User->get_users_columns());
 ?>
---EXPECT--
+--EXPECTF--
 string(12) "Prepare user"
 string(12) "Get username"
 string(0) ""
@@ -187,14 +187,14 @@ array(2) {
   ["url"]=>
   string(0) ""
   ["tag"]=>
-  string(15) "users/20/avatar"
+  string(%d) "users/%d/avatar"
 }
 string(44) "System/upload_files/add_tag event fired with"
 array(2) {
   ["url"]=>
   string(18) "http://xyz.xyz/xyz"
   ["tag"]=>
-  string(15) "users/20/avatar"
+  string(%d) "users/%d/avatar"
 }
 bool(true)
 string(18) "http://xyz.xyz/xyz"
@@ -205,14 +205,14 @@ array(2) {
   ["url"]=>
   string(18) "http://xyz.xyz/xyz"
   ["tag"]=>
-  string(15) "users/20/avatar"
+  string(%d) "users/%d/avatar"
 }
 string(44) "System/upload_files/add_tag event fired with"
 array(2) {
   ["url"]=>
   string(0) ""
   ["tag"]=>
-  string(15) "users/20/avatar"
+  string(%d) "users/%d/avatar"
 }
 bool(true)
 string(0) ""
@@ -256,7 +256,7 @@ string(17) "Set password hash"
 string(39) "System/Session/del_all event fired with"
 array(1) {
   ["id"]=>
-  int(20)
+  int(%d)
 }
 bool(true)
 int(1)
@@ -264,7 +264,7 @@ string(10) "Set status"
 string(39) "System/Session/del_all event fired with"
 array(1) {
   ["id"]=>
-  int(20)
+  int(%d)
 }
 bool(true)
 int(1)
@@ -284,8 +284,8 @@ bool(false)
 string(23) "Set non-existing column"
 bool(false)
 string(29) "Get id by login or email hash"
-int(21)
-int(21)
+int(%d)
+int(%d)
 string(39) "Get id by incorrect login or email hash"
 bool(false)
 string(22) "Columns in users table"

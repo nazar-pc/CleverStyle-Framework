@@ -77,23 +77,23 @@ array(3) {
   ["password"]=>
   string(0) ""
   ["id"]=>
-  int(12)
+  int(%d)
 }
 string(0) ""
 array(3) {
   ["id"]=>
-  int(12)
+  int(%d)
   ["email"]=>
   string(14) "mrcc1@test.com"
   ["password"]=>
   string(4) "%s"
 }
-int(12)
+int(%d)
 string(60) "%s"
 string(19) "Find confirmed user"
 array(1) {
   [0]=>
-  int(12)
+  int(%d)
 }
 string(22) "Wrong confirmation key"
 bool(false)
@@ -104,7 +104,7 @@ array(3) {
   ["password"]=>
   string(0) ""
   ["id"]=>
-  int(13)
+  int(%d)
 }
 string(0) ""
 bool(false)
@@ -117,7 +117,7 @@ array(3) {
   ["password"]=>
   string(0) ""
   ["id"]=>
-  int(14)
+  int(%d)
 }
 string(0) ""
 bool(false)
@@ -130,18 +130,18 @@ array(3) {
   ["password"]=>
   string(0) ""
   ["id"]=>
-  int(15)
+  int(%d)
 }
 string(0) ""
 array(3) {
   ["id"]=>
-  int(15)
+  int(%d)
   ["email"]=>
   string(14) "mrcc4@test.com"
   ["password"]=>
   string(4) "%s"
 }
-int(15)
+int(%d)
 string(60) "%s"
 string(29) "Confirm with non-existing key"
 bool(false)

@@ -47,9 +47,9 @@ var_dump($User->set_data('exp', 'xyz', User::GUEST_ID));
 var_dump($User->get_data('exp', User::GUEST_ID));
 var_dump($User->del_data('exp', User::GUEST_ID));
 ?>
---EXPECT--
+--EXPECTF--
 string(18) "Register test user"
-int(17)
+int(%d)
 string(21) "Set/get data (single)"
 bool(true)
 string(9) "One value"
