@@ -21,7 +21,7 @@ trait optimization {
 
 <y>Methods:</y>
   <g>clean_cache</g>  Clean system cache
-  <g>clean_pcache</g> Clear the cache of scripts and styles
+  <g>clean_public_cache</g> Clear the cache of scripts and styles
 
 <y>Arguments:</y>
   <g>prefix_path</g> If present, will clean only part of cache (<g>clean_cache</g> only)
@@ -32,7 +32,7 @@ trait optimization {
   Clean only languages cache:
     <g>./cli clean_cache:System/optimization prefix_path=languages</g>
   Clean the whole system public cache:
-    <g>./cli clean_pcache:System/optimization</g>
+    <g>./cli clean_public_cache:System/optimization</g>
 
 HELP;
 	}
@@ -56,8 +56,8 @@ HELP;
 	 *
 	 * @throws \cs\ExitException
 	 */
-	public static function optimization_clean_pcache () {
-		Api_controller::admin_optimization_clean_pcache();
+	public static function optimization_clean_public_cache () {
+		Api_controller::admin_optimization_clean_public_cache();
 		return "<g>OK</g>cli\n";
 	}
 }

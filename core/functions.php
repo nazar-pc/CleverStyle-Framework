@@ -160,7 +160,7 @@ function __ ($item, ...$arguments) {
  *
  * @return bool
  */
-function clean_pcache () {
+function clean_public_cache () {
 	$ok   = true;
 	$list = get_files_list(PUBLIC_CACHE, false, 'fd', true, true, 'name|desc');
 	foreach ($list as $item) {

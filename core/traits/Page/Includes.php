@@ -78,17 +78,17 @@ trait Includes {
 	 * Base name is used as prefix when creating CSS/JS/HTML cache files in order to avoid collisions when having several themes and languages
 	 * @var string
 	 */
-	protected $pcache_basename_path;
+	protected $public_cache_basename_path;
 	protected function init_includes () {
-		$this->core_html            = [];
-		$this->core_js              = [];
-		$this->core_css             = [];
-		$this->core_config          = '';
-		$this->html                 = [];
-		$this->js                   = [];
-		$this->css                  = [];
-		$this->config               = '';
-		$this->pcache_basename_path = '';
+		$this->core_html                  = [];
+		$this->core_js                    = [];
+		$this->core_css                   = [];
+		$this->core_config                = '';
+		$this->html                       = [];
+		$this->js                         = [];
+		$this->css                        = [];
+		$this->config                     = '';
+		$this->public_cache_basename_path = '';
 	}
 	/**
 	 * @param string|string[] $add
@@ -216,7 +216,7 @@ trait Includes {
 		/**
 		 * Base name for cache files
 		 */
-		$this->pcache_basename_path = PUBLIC_CACHE.'/'.$this->theme;
+		$this->public_cache_basename_path = PUBLIC_CACHE.'/'.$this->theme;
 		// TODO: I hope some day we'll get rid of this sh*t :(
 		$this->edge();
 		$Request = Request::instance();
@@ -228,7 +228,7 @@ trait Includes {
 			/**
 			 * Rebuilding HTML, JS and CSS cache if necessary
 			 */
-			Cache::rebuild($Config, $L, $this->pcache_basename_path, $this->theme);
+			Cache::rebuild($Config, $L, $this->public_cache_basename_path, $this->theme);
 			$this->webcomponents_polyfill($Request, $Config, true);
 			$languages_hash = $this->get_hash_of(implode('', $Config->core['active_languages']));
 			$language_hash  = file_get_json(PUBLIC_CACHE."/languages-$languages_hash.json")[$L->clanguage];
@@ -300,7 +300,7 @@ trait Includes {
 		}
 		if ($with_compression) {
 			$hash = file_get_contents(PUBLIC_CACHE.'/webcomponents.js.hash');
-			$this->add_script_imports_to_document($Config, "<script src=\"/storage/pcache/webcomponents.js?$hash\"></script>\n");
+			$this->add_script_imports_to_document($Config, "<script src=\"/storage/public_cache/webcomponents.js?$hash\"></script>\n");
 		} else {
 			$this->add_script_imports_to_document($Config, "<script src=\"/includes/js/WebComponents-polyfill/webcomponents-custom.min.js\"></script>\n");
 		}
@@ -322,7 +322,7 @@ trait Includes {
 	 * @return array[]
 	 */
 	protected function get_includes_and_preload_resource_for_page_with_compression ($Request) {
-		list($dependencies, $compressed_includes_map, $not_embedded_resources_map) = file_get_json("$this->pcache_basename_path.json");
+		list($dependencies, $compressed_includes_map, $not_embedded_resources_map) = file_get_json("$this->public_cache_basename_path.json");
 		$includes = $this->get_normalized_includes($dependencies, $compressed_includes_map, $Request);
 		$preload  = [];
 		foreach (array_merge(...array_values($includes)) as $path) {
@@ -496,7 +496,7 @@ trait Includes {
 	 * @param Request $Request
 	 */
 	protected function add_includes_on_page_manually_added_frontend_load_optimization ($Config, $Request) {
-		list($optimized_includes, $preload) = file_get_json("$this->pcache_basename_path.optimized.json");
+		list($optimized_includes, $preload) = file_get_json("$this->public_cache_basename_path.optimized.json");
 		$this->add_preload(
 			array_unique(
 				array_merge($preload, $this->core_css, $this->css)

@@ -181,8 +181,8 @@ HTACCESS;
 			if (is_dir(STORAGE.'/Composer/vendor/npm-asset')) {
 				file_put_contents(STORAGE.'/Composer/vendor/npm-asset/.htaccess', $htaccess_contents);
 			}
-			if (clean_pcache()) {
-				Event::instance()->fire('admin/System/general/optimization/clean_pcache');
+			if (clean_public_cache()) {
+				Event::instance()->fire('admin/System/general/optimization/clean_public_cache');
 			}
 		}
 	)

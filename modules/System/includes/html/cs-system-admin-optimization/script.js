@@ -18,8 +18,8 @@
     _clean_cache: function(){
       this._clean_cache_common('clean_cache');
     },
-    _clean_pcache: function(){
-      this._clean_cache_common('clean_pcache');
+    _clean_public_cache: function(){
+      this._clean_cache_common('clean_public_cache');
     },
     _clean_cache_common: function(method){
       var modal, this$ = this;

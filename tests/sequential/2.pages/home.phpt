@@ -12,7 +12,7 @@ echo Response::instance()->body;
 	<meta charset="utf-8">
 	<meta content="CleverStyle Framework by Mokrynskyi Nazar" name="generator">
 	<base href="http://cscms.travis/">
-	<link href="/storage/pcache/CleverStyle:System.css?%s" rel="stylesheet">
+	<link href="/storage/public_cache/CleverStyle:System.css?%s" rel="stylesheet">
 	<script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
 	<script class="cs-config" target="cs.optimized_includes" type="application/json">[[],[]]</script>
 	<link href="/favicon.ico" rel="shortcut icon">
@@ -62,8 +62,8 @@ echo Response::instance()->body;
 			© Powered by <a target="_blank" href="https://cleverstyle.org/Framework" title="CleverStyle Framework">CleverStyle Framework</a>
 		</div>
 	</footer>
-	<script src="/storage/pcache/webcomponents.js?%s"></script>
-	<script src="/storage/pcache/CleverStyle:System.js?%s"></script>
-	<link href="/storage/pcache/CleverStyle:System.html?%s" rel="import">
+	<script src="/storage/public_cache/webcomponents.js?%s"></script>
+	<script src="/storage/public_cache/CleverStyle:System.js?%s"></script>
+	<link href="/storage/public_cache/CleverStyle:System.html?%s" rel="import">
 
 </body>

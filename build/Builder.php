@@ -177,7 +177,7 @@ STUB
 			"$this->root/custom",
 			"$this->root/includes",
 			"$this->root/storage/.htaccess",
-			"$this->root/storage/pcache/.htaccess",
+			"$this->root/storage/public_cache/.htaccess",
 			"$this->root/storage/public/.htaccess",
 			"$this->root/storage/temp/.htaccess",
 			"$this->root/themes/CleverStyle",

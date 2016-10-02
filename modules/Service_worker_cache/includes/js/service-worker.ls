@@ -19,7 +19,7 @@ addEventListener('fetch', (event) !->
 					if response && response.status == 200 && response.type == 'basic'
 						path = response.url.match(/:\/\/[^/]+\/(.+)$/)?[1]
 						# Only cache relevant URLs
-						if path && path.match(/^components|includes|storage\/pcache|themes/)
+						if path && path.match(/^components|includes|storage\/public_cache|themes/)
 							response_copy = response.clone()
 							caches.open('frontend-cache').then (cache) !->
 								cache.put(event.request, response_copy)

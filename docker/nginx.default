@@ -30,7 +30,7 @@ server {
 	#	fastcgi_param	SCRIPT_FILENAME $document_root$1;
 	#}
 	# Add necessary headers
-	location /storage/pcache {
+	location /storage/public_cache {
 		location ~ \.(css|js|html)$ {
 			add_header Cache-Control "max-age=2592000, public";
 		}

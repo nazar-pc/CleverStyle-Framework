@@ -263,7 +263,7 @@ trait themes {
 		if (!Packages_manipulation::update_extract(THEMES."/$theme", $tmp_location)) {
 			throw new ExitException($L->theme_files_unpacking_error, 500);
 		}
-		clean_pcache();
+		clean_public_cache();
 		Event::instance()->fire(
 			'admin/System/themes/update/after',
 			[

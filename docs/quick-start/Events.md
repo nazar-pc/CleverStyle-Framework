@@ -43,7 +43,7 @@ Example:
     'admin/System/modules/disable',
     function ($data) {
         if ($data['name'] == basename(__DIR__)) {
-            clean_pcache();
+            clean_public_cache();
         }
     }
 );
@@ -111,7 +111,7 @@ if (!\cs\Event::instance()->fire(
 
 Backend events:
 * System/robots.txt
-* admin/System/general/optimization/clean_pcache
+* admin/System/general/optimization/clean_public_cache
 * admin/System/modules/default
 * admin/System/modules/update/before
 * admin/System/modules/update/after

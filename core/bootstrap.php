@@ -26,7 +26,7 @@ defined('PUBLIC_STORAGE') || define('PUBLIC_STORAGE', STORAGE.'/public');
 defined('CACHE') || define('CACHE', STORAGE.'/cache');
 defined('LOGS') || define('LOGS', STORAGE.'/logs');
 defined('TEMP') || define('TEMP', STORAGE.'/temp');
-defined('PUBLIC_CACHE') || define('PUBLIC_CACHE', STORAGE.'/pcache');
+defined('PUBLIC_CACHE') || define('PUBLIC_CACHE', STORAGE.'/public_cache');
 defined('THEMES') || define('THEMES', DIR.'/themes');
 /**
  * Useful PHP Functions

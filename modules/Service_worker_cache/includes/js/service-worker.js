@@ -21,7 +21,7 @@
           var path, ref$, response_copy;
           if (response && response.status === 200 && response.type === 'basic') {
             path = (ref$ = response.url.match(/:\/\/[^/]+\/(.+)$/)) != null ? ref$[1] : void 8;
-            if (path && path.match(/^components|includes|storage\/pcache|themes/)) {
+            if (path && path.match(/^components|includes|storage\/public_cache|themes/)) {
               response_copy = response.clone();
               caches.open('frontend-cache').then(function(cache){
                 cache.put(event.request, response_copy);

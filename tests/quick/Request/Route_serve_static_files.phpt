@@ -42,12 +42,12 @@ Event::instance()->on(
 );
 
 var_dump('Static public cache');
-test_serving_path('/storage/pcache/file.css');
-test_serving_path('/storage/pcache/file.js');
-test_serving_path('/storage/pcache/file.html');
+test_serving_path('/storage/public_cache/file.css');
+test_serving_path('/storage/public_cache/file.js');
+test_serving_path('/storage/public_cache/file.html');
 
 var_dump('Static public cache (not allowed)');
-test_serving_path('/storage/pcache/file.xyz');
+test_serving_path('/storage/public_cache/file.xyz');
 
 var_dump('Static public storage');
 test_serving_path('/storage/public/file.php');
@@ -90,12 +90,12 @@ test_serving_path('/core/fs.json');
 
 var_dump('Non-get method');
 $Request->method = 'POST';
-test_serving_path('/storage/pcache/file.css');
+test_serving_path('/storage/public_cache/file.css');
 ?>
 --EXPECT--
 string(19) "Static public cache"
 int(200)
-string(24) "/storage/pcache/file.css"
+string(30) "/storage/public_cache/file.css"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -104,7 +104,7 @@ array(1) {
   }
 }
 int(200)
-string(23) "/storage/pcache/file.js"
+string(29) "/storage/public_cache/file.js"
 array(1) {
   ["cache-control"]=>
   array(1) {
@@ -113,7 +113,7 @@ array(1) {
   }
 }
 int(200)
-string(25) "/storage/pcache/file.html"
+string(31) "/storage/public_cache/file.html"
 array(1) {
   ["cache-control"]=>
   array(1) {

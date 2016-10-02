@@ -17,8 +17,8 @@ Polymer(
 		settings_api_url	: 'api/System/admin/optimization'
 	_clean_cache : !->
 		@_clean_cache_common('clean_cache')
-	_clean_pcache : !->
-		@_clean_cache_common('clean_pcache')
+	_clean_public_cache : !->
+		@_clean_cache_common('clean_public_cache')
 	_clean_cache_common : (method) !->
 		modal = cs.ui.simple_modal("""
 			<progress is="cs-progress" infinite></progress>

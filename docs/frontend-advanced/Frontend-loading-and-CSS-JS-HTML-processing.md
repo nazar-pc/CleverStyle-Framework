@@ -11,10 +11,10 @@ When *Cache and compress JavaScript, CSS and HTML* option is enabled in system a
 * JS inside of HTML files (both inline and `script[src]`) will be combined into one block and inlined
 * CSS inside of HTML (both inline and `link[rel=import][type=css]`) will go through the same procedure as regular CSS files and will be inlined
 * CSS and JS code will additionally go through simple minification process
-* Everything will be compressed with Gzip and placed in `/storage/pcache`
+* Everything will be compressed with Gzip and placed in `/storage/public_cache`
 
 During this process files are combined into logical bundles while taking into account dependencies between components.
-All necessary dependencies structures and information about bundled files are cached in `/strorage/pcache` in JSON files.
+All necessary dependencies structures and information about bundled files are cached in `/strorage/public_cache` in JSON files.
 
 #### Vulcanization
 If vulcanization is enabled, then CSS and JS will be left inlined in HTML files, otherwise they will be placed into separate files in order to be CSP-compatible.

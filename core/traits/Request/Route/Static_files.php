@@ -35,7 +35,7 @@ trait Static_files {
 		/**
 		 * Public cache
 		 */
-		if (strpos($path, '/storage/pcache') === 0) {
+		if (strpos($path, '/storage/public_cache') === 0) {
 			if (!in_array($extension, ['css', 'js', 'html'])) {
 				throw new ExitException(403);
 			}

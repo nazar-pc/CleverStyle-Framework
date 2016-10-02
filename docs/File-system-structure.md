@@ -25,7 +25,7 @@
 * **storage**
   * **cache** - FileSystem cache
   * **logs** - logs
-  * **pcache** - public cache (css/js)
+  * **public_cache** - public cache (css/js/html)
   * **public** - public directory for external access, directory for Local storage
   * **temp** - directory for temporary files
 * **themes** - themes

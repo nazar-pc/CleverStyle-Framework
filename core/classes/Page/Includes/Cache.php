@@ -14,14 +14,14 @@ class Cache {
 	/**
 	 * @param \cs\Config   $Config
 	 * @param \cs\Language $L
-	 * @param string       $pcache_basename_path
+	 * @param string       $public_cache_basename_path
 	 * @param string       $theme
 	 */
-	public static function rebuild ($Config, $L, $pcache_basename_path, $theme) {
-		if (!file_exists("$pcache_basename_path.json")) {
-			static::rebuild_normal($Config, $pcache_basename_path, $theme);
+	public static function rebuild ($Config, $L, $public_cache_basename_path, $theme) {
+		if (!file_exists("$public_cache_basename_path.json")) {
+			static::rebuild_normal($Config, $public_cache_basename_path, $theme);
 			Event::instance()->fire('System/Page/rebuild_cache');
-			static::rebuild_optimized($pcache_basename_path);
+			static::rebuild_optimized($public_cache_basename_path);
 			static::rebuild_webcomponents_polyfill();
 		}
 		/**
@@ -42,29 +42,30 @@ class Cache {
 	}
 	/**
 	 * @param \cs\Config $Config
-	 * @param string     $pcache_basename_path
+	 * @param string     $public_cache_basename_path
+	 * @param string     $theme
 	 */
-	protected static function rebuild_normal ($Config, $pcache_basename_path, $theme) {
+	protected static function rebuild_normal ($Config, $public_cache_basename_path, $theme) {
 		list($dependencies, $includes_map) = Collecting::get_includes_dependencies_and_map($Config, $theme);
 		$compressed_includes_map    = [];
 		$not_embedded_resources_map = [];
 		/** @noinspection ForeachSourceInspection */
 		foreach ($includes_map as $filename_prefix => $local_includes) {
 			$compressed_includes_map[$filename_prefix] = static::cache_compressed_includes_files(
-				"$pcache_basename_path:".str_replace('/', '+', $filename_prefix),
+				"$public_cache_basename_path:".str_replace('/', '+', $filename_prefix),
 				$local_includes,
 				$Config->core['vulcanization'],
 				$not_embedded_resources_map
 			);
 		}
 		unset($includes_map, $filename_prefix, $local_includes);
-		file_put_json("$pcache_basename_path.json", [$dependencies, $compressed_includes_map, array_filter($not_embedded_resources_map)]);
+		file_put_json("$public_cache_basename_path.json", [$dependencies, $compressed_includes_map, array_filter($not_embedded_resources_map)]);
 	}
 	/**
-	 * @param string $pcache_basename_path
+	 * @param string $public_cache_basename_path
 	 */
-	protected static function rebuild_optimized ($pcache_basename_path) {
-		list(, $compressed_includes_map, $preload_source) = file_get_json("$pcache_basename_path.json");
+	protected static function rebuild_optimized ($public_cache_basename_path) {
+		list(, $compressed_includes_map, $preload_source) = file_get_json("$public_cache_basename_path.json");
 		$preload = [array_values($compressed_includes_map['System'])];
 		/** @noinspection ForeachSourceInspection */
 		foreach ($compressed_includes_map['System'] as $path) {
@@ -75,7 +76,7 @@ class Cache {
 		unset($compressed_includes_map['System']);
 		$optimized_includes = array_flip(array_merge(...array_values(array_map('array_values', $compressed_includes_map))));
 		$preload            = array_merge(...$preload);
-		file_put_json("$pcache_basename_path.optimized.json", [$optimized_includes, $preload]);
+		file_put_json("$public_cache_basename_path.optimized.json", [$optimized_includes, $preload]);
 	}
 	protected static function rebuild_webcomponents_polyfill () {
 		$webcomponents_js = file_get_contents(DIR.'/includes/js/WebComponents-polyfill/webcomponents-custom.min.js');
@@ -127,13 +128,13 @@ class Cache {
 			);
 			foreach ($not_embedded_resources as &$resource) {
 				if (strpos($resource, '/') !== 0) {
-					$resource = "/storage/pcache/$resource";
+					$resource = "/storage/public_cache/$resource";
 				}
 			}
 			unset($resource);
 			$file_path = "$target_file_path.$extension";
 			file_put_contents($file_path, $content, LOCK_EX | FILE_BINARY);
-			$relative_path                              = '/storage/pcache/'.basename($file_path).'?'.static::get_hash_of($content);
+			$relative_path                              = '/storage/public_cache/'.basename($file_path).'?'.static::get_hash_of($content);
 			$local_includes[$extension]                 = $relative_path;
 			$not_embedded_resources_map[$relative_path] = $not_embedded_resources;
 		}

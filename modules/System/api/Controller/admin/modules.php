@@ -323,7 +323,7 @@ trait modules {
 		static::admin_modules_cleanup();
 	}
 	protected static function admin_modules_cleanup () {
-		clean_pcache();
+		clean_public_cache();
 		$Cache = System_cache::instance();
 		unset(
 			$Cache->functionality,

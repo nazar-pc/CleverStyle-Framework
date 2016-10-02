@@ -64,11 +64,11 @@ trait optimization {
 	 *
 	 * @throws ExitException
 	 */
-	public static function admin_optimization_clean_pcache () {
-		if (!clean_pcache()) {
+	public static function admin_optimization_clean_public_cache () {
+		if (!clean_public_cache()) {
 			throw new ExitException(500);
 		}
-		Event::instance()->fire('admin/System/general/optimization/clean_pcache');
+		Event::instance()->fire('admin/System/general/optimization/clean_public_cache');
 	}
 	/**
 	 * Apply optimization settings
@@ -79,7 +79,7 @@ trait optimization {
 	 */
 	public static function admin_optimization_apply_settings ($Request) {
 		static::admin_core_options_apply($Request, static::$optimization_options_keys);
-		static::admin_optimization_clean_pcache();
+		static::admin_optimization_clean_public_cache();
 	}
 	/**
 	 * Save optimization settings
@@ -90,7 +90,7 @@ trait optimization {
 	 */
 	public static function admin_optimization_save_settings ($Request) {
 		static::admin_core_options_save($Request, static::$optimization_options_keys);
-		static::admin_optimization_clean_pcache();
+		static::admin_optimization_clean_public_cache();
 	}
 	/**
 	 * Cancel optimization settings
