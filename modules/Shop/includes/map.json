@@ -1,9 +1,0 @@
-{
-	"admin/Shop"   : [
-		"admin*"
-	],
-	"Shop"         : [
-		"cs-shop-*",
-		"cart.js"
-	]
-}

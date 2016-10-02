@@ -1,0 +1,10 @@
+{
+	"package" : "System",
+	"assets"  : {
+		"admin/System" : [
+			"file1.js",
+			"file2.js",
+			"file1.html"
+		]
+	}
+}

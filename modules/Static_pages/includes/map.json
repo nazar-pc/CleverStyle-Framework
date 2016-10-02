@@ -1,8 +1,0 @@
-{
-	"admin/Static_pages" : [
-		"cs-static-pages-admin-*"
-	],
-	"Static_pages"       : [
-		"cs-static-pages-*"
-	]
-}

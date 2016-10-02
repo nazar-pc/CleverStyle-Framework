@@ -1,6 +1,0 @@
-{
-	"admin/Blockchain_payment" : "admin.css",
-	"Blockchain_payment"       : [
-		"cs-blockchain-payment-pay/index.html"
-	]
-}

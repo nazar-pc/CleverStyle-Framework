@@ -42,8 +42,8 @@ class Collecting {
 		 * Also collect dependencies.
 		 */
 		foreach ($installed_modules as $module => $module_data) {
-			static::process_meta(MODULES."/$module", $dependencies, $functionalities, $module_data['active'] != Config\Module_Properties::ENABLED);
-			static::process_map(MODULES."/$module", $includes_map, $all_includes);
+			$not_enabled = $module_data['active'] != Config\Module_Properties::ENABLED;
+			static::process_meta(MODULES."/$module", $dependencies, $functionalities, $includes_map, $all_includes, $not_enabled);
 		}
 		unset($module, $module_data);
 		/**
@@ -112,14 +112,17 @@ class Collecting {
 		return get_files_list("$base_dir/$ext", "/.*\\.$ext\$/i", 'f', true, true, 'name', '!include') ?: [];
 	}
 	/**
-	 * Process meta information and corresponding entries to dependencies and functionalities
+	 * Process meta information and corresponding entries to dependencies and functionalities, fill assets map and remove files from list of all assets
+	 * (remaining files will be included on all pages)
 	 *
 	 * @param string $base_dir
 	 * @param array  $dependencies
 	 * @param array  $functionalities
+	 * @param array  $includes_map
+	 * @param array  $all_includes
 	 * @param bool   $skip_functionalities
 	 */
-	protected static function process_meta ($base_dir, &$dependencies, &$functionalities, $skip_functionalities = false) {
+	protected static function process_meta ($base_dir, &$dependencies, &$functionalities, &$includes_map, &$all_includes, $skip_functionalities = false) {
 		if (!file_exists("$base_dir/meta.json")) {
 			return;
 		}
@@ -137,37 +140,26 @@ class Collecting {
 			 */
 			$dependencies[$package][] = preg_split('/[=<>]/', $d, 2)[0];
 		}
-		if ($skip_functionalities) {
-			return;
-		}
-		foreach ((array)$meta['provide'] as $p) {
-			/**
-			 * If provides sub-functionality for other component (for instance, `Blog/post_patch`) - inverse "providing" to "dependency"
-			 * Otherwise it is just functionality alias to package name
-			 */
-			if (strpos($p, '/') !== false) {
+		if (!$skip_functionalities) {
+			foreach ((array)$meta['provide'] as $p) {
 				/**
-				 * Get name of package or functionality
+				 * If provides sub-functionality for other component (for instance, `Blog/post_patch`) - inverse "providing" to "dependency"
+				 * Otherwise it is just functionality alias to package name
 				 */
-				$p                  = explode('/', $p)[0];
-				$dependencies[$p][] = $package;
-			} else {
-				$functionalities[$p] = $package;
+				if (strpos($p, '/') !== false) {
+					/**
+					 * Get name of package or functionality
+					 */
+					$p                  = explode('/', $p)[0];
+					$dependencies[$p][] = $package;
+				} else {
+					$functionalities[$p] = $package;
+				}
 			}
 		}
-	}
-	/**
-	 * Process map structure, fill includes map and remove files from list of all includes (remaining files will be included on all pages)
-	 *
-	 * @param string $base_dir
-	 * @param array  $includes_map
-	 * @param array  $all_includes
-	 */
-	protected static function process_map ($base_dir, &$includes_map, &$all_includes) {
-		if (!file_exists("$base_dir/includes/map.json")) {
-			return;
+		if (isset($meta['assets'])) {
+			static::process_assets_map($meta['assets'], "$base_dir/includes", $includes_map, $all_includes);
 		}
-		static::process_map_internal(file_get_json("$base_dir/includes/map.json"), "$base_dir/includes", $includes_map, $all_includes);
 	}
 	/**
 	 * Process map structure, fill includes map and remove files from list of all includes (remaining files will be included on all pages)
@@ -177,7 +169,7 @@ class Collecting {
 	 * @param array  $includes_map
 	 * @param array  $all_includes
 	 */
-	protected static function process_map_internal ($map, $includes_dir, &$includes_map, &$all_includes) {
+	protected static function process_assets_map ($map, $includes_dir, &$includes_map, &$all_includes) {
 		foreach ($map as $path => $files) {
 			foreach ((array)$files as $file) {
 				$extension = file_extension($file);
@@ -199,7 +191,7 @@ class Collecting {
 					);
 					// Drop first level directory
 					$found_files = _preg_replace('#^[^/]+/(.*)#', '$1', $found_files);
-					static::process_map_internal([$path => $found_files], $includes_dir, $includes_map, $all_includes);
+					static::process_assets_map([$path => $found_files], $includes_dir, $includes_map, $all_includes);
 				}
 			}
 		}

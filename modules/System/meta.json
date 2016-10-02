@@ -1,12 +1,19 @@
 {
 	"package"             : "System",
 	"category"            : "modules",
-	"version"             : "6.23.1+build-2535",
+	"version"             : "6.24.0+build-2536",
 	"description"         : "Base system module of CleverStyle Framework",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/Framework",
 	"license"             : "MIT License",
 	"update_from_version" : "5.50.3",
+	"assets"              : {
+		"admin/System" : [
+			"behaviors.js",
+			"navigation.js",
+			"cs-system-admin-*"
+		]
+	},
 	"db"                  : [
 		"keys",
 		"texts",

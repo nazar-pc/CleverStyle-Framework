@@ -1,4 +1,7 @@
 {
 	"package" : "Enabled_provide",
+	"assets"  : {
+		"Enabled_provide" : "file1.*"
+	},
 	"provide" : "enabled"
 }

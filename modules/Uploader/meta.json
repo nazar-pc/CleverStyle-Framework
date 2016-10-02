@@ -1,11 +1,15 @@
 {
 	"package"      : "Uploader",
 	"category"     : "modules",
-	"version"      : "1.14.0+build-28",
+	"version"      : "1.15.0+build-29",
 	"description"  : "Uploader provides files uploading functionality to other modules",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/Framework",
 	"license"      : "MIT License",
+	"assets"       : {
+		"admin/Uploader" : "admin.css",
+		"Uploader"       : "script.js"
+	},
 	"db"           : [
 		"files"
 	],
@@ -17,7 +21,7 @@
 	],
 	"provide"      : "file_upload",
 	"require"      : [
-		"System>=6.0",
+		"System>=6.24",
 		"System<7.0"
 	],
 	"multilingual" : [

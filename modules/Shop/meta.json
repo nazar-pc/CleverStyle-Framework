@@ -1,12 +1,21 @@
 {
 	"package"             : "Shop",
 	"category"            : "modules",
-	"version"             : "0.175.4+build-286",
+	"version"             : "0.176.0+build-287",
 	"description"         : "Shop functionality",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/Framework",
 	"license"             : "MIT License",
 	"update_from_version" : "0.174",
+	"assets"              : {
+		"admin/Shop" : [
+			"admin*"
+		],
+		"Shop"       : [
+			"cs-shop-*",
+			"cart.js"
+		]
+	},
 	"db"                  : [
 		"shop"
 	],
@@ -15,7 +24,7 @@
 	],
 	"provide"             : "shop",
 	"require"             : [
-		"System>=6.0",
+		"System>=6.24",
 		"System<7.0",
 		"Tags>=2.0",
 		"Tags<3.0",

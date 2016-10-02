@@ -19,7 +19,6 @@ Every described below element is optional, even empty directory in `modules` wil
   * css
   * html
   * js
-  * map.json
 * meta
   * install_db
   * uninstall_db
@@ -151,51 +150,6 @@ Completely the same as for `api/index.{http_method_lowercase}.php`, but for CLI.
 #### includes/css includes/html includes/js
 CSS/Web Components (Polymer elements)/JS files in these directories will be automatically included on necessary pages of website (including dependencies between components), and compressed (if was chosen in configuration)
 
-#### includes/map.json
-Not all CSS/HTML/JS files need to be included on all pages of website. This file allows to specify which files and where should be included.
-This file affects compressed version of CSS/HTML/JS files, and naturally accounts components dependencies before inclusion on pages.
-
-Example:
-```json
-{
-    "admin/Blogs" : [
-        "admin.css"
-    ],
-    "Blogs"       : [
-        "general.css",
-        "general.js",
-        "my-component/index.html"
-    ]
-}
-```
-
-There is no need to mention `css`, `html` and `js` directories because files location is obvious from extension.
-
-Please, note, that also there is no need to mention css and JS files in `html` directory that are used by Web Components (Polymer elements), since they will be included automatically.
-
-Sometimes it might be necessary to include many files, so there is special wildcard syntax:
-```json
-{
-    "Fotorama" : "*"
-}
-```
-Example above will include all `css`, `html` and `js` files in their respective directories.
-
-It is also possible to specify part of path:
-```json
-{
-    "admin/Blogs" : [
-        "admin.css"
-    ],
-    "Blogs"       : [
-        "general.*",
-        "cs-blogs-*"
-    ]
-}
-```
-
-And last trick here: `*` is not required, it is used purely for readability purpose.
-
 #### meta/install_db
 This directory contains subdirectories with files. Subdirectories are called the same as databases are identified in `db` parameter of `meta.json` file (see below). Files are called correspondingly to the names of database drivers, supported by module with extension \*.sql, for example:
 * meta/install_db/posts/MySQLi.sql
@@ -236,34 +190,44 @@ License file, may be of txt or html format.
 Main description file of module. This file is required for module building, in order to be able to build module package. Example of meta.json file for module:
 ```json
 {
-	"package"             : "System",
-	"category"            : "modules",
-	"version"             : "0.171",
-	"update_from_version" : "0.171",
-	"description"         : "Base system module of CleverStyle Framework",
-	"author"              : "Nazar Mokrynskyi",
-	"website"             : "cleverstyle.org/Framework",
-	"license"             : "MIT License",
-	"db"                  : [
-		"keys",
-		"users",
-		"texts"
-	],
-	"db_support"          : [
-		"MySQLi"
-	],
-	"provide"             : [
-		"system"
-	],
-	"multilingual"        : [
-		"interface",
-		"content"
-	],
-	"languages"           : [
-		"English",
-		"Russian"
-	],
-	"hide_in_menu"        : 1
+    "package"             : "System",
+    "category"            : "modules",
+    "version"             : "0.171",
+    "update_from_version" : "0.171",
+    "description"         : "Base system module of CleverStyle Framework",
+    "author"              : "Nazar Mokrynskyi",
+    "website"             : "cleverstyle.org/Framework",
+    "license"             : "MIT License",
+    "assets"              : {
+        "admin/Blogs" : [
+            "admin.css"
+        ],
+        "Blogs"       : [
+            "general.css",
+            "general.js",
+            "my-component/index.html"
+        ]
+    },
+    "db"                  : [
+        "keys",
+        "users",
+        "texts"
+    ],
+    "db_support"          : [
+        "MySQLi"
+    ],
+    "provide"             : [
+        "system"
+    ],
+    "multilingual"        : [
+        "interface",
+        "content"
+    ],
+    "languages"           : [
+        "English",
+        "Russian"
+    ],
+    "hide_in_menu"        : 1
 }
 ```
 
@@ -283,6 +247,7 @@ If this file exists it should have at least next properties:
 
 Other possible properties are:
 * website
+* assets
 * db
 * db_support
 * storage
@@ -294,6 +259,57 @@ Other possible properties are:
 * conflict
 
 [Read about dependencies and conflicts](/docs/backend-advanced/Components-dependencies-and-conflicts.md)
+
+##### More about `assets` property
+Not all CSS/HTML/JS files need to be included on all pages of website. This option allows to specify which files and where should be included.
+This option also affects compressed version of CSS/HTML/JS files, and naturally accounts components dependencies before inclusion on pages.
+
+Example:
+```json
+...
+    "assets" : {
+        "admin/Blogs" : [
+            "admin.css"
+        ],
+        "Blogs"       : [
+            "general.css",
+            "general.js",
+            "my-component/index.html"
+        ]
+    },
+...
+```
+
+There is no need to mention `css`, `html` and `js` directories because files location is obvious from extension.
+
+Please, note, that also there is no need to mention css and JS files in `html` directory that are used by Web Components (Polymer elements), since they will be included automatically.
+
+Sometimes it might be necessary to include many files, so there is special wildcard syntax:
+```json
+...
+    "assets" : {
+        "Fotorama" : "*"
+    },
+...
+```
+Example above will include all `css`, `html` and `js` files in their respective directories.
+
+It is also possible to specify part of path:
+```json
+...
+    "assets" : {
+        "admin/Blogs" : [
+            "admin.css"
+        ],
+        "Blogs"       : [
+            "general.*",
+            "cs-blogs-*"
+        ]
+    },
+...
+```
+
+And last trick here: `*` is not required, it is used purely for readability purpose.
 
 ##### More about `db` property
 Contains array with identifiers for databases. If some tables of module can be completely separated, it may be useful to use different identifiers. In such case if you have several configured databases in system (physically separated, or even with different drivers, which is more reliable for some data), every identifier may be connected with any existing configured database.

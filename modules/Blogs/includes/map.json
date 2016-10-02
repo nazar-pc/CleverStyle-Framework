@@ -1,8 +1,0 @@
-{
-	"admin/Blogs" : [
-		"cs-blogs-admin-*"
-	],
-	"Blogs"       : [
-		"cs-blogs-*"
-	]
-}

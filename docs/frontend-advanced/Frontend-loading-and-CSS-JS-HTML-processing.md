@@ -24,7 +24,7 @@ NOTE: CSS is always inlined currently, this is because Polymer only supports `st
 CleverStyle Framework uses dependencies between components to load files in following order:
 * system files from `/includes/{css|js|html}`
 * theme files from `/themes/{theme_name}/{css|js|html}`
-* globally used files of components (files that are not listed in [map.json](/docs/quick-start/Module-architecture.md#includesmapjson) file and included on any page)
+* globally used files of components (files that are not listed in [assets key of meta.json](/docs/quick-start/Module-architecture.md#more-about-assets-property) file and included on any page)
 * files from all dependencies of current module (preserving order between dependencies themselves if any as well)
 * module files from `/modules/{module_name}/includes/{css|js|html}`
 

@@ -1,3 +1,6 @@
 {
-	"package" : "Disabled_with_map_and_meta"
+	"package" : "Disabled_with_map_and_meta",
+	"assets"  : {
+		"Disabled_with_map_and_meta" : "*"
+	}
 }
