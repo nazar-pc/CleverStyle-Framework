@@ -90,8 +90,7 @@ trait Management {
 		if ($this->get_id($email_hash)) {
 			return 'exists';
 		}
-		$login      = $this->registration_get_login_login_hash($email);
-		$login_hash = hash('sha224', $login);
+		list($login, $login_hash) = $this->registration_get_login_login_hash($email);
 		$this->delete_unconfirmed_users();
 		if (!Event::instance()->fire(
 			'System/User/registration/before',
