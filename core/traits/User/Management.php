@@ -131,7 +131,7 @@ trait Management {
 			time(),
 			ip2hex(Request::instance()->ip),
 			$reg_key,
-			User::STATUS_INACTIVE
+			User::STATUS_NOT_ACTIVATED
 		)
 		) {
 			$this->reg_id = (int)$this->db_prime()->id();
