@@ -87,15 +87,11 @@ trait Management {
 		}
 		$email      = mb_strtolower($email);
 		$email_hash = hash('sha224', $email);
-		$login      = strstr($email, '@', true);
-		$login_hash = hash('sha224', $login);
-		if ($this->registration_login_already_occupied($login, $login_hash)) {
-			$login      = $email;
-			$login_hash = $email_hash;
-		}
 		if ($this->get_id($email_hash)) {
 			return 'exists';
 		}
+		$login      = $this->registration_get_login_login_hash($email);
+		$login_hash = hash('sha224', $login);
 		$this->delete_unconfirmed_users();
 		if (!Event::instance()->fire(
 			'System/User/registration/before',
@@ -136,18 +132,13 @@ trait Management {
 			time(),
 			ip2hex(Request::instance()->ip),
 			$reg_key,
-			!$confirmation ? 1 : -1
+			User::STATUS_INACTIVE
 		)
 		) {
 			$this->reg_id = (int)$this->db_prime()->id();
 			$password     = '';
 			if (!$confirmation) {
-				$password = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-				$this->set_password($password, $this->reg_id);
-				$this->set_groups([User::USER_GROUP_ID], $this->reg_id);
-				if ($auto_sign_in && $Config->core['auto_sign_in_after_registration']) {
-					Session::instance()->add($this->reg_id);
-				}
+				$password = $this->activate_registered_user($Config, $this->reg_id, $auto_sign_in && $Config->core['auto_sign_in_after_registration']);
 			}
 			if (!Event::instance()->fire(
 				'System/User/registration/after',
@@ -173,6 +164,20 @@ trait Management {
 		}
 	}
 	/**
+	 * @param string $email
+	 *
+	 * @return string[]
+	 */
+	protected function registration_get_login_login_hash ($email) {
+		$login      = strstr($email, '@', true);
+		$login_hash = hash('sha224', $login);
+		if ($this->registration_login_already_occupied($login, $login_hash)) {
+			$login      = $email;
+			$login_hash = hash('sha224', $login);
+		}
+		return [$login, $login_hash];
+	}
+	/**
 	 * @param string $login
 	 * @param string $login_hash
 	 *
@@ -185,6 +190,26 @@ trait Management {
 				$login &&
 				in_array($login, file_get_json(MODULES.'/System/index.json')['profile'])
 			);
+	}
+	/**
+	 * @param Config $Config
+	 * @param int    $id
+	 * @param bool   $create_session
+	 *
+	 * @return string
+	 */
+	protected function activate_registered_user ($Config, $id, $create_session) {
+		$password = '';
+		if (!$this->get('password_hash', $id)) {
+			$password = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
+			$this->set_password($password, $id);
+		}
+		$this->set('status', User::STATUS_ACTIVE, $id);
+		$this->set_groups([User::USER_GROUP_ID], $id);
+		if ($create_session) {
+			Session::instance()->add($id);
+		}
+		return $password;
 	}
 	/**
 	 * Confirmation of registration process
@@ -226,14 +251,7 @@ trait Management {
 		}
 		$this->reg_id = (int)$data['id'];
 		$Config       = Config::instance();
-		$password     = '';
-		if (!$this->get('password_hash', $this->reg_id)) {
-			$password = password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-			$this->set_password($password, $this->reg_id);
-		}
-		$this->set('status', User::STATUS_ACTIVE, $this->reg_id);
-		$this->set_groups([User::USER_GROUP_ID], $this->reg_id);
-		Session::instance()->add($this->reg_id);
+		$password     = $this->activate_registered_user($Config, $this->reg_id, true);
 		if (!Event::instance()->fire(
 			'System/User/registration/confirmation/after',
 			[
