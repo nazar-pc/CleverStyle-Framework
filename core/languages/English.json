@@ -1,15 +1,11 @@
 {
-	//ISO 639-1
 	"clang"            : "en",
-	//ISO 3166-1 Alpha-2
 	"cregion"          : "us",
 	"content_language" : "en",
-	//Regional parameters, syntax of PHP function date()
 	"_datetime_long"   : "l, d F Y, h:i a",
 	"_datetime"        : "m.d.Y h:i a",
 	"_date"            : "m.d.Y",
 	"_time"            : "h:i a",
-	// System
 	"System"           : "System",
 	"system_"          : {
 		"time_"                   : {
