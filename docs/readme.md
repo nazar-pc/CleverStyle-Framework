@@ -63,6 +63,7 @@ Here you can find all useful information:
 * [RequireJS](/docs/frontend-advanced/RequireJS.md)
 * [Bower & NPM](/docs/frontend-advanced/Bower-and-NPM.md)
 * [Frontend loading and CSS/JS/HTML processing](/docs/frontend-advanced/Frontend-loading-and-CSS-JS-HTML-processing.md)
+* [Public cache structures](/docs/frontend-advanced/Public-cache-structures.md)
 
 ### System objects [Backend] [dev]
 Global system objects provides almost all functionality of CleverStyle Framework. Shortly they were described in [classes section](/docs/backend-core/Classes.md). Here you can see, how to use them in practice.
