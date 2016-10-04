@@ -503,6 +503,7 @@ trait Assets {
 			),
 			$Request
 		);
+		$optimized_assets  = array_flip($optimized_assets);
 		$system_scripts    = '';
 		$optimized_scripts = [];
 		$system_imports    = '';

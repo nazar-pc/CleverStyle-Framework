@@ -168,9 +168,9 @@ class Page_test extends Page {
 		Page::instance_reset();
 		Config::instance_reset();
 		Config::instance();
-		$structure                         = file_get_json(PUBLIC_CACHE.'/CleverStyle.optimized.json');
-		$structure[0]['/dependency1.html'] = 2;
-		$structure[0]['/dependency1.js']   = 3;
+		$structure      = file_get_json(PUBLIC_CACHE.'/CleverStyle.optimized.json');
+		$structure[0][] = '/dependency1.html';
+		$structure[0][] = '/dependency1.js';
 		file_put_json(PUBLIC_CACHE.'/CleverStyle.optimized.json', $structure);
 		$Page = Page::instance();
 		$Page->add_assets_on_page();

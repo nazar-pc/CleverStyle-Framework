@@ -74,7 +74,7 @@ class Cache {
 			}
 		}
 		unset($compressed_assets_map['System']);
-		$optimized_assets = array_flip(array_merge(...array_values(array_map('array_values', $compressed_assets_map))));
+		$optimized_assets = array_merge(...array_values(array_map('array_values', $compressed_assets_map)));
 		$preload          = array_merge(...$preload);
 		file_put_json("$public_cache_basename_path.optimized.json", [$optimized_assets, $preload]);
 	}
