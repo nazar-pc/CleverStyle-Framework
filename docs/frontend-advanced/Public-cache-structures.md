@@ -12,25 +12,25 @@ There are 2 such files for each theme in `storage/public_cache`:
 This file contains an array with 3 elements: dependencies, assets map, map of not embedded resources:
 ```json
 [
-	{
-		"System" : [
-			"editor",
-			"simple_editor",
-			"file_upload"
-		]
-	},
-	{
-		"admin/System" : {
-			"js"   : "/storage/pcache/CleverStyle:admin+System.js?58e6c",
-			"html" : "/storage/pcache/CleverStyle:admin+System.html?abea3"
-		},
-		"System"       : {
-			"html" : "/storage/pcache/CleverStyle:System.html?717f0",
-			"js"   : "/storage/pcache/CleverStyle:System.js?687ff",
-			"css"  : "/storage/pcache/CleverStyle:System.css?fecf7"
-		}
-	},
-	[]
+    {
+        "System" : [
+            "editor",
+            "simple_editor",
+            "file_upload"
+        ]
+    },
+    {
+        "admin/System" : {
+            "js"   : "/storage/public_cache/CleverStyle:admin+System.js?58e6c",
+            "html" : "/storage/public_cache/CleverStyle:admin+System.html?abea3"
+        },
+        "System"       : {
+            "html" : "/storage/public_cache/CleverStyle:System.html?717f0",
+            "js"   : "/storage/public_cache/CleverStyle:System.js?687ff",
+            "css"  : "/storage/public_cache/CleverStyle:System.css?fecf7"
+        }
+    },
+    []
 ]
 ```
 
@@ -44,15 +44,15 @@ Not embedded resources are such resources, that are related to some file from as
 This array is based on the contents of `{theme_name}.json`, it contains an array with 2 array items:
 ```json
 [
-	[
-		"/storage/pcache/CleverStyle:admin+System.js?58e6c",
-		"/storage/pcache/CleverStyle:admin+System.html?abea3"
-	],
-	[
-		"/storage/pcache/CleverStyle:System.html?717f0",
-		"/storage/pcache/CleverStyle:System.js?687ff",
-		"/storage/pcache/CleverStyle:System.css?fecf7"
-	]
+    [
+        "/storage/public_cache/CleverStyle:admin+System.js?58e6c",
+        "/storage/public_cache/CleverStyle:admin+System.html?abea3"
+    ],
+    [
+        "/storage/public_cache/CleverStyle:System.html?717f0",
+        "/storage/public_cache/CleverStyle:System.js?687ff",
+        "/storage/public_cache/CleverStyle:System.css?fecf7"
+    ]
 ]
 ```
 
