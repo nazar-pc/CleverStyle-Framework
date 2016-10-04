@@ -68,10 +68,7 @@ class Photo_gallery {
 	 */
 	public function get ($id) {
 		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i	= $this->get($i);
-			}
-			return $id;
+			return array_map([$this, 'get'], $id);
 		}
 		$L			= Language::instance();
 		$id			= (int)$id;
@@ -294,10 +291,7 @@ class Photo_gallery {
 	 */
 	public function get_gallery ($id) {
 		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i	= $this->get_gallery($i);
-			}
-			return $id;
+			return array_map([$this, 'get_gallery'], $id);
 		}
 		$L		= Language::instance();
 		$id		= (int)$id;

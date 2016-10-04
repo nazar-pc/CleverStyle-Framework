@@ -27,10 +27,7 @@ trait Common_actions {
 	 */
 	protected function get_common ($id) {
 		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i = $this->get_common($i);
-			}
-			return $id;
+			return array_map([$this, 'get_common'], $id);
 		}
 		$L  = Language::instance();
 		$id = (int)$id;

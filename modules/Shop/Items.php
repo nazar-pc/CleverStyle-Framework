@@ -122,10 +122,7 @@ class Items {
 	 */
 	public function get ($id) {
 		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i = $this->get($i);
-			}
-			return $id;
+			return array_map([$this, 'get'], $id);
 		}
 		$L    = Language::instance();
 		$id   = (int)$id;

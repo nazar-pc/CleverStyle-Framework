@@ -72,10 +72,7 @@ class Comments {
 	 */
 	public function get_extended ($id) {
 		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i = $this->get_extended($i);
-			}
-			return $id;
+			return array_map([$this, 'get_extended'], $id);
 		}
 		$comment                   = $this->get($id);
 		$User                      = User::instance();

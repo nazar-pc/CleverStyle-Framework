@@ -79,10 +79,7 @@ class Content {
 	 */
 	public function get ($key) {
 		if (is_array($key)) {
-			foreach ($key as &$k) {
-				$k = $this->get($k);
-			}
-			return $key;
+			return array_map([$this, 'get'], $key);
 		}
 		$key = str_replace(['/', '?', '#', '"', '<', '>'], '_', $key);
 		return $this->cache->get(

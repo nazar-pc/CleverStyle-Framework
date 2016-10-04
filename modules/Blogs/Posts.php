@@ -77,10 +77,7 @@ class Posts {
 	 */
 	public function get ($id) {
 		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i = $this->get($i);
-			}
-			return $id;
+			return array_map([$this, 'get'], $id);
 		}
 		$L    = Language::instance();
 		$id   = (int)$id;
@@ -257,9 +254,9 @@ class Posts {
 	/**
 	 * Get posts for tag
 	 *
-	 * @param int    $tag
-	 * @param int    $page
-	 * @param int    $count
+	 * @param int $tag
+	 * @param int $page
+	 * @param int $count
 	 *
 	 * @return int[]
 	 */
@@ -267,7 +264,7 @@ class Posts {
 		$search_parameters = [
 			'draft' => 0,
 			'tags'  => [
-				'tag'  => $tag
+				'tag' => $tag
 			]
 		];
 		return $this->search($search_parameters, $page, $count, 'date', false) ?: [];
@@ -275,7 +272,7 @@ class Posts {
 	/**
 	 * Get number of posts for tag
 	 *
-	 * @param int    $tag
+	 * @param int $tag
 	 *
 	 * @return int
 	 */
@@ -283,7 +280,7 @@ class Posts {
 		$search_parameters = [
 			'draft'       => 0,
 			'tags'        => [
-				'tag'  => $tag
+				'tag' => $tag
 			],
 			'total_count' => true
 		];
