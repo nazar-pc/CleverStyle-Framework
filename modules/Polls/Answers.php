@@ -61,10 +61,7 @@ class Answers {
 	 */
 	public function get ($poll, $user = false) {
 		if (is_array($poll)) {
-			foreach ($poll as &$i) {
-				$i = $this->get($i, $user);
-			}
-			return $poll;
+			return array_map_arguments([$this, 'get'], $poll, $user);
 		}
 		return $this->db()->qfs(
 			"SELECT `option`

@@ -62,10 +62,7 @@ class Group {
 	 */
 	public function get ($id) {
 		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i = $this->get($i);
-			}
-			return $id;
+			return array_map([$this, 'get'], $id);
 		}
 		$id = (int)$id;
 		if (!$id) {
@@ -142,10 +139,7 @@ class Group {
 	 */
 	public function del ($id) {
 		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i = (int)$this->del($i);
-			}
-			return (bool)array_product($id);
+			return array_map_arguments_bool([$this, 'del'], $id);
 		}
 		$id = (int)$id;
 		if (in_array($id, [User::ADMIN_GROUP_ID, User::USER_GROUP_ID])) {

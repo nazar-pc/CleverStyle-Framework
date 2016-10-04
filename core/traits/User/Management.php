@@ -408,18 +408,17 @@ trait Management {
 	 * Delete specified user or array of users
 	 *
 	 * @param int|int[] $user User id or array of users ids
+	 *
+	 * @return bool
 	 */
 	public function del_user ($user) {
 		$this->disable_memory_cache();
 		if (is_array($user)) {
-			foreach ($user as $id) {
-				$this->del_user($id);
-			}
-			return;
+			return array_map_arguments_bool([$this, 'del_user'], $user);
 		}
 		$user = (int)$user;
 		if (in_array($user, [0, User::GUEST_ID, User::ROOT_ID]) || !$this->get('id', $user)) {
-			return;
+			return false;
 		}
 		Event::instance()->fire(
 			'System/User/del/before',
@@ -427,25 +426,36 @@ trait Management {
 				'id' => $user
 			]
 		);
-		$this->set_groups([], $user);
-		$this->del_permissions_all($user);
 		$Cache      = $this->cache;
 		$login_hash = $this->get('login_hash', $user);
 		$email_hash = $this->get('email_hash', $user);
-		$this->db_prime()->q(
-			"DELETE FROM `[prefix]users`
-			WHERE `id` = $user"
+		/** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+		$result = $this->db_prime()->transaction(
+			function ($cdb) use ($user) {
+				/**
+				 * @var \cs\DB\_Abstract $cdb
+				 */
+				$this->set_groups([], $user);
+				$this->del_permissions_all($user);
+				return $cdb->q(
+					"DELETE FROM `[prefix]users`
+					WHERE `id` = $user"
+				);
+			}
 		);
-		unset(
-			$Cache->$login_hash,
-			$Cache->$email_hash,
-			$Cache->$user
-		);
-		Event::instance()->fire(
-			'System/User/del/after',
-			[
-				'id' => $user
-			]
-		);
+		if ($result) {
+			unset(
+				$Cache->$login_hash,
+				$Cache->$email_hash,
+				$Cache->$user
+			);
+			Event::instance()->fire(
+				'System/User/del/after',
+				[
+					'id' => $user
+				]
+			);
+		}
+		return $result;
 	}
 }

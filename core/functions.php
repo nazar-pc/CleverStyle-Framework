@@ -467,11 +467,7 @@ function pages_buttons ($page, $total, $url = false) {
  */
 function functionality ($functionality) {
 	if (is_array($functionality)) {
-		$result = true;
-		foreach ($functionality as $f) {
-			$result = $result && functionality($f);
-		}
-		return $result;
+		return array_map_arguments_bool('functionality', $functionality);
 	}
 	$all = Cache::instance()->get(
 		'functionality',
@@ -509,10 +505,7 @@ function functionality ($functionality) {
 function xap ($in, $html = 'text', $iframe = false) {
 	static $purifier, $purifier_iframe, $purifier_no_tags;
 	if (is_array($in)) {
-		foreach ($in as &$item) {
-			$item = xap($item, $html, $iframe);
-		}
-		return $in;
+		return array_map_arguments('xap', $in, $html, $iframe);
 	}
 	/**
 	 * Text mode
@@ -572,3 +565,32 @@ function __htmlpurifier_autoload ($class) {
 }
 
 spl_autoload_register('__htmlpurifier_autoload', true, true);
+
+/**
+ * @param callable $func
+ * @param array    $arguments
+ * @param array    $additional_arguments
+ *
+ * @return array
+ */
+function array_map_arguments (callable $func, array $arguments, ...$additional_arguments) {
+	foreach ($arguments as &$a) {
+		$a = $func($a, ...$additional_arguments);
+	}
+	return $arguments;
+}
+
+/**
+ * @param callable $func
+ * @param array    $arguments
+ * @param array    $additional_arguments
+ *
+ * @return bool
+ */
+function array_map_arguments_bool (callable $func, array $arguments, ...$additional_arguments) {
+	$result = true;
+	foreach ($arguments as $a) {
+		$result = $result && $func($a, ...$additional_arguments);
+	}
+	return $result;
+}

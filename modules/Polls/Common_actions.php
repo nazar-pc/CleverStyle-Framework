@@ -19,10 +19,7 @@ trait Common_actions {
 	 */
 	public function get_common ($id) {
 		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i = $this->get_common($i);
-			}
-			return $id;
+			return array_map([$this, 'get_common'], $id);
 		}
 		return $this->cache->get(
 			(int)$id,

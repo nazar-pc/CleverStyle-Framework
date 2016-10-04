@@ -147,7 +147,7 @@ Restoring of password
 #### restore_password_confirmation($key : string) : array|false
 Confirmation of password restoring process
 
-#### del_user($user : int|int[])
+#### del_user($user : int|int[]) : bool
 Delete specified user or array of users
 
 #### get_users_columns() : array

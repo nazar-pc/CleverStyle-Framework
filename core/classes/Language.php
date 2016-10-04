@@ -490,10 +490,7 @@ class Language implements JsonSerializable {
 	 */
 	public function to_locale ($data, $short_may = false) {
 		if (is_array($data)) {
-			foreach ($data as &$item) {
-				$item = $this->to_locale($item, $short_may);
-			}
-			return $data;
+			return array_map_arguments([$this, 'to_locale'], $data, $short_may);
 		}
 		if ($short_may) {
 			$data = str_replace('May', 'May_short', $data);
