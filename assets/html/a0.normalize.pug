@@ -2,8 +2,12 @@
 dom-module#Normalize
 	template
 		style.
-			/*! normalize.css v4.2.0 | MIT License | github.com/necolas/normalize.css */
-			/* Support for IE11- and Android 4.x- removed */
+			/*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
+			/*
+			 * Support for old versions of all browsers (old means older than 2 latest stable versions) removed, IE is not supported at all (Edge is)
+			 * `button, input, optgroup, select, textarea` inherits font instead of defining its own
+			 */
+
 			html {
 				line-height              : 1.15;
 				-ms-text-size-adjust     : 100%;
@@ -14,24 +18,28 @@ dom-module#Normalize
 				margin : 0;
 			}
 
-			details, main, summary {
-				display : block;
+			h1 {
+				font-size : 2em;
+				margin    : 0.67em 0;
 			}
 
-			audio:not([controls]) {
-				display : none;
-				height  : 0;
+			hr {
+				box-sizing : content-box;
+				height     : 0;
+				overflow   : visible;
 			}
 
-			progress {
-				vertical-align : baseline;
+			pre {
+				font-family : monospace, monospace;
+				font-size   : 1em;
 			}
 
 			a {
 				-webkit-text-decoration-skip : objects;
 			}
 
-			a:active, a:hover {
+			a:active,
+			a:hover {
 				outline-width : 0;
 			}
 
@@ -40,13 +48,16 @@ dom-module#Normalize
 				text-decoration : underline dotted;
 			}
 
-			b, strong {
+			b,
+			strong {
 				font-weight : bolder;
 			}
 
-			h1 {
-				font-size : 2em;
-				margin    : .67em 0;
+			code,
+			kbd,
+			samp {
+				font-family : monospace, monospace;
+				font-size   : 1em;
 			}
 
 			small {
@@ -68,39 +79,18 @@ dom-module#Normalize
 				top : -0.5em;
 			}
 
-			svg:not(:root) {
-				overflow : hidden;
-			}
-
-			code, kbd, pre, samp {
-				font-family : monospace, monospace;
-				font-size   : 1em;
-			}
-
-			hr {
-				box-sizing : content-box;
-				height     : 0;
-				overflow   : visible;
-			}
-
 			button, input, optgroup, select, textarea {
-				font   : inherit;
-				margin : 0
-			}
-
-			optgroup {
-				font-weight : bold;
-			}
-
-			button, input {
-				overflow : visible;
+				font-family : inherit;
+				font-size   : 100%;
+				line-height : 1.15;
+				margin      : 0;
 			}
 
 			button, select {
 				text-transform : none;
 			}
 
-			button, html [type="button"], [type="reset"], [type="submit"] {
+			button, [type="button"], [type="reset"], [type="submit"] {
 				-webkit-appearance : button;
 			}
 
@@ -121,19 +111,18 @@ dom-module#Normalize
 
 			legend {
 				box-sizing  : border-box;
-				color       : inherit;
 				display     : table;
 				max-width   : 100%;
 				padding     : 0;
 				white-space : normal;
 			}
 
-			textarea {
-				overflow : auto
+			progress {
+				vertical-align : baseline;
 			}
 
 			[type="number"]::-webkit-inner-spin-button, [type="number"]::-webkit-outer-spin-button {
-				height : auto
+				height : auto;
 			}
 
 			[type="search"] {
@@ -145,14 +134,15 @@ dom-module#Normalize
 				-webkit-appearance : none;
 			}
 
-			+
-			::-webkit-input-placeholder {
-				color   : inherit;
-				opacity : 0.54;
-			}
-
-			+
 			::-webkit-file-upload-button {
 				-webkit-appearance : button;
 				font               : inherit;
+			}
+
+			details {
+				display : block;
+			}
+
+			summary {
+				display : list-item;
 			}
