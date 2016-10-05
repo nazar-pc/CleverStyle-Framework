@@ -93,7 +93,7 @@ Some components are developed in parallel with core in this repository
  * **HybridAuth** (integration of [HybridAuth](https://github.com/hybridauth/hybridauth) library for integration with social networks and other services)
  * **Json_ld** (simplifies some parts of JSON-LD generation)
  * **OAuth2** (provides realization of OAuth 2 authorization protocol (server side))
- * **Old IE** (brings frontend polyfills and hacks to provide support for older IE versions (10 currently))
+ * **Old IE** (brings frontend polyfills and hacks to provide support for older IE versions (11 currently))
  * **Photo gallery** (simple photo gallery module)
  * **Picturefill** (integration of [Picturefill](https://github.com/scottjehl/picturefill) polyfill into CleverStyle Framework)
  * **Polls** (provides polls functionality to other modules)
