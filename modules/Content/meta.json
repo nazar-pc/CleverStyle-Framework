@@ -1,37 +1,36 @@
 {
-	"package"             : "Content",
-	"category"            : "modules",
-	"version"             : "1.36.1+build-76",
-	"description"         : "Simple content functionality. May be used by other components or stand-alone.",
-	"author"              : "Nazar Mokrynskyi",
-	"website"             : "cleverstyle.org/Framework",
-	"license"             : "MIT License",
-	"update_from_version" : "1.30",
-	"assets"              : {
+	"package"      : "Content",
+	"category"     : "modules",
+	"version"      : "1.36.2+build-77",
+	"description"  : "Simple content functionality. May be used by other components or stand-alone.",
+	"author"       : "Nazar Mokrynskyi",
+	"website"      : "cleverstyle.org/Framework",
+	"license"      : "MIT License",
+	"assets"       : {
 		"admin/Content" : "admin.css"
 	},
-	"db"                  : [
+	"db"           : [
 		"content"
 	],
-	"db_support"          : [
+	"db_support"   : [
 		"MySQLi"
 	],
-	"provide"             : "content",
-	"require"             : [
+	"provide"      : "content",
+	"require"      : [
 		"System>=6.25",
 		"System<7.0"
 	],
-	"optional"            : [
+	"optional"     : [
 		"Plupload",
 		"TinyMCE",
 		"file_upload",
 		"editor"
 	],
-	"multilingual"        : [
+	"multilingual" : [
 		"interface",
 		"content"
 	],
-	"languages"           : [
+	"languages"    : [
 		"English",
 		"Russian",
 		"Ukrainian"

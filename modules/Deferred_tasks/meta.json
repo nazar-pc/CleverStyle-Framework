@@ -1,25 +1,24 @@
 {
-	"package"             : "Deferred_tasks",
-	"category"            : "modules",
-	"version"             : "0.227.0+build-46",
-	"description"         : "Deferred tasks allows other components to create tasks, that can be executed not immediately, but little bit later. Usually is used for parsers, rating calculators and other purposes, when it is necessary to do some tasks on regular basis.",
-	"author"              : "Nazar Mokrynskyi",
-	"website"             : "cleverstyle.org/Framework",
-	"license"             : "MIT License",
-	"update_from_version" : "0.17",
-	"assets"              : {
+	"package"      : "Deferred_tasks",
+	"category"     : "modules",
+	"version"      : "0.227.1+build-47",
+	"description"  : "Deferred tasks allows other components to create tasks, that can be executed not immediately, but little bit later. Usually is used for parsers, rating calculators and other purposes, when it is necessary to do some tasks on regular basis.",
+	"author"       : "Nazar Mokrynskyi",
+	"website"      : "cleverstyle.org/Framework",
+	"license"      : "MIT License",
+	"assets"       : {
 		"admin/Deferred_tasks" : "admin.css"
 	},
-	"db"                  : [
+	"db"           : [
 		"tasks"
 	],
-	"db_support"          : [
+	"db_support"   : [
 		"MySQLi"
 	],
-	"provide"             : "delayed_tasks",
-	"require"             : [
+	"provide"      : "delayed_tasks",
+	"require"      : [
 		"System>=6.25",
 		"System<7.0"
 	],
-	"hide_in_menu"        : 1
+	"hide_in_menu" : 1
 }

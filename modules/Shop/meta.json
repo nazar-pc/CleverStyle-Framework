@@ -1,13 +1,12 @@
 {
-	"package"             : "Shop",
-	"category"            : "modules",
-	"version"             : "0.177.1+build-289",
-	"description"         : "Shop functionality",
-	"author"              : "Nazar Mokrynskyi",
-	"website"             : "cleverstyle.org/Framework",
-	"license"             : "MIT License",
-	"update_from_version" : "0.174",
-	"assets"              : {
+	"package"      : "Shop",
+	"category"     : "modules",
+	"version"      : "0.177.2+build-290",
+	"description"  : "Shop functionality",
+	"author"       : "Nazar Mokrynskyi",
+	"website"      : "cleverstyle.org/Framework",
+	"license"      : "MIT License",
+	"assets"       : {
 		"admin/Shop" : [
 			"admin*"
 		],
@@ -16,14 +15,14 @@
 			"cart.js"
 		]
 	},
-	"db"                  : [
+	"db"           : [
 		"shop"
 	],
-	"db_support"          : [
+	"db_support"   : [
 		"MySQLi"
 	],
-	"provide"             : "shop",
-	"require"             : [
+	"provide"      : "shop",
+	"require"      : [
 		"System>=6.25",
 		"System<7.0",
 		"Tags>=2.0",
@@ -31,10 +30,10 @@
 		"fotorama",
 		"composer_assets"
 	],
-	"require_npm"         : {
+	"require_npm"  : {
 		"jquery" : "^3.0.0"
 	},
-	"optional"            : [
+	"optional"     : [
 		"Comments",
 		"Plupload",
 		"TinyMCE",
@@ -44,11 +43,11 @@
 		"inline_editor",
 		"payment"
 	],
-	"multilingual"        : [
+	"multilingual" : [
 		"interface",
 		"content"
 	],
-	"languages"           : [
+	"languages"    : [
 		"English",
 		"Russian",
 		"Ukrainian"
