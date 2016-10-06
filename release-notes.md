@@ -2589,3 +2589,125 @@ Dropped backward compatibility:
 * None
 
 Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
+
+# 6.28.1+build-2543: No old browsers, polished API and interfaces, better security
+
+First of all - there is an important security update - `xap()` function now has brand new implementation and is secure (while previous implementation, unfortunately, was not).
+
+New major release breaks a lot of small things, which was necessary to make system more consistent like following:
+* there was cache/database//storage engines, databases types and storage connections - now they are all just drivers
+* includes are renamed to assets (as it is much more common naming)
+
+This release also drops support for IE (partial IE11 support is provided by Old IE module) as well as old versions of all major browsers except 2 latest stable versions.
+
+Some secondary features like temporary users blocking and blocking visitors that failed to enter correct credentials in sign in form few times - these features can be implemented with modules with much more options than built-in primitive support had.
+
+There was a lot of new performance tweaks (simple page rendering is easily under 1ms with PHP7, asynchronous translations on frontend), a lot of fixes and new tests were added (77%+ for system in general, but real coverage is even better, some tests are excluded from code coverage because of https://bugs.xdebug.org/view.php?id=1322) as well as updated documentation.
+
+The last thing to note is that CleverStyle Framework can now be translated on Transifex: https://www.transifex.com/cleverstyle/cleverstyle-framework
+
+Overall, this is the best release to date, give it a try!
+
+Security fixes:
+* HTML Purifier bundled with system, `xap()` function reimplemented with the same syntax as before using HTML Purifier as the backend
+
+New components:
+* None
+
+New features:
+* Translations on frontend are now asynchronous in production mode and their cache is separated from regular CSS/JS/HTML cache (which are now language-independent)
+* Improved JS minifier - can now avoid template strings, but will process code before first and after last template string (also backticks in comments are not a problem anymore)
+* Added support for nested query parameters in `cs.api()`
+* New backend events added:
+  * `api/System/profile/sign_in/before`
+  * `api/System/profile/sign_in/success`
+  * `api/System/profile/sign_in/error`
+* Implemented sorting for multilingual fields in `cs\CRUD_helpers` trait
+* Use patched version of `wp-cli/php-cli-tools` that contains support for nicer syntax for colorizing output (https://github.com/wp-cli/php-cli-tools/pull/100)
+
+Updates:
+* New upstream version of UPF
+* Normalize is now based on normalize.css 5.0.0 (dropped IE support, only 2 latest stable versions of major browsers supported)
+* New upstream release of HybridAuth.
+  * New HybridAuth providers:
+    * Dataporten
+    * HumanitarianId
+    * Pinterest
+    * Weibo
+* New upstream version of Polymer (still with Shady DOM removed)
+
+Fixes and small improvements:
+* System:
+  * Fix for incorrect order of `construct()` / `INIT_STATE_METHOD` methods calls when classes are interconnected
+  * Fix for edge cases in `cs\Config` multilingual settings
+  * Simplified `cs.Event` implementation - should be easier to read and understand
+  * sprintf.js moved to AMD modules and is not loaded unconditionally anymore
+  * Small simplification, no need to print messages, since they will be shown to user during sign in process anyway
+  * Clean the whole cache on system update
+  * Few TODOs removed, since `ready` callback will not be available in Polymer 2.x anyway
+  * Move few checks to interpreter
+  * Limit uploading to SourceForge to 2 minutes timeout in Travis CI (otherwise it fails to upload code coverage to Scrutinizer)
+  * Tiny tweak (ensure headers property is always an array in `cs\Response`)
+  * Includes map always have indexed arrays with consistent keys on the last level
+  * Tiny tweak - no need to iterate through cookies if there is no cookies in list
+  * Small simplification - `glob()` can replace `get_files_list()` with simpler syntax
+  * Replace few conditions with single regular expression
+  * Do not ignore attachments errors when sending email
+  * No need for `require_once` in autoloader
+  * Create simple autoloader for HTMLPurifier
+  * Following traits converted into standalone classes:
+    * `cs\Page\Includes\Cache`
+    * `cs\Page\Includes\Collecting`
+    * `cs\Page\Includes\RequireJS`
+  * Only register `request-file` stream wrapper when needed
+  * Use `html` instead of `:root` for forward compatibility with Polymer 2.x
+  * Utility functions `array_map_arguments()` and `array_map_arguments_bool()` added
+  * Small simplifications using new functions
+  * Users deletion is now done in transaction to keep user groups, permissions and user itself in sync
+  * Remove comments from translations files
+  * Added link to Transifex project for translation
+  * Added documentation about structures used in JSON files for public cache
+* Composer:
+  * Added `ezyang/htmlpurifier` to Composer module as package bundled with system
+* Shop:
+  * Shop module migrated to using sprintf.js as AMD module
+  * Fix for items search in Shop module (caused by changes in `cs\CRUD`, which now uses server-side prepared statements instead of placeholders)
+  * Various small fixes in Shop module
+  * Small hack for item page in Shop module in browsers without native Shadow DOM support (caused by https://github.com/webcomponents/webcomponentsjs/issues/112)
+* Static pages:
+  * Administration pages in Static pages module moved to Controller
+  * Small fix for categories creation in Static pages module
+  * Categories and pages manipulation all on frontend through API
+  * Add menu item to conveniently go back to categories list
+  * Show pages and categories in alphabetical order
+  * Do not use pages structure anymore, use simple mapping of full path to id instead
+* TinyMCE:
+  * Allow to hide `cs-editor` and friends with `hidden` attribute
+  * Small fix on top of minified TinyMCE
+
+Deprecations (will be dropped right after release):
+* None (major release)
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* None (major release)
+
+Dropped backward compatibility:
+* All deprecated functionality was dropped
+* Dropped update support from System versions older than previous release, the same for all components
+* IE10 and Safari 8- support dropped entirely
+* IE11 support moved from system to Old IE module
+* Removed `block_until` column from users table and corresponding functionality (it has very limited and might be implemented by modules if necessary)
+* Removed storing result of sign in process and related functionality (can be achieved with new events)
+* Removed support for inline CSS/JS/HTML in `cs\Page\Includes` (it can be added manually, not used by core and generally not a very good idea)
+* Engines renamed to drivers (including configuration options)
+* Storage connection renamed to storage driver
+* Database type renamed to database driver
+* Global `url_by_source()` and `source_by_url()` functions removed, their implementation was moved to Local storage driver
+* `cs\CRUD_helpers` now always using system language and doesn't allow to specify language directly
+* `storage/pcache` directory moved to `storage/public_cache`
+* Backend event renamed from `admin/System/general/optimization/clean_pcache` to `admin/System/general/optimization/clean_public_cache`
+* Contents of `includes/map.json` file moved into `meta.json` under `assets` key
+* Assets is more common naming in the wild than includes, so all `includes` directories, related code renamed to `assets`
+* Changed structure of optimized map in public cache
+
+Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
