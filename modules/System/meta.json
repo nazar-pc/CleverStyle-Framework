@@ -1,12 +1,12 @@
 {
 	"package"             : "System",
 	"category"            : "modules",
-	"version"             : "6.28.0+build-2542",
+	"version"             : "6.28.1+build-2543",
 	"description"         : "Base system module of CleverStyle Framework",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/Framework",
 	"license"             : "MIT License",
-	"update_from_version" : "5.50.3",
+	"update_from_version" : "5.50",
 	"assets"              : {
 		"admin/System" : [
 			"behaviors.js",
