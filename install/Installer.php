@@ -84,7 +84,7 @@ CONFIG;
 		defined('DEBUG') || define('DEBUG', false);
 		$file_index_map = static::initialize_filesystem($source);
 		static::extract($file_index_map, $source, $target);
-		$domain     = parse_url($url, PHP_URL_HOST);
+		$domain     = explode('/', $url)[2];
 		$public_key = hash('sha512', random_bytes(1000));
 		static::initialize_core_config(
 			$target,
