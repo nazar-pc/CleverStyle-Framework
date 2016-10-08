@@ -6,7 +6,6 @@ if (getenv('DB') != 'MySQLi') {
 ?>
 --FILE--
 <?php
-define('DEBUG', true);
 include __DIR__.'/../../unit.php';
 $db = new \cs\DB\MySQLi('travis', 'travis', '', '127.0.0.1', uniqid('xyz_', false));
 if (!$db->connected()) {

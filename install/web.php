@@ -133,9 +133,7 @@ function install_process ($phar_path) {
 		);
 		$scheme = $https ? 'https' : 'http';
 		$host   = explode(':', $_SERVER['HTTP_HOST'])[0];
-		$path   = explode('?', $_SERVER['REQUEST_URI'])[0] ?: '/';
-		$url    = "$scheme://$host$path";
-		$url    = implode('/', array_slice(explode('/', $url), 0, -2)); //Remove 2 last items
+		$url    = "$scheme://$host";
 	}
 	try {
 		Installer::install(

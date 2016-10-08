@@ -234,27 +234,11 @@ array(1) {
     ["prefix":protected]=>
     NULL
     ["time":protected]=>
-    NULL
-    ["query":protected]=>
-    array(2) {
-      ["time"]=>
-      int(0)
-      ["text"]=>
-      string(0) ""
-    }
-    ["queries":protected]=>
-    array(3) {
-      ["num"]=>
-      int(0)
-      ["time"]=>
-      array(0) {
-      }
-      ["text"]=>
-      array(0) {
-      }
-    }
+    int(0)
+    ["queries_count":protected]=>
+    int(0)
     ["connecting_time":protected]=>
-    NULL
+    int(0)
     ["in_transaction":protected]=>
     bool(false)
   }
@@ -290,27 +274,11 @@ array(1) {
     ["prefix":protected]=>
     NULL
     ["time":protected]=>
-    NULL
-    ["query":protected]=>
-    array(2) {
-      ["time"]=>
-      int(0)
-      ["text"]=>
-      string(0) ""
-    }
-    ["queries":protected]=>
-    array(3) {
-      ["num"]=>
-      int(0)
-      ["time"]=>
-      array(0) {
-      }
-      ["text"]=>
-      array(0) {
-      }
-    }
+    int(0)
+    ["queries_count":protected]=>
+    int(0)
     ["connecting_time":protected]=>
-    NULL
+    int(0)
     ["in_transaction":protected]=>
     bool(false)
   }
@@ -341,27 +309,11 @@ array(1) {
     ["prefix":protected]=>
     NULL
     ["time":protected]=>
-    NULL
-    ["query":protected]=>
-    array(2) {
-      ["time"]=>
-      int(0)
-      ["text"]=>
-      string(0) ""
-    }
-    ["queries":protected]=>
-    array(3) {
-      ["num"]=>
-      int(0)
-      ["time"]=>
-      array(0) {
-      }
-      ["text"]=>
-      array(0) {
-      }
-    }
+    int(0)
+    ["queries_count":protected]=>
+    int(0)
     ["connecting_time":protected]=>
-    NULL
+    int(0)
     ["in_transaction":protected]=>
     bool(false)
   }

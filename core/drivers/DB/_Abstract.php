@@ -39,32 +39,19 @@ abstract class _Abstract {
 	 *
 	 * @var float
 	 */
-	protected $time;
+	protected $time = 0;
 	/**
-	 * Array for storing of data of the last executed request
+	 * Total number of executed requests
 	 *
-	 * @var array
+	 * @var int
 	 */
-	protected $query = [
-		'time' => 0,
-		'text' => ''
-	];
-	/**
-	 * Array for storing data of all executed requests
-	 *
-	 * @var array
-	 */
-	protected $queries = [
-		'num'  => 0,
-		'time' => [],
-		'text' => []
-	];
+	protected $queries_count = 0;
 	/**
 	 * Connection time
 	 *
 	 * @var float
 	 */
-	protected $connecting_time;
+	protected $connecting_time = 0;
 	/**
 	 * @var bool
 	 */
@@ -147,7 +134,7 @@ abstract class _Abstract {
 			$q = $q[0];
 		}
 		unset($q);
-		$this->queries['num'] += count($queries);
+		$this->queries_count += count($queries);
 		$result = $this->q_multi_internal($queries, $parameters_server);
 		$this->time += round(microtime(true) - $time_from, 6);
 		return $result;
@@ -176,17 +163,9 @@ abstract class _Abstract {
 	protected function execute_single ($query, $parameters) {
 		$time_from = microtime(true);
 		list($query, $parameters) = $this->prepare_query_and_parameters($query, $parameters);
-		$this->query['text'] = $query[0];
-		if (DEBUG) {
-			$this->queries['text'][] = $this->query['text'];
-		}
-		$result              = $this->q_internal($query, $parameters);
-		$this->query['time'] = round(microtime(true) - $time_from, 6);
-		$this->time += $this->query['time'];
-		if (DEBUG) {
-			$this->queries['time'][] = $this->query['time'];
-		}
-		++$this->queries['num'];
+		$result = $this->q_internal($query, $parameters);
+		$this->time += round(microtime(true) - $time_from, 6);
+		++$this->queries_count;
 		return $result;
 	}
 	/**
@@ -468,7 +447,7 @@ abstract class _Abstract {
 	 * @return int
 	 */
 	public function queries_count () {
-		return $this->queries['num'];
+		return $this->queries_count;
 	}
 	/**
 	 * Total working time (including connection, queries execution and other delays)

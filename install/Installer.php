@@ -80,8 +80,6 @@ CONFIG;
 		$mode
 	) {
 		static::pre_installation_checks($source, $target, $db_driver);
-		// Needed to be defined before connecting to the database
-		defined('DEBUG') || define('DEBUG', false);
 		$file_index_map = static::initialize_filesystem($source);
 		static::extract($file_index_map, $source, $target);
 		$domain     = explode('/', $url)[2];
