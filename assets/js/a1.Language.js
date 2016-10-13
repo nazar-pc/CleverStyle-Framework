@@ -40,8 +40,12 @@
     var key, value;
     for (key in translations) {
       value = translations[key];
-      Language[key] = get_formatted.bind(value);
-      Language[key].toString = Language[key];
+      if (value.indexOf('%') === -1) {
+        Language[key] = value;
+      } else {
+        Language[key] = get_formatted.bind(value);
+        Language[key].toString = Language[key];
+      }
     }
   };
   x$ = cs.Language = Language;
@@ -72,6 +76,9 @@
     this.ready = function(){
       return ready;
     };
+    ready.then(function(){
+      translations = void 8;
+    });
     return ready;
   };
 }).call(this);

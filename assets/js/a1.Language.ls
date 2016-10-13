@@ -25,8 +25,12 @@ get_formatted		= ->
 	'' + (if &length then vsprintf(@, [...&]) else @)
 fill_translations	= (translations) !->
 	for key, value of translations
-		Language[key]			= get_formatted.bind(value)
-		Language[key].toString	= Language[key]
+		# Only create functions where string contains formatting; this optimization makes loop ~2x faster
+		if value.indexOf('%') == -1
+			Language[key]			= value
+		else
+			Language[key]			= get_formatted.bind(value)
+			Language[key].toString	= Language[key]
 cs.Language		= Language
 	..get	= (key) ->
 		@[key].toString()
@@ -46,4 +50,6 @@ cs.Language		= Language
 				is_ready	:= true
 				resolve(Language)
 		@ready	= -> ready
+		ready.then !->
+			translations := void
 		ready
