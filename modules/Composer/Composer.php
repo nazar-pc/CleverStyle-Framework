@@ -172,7 +172,6 @@ class Composer {
 			/** @noinspection MkdirRaceConditionInspection */
 			@mkdir($storage, 0770);
 		}
-		rmdir_recursive("$storage/home");
 		/** @noinspection MkdirRaceConditionInspection */
 		@mkdir("$storage/home", 0770);
 		rmdir_recursive("$storage/tmp");
@@ -255,7 +254,6 @@ class Composer {
 	 * @param string $storage
 	 */
 	protected function cleanup ($storage) {
-		rmdir_recursive("$storage/home");
 		rmdir_recursive("$storage/tmp");
 	}
 }
