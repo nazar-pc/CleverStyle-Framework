@@ -84,6 +84,12 @@ class Builder {
 		}
 		unset($index, $file);
 		/**
+		 * Add license under the file `license-cleverstyle-framework.txt` rather than `license.txt`, so that license is not enforced on projects using it and is
+		 * not overridden on framework update
+		 */
+		$phar->addFile("$this->root/license.txt", 'fs/'.count($core_files));
+		$core_files[] = 'license-cleverstyle-framework.txt';
+		/**
 		 * Addition of separate files into package
 		 */
 		$phar->addFromString(
@@ -186,7 +192,6 @@ STUB
 			"$this->root/composer.json",
 			"$this->root/composer.lock",
 			"$this->root/index.php",
-			"$this->root/license.txt",
 			"$this->root/package.json"
 		];
 		$files            = [];
