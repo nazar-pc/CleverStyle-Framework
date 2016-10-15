@@ -9,7 +9,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-system-admin-permissions-for-item',
+    is: 'cs-system-admin-permissions-for-item',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_permissions_')],
     properties: {
       group: '',

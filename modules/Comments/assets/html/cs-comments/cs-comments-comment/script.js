@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-comments-comment',
+    is: 'cs-comments-comment',
     behaviors: [cs.Polymer.behaviors.Language('comments_')],
     properties: {
       comment: Object,

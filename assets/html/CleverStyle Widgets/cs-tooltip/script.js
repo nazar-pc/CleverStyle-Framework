@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-tooltip',
+    is: 'cs-tooltip',
     behaviors: Polymer.cs.behaviors.csTooltip
   });
 }).call(this);

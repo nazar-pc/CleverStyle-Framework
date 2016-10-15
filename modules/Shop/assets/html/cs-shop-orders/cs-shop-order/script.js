@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-shop-order',
+    is: 'cs-shop-order',
     behaviors: [cs.Polymer.behaviors.Language('shop_')],
     properties: {
       order_id: Number,

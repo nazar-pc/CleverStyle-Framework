@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-notify',
+    is: 'cs-notify',
     behaviors: Polymer.cs.behaviors.csNotify
   });
 }).call(this);

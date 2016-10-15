@@ -9,7 +9,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-system-admin-databases-list',
+    is: 'cs-system-admin-databases-list',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_databases_'), cs.Polymer.behaviors.admin.System.settings],
     properties: {
       settings_api_url: 'api/System/admin/databases'

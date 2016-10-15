@@ -5,7 +5,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-nav-dropdown'
-	'extends'	: 'nav'
+	is			: 'cs-nav-dropdown'
+	extends		: 'nav'
 	behaviors	: Polymer.cs.behaviors.cs-nav-dropdown
 )

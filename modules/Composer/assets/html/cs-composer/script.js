@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-composer',
+    is: 'cs-composer',
     behaviors: [cs.Polymer.behaviors.Language('composer_')],
     properties: {
       action: String,

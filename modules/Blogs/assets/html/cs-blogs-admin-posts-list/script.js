@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-blogs-admin-posts-list',
+    is: 'cs-blogs-admin-posts-list',
     behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {
       posts: Array,

@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-input-text',
+    is: 'cs-input-text',
     'extends': 'input',
     behaviors: Polymer.cs.behaviors.csInputText
   });

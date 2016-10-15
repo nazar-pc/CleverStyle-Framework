@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-blogs-posts-post'
-	'extends'	: 'article'
+	is			: 'cs-blogs-posts-post'
+	extends		: 'article'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('blogs_')
 	]

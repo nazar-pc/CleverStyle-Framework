@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-blogs-admin-general',
+    is: 'cs-blogs-admin-general',
     behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {
       settings: Object,

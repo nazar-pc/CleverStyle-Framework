@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-progress',
+    is: 'cs-progress',
     'extends': 'progress',
     behaviors: Polymer.cs.behaviors.csProgress
   });

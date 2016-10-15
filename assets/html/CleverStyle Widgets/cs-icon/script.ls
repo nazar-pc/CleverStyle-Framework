@@ -5,6 +5,6 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-icon'
+	is			: 'cs-icon'
 	behaviors	: Polymer.cs.behaviors.cs-icon
 )

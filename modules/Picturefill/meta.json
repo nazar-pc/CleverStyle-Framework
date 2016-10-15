@@ -1,7 +1,7 @@
 {
 	"package"     : "Picturefill",
 	"category"    : "modules",
-	"version"     : "3.0.1-cs7",
+	"version"     : "3.0.1-cs8",
 	"description" : "A responsive image polyfill for <picture>, srcset, sizes, and more",
 	"author"      : "Scott Jehl",
 	"website"     : "https://github.com/scottjehl/picturefill",

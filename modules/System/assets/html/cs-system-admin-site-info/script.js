@@ -9,7 +9,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-system-admin-site-info',
+    is: 'cs-system-admin-site-info',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_site_info_'), cs.Polymer.behaviors.admin.System.settings],
     observers: ['_url_changed(settings.url)', '_cookie_domain_changed(settings.cookie_domain)'],
     properties: {

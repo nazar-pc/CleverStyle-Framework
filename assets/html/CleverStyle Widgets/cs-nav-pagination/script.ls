@@ -5,7 +5,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-nav-pagination'
-	'extends'	: 'nav'
+	is			: 'cs-nav-pagination'
+	extends		: 'nav'
 	behaviors	: Polymer.cs.behaviors.cs-nav-pagination
 )

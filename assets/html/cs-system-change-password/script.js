@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-system-change-password',
+    is: 'cs-system-change-password',
     behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
     attached: function(){
       this.$.current_password.focus();

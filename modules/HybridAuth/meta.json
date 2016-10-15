@@ -1,7 +1,7 @@
 {
 	"package"      : "HybridAuth",
 	"category"     : "modules",
-	"version"      : "2.7.0+cs-1.1.2",
+	"version"      : "2.7.0+cs-1.1.3",
 	"description"  : "Module for integration with social networks. Integrates HybridAuth library with all available providers into CleverStyle Framework.",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/Framework",

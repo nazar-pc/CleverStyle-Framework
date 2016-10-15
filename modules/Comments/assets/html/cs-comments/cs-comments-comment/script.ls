@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-comments-comment'
+	is			: 'cs-comments-comment'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('comments_')
 	]

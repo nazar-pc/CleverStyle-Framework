@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-section-switcher',
+    is: 'cs-section-switcher',
     'extends': 'section',
     behaviors: Polymer.cs.behaviors.csSectionSwitcher
   });

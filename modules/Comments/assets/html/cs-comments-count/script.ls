@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-comments-count'
+	is			: 'cs-comments-count'
 	properties	:
 		module	: String
 		item	: Number

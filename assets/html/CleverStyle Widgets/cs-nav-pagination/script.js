@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-nav-pagination',
+    is: 'cs-nav-pagination',
     'extends': 'nav',
     behaviors: Polymer.cs.behaviors.csNavPagination
   });

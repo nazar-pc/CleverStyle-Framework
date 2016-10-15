@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-label-button',
+    is: 'cs-label-button',
     'extends': 'label',
     behaviors: Polymer.cs.behaviors.csLabelButton
   });

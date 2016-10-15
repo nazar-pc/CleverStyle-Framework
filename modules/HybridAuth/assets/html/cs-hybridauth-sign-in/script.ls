@@ -6,13 +6,13 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-hybridauth-sign-in'
+	is			: 'cs-hybridauth-sign-in'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('hybridauth_')
 	]
 	properties	:
 		providers	: Array
-	ready		: !->
+	ready : !->
 		providers = cs.hybridauth.providers
 		@providers	=
 			for provider of providers

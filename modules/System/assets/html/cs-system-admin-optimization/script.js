@@ -9,7 +9,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-system-admin-optimization',
+    is: 'cs-system-admin-optimization',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_optimization_'), cs.Polymer.behaviors.admin.System.settings],
     properties: {
       path_prefix: '',

@@ -7,7 +7,7 @@
  * @license    MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-system-admin-users-groups-form'
+	is			: 'cs-system-admin-users-groups-form'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('system_admin_users_')
 	]

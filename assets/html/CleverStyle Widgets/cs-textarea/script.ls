@@ -5,6 +5,6 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-textarea'
-	'extends'	: 'textarea'
+	is			: 'cs-textarea'
+	extends		: 'textarea'
 	behaviors	: Polymer.cs.behaviors.cs-textarea)

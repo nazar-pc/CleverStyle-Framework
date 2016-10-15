@@ -5,7 +5,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-input-text'
-	'extends'	: 'input'
+	is			: 'cs-input-text'
+	extends		: 'input'
 	behaviors	: Polymer.cs.behaviors.cs-input-text
 )

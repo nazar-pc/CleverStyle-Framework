@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-shop-category-item'
-	'extends'	: 'article'
+	is			: 'cs-shop-category-item'
+	extends		: 'article'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('shop_')
 	]

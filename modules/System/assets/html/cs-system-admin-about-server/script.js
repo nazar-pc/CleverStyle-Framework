@@ -9,7 +9,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-system-admin-about-server',
+    is: 'cs-system-admin-about-server',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_about_server_')],
     properties: {
       server_config: Object

@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-picturefill-img',
+    is: 'cs-picturefill-img',
     'extends': 'img',
     ready: function(){
       picturefill({
@@ -17,7 +17,7 @@
     }
   });
   Polymer({
-    'is': 'cs-picturefill-picture',
+    is: 'cs-picturefill-picture',
     'extends': 'picture',
     ready: function(){
       picturefill({

@@ -6,5 +6,5 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'	: 'cs-shop-empty-cart'
+	is	: 'cs-shop-empty-cart'
 )

@@ -10,7 +10,7 @@
   var GUEST_ID;
   GUEST_ID = 1;
   Polymer({
-    'is': 'cs-blogs-head-actions',
+    is: 'cs-blogs-head-actions',
     behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {
       settings: {

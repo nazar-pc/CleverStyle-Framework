@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-link-button',
+    is: 'cs-link-button',
     'extends': 'a',
     behaviors: Polymer.cs.behaviors.csLinkButton
   });

@@ -7,7 +7,7 @@
  * @license    MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-system-admin-about-server'
+	is			: 'cs-system-admin-about-server'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('system_admin_about_server_')
 	]

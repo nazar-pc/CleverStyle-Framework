@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-button',
+    is: 'cs-button',
     'extends': 'button',
     behaviors: Polymer.cs.behaviors.csButton
   });

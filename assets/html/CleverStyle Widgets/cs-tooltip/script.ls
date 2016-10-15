@@ -5,6 +5,6 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-tooltip'
+	is			: 'cs-tooltip'
 	behaviors	: Polymer.cs.behaviors.cs-tooltip
 )

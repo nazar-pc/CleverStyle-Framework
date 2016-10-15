@@ -9,7 +9,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-system-admin-users-add-user-form',
+    is: 'cs-system-admin-users-add-user-form',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_users_')],
     properties: {
       email: ''

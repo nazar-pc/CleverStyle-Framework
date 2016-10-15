@@ -8,8 +8,8 @@
 cart				= cs.shop.cart
 price_formatting	= cs.shop.settings.price_formatting
 Polymer(
-	'is'			: 'cs-shop-cart-item'
-	properties		:
+	is			: 'cs-shop-cart-item'
+	properties	:
 		item_id					: Number
 		unit_price				: Number
 		units					: Number
@@ -17,10 +17,10 @@ Polymer(
 		item_title				: String
 		unit_price_formatted	: String
 		price_formatted			: String
-	observers		: [
+	observers	: [
 		'units_changed(item_id, units)'
 	]
-	attached			: !->
+	attached : !->
 		let (img = @querySelector('#img'))
 			@$.img.src		= img.src
 			@$.img.title	= img.title
@@ -29,7 +29,7 @@ Polymer(
 		@item_title				= link.textContent
 		{sprintf} <~! require(['sprintf-js'])
 		@unit_price_formatted	= sprintf(price_formatting, @unit_price)
-	units_changed	: (item_id, units) !->
+	units_changed : (item_id, units) !->
 		if !item_id
 			return
 		if parseInt(units)
@@ -46,7 +46,7 @@ Polymer(
 						@recalculate(item.price, units)
 						return false
 		), (if !@price_formatted then 0 else 100) # To do it faster for the first time
-	recalculate	: (price, units) !->
+	recalculate : (price, units) !->
 		{sprintf} <~! require(['sprintf-js'])
 		@price_formatted	= sprintf(price_formatting, price)
 		discount			= units * @unit_price - price

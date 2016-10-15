@@ -10,7 +10,7 @@
   var GUEST_ID;
   GUEST_ID = 1;
   Polymer({
-    'is': 'cs-comments',
+    is: 'cs-comments',
     behaviors: [cs.Polymer.behaviors.Language('comments_')],
     properties: {
       module: String,

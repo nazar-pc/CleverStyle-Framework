@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-nav-dropdown',
+    is: 'cs-nav-dropdown',
     'extends': 'nav',
     behaviors: Polymer.cs.behaviors.csNavDropdown
   });

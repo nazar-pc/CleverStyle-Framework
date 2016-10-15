@@ -9,7 +9,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-system-admin-databases-form',
+    is: 'cs-system-admin-databases-form',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_databases_')],
     properties: {
       add: Boolean,

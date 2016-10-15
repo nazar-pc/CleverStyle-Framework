@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-section-modal',
+    is: 'cs-section-modal',
     'extends': 'section',
     behaviors: Polymer.cs.behaviors.csSectionModal
   });

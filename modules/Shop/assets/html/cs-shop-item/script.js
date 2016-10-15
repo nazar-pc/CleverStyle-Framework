@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-shop-item',
+    is: 'cs-shop-item',
     'extends': 'section',
     behaviors: [cs.Polymer.behaviors.Language('shop_')],
     properties: {

@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-system-registration',
+    is: 'cs-system-registration',
     behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
     attached: function(){
       this.$.email.focus();

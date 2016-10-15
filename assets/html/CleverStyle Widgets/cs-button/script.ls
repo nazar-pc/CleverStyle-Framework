@@ -5,7 +5,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-button'
-	'extends'	: 'button'
+	is			: 'cs-button'
+	extends		: 'button'
 	behaviors	: Polymer.cs.behaviors.cs-button
 )

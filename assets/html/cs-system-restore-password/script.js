@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-system-restore-password',
+    is: 'cs-system-restore-password',
     behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
     attached: function(){
       setTimeout(bind$(this.$.login, 'focus'));

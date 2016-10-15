@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-hybridauth-sign-in',
+    is: 'cs-hybridauth-sign-in',
     behaviors: [cs.Polymer.behaviors.Language('hybridauth_')],
     properties: {
       providers: Array

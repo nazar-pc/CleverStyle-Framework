@@ -11,11 +11,11 @@ shop	= cs.shop
 cart	= shop.cart
 params	= cart.params
 Polymer(
-	'is'						: 'cs-shop-cart'
-	behaviors					: [
+	is			: 'cs-shop-cart'
+	behaviors	: [
 		cs.Polymer.behaviors.Language('shop_')
 	]
-	properties					:
+	properties	:
 		items					: Array
 		shipping_types			:
 			type	: Array
@@ -51,7 +51,7 @@ Polymer(
 				details.method	= method
 				details
 		registration_required	: Boolean
-	ready						: !->
+	ready : !->
 		@payment_method	= @payment_methods[0].method
 		Promise.all([
 			...for let item_id, units of cart.get_all()
@@ -66,7 +66,7 @@ Polymer(
 			@registration_required	= !shop.settings.allow_guests_orders && !is_user
 			if !@shipping_username && is_user
 				@shipping_username = data.username || data.login
-	shipping_type_changed		: (shipping_type_selected) !->
+	shipping_type_changed : (shipping_type_selected) !->
 		{sprintf} <~! require(['sprintf-js'])
 		params.shipping_type	= shipping_type_selected
 		shop.shipping_types.forEach (shipping_type) !~>
@@ -74,18 +74,18 @@ Polymer(
 				@set('shipping_type_details', shipping_type)
 				@set('shipping_cost_formatted', sprintf(shop.settings.price_formatting, shipping_type.price))
 				return false
-	payment_method_changed		: (payment_method_selected) !->
+	payment_method_changed : (payment_method_selected) !->
 		if (payment_method_selected)
 			@$.payment_method_description.innerHTML	= shop.payment_methods[payment_method_selected].description
-	shipping_username_changed	: !->
+	shipping_username_changed : !->
 		params.shipping_username	= @shipping_username
-	phone_changed				: !->
+	phone_changed : !->
 		params.phone	= @phone
-	address_changed				: !->
+	address_changed : !->
 		params.address	= @address
-	comment_changed				: !->
+	comment_changed : !->
 		params.comment	= @comment
-	finish_order				: !->
+	finish_order : !->
 		if !@shipping_username
 			cs.ui.alert(@L.shipping_username_is_required)
 			return

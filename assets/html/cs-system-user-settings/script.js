@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-system-user-settings',
+    is: 'cs-system-user-settings',
     behaviors: [cs.Polymer.behaviors.Language('system_profile_')],
     properties: {
       languages: Array,

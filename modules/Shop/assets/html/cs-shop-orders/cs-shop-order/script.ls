@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-shop-order'
+	is			: 'cs-shop-order'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('shop_')
 	]

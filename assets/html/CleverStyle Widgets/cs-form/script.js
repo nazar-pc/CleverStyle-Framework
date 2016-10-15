@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-form',
+    is: 'cs-form',
     'extends': 'form',
     behaviors: Polymer.cs.behaviors.csForm
   });

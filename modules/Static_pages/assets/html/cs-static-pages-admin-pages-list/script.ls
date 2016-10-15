@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-static-pages-admin-pages-list'
+	is			: 'cs-static-pages-admin-pages-list'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('static_pages_')
 	]

@@ -6,13 +6,13 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-shop-order-item'
+	is			: 'cs-shop-order-item'
 	properties	:
 		item_id		: Number
 		price		: Number
 		unit_price	: Number
 		units		: Number
-	ready		: !->
+	ready : !->
 		img				= @querySelector('#img')
 		@$.img.src		= img.src
 		@$.img.title	= img.title

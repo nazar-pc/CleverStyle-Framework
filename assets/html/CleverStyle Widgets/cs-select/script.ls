@@ -5,7 +5,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-select'
-	'extends'	: 'select'
+	is			: 'cs-select'
+	extends		: 'select'
 	behaviors	: Polymer.cs.behaviors.cs-select
 )

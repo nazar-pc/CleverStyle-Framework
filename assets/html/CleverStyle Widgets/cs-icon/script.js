@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-icon',
+    is: 'cs-icon',
     behaviors: Polymer.cs.behaviors.csIcon
   });
 }).call(this);

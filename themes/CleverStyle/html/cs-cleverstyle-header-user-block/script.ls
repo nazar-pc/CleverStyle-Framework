@@ -6,7 +6,7 @@
  * @license    MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-cleverstyle-header-user-block'
+	is			: 'cs-cleverstyle-header-user-block'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('system_profile_')
 	]

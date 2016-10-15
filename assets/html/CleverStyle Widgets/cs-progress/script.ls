@@ -5,7 +5,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-progress'
-	'extends'	: 'progress'
+	is			: 'cs-progress'
+	extends		: 'progress'
 	behaviors	: Polymer.cs.behaviors.cs-progress
 )

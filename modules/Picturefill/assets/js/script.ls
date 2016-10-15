@@ -6,16 +6,16 @@
  * @license   MIT License
  */
 Polymer(
-	'is'		: 'cs-picturefill-img'
-	'extends'	: 'img'
+	is		: 'cs-picturefill-img'
+	extends	: 'img'
 	ready : !->
 		picturefill(
 			elements : [@]
 		)
 )
 Polymer(
-	'is'		: 'cs-picturefill-picture'
-	'extends'	: 'picture'
+	is		: 'cs-picturefill-picture'
+	extends	: 'picture'
 	ready : !->
 		picturefill(
 			elements : [@querySelector('img')]

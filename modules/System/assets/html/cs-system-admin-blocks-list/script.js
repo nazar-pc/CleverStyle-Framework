@@ -9,7 +9,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-system-admin-blocks-list',
+    is: 'cs-system-admin-blocks-list',
     behaviors: [cs.Polymer.behaviors.Language('system_admin_blocks_')],
     properties: {
       blocks: Object,

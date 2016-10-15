@@ -8,6 +8,6 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-shop-empty-cart'
+    is: 'cs-shop-empty-cart'
   });
 }).call(this);

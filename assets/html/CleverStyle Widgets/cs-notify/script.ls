@@ -5,6 +5,6 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-notify'
+	is			: 'cs-notify'
 	behaviors	: Polymer.cs.behaviors.cs-notify
 )

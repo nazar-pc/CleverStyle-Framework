@@ -5,7 +5,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-form'
-	'extends'	: 'form'
+	is			: 'cs-form'
+	extends		: 'form'
 	behaviors	: Polymer.cs.behaviors.cs-form
 )

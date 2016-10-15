@@ -11,7 +11,7 @@
   cart = cs.shop.cart;
   price_formatting = cs.shop.settings.price_formatting;
   Polymer({
-    'is': 'cs-shop-cart-item',
+    is: 'cs-shop-cart-item',
     properties: {
       item_id: Number,
       unit_price: Number,

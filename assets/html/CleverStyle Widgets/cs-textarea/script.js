@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-textarea',
+    is: 'cs-textarea',
     'extends': 'textarea',
     behaviors: Polymer.cs.behaviors.csTextarea
   });

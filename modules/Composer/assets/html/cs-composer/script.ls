@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-composer'
+	is			: 'cs-composer'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('composer_')
 	]

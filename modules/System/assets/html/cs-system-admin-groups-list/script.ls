@@ -9,7 +9,7 @@
 const ADMIN_GROUP_ID	= 1
 const USER_GROUP_ID		= 2
 Polymer(
-	'is'		: 'cs-system-admin-groups-list'
+	is			: 'cs-system-admin-groups-list'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('system_admin_groups_')
 	]

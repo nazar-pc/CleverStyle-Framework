@@ -5,7 +5,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-label-switcher'
-	'extends'	: 'label'
+	is			: 'cs-label-switcher'
+	extends		: 'label'
 	behaviors	: Polymer.cs.behaviors.cs-label-switcher
 )

@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-label-switcher',
+    is: 'cs-label-switcher',
     'extends': 'label',
     behaviors: Polymer.cs.behaviors.csLabelSwitcher
   });

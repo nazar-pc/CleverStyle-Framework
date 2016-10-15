@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-shop-order-item',
+    is: 'cs-shop-order-item',
     properties: {
       item_id: Number,
       price: Number,

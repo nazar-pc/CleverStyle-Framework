@@ -6,18 +6,18 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'			: 'cs-blogs-post'
-	'extends'		: 'article'
-	behaviors		: [
+	is			: 'cs-blogs-post'
+	extends		: 'article'
+	behaviors	: [
 		cs.Polymer.behaviors.Language('blogs_')
 	]
-	properties		:
+	properties	:
 		can_edit		: false
 		can_delete		: false
 		show_comments	: false
 		preview			: false
 		url_prefix		: ''
-	ready			: !->
+	ready : !->
 		cs.Language.ready().then (L) !~>
 			if location.pathname.indexOf('/' + L.clang) == 0
 				@url_prefix	= '/' + L.clang

@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-static-pages-admin-categories-list',
+    is: 'cs-static-pages-admin-categories-list',
     behaviors: [cs.Polymer.behaviors.Language('static_pages_')],
     properties: {
       categories: Array

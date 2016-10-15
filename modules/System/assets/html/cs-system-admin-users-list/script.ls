@@ -11,7 +11,7 @@ const STATUS_INACTIVE	= 0
 const GUEST_ID			= 1
 const ROOT_ID			= 2
 Polymer(
-	'is'		: 'cs-system-admin-users-list'
+	is			: 'cs-system-admin-users-list'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('system_admin_users_')
 	]

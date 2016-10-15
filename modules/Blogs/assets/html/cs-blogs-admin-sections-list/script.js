@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-blogs-admin-sections-list',
+    is: 'cs-blogs-admin-sections-list',
     behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {
       sections: Array

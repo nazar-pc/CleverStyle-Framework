@@ -5,7 +5,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-label-button'
-	'extends'	: 'label'
+	is			: 'cs-label-button'
+	extends		: 'label'
 	behaviors	: Polymer.cs.behaviors.cs-label-button
 )

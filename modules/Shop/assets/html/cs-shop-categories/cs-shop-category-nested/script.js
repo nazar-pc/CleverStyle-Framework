@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-shop-category-nested',
+    is: 'cs-shop-category-nested',
     'extends': 'article',
     properties: {
       href: String,

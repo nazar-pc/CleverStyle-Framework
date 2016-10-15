@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-nav-tabs',
+    is: 'cs-nav-tabs',
     'extends': 'nav',
     behaviors: Polymer.cs.behaviors.csNavTabs
   });

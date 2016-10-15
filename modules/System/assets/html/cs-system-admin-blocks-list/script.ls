@@ -7,7 +7,7 @@
  * @license    MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-system-admin-blocks-list'
+	is			: 'cs-system-admin-blocks-list'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('system_admin_blocks_')
 	]

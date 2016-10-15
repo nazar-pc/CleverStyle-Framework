@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-shop-category'
-	'extends'	: 'article'
+	is			: 'cs-shop-category'
+	extends		: 'article'
 	properties	:
 		href	: String
 	ready : !->

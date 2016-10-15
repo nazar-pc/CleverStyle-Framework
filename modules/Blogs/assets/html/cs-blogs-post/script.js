@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-blogs-post',
+    is: 'cs-blogs-post',
     'extends': 'article',
     behaviors: [cs.Polymer.behaviors.Language('blogs_')],
     properties: {

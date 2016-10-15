@@ -6,9 +6,9 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-blogs-posts'
-	'extends'	: 'section'
-	ready		: !->
+	is		: 'cs-blogs-posts'
+	extends	: 'section'
+	ready : !->
 		@jsonld = JSON.parse(@children[0].innerHTML)
 		@posts	= @jsonld['@graph']
 )

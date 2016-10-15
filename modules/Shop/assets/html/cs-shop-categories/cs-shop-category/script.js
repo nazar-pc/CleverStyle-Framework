@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-shop-category',
+    is: 'cs-shop-category',
     'extends': 'article',
     properties: {
       href: String

@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-blogs-admin-posts-list'
+	is			: 'cs-blogs-admin-posts-list'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('blogs_')
 	]

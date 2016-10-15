@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-select',
+    is: 'cs-select',
     'extends': 'select',
     behaviors: Polymer.cs.behaviors.csSelect
   });

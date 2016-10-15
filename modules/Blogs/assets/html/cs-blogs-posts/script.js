@@ -8,7 +8,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-blogs-posts',
+    is: 'cs-blogs-posts',
     'extends': 'section',
     ready: function(){
       this.jsonld = JSON.parse(this.children[0].innerHTML);

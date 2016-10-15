@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer({
-    'is': 'cs-nav-button-group',
+    is: 'cs-nav-button-group',
     'extends': 'nav',
     behaviors: Polymer.cs.behaviors.csNavButtonGroup
   });

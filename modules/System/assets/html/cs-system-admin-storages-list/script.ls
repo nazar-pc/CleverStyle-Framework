@@ -7,7 +7,7 @@
  * @license    MIT License, see license.txt
  */
 Polymer(
-	'is'		: 'cs-system-admin-storages-list'
+	is			: 'cs-system-admin-storages-list'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('system_admin_storages_')
 	]
