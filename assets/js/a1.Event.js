@@ -34,10 +34,10 @@
       return this;
     },
     once: function(event, callback){
-      var callback_;
+      var callback_, this$ = this;
       if (event && callback) {
         callback_ = function(){
-          cs.Event.off(event, callback_);
+          this$.off(event, callback_);
           return callback.apply(callback, arguments);
         };
         this.on(event, callback_);

@@ -28,8 +28,8 @@ cs.Event	=
 		@
 	once : (event, callback) ->
 		if event && callback
-			callback_ = ->
-				cs.Event.off(event, callback_)
+			callback_ = ~>
+				@off(event, callback_)
 				callback.apply(callback, arguments)
 			@on(event, callback_)
 		@
