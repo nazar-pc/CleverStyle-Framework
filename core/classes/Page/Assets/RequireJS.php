@@ -67,7 +67,7 @@ class RequireJS {
 	/**
 	 * @param string $dir
 	 *
-	 * @return string
+	 * @return string[]
 	 */
 	protected static function find_package_main_path ($dir) {
 		$path = static::find_package_bower($dir) ?: static::find_package_npm($dir);
