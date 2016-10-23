@@ -96,7 +96,7 @@
         component = new_meta['package'];
         category = new_meta.category;
         Promise.all([cs.api(["get			api/System/admin/" + category + "/" + component + "/update_dependencies", 'get_settings	api/System/admin/system']), cs.Language('system_admin_').ready()]).then(function(arg$){
-          var ref$, dependencies, settings, L, translation_key, title, message, message_more, modal, i$, len$, p;
+          var ref$, dependencies, settings, L, translation_key, message, title, message_more, modal, i$, len$, p;
           ref$ = arg$[0], dependencies = ref$[0], settings = ref$[1], L = arg$[1];
           delete dependencies.db_support;
           delete dependencies.storage_support;
@@ -113,11 +113,12 @@
               return 'appearance_updating_theme';
             }
           }());
-          title = "<h3>" + L[translation_key](component) + "</h3>";
           message = '';
           if (component === 'System') {
+            title = "<h3>" + L[translation_key] + "</h3>";
             message_more = '<p class>' + L.modules_update_system(existing_meta.version, new_meta.version) + '</p>';
           } else {
+            title = "<h3>" + L[translation_key](component) + "</h3>";
             translation_key = (function(){
               switch (category) {
               case 'modules':
