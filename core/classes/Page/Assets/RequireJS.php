@@ -14,9 +14,10 @@ class RequireJS {
 	/**
 	 * @return string[]
 	 */
-	public static function get_paths () {
+	public static function get_config () {
 		$Config                = Config::instance();
 		$paths                 = [];
+		$packages              = [];
 		$directories_to_browse = [
 			DIR.'/bower_components',
 			DIR.'/node_modules'
@@ -25,6 +26,7 @@ class RequireJS {
 			'System/Page/requirejs',
 			[
 				'paths'                 => &$paths,
+				'packages'              => &$packages,
 				'directories_to_browse' => &$directories_to_browse
 			]
 		);
@@ -36,10 +38,13 @@ class RequireJS {
 		}
 		foreach ($directories_to_browse as $dir) {
 			foreach (get_files_list($dir, false, 'd', true) as $d) {
-				$paths += static::find_package($d);
+				$packages[] = static::find_package_main_path($d);
 			}
 		}
-		return _substr($paths, strlen(DIR));
+		return [
+			'paths'    => _substr($paths, strlen(DIR)),
+			'packages' => array_values(array_filter($packages))
+		];
 	}
 	/**
 	 * @param string $dir
@@ -62,11 +67,18 @@ class RequireJS {
 	/**
 	 * @param string $dir
 	 *
-	 * @return string[]
+	 * @return string
 	 */
-	protected static function find_package ($dir) {
+	protected static function find_package_main_path ($dir) {
 		$path = static::find_package_bower($dir) ?: static::find_package_npm($dir);
-		return $path ? [basename($dir) => substr($path, 0, -3)] : [];
+		if (!$path) {
+			return [];
+		}
+		return [
+			'name'     => basename($dir),
+			'main'     => substr($path, strlen($dir) + 1, -3),
+			'location' => substr($dir, strlen(DIR))
+		];
 	}
 	/**
 	 * @param string $dir

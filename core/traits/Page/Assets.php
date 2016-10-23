@@ -247,7 +247,7 @@ trait Assets {
 			 * Language translation is added explicitly only when compression is disabled, otherwise it will be in compressed JS file
 			 */
 			$this->config_internal($L, 'cs.Language', true);
-			$this->config_internal(RequireJS::get_paths(), 'requirejs.paths', true);
+			$this->config_internal(RequireJS::get_config(), 'requirejs', true);
 			$assets  = $this->get_assets_for_page_without_compression($Config, $Request);
 			$preload = [];
 		}

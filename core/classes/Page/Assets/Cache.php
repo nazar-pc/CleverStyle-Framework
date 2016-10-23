@@ -180,13 +180,15 @@ class Cache {
 				 * @return string
 				 */
 				$callback = function ($content, $file) use (&$not_embedded_resources) {
-					return $content.Assets_processing::html(
-						file_get_contents($file),
-						$file,
-						'',
-						true,
-						$not_embedded_resources
-					);
+					return
+						$content.
+						Assets_processing::html(
+							file_get_contents($file),
+							$file,
+							'',
+							true,
+							$not_embedded_resources
+						);
 				};
 				break;
 			case 'js':
@@ -200,7 +202,7 @@ class Cache {
 					return $content.Assets_processing::js(file_get_contents($file));
 				};
 				if (substr($target_file_path, -7) == ':System') {
-					$content = 'window.cs={};window.requirejs={paths:'._json_encode(RequireJS::get_paths()).'};';
+					$content = 'window.cs={};window.requirejs='._json_encode(RequireJS::get_config()).';';
 				}
 		}
 		/** @noinspection PhpUndefinedVariableInspection */

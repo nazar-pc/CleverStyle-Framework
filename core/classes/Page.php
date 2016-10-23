@@ -26,6 +26,7 @@ use function
  *  System/Page/requirejs
  *  [
  *    'paths'                 => &$paths,                // The same as `paths` in requirejs.config()
+ *    'packages'              => &$packages,             // The same as `packages` in requirejs.config()
  *    'directories_to_browse' => &$directories_to_browse // Location of AMD modules (typically bower_components and node_modules directories, absolute paths)
  *  ]
  *

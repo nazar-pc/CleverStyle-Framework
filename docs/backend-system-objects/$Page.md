@@ -164,6 +164,7 @@ Is used for supplying additional aliases for AMD modules and/or additional direc
 System/Page/requirejs
 [
   'paths'                 => &$paths,                // The same as `paths` in requirejs.config()
+  'packages'              => &$packages,             // The same as `packages` in requirejs.config()
   'directories_to_browse' => &$directories_to_browse // Where to look for AMD modules (typically bower_components and node_modules directories)
 ]
 ```
