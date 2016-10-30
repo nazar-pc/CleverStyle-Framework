@@ -204,7 +204,7 @@ string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-custom.
 <script src="/assets/js/Polymer/default-computed-bindings.js?%s"></script>
 <script src="/assets/js/Polymer/extend-override.js?%s"></script>
 <script src="/assets/js/Polymer/simplified-default-value-declaration.js?%s"></script>
-<script src="/assets/js/zz0.alameda.js?%s"></script>
+<script src="/assets/js/zz0.alameda-custom.js?%s"></script>
 <script src="/assets/js/zz1.alameda-setup.js?%s"></script>
 <script src="/assets/js/zzz.optimized-assets.js?%s"></script>
 <link href="/assets/html/a0.advanced-styles-alone.html?%s" rel="import">
@@ -276,7 +276,7 @@ string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-custom.
 <script src="/assets/js/Polymer/default-computed-bindings.js?%s"></script>
 <script src="/assets/js/Polymer/extend-override.js?%s"></script>
 <script src="/assets/js/Polymer/simplified-default-value-declaration.js?%s"></script>
-<script src="/assets/js/zz0.alameda.js?%s"></script>
+<script src="/assets/js/zz0.alameda-custom.js?%s"></script>
 <script src="/assets/js/zz1.alameda-setup.js?%s"></script>
 <script src="/assets/js/zzz.optimized-assets.js?%s"></script>
 <link href="/assets/html/a0.advanced-styles-alone.html?%s" rel="import">
