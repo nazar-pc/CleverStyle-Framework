@@ -65,9 +65,7 @@
         if (!element.tooltip || this.show) {
           return;
         }
-        if (this.innerHTML !== element.tooltip) {
-          this.innerHTML = element.tooltip;
-        }
+        this._update_content(element.tooltip);
         tooltip_position = this._get_tooltip_position(element);
         x$ = this.style;
         x$.top = tooltip_position.top + 'px';
@@ -114,6 +112,11 @@
           tooltip_position.arrow_left_offset = tooltip_size.width / 2 - element_position.left - element_position.width / 2;
         }
         return tooltip_position;
+      },
+      _update_content: function(content){
+        if (this.innerHTML !== content) {
+          this.innerHTML = content;
+        }
       }
     }
   ];

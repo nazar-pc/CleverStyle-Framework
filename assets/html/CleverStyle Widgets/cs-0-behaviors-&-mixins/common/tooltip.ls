@@ -4,10 +4,12 @@
  * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-tooltip_element = null
-Polymer.{}cs.{}behaviors.tooltip =
+tooltip_element						= null
+Polymer.{}cs.{}behaviors.tooltip	=
 	properties	:
-		tooltip	: String
+		tooltip	:
+			observer	: '_tooltip_changed'
+			type		: String
 	attached : !->
 		@addEventListener('mouseover', !~function add_tooltip
 			@removeEventListener('mouseover', add_tooltip)
@@ -36,8 +38,12 @@ Polymer.{}cs.{}behaviors.tooltip =
 		@_cancel_schedule_show()
 		@show_timeout = setTimeout(
 			tooltip_element._show.bind(tooltip_element, element)
+			tooltip_element._for_element	= @
 			100
 		)
 	_cancel_schedule_show : !->
 		if @show_timeout
 			clearTimeout(@show_timeout)
+	_tooltip_changed : !->
+		if tooltip_element && tooltip_element._for_element == @
+			tooltip_element._update_content(@tooltip)

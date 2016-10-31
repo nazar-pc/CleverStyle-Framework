@@ -10,7 +10,10 @@
   tooltip_element = null;
   ((ref$ = Polymer.cs || (Polymer.cs = {})).behaviors || (ref$.behaviors = {})).tooltip = {
     properties: {
-      tooltip: String
+      tooltip: {
+        observer: '_tooltip_changed',
+        type: String
+      }
     },
     attached: function(){
       var this$ = this;
@@ -50,11 +53,16 @@
     },
     _schedule_show: function(element){
       this._cancel_schedule_show();
-      this.show_timeout = setTimeout(tooltip_element._show.bind(tooltip_element, element), 100);
+      this.show_timeout = setTimeout(tooltip_element._show.bind(tooltip_element, element), tooltip_element._for_element = this, 100);
     },
     _cancel_schedule_show: function(){
       if (this.show_timeout) {
         clearTimeout(this.show_timeout);
+      }
+    },
+    _tooltip_changed: function(){
+      if (tooltip_element && tooltip_element._for_element === this) {
+        tooltip_element._update_content(this.tooltip);
       }
     }
   };

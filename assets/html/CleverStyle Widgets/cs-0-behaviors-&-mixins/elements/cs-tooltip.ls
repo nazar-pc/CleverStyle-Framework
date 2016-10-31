@@ -45,8 +45,7 @@ Polymer.cs.behaviors.cs-tooltip	= [
 		@reset_show = true
 		if !element.tooltip || @show
 			return
-		if @innerHTML != element.tooltip
-			@innerHTML = element.tooltip
+		@_update_content(element.tooltip)
 		tooltip_position	= @_get_tooltip_position(element)
 		@style
 			..top	= tooltip_position.top + 'px'
@@ -87,4 +86,7 @@ Polymer.cs.behaviors.cs-tooltip	= [
 		else
 			tooltip_position.arrow_left_offset	= (tooltip_size.width / 2) - element_position.left - (element_position.width / 2)
 		tooltip_position
+	_update_content : (content) !->
+		if @innerHTML != content
+			@innerHTML = content
 ]
