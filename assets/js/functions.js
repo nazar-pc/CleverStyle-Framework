@@ -373,7 +373,9 @@
       y$.primary = true;
       y$.action = 'close';
       y$.bind = modal;
-      y$.addEventListener('click', resolve);
+      y$.addEventListener('click', function(){
+        resolve();
+      });
       z$ = modal;
       z$.ok = ok;
       z$.appendChild(ok);
@@ -406,12 +408,20 @@
     y$.primary = true;
     y$.action = 'close';
     y$.bind = modal;
-    y$.addEventListener('click', ok_callback || function(){});
+    y$.addEventListener('click', function(){
+      if (typeof ok_callback == 'function') {
+        ok_callback();
+      }
+    });
     z$ = cancel = document.createElement('button', 'cs-button');
     z$.innerHTML = 'Cancel';
     z$.action = 'close';
     z$.bind = modal;
-    z$.addEventListener('click', cancel_callback || function(){});
+    z$.addEventListener('click', function(){
+      if (typeof cancel_callback == 'function') {
+        cancel_callback();
+      }
+    });
     z1$ = modal;
     z1$.ok = ok;
     z1$.cancel = cancel;
@@ -428,8 +438,12 @@
       return modal;
     } else {
       return new Promise(function(resolve, reject){
-        ok.addEventListener('click', resolve);
-        cancel.addEventListener('click', reject);
+        ok.addEventListener('click', function(){
+          resolve();
+        });
+        cancel.addEventListener('click', function(){
+          reject();
+        });
       });
     }
   };
@@ -465,14 +479,20 @@
       ok.addEventListener('click', function(){
         ok_callback(input.value);
       });
-      cancel.addEventListener('click', cancel_callback || function(){});
+      cancel.addEventListener('click', function(){
+        if (typeof cancel_callback == 'function') {
+          cancel_callback();
+        }
+      });
       return modal;
     } else {
       return new Promise(function(resolve, reject){
         ok.addEventListener('click', function(){
           resolve(input.value);
         });
-        cancel.addEventListener('click', reject);
+        cancel.addEventListener('click', function(){
+          reject();
+        });
       });
     }
   };

@@ -291,7 +291,9 @@ cs.{}ui
 				..primary	= true
 				..action	= 'close'
 				..bind		= modal
-				..addEventListener('click', resolve)
+				..addEventListener('click', !->
+					resolve()
+				)
 			modal
 				..ok	= ok
 				..appendChild(ok)
@@ -319,12 +321,16 @@ cs.{}ui
 			..primary	= true
 			..action	= 'close'
 			..bind		= modal
-			..addEventListener('click', ok_callback || ->)
+			..addEventListener('click', !->
+				ok_callback?()
+			)
 		cancel	= document.createElement('button', 'cs-button')
 			..innerHTML	= 'Cancel'
 			..action	= 'close'
 			..bind		= modal
-			..addEventListener('click', cancel_callback || ->)
+			..addEventListener('click', !->
+				cancel_callback?()
+			)
 		modal
 			..ok		= ok
 			..cancel	= cancel
@@ -339,8 +345,12 @@ cs.{}ui
 			modal
 		else
 			new Promise (resolve, reject) !->
-				ok.addEventListener('click', resolve)
-				cancel.addEventListener('click', reject)
+				ok.addEventListener('click', !->
+					resolve()
+				)
+				cancel.addEventListener('click', !->
+					reject()
+				)
 	/**
 	 * Prompt modal
 	 *
@@ -376,14 +386,18 @@ cs.{}ui
 			ok.addEventListener('click', !->
 				ok_callback(input.value)
 			)
-			cancel.addEventListener('click', cancel_callback || ->)
+			cancel.addEventListener('click', !->
+				cancel_callback?()
+			)
 			modal
 		else
 			new Promise (resolve, reject) !->
 				ok.addEventListener('click', !->
 					resolve(input.value)
 				)
-				cancel.addEventListener('click', reject)
+				cancel.addEventListener('click', !->
+					reject()
+				)
 	/**
 	 * Notify
 	 *
