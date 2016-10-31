@@ -374,14 +374,9 @@ cs.{}ui
 			"""
 			->
 		)
-		input			= modal.querySelector('input')
-			..addEventListener('value-changed', !->
-				ok.disabled	= !input.value.length
-			)
+		modal.input			= modal.querySelector('input')
 			..focus()
-		{ok, cancel}	= modal
-		modal.input		= input
-		ok.disabled		= true
+		{input, ok, cancel}	= modal
 		if ok_callback
 			ok.addEventListener('click', !->
 				ok_callback(input.value)

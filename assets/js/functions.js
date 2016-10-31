@@ -467,14 +467,9 @@
       content = "<h3>" + content + "</h3>";
     }
     modal = cs.ui.confirm("" + content + "\n<p><input is=\"cs-input-text\" type=\"text\"></p>", function(){});
-    x$ = input = modal.querySelector('input');
-    x$.addEventListener('value-changed', function(){
-      ok.disabled = !input.value.length;
-    });
+    x$ = modal.input = modal.querySelector('input');
     x$.focus();
-    ok = modal.ok, cancel = modal.cancel;
-    modal.input = input;
-    ok.disabled = true;
+    input = modal.input, ok = modal.ok, cancel = modal.cancel;
     if (ok_callback) {
       ok.addEventListener('click', function(){
         ok_callback(input.value);
