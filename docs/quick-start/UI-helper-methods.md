@@ -5,6 +5,7 @@ For this purposes CleverStyle Framework provides few convenient methods and prop
 * `cs.ui.simple_modal()`
 * `cs.ui.alert()`
 * `cs.ui.confirm()`
+* `cs.ui.prompt()`
 * `cs.ui.notify()`
 * `cs.ui.ready`
 
@@ -25,6 +26,12 @@ Modal element will be attached to `document.documentElement` and returned.
 #### cs.ui.confirm(content : HTMLElement|jQuery|String, ok_callback : Function [, cancel_callback : Function]) : HTMLElement|Promise
 Interface for creating modal from string or element as its content specifically for replacing default `window.confirm()` method.
 Modal will be opened right after creation and destroyed when closed, also will have "OK" and "Cancel" buttons, "OK" is focused automatically.
+Depending on button clicked `ok_callback` or `cancel_callback` will be called.
+Modal element will be attached to `document.documentElement` and returned (if `ok_callback` not specified, `Promise` will be returned instead).
+
+#### cs.ui.prompt(content : HTMLElement|jQuery|String, ok_callback : Function [, cancel_callback : Function]) : HTMLElement|Promise
+Interface for creating modal from string or element as its content specifically for replacing default `window.prompt()` method.
+Modal will be opened right after creation and destroyed when closed, also will have text input field, "OK" and "Cancel" buttons, text input field is focused automatically, "OK" is disabled until user type something.
 Depending on button clicked `ok_callback` or `cancel_callback` will be called.
 Modal element will be attached to `document.documentElement` and returned (if `ok_callback` not specified, `Promise` will be returned instead).
 

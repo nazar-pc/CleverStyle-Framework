@@ -434,6 +434,49 @@
     }
   };
   /**
+   * Prompt modal
+   *
+   * `ok_callback` will be called or Promise will be resolved with value that user enter in text field
+   *
+   * @param {(HTMLElement|jQuery|string)} content
+   * @param {Function}                    ok_callback
+   * @param {Function}                    cancel_callback
+      *
+   * @return {(HTMLElement|Promise)}
+   */
+  x$.prompt = function(content, ok_callback, cancel_callback){
+    var modal, x$, input, ok, cancel;
+    if (content instanceof Function) {
+      content = content.toString();
+    }
+    if (typeof content === 'string' && content.indexOf('<') === -1) {
+      content = "<h3>" + content + "</h3>";
+    }
+    modal = cs.ui.confirm("" + content + "\n<p><input is=\"cs-input-text\" type=\"text\"></p>", function(){});
+    x$ = input = modal.querySelector('input');
+    x$.addEventListener('value-changed', function(){
+      ok.disabled = !input.value.length;
+    });
+    x$.focus();
+    ok = modal.ok, cancel = modal.cancel;
+    modal.input = input;
+    ok.disabled = true;
+    if (ok_callback) {
+      ok.addEventListener('click', function(){
+        ok_callback(input.value);
+      });
+      cancel.addEventListener('click', cancel_callback || function(){});
+      return modal;
+    } else {
+      return new Promise(function(resolve, reject){
+        ok.addEventListener('click', function(){
+          resolve(input.value);
+        });
+        cancel.addEventListener('click', reject);
+      });
+    }
+  };
+  /**
    * Notify
    *
    * @param {(HTMLElement|jQuery|string)} content
