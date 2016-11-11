@@ -42,7 +42,7 @@ matrix:
 #    - env: DB=PostgreSQL
 
 before_script:
-  - mysql -e 'CREATE DATABASE `travis`;'
+  - mysql -u root -e 'CREATE DATABASE `travis`;'
   - |
     if [[ $TRAVIS_PHP_VERSION = '5.6' ]]; then
       echo yes | pecl install apcu-4.0.11
