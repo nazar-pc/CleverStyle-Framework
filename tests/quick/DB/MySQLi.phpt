@@ -28,7 +28,7 @@ $result = $db->insert(
 	]
 );
 if ($result) {
-	var_dump('single insert id', $db->id(), $db->affected());
+	var_dump('single insert id', $result, $db->id(), $db->affected());
 }
 $result = $db->insert(
 	$query,
@@ -119,8 +119,11 @@ var_dump('->qf(..., 2)', $db->qf("SELECT * FROM `[prefix]test` WHERE `id` = '%d'
 var_dump('->qf(..., 2), prepared statement', $db->qf("SELECT * FROM `[prefix]test` WHERE `id` = ?", 2));
 var_dump('->qf(..., 2), prepared statement, more arguments than needed', $db->qf("SELECT * FROM `[prefix]test` WHERE `id` = ? LIMIT ?", 2, 1, 3));
 var_dump('->qfs()', $db->qfs("SELECT * FROM `[prefix]test`"));
+var_dump('->qfs(..., 2), prepared statement', $db->qfs("SELECT * FROM `[prefix]test` WHERE `id` = ?", 2));
 var_dump('->qfa()', $db->qfa("SELECT * FROM `[prefix]test`"));
+var_dump('->qfa(..., 2), prepared statement', $db->qfa("SELECT * FROM `[prefix]test` WHERE `id` = ?", 2));
 var_dump('->qfas()', $db->qfas("SELECT * FROM `[prefix]test`"));
+var_dump('->f(->q(..., 1), false, true, true), prepared statement', $db->f($db->q("SELECT * FROM `[prefix]test` WHERE `id` > ?", 1), false, true, true));
 var_dump('columns list', $db->columns('[prefix]test'));
 var_dump('columns list like title', $db->columns('[prefix]test', 'title'));
 var_dump('columns list like titl%', $db->columns('[prefix]test', 'titl%'));
@@ -246,6 +249,7 @@ MySQLi_test::test();
 ?>
 --EXPECTF--
 string(16) "single insert id"
+bool(true)
 int(1)
 int(1)
 string(18) "multiple insert id"
@@ -411,6 +415,8 @@ array(4) {
 }
 string(7) "->qfs()"
 string(1) "1"
+string(33) "->qfs(..., 2), prepared statement"
+int(2)
 string(7) "->qfa()"
 array(5) {
   [0]=>
@@ -469,6 +475,20 @@ array(5) {
     string(4) "12.5"
   }
 }
+string(33) "->qfa(..., 2), prepared statement"
+array(1) {
+  [0]=>
+  array(4) {
+    ["id"]=>
+    int(2)
+    ["title"]=>
+    string(7) "Title 2"
+    ["description"]=>
+    string(13) "Description 2"
+    ["value"]=>
+    float(11.5)
+  }
+}
 string(8) "->qfas()"
 array(5) {
   [0]=>
@@ -481,6 +501,53 @@ array(5) {
   string(1) "4"
   [4]=>
   string(1) "5"
+}
+string(55) "->f(->q(..., 1), false, true, true), prepared statement"
+array(4) {
+  [0]=>
+  array(4) {
+    [0]=>
+    int(2)
+    [1]=>
+    string(7) "Title 2"
+    [2]=>
+    string(13) "Description 2"
+    [3]=>
+    float(11.5)
+  }
+  [1]=>
+  array(4) {
+    [0]=>
+    int(3)
+    [1]=>
+    string(7) "Title 3"
+    [2]=>
+    string(13) "Description 3"
+    [3]=>
+    float(12.5)
+  }
+  [2]=>
+  array(4) {
+    [0]=>
+    int(4)
+    [1]=>
+    string(7) "Title 4"
+    [2]=>
+    string(13) "Description 2"
+    [3]=>
+    float(11.5)
+  }
+  [3]=>
+  array(4) {
+    [0]=>
+    int(5)
+    [1]=>
+    string(7) "Title 5"
+    [2]=>
+    string(13) "Description 3"
+    [3]=>
+    float(12.5)
+  }
 }
 string(12) "columns list"
 array(4) {
@@ -549,7 +616,7 @@ string(5) "mysql"
 string(13) "Database name"
 string(6) "travis"
 string(13) "Queries count"
-int(38)
+int(41)
 string(4) "Time"
 float(%f)
 string(15) "Connecting time"

@@ -7,7 +7,8 @@
  */
 namespace cs\DB;
 use
-	mysqli_result;
+	mysqli_result,
+	mysqli_stmt;
 
 class MySQLi extends _Abstract {
 	/**
@@ -77,32 +78,32 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 *
-	 * @return bool|mysqli_result
+	 * @return bool|mysqli_result|mysqli_stmt
 	 */
 	protected function q_internal ($query, $parameters = []) {
 		if (!$query) {
 			return false;
 		}
-		$result = $this->q_internal_internal($query, $parameters);
+		$stmt = $this->q_internal_once($query, $parameters);
 		/*
 		 * In case of MySQL Client error try once again
 		 */
 		if (
-			!$result &&
+			!$stmt &&
 			$this->instance->errno >= 2000 &&
 			$this->instance->ping()
 		) {
-			$result = $this->q_internal_internal($query, $parameters);
+			$stmt = $this->q_internal_once($query, $parameters);
 		}
-		return $result;
+		return $stmt;
 	}
 	/**
 	 * @param string $query
 	 * @param array  $parameters
 	 *
-	 * @return bool|mysqli_result
+	 * @return bool|mysqli_result|mysqli_stmt
 	 */
-	protected function q_internal_internal ($query, $parameters) {
+	protected function q_internal_once ($query, $parameters) {
 		if (!$parameters) {
 			return $this->instance->query($query);
 		}
@@ -112,25 +113,59 @@ class MySQLi extends _Abstract {
 		}
 		// Allows to provide more parameters for prepared statements than needed
 		$local_parameters = array_slice($parameters, 0, substr_count($query, '?'));
-		$stmt->bind_param(
-			str_repeat('s', count($local_parameters)),
-			...$local_parameters
-		);
+		if (!$this->q_internal_once_bind_param($stmt, $local_parameters)) {
+			return false;
+		}
 		$result = $stmt->execute();
 		/**
 		 * Return result only for SELECT queries, boolean otherwise
 		 */
-		return $stmt->get_result() ?: $result;
+		return $result && strpos($query, 'SELECT') === 0 ? $stmt : $result;
+	}
+	/**
+	 * @param mysqli_stmt $stmt
+	 * @param array       $local_parameters
+	 *
+	 * @return bool
+	 */
+	protected function q_internal_once_bind_param ($stmt, $local_parameters) {
+		/**
+		 * Hack: Until https://github.com/facebook/hhvm/issues/6229 is fixed
+		 *
+		 * Some black magic to please HHVM, ideally only last line is necessary
+		 */
+		$tmp = [];
+		foreach (array_keys($local_parameters) as $key) {
+			$tmp[$key] = &$local_parameters[$key];
+		}
+		return $stmt->bind_param(
+			str_repeat('s', count($local_parameters)),
+			...$local_parameters
+		);
 	}
 	/**
 	 * @inheritdoc
 	 *
-	 * @param false|mysqli_result $query_result
+	 * @param false|mysqli_result|mysqli_stmt $query_result_stmt
 	 */
-	public function f ($query_result, $single_column = false, $array = false, $indexed = false) {
-		if (!($query_result instanceof mysqli_result)) {
-			return false;
+	public function f ($query_result_stmt, $single_column = false, $array = false, $indexed = false) {
+		if ($query_result_stmt instanceof mysqli_result) {
+			return $this->f_result($query_result_stmt, $single_column, $array, $indexed);
 		}
+		if ($query_result_stmt instanceof mysqli_stmt) {
+			return $this->f_stmt($query_result_stmt, $single_column, $array, $indexed);
+		}
+		return false;
+	}
+	/**
+	 * @param mysqli_result $query_result
+	 * @param bool          $single_column
+	 * @param bool          $array
+	 * @param bool          $indexed
+	 *
+	 * @return array|bool|mixed
+	 */
+	protected function f_result ($query_result, $single_column, $array, $indexed) {
 		$result_type = $single_column || $indexed ? MYSQLI_NUM : MYSQLI_ASSOC;
 		if ($array) {
 			$result = [];
@@ -147,6 +182,80 @@ class MySQLi extends _Abstract {
 		return $single_column && $result ? $result[0] : $result;
 	}
 	/**
+	 * @param mysqli_stmt $stmt
+	 * @param bool        $single_column
+	 * @param bool        $array
+	 * @param bool        $indexed
+	 *
+	 * @return array|bool|mixed
+	 */
+	protected function f_stmt ($stmt, $single_column, $array, $indexed) {
+		$meta    = $stmt->result_metadata();
+		$result  = [];
+		$columns = [];
+		while ($field = $meta->fetch_field()) {
+			$result[]  = null;
+			$columns[] = $field->name;
+		}
+		if (!$stmt->store_result() || !$this->f_stmt_bind_result($stmt, $result)) {
+			return false;
+		}
+		if ($array) {
+			$return_result = [];
+			while ($current_result = $this->f_stmt_internal($stmt, $result, $single_column, $indexed, $columns)) {
+				$return_result[] = $current_result;
+			}
+			$this->free($stmt);
+			return $return_result;
+		}
+		return $this->f_stmt_internal($stmt, $result, $single_column, $indexed, $columns);
+	}
+	/**
+	 * @param mysqli_stmt $stmt
+	 * @param array       $result
+	 *
+	 * @return bool
+	 */
+	protected function f_stmt_bind_result ($stmt, &$result) {
+		/**
+		 * Hack: Until https://github.com/facebook/hhvm/issues/6229 is fixed
+		 *
+		 * Some black magic to please HHVM, ideally only last line is necessary
+		 */
+		$tmp = [];
+		foreach (array_keys($result) as $key) {
+			$tmp[$key] = &$result[$key];
+		}
+		return $stmt->bind_result(...$result);
+	}
+	/**
+	 * @param mysqli_stmt $stmt
+	 * @param array       $result
+	 * @param bool        $single_column
+	 * @param bool        $indexed
+	 * @param string[]    $columns
+	 *
+	 * @return array|bool
+	 */
+	protected function f_stmt_internal ($stmt, $result, $single_column, $indexed, $columns) {
+		if (!$stmt->fetch()) {
+			return false;
+		}
+		if ($single_column && $result) {
+			return $result[0];
+		}
+		// Hack: `$result`'s values are all references, we need to dereference them into plain values
+		$new_result = [];
+		foreach ($result as $i => $v) {
+			$new_result[$i] = $v;
+		}
+		$result = $new_result;
+		if ($indexed) {
+			return $result;
+		}
+		return array_combine($columns, $result);
+	}
+	/**
 	 * @inheritdoc
 	 */
 	public function id () {
@@ -161,11 +270,14 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 *
-	 * @param false|mysqli_result $query_result
+	 * @param false|mysqli_result|mysqli_stmt $query_result_stmt
 	 */
-	public function free ($query_result) {
-		if ($query_result instanceof mysqli_result) {
-			$query_result->free();
+	public function free ($query_result_stmt) {
+		if ($query_result_stmt instanceof mysqli_result) {
+			$query_result_stmt->free();
+		}
+		if ($query_result_stmt instanceof mysqli_stmt) {
+			$query_result_stmt->free_result();
 		}
 		return true;
 	}
