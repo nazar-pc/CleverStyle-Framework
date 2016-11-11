@@ -140,6 +140,7 @@ Backend events:
 * System/Language/change/before
 * System/Language/change/after
 * System/Language/load
+* System/Page/assets_dependencies_and_map
 * System/Page/render/before
 * System/Page/render/after
 * System/Page/rebuild_cache

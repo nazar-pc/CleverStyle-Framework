@@ -5,7 +5,7 @@ dom-module#cs-system-admin-optimization
 		form.cs-text-center(is="cs-form")
 			+on-off-switcher("cache_compress_js_css")
 			+on-off-switcher("frontend_load_optimization", "equal(settings.cache_compress_js_css, 0)")
-			+on-off-switcher("vulcanization")
+			+on-off-switcher("vulcanization", "equal(settings.cache_compress_js_css, 0)")
 			+on-off-switcher("put_js_after_body")
 			+on-off-switcher("disable_webcomponents", "simple_admin_mode")
 			+input("inserts_limit", "simple_admin_mode", "number", 1)
