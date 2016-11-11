@@ -558,7 +558,7 @@ function __htmlpurifier_autoload ($class) {
 	$class = ltrim($class, '\\');
 	if (strpos($class, 'HTMLPurifier_') === 0) {
 		spl_autoload_unregister('__htmlpurifier_autoload');
-		Phar::loadPhar(__DIR__.'/thirdparty/htmlpurifier.tar.gz', 'htmlpurifier.phar');
+		Phar::loadPhar(__DIR__.'/thirdparty/htmlpurifier.phar');
 		require_once 'phar://htmlpurifier.phar/HTMLPurifier.standalone.php';
 		return true;
 	}
