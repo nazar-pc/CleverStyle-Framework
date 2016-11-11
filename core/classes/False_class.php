@@ -76,7 +76,7 @@ class False_class extends SimpleXMLElement implements ArrayAccess {
 	 * @return string
 	 */
 	public function __toString () {
-		return '0';
+		return '';
 	}
 	/**
 	 * If item exists
