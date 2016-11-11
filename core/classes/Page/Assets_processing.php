@@ -306,7 +306,7 @@ class Assets_processing {
 			file_put_contents("$base_target_file_path.js", $scripts_content, LOCK_EX | FILE_BINARY);
 			$base_target_file_name = basename($base_target_file_path);
 			// Add script with combined content file to the end
-			$data .= "<script src=\"$base_target_file_name.js?$content_md5\"></script>";
+			$data .= "<script src=\"./$base_target_file_name.js?$content_md5\"></script>";
 			$not_embedded_resources[] = "$base_target_file_name.js?$content_md5";
 		} else {
 			// Add combined content inline script to the end

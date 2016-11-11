@@ -25,12 +25,12 @@ echo file_get_contents("$tmp_dir/System.js")."\n";
 </dom-module>
 <script src="/external-script.js"></script>
 <style is="custom-style">html{--my-property:black;}</style>
-<script src="System-imported.js?d5690"></script>
+<script src="./System-imported.js?d5690"></script>
 <style is="custom-style">html{--my-property-2:black;}</style>
-<script src="System-imported-no-styles.js?b0c48"></script>
+<script src="./System-imported-no-styles.js?b0c48"></script>
 <script src="/external-imported-script.js"></script>
 <link rel="import" href="/external-import.html" type="html">
-<script src="System.js?1493d"></script>
+<script src="./System.js?1493d"></script>
 array(4) {
   [0]=>
   string(57) "/tests/quick/Page/Assets_processing/image-large.svg?%s"
