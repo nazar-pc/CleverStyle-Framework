@@ -54,6 +54,10 @@ before_script:
     if [[ $TRAVIS_PHP_VERSION = '7.0' ]]; then
       echo yes | pecl install apcu-5.1.6
     fi
+  - |
+    if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
+      echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    fi
 
 # Only compute code coverage on PHP 7.0
 # HHVM doesn't have write support for Phar archives, so we'll only run quick tests on it
