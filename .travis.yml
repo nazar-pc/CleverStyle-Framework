@@ -45,8 +45,10 @@ before_script:
   - |
     if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
       mysql -e 'CREATE DATABASE `travis`;'
-    else
-      mysql -u root -e 'CREATE USER 'travis'@'%' IDENTIFIED WITH mysql_native_password;'
+    fi
+  - |
+    if [[ $TRAVIS_PHP_VERSION = hhv* && $DB = 'MySQLi' ]]; then
+      mysql -u root -e 'CREATE USER 'travis'@'127.0.0.1' IDENTIFIED WITH mysql_native_password;'
     fi
   - |
     if [[ $TRAVIS_PHP_VERSION = '5.6' ]]; then
