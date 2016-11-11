@@ -91,7 +91,6 @@ include __DIR__.'/../_clean.php';
 				<select name="timezone" size="7">
 					<option value="Pacific/Midway">Pacific/Midway (-11:00)</option>
 					%a
-					<option value="Pacific/Kiritimati">Pacific/Kiritimati (+14:00)</option>
 				</select>
 			</td>
 		</tr>
