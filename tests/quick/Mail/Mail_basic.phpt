@@ -470,7 +470,6 @@ array(1) {
   [0]=>
   string(13) "user@test.com"
 }
-PHP Warning:  Attachment file doesn't exists in %s/core/classes/Mail.php on line %d
-
+%A
 Warning: Attachment file doesn't exists in %s/core/classes/Mail.php on line %d
 bool(false)
