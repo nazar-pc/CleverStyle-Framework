@@ -30,13 +30,11 @@ matrix:
             - mysql-server-5.6
             - mysql-client-core-5.6
             - mysql-client-5.6
-      services:
       env: DB=MySQLi
     - php: hhvm
       sudo: true
       dist: trusty
       group: edge # use until the next Travis Image update
-      services:
       env: DB=SQLite
   allow_failures:
     - php: nightly
@@ -53,10 +51,6 @@ before_script:
     if [[ $TRAVIS_PHP_VERSION = '7.0' ]]; then
       echo yes | pecl install apcu-5.1.6
     fi
-  - |
-    if [[ $TRAVIS_PHP_VERSION != 'hhv*' ]]; then
-      echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    fi
 
 # Only compute code coverage on PHP 7.0
 # HHVM doesn't have write support for Phar archives, so we'll only run quick tests on it
@@ -66,7 +60,7 @@ script:
       export SKIP_COVERAGE=1
     fi
   - |
-    if [[ $TRAVIS_PHP_VERSION = 'hhv*' ]]; then
+    if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then
       hhvm phpt-tests-runner tests/quick
     else
       php -d variables_order=EGPCS phpt-tests-runner tests
