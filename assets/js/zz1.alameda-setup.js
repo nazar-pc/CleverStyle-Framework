@@ -11,7 +11,7 @@
     paths: {
       jssha: 'assets/js/modules/jsSHA-2.1.0',
       autosize: 'assets/js/modules/autosize.min',
-      html5sortable: 'assets/js/modules/html5sortable-0.4.0.min',
+      html5sortable: 'assets/js/modules/html5sortable-0.4.3.min',
       'sprintf-js': 'assets/js/modules/sprintf-1.0.3.min'
     },
     waitSeconds: 60
