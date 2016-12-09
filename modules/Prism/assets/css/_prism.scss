@@ -1,4 +1,4 @@
-/* http://prismjs.com/download.html?themes=prism-okaidia&plugins=line-highlight+line-numbers+autolinker+file-highlight+previewer-base+previewer-color+previewer-gradient+previewer-easing+previewer-time+previewer-angle+command-line */
+/* http://prismjs.com/download.html?themes=prism-okaidia&languages=markup+css+clike+javascript&plugins=line-highlight+line-numbers+autolinker+file-highlight+previewer-base+previewer-color+previewer-gradient+previewer-easing+previewer-time+previewer-angle+autoloader+command-line */
 /**
  * okaidia theme for JavaScript, CSS and HTML
  * Loosely based on Monokai textmate theme by http://www.monokai.nl/
@@ -134,9 +134,6 @@ pre[data-line] {
 	margin-top: 1em; /* Same as .prism’s padding-top */
 
 	background: hsla(24, 20%, 50%,.08);
-	background: -moz-linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
-	background: -webkit-linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
-	background: -o-linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
 	background: linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
 
 	pointer-events: none;
@@ -228,13 +225,8 @@ pre.line-numbers > code {
 	height: 32px;
 	margin-left: -16px;
 
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=$opacity)";
-	filter: alpha(opacity=0);
-	-khtml-opacity: 0;
-	-moz-opacity: 0;
 	opacity: 0;
 	-webkit-transition: opacity .25s;
-	-moz-transition: opacity .25s;
 	-o-transition: opacity .25s;
 	transition: opacity .25s;
 }
@@ -253,14 +245,8 @@ pre.line-numbers > code {
 	right: -5px;
 	left: -5px;
 	bottom: -5px;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
 	border-radius: 10px;
 	border: 5px solid #fff;
-	-webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) inset, 0 0 10px rgba(0, 0, 0, 0.75);
-	-moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) inset, 0 0 10px rgba(0, 0, 0, 0.75);
-	-ms-box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) inset, 0 0 10px rgba(0, 0, 0, 0.75);
-	-o-box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) inset, 0 0 10px rgba(0, 0, 0, 0.75);
 	box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) inset, 0 0 10px rgba(0, 0, 0, 0.75);
 }
 
@@ -282,10 +268,6 @@ pre.line-numbers > code {
 	border-bottom-color: #fff;
 }
 .prism-previewer.active {
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=$opacity)";
-	filter: alpha(opacity=1);
-	-khtml-opacity: 1;
-	-moz-opacity: 1;
 	opacity: 1;
 }
 .prism-previewer-color {
@@ -315,14 +297,8 @@ pre.line-numbers > code {
 	left: -5px;
 	right: -5px;
 	bottom: -5px;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
 	border-radius: 10px;
 	border: 5px solid #fff;
-	-webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) inset, 0 0 10px rgba(0, 0, 0, 0.75);
-	-moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) inset, 0 0 10px rgba(0, 0, 0, 0.75);
-	-ms-box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) inset, 0 0 10px rgba(0, 0, 0, 0.75);
-	-o-box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) inset, 0 0 10px rgba(0, 0, 0, 0.75);
 	box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) inset, 0 0 10px rgba(0, 0, 0, 0.75);
 }
 .prism-previewer-easing {
@@ -415,8 +391,6 @@ pre.line-numbers > code {
 }
 
 .prism-previewer-time:before {
-	-webkit-border-radius: 50%;
-	-moz-border-radius: 50%;
 	border-radius: 50%;
 	background: #fff;
 }
@@ -445,8 +419,6 @@ pre.line-numbers > code {
 	animation: prism-previewer-time linear infinite 3s;
 }
 .prism-previewer-angle:before {
-	-webkit-border-radius: 50%;
-	-moz-border-radius: 50%;
 	border-radius: 50%;
 	background: #fff;
 }
