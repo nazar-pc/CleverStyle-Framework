@@ -88,7 +88,7 @@ class Cache {
 			$translations             = _json_encode($L);
 			$language_hash            = md5($translations);
 			$languages_map[$language] = $language_hash;
-			file_put_contents(PUBLIC_CACHE."/languages-$language-$language_hash.js", "define($translations);");
+			file_put_contents(PUBLIC_CACHE."/$language_hash.js", "define($translations);");
 		}
 		$L->change($current_language);
 		file_put_json(PUBLIC_CACHE."/languages-$languages_hash.json", $languages_map);

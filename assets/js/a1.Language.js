@@ -63,7 +63,7 @@
       Promise.all([
         translations
           ? [translations]
-          : require(["storage/public_cache/languages-" + cs.current_language.language + "-" + cs.current_language.hash]), require(['sprintf-js'])
+          : require(["storage/public_cache/" + cs.current_language.hash]), require(['sprintf-js'])
       ]).then(function(arg$){
         var translations, sprintfjs;
         translations = arg$[0][0], sprintfjs = arg$[1][0];

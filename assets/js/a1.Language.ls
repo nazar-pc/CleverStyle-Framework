@@ -42,7 +42,7 @@ cs.Language		= Language
 				if translations
 					[translations]
 				else
-					require(["storage/public_cache/languages-#{cs.current_language.language}-#{cs.current_language.hash}"])
+					require(["storage/public_cache/#{cs.current_language.hash}"])
 				require(['sprintf-js'])
 			]).then ([[translations], [sprintfjs]]) !->
 				fill_translations(translations)
