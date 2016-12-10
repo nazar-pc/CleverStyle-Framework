@@ -42,7 +42,7 @@ class Cache {
 		/** @noinspection ForeachSourceInspection */
 		foreach ($assets_map as $filename_prefix => $local_assets) {
 			$compressed_assets_map[$filename_prefix] = static::cache_compressed_assets_files(
-				PUBLIC_CACHE."/$theme:".str_replace('/', '+', $filename_prefix),
+				$filename_prefix,
 				$local_assets,
 				$Config->core['vulcanization'],
 				$not_embedded_resources_map
@@ -97,7 +97,7 @@ class Cache {
 	 * Creates cached version of given HTML, JS and CSS files.
 	 * Resulting files names consist of `$filename_prefix` and extension.
 	 *
-	 * @param string     $target_file_path
+	 * @param string     $filename_prefix
 	 * @param string[][] $assets                     Array of paths to files, may have keys: `css` and/or `js` and/or `html`
 	 * @param bool       $vulcanization              Whether to put combined files separately or to make included assets built-in (vulcanization)
 	 * @param string[][] $not_embedded_resources_map Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because
@@ -105,13 +105,13 @@ class Cache {
 	 *
 	 * @return array
 	 */
-	protected static function cache_compressed_assets_files ($target_file_path, $assets, $vulcanization, &$not_embedded_resources_map) {
+	protected static function cache_compressed_assets_files ($filename_prefix, $assets, $vulcanization, &$not_embedded_resources_map) {
 		$local_assets = [];
 		foreach ($assets as $extension => $files) {
 			$not_embedded_resources = [];
 			$content                = static::cache_compressed_assets_files_single(
 				$extension,
-				$target_file_path,
+				$filename_prefix,
 				$files,
 				$vulcanization,
 				$not_embedded_resources
@@ -131,14 +131,14 @@ class Cache {
 	}
 	/**
 	 * @param string   $extension
-	 * @param string   $target_file_path
+	 * @param string   $filename_prefix
 	 * @param string[] $files
 	 * @param bool     $vulcanization          Whether to put combined files separately or to make included assets built-in (vulcanization)
 	 * @param string[] $not_embedded_resources Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because of CSP
 	 *
 	 * @return string
 	 */
-	protected static function cache_compressed_assets_files_single ($extension, $target_file_path, $files, $vulcanization, &$not_embedded_resources) {
+	protected static function cache_compressed_assets_files_single ($extension, $filename_prefix, $files, $vulcanization, &$not_embedded_resources) {
 		$content = '';
 		switch ($extension) {
 			/**
@@ -190,15 +190,14 @@ class Cache {
 				$callback = function ($content, $file) {
 					return $content.Assets_processing::js(file_get_contents($file));
 				};
-				if (substr($target_file_path, -7) == ':System') {
+				if ($filename_prefix == 'System') {
 					$content = 'window.cs={};window.requirejs='._json_encode(RequireJS::get_config()).';';
 				}
 		}
 		/** @noinspection PhpUndefinedVariableInspection */
 		$content .= array_reduce($files, $callback);
 		if ($extension == 'html') {
-			$file_path = "$target_file_path-$extension";
-			$content   = Assets_processing::html($content, $file_path, $file_path, $vulcanization);
+			$content   = Assets_processing::html($content, '', PUBLIC_CACHE, $vulcanization);
 		}
 		return $content;
 	}

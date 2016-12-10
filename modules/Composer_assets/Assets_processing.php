@@ -41,7 +41,7 @@ class Assets_processing {
 HTACCESS
 		);
 		return self::save_content(
-			self::get_content($Config, $files, $package_name, $package_dir, $target_dir),
+			self::get_content($Config, $files, $package_dir, $target_dir),
 			$target_dir
 		);
 	}
@@ -84,7 +84,7 @@ HTACCESS
 	 *
 	 * @return string[][]
 	 */
-	protected static function get_content ($Config, $files, $package_name, $package_dir, $target_dir) {
+	protected static function get_content ($Config, $files, $package_dir, $target_dir) {
 		$content = [];
 		foreach ($files as $file) {
 			$file = "$package_dir/$file";
@@ -99,7 +99,7 @@ HTACCESS
 					$content['html'][] = System_assets_processing::html(
 						file_get_contents($file),
 						$file,
-						"$target_dir/$package_name",
+						$target_dir,
 						$Config->core['vulcanization']
 					);
 					break;

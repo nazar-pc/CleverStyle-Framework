@@ -242,15 +242,15 @@ class Assets_processing {
 	 *
 	 * @param string   $data                   Content of processed file
 	 * @param string   $file                   Path to file, that contains specified in previous parameter content
-	 * @param string   $base_target_file_path  Base filename for resulting combined files
+	 * @param string   $target_directory_path  Target directory for resulting combined files
 	 * @param bool     $vulcanization          Whether to put combined files separately or to make included assets built-in (vulcanization)
 	 * @param string[] $not_embedded_resources Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because of CSP
 	 *
 	 * @return string
 	 */
-	public static function html ($data, $file, $base_target_file_path, $vulcanization, &$not_embedded_resources = []) {
-		static::html_process_links_and_styles($data, $file, $base_target_file_path, $vulcanization, $not_embedded_resources);
-		static::html_process_scripts($data, $file, $base_target_file_path, $vulcanization, $not_embedded_resources);
+	public static function html ($data, $file, $target_directory_path, $vulcanization, &$not_embedded_resources = []) {
+		static::html_process_links_and_styles($data, $file, $target_directory_path, $vulcanization, $not_embedded_resources);
+		static::html_process_scripts($data, $file, $target_directory_path, $vulcanization, $not_embedded_resources);
 		// Removing HTML comments (those that are mostly likely comments, to avoid problems)
 		$data = preg_replace_callback(
 			'/^\s*<!--([^>-].*[^-])?-->/Ums',
@@ -264,11 +264,11 @@ class Assets_processing {
 	/**
 	 * @param string   $data                   Content of processed file
 	 * @param string   $file                   Path to file, that contains specified in previous parameter content
-	 * @param string   $base_target_file_path  Base filename for resulting combined files
+	 * @param string   $target_directory_path  Target directory for resulting combined files
 	 * @param bool     $vulcanization          Whether to put combined files separately or to make included assets built-in (vulcanization)
 	 * @param string[] $not_embedded_resources Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because of CSP
 	 */
-	protected static function html_process_scripts (&$data, $file, $base_target_file_path, $vulcanization, &$not_embedded_resources) {
+	protected static function html_process_scripts (&$data, $file, $target_directory_path, $vulcanization, &$not_embedded_resources) {
 		if (!preg_match_all('/<script(.*)<\/script>/Uims', $data, $scripts)) {
 			return;
 		}
@@ -299,15 +299,15 @@ class Assets_processing {
 		 * If vulcanization is not used - put contents into separate file, and put link to it, otherwise put minified content back
 		 */
 		if (!$vulcanization) {
-			/**
-			 * md5 to distinguish modifications of the files
-			 */
-			$content_md5 = substr(md5($scripts_content), 0, 5);
-			file_put_contents("$base_target_file_path.js", $scripts_content, LOCK_EX | FILE_BINARY);
-			$base_target_file_name = basename($base_target_file_path);
+			$hash = md5($scripts_content);
+			// TODO: Remove in 7.x; For backward compatibility, since some modules might use this b specifying file path
+			if (!is_dir($target_directory_path)) {
+				$target_directory_path = dirname($target_directory_path);
+			}
+			file_put_contents("$target_directory_path/$hash.js", $scripts_content, LOCK_EX | FILE_BINARY);
 			// Add script with combined content file to the end
-			$data .= "<script src=\"./$base_target_file_name.js?$content_md5\"></script>";
-			$not_embedded_resources[] = "$base_target_file_name.js?$content_md5";
+			$data .= "<script src=\"./$hash.js\"></script>";
+			$not_embedded_resources[] = str_replace(getcwd(), '', realpath("$target_directory_path/$hash.js"));
 		} else {
 			// Add combined content inline script to the end
 			$data .= "<script>$scripts_content</script>";
@@ -316,11 +316,11 @@ class Assets_processing {
 	/**
 	 * @param string   $data                   Content of processed file
 	 * @param string   $file                   Path to file, that contains specified in previous parameter content
-	 * @param string   $base_target_file_path  Base filename for resulting combined files
+	 * @param string   $target_directory_path  Target directory for resulting combined files
 	 * @param bool     $vulcanization          Whether to put combined files separately or to make included assets built-in (vulcanization)
 	 * @param string[] $not_embedded_resources Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because of CSP
 	 */
-	protected static function html_process_links_and_styles (&$data, $file, $base_target_file_path, $vulcanization, &$not_embedded_resources) {
+	protected static function html_process_links_and_styles (&$data, $file, $target_directory_path, $vulcanization, &$not_embedded_resources) {
 		// Drop Polymer inclusion, since it is already present
 		$data = str_replace('<link rel="import" href="../polymer/polymer.html">', '', $data);
 		if (!preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles)) {
@@ -377,7 +377,7 @@ class Assets_processing {
 					static::html(
 						file_get_contents("$dir/$url"),
 						"$dir/$url",
-						"$base_target_file_path-".basename($url, '.html'),
+						$target_directory_path,
 						$vulcanization,
 						$not_embedded_resources
 					),
@@ -412,6 +412,6 @@ class Assets_processing {
 	 * @return bool
 	 */
 	protected static function is_relative_path_and_exists ($path, $dir) {
-		return !preg_match('#^(http://|https://|ftp://|/)#i', $path) && file_exists("$dir/$path");
+		return $dir && !preg_match('#^(http://|https://|ftp://|/)#i', $path) && file_exists("$dir/$path");
 	}
 }

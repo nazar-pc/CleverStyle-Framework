@@ -5,14 +5,14 @@ use function cs\make_tmp_dir;
 
 include __DIR__.'/../../unit.php';
 $tmp_dir = make_tmp_dir();
-echo Assets_processing::html(file_get_contents(__DIR__.'/Assets_processing/my-element.html'), __DIR__.'/Assets_processing/my-element.html', "$tmp_dir/System", false, $not_embedded_resources)."\n";
+echo Assets_processing::html(file_get_contents(__DIR__.'/Assets_processing/my-element.html'), __DIR__.'/Assets_processing/my-element.html', $tmp_dir, false, $not_embedded_resources)."\n";
 var_dump($not_embedded_resources);
-var_dump('System-imported.js');
-echo file_get_contents("$tmp_dir/System-imported.js")."\n";
-var_dump('System-imported-no-styles.js');
-echo file_get_contents("$tmp_dir/System-imported-no-styles.js")."\n";
-var_dump('System.js');
-echo file_get_contents("$tmp_dir/System.js")."\n";
+var_dump('imported.js');
+echo file_get_contents("$tmp_dir/d56902a9037da35c4d51753cb1b31d4f.js")."\n";
+var_dump('imported-no-styles.js');
+echo file_get_contents("$tmp_dir/b0c4817554bfb8e8f10f16ab1c683f47.js")."\n";
+var_dump('my-element.js');
+echo file_get_contents("$tmp_dir/1493da20bba0b80de0e0f7297d3cf6d0.js")."\n";
 ?>
 --EXPECTF--
 
@@ -25,27 +25,27 @@ echo file_get_contents("$tmp_dir/System.js")."\n";
 </dom-module>
 <script src="/external-script.js"></script>
 <style is="custom-style">html{--my-property:black;}</style>
-<script src="./System-imported.js?d5690"></script>
+<script src="./d56902a9037da35c4d51753cb1b31d4f.js"></script>
 <style is="custom-style">html{--my-property-2:black;}</style>
-<script src="./System-imported-no-styles.js?b0c48"></script>
+<script src="./b0c4817554bfb8e8f10f16ab1c683f47.js"></script>
 <script src="/external-imported-script.js"></script>
 <link rel="import" href="/external-import.html" type="html">
-<script src="./System.js?1493d"></script>
+<script src="./1493da20bba0b80de0e0f7297d3cf6d0.js"></script>
 array(4) {
   [0]=>
   string(57) "/tests/quick/Page/Assets_processing/image-large.svg?%s"
   [1]=>
-  string(24) "System-imported.js?d5690"
+  string(70) "/tests/%s/d56902a9037da35c4d51753cb1b31d4f.js"
   [2]=>
-  string(34) "System-imported-no-styles.js?b0c48"
+  string(70) "/tests/%s/b0c4817554bfb8e8f10f16ab1c683f47.js"
   [3]=>
-  string(15) "System.js?1493d"
+  string(70) "/tests/%s/1493da20bba0b80de0e0f7297d3cf6d0.js"
 }
-string(18) "System-imported.js"
+string(11) "imported.js"
 var xyz = 'xyz';
-string(28) "System-imported-no-styles.js"
+string(21) "imported-no-styles.js"
 var zyx = 'zyx';
-string(9) "System.js"
+string(13) "my-element.js"
 Polymer({is : 'my-element'});;var bar = 'bar'; /* another comment */var foo = 'foo'; // Single-line after code
 (function (bar, foo) {return foo + bar +(10 * 15 / 5);})(bar, foo);if ( !( bar > foo ) ){console . log (foo), console.log(bar
 );}var script_code = "<script>JS here<\/script>";;Polymer.updateStyles();
