@@ -324,11 +324,11 @@ array(1) {
 }
 string(39) "Compression, no load optimization, head"
 string(4) "Head"
-string(%d) "<script src="/storage/public_cache/webcomponents.js?%s"></script>
-<link href="/storage/public_cache/CleverStyle:System.css?%s" rel="stylesheet">
+string(%d) "<script src="/storage/public_cache/%s.js"></script>
+<link href="/storage/public_cache/%s.css" rel="stylesheet">
 <script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
-<script src="/storage/public_cache/CleverStyle:System.js?%s"></script>
-<link href="/storage/public_cache/CleverStyle:System.html?%s" rel="import">
+<script src="/storage/public_cache/%s.js"></script>
+<link href="/storage/public_cache/%s.html" rel="import">
 "
 string(9) "post_Body"
 string(0) ""
@@ -342,22 +342,22 @@ array(2) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(79) "</storage/public_cache/CleverStyle:System.html?%s>; rel=preload; as=document"
+    string(%d) "</storage/public_cache/%s.html>; rel=preload; as=document"
     [1]=>
-    string(75) "</storage/public_cache/CleverStyle:System.js?%s>; rel=preload; as=script"
+    string(%d) "</storage/public_cache/%s.js>; rel=preload; as=script"
     [2]=>
-    string(75) "</storage/public_cache/CleverStyle:System.css?%s>; rel=preload; as=style"
+    string(%d) "</storage/public_cache/%s.css>; rel=preload; as=style"
   }
 }
 string(45) "Compression, no load optimization, after body"
 string(4) "Head"
-string(%d) "<link href="/storage/public_cache/CleverStyle:System.css?%s" rel="stylesheet">
+string(%d) "<link href="/storage/public_cache/%s.css" rel="stylesheet">
 <script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
 "
 string(9) "post_Body"
-string(%d) "<script src="/storage/public_cache/webcomponents.js?%s"></script>
-<script src="/storage/public_cache/CleverStyle:System.js?%s"></script>
-<link href="/storage/public_cache/CleverStyle:System.html?%s" rel="import">
+string(%d) "<script src="/storage/public_cache/%s.js"></script>
+<script src="/storage/public_cache/%s.js"></script>
+<link href="/storage/public_cache/%s.html" rel="import">
 "
 string(7) "headers"
 array(2) {
@@ -369,21 +369,21 @@ array(2) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(79) "</storage/public_cache/CleverStyle:System.html?%s>; rel=preload; as=document"
+    string(%d) "</storage/public_cache/%s.html>; rel=preload; as=document"
     [1]=>
-    string(75) "</storage/public_cache/CleverStyle:System.js?%s>; rel=preload; as=script"
+    string(%d) "</storage/public_cache/%s.js>; rel=preload; as=script"
     [2]=>
-    string(75) "</storage/public_cache/CleverStyle:System.css?%s>; rel=preload; as=style"
+    string(%d) "</storage/public_cache/%s.css>; rel=preload; as=style"
   }
 }
 string(36) "Compression, load optimization, head"
 string(4) "Head"
-string(%d) "<script src="/storage/public_cache/webcomponents.js?%s"></script>
-<link href="/storage/public_cache/CleverStyle:System.css?%s" rel="stylesheet">
+string(%d) "<script src="/storage/public_cache/%s.js"></script>
+<link href="/storage/public_cache/%s.css" rel="stylesheet">
 <script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
 <script class="cs-config" target="cs.optimized_assets" type="application/json">[[],[]]</script>
-<script src="/storage/public_cache/CleverStyle:System.js?%s"></script>
-<link href="/storage/public_cache/CleverStyle:System.html?%s" rel="import">
+<script src="/storage/public_cache/%s.js"></script>
+<link href="/storage/public_cache/%s.html" rel="import">
 "
 string(9) "post_Body"
 string(0) ""
@@ -397,23 +397,23 @@ array(2) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(79) "</storage/public_cache/CleverStyle:System.html?%s>; rel=preload; as=document"
+    string(%d) "</storage/public_cache/%s.html>; rel=preload; as=document"
     [1]=>
-    string(75) "</storage/public_cache/CleverStyle:System.js?%s>; rel=preload; as=script"
+    string(%d) "</storage/public_cache/%s.js>; rel=preload; as=script"
     [2]=>
-    string(75) "</storage/public_cache/CleverStyle:System.css?%s>; rel=preload; as=style"
+    string(%d) "</storage/public_cache/%s.css>; rel=preload; as=style"
   }
 }
 string(42) "Compression, load optimization, after body"
 string(4) "Head"
-string(%d) "<link href="/storage/public_cache/CleverStyle:System.css?%s" rel="stylesheet">
+string(%d) "<link href="/storage/public_cache/%s.css" rel="stylesheet">
 <script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
 <script class="cs-config" target="cs.optimized_assets" type="application/json">[[],[]]</script>
 "
 string(9) "post_Body"
-string(%d) "<script src="/storage/public_cache/webcomponents.js?%s"></script>
-<script src="/storage/public_cache/CleverStyle:System.js?%s"></script>
-<link href="/storage/public_cache/CleverStyle:System.html?%s" rel="import">
+string(%d) "<script src="/storage/public_cache/%s.js"></script>
+<script src="/storage/public_cache/%s.js"></script>
+<link href="/storage/public_cache/%s.html" rel="import">
 "
 string(7) "headers"
 array(2) {
@@ -425,24 +425,24 @@ array(2) {
   ["link"]=>
   array(3) {
     [0]=>
-    string(79) "</storage/public_cache/CleverStyle:System.html?%s>; rel=preload; as=document"
+    string(%d) "</storage/public_cache/%s.html>; rel=preload; as=document"
     [1]=>
-    string(75) "</storage/public_cache/CleverStyle:System.js?%s>; rel=preload; as=script"
+    string(%d) "</storage/public_cache/%s.js>; rel=preload; as=script"
     [2]=>
-    string(75) "</storage/public_cache/CleverStyle:System.css?%s>; rel=preload; as=style"
+    string(%d) "</storage/public_cache/%s.css>; rel=preload; as=style"
   }
 }
 string(7) "Edge 14"
 string(9) "post_Body"
-string(%d) "<script src="/storage/public_cache/webcomponents.js?%s"></script>
+string(%d) "<script src="/storage/public_cache/%s.js"></script>
 <script src="assets/js/microsoft_sh*t/14/URL.js"></script>
-<script src="/storage/public_cache/CleverStyle:System.js?%s"></script>
-<link href="/storage/public_cache/CleverStyle:System.html?%s" rel="import">
+<script src="/storage/public_cache/%s.js"></script>
+<link href="/storage/public_cache/%s.html" rel="import">
 "
 string(20) "Shadow DOM supported"
 string(9) "post_Body"
-string(%d) "<script src="/storage/public_cache/CleverStyle:System.js?%s"></script>
-<link href="/storage/public_cache/CleverStyle:System.html?%s" rel="import">
+string(%d) "<script src="/storage/public_cache/%s.js"></script>
+<link href="/storage/public_cache/%s.html" rel="import">
 "
 string(14) "Already pushed"
 string(7) "headers"
@@ -450,16 +450,16 @@ array(0) {
 }
 string(36) "Custom styles, scripts, html imports"
 string(4) "Head"
-string(%d) "<link href="/storage/public_cache/CleverStyle:System.css?%s" rel="stylesheet">
+string(%d) "<link href="/storage/public_cache/%s.css" rel="stylesheet">
 <link href="style.css" rel="stylesheet">
 <script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
 <script class="cs-config" target="cs.optimized_assets" type="application/json">[[],[]]</script>
 "
 string(9) "post_Body"
-string(%d) "<script src="/storage/public_cache/webcomponents.js?%s"></script>
-<script src="/storage/public_cache/CleverStyle:System.js?%s"></script>
+string(%d) "<script src="/storage/public_cache/%s.js"></script>
+<script src="/storage/public_cache/%s.js"></script>
 <script src="script.js"></script>
-<link href="/storage/public_cache/CleverStyle:System.html?%s" rel="import">
+<link href="/storage/public_cache/%s.html" rel="import">
 <link href="import.html" rel="import">
 "
 string(7) "headers"
@@ -472,11 +472,11 @@ array(2) {
   ["link"]=>
   array(4) {
     [0]=>
-    string(79) "</storage/public_cache/CleverStyle:System.html?%s>; rel=preload; as=document"
+    string(%d) "</storage/public_cache/%s.html>; rel=preload; as=document"
     [1]=>
-    string(75) "</storage/public_cache/CleverStyle:System.js?%s>; rel=preload; as=script"
+    string(%d) "</storage/public_cache/%s.js>; rel=preload; as=script"
     [2]=>
-    string(75) "</storage/public_cache/CleverStyle:System.css?%s>; rel=preload; as=style"
+    string(%d) "</storage/public_cache/%s.css>; rel=preload; as=style"
     [3]=>
     string(34) "<style.css>; rel=preload; as=style"
   }
@@ -491,16 +491,16 @@ array(0) {
 }
 string(25) "Load assets of dependency"
 string(4) "Head"
-string(%d) "<link href="/storage/public_cache/CleverStyle:System.css?%s" rel="stylesheet">
+string(%d) "<link href="/storage/public_cache/%s.css" rel="stylesheet">
 <link href="/dependency1.css" rel="stylesheet">
 <script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
 <script class="cs-config" target="cs.optimized_assets" type="application/json">[[],[]]</script>
 "
 string(9) "post_Body"
-string(%d) "<script src="/storage/public_cache/webcomponents.js?%s"></script>
-<script src="/storage/public_cache/CleverStyle:System.js?%s"></script>
+string(%d) "<script src="/storage/public_cache/%s.js"></script>
+<script src="/storage/public_cache/%s.js"></script>
 <script src="/dependency1.js"></script>
-<link href="/storage/public_cache/CleverStyle:System.html?%s" rel="import">
+<link href="/storage/public_cache/%s.html" rel="import">
 <link href="/dependency1.html" rel="import">
 "
 string(7) "headers"
@@ -513,26 +513,26 @@ array(2) {
   ["link"]=>
   array(4) {
     [0]=>
-    string(79) "</storage/public_cache/CleverStyle:System.html?%s>; rel=preload; as=document"
+    string(%d) "</storage/public_cache/%s.html>; rel=preload; as=document"
     [1]=>
-    string(75) "</storage/public_cache/CleverStyle:System.js?%s>; rel=preload; as=script"
+    string(%d) "</storage/public_cache/%s.js>; rel=preload; as=script"
     [2]=>
-    string(75) "</storage/public_cache/CleverStyle:System.css?%s>; rel=preload; as=style"
+    string(%d) "</storage/public_cache/%s.css>; rel=preload; as=style"
     [3]=>
     string(41) "</dependency1.css>; rel=preload; as=style"
   }
 }
 string(37) "Load assets of dependency (optimized)"
 string(4) "Head"
-string(%d) "<link href="/storage/public_cache/CleverStyle:System.css?%s" rel="stylesheet">
+string(%d) "<link href="/storage/public_cache/%s.css" rel="stylesheet">
 <link href="/dependency1.css" rel="stylesheet">
 <script class="cs-config" target="cs.current_language" type="application/json">{"language":"English","hash":"%s"}</script>
 <script class="cs-config" target="cs.optimized_assets" type="application/json">[["\/dependency1.js"],["\/dependency1.html"]]</script>
 "
 string(9) "post_Body"
-string(%d) "<script src="/storage/public_cache/webcomponents.js?%s"></script>
-<script src="/storage/public_cache/CleverStyle:System.js?%s"></script>
-<link href="/storage/public_cache/CleverStyle:System.html?%s" rel="import">
+string(%d) "<script src="/storage/public_cache/%s.js"></script>
+<script src="/storage/public_cache/%s.js"></script>
+<link href="/storage/public_cache/%s.html" rel="import">
 "
 string(7) "headers"
 array(2) {
@@ -544,11 +544,11 @@ array(2) {
   ["link"]=>
   array(4) {
     [0]=>
-    string(79) "</storage/public_cache/CleverStyle:System.html?%s>; rel=preload; as=document"
+    string(%d) "</storage/public_cache/%s.html>; rel=preload; as=document"
     [1]=>
-    string(75) "</storage/public_cache/CleverStyle:System.js?%s>; rel=preload; as=script"
+    string(%d) "</storage/public_cache/%s.js>; rel=preload; as=script"
     [2]=>
-    string(75) "</storage/public_cache/CleverStyle:System.css?%s>; rel=preload; as=style"
+    string(%d) "</storage/public_cache/%s.css>; rel=preload; as=style"
     [3]=>
     string(41) "</dependency1.css>; rel=preload; as=style"
   }

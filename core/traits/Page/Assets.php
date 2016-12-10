@@ -220,7 +220,7 @@ trait Assets {
 			 */
 			Cache::rebuild($Config, $L, $this->theme);
 			$this->webcomponents_polyfill($Request, $Config, true);
-			$languages_hash = $this->get_hash_of(implode('', $Config->core['active_languages']));
+			$languages_hash = md5(implode('', $Config->core['active_languages']));
 			$language_hash  = file_get_json(PUBLIC_CACHE."/languages-$languages_hash.json")[$L->clanguage];
 			$this->config_internal(
 				[
@@ -290,7 +290,7 @@ trait Assets {
 		}
 		if ($with_compression) {
 			$hash = file_get_contents(PUBLIC_CACHE.'/webcomponents.js.hash');
-			$this->add_script_imports_to_document($Config, "<script src=\"/storage/public_cache/webcomponents.js?$hash\"></script>\n");
+			$this->add_script_imports_to_document($Config, "<script src=\"/storage/public_cache/$hash.js\"></script>\n");
 		} else {
 			$this->add_script_imports_to_document($Config, "<script src=\"/assets/js/WebComponents-polyfill/webcomponents-custom.min.js\"></script>\n");
 		}
