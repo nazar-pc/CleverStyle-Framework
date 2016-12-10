@@ -30,6 +30,7 @@ class Assets_processing {
 			return [];
 		}
 		$target_dir = "$composer_assets_dir/$package_name";
+		/** @noinspection MkdirRaceConditionInspection */
 		@mkdir($target_dir, 0770, true);
 		file_put_contents(
 			"$target_dir/.htaccess",
@@ -78,7 +79,6 @@ HTACCESS
 	/**
 	 * @param Config   $Config
 	 * @param string[] $files
-	 * @param string   $package_name
 	 * @param string   $package_dir
 	 * @param string   $target_dir
 	 *
