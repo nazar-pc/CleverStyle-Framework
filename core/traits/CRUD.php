@@ -140,7 +140,6 @@ trait CRUD {
 				continue;
 			}
 			$fields = "`$model[id_field]`, ";
-			/** @noinspection DisconnectedForeachInstructionInspection */
 			$values = "'$id'";
 			if (isset($model['language_field'])) {
 				$fields .= "`$model[language_field]`, ";

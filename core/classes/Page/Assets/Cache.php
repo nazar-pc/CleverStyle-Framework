@@ -85,7 +85,6 @@ class Cache {
 		/** @noinspection ForeachSourceInspection */
 		foreach ($Config->core['active_languages'] as $language) {
 			$L->change($language);
-			/** @noinspection DisconnectedForeachInstructionInspection */
 			$translations             = _json_encode($L);
 			$language_hash            = md5($translations);
 			$languages_map[$language] = $language_hash;
