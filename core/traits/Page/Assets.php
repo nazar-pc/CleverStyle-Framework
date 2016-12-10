@@ -74,21 +74,15 @@ trait Assets {
 	 * @var string
 	 */
 	protected $config;
-	/**
-	 * Base name is used as prefix when creating CSS/JS/HTML cache files in order to avoid collisions when having several themes and languages
-	 * @var string
-	 */
-	protected $public_cache_basename_path;
 	protected function init_assets () {
-		$this->core_html                  = [];
-		$this->core_js                    = [];
-		$this->core_css                   = [];
-		$this->core_config                = '';
-		$this->html                       = [];
-		$this->js                         = [];
-		$this->css                        = [];
-		$this->config                     = '';
-		$this->public_cache_basename_path = '';
+		$this->core_html   = [];
+		$this->core_js     = [];
+		$this->core_css    = [];
+		$this->core_config = '';
+		$this->html        = [];
+		$this->js          = [];
+		$this->css         = [];
+		$this->config      = '';
 	}
 	/**
 	 * @param string|string[] $add
@@ -213,10 +207,6 @@ trait Assets {
 		if (!$Config) {
 			return $this;
 		}
-		/**
-		 * Base name for cache files
-		 */
-		$this->public_cache_basename_path = PUBLIC_CACHE.'/'.$this->theme;
 		// TODO: I hope some day we'll get rid of this sh*t :(
 		$this->edge();
 		$Request = Request::instance();
@@ -228,7 +218,7 @@ trait Assets {
 			/**
 			 * Rebuilding HTML, JS and CSS cache if necessary
 			 */
-			Cache::rebuild($Config, $L, $this->public_cache_basename_path, $this->theme);
+			Cache::rebuild($Config, $L, $this->theme);
 			$this->webcomponents_polyfill($Request, $Config, true);
 			$languages_hash = $this->get_hash_of(implode('', $Config->core['active_languages']));
 			$language_hash  = file_get_json(PUBLIC_CACHE."/languages-$languages_hash.json")[$L->clanguage];
@@ -322,7 +312,7 @@ trait Assets {
 	 * @return array[]
 	 */
 	protected function get_assets_and_preload_resource_for_page_with_compression ($Request) {
-		list($dependencies, $compressed_assets_map, $not_embedded_resources_map) = file_get_json("$this->public_cache_basename_path.json");
+		list($dependencies, $compressed_assets_map, $not_embedded_resources_map) = file_get_json(PUBLIC_CACHE."/$this->theme.json");
 		$assets  = $this->get_normalized_assets($dependencies, $compressed_assets_map, $Request);
 		$preload = [];
 		foreach (array_merge(...array_values($assets)) as $path) {
@@ -496,7 +486,7 @@ trait Assets {
 	 * @param Request $Request
 	 */
 	protected function add_assets_on_page_manually_added_frontend_load_optimization ($Config, $Request) {
-		list($optimized_assets, $preload) = file_get_json("$this->public_cache_basename_path.optimized.json");
+		list($optimized_assets, $preload) = file_get_json(PUBLIC_CACHE."/$this->theme.optimized.json");
 		$this->add_preload(
 			array_unique(
 				array_merge($preload, $this->core_css, $this->css)

@@ -14,10 +14,10 @@ class Cache {
 	/**
 	 * @param \cs\Config   $Config
 	 * @param \cs\Language $L
-	 * @param string       $public_cache_basename_path
 	 * @param string       $theme
 	 */
-	public static function rebuild ($Config, $L, $public_cache_basename_path, $theme) {
+	public static function rebuild ($Config, $L, $theme) {
+		$public_cache_basename_path = PUBLIC_CACHE.'/'.$theme;
 		if (!file_exists("$public_cache_basename_path.json")) {
 			static::rebuild_normal($Config, $public_cache_basename_path, $theme);
 			Event::instance()->fire('System/Page/rebuild_cache');
