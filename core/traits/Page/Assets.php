@@ -218,7 +218,7 @@ trait Assets {
 			/**
 			 * Rebuilding HTML, JS and CSS cache if necessary
 			 */
-			Cache::rebuild($Config, $L, $this->theme);
+			(new Cache)->rebuild($Config, $L, $this->theme);
 			$this->webcomponents_polyfill($Request, $Config, true);
 			$languages_hash = md5(implode('', $Config->core['active_languages']));
 			$language_hash  = file_get_json(PUBLIC_CACHE."/languages-$languages_hash.json")[$L->clanguage];

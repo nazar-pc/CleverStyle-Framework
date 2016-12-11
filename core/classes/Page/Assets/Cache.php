@@ -12,36 +12,46 @@ use
 
 class Cache {
 	/**
+	 * @var string
+	 */
+	protected $public_cache;
+	/**
+	 * @param string $public_cache
+	 */
+	public function __construct ($public_cache = PUBLIC_CACHE) {
+		$this->public_cache = $public_cache;
+	}
+	/**
 	 * @param \cs\Config   $Config
 	 * @param \cs\Language $L
 	 * @param string       $theme
 	 */
-	public static function rebuild ($Config, $L, $theme) {
-		if (!file_exists(PUBLIC_CACHE."/$theme.json")) {
-			static::rebuild_normal($Config, $theme);
+	public function rebuild ($Config, $L, $theme) {
+		if (!file_exists("$this->public_cache/$theme.json")) {
+			$this->rebuild_normal($Config, $theme);
 			Event::instance()->fire('System/Page/rebuild_cache');
-			static::rebuild_optimized($theme);
-			static::rebuild_webcomponents_polyfill();
+			$this->rebuild_optimized($theme);
+			$this->rebuild_webcomponents_polyfill();
 		}
 		/**
 		 * We take hash of languages in order to take into account when list of active languages has changed (and generate cache for all acive languages)
 		 */
 		$languages_hash = md5(implode('', $Config->core['active_languages']));
-		if (!file_exists(PUBLIC_CACHE."/languages-$languages_hash.json")) {
-			static::rebuild_languages($Config, $L, $languages_hash);
+		if (!file_exists("$this->public_cache/languages-$languages_hash.json")) {
+			$this->rebuild_languages($Config, $L, $languages_hash);
 		}
 	}
 	/**
 	 * @param \cs\Config $Config
 	 * @param string     $theme
 	 */
-	protected static function rebuild_normal ($Config, $theme) {
+	protected function rebuild_normal ($Config, $theme) {
 		list($dependencies, $assets_map) = Collecting::get_assets_dependencies_and_map($Config, $theme);
 		$compressed_assets_map      = [];
 		$not_embedded_resources_map = [];
 		/** @noinspection ForeachSourceInspection */
 		foreach ($assets_map as $filename_prefix => $local_assets) {
-			$compressed_assets_map[$filename_prefix] = static::cache_compressed_assets_files(
+			$compressed_assets_map[$filename_prefix] = $this->cache_compressed_assets_files(
 				$filename_prefix,
 				$local_assets,
 				$Config->core['vulcanization'],
@@ -49,13 +59,13 @@ class Cache {
 			);
 		}
 		unset($assets_map, $filename_prefix, $local_assets);
-		file_put_json(PUBLIC_CACHE."/$theme.json", [$dependencies, $compressed_assets_map, array_filter($not_embedded_resources_map)]);
+		file_put_json("$this->public_cache/$theme.json", [$dependencies, $compressed_assets_map, array_filter($not_embedded_resources_map)]);
 	}
 	/**
 	 * @param string $theme
 	 */
-	protected static function rebuild_optimized ($theme) {
-		list(, $compressed_assets_map, $preload_source) = file_get_json(PUBLIC_CACHE."/$theme.json");
+	protected function rebuild_optimized ($theme) {
+		list(, $compressed_assets_map, $preload_source) = file_get_json("$this->public_cache/$theme.json");
 		$preload = [array_values($compressed_assets_map['System'])];
 		/** @noinspection ForeachSourceInspection */
 		foreach ($compressed_assets_map['System'] as $path) {
@@ -66,20 +76,20 @@ class Cache {
 		unset($compressed_assets_map['System']);
 		$optimized_assets = array_merge(...array_values(array_map('array_values', $compressed_assets_map)));
 		$preload          = array_merge(...$preload);
-		file_put_json(PUBLIC_CACHE."/$theme.optimized.json", [$optimized_assets, $preload]);
+		file_put_json("$this->public_cache/$theme.optimized.json", [$optimized_assets, $preload]);
 	}
-	protected static function rebuild_webcomponents_polyfill () {
+	protected function rebuild_webcomponents_polyfill () {
 		$webcomponents_js = file_get_contents(DIR.'/assets/js/WebComponents-polyfill/webcomponents-custom.min.js');
 		$hash             = md5($webcomponents_js);
-		file_put_contents(PUBLIC_CACHE."/$hash.js", $webcomponents_js, LOCK_EX | FILE_BINARY);
-		file_put_contents(PUBLIC_CACHE.'/webcomponents.js.hash', $hash, LOCK_EX | FILE_BINARY);
+		file_put_contents("$this->public_cache/$hash.js", $webcomponents_js, LOCK_EX | FILE_BINARY);
+		file_put_contents("$this->public_cache/webcomponents.js.hash", $hash, LOCK_EX | FILE_BINARY);
 	}
 	/**
 	 * @param \cs\Config   $Config
 	 * @param \cs\Language $L
 	 * @param string       $languages_hash
 	 */
-	protected static function rebuild_languages ($Config, $L, $languages_hash) {
+	protected function rebuild_languages ($Config, $L, $languages_hash) {
 		$current_language = $L->clanguage;
 		$languages_map    = [];
 		/** @noinspection ForeachSourceInspection */
@@ -88,10 +98,10 @@ class Cache {
 			$translations             = _json_encode($L);
 			$language_hash            = md5($translations);
 			$languages_map[$language] = $language_hash;
-			file_put_contents(PUBLIC_CACHE."/$language_hash.js", "define($translations);");
+			file_put_contents("$this->public_cache/$language_hash.js", "define($translations);");
 		}
 		$L->change($current_language);
-		file_put_json(PUBLIC_CACHE."/languages-$languages_hash.json", $languages_map);
+		file_put_json("$this->public_cache/languages-$languages_hash.json", $languages_map);
 	}
 	/**
 	 * Creates cached version of given HTML, JS and CSS files.
@@ -105,11 +115,11 @@ class Cache {
 	 *
 	 * @return array
 	 */
-	protected static function cache_compressed_assets_files ($filename_prefix, $assets, $vulcanization, &$not_embedded_resources_map) {
+	protected function cache_compressed_assets_files ($filename_prefix, $assets, $vulcanization, &$not_embedded_resources_map) {
 		$local_assets = [];
 		foreach ($assets as $extension => $files) {
 			$not_embedded_resources = [];
-			$content                = static::cache_compressed_assets_files_single(
+			$content                = $this->cache_compressed_assets_files_single(
 				$extension,
 				$filename_prefix,
 				$files,
@@ -121,7 +131,7 @@ class Cache {
 					$resource = "/storage/public_cache/$resource";
 				}
 			}
-			$file_path = PUBLIC_CACHE.'/'.md5($content).'.'.$extension;
+			$file_path = $this->public_cache.'/'.md5($content).'.'.$extension;
 			file_put_contents($file_path, $content, LOCK_EX | FILE_BINARY);
 			$relative_path                              = '/storage/public_cache/'.basename($file_path);
 			$local_assets[$extension]                   = $relative_path;
@@ -138,7 +148,7 @@ class Cache {
 	 *
 	 * @return string
 	 */
-	protected static function cache_compressed_assets_files_single ($extension, $filename_prefix, $files, $vulcanization, &$not_embedded_resources) {
+	protected function cache_compressed_assets_files_single ($extension, $filename_prefix, $files, $vulcanization, &$not_embedded_resources) {
 		$content = '';
 		switch ($extension) {
 			/**
@@ -197,7 +207,7 @@ class Cache {
 		/** @noinspection PhpUndefinedVariableInspection */
 		$content .= array_reduce($files, $callback);
 		if ($extension == 'html') {
-			$content   = Assets_processing::html($content, '', PUBLIC_CACHE, $vulcanization);
+			$content = Assets_processing::html($content, '', $this->public_cache, $vulcanization);
 		}
 		return $content;
 	}
