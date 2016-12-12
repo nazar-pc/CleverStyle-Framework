@@ -12,8 +12,7 @@ phar.readonly = Off
 --FILE--
 <?php
 include __DIR__.'/_install_prepare.php';
-// TODO: xdebug causes everything to crash if code coverage is used in following test, likely caused by https://bugs.xdebug.org/view.php?id=1322
-system('SKIP_COVERAGE=1 '.PHP_BINARY.' -d variables_order=EGPCS -d xdebug.default_enable=0 '.__DIR__.'/0.install-mysqli-web-0.php');
+system(PHP_BINARY.' -d variables_order=EGPCS -d xdebug.default_enable=0 '.__DIR__.'/0.install-mysqli-web-0.php');
 system(PHP_BINARY.' -d variables_order=EGPCS -d xdebug.default_enable=0 '.__DIR__.'/0.install-mysqli-web-1.php');
 ?>
 --CLEAN--
