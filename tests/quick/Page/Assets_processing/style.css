@@ -25,7 +25,7 @@
 }
 
 .image-absolute-path {
-	background-image : url("/image.svg");
+	background-image : url("/tests/quick/Page/Assets_processing/image.svg");
 }
 
 .image-query-string {

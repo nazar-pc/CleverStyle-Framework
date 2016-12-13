@@ -101,7 +101,8 @@ class Assets_processing {
 				if (!static::is_relative_path_and_exists($link, $dir)) {
 					return $match[0];
 				}
-				$extension = file_extension($link);
+				$extension     = file_extension($link);
+				$absolute_path = static::absolute_path($link, $dir);
 				/**
 				 * Only process CSS imports without media queries, imports with media queries will just be corrected to absolute paths
 				 */
@@ -109,11 +110,11 @@ class Assets_processing {
 					/**
 					 * For recursive stylesheets processing, if CSS file includes others CSS files
 					 */
-					return static::css(file_get_contents("$dir/$link"), "$dir/$link", $not_embedded_resources);
+					return static::css(file_get_contents($absolute_path), $absolute_path, $not_embedded_resources);
 				}
-				$content = file_get_contents("$dir/$link");
-				if (!isset(static::$extension_to_mime[$extension]) || filesize("$dir/$link") > static::MAX_EMBEDDING_SIZE) {
-					$path_relatively_to_the_root = str_replace(getcwd(), '', realpath("$dir/$link"));
+				$content = file_get_contents($absolute_path);
+				if (!isset(static::$extension_to_mime[$extension]) || filesize($absolute_path) > static::MAX_EMBEDDING_SIZE) {
+					$path_relatively_to_the_root = str_replace(getcwd(), '', $absolute_path);
 					$path_relatively_to_the_root .= '?'.substr(md5($content), 0, 5);
 					if (isset(static::$extension_to_mime[$extension]) && strpos($path, '?') === false) {
 						$not_embedded_resources[] = $path_relatively_to_the_root;
@@ -404,14 +405,24 @@ class Assets_processing {
 		return false;
 	}
 	/**
-	 * Simple check for http[s], ftp and absolute links
-	 *
 	 * @param string $path
 	 * @param string $dir
 	 *
 	 * @return bool
 	 */
 	protected static function is_relative_path_and_exists ($path, $dir) {
-		return $dir && !preg_match('#^(http://|https://|ftp://|/)#i', $path) && file_exists("$dir/$path");
+		return $dir && !preg_match('#^https?://#i', $path) && file_exists(static::absolute_path($path, $dir));
+	}
+	/**
+	 * @param string $path
+	 * @param string $dir
+	 *
+	 * @return string
+	 */
+	protected static function absolute_path ($path, $dir) {
+		if (strpos($path, '/') === 0) {
+			return realpath(getcwd().$path);
+		}
+		return realpath("$dir/$path");
 	}
 }
