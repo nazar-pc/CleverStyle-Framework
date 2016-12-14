@@ -11,15 +11,10 @@ namespace cs\Page;
  * Class includes few methods used for processing CSS, JS and HTML files before putting into cache
  *
  * This is because CSS and HTML files may include other CSS, JS files, images, fonts and so on with absolute and relative paths.
- * Methods of this class handle all this assets, applies basic minification to CSS and JS files and produce single resulting file (relative paths to
- * files that can't be embedded are converted to absolute). This allows to decrease number of HTTP requests on page and avoid breaking of relative paths for
- * fonts, images and other assets after putting them into cache directory as well as minimize contents size by removing comments and other redundant stuff.
+ * Methods of this class handle all this assets, applies basic minification to CSS and JS files and produce single resulting file, nested files are also copied
+ * to target directory and processed if needed.
  */
 class Assets_processing {
-	/**
-	 * Do not inline files bigger than 4 KiB
-	 */
-	const MAX_EMBEDDING_SIZE = 4096;
 	protected static $extension_to_mime = [
 		'jpeg' => 'image/jpg',
 		'jpe'  => 'image/jpg',
