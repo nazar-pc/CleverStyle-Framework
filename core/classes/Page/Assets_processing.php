@@ -39,11 +39,12 @@ class Assets_processing {
 	 *
 	 * @param string   $data                   Content of processed file
 	 * @param string   $file                   Path to file, that contains specified in previous parameter content
+	 * @param string   $target_directory_path  Target directory for resulting combined files
 	 * @param string[] $not_embedded_resources Some resources like images and fonts might not be embedded into resulting CSS because of their size
 	 *
 	 * @return string    $data
 	 */
-	public static function css ($data, $file, &$not_embedded_resources = []) {
+	public static function css ($data, $file, $target_directory_path = PUBLIC_CACHE, &$not_embedded_resources = []) {
 		$dir = dirname($file);
 		/**
 		 * Remove comments, tabs and new lines
@@ -94,7 +95,7 @@ class Assets_processing {
 		 */
 		$data = preg_replace_callback(
 			'/url\((.*)\)|@import\s*(?:url\()?\s*([\'"].*[\'"])\s*\)??(.*);/U',
-			function ($match) use ($dir, &$not_embedded_resources) {
+			function ($match) use ($dir, $target_directory_path, &$not_embedded_resources) {
 				$path_matched = @$match[2] ?: $match[1];
 				$path         = trim($path_matched, '\'" ');
 				$link         = explode('?', $path, 2)[0];
@@ -110,16 +111,15 @@ class Assets_processing {
 					/**
 					 * For recursive stylesheets processing, if CSS file includes others CSS files
 					 */
-					return static::css(file_get_contents($absolute_path), $absolute_path, $not_embedded_resources);
+					return static::css(file_get_contents($absolute_path), $absolute_path, $target_directory_path, $not_embedded_resources);
 				}
 				$content = file_get_contents($absolute_path);
 				if (!isset(static::$extension_to_mime[$extension]) || filesize($absolute_path) > static::MAX_EMBEDDING_SIZE) {
-					$path_relatively_to_the_root = str_replace(getcwd(), '', $absolute_path);
-					$path_relatively_to_the_root .= '?'.substr(md5($content), 0, 5);
+					$filename = static::file_put_contents_with_hash($target_directory_path, $extension, $content);
 					if (isset(static::$extension_to_mime[$extension]) && strpos($path, '?') === false) {
-						$not_embedded_resources[] = $path_relatively_to_the_root;
+						$not_embedded_resources[] = str_replace(getcwd(), '', "$target_directory_path/$filename");
 					}
-					return str_replace($path_matched, "'".str_replace("'", "\\'", $path_relatively_to_the_root)."'", $match[0]);
+					return str_replace($path_matched, "'./$filename'", $match[0]);
 				}
 				$mime_type = static::$extension_to_mime[$extension];
 				$content   = base64_encode($content);
@@ -128,6 +128,20 @@ class Assets_processing {
 			$data
 		);
 		return trim($data);
+	}
+	/**
+	 * Put `$content` into `$dir` where filename is `md5($content)` with specified extension
+	 *
+	 * @param string $dir
+	 * @param string $extension
+	 * @param string $content
+	 *
+	 * @return string Filename (without full path)
+	 */
+	protected static function file_put_contents_with_hash ($dir, $extension, $content) {
+		$hash = md5($content);
+		file_put_contents("$dir/$hash.$extension", $content, LOCK_EX | FILE_BINARY);
+		return "$hash.$extension";
 	}
 	/**
 	 * Simple and fast JS minification
@@ -300,15 +314,14 @@ class Assets_processing {
 		 * If vulcanization is not used - put contents into separate file, and put link to it, otherwise put minified content back
 		 */
 		if (!$vulcanization) {
-			$hash = md5($scripts_content);
-			// TODO: Remove in 7.x; For backward compatibility, since some modules might use this b specifying file path
+			// TODO: Remove in 7.x; For backward compatibility, since some modules might use this by specifying file path
 			if (!is_dir($target_directory_path)) {
 				$target_directory_path = dirname($target_directory_path);
 			}
-			file_put_contents("$target_directory_path/$hash.js", $scripts_content, LOCK_EX | FILE_BINARY);
+			$filename = static::file_put_contents_with_hash($target_directory_path, 'js', $scripts_content);
 			// Add script with combined content file to the end
-			$data .= "<script src=\"./$hash.js\"></script>";
-			$not_embedded_resources[] = str_replace(getcwd(), '', realpath("$target_directory_path/$hash.js"));
+			$data .= "<script src=\"./$filename\"></script>";
+			$not_embedded_resources[] = str_replace(getcwd(), '', "$target_directory_path/$filename");
 		} else {
 			// Add combined content inline script to the end
 			$data .= "<script>$scripts_content</script>";
@@ -340,7 +353,7 @@ class Assets_processing {
 				$content = explode('>', $links_and_styles[2][$index], 2)[1];
 				$data    = str_replace(
 					$content,
-					static::css($content, $file, $not_embedded_resources),
+					static::css($content, $file, $target_directory_path, $not_embedded_resources),
 					$data
 				);
 				continue;
@@ -362,6 +375,7 @@ class Assets_processing {
 				$css  = static::css(
 					file_get_contents("$dir/$url"),
 					"$dir/$url",
+					$target_directory_path,
 					$not_embedded_resources
 				);
 				$data = preg_replace(

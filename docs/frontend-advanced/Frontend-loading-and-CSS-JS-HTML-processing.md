@@ -6,7 +6,7 @@ Depending on system configuration sources minification, combining, vulcanization
 When *Cache and compress JavaScript, CSS and HTML* option is enabled in system administration, following will happen under the hood:
 * CSS and HTML files will be analyzed
 * small (under 4 KiB) files like images and fonts will be embedded into resulting CSS
-* relative paths to larger files in CSS will be corrected to absolute (since cached CSS file will be located in another place), `?md5_hash` will be added based on file contents (replaces existing query string if there was any)
+* larger files in CSS will be copied to public cache directory and path to new file location will be corrected
 * large files not embedded into resulting CSS will still be preloaded using HTTP/2 Server Push (add any query parameter after `?` to instruct framework to not preload this file anyway)
 * CSS imports will be also embedded into parent CSS (except those with media queries)
 * JS inside of HTML files (both inline and `script[src]`) will be combined into one block and inlined

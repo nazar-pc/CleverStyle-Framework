@@ -163,7 +163,7 @@ class Cache {
 				 * @return string
 				 */
 				$callback = function ($content, $file) use (&$not_embedded_resources) {
-					return $content.Assets_processing::css(file_get_contents($file), $file, $not_embedded_resources);
+					return $content.Assets_processing::css(file_get_contents($file), $file, $this->public_cache, $not_embedded_resources);
 				};
 				break;
 			/**
@@ -184,7 +184,7 @@ class Cache {
 						Assets_processing::html(
 							file_get_contents($file),
 							$file,
-							'',
+							$this->public_cache,
 							true,
 							$not_embedded_resources
 						);

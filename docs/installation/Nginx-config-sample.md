@@ -36,10 +36,10 @@ server {
 	#}
 	# Add necessary headers
 	location /storage/public_cache {
-		location ~ \.(css|js|html)$ {
-			add_header Cache-Control "max-age=2592000, public";
+		location ~ \.(hash|json)$ {
+			return 403;
 		}
-		return 403;
+		add_header Cache-Control "max-age=2592000, public";
 	}
 	# Some headers to improve security when dealing with downloaded content
 	location /storage/public {

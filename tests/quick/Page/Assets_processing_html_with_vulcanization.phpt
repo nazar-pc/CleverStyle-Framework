@@ -1,14 +1,17 @@
 --FILE--
 <?php
 namespace cs\Page;
+use function cs\make_tmp_dir;
+
 include __DIR__.'/../../unit.php';
-echo Assets_processing::html(file_get_contents(__DIR__.'/Assets_processing/my-element.html'), __DIR__.'/Assets_processing/my-element.html', '', true, $not_embedded_resources)."\n";
+$tmp_dir = make_tmp_dir();
+echo Assets_processing::html(file_get_contents(__DIR__.'/Assets_processing/my-element.html'), __DIR__.'/Assets_processing/my-element.html', $tmp_dir, true, $not_embedded_resources)."\n";
 var_dump($not_embedded_resources);
 ?>
 --EXPECTF--
 
 <dom-module id="my-element">
-	<template><style>.imported-class{color:black;}.imported-class{color:black;}.imported-class-2{color:black;}.imported-class-2{color:black;}@import '/tests/quick/Page/Assets_processing/imported.css?68b89' screen and (orientation:landscape);@import url('/tests/quick/Page/Assets_processing/imported.css?68b89') screen and (orientation:landscape);@import '/tests/quick/Page/Assets_processing/imported-2.css?047a1' screen and (orientation:landscape);@import url('/tests/quick/Page/Assets_processing/imported-2.css?047a1') screen and (orientation:landscape);.some-class{background-color:#000;color:#fff;transition:opacity .3s,transform .5s;}.image{background-image:url(data:image/svg+xml;charset=utf-8;base64,MTExMTE=);}.image-large{background-image:url('/tests/quick/Page/Assets_processing/image-large.svg?0bf9e');}.image-absolute-path{background-image:url("data:image/svg+xml;charset=utf-8;base64,MTExMTE=");}.image-query-string{background-image:url('/tests/quick/Page/Assets_processing/image-large-2.svg?0bf9e');}@media(min-width:960px) and (orientation:landscape){.another-class{display:none;}}</style>
+	<template><style>.imported-class{color:black;}.imported-class{color:black;}.imported-class-2{color:black;}.imported-class-2{color:black;}@import './68b89e0f0f795bd30957fec322063ab3.css' screen and (orientation:landscape);@import url('./68b89e0f0f795bd30957fec322063ab3.css') screen and (orientation:landscape);@import './047a14bb3ae252664280463d532cb113.css' screen and (orientation:landscape);@import url('./047a14bb3ae252664280463d532cb113.css') screen and (orientation:landscape);.some-class{background-color:#000;color:#fff;transition:opacity .3s,transform .5s;}.image{background-image:url(data:image/svg+xml;charset=utf-8;base64,MTExMTE=);}.image-large{background-image:url('./0bf9edfe605a79ba7a8bea72b894729f.svg');}.image-absolute-path{background-image:url("data:image/svg+xml;charset=utf-8;base64,MTExMTE=");}.image-query-string{background-image:url('./0bf9edfe605a79ba7a8bea72b894729f.svg');}@media(min-width:960px) and (orientation:landscape){.another-class{display:none;}}</style>
 		<style>:host{display:block;}</style>
 	</template>
 %w
@@ -24,5 +27,5 @@ var_dump($not_embedded_resources);
 );}var script_code = "<script>JS here<\/script>";;Polymer.updateStyles();;var xyz = 'xyz';;var zyx = 'zyx';</script>
 array(1) {
   [0]=>
-  string(57) "/tests/quick/Page/Assets_processing/image-large.svg?%s"
+  string(%d) "/tests/%s/0bf9edfe605a79ba7a8bea72b894729f.svg"
 }

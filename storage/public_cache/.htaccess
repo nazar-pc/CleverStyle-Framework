@@ -1,3 +1,4 @@
-<FilesMatch "\.(css|js|html)$">
-	Allow From All
+Allow From All
+<FilesMatch "\.(hash|json)$">
+	Deny From All
 </FilesMatch>

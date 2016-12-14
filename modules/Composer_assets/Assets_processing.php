@@ -93,7 +93,7 @@ HTACCESS
 					$content['js'][] = file_get_contents($file);
 					break;
 				case 'css':
-					$content['css'][] = System_assets_processing::css(file_get_contents($file), $file);
+					$content['css'][] = System_assets_processing::css(file_get_contents($file), $file, $target_dir);
 					break;
 				case 'html':
 					$content['html'][] = System_assets_processing::html(
@@ -104,10 +104,10 @@ HTACCESS
 					);
 					break;
 				case 'less':
-					$content['css'][] = System_assets_processing::css(self::compile_less($file), $file);
+					$content['css'][] = System_assets_processing::css(self::compile_less($file), $file, $target_dir);
 					break;
 				case 'scss':
-					$content['css'][] = System_assets_processing::css(self::compile_scss($file), $file);
+					$content['css'][] = System_assets_processing::css(self::compile_scss($file), $file, $target_dir);
 					break;
 			}
 		}
