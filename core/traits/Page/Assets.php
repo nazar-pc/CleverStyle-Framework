@@ -474,7 +474,7 @@ trait Assets {
 		}
 		$Response = Response::instance();
 		$Response->cookie('pushed', 1, 0, true);
-		foreach ($preload as $resource) {
+		foreach (array_unique($preload) as $resource) {
 			$extension = explode('?', file_extension($resource))[0];
 			$as        = $this->extension_to_as[$extension];
 			$resource  = str_replace(' ', '%20', $resource);
@@ -488,9 +488,7 @@ trait Assets {
 	protected function add_assets_on_page_manually_added_frontend_load_optimization ($Config, $Request) {
 		list($optimized_assets, $preload) = file_get_json(PUBLIC_CACHE."/$this->theme.optimized.json");
 		$this->add_preload(
-			array_unique(
-				array_merge($preload, $this->core_css, $this->css)
-			),
+			array_merge($preload, $this->core_css, $this->css),
 			$Request
 		);
 		$optimized_assets  = array_flip($optimized_assets);

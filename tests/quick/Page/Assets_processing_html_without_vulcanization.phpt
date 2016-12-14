@@ -17,7 +17,7 @@ echo file_get_contents("$tmp_dir/1493da20bba0b80de0e0f7297d3cf6d0.js")."\n";
 --EXPECTF--
 
 <dom-module id="my-element">
-	<template><style>.imported-class{color:black;}.imported-class{color:black;}.imported-class-2{color:black;}.imported-class-2{color:black;}@import './23ade486f04787f66ae11b23a663c51b.css' screen and (orientation:landscape);@import url('./23ade486f04787f66ae11b23a663c51b.css') screen and (orientation:landscape);@import './fa302422c3063896a9294da61f07e969.css' screen and (orientation:landscape);@import url('./fa302422c3063896a9294da61f07e969.css') screen and (orientation:landscape);.some-class{background-color:#000;color:#fff;transition:opacity .3s,transform .5s;}.image{background-image:url(data:image/svg+xml;charset=utf-8;base64,MTExMTE=);}.image-large{background-image:url('./0bf9edfe605a79ba7a8bea72b894729f.svg');}.image-absolute-path{background-image:url("data:image/svg+xml;charset=utf-8;base64,MTExMTE=");}.image-query-string{background-image:url('./0bf9edfe605a79ba7a8bea72b894729f.svg');}@media(min-width:960px) and (orientation:landscape){.another-class{display:none;}}</style>
+	<template><style>.imported-class{color:black;}.imported-class{color:black;}.imported-class-2{color:black;}.imported-class-2{color:black;}@import './23ade486f04787f66ae11b23a663c51b.css' screen and (orientation:landscape);@import url('./23ade486f04787f66ae11b23a663c51b.css') screen and (orientation:landscape);@import './fa302422c3063896a9294da61f07e969.css' screen and (orientation:landscape);@import url('./fa302422c3063896a9294da61f07e969.css') screen and (orientation:landscape);.some-class{background-color:#000;color:#fff;transition:opacity .3s,transform .5s;}.image{background-image:url('./b0baee9d279d34fa1dfd71aadb908c3f.svg');}.image-large{background-image:url('./0bf9edfe605a79ba7a8bea72b894729f.svg');}.image-absolute-path{background-image:url('./b0baee9d279d34fa1dfd71aadb908c3f.svg');}.image-query-string{background-image:url('./0bf9edfe605a79ba7a8bea72b894729f.svg');}@media(min-width:960px) and (orientation:landscape){.another-class{display:none;}}</style>
 		<style>:host{display:block;}</style>
 	</template>
 %w
@@ -31,14 +31,18 @@ echo file_get_contents("$tmp_dir/1493da20bba0b80de0e0f7297d3cf6d0.js")."\n";
 <script src="/external-imported-script.js"></script>
 <link rel="import" href="/external-import.html" type="html">
 <script src="./1493da20bba0b80de0e0f7297d3cf6d0.js"></script>
-array(4) {
+array(6) {
   [0]=>
-  string(%d) "/tests/%s/0bf9edfe605a79ba7a8bea72b894729f.svg"
+  string(%d) "/tests/%s/b0baee9d279d34fa1dfd71aadb908c3f.svg"
   [1]=>
-  string(%d) "/tests/%s/d56902a9037da35c4d51753cb1b31d4f.js"
+  string(%d) "/tests/%s/0bf9edfe605a79ba7a8bea72b894729f.svg"
   [2]=>
-  string(%d) "/tests/%s/b0c4817554bfb8e8f10f16ab1c683f47.js"
+  string(%d) "/tests/%s/b0baee9d279d34fa1dfd71aadb908c3f.svg"
   [3]=>
+  string(%d) "/tests/%s/d56902a9037da35c4d51753cb1b31d4f.js"
+  [4]=>
+  string(%d) "/tests/%s/b0c4817554bfb8e8f10f16ab1c683f47.js"
+  [5]=>
   string(%d) "/tests/%s/1493da20bba0b80de0e0f7297d3cf6d0.js"
 }
 string(11) "imported.js"

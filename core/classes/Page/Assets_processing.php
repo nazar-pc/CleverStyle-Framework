@@ -87,7 +87,7 @@ class Assets_processing {
 		 */
 		$data = preg_replace('/(\D)0\.(\d+)/i', '$1.$2', $data);
 		/**
-		 * Unnecessary spaces around colons (should have whitespace character after, otherwise might be `.c :disabled` and will be handled incorrectly)
+		 * Unnecessary spaces around colons (should have whitespace character after, otherwise `.class :disabled` will be handled incorrectly)
 		 */
 		$data = preg_replace('/\s*:\s+/', ':', $data);
 		/**
@@ -125,17 +125,12 @@ class Assets_processing {
 					$filename = static::file_put_contents_with_hash($target_directory_path, $extension, $content);
 					return str_replace($path_matched, "'./$filename'", $match[0]);
 				}
-				if (filesize($absolute_path) > static::MAX_EMBEDDING_SIZE) {
-					$filename = md5_file($absolute_path).'.'.$extension;
-					copy($absolute_path, "$target_directory_path/$filename");
-					if (strpos($path, '?') === false) {
-						$not_embedded_resources[] = str_replace(getcwd(), '', "$target_directory_path/$filename");
-					}
-					return str_replace($path_matched, "'./$filename'", $match[0]);
+				$filename = md5_file($absolute_path).'.'.$extension;
+				copy($absolute_path, "$target_directory_path/$filename");
+				if (strpos($path, '?') === false) {
+					$not_embedded_resources[] = str_replace(getcwd(), '', "$target_directory_path/$filename");
 				}
-				$mime_type = static::$extension_to_mime[$extension];
-				$content   = base64_encode($content);
-				return str_replace($path, "data:$mime_type;charset=utf-8;base64,$content", $match[0]);
+				return str_replace($path_matched, "'./$filename'", $match[0]);
 			},
 			$data
 		);
