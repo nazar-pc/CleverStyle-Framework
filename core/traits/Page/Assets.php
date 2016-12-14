@@ -250,14 +250,6 @@ trait Assets {
 		return $this;
 	}
 	/**
-	 * @param string $content
-	 *
-	 * @return string
-	 */
-	protected function get_hash_of ($content) {
-		return substr(md5($content), 0, 5);
-	}
-	/**
 	 * @param Config  $Config
 	 * @param Request $Request
 	 *
@@ -413,7 +405,7 @@ trait Assets {
 				return $content.file_get_contents($file);
 			}
 		);
-		$content_hash = $this->get_hash_of($content);
+		$content_hash = substr(md5($content), 0, 5);
 		foreach ($assets as &$files) {
 			foreach ($files as &$file) {
 				$file .= "?$content_hash";
