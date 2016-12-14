@@ -126,7 +126,8 @@ class Assets_processing {
 					return str_replace($path_matched, "'./$filename'", $match[0]);
 				}
 				if (filesize($absolute_path) > static::MAX_EMBEDDING_SIZE) {
-					$filename = static::file_put_contents_with_hash($target_directory_path, $extension, $content);
+					$filename = md5_file($absolute_path).'.'.$extension;
+					copy($absolute_path, "$target_directory_path/$filename");
 					if (strpos($path, '?') === false) {
 						$not_embedded_resources[] = str_replace(getcwd(), '', "$target_directory_path/$filename");
 					}
