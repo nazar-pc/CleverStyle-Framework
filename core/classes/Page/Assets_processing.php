@@ -93,6 +93,7 @@ class Assets_processing {
 		/**
 		 * Assets processing
 		 */
+		// TODO: replace by loop, track duplicated stuff that are subject to inlining and if they appear more than once, don't inline them
 		$data = preg_replace_callback(
 			'/url\((.*)\)|@import\s*(?:url\()?\s*([\'"].*[\'"])\s*\)??(.*);/U',
 			function ($match) use ($dir, $target_directory_path, &$not_embedded_resources) {
@@ -104,19 +105,29 @@ class Assets_processing {
 				}
 				$extension     = file_extension($link);
 				$absolute_path = static::absolute_path($link, $dir);
-				/**
-				 * Only process CSS imports without media queries, imports with media queries will just be corrected to absolute paths
-				 */
-				if ($extension == 'css' && @$match[2] && !trim(@$match[3])) {
+				$content       = file_get_contents($absolute_path);
+				if ($extension == 'css' && @$match[2]) {
 					/**
-					 * For recursive stylesheets processing, if CSS file includes others CSS files
+					 * Only inline CSS imports without media queries, imports with media queries will be placed as separate files
 					 */
-					return static::css(file_get_contents($absolute_path), $absolute_path, $target_directory_path, $not_embedded_resources);
+					if (!trim(@$match[3])) {
+						return static::css($content, $absolute_path, $target_directory_path, $not_embedded_resources);
+					} else {
+						$filename = static::file_put_contents_with_hash(
+							$target_directory_path,
+							$extension,
+							static::css($content, $absolute_path, $target_directory_path)
+						);
+						return str_replace($path_matched, "'./$filename'", $match[0]);
+					}
 				}
-				$content = file_get_contents($absolute_path);
-				if (!isset(static::$extension_to_mime[$extension]) || filesize($absolute_path) > static::MAX_EMBEDDING_SIZE) {
+				if (!isset(static::$extension_to_mime[$extension])) {
 					$filename = static::file_put_contents_with_hash($target_directory_path, $extension, $content);
-					if (isset(static::$extension_to_mime[$extension]) && strpos($path, '?') === false) {
+					return str_replace($path_matched, "'./$filename'", $match[0]);
+				}
+				if (filesize($absolute_path) > static::MAX_EMBEDDING_SIZE) {
+					$filename = static::file_put_contents_with_hash($target_directory_path, $extension, $content);
+					if (strpos($path, '?') === false) {
 						$not_embedded_resources[] = str_replace(getcwd(), '', "$target_directory_path/$filename");
 					}
 					return str_replace($path_matched, "'./$filename'", $match[0]);
