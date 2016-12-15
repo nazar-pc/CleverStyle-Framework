@@ -47,29 +47,24 @@ function form () {
 
 /**
  * @param string $dir
- * @param string $exclude_dir
+ * @param string $exclude_component
  *
  * @return array[]
  */
-function get_list_for_form ($dir, $exclude_dir = '') {
-	$components = array_values(
-		array_filter(
-			get_files_list($dir, false, 'd'),
-			function ($module) use ($exclude_dir) {
-				return $module != $exclude_dir;
-			}
-		)
-	);
-	foreach ($components as &$component) {
-		$component = [
-			$component,
-			file_exists("$dir/$component/meta.json") ? [
-				'title' => 'Version: '.file_get_json("$dir/$component/meta.json")['version']
-			] : [
-				'title' => 'No meta.json file found',
-				'disabled'
-			]
-		];
+function get_list_for_form ($dir, $exclude_component = '') {
+	$components = [];
+	foreach (array_map('basename', glob("$dir/*", GLOB_ONLYDIR)) as $component) {
+		if ($component != $exclude_component) {
+			$components[] = [
+				$component,
+				file_exists("$dir/$component/meta.json") ? [
+					'title' => 'Version: '.file_get_json("$dir/$component/meta.json")['version']
+				] : [
+					'title' => 'No meta.json file found',
+					'disabled'
+				]
+			];
+		}
 	}
 	return $components;
 }
