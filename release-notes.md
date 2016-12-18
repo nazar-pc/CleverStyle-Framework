@@ -2711,3 +2711,88 @@ Dropped backward compatibility:
 * Changed structure of optimized map in public cache
 
 Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
+
+# 6.45.0+build-2585: Improved AMD modules support and public cache
+
+This release brings a number of small tweaks and improvements, the most noticeable being related to frontend.
+
+First frontend improvement is about RequireJS/Alameda support being improved by generating more advanced packages configs instead of simple paths (`lodash-amd` can now be used without issues). Also custom version of Alameda is now used in order to support some not completely valid modules, that might appear in the wild (this is better than not supporting those at all).
+
+Second frontend improvement is about how framework stores frontend cache: now everything is copied into public cache directory, so that it is possible to process all necessary assets (including images, fonts, etc) by just traversing files in this single directory.
+
+As usual, there are other small improvements, more tests, updated documentation and updated third-party components to their latest versions.
+
+Security fixes:
+* None
+
+New components:
+* None
+
+New features:
+* Improved RequireJS support with generating packages configs instead of just paths for Bower/NPM packages (enables using packages like `lodash-amd` with multiple components inside)
+* `System/Page/requirejs` event extended to also expose possibility to add RequireJS packages
+* Prefer non-minified files for RequireJS when assets compression is not used
+* Added custom version of Alameda that allows to load more packages that can be found in the wild even if they are technically broken (readme file added with details about this)
+* Added `cs.ui.prompt()` method as nice looking replacement for `window.prompt()`
+* Update tooltip contents as `tooltip` property on element gets updated
+* Content-based files naming in public cache
+* All images, fonts and other stuff used in CSS files are now copied into public cache directory, so that post-processing might be executed on single directory
+* Added support for paths that are relative to the root of the website (these were previously considered absolute) in CSS processing
+* Nested CSS imports are now also processed even if they have media query associated with them
+* It is almost 2017 and HTTP/2 is here, let's stop inlining any resources in CSS except plain CSS
+
+Updates:
+* New upstream version of Font Awesome
+* New upstream version of autosize
+* New upstream version of Composer
+* New upstream version of html5sortable
+* New upstream version of Prism
+* New upstream version of PHPMailer
+* New upstream version of Polymer (still with Shady DOM removed)
+* New upstream release of HybridAuth
+  * New HybridAuth providers:
+    * Amazon
+    * Strava
+* New version of TinyMCE (current git version)
+
+Fixes and small improvements:
+* System:
+  * Use newer APCu version with PHP7 on Travis CI
+  * Stop using `parse_url()` function
+  * There are no methods for getting information about executed queries in 6.x, so now we can do some simplifications
+  * Framework doesn't support installation into subdirectory, so lets remove path from URL in installer
+  * Optimized translation processing for `cs.Language` on frontend by not creating functions for keys that don't need to support formatting
+  * Tiny UI fix for button appearance after normalize update
+  * Tiny builder fix
+  * In installed framework store original `license.txt` under `license-cleverstyle-framework.txt`
+  * Tiny fix for the issue that causes system update impossible in UI
+  * https://github.com/webcomponents/webcomponentsjs/pull/642 applied on top of minified WebComponents.js
+  * Hide implementation details of callbacks in `cs.ui.*` methods - no need for consumers to know that it happened because of click on a button
+  * Tiny UI tweak in administration, option doesn't have any effect without assets compression
+  * Fix for relative paths to scripts in assets cache without vulcanization
+  * Run quick tests on Travis CI using HHVM
+  * Use Phar version of htmlpurifier: it is bigger, but works under HHVM
+  * Return empty string instead of string with `0` when casting `cs\False_class` to string
+  * `mysqli_result::get_result()` method might not be implemented (see https://secure.php.net/manual/en/mysqli-stmt.get-result.php#refsect1-mysqli-stmt.get-result-mysqlnd and https://github.com/facebook/hhvm/issues/2368), so let's make hands dirty and reimplement everything without it
+  * Also some black magic is used as workaround for https://github.com/facebook/hhvm/issues/6229
+  * More tests added to test some edge cases
+  * Require quick HHVM tests in Travis CI for successful result
+  * Small refactoring, public cache directory might be swapped when necessary during `\cs\Page\Assets\Cache` construction
+  * As https://bugs.xdebug.org/view.php?id=1322 is resolved, we can unlock tests coverage tracking for more code
+  * Docs update
+  * FTP paths support removed from CSS processing (not likely to be used anyway)
+* Composer:
+  * Do not clean Composer's home directory, allow it to keep cache there
+* Composer assets
+  * Increase `fxp/composer-asset-plugin` dependency version
+
+Deprecations:
+* Third argument in `cs\Page\Assets_processing::html()` method now accepts directory instead of file, but until 7.x keeps compatibility with old syntax
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* 3rd argument added to the method `\cs\Page\Assets_processing::css()`
+
+Dropped backward compatibility:
+* None
+
+Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
