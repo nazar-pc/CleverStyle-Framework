@@ -266,7 +266,7 @@ trait Assets {
 			return;
 		}
 		$this->core_js(
-			get_files_list(DIR.'/assets/js/microsoft_sh*t', '/.*\.js$/i', 'f', 'assets/js/microsoft_sh*t', true)
+			get_files_list(DIR.'/assets/js/microsoft_shit', '/.*\.js$/i', 'f', 'assets/js/microsoft_shit', true)
 		);
 	}
 	/**
