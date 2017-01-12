@@ -41,4 +41,4 @@ if ($mode == 'core') {
 <section>
 	<?=$content?>
 </section>
-<footer>Copyright (c) 2011-2016, Nazar Mokrynskyi</footer>
+<footer>Copyright (c) 2011-2017, Nazar Mokrynskyi</footer>

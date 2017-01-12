@@ -214,4 +214,4 @@ $version = file_get_json("$phar_path/meta.json")['version'];
 	<h1>Installation</h1>
 </header>
 <section><?=isset($_POST['site_name']) ? install_process($phar_path) : install_form($phar_path)?></section>
-<footer>Copyright (c) 2011-2016, Nazar Mokrynskyi</footer>
+<footer>Copyright (c) 2011-2017, Nazar Mokrynskyi</footer>

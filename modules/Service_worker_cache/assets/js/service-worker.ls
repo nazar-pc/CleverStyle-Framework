@@ -2,7 +2,7 @@
  * @package   Service worker cache
  * @category  modules
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright Copyright (c) 2015-2016, Nazar Mokrynskyi
+ * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
 # We are not going to include polyfill here, just exit if cache is not available

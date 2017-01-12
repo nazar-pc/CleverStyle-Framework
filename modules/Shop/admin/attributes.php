@@ -3,7 +3,7 @@
  * @package    Shop
  * @attribute  modules
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2014-2016, Nazar Mokrynskyi
+ * @copyright  Copyright (c) 2014-2017, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
 namespace cs\modules\Shop;
