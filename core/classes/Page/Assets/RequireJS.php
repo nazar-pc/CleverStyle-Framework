@@ -133,20 +133,34 @@ class RequireJS {
 	protected static function get_hashes ($paths, $packages) {
 		$hashes = [];
 		foreach ($packages as $package) {
-			$hash                         =
-				@md5_file(DIR."/$package[location]/bower.json").
-				@md5_file(DIR."/$package[location]/package.json").
-				@md5_file(DIR."/$package[location]/$package[main].js");
-			$hashes[$package['location']] = $hash;
+			$hashes[$package['location']] = static::hash_from_paths(
+				DIR."/$package[location]/bower.json",
+				DIR."/$package[location]/package.json",
+				DIR."/$package[location]/$package[main].js"
+			);
 		}
 		foreach ($paths as $path) {
-			$hash          =
-				@md5_file(DIR."/$path/bower.json").
-				@md5_file(DIR."/$path/package.json").
-				@md5_file(DIR."/$path/../../meta.json").
-				@md5_file(DIR."/$path.js");
-			$hashes[$path] = $hash;
+			$hashes[$path] = static::hash_from_paths(
+				DIR."/$path/bower.json",
+				DIR."/$path/package.json",
+				DIR."/$path/../../meta.json",
+				DIR."/$path.js"
+			);
 		}
 		return _substr($hashes, 0, 5);
+	}
+	/**
+	 * @param string[] ...$paths
+	 *
+	 * @return string
+	 */
+	protected static function hash_from_paths (...$paths) {
+		$hash = '';
+		foreach ($paths as $path) {
+			if (file_exists($path)) {
+				$hash .= md5_file($path);
+			}
+		}
+		return md5($hash);
 	}
 }

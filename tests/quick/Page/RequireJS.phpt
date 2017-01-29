@@ -168,7 +168,7 @@ array(3) {
     ["/modules/Disabled/assets/js"]=>
     string(5) "%s"
     ["/modules/System/assets/js"]=>
-    string(0) ""
+    string(5) "%s"
   }
 }
 string(25) "Do not use minified files"
@@ -290,6 +290,6 @@ array(3) {
     ["/modules/Disabled/assets/js"]=>
     string(5) "%s"
     ["/modules/System/assets/js"]=>
-    string(0) ""
+    string(5) "%s"
   }
 }
