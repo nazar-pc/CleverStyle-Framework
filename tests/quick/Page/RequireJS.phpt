@@ -71,7 +71,7 @@ array(2) {
     }
   }
 }
-array(2) {
+array(3) {
   ["paths"]=>
   array(4) {
     ["Disabled"]=>
@@ -148,6 +148,27 @@ array(2) {
       ["location"]=>
       string(26) "/node_modules/package-main"
     }
+  }
+  ["hashes"]=>
+  array(9) {
+    ["/bower_components/package-js"]=>
+    string(5) "%s"
+    ["/bower_components/package-min-js"]=>
+    string(5) "%s"
+    ["/node_modules/package-browser"]=>
+    string(5) "%s"
+    ["/node_modules/package-js-browser"]=>
+    string(5) "%s"
+    ["/node_modules/package-js-browser-min"]=>
+    string(5) "%s"
+    ["/node_modules/package-jspm-main"]=>
+    string(5) "%s"
+    ["/node_modules/package-main"]=>
+    string(5) "%s"
+    ["/modules/Disabled/assets/js"]=>
+    string(5) "%s"
+    ["/modules/System/assets/js"]=>
+    string(0) ""
   }
 }
 string(25) "Do not use minified files"
@@ -172,7 +193,7 @@ array(2) {
     }
   }
 }
-array(2) {
+array(3) {
   ["paths"]=>
   array(4) {
     ["Disabled"]=>
@@ -249,5 +270,26 @@ array(2) {
       ["location"]=>
       string(26) "/node_modules/package-main"
     }
+  }
+  ["hashes"]=>
+  array(9) {
+    ["/bower_components/package-js"]=>
+    string(5) "%s"
+    ["/bower_components/package-min-js"]=>
+    string(5) "%s"
+    ["/node_modules/package-browser"]=>
+    string(5) "%s"
+    ["/node_modules/package-js-browser"]=>
+    string(5) "%s"
+    ["/node_modules/package-js-browser-min"]=>
+    string(5) "%s"
+    ["/node_modules/package-jspm-main"]=>
+    string(5) "%s"
+    ["/node_modules/package-main"]=>
+    string(5) "%s"
+    ["/modules/Disabled/assets/js"]=>
+    string(5) "%s"
+    ["/modules/System/assets/js"]=>
+    string(0) ""
   }
 }

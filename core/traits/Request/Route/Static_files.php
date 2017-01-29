@@ -69,7 +69,7 @@ trait Static_files {
 	 * @throws ExitException
 	 */
 	protected function serve_static_file ($path, $headers = []) {
-		$headers += ['cache-control' => 'max-age=2592000, public'];
+		$headers += ['cache-control' => 'max-age=2592000, immutable'];
 		Response::instance()->init('', fopen(DIR.$path, 'rb'), $headers);
 		throw new ExitException;
 	}

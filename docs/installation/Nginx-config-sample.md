@@ -39,7 +39,7 @@ server {
 		location ~ \.(hash|json)$ {
 			return 403;
 		}
-		add_header Cache-Control "max-age=2592000, public";
+		add_header Cache-Control "max-age=2592000, immutable";
 	}
 	# Some headers to improve security when dealing with downloaded content
 	location /storage/public {

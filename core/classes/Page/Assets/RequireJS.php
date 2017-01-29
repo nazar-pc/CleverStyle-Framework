@@ -42,9 +42,13 @@ class RequireJS {
 				$packages[] = static::find_package_main_path($d, $allowed_extensions);
 			}
 		}
+		$paths    = _substr($paths, strlen(DIR));
+		$packages = array_values(array_filter($packages));
+		$hashes   = static::get_hashes($paths, $packages);
 		return [
-			'paths'    => _substr($paths, strlen(DIR)),
-			'packages' => array_values(array_filter($packages))
+			'paths'    => $paths,
+			'packages' => $packages,
+			'hashes'   => $hashes
 		];
 	}
 	/**
@@ -119,5 +123,30 @@ class RequireJS {
 			return file_exists_with_extension("$dir/$main", $allowed_extensions) ?: file_exists_with_extension("$dir/dist/$main", $allowed_extensions);
 		}
 		return false;
+	}
+	/**
+	 * @param string[] $paths
+	 * @param array[]  $packages
+	 *
+	 * @return string[]
+	 */
+	protected static function get_hashes ($paths, $packages) {
+		$hashes = [];
+		foreach ($packages as $package) {
+			$hash                         =
+				@md5_file(DIR."/$package[location]/bower.json").
+				@md5_file(DIR."/$package[location]/package.json").
+				@md5_file(DIR."/$package[location]/$package[main].js");
+			$hashes[$package['location']] = $hash;
+		}
+		foreach ($paths as $path) {
+			$hash          =
+				@md5_file(DIR."/$path/bower.json").
+				@md5_file(DIR."/$path/package.json").
+				@md5_file(DIR."/$path/../../meta.json").
+				@md5_file(DIR."/$path.js");
+			$hashes[$path] = $hash;
+		}
+		return _substr($hashes, 0, 5);
 	}
 }

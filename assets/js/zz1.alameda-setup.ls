@@ -6,10 +6,10 @@
  */
 requirejs.config(
 	baseUrl		: '/'
-	paths		:
-		jssha			: 'assets/js/modules/jsSHA-2.1.0'
-		autosize		: 'assets/js/modules/autosize.min'
-		html5sortable	: 'assets/js/modules/html5sortable-0.4.3.min'
-		'sprintf-js'	: 'assets/js/modules/sprintf-1.0.3.min'
+	urlArgs		: (id, url) ->
+		for path, hash of requirejs.contexts._.config.hashes
+			if url.indexOf(path) == 0
+				return (if url.indexOf('?') === -1 then '?' else '&') + hash
+		''
 	waitSeconds	: 60
 )

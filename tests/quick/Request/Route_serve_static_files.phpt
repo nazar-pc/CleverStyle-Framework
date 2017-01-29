@@ -100,7 +100,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -109,7 +109,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -118,7 +118,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 string(33) "Static public cache (not allowed)"
@@ -142,7 +142,7 @@ array(3) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -161,7 +161,7 @@ array(3) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 string(13) "System assets"
@@ -171,7 +171,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -180,7 +180,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -189,7 +189,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -198,7 +198,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -207,7 +207,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -216,7 +216,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 string(13) "Module assets"
@@ -226,7 +226,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -235,7 +235,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -244,7 +244,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -253,7 +253,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -262,7 +262,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -271,7 +271,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 string(12) "Theme assets"
@@ -281,7 +281,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -290,7 +290,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -299,7 +299,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -308,7 +308,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -317,7 +317,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 int(200)
@@ -326,7 +326,7 @@ array(1) {
   ["cache-control"]=>
   array(1) {
     [0]=>
-    string(23) "max-age=2592000, public"
+    string(26) "max-age=2592000, immutable"
   }
 }
 string(21) "PHP files not allowed"

@@ -65,14 +65,14 @@ Event::instance()
 			$Page             = Page::instance();
 			$core_url         = $Config->core_url();
 			$base_url         = $Config->base_url();
-			$Page->Head .= h::link(
+			$Page->Head       .= h::link(
 				[
 					'hreflang' => 'x-default',
 					'href'     => $Request->home_page ? $core_url : "$core_url/$relative_address",
 					'rel'      => 'alternate'
 				]
 			);
-			$clangs = Cache::instance()->get(
+			$clangs           = Cache::instance()->get(
 				'languages/clangs',
 				function () use ($Config) {
 					$clangs = [];
@@ -121,5 +121,16 @@ Event::instance()
 					);
 				}
 			}
+		}
+	)
+	->on(
+		'System/Page/requirejs',
+		function ($data) {
+			$data['paths'] += [
+				'jssha'         => DIR.'/assets/js/modules/jsSHA-2.1.0',
+				'autosize'      => DIR.'/assets/js/modules/autosize.min',
+				'html5sortable' => DIR.'/assets/js/modules/html5sortable-0.4.3.min',
+				'sprintf-js'    => DIR.'/assets/js/modules/sprintf-1.0.3.min'
+			];
 		}
 	);
