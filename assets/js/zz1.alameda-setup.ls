@@ -9,7 +9,7 @@ requirejs.config(
 	urlArgs		: (id, url) ->
 		for path, hash of requirejs.contexts._.config.hashes
 			if url.indexOf(path) == 0
-				return (if url.indexOf('?') === -1 then '?' else '&') + hash
+				return (if url.indexOf('?') == -1 then '?' else '&') + hash
 		''
 	waitSeconds	: 60
 )
