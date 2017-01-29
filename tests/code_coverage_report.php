@@ -3,7 +3,7 @@
  * @package    CleverStyle Framework
  * @subpackage Test
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
+ * @copyright  Copyright (c) 2016-2017, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
 require_once __DIR__.'/php-code-coverage.phar';

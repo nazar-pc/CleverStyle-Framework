@@ -4,7 +4,7 @@
  * @subpackage System module
  * @category   modules
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2016, Nazar Mokrynskyi
+ * @copyright  Copyright (c) 2016-2017, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
 namespace cs\modules\System\api\Controller\admin;
