@@ -79,9 +79,8 @@ class Request {
 		$POST   = [];
 		foreach ($request->getHeaders() as $key => $value) {
 			if ($key == 'Content-Type') {
-				$SERVER['CONTENT_TYPE'] = $value;
+				$SERVER['CONTENT_TYPE'] = implode(';', $value);
 			} elseif ($key == 'Cookie') {
-				$value = _trim(explode(';', $value));
 				foreach ($value as $c) {
 					$c             = explode('=', $c);
 					$COOKIE[$c[0]] = $c[1];
@@ -89,15 +88,15 @@ class Request {
 				unset($c);
 			} else {
 				$key                 = strtoupper(str_replace('-', '_', $key));
-				$SERVER["HTTP_$key"] = $value;
+				$SERVER["HTTP_$key"] = implode(';', $value);
 			}
 		}
 		$SERVER['REQUEST_METHOD']  = $request->getMethod();
 		$SERVER['REQUEST_URI']     = $request->getPath();
-		$SERVER['QUERY_STRING']    = http_build_query($request->getQuery());
+		$SERVER['QUERY_STRING']    = http_build_query($request->getQueryParams());
 		$SERVER['REMOTE_ADDR']     = $request->remoteAddress;
-		$GET                       = $request->getQuery();
-		$SERVER['SERVER_PROTOCOL'] = 'HTTP/'.$request->getHttpVersion();
+		$GET                       = $request->getQueryParams();
+		$SERVER['SERVER_PROTOCOL'] = 'HTTP/'.$request->getProtocolVersion();
 		if (isset($SERVER['CONTENT_TYPE'])) {
 			if (strpos($SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded') === 0) {
 				parse_str($data, $POST);
@@ -133,8 +132,8 @@ class Request {
 		$Request = System_request::instance();
 		$Request->init_from_globals();
 		$Request->started = $request_started;
-		$L            = Language::instance(true);
-		$url_language = $L->url_language();
+		$L                = Language::instance(true);
+		$url_language     = $L->url_language();
 		if ($url_language) {
 			$L->change($url_language);
 		}
