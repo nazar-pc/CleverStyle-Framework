@@ -2796,3 +2796,45 @@ Dropped backward compatibility:
 * None
 
 Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
+
+# 6.53.0+build-2598: Maintenance release
+
+This release mainly brings updates to third-party components.
+
+Security fixes:
+* None
+
+New components:
+* None
+
+New features:
+* Use immutable caching with `immutable` in `Cache-Control` header
+* Add query parameters when loading AMD modules, so that updates of Bower/NPM packages and system modules will result in actual files reloading on frontend
+
+Updates:
+* New upstream version of Composer
+* New upstream version of html5sortable
+* Custom version of Alameda rebased against latest upstream version
+* `wp-cli/php-cli-tools` rebased against latest upstream version
+* Polymer and WebComponents.js rebased against latest upstream versions
+* TinyMCE rebased against latest stable release
+* HTML Purifier
+
+Fixes and small improvements:
+* System:
+  * Windows doesn't like start in files/directories names, let's fix this
+  * Move built-in AMD modules list from `zz1.alameda-setup.ls` to backend event handler
+  * Added readme information about Polymer build used in CleverStyle Framework
+* Http server
+  * Increase `react/http` dependency version
+
+Deprecations:
+* None
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* None
+
+Dropped backward compatibility:
+* None
+
+Latest builds on [downloads page](/docs/installation/Download-installation-packages.md) ([details about installation process](/docs/installation/Installation.md)) or download source code and [build it yourself](/docs/installation/Installer-builder.md)
