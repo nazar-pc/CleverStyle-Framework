@@ -244,6 +244,12 @@ class Composer {
 		if (!$package['require'] && !isset($package['replace'])) {
 			return;
 		}
+		// TODO: Workaround for https://github.com/composer/composer/issues/6274, should be removed when fixed upstream
+		foreach ($package as $key => $value) {
+			if (is_array($value) && !$value) {
+				unset($package[$key]);
+			}
+		}
 		$composer['repositories'][]         = [
 			'type'    => 'package',
 			'package' => $package
