@@ -51,7 +51,7 @@ Event::instance()
 	->on(
 		'Composer/generate_package',
 		function ($data) {
-			if (!Config::instance()->module('Composer_assets')->enabled()) {
+			if (!Config::instance()->module('Composer_assets')->enabled() || !class_exists('Fxp\\Composer\\AssetPlugin\\FxpAssetPlugin')) {
 				return;
 			}
 			if (isset($data['meta']['require_bower']) && $data['meta']['require_bower']) {
