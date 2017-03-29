@@ -42,6 +42,12 @@
 			"secret"
 		]
 	},
+	"Discord"        : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
 	"Disqus"         : {
 		"keys" : [
 			"id",
@@ -67,6 +73,12 @@
 		]
 	},
 	"DrupalOAuth2"   : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
+	"Envato"         : {
 		"keys" : [
 			"id",
 			"secret"
@@ -128,6 +140,12 @@
 	"Identica"       : {
 		"keys" : [
 			"key",
+			"secret"
+		]
+	},
+	"IdqOAuth2"      : {
+		"keys" : [
+			"id",
 			"secret"
 		]
 	},
@@ -275,6 +293,12 @@
 	},
 	"Steam"          : {},
 	"Strava"         : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
+	"Stripe"         : {
 		"keys" : [
 			"id",
 			"secret"
