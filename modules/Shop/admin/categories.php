@@ -38,7 +38,7 @@ $all_categories = array_map(
 usort(
 	$all_categories,
 	function ($cat1, $cat2) {
-		return $cat1['title'] > $cat2['title'] ? 1 : -1;
+		return $cat1['title'] <=> $cat2['title'];
 	}
 );
 Page::instance()

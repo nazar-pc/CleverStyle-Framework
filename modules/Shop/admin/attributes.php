@@ -19,7 +19,7 @@ $attribute_types = $Attributes->get_type_to_name_array();
 usort(
 	$all_attributes,
 	function ($attr1, $attr2) {
-		return $attr1['title_internal'] > $attr2['title_internal'] ? 1 : -1;
+		return $attr1['title_internal'] <=> $attr2['title_internal'];
 	}
 );
 Page::instance()

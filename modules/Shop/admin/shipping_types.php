@@ -18,7 +18,7 @@ $all_shipping_types = $Shipping_types->get($Shipping_types->get_all());
 usort(
 	$all_shipping_types,
 	function ($shipping_type1, $shipping_type2) {
-		return $shipping_type1['title'] > $shipping_type2['title'] ? 1 : -1;
+		return $shipping_type1['title'] <=> $shipping_type2['title'];
 	}
 );
 Page::instance()

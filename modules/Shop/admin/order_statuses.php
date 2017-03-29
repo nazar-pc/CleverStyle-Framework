@@ -19,7 +19,7 @@ $order_status_types = $Order_statuses->get_type_to_name_array();
 usort(
 	$all_order_statuses,
 	function ($order_status1, $order_status2) {
-		return $order_status1['title'] > $order_status2['title'] ? 1 : -1;
+		return $order_status1['title'] <=> $order_status2['title'];
 	}
 );
 Page::instance()
