@@ -16,8 +16,8 @@ It is free, Open Source and is distributed under MIT license, see [license.txt](
 # Key features
 
 * Components
- * Modules - major component type
- * Blocks - are placed on around the page for displaying additional information
+  * Modules - major component type
+  * Blocks - are placed on around the page for displaying additional information
 * Events - ability to capture, respond or even override behavior of different aspects of the system without changing system itself
 * Users, groups and permissions for granular access to functionality
 * Localization and internationalization (both interface and content)
