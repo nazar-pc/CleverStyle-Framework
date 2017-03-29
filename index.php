@@ -14,7 +14,7 @@
  *  Optional Apache2 modules:
  *  * expires
  * * or Nginx
- * * PHP 5.6+
+ * * PHP 7.0+
  *  PHP libraries MUST be present:
  *  * cURL
  *  Optional PHP libraries:
@@ -25,8 +25,8 @@
  */
 namespace cs;
 
-if (version_compare(PHP_VERSION, '5.6', '<')) {
-	echo 'CleverStyle Framework require PHP 5.6 or higher';
+if (version_compare(PHP_VERSION, '7.0', '<')) {
+	echo 'CleverStyle Framework requires PHP 7.0 or higher';
 	return;
 }
 

@@ -8,7 +8,7 @@
 	"license"     : "MIT License",
 	"provide"     : "json_ld",
 	"require"     : [
-		"System>=6.0",
-		"System<7.0"
+		"System>=7.0",
+		"System<8.0"
 	]
 }

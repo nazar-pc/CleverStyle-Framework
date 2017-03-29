@@ -2,7 +2,7 @@
 /**
  * @package   UPF (Useful PHP Functions)
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright Copyright (c) 2011-2016, Nazar Mokrynskyi
+ * @copyright Copyright (c) 2011-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
 
@@ -969,7 +969,7 @@ function password_generate ($length = 10, $strength = 5) {
 	$size = count($symbols) - 1;
 	while (true) {
 		for ($i = 0; $i < $length; ++$i) {
-			$password[] = $symbols[mt_rand(0, $size)];
+			$password[] = $symbols[random_int(0, $size)];
 		}
 		shuffle($password);
 		if (password_check(implode('', $password)) == $strength) {
@@ -1355,20 +1355,4 @@ function _array ($in) {
 		);
 	}
 	return (array)$in;
-}
-
-/**
- * Fallback for function from PHP7
- */
-if (!function_exists('random_bytes')) {
-	/**
-	 * Generates cryptographically secure pseudo-random bytes
-	 *
-	 * @param int $length
-	 *
-	 * @return string
-	 */
-	function random_bytes ($length) {
-		return openssl_random_pseudo_bytes($length);
-	}
 }

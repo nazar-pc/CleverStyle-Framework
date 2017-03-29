@@ -238,9 +238,8 @@ class DB {
 		}
 		$mirrors_count = count($Config->db[$database_id]['mirrors']);
 		if ($Config->core['db_mirror_mode'] == self::MIRROR_MODE_MASTER_SLAVE) {
-			return $read_query ? mt_rand(0, $mirrors_count - 1) : self::MASTER_MIRROR;
-		} else {
-			return mt_rand(self::MASTER_MIRROR, $mirrors_count - 1);
+			return $read_query ? random_int(0, $mirrors_count - 1) : self::MASTER_MIRROR;
 		}
+		return random_int(self::MASTER_MIRROR, $mirrors_count - 1);
 	}
 }

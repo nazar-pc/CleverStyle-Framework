@@ -21,8 +21,8 @@
 	],
 	"provide"          : "photo_gallery",
 	"require"          : [
-		"System>=6.25",
-		"System<7.0",
+		"System>=7.0",
+		"System<8.0",
 		"Composer",
 		"Fotorama>=4.4.9",
 		"file_upload",

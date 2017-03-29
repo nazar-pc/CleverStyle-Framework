@@ -119,7 +119,7 @@ Some components are developed in parallel with core in this repository
  * REQUIRED: rewrite, headers
  * OPTIONAL: expires
 * or Nginx ([config sample](/docs/installation/Nginx-config-sample.md))
-* PHP 5.6+ with libraries:
+* PHP 7.0+ with libraries:
  * REQUIRED: cURL, XML, mbstring
  * OPTIONAL: APCu, Memcached
 * or HHVM 3.14+

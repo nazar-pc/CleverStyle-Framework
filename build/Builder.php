@@ -153,8 +153,8 @@ class Builder {
 		/** @lang PHP */
 			<<<STUB
 <?php
-if (version_compare(PHP_VERSION, '5.6', '<')) {
-	echo 'CleverStyle Framework require PHP 5.6 or higher';
+if (version_compare(PHP_VERSION, '7.0', '<')) {
+	echo 'CleverStyle Framework requires PHP 7.0 or higher';
 	return;
 }
 

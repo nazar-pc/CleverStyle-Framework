@@ -17,8 +17,8 @@
 	],
 	"provide"      : "delayed_tasks",
 	"require"      : [
-		"System>=6.25",
-		"System<7.0"
+		"System>=7.0",
+		"System<8.0"
 	],
 	"hide_in_menu" : 1
 }

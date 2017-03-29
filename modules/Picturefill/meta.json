@@ -11,7 +11,7 @@
 	},
 	"provide"     : "picturefill",
 	"require"     : [
-		"System>=6.25",
-		"System<7.0"
+		"System>=7.0",
+		"System<8.0"
 	]
 }

@@ -17,8 +17,8 @@
 	],
 	"provide"      : "polls",
 	"require"      : [
-		"System>=6.26",
-		"System<7.0"
+		"System>=7.0",
+		"System<8.0"
 	],
 	"multilingual" : [
 		"interface",

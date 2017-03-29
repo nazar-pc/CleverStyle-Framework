@@ -12,8 +12,8 @@
 		"npm"
 	],
 	"require"          : [
-		"System>=6.38",
-		"System<7.0",
+		"System>=7.0",
+		"System<8.0",
 		"Composer>=1.0.2"
 	],
 	"require_composer" : {
