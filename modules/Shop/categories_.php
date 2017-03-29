@@ -47,7 +47,7 @@ if (isset($all_categories[$current_category])) {
 	throw new ExitException(404);
 }
 $Page->canonical_url($canonical_url);
-$page = (int)@$_GET['page'] ?: 1;
+$page = $_GET['page'] ?? 1;
 if ($page == 1 && @$categories_tree[$current_category]) {
 	$categories_list = [];
 	foreach ($categories_tree[$current_category] as $category) {
@@ -84,7 +84,7 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 								]
 							);
 					},
-					@$categories_tree[$category['id']] ?: []
+					$categories_tree[$category['id']] ?? []
 				) ?: false
 			);
 	}
@@ -97,7 +97,7 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 if (!$current_category) {
 	return;
 }
-$count = (int)@$_GET['count'] ?: $Config->module('Shop')->items_per_page;
+$count = $_GET['count'] ?? $Config->module('Shop')->items_per_page;
 $Items = Items::instance();
 $items = $Items->get(
 	$Items->search(
@@ -107,7 +107,7 @@ $items = $Items->get(
 		] + (array)$_GET,
 		$page,
 		$count,
-		@$_GET['order_by'] ?: 'id',
+		$_GET['order_by'] ?? 'id',
 		@$_GET['asc']
 	)
 );
@@ -122,7 +122,7 @@ $items_total     = $Items->search(
 	] + (array)$_GET,
 	$page,
 	$count,
-	@$_GET['order_by'] ?: 'id',
+	$_GET['order_by'] ?? 'id',
 	@$_GET['asc']
 );
 $base_items_path = "$module_path/".path($L->items).'/'.path($all_categories[$current_category]['title']).'/';
@@ -130,7 +130,7 @@ foreach ($items as &$item) {
 	$item = [
 		h::{'img#img'}(
 			[
-				'src'   => @$item['images'][0] ?: Items::DEFAULT_IMAGE,
+				'src'   => $item['images'][0] ?? Items::DEFAULT_IMAGE,
 				'title' => $item['title']
 			]
 		).

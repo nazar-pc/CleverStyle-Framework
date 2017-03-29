@@ -20,7 +20,7 @@ $make_url = function ($arguments) {
 };
 
 $make_header = function ($title, $field) use ($make_url) {
-	$order_by = @$_GET['order_by'] ?: 'created';
+	$order_by = $_GET['order_by'] ?? 'created';
 	$icon     = $order_by == $field ? h::icon(@$_GET['asc'] ? 'caret-up' : 'caret-down') : '';
 	$asc      = $order_by == $field ? !@$_GET['asc'] : false;
 	return h::a(
@@ -43,14 +43,14 @@ $Items          = Items::instance();
 $Orders         = Orders::instance();
 $Order_statuses = Order_statuses::instance();
 $Shipping_types = Shipping_types::instance();
-$page           = @$_GET['page'] ?: 1;
-$count          = @$_GET['count'] ?: Config::instance()->module('Shop')->items_per_page_admin;
+$page           = $_GET['page'] ?? 1;
+$count          = $_GET['count'] ?? Config::instance()->module('Shop')->items_per_page_admin;
 $orders         = $Orders->get(
 	$Orders->search(
 		(array)$_GET,
 		$page,
 		$count,
-		@$_GET['order_by'] ?: 'date',
+		$_GET['order_by'] ?? 'date',
 		@$_GET['asc']
 	) ?: []
 );
@@ -60,7 +60,7 @@ $orders_total   = $Orders->search(
 	] + (array)$_GET,
 	$page,
 	$count,
-	@$_GET['order_by'] ?: 'date',
+	$_GET['order_by'] ?? 'date',
 	@$_GET['asc']
 );
 $module_path    = path($L->shop);

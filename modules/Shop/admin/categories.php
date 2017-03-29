@@ -61,7 +61,7 @@ Page::instance()
 							$category['id'],
 							$category['title'],
 							$Attributes->get($category['title_attribute'])['title_internal'],
-							@$Attributes->get($category['description_attribute'])['title_internal'] ?: '',
+							$Attributes->get($category['description_attribute'])['title_internal'] ?? '',
 							h::icon($category['visible'] ? 'check' : 'minus'),
 							h::{'button.cs-shop-category-edit[is=cs-button]'}(
 								$L->edit,

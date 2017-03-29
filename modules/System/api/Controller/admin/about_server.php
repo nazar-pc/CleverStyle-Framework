@@ -80,7 +80,7 @@ trait about_server {
 	 * @return string
 	 */
 	static private function admin_about_server_get_server_api () {
-		$server_software = @$_SERVER['SERVER_SOFTWARE'] ?: '';
+		$server_software = $_SERVER['SERVER_SOFTWARE'] ?? '';
 		$phpinfo         = ob_wrapper('phpinfo');
 		if (stripos($server_software, 'apache') !== false) {
 			preg_match(

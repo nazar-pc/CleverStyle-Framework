@@ -22,8 +22,8 @@ $Items          = Items::instance();
 $Orders         = Orders::instance();
 $Order_statuses = Order_statuses::instance();
 $Shipping_types = Shipping_types::instance();
-$page           = @$_GET['page'] ?: 1;
-$count          = @$_GET['count'] ?: Config::instance()->module('Shop')->items_per_page;
+$page           = $_GET['page'] ?? 1;
+$count          = $_GET['count'] ?? Config::instance()->module('Shop')->items_per_page;
 if ($Session->user()) {
 	$orders       = $Orders->get(
 		$Orders->search(
@@ -32,7 +32,7 @@ if ($Session->user()) {
 			] + (array)$_GET,
 			$page,
 			$count,
-			@$_GET['order_by'] ?: 'date',
+			$_GET['order_by'] ?? 'date',
 			@$_GET['asc']
 		) ?: []
 	);
@@ -43,7 +43,7 @@ if ($Session->user()) {
 		] + (array)$_GET,
 		$page,
 		$count,
-		@$_GET['order_by'] ?: 'date',
+		$_GET['order_by'] ?? 'date',
 		@$_GET['asc']
 	);
 } else {
@@ -83,7 +83,7 @@ $Page->content(
 										return [
 											h::{'img#img'}(
 												[
-													'src' => @$item_data['images'][0] ?: Items::DEFAULT_IMAGE
+													'src' => $item_data['images'][0] ?? Items::DEFAULT_IMAGE
 												]
 											).
 											h::{'a#link'}(
@@ -111,10 +111,10 @@ $Page->content(
 								)
 							).
 							h::{'#shipping_type'}(
-								@$shipping_type['title'] ?: '_',
+								$shipping_type['title'] ?? '_',
 								[
 									'data-id'    => $order['shipping_type'],
-									'data-price' => @$shipping_type['price'] ?: '?'
+									'data-price' => $shipping_type['price'] ?? '?'
 								]
 							).
 							h::{'#order_status'}(

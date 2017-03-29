@@ -35,7 +35,7 @@ $result = Items::instance()->set(
 	$_POST['listed'],
 	$_POST['attributes'],
 	_json_decode($_POST['images']) ?: [],
-	@$_POST['videos'] ?: [],
+	$_POST['videos'] ?? [],
 	_trim(explode(',', $_POST['tags']))
 );
 if (!$result) {

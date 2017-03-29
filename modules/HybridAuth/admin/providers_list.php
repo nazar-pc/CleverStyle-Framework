@@ -43,7 +43,7 @@ $Page->content(
 										h::{'input[is=cs-input-text]'}(
 											[
 												'name'  => "providers[$provider][keys][$key]",
-												'value' => @$providers_config[$provider]['keys'][$key] ?: ''
+												'value' => $providers_config[$provider]['keys'][$key] ?? ''
 											]
 										)
 									]
@@ -61,7 +61,7 @@ $Page->content(
 										h::{'input[is=cs-input-text]'}(
 											[
 												'name'  => "providers[$provider][scope]",
-												'value' => @$providers_config[$provider]['scope'] ?: $provider_data['scope']
+												'value' => $providers_config[$provider]['scope'] ?? $provider_data['scope']
 											]
 										)
 									]
@@ -101,7 +101,7 @@ $Page->content(
 							h::radio(
 								[
 									'name'    => "providers[$provider][enabled]",
-									'checked' => @$providers_config[$provider]['enabled'] ?: 0,
+									'checked' => $providers_config[$provider]['enabled'] ?? 0,
 									'value'   => [0, 1],
 									'in'      => [$L->off, $L->on]
 								]

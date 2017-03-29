@@ -136,7 +136,7 @@ class Items {
 				$data['attributes']  = $this->read_attributes_processing($data['attributes'], $L->clang);
 				$category            = Categories::instance()->get($data['category']);
 				$data['title']       = $data['attributes'][$category['title_attribute']];
-				$data['description'] = @$data['attributes'][$category['description_attribute']] ?: '';
+				$data['description'] = $data['attributes'][$category['description_attribute']] ?? '';
 				$data['tags']        = $this->read_tags_processing($data['tags']);
 				return $data;
 			}

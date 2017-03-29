@@ -132,7 +132,7 @@ class Response {
 		$Request        = Request::instance();
 		$prefix         = $Config->core['cookie_prefix'];
 		$cookie_domains = $Config->core['cookie_domain'];
-		$domain         = @$cookie_domains[$Request->mirror_index] ?: $cookie_domains[0];
+		$domain         = $cookie_domains[$Request->mirror_index] ?? $cookie_domains[0];
 		if ($value === '') {
 			unset($Request->cookie[$name], $Request->cookie[$prefix.$name]);
 		} else {

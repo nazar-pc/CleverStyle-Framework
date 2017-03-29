@@ -35,7 +35,7 @@ $id = Items::instance()->add(
 	$_POST['listed'],
 	$_POST['attributes'],
 	_json_decode($_POST['images']) ?: [],
-	@$_POST['videos'] ?: [],
+	$_POST['videos'] ?? [],
 	_trim(explode(',', $_POST['tags']))
 );
 if (!$id) {

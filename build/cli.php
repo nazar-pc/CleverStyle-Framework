@@ -19,11 +19,11 @@ $options = getopt(
 		'suffix:'
 	]
 );
-$mode    = @$options['M'] ?: @$options['mode'];
-$modules = array_filter(explode(',', @$options['m'] ?: @$options['modules']));
-$themes  = array_filter(explode(',', @$options['t'] ?: @$options['themes']));
+$mode    = $options['M'] ?? @$options['mode'];
+$modules = array_filter(explode(',', $options['m'] ?? @$options['modules']));
+$themes  = array_filter(explode(',', $options['t'] ?? @$options['themes']));
 /** @noinspection NestedTernaryOperatorInspection */
-$suffix = (@$options['s'] ?: @$options['suffix']) ?: null;
+$suffix = $options['s'] ?? @$options['suffix'];
 if (
 	isset($options['h']) ||
 	isset($options['help']) ||

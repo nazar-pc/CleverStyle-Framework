@@ -41,5 +41,5 @@ function process_content ($content) {
 }
 
 $content = process_content($content);
-file_put_contents(@$argv[2] ?: $argv[1], $content);
+file_put_contents($argv[2] ?? $argv[1], $content);
 echo 'Ready!';

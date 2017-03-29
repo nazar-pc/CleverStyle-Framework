@@ -47,7 +47,7 @@ class Request {
 		$System_request->query_string = $uri->getQuery();
 		/** @noinspection NestedTernaryOperatorInspection */
 		$System_request->uri         = $System_request->path.($System_request->query_string ? "?$System_request->query_string" : '') ?: '/';
-		$System_request->remote_addr = @$Psr7_request->getServerParams()['REMOTE_ADDR'] ?: '127.0.0.1';
+		$System_request->remote_addr = $Psr7_request->getServerParams()['REMOTE_ADDR'] ?? '127.0.0.1';
 		$System_request->ip          = self::ip($System_request, $Psr7_request);
 	}
 	/**

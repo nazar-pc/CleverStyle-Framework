@@ -15,11 +15,11 @@ header('Connection: close');
 
 $Builder = new Builder(DIR, DIR);
 $content = '';
-$mode    = @$_POST['mode'] ?: 'form';
+$mode    = $_POST['mode'] ?? 'form';
 if ($mode == 'core') {
-	$content = $Builder->core(@$_POST['modules'] ?: [], @$_POST['themes'] ?: [], @$_POST['suffix']);
+	$content = $Builder->core($_POST['modules'] ?? [], $_POST['themes'] ?? [], @$_POST['suffix']);
 } elseif (in_array($mode, ['core', 'module', 'theme'])) {
-	foreach (@$_POST[$mode.'s'] ?: [] as $component) {
+	foreach ($_POST[$mode.'s'] ?? [] as $component) {
 		$content .= $Builder->$mode($component, @$_POST['suffix']).'<br>';
 	}
 	if (!$content) {

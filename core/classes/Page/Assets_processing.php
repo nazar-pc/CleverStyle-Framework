@@ -92,7 +92,7 @@ class Assets_processing {
 		$data = preg_replace_callback(
 			'/url\((.*)\)|@import\s*(?:url\()?\s*([\'"].*[\'"])\s*\)??(.*);/U',
 			function ($match) use ($dir, $target_directory_path, &$not_embedded_resources) {
-				$path_matched = @$match[2] ?: $match[1];
+				$path_matched = $match[2] ?? $match[1];
 				$path         = trim($path_matched, '\'" ');
 				$link         = explode('?', $path, 2)[0];
 				if (!static::is_relative_path_and_exists($link, $dir)) {
@@ -107,14 +107,13 @@ class Assets_processing {
 					 */
 					if (!trim(@$match[3])) {
 						return static::css($content, $absolute_path, $target_directory_path, $not_embedded_resources);
-					} else {
-						$filename = static::file_put_contents_with_hash(
-							$target_directory_path,
-							$extension,
-							static::css($content, $absolute_path, $target_directory_path)
-						);
-						return str_replace($path_matched, "'./$filename'", $match[0]);
 					}
+					$filename = static::file_put_contents_with_hash(
+						$target_directory_path,
+						$extension,
+						static::css($content, $absolute_path, $target_directory_path)
+					);
+					return str_replace($path_matched, "'./$filename'", $match[0]);
 				}
 				if (!isset(static::$extension_to_mime[$extension])) {
 					$filename = static::file_put_contents_with_hash($target_directory_path, $extension, $content);
@@ -300,10 +299,10 @@ class Assets_processing {
 					continue;
 				}
 				$scripts_to_replace[] = $scripts[0][$index];
-				$scripts_content .= file_get_contents("$dir/$url").";\n";
+				$scripts_content      .= file_get_contents("$dir/$url").";\n";
 			} else {
 				$scripts_to_replace[] = $scripts[0][$index];
-				$scripts_content .= "$script[1];\n";
+				$scripts_content      .= "$script[1];\n";
 			}
 		}
 		$scripts_content = static::js($scripts_content);
@@ -322,7 +321,7 @@ class Assets_processing {
 			}
 			$filename = static::file_put_contents_with_hash($target_directory_path, 'js', $scripts_content);
 			// Add script with combined content file to the end
-			$data .= "<script src=\"./$filename\"></script>";
+			$data                     .= "<script src=\"./$filename\"></script>";
 			$not_embedded_resources[] = str_replace(getcwd(), '', "$target_directory_path/$filename");
 		} else {
 			// Add combined content inline script to the end

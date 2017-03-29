@@ -115,7 +115,7 @@ class RequireJS {
 		$package = @file_get_json("$dir/package.json");
 		// If we have browser-specific declaration - use it
 		/** @noinspection NestedTernaryOperatorInspection */
-		$main = @$package['browser'] ?: (@$package['jspm']['main'] ?: @$package['main']);
+		$main = $package['browser'] ?? ($package['jspm']['main'] ?? @$package['main']);
 		if (preg_match('/\.js$/', $main)) {
 			$main = substr($main, 0, -3);
 		}

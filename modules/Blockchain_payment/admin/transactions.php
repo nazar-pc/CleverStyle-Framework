@@ -19,7 +19,7 @@ function make_url ($arguments) {
 }
 
 function make_header ($title, $field) {
-	$order_by = @$_GET['order_by'] ?: 'created';
+	$order_by = $_GET['order_by'] ?? 'created';
 	$icon     = $order_by == $field ? h::icon(@$_GET['asc'] ? 'caret-up' : 'caret-down') : '';
 	$asc      = $order_by == $field ? !@$_GET['asc'] : false;
 	return h::a(
@@ -38,14 +38,14 @@ function make_header ($title, $field) {
 
 $L                  = new Prefix('blockchain_payment_');
 $Transactions       = Transactions::instance();
-$page               = @$_GET['page'] ?: 1;
-$count              = @$_GET['count'] ?: 100;
+$page               = $_GET['page'] ?? 1;
+$count              = $_GET['count'] ?? 100;
 $transactions       = $Transactions->get(
 	$Transactions->search(
 		(array)$_GET,
 		$page,
 		$count,
-		@$_GET['order_by'] ?: 'created',
+		$_GET['order_by'] ?? 'created',
 		@$_GET['asc']
 	)
 );
@@ -55,7 +55,7 @@ $transactions_total = $Transactions->search(
 	] + (array)$_GET,
 	$page,
 	$count,
-	@$_GET['order_by'] ?: 'created',
+	$_GET['order_by'] ?? 'created',
 	@$_GET['asc']
 );
 Page::instance()
