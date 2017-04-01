@@ -6,23 +6,23 @@ dom-module#cs-system-admin-users-edit-user-form
 			cs-icon(icon="spinner" spin)
 		form(is="cs-form" hidden="[[!user_data.id]]")
 			label id
-			input(is="cs-input-text" readonly value="[[user_data.id]]")
+			cs-input-text: input(readonly value="[[user_data.id]]")
 			label [[L.registration_date]]
-			input(is="cs-input-text" readonly value="[[user_data.reg_date_formatted]]")
+			cs-input-text: input(readonly value="[[user_data.reg_date_formatted]]")
 			label [[L.registration_ip]]
-			input(is="cs-input-text" readonly value="[[user_data.reg_ip_formatted.0]]")
+			cs-input-text: input(readonly value="[[user_data.reg_ip_formatted.0]]")
 			template(is="dom-if" if="[[user_data.reg_ip_formatted.1]]")
 				br
-				input(is="cs-input-text" readonly value="[[user_data.reg_ip_formatted.1]]" class="cs-margin-bottom")
+				cs-input-text: input(readonly value="[[user_data.reg_ip_formatted.1]]" class="cs-margin-bottom")
 			label [[L.login]]
-			input(is="cs-input-text" type="text" value="{{user_data.login}}")
+			cs-input-text: input(type="text" value="{{user_data.login}}")
 			label [[L.username]]
-			input(is="cs-input-text" type="text" value="{{user_data.username}}")
+			cs-input-text: input(type="text" value="{{user_data.username}}")
 			label Email
-			input(is="cs-input-text" type="email" value="{{user_data.email}}")
+			cs-input-text: input(type="email" value="{{user_data.email}}")
 			label [[L.password_only_for_changing]]
 			div
-				input(is="cs-input-text" type="password" value="{{user_data.password}}" tight)
+				cs-input-text(tight): input(type="password" value="{{user_data.password}}")
 				button(is="cs-button" type="button" icon="lock" on-tap="_show_password" force-fullsize)
 			label [[L.language]]
 			select(is="cs-select" selected="{{user_data.language}}" size="5")
@@ -46,7 +46,7 @@ dom-module#cs-system-admin-users-edit-user-form
 			label [[L.avatar]]
 			label
 				img(src="[[if(user_data.avatar, user_data.avatar, '')]]" hidden="[[!user_data.avatar]]")
-			input(is="cs-input-text" type="text" value="{{user_data.avatar}}")
+			cs-input-text: input(type="text" value="{{user_data.avatar}}")
 			div.cs-padding-bottom
 				button#upload-avatar(is="cs-button" type="button" icon="upload" hidden="[[!can_upload]]") [[L.upload_avatar]]
 			div

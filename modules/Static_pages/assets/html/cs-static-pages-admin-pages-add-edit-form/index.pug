@@ -19,9 +19,9 @@ dom-module#cs-static-pages-admin-pages-add-edit-form
 							template(is="dom-repeat" items="[[categories]]")
 								option(value="[[item.id]]") [[item.full_title]]
 				td
-					input(is="cs-input-text" type="text" value="{{page.title}}")
+					cs-input-text: input(type="text" value="{{page.title}}")
 				td
-					input(is="cs-input-text" type="text" value="{{page.path}}")
+					cs-input-text: input(type="text" value="{{page.path}}")
 				td
 					nav(is="cs-nav-button-group")
 						label(is="cs-label-button" value="{{page.interface}}")

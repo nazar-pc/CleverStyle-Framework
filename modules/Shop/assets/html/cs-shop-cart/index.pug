@@ -19,9 +19,9 @@ dom-module#cs-shop-cart
 					| ([[shipping_cost_formatted]])
 				.cs-margin-bottom(hidden="[[!shipping_type_details.description]]") [[shipping_type_details.description]]
 				label [[L.shipping_username]]
-				input(is="cs-input-text" type="text" value="{{shipping_username}}")
+				cs-input-text: input(type="text" value="{{shipping_username}}")
 				label(hidden="[[!equal(shipping_type_details.phone_needed, 1)]]") [[L.shipping_phone]]
-				input(is="cs-input-text" type="text" value="{{phone}}")
+				cs-input-text: input(type="text" value="{{phone}}")
 				label(hidden="[[!equal(shipping_type_details.address_needed, 1)]]") [[L.shipping_address]]
 				textarea(is="cs-textarea" autosize value="{{address}}" hidden="[[!equal(shipping_type_details.address_needed, 1)]]")
 				label [[L.comment]]

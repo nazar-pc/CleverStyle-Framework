@@ -20,13 +20,13 @@ $Page->content(
 			h::{'header h2.cs-text-center'}($L->Feedback).
 			h::{'table.cs-table[center] tr| td'}(
 				[
-					h::{'input[is=cs-input-text][name=name][required]'}(
+					h::{'cs-input-text input[name=name][required]'}(
 						[
 							'placeholder' => $L->feedback_name,
 							'value'       => $User->user() ? $User->username() : (isset($_POST['name']) ? $_POST['name'] : '')
 						]
 					),
-					h::{'input[is=cs-input-text][type=email][name=email][required]'}(
+					h::{'cs-input-text input[type=email][name=email][required]'}(
 						[
 							'placeholder' => $L->feedback_email,
 							'value'       => $User->user() ? $User->email : (isset($_POST['email']) ? $_POST['email'] : '')

@@ -34,12 +34,12 @@ Page::instance()
 						return [
 							[
 								$client['name'],
-								h::{'input[is=cs-input-text][full-width][readonly]'}(
+								h::{'cs-input-text[full-width] input[readonly]'}(
 									[
 										'value' => $client['id']
 									]
 								),
-								h::{'input[is=cs-input-text][full-width][readonly]'}(
+								h::{'cs-input-text[full-width] input[readonly]'}(
 									[
 										'value' => $client['secret']
 									]
@@ -80,7 +80,7 @@ Page::instance()
 			],
 			[
 				h::info('oauth2_expiration'),
-				h::{'input[is=cs-input-text][compact][type=number]'}(
+				h::{'cs-input-text[compact] input[type=number]'}(
 					[
 						'name'  => 'general[expiration]',
 						'value' => $module_data->expiration,

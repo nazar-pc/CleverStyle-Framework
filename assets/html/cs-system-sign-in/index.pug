@@ -4,9 +4,9 @@ dom-module#cs-system-sign-in
 		form(is="cs-form" on-submit="_sign_in")
 			h3 [[L.sign_in]]
 			label
-				input#login(is="cs-input-text" placeholder="[[L.login_or_email]]" type="text" autocorrect="off")
+				cs-input-text(tight): input#login(placeholder="[[L.login_or_email]]" type="text" autocorrect="off")
 			label
-				input#password(is="cs-input-text" placeholder="[[L.password]]" type="password")
+				cs-input-text(tight): input#password(placeholder="[[L.password]]" type="password")
 			nav(is="cs-nav-button-group")
 				button(is="cs-button" primary type="submit") [[L.sign_in]]
 				button(is="cs-button" icon="question" type="button" force-fullsize tooltip="[[L.restore_password]]" on-tap="_restore_password")

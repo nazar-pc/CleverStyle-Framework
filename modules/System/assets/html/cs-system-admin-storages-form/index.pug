@@ -4,11 +4,11 @@ dom-module#cs-system-admin-storages-form
 			label(tooltip="[[L.storage_url]]")
 				| [[L.storage_url]]
 				cs-tooltip
-			input(is="cs-input-text" type="text" value="{{storage.url}}")
+			cs-input-text: input(type="text" value="{{storage.url}}")
 			label(tooltip="[[L.storage_host_info]]")
 				| [[L.storage_host]]
 				cs-tooltip
-			input(is="cs-input-text" type="text" value="{{storage.host}}")
+			cs-input-text: input(type="text" value="{{storage.host}}")
 			label(tooltip="[[L.storage_driver]]")
 				| [[L.storage_driver]]
 				cs-tooltip
@@ -18,11 +18,11 @@ dom-module#cs-system-admin-storages-form
 			label(tooltip="[[L.storage_user_info]]")
 				| [[L.storage_user]]
 				cs-tooltip
-			input(is="cs-input-text" type="text" value="{{storage.user}}")
+			cs-input-text: input(type="text" value="{{storage.user}}")
 			label(tooltip="[[L.storage_password_info]]")
 				| [[L.storage_password]]
 				cs-tooltip
-			input(is="cs-input-text" type="text" value="{{storage.password}}")
+			cs-input-text: input(type="text" value="{{storage.password}}")
 			div
 				button(is="cs-button" type="button" primary on-tap="_save" disabled="[[!and(storage.url, storage.host, storage.driver)]]") [[L.save]]
 				button(is="cs-button" type="button" on-tap="_test_connection" icon="signal" disabled="[[!and(storage.url, storage.host, storage.driver)]]") [[L.test_connection]]

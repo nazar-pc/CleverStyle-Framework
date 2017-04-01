@@ -12,7 +12,7 @@ dom-module#cs-system-admin-databases-form
 			label(tooltip="[[L.db_host_info]]")
 				| [[L.db_host]]
 				cs-tooltip
-			input(is="cs-input-text" type="text" value="{{database.host}}")
+			cs-input-text: input(type="text" value="{{database.host}}")
 			label(tooltip="[[L.db_type_info]]")
 				| [[L.db_driver]]
 				cs-tooltip
@@ -22,19 +22,19 @@ dom-module#cs-system-admin-databases-form
 			label(tooltip="[[L.db_prefix_info]]")
 				| [[L.db_prefix]]
 				cs-tooltip
-			input(is="cs-input-text" type="text" value="{{database.prefix}}")
+			cs-input-text: input(type="text" value="{{database.prefix}}")
 			label(tooltip="[[L.db_name_info]]")
 				| [[L.db_name]]
 				cs-tooltip
-			input(is="cs-input-text" type="text" value="{{database.name}}")
+			cs-input-text: input(type="text" value="{{database.name}}")
 			label(tooltip="[[L.db_user_info]]")
 				| [[L.db_user]]
 				cs-tooltip
-			input(is="cs-input-text" type="text" value="{{database.user}}")
+			cs-input-text: input(type="text" value="{{database.user}}")
 			label(tooltip="[[L.db_password_info]]")
 				| [[L.db_password]]
 				cs-tooltip
-			input(is="cs-input-text" type="text" value="{{database.password}}")
+			cs-input-text: input(type="text" value="{{database.password}}")
 			div
 				button(is="cs-button" type="button" primary on-tap="_save" disabled="[[!and(database.host, database.driver)]]") [[L.save]]
 				button(is="cs-button" type="button" on-tap="_test_connection" icon="signal" disabled="[[!and(database.host, database.driver)]]") [[L.test_connection]]

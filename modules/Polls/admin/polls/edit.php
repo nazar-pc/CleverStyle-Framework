@@ -22,7 +22,7 @@ $Page
 	->content(
 		h::{'form[is=cs-form][action=admin/Polls/polls]'}(
 			h::h2($L->editing_of_poll($poll['title'])).
-			h::{'input[is=cs-input-text][name=edit[title]]'}(
+			h::{'cs-input-text input[name=edit[title]]'}(
 				[
 					'value'       => $poll['title'],
 					'placeholder' => $L->poll_title
@@ -31,7 +31,7 @@ $Page
 			h::p(
 				array_map(
 					function ($option) {
-						return h::{'input[is=cs-input-text]'}(
+						return h::{'cs-input-text input'}(
 							[
 								'value' => $option['title'],
 								'name'  => "edit[options][$option[id]]"

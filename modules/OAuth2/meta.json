@@ -1,7 +1,7 @@
 {
 	"package"      : "OAuth2",
 	"category"     : "modules",
-	"version"      : "1.44.1+build-125",
+	"version"      : "1.45.0+build-126",
 	"description"  : "Module provides realization of OAuth 2 authorization protocol (server side).",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/Framework",
@@ -18,7 +18,7 @@
 	],
 	"provide"      : "oauth2",
 	"require"      : [
-		"System>=7.0",
+		"System>=7.1",
 		"System<8.0"
 	],
 	"multilingual" : [

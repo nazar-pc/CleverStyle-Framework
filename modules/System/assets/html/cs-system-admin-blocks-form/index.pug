@@ -18,7 +18,7 @@ dom-module#cs-system-admin-blocks-form
 						| [[L.block_title]]
 						cs-tooltip
 				td
-					input(is="cs-input-text" name="block[title]" type="text" value="{{block.title}}")
+					cs-input-text: input(name="block[title]" type="text" value="{{block.title}}")
 			tr
 				td
 					span(tooltip="[[L.block_active_info]]")
@@ -37,7 +37,7 @@ dom-module#cs-system-admin-blocks-form
 						| [[L.block_start]]
 						cs-tooltip
 				td
-					input(is="cs-input-text" name="block[start]" type="datetime-local" value="{{block.start}}")
+					cs-input-text: input(name="block[start]" type="datetime-local" value="{{block.start}}")
 			tr
 				td
 					span(tooltip="[[L.block_expire_info]]")
@@ -52,7 +52,7 @@ dom-module#cs-system-admin-blocks-form
 						| [[L.as_specified]]
 					br
 					br
-					input(is="cs-input-text" name="block[expire][date]" type="datetime-local" value="{{block.expire.date}}")
+					cs-input-text: input(name="block[expire][date]" type="datetime-local" value="{{block.expire.date}}")
 		.html(hidden="[[!equal(block.type, 'html')]]")
 			cs-editor(value="{{block.content}}")
 				textarea(is="cs-textarea" autosize full-width rows="5" name="block[html]" value="{{block.content}}")

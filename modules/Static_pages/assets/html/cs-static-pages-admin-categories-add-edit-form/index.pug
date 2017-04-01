@@ -6,13 +6,13 @@ dom-module#cs-static-pages-admin-categories-add-edit-form
 			tr
 				td [[L.category_title]]
 				td
-					input(is="cs-input-text" type="text" value="{{category.title}}")
+					cs-input-text: input(type="text" value="{{category.title}}")
 			tr
 				td(tooltip="[[L.category_path_info]]")
 					| [[L.category_path]]
 					cs-tooltip
 				td
-					input(is="cs-input-text" type="text" value="{{category.path}}")
+					cs-input-text: input(type="text" value="{{category.path}}")
 			tr
 				td [[L.parent_category]]
 				td

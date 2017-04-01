@@ -21,9 +21,9 @@ Page::instance()
 				$L->addition_of_client
 			).
 			h::label($L->client_name).
-			h::{'input[is=cs-input-text][name=name]'}().
+			h::{'cs-input-text input[name=name]'}().
 			h::label($L->client_domain).
-			h::{'input[is=cs-input-text][name=domain]'}().
+			h::{'cs-input-text input[name=domain]'}().
 			h::label($L->active).
 			h::{'div radio[name=active][checked=1]'}(
 				[

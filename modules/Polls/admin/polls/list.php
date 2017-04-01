@@ -45,7 +45,7 @@ Page::instance()->content(
 			)
 		).
 		h::h2($L->new_poll).
-		h::{'p input[is=cs-input-text][name=add[title]]'}(
+		h::{'p cs-input-text input[name=add[title]]'}(
 			[
 				'placeholder' => $L->poll_title
 			]

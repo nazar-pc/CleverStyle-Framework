@@ -4,6 +4,6 @@ dom-module#cs-system-restore-password-form
 		form(is="cs-form" on-submit="_restore_password")
 			h3 [[L.restore_password]]
 			label
-				input#login(is="cs-input-text" placeholder="[[L.login_or_email]]" type="text" autocorrect="off")
+				cs-input-text(tight): input#login(placeholder="[[L.login_or_email]]" type="text" autocorrect="off")
 			button(is="cs-button" primary type="submit") [[L.restore_password]]
 	script(src="script.js")

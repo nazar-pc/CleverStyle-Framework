@@ -33,13 +33,13 @@ if ($data) {
 $Page->content(
 	h::{'form[is=cs-form]'}(
 		h::label("$L->upload_size_limit (b, kb, mb, gb)").
-		h::{'input[is=cs-input-text][compact][name=max_file_size]'}(
+		h::{'cs-input-text[compact] input[name=max_file_size]'}(
 			[
 				'value' => $module_data->max_file_size
 			]
 		).
 		h::{'label info'}('uploader_confirmation_time').
-		h::{'input[is=cs-input-text][compact][name=confirmation_time]'}(
+		h::{'cs-input-text[compact] input[name=confirmation_time]'}(
 			[
 				'value' => $module_data->confirmation_time
 			]

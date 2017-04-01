@@ -24,19 +24,19 @@ Page::instance()
 				$L->editing_of_client($client['name'])
 			).
 			h::label($L->client_name).
-			h::{'input[is=cs-input-text][name=name]'}(
+			h::{'cs-input-text input[name=name]'}(
 				[
 					'value' => $client['name']
 				]
 			).
 			h::label('client_secret').
-			h::{'input[is=cs-input-text][name=secret]'}(
+			h::{'cs-input-text input[name=secret]'}(
 				[
 					'value' => $client['secret']
 				]
 			).
 			h::label($L->client_domain).
-			h::{'input[is=cs-input-text][name=domain]'}(
+			h::{'cs-input-text input[name=domain]'}(
 				[
 					'value' => $client['domain']
 				]

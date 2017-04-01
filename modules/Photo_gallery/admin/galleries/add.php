@@ -23,10 +23,10 @@ Page::instance()
 				$L->addition_of_gallery
 			).
 			h::label($L->gallery_title).
-			h::{'input[is=cs-input-text][name=add[title]]'}().
+			h::{'cs-input-text input[name=add[title]]'}().
 			($Config->core['simple_admin_mode'] ? '' :
 				h::label(h::info('photo_gallery_gallery_path')).
-				h::{'input[is=cs-input-text][name=add[path]]'}()
+				h::{'cs-input-text input[name=add[path]]'}()
 			).
 			h::label($L->gallery_description).
 			h::{'textarea[is=cs-textarea][name=add[description]]'}().

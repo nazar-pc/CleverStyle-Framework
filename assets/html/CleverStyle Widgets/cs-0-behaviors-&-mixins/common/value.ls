@@ -5,8 +5,16 @@
  * @license   MIT License, see license.txt
  */
 Polymer.cs.behaviors.value =
-	listeners	:
-		change	: '_changed'
-		input	: '_changed'
-	_changed : !->
-		@fire('value-changed')
+	ready : !->
+		#TODO: Should always be firstChild when everything converted to wrapper elements
+		if this.extends
+			target	= @
+		else
+			target	= @firstChild
+		target
+			..addEventListener('change', !->
+				@dispatchEvent(new CustomEvent('value-changed'))
+			)
+			..addEventListener('input', !->
+				@dispatchEvent(new CustomEvent('value-changed'))
+			)

@@ -41,7 +41,7 @@ Page::instance()
 							).
 							h::div(
 								h::label($L->image_title).
-								h::{'input[is=cs-input-text]'}(
+								h::{'cs-input-text input'}(
 									[
 										'name'  => "edit_images[$image[id]][title]",
 										'value' => $image['title']

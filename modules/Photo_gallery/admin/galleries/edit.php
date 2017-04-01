@@ -25,14 +25,14 @@ Page::instance()
 				$L->editing_of_gallery($gallery['title'])
 			).
 			h::label($L->gallery_title).
-			h::{'input[is=cs-input-text][name=edit[title]]'}(
+			h::{'cs-input-text input[name=edit[title]]'}(
 				[
 					'value' => $gallery['title']
 				]
 			).
 			($Config->core['simple_admin_mode'] ? '' :
 				h::label(h::info('photo_gallery_gallery_path')).
-				h::{'input[is=cs-input-text][name=edit[path]]'}(
+				h::{'cs-input-text input[name=edit[path]]'}(
 					[
 						'value' => $gallery['path']
 					]

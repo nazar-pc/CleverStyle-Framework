@@ -40,7 +40,7 @@ $Page->content(
 								$content .= h::{'tr td'}(
 									[
 										ucfirst($key),
-										h::{'input[is=cs-input-text]'}(
+										h::{'cs-input-text input'}(
 											[
 												'name'  => "providers[$provider][keys][$key]",
 												'value' => $providers_config[$provider]['keys'][$key] ?? ''
@@ -58,7 +58,7 @@ $Page->content(
 								isset($provider_data['scope']) ? h::{'tr td'}(
 									[
 										'Scope',
-										h::{'input[is=cs-input-text]'}(
+										h::{'cs-input-text input'}(
 											[
 												'name'  => "providers[$provider][scope]",
 												'value' => $providers_config[$provider]['scope'] ?? $provider_data['scope']
@@ -69,7 +69,7 @@ $Page->content(
 								).
 								(
 								isset($provider_data['trustForwarded'])
-									? h::{'tr td input[is=cs-input-text]'}(
+									? h::{'tr td cs-input-text input'}(
 									[
 										'name'  => "providers[$provider][trustForwarded]",
 										'value' => 1,

@@ -47,14 +47,14 @@ if (isset($_POST['start_server']) && !is_server_running()) {
 $Page->content(
 	h::{'form[is=cs-form]'}(
 		h::{'label info'}('websockets_security_key').
-		h::{'input[is=cs-input-text]'}(
+		h::{'cs-input-text input'}(
 			[
 				'name'  => 'security_key',
 				'value' => $module_data->security_key
 			]
 		).
 		h::{'label info'}('websockets_listen_port').
-		h::{'input[is=cs-input-text]'}(
+		h::{'cs-input-text input'}(
 			[
 				'name'  => 'listen_port',
 				'value' => $module_data->listen_port ?: 8080
@@ -70,7 +70,7 @@ $Page->content(
 			]
 		).
 		h::{'label info'}('websockets_dns_server').
-		h::{'input[is=cs-input-text]'}(
+		h::{'cs-input-text input'}(
 			[
 				'name'  => 'dns_server',
 				'value' => $module_data->dns_server ?: '127.0.0.1'

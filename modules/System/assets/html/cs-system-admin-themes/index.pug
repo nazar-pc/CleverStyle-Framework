@@ -21,6 +21,6 @@ dom-module#cs-system-admin-themes
 						= ' '
 						a(is="cs-link-button" icon="trash" on-tap="_remove_completely" tooltip="[[L.complete_theme_removal]]" hidden="[[!theme.can_delete]]")
 		p
-			input(is="cs-input-text" type="file" compact tight id="file")
+			cs-input-text(compact tight): input(type="file" id="file")
 			button(is="cs-button" type="button" icon="upload" on-tap="_upload") [[L.upload_and_install_update_theme]]
 	script(src="script.js")

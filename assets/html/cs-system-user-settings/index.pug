@@ -5,9 +5,9 @@ dom-module#cs-system-user-settings
 		form(is="cs-form" on-submit="_save")
 			h3 [[L.general_settings]]
 			label [[L.login]]
-			input(is="cs-input-text" type="text" value="{{user_data.login}}")
+			cs-input-text: input(type="text" value="{{user_data.login}}")
 			label [[L.username]]
-			input(is="cs-input-text" type="text" value="{{user_data.username}}")
+			cs-input-text: input(type="text" value="{{user_data.username}}")
 			label [[L.language]]
 			select(is="cs-select" selected="{{user_data.language}}" size="5")
 				template(is="dom-repeat" items="[[languages]]" as="language")
@@ -19,7 +19,7 @@ dom-module#cs-system-user-settings
 			label [[L.avatar]]
 			label
 				img(src="[[if(user_data.avatar, user_data.avatar, '')]]" hidden="[[!user_data.avatar]]")
-			input(is="cs-input-text" type="text" value="{{user_data.avatar}}")
+			cs-input-text: input(type="text" value="{{user_data.avatar}}")
 			div.cs-padding-bottom
 				button#upload-avatar(is="cs-button" type="button" icon="upload" hidden="[[!can_upload]]") [[L.upload_avatar]]
 			nav(is="cs-nav-button=group")

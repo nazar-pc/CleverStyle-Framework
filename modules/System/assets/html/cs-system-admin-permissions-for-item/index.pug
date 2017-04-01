@@ -54,7 +54,7 @@ dom-module#cs-system-admin-permissions-for-item
 					table#users.cs-table(right-left)
 						template(is="dom-repeat" items="[[users]]" as="user")
 							+user-row
-					input#search(is="cs-input-text" autocomplete="off" placeholder="[[L.type_username_or_email_press_enter]]" type="search")
+					cs-input-text: input#search(autocomplete="off" placeholder="[[L.type_username_or_email_press_enter]]" type="search")
 					table#search-results.cs-table.cs-margin-top(right-left)
 						template(is="dom-repeat" items="[[found_users]]" as="user")
 							+user-row

@@ -3,11 +3,11 @@ dom-module#cs-system-admin-groups-form
 		form(is="cs-form")
 			template(is="dom-if" if="[[group_id]]")
 				label id
-				input(is="cs-input-text" readonly value="[[group_id]]")
+				cs-input-text: input(readonly value="[[group_id]]")
 			label [[L.group_name]]
-			input(is="cs-input-text" type="text" value="{{group_title}}")
+			cs-input-text: input(type="text" value="{{group_title}}")
 			label [[L.group_description]]
-			input(is="cs-input-text" type="text" value="{{group_description}}")
+			cs-input-text: input(type="text" value="{{group_description}}")
 			div
 				button(is="cs-button" type="button" primary on-tap="save" disabled="[[!group_title]]") [[L.save]]
 	script(src="script.js")

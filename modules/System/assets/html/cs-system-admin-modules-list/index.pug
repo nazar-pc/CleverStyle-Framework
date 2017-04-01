@@ -47,10 +47,10 @@ dom-module#cs-system-admin-modules-list
 						= ' '
 						button(is="cs-button" type="button" icon="trash" on-tap="_remove_completely" tooltip="[[L.complete_module_removal]]" hidden="[[!equal(module.active, -1)]]")
 		p
-			input(is="cs-input-text" type="file" compact tight id="file")
+			cs-input-text(compact tight): input(type="file" id="file")
 			button(is="cs-button" type="button" icon="upload" on-tap="_upload") [[L.upload_and_install_update_module]]
 		p
-			input(is="cs-input-text" type="file" compact tight id="file_system")
+			cs-input-text(compact tight): input(type="file" id="file_system")
 			button(is="cs-button" type="button" icon="upload" on-tap="_upload_system") [[L.upload_and_update_system]]
 		p
 			button(is="cs-button" type="button" icon="refresh" on-tap="_update_modules_list" tooltip="[[L.update_modules_list_info]]") [[L.update_modules_list]]

@@ -11,7 +11,7 @@ dom-module#cs-system-admin-optimization
 			+input("inserts_limit", "simple_admin_mode", "number", 1)
 			+input("update_ratio", "simple_admin_mode", "number", 0, 100)
 			p
-				input(is="cs-input-text" compact tight value="{{path_prefix}}" placeholder="[[L.partial_cache_cleaning]]")
+				cs-input-text(compact tight): input(value="{{path_prefix}}" placeholder="[[L.partial_cache_cleaning]]")
 				button(is="cs-button" type="button" disabled="[[equal(settings.cache_state, 0)]]" on-tap="_clean_cache") [[L.clean_settings_cache]]
 			button(is="cs-button" type="button" disabled="[[equal(settings.cache_compress_js_css, 0)]]" on-tap="_clean_public_cache") [[L.clean_scripts_styles_cache]]
 			+footer-buttons

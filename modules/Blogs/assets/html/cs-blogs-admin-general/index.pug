@@ -2,7 +2,7 @@ mixin input (name, type, min)
 	label(tooltip=`[[L.${name}_info]]`)
 		| [[L.#{name}]]
 		cs-tooltip
-	input(is="cs-input-text" type=type value=`{{settings.${name}}}` min=min)
+	cs-input-text: input(type=type value=`{{settings.${name}}}` min=min)
 mixin on-off-switcher (name)
 	- values = [0,1]
 	- translations = ['[[L.no]]', '[[L.yes]]']

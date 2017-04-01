@@ -6,6 +6,5 @@
  */
 Polymer(
 	is			: 'cs-input-text'
-	extends		: 'input'
 	behaviors	: Polymer.cs.behaviors.cs-input-text
 )

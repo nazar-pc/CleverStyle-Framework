@@ -30,14 +30,14 @@ if (isset($_POST['bitcoin_address'], $_POST['bitcoin_address'])) {
 $Page->content(
 	h::{'form[is=cs-form]'}(
 		h::{'label info'}('blockchain_payment_bitcoin_address').
-		h::{'input[is=cs-input-text]'}(
+		h::{'cs-input-text input'}(
 			[
 				'name'  => 'bitcoin_address',
 				'value' => $module_data->bitcoin_address
 			]
 		).
 		h::{'label info'}('blockchain_payment_confirmations_required').
-		h::{'input[is=cs-input-text]'}(
+		h::{'cs-input-text input'}(
 			[
 				'name'  => 'confirmations_required',
 				'value' => $module_data->confirmations_required,

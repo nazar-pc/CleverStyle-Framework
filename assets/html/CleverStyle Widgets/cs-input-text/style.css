@@ -1,0 +1,52 @@
+/**
+ * @package   CleverStyle Widgets
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+:host {
+	display : inline-block;
+}
+
+::slotted(input) {
+	background-color : #fff;
+	border           : none;
+	color            : inherit;
+	vertical-align   : middle;
+
+	@apply --cs-global;
+	@apply --cs-input-text;
+}
+
+:host([compact]) ::slotted(input) {
+	width : auto;
+}
+
+:host([full-width]) ::slotted(input) {
+	width : 100%;
+}
+
+::slotted(input:active) {
+	@apply --cs-input-text-active;
+}
+
+::slotted(input:focus) {
+	outline : none;
+
+	@apply --cs-input-text-hover;
+	@apply --cs-input-text-focus;
+}
+
+::slotted(input:hover) {
+	@apply --cs-input-text-hover;
+}
+
+::slotted(input[disabled]) {
+	cursor : not-allowed;
+
+	@apply --cs-input-text-disabled;
+}
+
+::slotted(input[readonly]) {
+	@apply --cs-input-text-readonly;
+}
