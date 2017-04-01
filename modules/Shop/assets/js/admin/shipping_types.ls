@@ -11,9 +11,9 @@ make_modal	= (L, title, action) ->
 	$(cs.ui.simple_modal("""<form is="cs-form">
 		<h3 class="cs-text-center">#title</h3>
 		<label>#{L.title}</label>
-		<input is="cs-input-text" name="title" required>
+		<cs-input-text><input name="title" required></cs-input-text>
 		<label>#{L.price}</label>
-		<input is="cs-input-text" name="price" type="number" min="0" value="0" required>
+		<cs-input-text><input name="price" type="number" min="0" value="0" required></cs-input-text>
 		<label>#{L.phone_needed}</label>
 		<div>
 			<label is="cs-label-button"><input type="radio" name="phone_needed" value="1" checked> #{L.yes}</label>

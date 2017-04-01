@@ -92,7 +92,7 @@ make_modal = (attributes, categories, L, title, action) ->
 					values = values.join('')
 					color	=
 						if attribute.type == color_set_attribute_type
-							"""<input is="cs-input-text" type="color">"""
+							"""<cs-input-text><input type="color"></cs-input-text>"""
 						else
 							''
 					"""<p>
@@ -105,7 +105,7 @@ make_modal = (attributes, categories, L, title, action) ->
 					</p>"""
 				else if string_attribute_types.indexOf(attribute.type) != -1
 					"""<p>
-						#{attribute.title}: <input is="cs-input-text" name="attributes[#{attribute.id}]">
+						#{attribute.title}: <cs-input-text><input name="attributes[#{attribute.id}]"></cs-input-text>
 					</p>"""
 				else
 					"""<p>
@@ -114,10 +114,10 @@ make_modal = (attributes, categories, L, title, action) ->
 		attributes_list	= attributes_list.join('')
 		$this.parent().next().html("""
 			<p>
-				#{L.price}: <input is="cs-input-text" name="price" type="number" value="0" required>
+				#{L.price}: <cs-input-text><input name="price" type="number" value="0" required></cs-input-text>
 			</p>
 			<p>
-				#{L.in_stock}: <input is="cs-input-text" name="in_stock" type="number" value="1" step="1">
+				#{L.in_stock}: <cs-input-text><input name="in_stock" type="number" value="1" step="1"></cs-input-text>
 			</p>
 			<p>
 				#{L.available_soon}:
@@ -141,7 +141,7 @@ make_modal = (attributes, categories, L, title, action) ->
 			</p>
 			#attributes_list
 			<p>
-				#{L.tags}: <input is="cs-input-text" name="tags" placeholder="shop, high quality, e-commerce">
+				#{L.tags}: <cs-input-text><input name="tags" placeholder="shop, high quality, e-commerce"></cs-input-text>
 			</p>
 			<p>
 				<button is="cs-button" primary type="submit">#action</button>
@@ -224,7 +224,7 @@ make_modal = (attributes, categories, L, title, action) ->
 						<option value="direct_url">#{L.direct_video_url}</option>
 					</select>
 					<textarea is="cs-textarea" autosize name="videos[video][]" placeholder="#{L.url_or_code}" class="video-video" rows="3"></textarea>
-					<input is="cs-input-text" name="videos[poster][]" class="video-poster" placeholder="#{L.video_poster}">
+					<cs-input-text><input name="videos[poster][]" class="video-poster" placeholder="#{L.video_poster}"></cs-input-text>
 					<button is="cs-button" icon="close" type="button" class="delete-video"></button>
 					<progress is="cs-progress" hidden full-width></progress>
 				</p>""")

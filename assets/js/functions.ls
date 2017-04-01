@@ -370,7 +370,7 @@ cs.{}ui
 		modal				= cs.ui.confirm(
 			"""
 				#content
-				<p><input is="cs-input-text" type="text"></p>
+				<p><cs-input-text><input type="text"></cs-input-text></p>
 			"""
 			->
 		)

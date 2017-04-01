@@ -15,10 +15,10 @@ make_modal	= (types, L, title, action) ->
 	modal	= $(cs.ui.simple_modal("""<form is="cs-form">
 		<h3 class="cs-text-center">#title</h3>
 		<label>#{L.title}</label>
-		<input is="cs-input-text" name="title" required>
+		<cs-input-text><input name="title" required></cs-input-text>
 		<label>#{L.color}</label>
-		<input is="cs-input-text" name="color"><br>
-		<input is="cs-input-text" type="color">
+		<cs-input-text><input name="color"></cs-input-text><br>
+		<cs-input-text><input type="color"></cs-input-text>
 		<label>#{L.order_status_type}</label>
 		<select is="cs-select" name="type" required>#types</select>
 		<label>#{L.send_update_status_email}</label>

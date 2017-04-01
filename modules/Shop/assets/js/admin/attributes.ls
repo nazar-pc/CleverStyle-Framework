@@ -19,9 +19,9 @@ make_modal			= (types, L, title, action) ->
 		<label>#{L.possible_values}</label>
 		<textarea is="cs-textarea" autosize name="value"></textarea>
 		<label>#{L.title}</label>
-		<input is="cs-input-text" name="title" required>
+		<cs-input-text><input name="title" required></cs-input-text>
 		<label>#{L.title_internal}</label>
-		<input is="cs-input-text" name="title_internal" required>
+		<cs-input-text><input name="title_internal" required></cs-input-text>
 		<br>
 		<button is="cs-button" primary type="submit">#action</button>
 	</form>""")

@@ -43,7 +43,7 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 			#{L.datetime}: <span class="date"></span>
 		</p>
 		<p>
-			#{L.user}: <span class="username"></span>, id: <input is="cs-input-text" compact name="user" required>
+			#{L.user}: <span class="username"></span>, id: <cs-input-text><input compact name="user" required></cs-input-text>
 		</p>
 		<p>
 			<div class="items"></div>
@@ -53,13 +53,13 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 			#{L.shipping_type}: <select is="cs-select" name="shipping_type" required>#shipping_types_list</select>
 		</p>
 		<p>
-			#{L.shipping_cost}: <input is="cs-input-text" name="shipping_cost"> (<span id="shipping_cost"></span>)
+			#{L.shipping_cost}: <cs-input-text><input name="shipping_cost"></cs-input-text> (<span id="shipping_cost"></span>)
 		</p>
 		<p>
-			#{L.shipping_username}: <input is="cs-input-text" name="shipping_username">
+			#{L.shipping_username}: <cs-input-text><input name="shipping_username"></cs-input-text>
 		</p>
 		<p>
-			#{L.shipping_phone}: <input is="cs-input-text" name="shipping_phone">
+			#{L.shipping_phone}: <cs-input-text><input name="shipping_phone"></cs-input-text>
 		</p>
 		<p>
 			#{L.shipping_address}: <textarea is="cs-textarea" autosize name="shipping_address"></textarea>
@@ -104,11 +104,11 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 			callback	= (item_data) !->
 				total_price	= item_data.price * item.units
 				items_container.append("""<p>
-					#{L.item}: <input is="cs-input-text" compact value="-" class="title" readonly>
-					id: <input is="cs-input-text" compact name="items[item][]" value="#{item.item}" required>
-					#{L.unit_price} <input is="cs-input-text" compact name="items[unit_price][]" value="#{item.unit_price}" required> (<span class="unit-price">#{item_data.price}</span>)
-					#{L.units} <input is="cs-input-text" compact name="items[units][]" value="#{item.units}" required>
-					#{L.total_price} <input is="cs-input-text" compact name="items[price][]" value="#{item.price}" required> (<span class="item-price" data-original-price="#{item_data.price}">#total_price</span>)
+					#{L.item}: <cs-input-text compact><input value="-" class="title" readonly></cs-input-text>
+					id: <cs-input-text compact><input name="items[item][]" value="#{item.item}" required></cs-input-text>
+					#{L.unit_price} <cs-input-text compact><input name="items[unit_price][]" value="#{item.unit_price}" required></cs-input-text> (<span class="unit-price">#{item_data.price}</span>)
+					#{L.units} <cs-input-text compact><input name="items[units][]" value="#{item.units}" required></cs-input-text>
+					#{L.total_price} <cs-input-text compact><input name="items[price][]" value="#{item.price}" required></cs-input-text> (<span class="item-price" data-original-price="#{item_data.price}">#total_price</span>)
 					<button is="cs-button" icon="close" type="button" class="delete-item"></button>
 				</p>""")
 				items_container.children(':last').find('.title').val(item_data.title)

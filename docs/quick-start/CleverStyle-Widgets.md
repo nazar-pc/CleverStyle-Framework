@@ -65,7 +65,7 @@ Example (and expected markup):
 ```html
 <form is="cs-form">
     <label>Name</label>
-    <input is="cs-input-text">
+    <cs-input-text><input></cs-input-text>
     <label>Description</label>
     <textarea is="cs-textarea"></textarea>
 </form>
@@ -97,7 +97,7 @@ Examples:
 ```
 
 #### cs-input-text
-Extends native `input` element.
+Wrapper element for native `input` element.
 
 Attributes (also available as properties, so use whatever is more convenient):
 * compact - boolean, uses automatic width computation, which is more compact that enforced styled width
@@ -105,17 +105,17 @@ Attributes (also available as properties, so use whatever is more convenient):
 * tight - boolean, affects button styling by removing space after button and placing directly before next element (useful for button groups and combining with inputs)
 
 Properties:
-* this - object, read-only, `this` of element, useful for data-binding
 * tooltip - string, if specified then tooltip with specified content will be shown on hover
-* value - string, actually, native property, but now fires `value-change` event on any `change` or `input` event, so works nicely and more convenient with data bindings
+
+Input element will start firing `value-change` event on any `change` or `input` event, so that it works nicely and more convenient with data bindings
 
 Examples:
 ```html
-<input is="cs-input-text">
-<input is="cs-input-text" type="email" value="{{email}}">
-<input is="cs-input-text" full-size>
+<cs-input-text><input></cs-input-text>
+<cs-input-text><input type="email" value="{{email}}"></cs-input-text>
+<cs-input-text full-size><input></cs-input-text>
 <p>
-    <input is="cs-input-text" tight>
+    <cs-input-text tight><input></cs-input-text>
     <button is="cs-button" icon="check">Button right after input</button>
 </p>
 ```

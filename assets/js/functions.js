@@ -466,7 +466,7 @@
     if (typeof content === 'string' && content.indexOf('<') === -1) {
       content = "<h3>" + content + "</h3>";
     }
-    modal = cs.ui.confirm("" + content + "\n<p><input is=\"cs-input-text\" type=\"text\"></p>", function(){});
+    modal = cs.ui.confirm("" + content + "\n<p><cs-input-text><input type=\"text\"></cs-input-text></p>", function(){});
     x$ = modal.input = modal.querySelector('input');
     x$.focus();
     input = modal.input, ok = modal.ok, cancel = modal.cancel;

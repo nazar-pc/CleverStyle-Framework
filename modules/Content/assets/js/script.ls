@@ -24,9 +24,9 @@ Promise.all([
 				cs.Language('content_').ready().then (L) !->
 					modal_body	= html_to_node("""<form is="cs-form">
 						<label>#{L.key}</label>
-						<input is="cs-input-text" type="text" name="key">
+						<cs-input-text><input type="text" name="key"></cs-input-text>
 						<label>#{L.title}</label>
-						<input is="cs-input-text" type="text" name="title">
+						<cs-input-text><input type="text" name="title"></cs-input-text>
 						<label>#{L.content}</label>
 						<textarea is="cs-textarea" autosize class="text cs-margin-bottom"></textarea>
 						<cs-editor class="html cs-margin-bottom" hidden>
@@ -78,9 +78,9 @@ Promise.all([
 					cs.api("get api/Content/#key").then (data) !->
 						modal_body	= html_to_node("""<form is="cs-form">
 							<label>#{L.key}</label>
-							<input is="cs-input-text" readonly value="#{data.key}">
+							<cs-input-text><input readonly value="#{data.key}"></cs-input-text>
 							<label>#{L.title}</label>
-							<input is="cs-input-text" type="text" name="title">
+							<cs-input-text><input type="text" name="title"></cs-input-text>
 							<label>#{L.content}</label>
 							<textarea is="cs-textarea" autosize class="text cs-margin-bottom"></textarea>
 							<cs-editor class="html cs-margin-bottom" hidden>
