@@ -6,36 +6,20 @@
  */
 Polymer.{}cs.{}behaviors.button =
 	properties	:
-		action			: String
-		active			:
+		action	: String
+		active	:
 			notify				: true
 			reflectToAttribute	: true
 			type				: Boolean
-		bind			: Object
-		empty			:
+		bind	: Object
+		compact	:
 			reflectToAttribute	: true
 			type				: Boolean
-		force-fullsize	:
-			reflectToAttribute	: true
-			type				: Boolean
-		icon-before		:
-			reflectToAttribute	: true
-			type				: String
-		icon-after		:
-			reflectToAttribute	: true
-			type				: String
-		icon			:
-			type				: String
-			observer			: '_icon_changed'
-		primary			:
+		primary	:
 			reflectToAttribute	: true
 			type				: Boolean
 	listeners	:
 		tap	: '_tap'
-	attached : !->
-		@empty = !@childNodes.length
 	_tap : ->
 		if @bind && @action
 			@bind[@action]()
-	_icon_changed : !->
-		@iconBefore = @icon

@@ -5,7 +5,12 @@
  * @license   MIT License, see license.txt
  */
 :host {
-	display : inline-block;
+	display        : inline-flex;
+	vertical-align : middle;
+}
+
+:host([hidden]) {
+	display : none;
 }
 
 ::slotted(input) {

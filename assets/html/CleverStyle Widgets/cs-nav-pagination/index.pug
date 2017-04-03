@@ -5,5 +5,5 @@ dom-module#cs-nav-pagination
 		content
 		//- Render pages if any
 		template(is="dom-repeat" items="[[pages_list]]")
-			button(is="cs-button" type="button" primary="[[item.active]]" disabled="[[item.disabled]]" on-tap="_set_page" first$="[[item.first]]" last$="[[item.last]]") [[item.text]]
+			cs-button(primary="[[item.active]]"): button(type="button" disabled="[[item.disabled]]" on-tap="_set_page" first$="[[item.first]]" last$="[[item.last]]") [[item.text]]
 	script(src="script.js")

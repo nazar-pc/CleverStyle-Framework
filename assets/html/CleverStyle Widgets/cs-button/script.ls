@@ -6,6 +6,5 @@
  */
 Polymer(
 	is			: 'cs-button'
-	extends		: 'button'
 	behaviors	: Polymer.cs.behaviors.cs-button
 )

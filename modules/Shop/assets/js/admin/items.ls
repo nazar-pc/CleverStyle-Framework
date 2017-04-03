@@ -131,20 +131,20 @@ make_modal = (attributes, categories, L, title, action) ->
 			</p>
 			<p>
 				<span class="images" style="display: block"></span>
-				<button is="cs-button" tight type="button" class="add-images">#{L.add_images}</button>
+				<cs-button tight><button type="button" class="add-images">#{L.add_images}</button></cs-button>
 				<progress is="cs-progress" hidden></progress>
 				<input type="hidden" name="images">
 			</p>
 			<p>
 				<div class="videos"></div>
-				<button is="cs-button" type="button" class="add-video">#{L.add_video}</button>
+				<cs-button><button type="button" class="add-video">#{L.add_video}</button></cs-button>
 			</p>
 			#attributes_list
 			<p>
 				#{L.tags}: <cs-input-text><input name="tags" placeholder="shop, high quality, e-commerce"></cs-input-text>
 			</p>
 			<p>
-				<button is="cs-button" primary type="submit">#action</button>
+				<cs-button primary><button type="submit">#action</button></cs-button>
 			</p>
 		""")
 		images_container	= modal.find('.images')
@@ -160,7 +160,7 @@ make_modal = (attributes, categories, L, title, action) ->
 			html5sortable(
 				images_container.get()
 				forcePlaceholderSize	: true
-				placeholder				: '<button is="cs-button" icon="map-pin" style="vertical-align: top">'
+				placeholder				: '<cs-button compact><button style="vertical-align: top"><cs-icon icon="map-pin"></cs-icon></button></cs-button'
 			)[0]
 				.addEventListener(
 					'sortupdate'
@@ -171,7 +171,7 @@ make_modal = (attributes, categories, L, title, action) ->
 				images_container.append("""<a href="#image" target="_blank" style="display: inline-block; padding: .5em; width: 150px">
 					<img src="#image">
 					<br>
-					<button is="cs-button" force-compact type="button" class="remove-image" style="width: 100%">#{L.remove_image}</button>
+					<cs-button compact><button type="button" class="remove-image" style="width: 100%">#{L.remove_image}</button></cs-button>
 				</a>""")
 			modal.update_images()
 		if cs.file_upload
@@ -225,7 +225,7 @@ make_modal = (attributes, categories, L, title, action) ->
 					</select>
 					<textarea is="cs-textarea" autosize name="videos[video][]" placeholder="#{L.url_or_code}" class="video-video" rows="3"></textarea>
 					<cs-input-text><input name="videos[poster][]" class="video-poster" placeholder="#{L.video_poster}"></cs-input-text>
-					<button is="cs-button" icon="close" type="button" class="delete-video"></button>
+					<cs-button><button type="button" class="delete-video"><cs-icon icon="close"></cs-icon></button></cs-button>
 					<progress is="cs-progress" hidden full-width></progress>
 				</p>""")
 				added_video		= videos_container.children('p:last')
@@ -234,7 +234,7 @@ make_modal = (attributes, categories, L, title, action) ->
 				if cs.file_upload
 					do !->
 						video_video.after("""
-							&nbsp;<button is="cs-button" type="button" icon="upload"></button>
+							&nbsp;<cs-button><button type="button"><cs-icon icon="upload"></cs-icon></button></cs-button>
 						""")
 						progress	= video_video.parent().find('progress')[0]
 						uploader	= cs.file_upload(
@@ -252,7 +252,7 @@ make_modal = (attributes, categories, L, title, action) ->
 						modal.on('close', uploader~destroy)
 					do !->
 						video_poster.after("""
-							&nbsp;<button is="cs-button" type="button" icon="upload"></button>
+							&nbsp;<cs-button><button type="button"><cs-icon icon="upload"></cs-icon></button></cs-button>
 						""")
 						progress	= video_video.parent().find('progress')[0]
 						uploader	= cs.file_upload(

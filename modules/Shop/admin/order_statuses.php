@@ -44,13 +44,13 @@ Page::instance()
 									$order_status['title'],
 									$order_status_types[$order_status['type']],
 									h::icon($order_status['send_update_status_email'] ? 'check' : 'minus'),
-									h::{'button.cs-shop-order-status-edit[is=cs-button]'}(
+									h::{'cs-button button.cs-shop-order-status-edit'}(
 										$L->edit,
 										[
 											'data-id' => $order_status['id']
 										]
 									).
-									h::{'button.cs-shop-order-status-delete[is=cs-button]'}(
+									h::{'cs-button button.cs-shop-order-status-delete'}(
 										$L->delete,
 										[
 											'data-id' => $order_status['id']

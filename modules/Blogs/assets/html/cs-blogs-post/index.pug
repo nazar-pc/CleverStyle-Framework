@@ -5,7 +5,8 @@ dom-module#cs-blogs-post
 		header
 			a(is="cs-link-button" icon="pencil" href="[[url_prefix]]/Blogs/edit_post/[[jsonld.id]]" tooltip="[[L.edit]]" hidden="[[!can_edit]]")
 			= ' '
-			button(is="cs-button" type="button" icon="trash" on-tap="_delete" tooltip="[[L.delete]]" hidden="[[!can_delete]]")
+			cs-button(compact tooltip="[[L.delete]]" hidden="[[!can_delete]]"): button(type="button" on-tap="_delete")
+				cs-icon(icon="trash")
 			h1 [[jsonld.title]]
 			template(is="dom-if" if="[[jsonld.articleSection.length]]")
 				p

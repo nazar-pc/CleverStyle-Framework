@@ -21,13 +21,13 @@ Page::instance()
 		h::{'form[is=cs-form][action=admin/Polls/polls]'}(
 			h::h2($L->sure_want_to_delete_poll($poll['title'])).
 			h::p(
-				h::{'button[is=cs-button][type=submit][name=delete]'}(
+				h::{'cs-button button[type=submit][name=delete]'}(
 					$L->yes,
 					[
 						'value' => $poll['id']
 					]
 				).
-				h::{'button[is=cs-button][type=button]'}(
+				h::{'cs-button button[type=button]'}(
 					$L->cancel,
 					[
 						'onclick' => 'history.go(-1);'

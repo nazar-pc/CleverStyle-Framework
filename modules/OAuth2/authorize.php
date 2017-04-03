@@ -171,8 +171,8 @@ if (!$OAuth2->get_access($client['id'])) {
 		);
 		$Page->content(
 			h::form(
-				h::{'button[is=cs-button][type=submit][name=mode][value=allow]'}($L->allow).
-				h::{'button[is=cs-button][type=submit][mode=mode][value=deny]'}($L->deny)
+				h::{'cs-button button[type=submit][name=mode][value=allow]'}($L->allow).
+				h::{'cs-button button[type=submit][mode=mode][value=deny]'}($L->deny)
 			)
 		);
 	}

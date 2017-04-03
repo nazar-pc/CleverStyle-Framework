@@ -28,5 +28,6 @@ dom-module#cs-blogs-admin-posts-list
 					td
 						a(is="cs-link-button" icon="pencil" href="/Blogs/edit_post/[[item.id]]" tooltip="[[L.edit]]")
 						= ' '
-						button(is="cs-button" icon="trash" type="button" on-tap="_delete" tooltip="[[L.delete]]")
+						cs-button(compact tooltip="[[L.delete]]"): button(type="button" on-tap="_delete")
+							cs-icon(icon="trash")
 	script(src="script.js")

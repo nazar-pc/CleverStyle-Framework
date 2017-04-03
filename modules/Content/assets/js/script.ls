@@ -38,7 +38,7 @@ Promise.all([
 							<option value="html">html</option>
 						</select>
 						<div>
-							<button is="cs-button" type="button" primary>#{L.save}</button>
+							<cs-button primary><button type="button">#{L.save}</button></cs-button>
 						</div>
 					</form>""")
 					key		= modal_body.querySelector('[name=key]')
@@ -92,7 +92,7 @@ Promise.all([
 								<option value="html">html</option>
 							</select>
 							<div>
-								<button is="cs-button" type="button" primary>#{L.save}</button>
+								<cs-button primary><button type="button">#{L.save}</button></cs-button>
 							</div>
 						</form>""")
 						title	= modal_body.querySelector('[name=title]')
@@ -140,7 +140,7 @@ Promise.all([
 			show_edit_button	= (key, x, y, container) !->
 				cs.Language('content_').ready().then (L) !->
 					button = html_to_node("""
-						<button is="cs-button" class="cs-content-edit" data-key="#key" style="position: absolute; left: #x; top: #y;">#{L.edit}</button>
+						<cs-button><button class="cs-content-edit" data-key="#key" style="position: absolute; left: #x; top: #y;">#{L.edit}</button></cs-button>
 					""")
 					container.appendChild(button)
 					container.addEventListener(

@@ -42,13 +42,13 @@ Page::instance()
 							$attribute['title_internal'],
 							$attribute['title'],
 							$attribute_types[$attribute['type']],
-							h::{'button.cs-shop-attribute-edit[is=cs-button]'}(
+							h::{'cs-button button.cs-shop-attribute-edit'}(
 								$L->edit,
 								[
 									'data-id' => $attribute['id']
 								]
 							).
-							h::{'button.cs-shop-attribute-delete[is=cs-button]'}(
+							h::{'cs-button button.cs-shop-attribute-delete'}(
 								$L->delete,
 								[
 									'data-id' => $attribute['id']
@@ -60,5 +60,5 @@ Page::instance()
 				) ?: false
 			)
 		).
-		h::{'p button.cs-shop-attribute-add[is=cs-button]'}($L->add)
+		h::{'p cs-button button.cs-shop-attribute-add'}($L->add)
 	);

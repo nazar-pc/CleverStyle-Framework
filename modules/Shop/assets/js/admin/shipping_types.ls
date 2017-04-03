@@ -27,7 +27,7 @@ make_modal	= (L, title, action) ->
 		<label>#{L.description}</label>
 		<textarea is="cs-textarea" autosize name="description"></textarea>
 		<br>
-		<button is="cs-button" primary type="submit">#action</button>
+		<cs-button primary><button type="submit">#action</button></cs-button>
 	</form>"""))
 $('html')
 	.on('mousedown', '.cs-shop-shipping-type-add', !->

@@ -4,9 +4,11 @@ dom-module#cs-static-pages-page
 		style(include="advanced-styles")
 		div(hidden="[[editing]]")
 			p(hidden="[[!admin]]")
-				button(is="cs-button" type="button" icon="file-text" on-tap="_edit" tooltip="[[L.edit]]")
+				cs-button(compact tooltip="[[L.edit]]"): button(type="button" on-tap="_edit")
+					cs-icon(icon="file-text")
 				= ' '
-				button(is="cs-button" type="button" icon="trash" on-tap="_delete" tooltip="[[L.delete]]")
+				cs-button(compact tooltip="[[L.delete]]"): button(type="button" on-tap="_delete")
+					cs-icon(icon="trash")
 			content
 		div(hidden="[[!editing]]")
 			h1#title(contenteditable="true") [[page.title]]
@@ -17,5 +19,5 @@ dom-module#cs-static-pages-page
 				cs-editor-inline(value="{{page.content}}")
 					div
 			p
-				button(is="cs-button" on-tap="_save" type="button" primary) [[L.save]]
+				cs-button(primary): button(on-tap="_save" type="button") [[L.save]]
 	script(src="script.js")

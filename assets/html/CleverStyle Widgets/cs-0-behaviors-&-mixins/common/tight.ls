@@ -8,5 +8,5 @@ Polymer.{}cs.{}behaviors.tight =
 	properties :
 		tight		: Boolean
 	ready : !->
-		if @tight && @nextSibling.nodeType == Node.TEXT_NODE
+		if @tight && @?nextSibling.nodeType == Node.TEXT_NODE
 			@nextSibling.parentNode.removeChild(@nextSibling)

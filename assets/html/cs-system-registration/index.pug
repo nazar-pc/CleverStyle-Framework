@@ -4,6 +4,6 @@ dom-module#cs-system-registration
 		form(is="cs-form" on-submit="_registration")
 			h3 [[L.registration]]
 			label
-				cs-input-text(tight): input#email(placeholder="Email" type="email" autocorrect="off")
-			button(is="cs-button" primary type="submit") [[L.registration]]
+				cs-input-text: input#email(placeholder="Email" type="email" autocorrect="off")
+			cs-button(primary): button(type="submit") [[L.registration]]
 	script(src="script.js")

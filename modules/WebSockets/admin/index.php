@@ -76,8 +76,8 @@ $Page->content(
 				'value' => $module_data->dns_server ?: '127.0.0.1'
 			]
 		).
-		h::{'p button[is=cs-button][type=submit]'}(
-			$L->save,
+		h::{'p cs-button'}(
+			h::{'button[type=submit]'}($L->save),
 			[
 				'tooltip' => $L->save_info
 			]
@@ -86,7 +86,7 @@ $Page->content(
 			? h::{'p.cs-block-success.cs-text-success'}($L->server_is_running)
 			: h::{'p.cs-block-warning.cs-text-warning'}(
 				"$L->server_is_not_running. ".
-				h::{'button[is=cs-button][name=start_server][type=submit]'}($L->start_server)
+				h::{'cs-button button[name=start_server][type=submit]'}($L->start_server)
 			)
 		)
 	)

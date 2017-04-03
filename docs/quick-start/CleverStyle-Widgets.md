@@ -23,33 +23,32 @@ CleverStyle Widgets includes following elements:
 * `cs-tooltip`
 
 #### cs-button
-Extends native `button` element.
+Wrapper element for native `button` element.
 
 Attributes (also available as properties, so use whatever is more convenient):
 * active - boolean, allows to force `:active` state
-* force-fullsize - boolean, forces even empty button to appear as regular
-* icon-before - string, icon from `cs-icon` element added before button contents
-* icon-after - string, icon from `cs-icon` element added after button contents
-* icon - alias for `icon-before`
+* compact - boolean, forces button to have smaller size than usually by reducing padding
 * primary - boolean, allows to apply different styling to button, usually used for some key actions
 * tight - boolean, affects button styling by removing space after button and placing directly before next element (useful for button groups and combining with inputs)
 
 Properties:
 * action - string, method on `bind` object to call on button click (see examples below)
 * bind - object, object that contains `action` method to call on button click (see examples below)
-* this - object, read-only, `this` of element, useful for data-binding
 * tooltip - string, if specified then tooltip with specified content will be shown on hover
 
 Examples:
 ```html
-<button is="cs-button" type="button">Button</button>
-<button is="cs-button" type="button" primary>Primary button</button>
-<button is="cs-button" icon="book" type="button"></button>
-<button is="cs-button" icon="check" on-tap="_enable" force-compact>[[L.enable]]</button>
-<button is="cs-button" type="button" icon="home" force-fullsize></button>
+<cs-button><button type="button">Button</button></cs-button>
+<cs-button primary><button type="button">Primary button</button></cs-button>
+<cs-button>
+    <button on-tap="_enable" compact>
+        <cs-icon icon="check"></cs-icon>
+        [[L.enable]]
+    </button>
+</cs-button>
 <template is="dom-bind">
     <section is="cs-section-modal" this="{{modal}}">One Two Three</section>
-    <button is="cs-button" type="button" bind="[[modal]]" action="open">Button</button>
+    <cs-button bind="[[modal]]" action="open"><button type="button">Button</button></cs-button>
 </template>
 ```
 
@@ -116,7 +115,7 @@ Examples:
 <cs-input-text full-size><input></cs-input-text>
 <p>
     <cs-input-text tight><input></cs-input-text>
-    <button is="cs-button" icon="check">Button right after input</button>
+    <cs-button><button>Button right after input</button></cs-button>
 </p>
 ```
 
@@ -187,8 +186,8 @@ Properties:
 Example:
 ```html
 <nav is="cs-nav-button-group">
-    <button is="cs-button" primary type="submit") OK
-    <button is="cs-button" type="button") Cancel
+    <cs-button primary><button type="submit">OK</button></cs-button>
+    <cs-button><button type="button">Cancel</button></cs-button>
 </nav>
 ```
 
@@ -210,7 +209,7 @@ Example:
 <nav is="cs-nav-dropdown" align="right">
     <nav is="cs-nav-button-group" vertical>
         <a is="cs-link-button" on-tap="_general_settings">[[L.general]]</a>
-        <button is="cs-button" type="button" on-tap="_change_password">[[L.change_password]]</button>
+        <cs-button><button type="button" on-tap="_change_password">[[L.change_password]]</button></cs-button>
     </nav>
 </nav>
 ```
@@ -244,8 +243,8 @@ Properties:
 Example:
 ```html
 <nav is="cs-nav-tabs">
-    <button is="cs-button" type="button">One</button>
-    <button is="cs-button" type="button">Two</button>
+    <cs-button><button type="button">One</button></cs-button>
+    <cs-button><button type="button">Two</button></cs-button>
 </nav>
 ```
 
@@ -313,9 +312,9 @@ Examples:
 ```html
 <template is="dom-bind">
     <section is="cs-section-modal" this="{{modal}}">One Two Three</section>
-    <button is="cs-button" type="button" bind="[[modal]]" action="open">Button</button>
+    <cs-button bind="[[modal]]" action="open"><button type="button">Button</button></cs-button>
 </template>
-<button is="cs-button" type="button">Button</button>
+<cs-button><button type="button">Button</button></cs-button>
 <section is="cs-section-modal">One Two Three</section>
 <section is="cs-section-modal" auto-open>One Two Three</section>
 ```
@@ -332,8 +331,8 @@ Properties:
 Examples:
 ```html
 <nav is="cs-nav-tabs">
-    <button is="cs-button" type="button">One</button>
-    <button is="cs-button" type="button">Two</button>
+    <cs-button><button type="button">One</button></cs-button>
+    <cs-button><button type="button">Two</button></cs-button>
 </nav>
 <section is="cs-section-switcher">
     <article>One</article>
@@ -344,8 +343,8 @@ Examples:
     <article>Two</article>
 </section>
 <nav is="cs-nav-tabs" selected="{{selected}}">
-    <button is="cs-button" type="button">One</button>
-    <button is="cs-button" type="button">Two</button>
+    <cs-button><button type="button">One</button></cs-button>
+    <cs-button><button type="button">Two</button></cs-button>
 </nav>
 ```
 
@@ -403,9 +402,11 @@ Tooltip is applied to element by placing `cs-tooltip` element inside (see exampl
 
 Examples:
 ```html
-<button is="cs-button" tooltip="Tooltip contents">Button</button>
-<button tooltip="Tooltip contents">
-    Button
-    <cs-tooltip></cs-tooltip>
-</button>
+<cs-button tooltip="Tooltip contents"><button>Button</button></cs-button>
+<cs-button>
+    <button tooltip="Tooltip contents">
+        Button
+        <cs-tooltip></cs-tooltip>
+    </button>
+</cs-button>
 ```

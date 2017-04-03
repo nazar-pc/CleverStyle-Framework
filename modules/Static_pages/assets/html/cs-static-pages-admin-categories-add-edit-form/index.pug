@@ -20,5 +20,5 @@ dom-module#cs-static-pages-admin-categories-add-edit-form
 						select(is="cs-select" selected="{{category.parent}}" size="7")
 							template(is="dom-repeat" items="[[categories]]")
 								option(value="[[item.id]]" disabled="[[equal(item.id, category.id)]]") [[item.full_title]]
-		button(is="cs-button" on-tap="_save" type="button" primary) [[L.save]]
+		cs-button(primary): button(on-tap="_save" type="button") [[L.save]]
 	script(src="script.js")

@@ -10,9 +10,11 @@ dom-module#cs-static-pages-admin-pages-list
 					td
 						a(href="/[[item.full_path]]") [[item.title]]
 					td
-						button(is="cs-button" type="button" icon="file-text" on-tap="_edit" tooltip="[[L.edit]]")
+						cs-button(compact tooltip="[[L.edit]]"): button(type="button" on-tap="_edit")
+							cs-icon(icon="file-text")
 						= ' '
-						button(is="cs-button" type="button" icon="trash" on-tap="_delete" tooltip="[[L.delete]]")
+						cs-button(compact tooltip="[[L.delete]]"): button(type="button" on-tap="_delete")
+							cs-icon(icon="trash")
 		p
-			button(is="cs-button" type="button" on-tap="_add") [[L.add_page]]
+			cs-button: button(type="button" on-tap="_add") [[L.add_page]]
 	script(src="script.js")

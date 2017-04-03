@@ -42,13 +42,13 @@ $Page->content(
 							$item['key'],
 							$item['title'],
 							$item['type'],
-							h::{'button.cs-content-edit[is=cs-button]'}(
+							h::{'cs-button button.cs-content-edit'}(
 								$L->edit,
 								[
 									'data-key' => $item['key']
 								]
 							).
-							h::{'button.cs-content-delete[is=cs-button]'}(
+							h::{'cs-button button.cs-content-delete'}(
 								$L->delete,
 								[
 									'data-key' => $item['key']
@@ -60,7 +60,7 @@ $Page->content(
 				) ?: false
 			)
 		).
-		h::{'p button.cs-content-add[is=cs-button]'}($L->add).
+		h::{'p cs-button button.cs-content-add'}($L->add).
 		h::{'label info'}('content_simple_insert').
 		h::{'div radio'}(
 			[
@@ -70,8 +70,8 @@ $Page->content(
 				'checked' => $module_data->simple_insert
 			]
 		).
-		h::{'p button[is=cs-button][type=submit]'}(
-			$L->save,
+		h::{'p cs-button'}(
+			h::{'button[type=submit]'}($L->save),
 			[
 				'tooltip' => $L->save_info
 			]

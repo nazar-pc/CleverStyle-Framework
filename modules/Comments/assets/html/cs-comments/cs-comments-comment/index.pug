@@ -20,17 +20,17 @@ dom-module#cs-comments-comment
 					cs-editor-simple(value="{{comment.edited_text}}")
 						textarea(is="cs-textarea" autosize value="{{comment.edited_text}}")
 					p
-						button(is="cs-button" type="button" on-tap="_save_edit") [[L.save]]
+						cs-button: button(type="button" on-tap="_save_edit") [[L.save]]
 						= ' '
-						button(is="cs-button" type="button" on-tap="_cancel_edit") [[L.cancel]]
+						cs-button: button(type="button" on-tap="_cancel_edit") [[L.cancel]]
 			.children
 				template(is="dom-if" if="[[replying]]")
 					cs-editor-simple(value="{{reply.text}}")
 						textarea(is="cs-textarea" autosize value="{{reply.text}}")
 					p
-						button(is="cs-button" type="button" on-tap="_post_reply") [[L.send_comment]]
+						cs-button: button(type="button" on-tap="_post_reply") [[L.send_comment]]
 						= ' '
-						button(is="cs-button" type="button" on-tap="_cancel_reply") [[L.cancel]]
+						cs-button: button(type="button" on-tap="_cancel_reply") [[L.cancel]]
 				template(is="dom-repeat" items="[[comment.children]]")
 					cs-comments-comment(comment="[[item]]" id="comment_[[item.id]]" parent-comment="[[_this]]" children$="[[and(item.parent)]]" parent$="[[and(item.children.length)]]")
 	script(src="script.js")

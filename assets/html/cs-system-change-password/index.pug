@@ -5,9 +5,11 @@ dom-module#cs-system-change-password
 			h3 [[L.password_changing]]
 			p
 				cs-input-text(tight): input#current_password(placeholder="[[L.current_password]]" type="password")
-				button(is="cs-button" type="button" icon="lock" on-tap="_show_password" force-fullsize)
+				cs-button: button(type="button" on-tap="_show_password")
+					cs-icon(icon="lock")
 			p
 				cs-input-text(tight): input#new_password(placeholder="[[L.new_password]]" type="password")
-				button(is="cs-button" type="button" icon="lock" on-tap="_show_password" force-fullsize)
-			button(is="cs-button" primary type="submit") [[L.change_password]]
+				cs-button: button(type="button" on-tap="_show_password")
+					cs-icon(icon="lock")
+			cs-button(primary): button(type="submit") [[L.change_password]]
 	script(src="script.js")

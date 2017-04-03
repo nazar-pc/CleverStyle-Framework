@@ -5,7 +5,7 @@ dom-module#cs-blogs-head-actions
 			a(is="cs-link-button" icon="gears" href="/admin/Blogs" tooltip="[[L.system_admin_administration]]" hidden="[[!settings.admin]]")
 			template(is="dom-if" if="[[can_write_post]]")
 				= ' '
-				a(is="cs-link-button" icon="pencil" force-compact href="/Blogs/new_post") [[L.new_post]]
+				a(is="cs-link-button" icon="pencil" compact href="/Blogs/new_post") [[L.new_post]]
 				= ' '
-				a(is="cs-link-button" icon="archive" force-compact href="/Blogs/drafts") [[L.drafts]]
+				a(is="cs-link-button" icon="archive" compact href="/Blogs/drafts") [[L.drafts]]
 	script(src="script.js")

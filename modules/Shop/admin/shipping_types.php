@@ -43,13 +43,13 @@ Page::instance()
 							$shipping_type['price'],
 							h::icon($shipping_type['phone_needed'] ? 'check' : 'minus'),
 							h::icon($shipping_type['address_needed'] ? 'check' : 'minus'),
-							h::{'button.cs-shop-shipping-type-edit[is=cs-button]'}(
+							h::{'cs-button button.cs-shop-shipping-type-edit'}(
 								$L->edit,
 								[
 									'data-id' => $shipping_type['id']
 								]
 							).
-							h::{'button.cs-shop-shipping-type-delete[is=cs-button]'}(
+							h::{'cs-button button.cs-shop-shipping-type-delete'}(
 								$L->delete,
 								[
 									'data-id' => $shipping_type['id']
@@ -61,5 +61,5 @@ Page::instance()
 				) ?: false
 			)
 		).
-		h::{'p button.cs-shop-shipping-type-add[is=cs-button]'}($L->add)
+		h::{'p cs-button button.cs-shop-shipping-type-add'}($L->add)
 	);

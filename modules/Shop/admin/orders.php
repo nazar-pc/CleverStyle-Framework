@@ -132,13 +132,13 @@ Page::instance()
 									]
 								),
 								nl2br($order['comment']),
-								h::{'button.cs-shop-order-statuses-history[is=cs-button]'}(
+								h::{'cs-button button.cs-shop-order-statuses-history'}(
 									$L->statuses_history,
 									[
 										'data-id' => $order['id']
 									]
 								).
-								h::{'button.cs-shop-order-edit[is=cs-button]'}(
+								h::{'cs-button button.cs-shop-order-edit'}(
 									$L->edit,
 									[
 										'data-id'       => $order['id'],
@@ -146,7 +146,7 @@ Page::instance()
 										'data-date'     => $date
 									]
 								).
-								h::{'button.cs-shop-order-delete[is=cs-button]'}(
+								h::{'cs-button button.cs-shop-order-delete'}(
 									$L->delete,
 									[
 										'data-id' => $order['id']
@@ -174,5 +174,5 @@ Page::instance()
 			},
 			true
 		).
-		h::{'p button.cs-shop-order-add[is=cs-button]'}($L->add)
+		h::{'p cs-button button.cs-shop-order-add'}($L->add)
 	);

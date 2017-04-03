@@ -32,13 +32,13 @@ dom-module#cs-blogs-add-edit-post
 				td [[L.post_tags]]
 				td
 					cs-input-text: input(name="tags" required value="{{local_tags}}" placeholder="CleverStyle, Framework, Open Source")
-		button(is="cs-button" type="button" on-tap="_preview") [[L.preview]]
+		cs-button: button(type="button" on-tap="_preview") [[L.preview]]
 		= ' '
-		button(is="cs-button" type="button" on-tap="_publish") [[L.publish]]
+		cs-button: button(type="button" on-tap="_publish") [[L.publish]]
 		= ' '
-		button(is="cs-button" type="button" on-tap="_to_drafts") [[L.to_drafts]]
+		cs-button: button(type="button" on-tap="_to_drafts") [[L.to_drafts]]
 		= ' '
-		button(is="cs-button" type="button" on-tap="_delete" hidden="[[!and(id, settings.admin_edit)]]") [[L.delete]]
+		cs-butotn(hidden="[[!and(id, settings.admin_edit)]]"): button(type="button" on-tap="_delete") [[L.delete]]
 		= ' '
-		button(is="cs-button" type="button" on-tap="_cancel") [[L.cancel]]
+		cs-button: button(type="button" on-tap="_cancel") [[L.cancel]]
 	script(src="script.js")

@@ -356,7 +356,7 @@ class Controller {
 						isset($_POST['email']) ? $_POST['email'] : ''
 					)
 				).
-				h::{'button[is=cs-button][type=submit]'}(
+				h::{'cs-button button[type=submit]'}(
 					$L->submit
 				)
 			)

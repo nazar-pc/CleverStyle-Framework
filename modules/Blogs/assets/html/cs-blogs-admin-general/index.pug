@@ -29,5 +29,5 @@ dom-module#cs-blogs-admin-general
 			+on-off-switcher("new_posts_only_from_admins")
 			+on-off-switcher("allow_iframes_without_content")
 			p
-				button(is="cs-button" type="button" on-tap="_save" tooltip="[[L.save_info]]") [[L.save]]
+				cs-button(tooltip="[[L.save_info]]"): button(type="button" on-tap="_save") [[L.save]]
 	script(src="script.js")

@@ -27,7 +27,7 @@ Polymer.cs.behaviors.cs-section-modal	= [
 	ready : !->
 		@_esc_handler = @_esc_handler.bind(@)
 	attached : !->
-		if @previousElementSibling?.matches('button') && !@previousElementSibling.action
+		if @previousElementSibling?.matches('cs-button') && !@previousElementSibling.action
 			@previousElementSibling.action	= 'open'
 			@previousElementSibling.bind	= @
 		if @autoOpen

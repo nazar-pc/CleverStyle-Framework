@@ -140,7 +140,7 @@
             }
           }();
           attributes_list = attributes_list.join('');
-          $this.parent().next().html("<p>\n	" + L.price + ": <cs-input-text><input name=\"price\" type=\"number\" value=\"0\" required></cs-input-text>\n</p>\n<p>\n	" + L.in_stock + ": <cs-input-text><input name=\"in_stock\" type=\"number\" value=\"1\" step=\"1\"></cs-input-text>\n</p>\n<p>\n	" + L.available_soon + ":\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"soon\" value=\"1\"> " + L.yes + "</label>\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"soon\" value=\"0\" checked> " + L.no + "</label>\n</p>\n<p>\n	" + L.listed + ":\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"listed\" value=\"1\" checked> " + L.yes + "</label>\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"listed\" value=\"0\"> " + L.no + "</label>\n</p>\n<p>\n	<span class=\"images\" style=\"display: block\"></span>\n	<button is=\"cs-button\" tight type=\"button\" class=\"add-images\">" + L.add_images + "</button>\n	<progress is=\"cs-progress\" hidden></progress>\n	<input type=\"hidden\" name=\"images\">\n</p>\n<p>\n	<div class=\"videos\"></div>\n	<button is=\"cs-button\" type=\"button\" class=\"add-video\">" + L.add_video + "</button>\n</p>\n" + attributes_list + "\n<p>\n	" + L.tags + ": <cs-input-text><input name=\"tags\" placeholder=\"shop, high quality, e-commerce\"></cs-input-text>\n</p>\n<p>\n	<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n</p>");
+          $this.parent().next().html("<p>\n	" + L.price + ": <cs-input-text><input name=\"price\" type=\"number\" value=\"0\" required></cs-input-text>\n</p>\n<p>\n	" + L.in_stock + ": <cs-input-text><input name=\"in_stock\" type=\"number\" value=\"1\" step=\"1\"></cs-input-text>\n</p>\n<p>\n	" + L.available_soon + ":\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"soon\" value=\"1\"> " + L.yes + "</label>\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"soon\" value=\"0\" checked> " + L.no + "</label>\n</p>\n<p>\n	" + L.listed + ":\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"listed\" value=\"1\" checked> " + L.yes + "</label>\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"listed\" value=\"0\"> " + L.no + "</label>\n</p>\n<p>\n	<span class=\"images\" style=\"display: block\"></span>\n	<cs-button tight><button type=\"button\" class=\"add-images\">" + L.add_images + "</button></cs-button>\n	<progress is=\"cs-progress\" hidden></progress>\n	<input type=\"hidden\" name=\"images\">\n</p>\n<p>\n	<div class=\"videos\"></div>\n	<cs-button><button type=\"button\" class=\"add-video\">" + L.add_video + "</button></cs-button>\n</p>\n" + attributes_list + "\n<p>\n	" + L.tags + ": <cs-input-text><input name=\"tags\" placeholder=\"shop, high quality, e-commerce\"></cs-input-text>\n</p>\n<p>\n	<cs-button primary><button type=\"submit\">" + action + "</button></cs-button>\n</p>");
           images_container = modal.find('.images');
           modal.update_images = function(){
             var images, this$ = this;
@@ -153,13 +153,13 @@
               html5sortable(images_container.get(), 'destroy');
               html5sortable(images_container.get(), {
                 forcePlaceholderSize: true,
-                placeholder: '<button is="cs-button" icon="map-pin" style="vertical-align: top">'
+                placeholder: '<cs-button compact><button style="vertical-align: top"><cs-icon icon="map-pin"></cs-icon></button></cs-button'
               })[0].addEventListener('sortupdate', modal.update_images);
             });
           };
           modal.add_images = function(images){
             images.forEach(function(image){
-              images_container.append("<a href=\"" + image + "\" target=\"_blank\" style=\"display: inline-block; padding: .5em; width: 150px\">\n	<img src=\"" + image + "\">\n	<br>\n	<button is=\"cs-button\" force-compact type=\"button\" class=\"remove-image\" style=\"width: 100%\">" + L.remove_image + "</button>\n</a>");
+              images_container.append("<a href=\"" + image + "\" target=\"_blank\" style=\"display: inline-block; padding: .5em; width: 150px\">\n	<img src=\"" + image + "\">\n	<br>\n	<cs-button compact><button type=\"button\" class=\"remove-image\" style=\"width: 100%\">" + L.remove_image + "</button></cs-button>\n</a>");
             });
             modal.update_images();
           };
@@ -207,14 +207,14 @@
           modal.add_videos = function(videos){
             videos.forEach(function(video){
               var added_video, video_video, video_poster;
-              videos_container.append("<p>\n	<cs-icon icon=\"sort\" class=\"handle\"></cs-icon>\n	<select is=\"cs-select\" name=\"videos[type][]\" class=\"video-type\">\n		<option value=\"supported_video\">" + L.youtube_vimeo_url + "</option>\n		<option value=\"iframe\">" + L.iframe_url_or_embed_code + "</option>\n		<option value=\"direct_url\">" + L.direct_video_url + "</option>\n	</select>\n	<textarea is=\"cs-textarea\" autosize name=\"videos[video][]\" placeholder=\"" + L.url_or_code + "\" class=\"video-video\" rows=\"3\"></textarea>\n	<cs-input-text><input name=\"videos[poster][]\" class=\"video-poster\" placeholder=\"" + L.video_poster + "\"></cs-input-text>\n	<button is=\"cs-button\" icon=\"close\" type=\"button\" class=\"delete-video\"></button>\n	<progress is=\"cs-progress\" hidden full-width></progress>\n</p>");
+              videos_container.append("<p>\n	<cs-icon icon=\"sort\" class=\"handle\"></cs-icon>\n	<select is=\"cs-select\" name=\"videos[type][]\" class=\"video-type\">\n		<option value=\"supported_video\">" + L.youtube_vimeo_url + "</option>\n		<option value=\"iframe\">" + L.iframe_url_or_embed_code + "</option>\n		<option value=\"direct_url\">" + L.direct_video_url + "</option>\n	</select>\n	<textarea is=\"cs-textarea\" autosize name=\"videos[video][]\" placeholder=\"" + L.url_or_code + "\" class=\"video-video\" rows=\"3\"></textarea>\n	<cs-input-text><input name=\"videos[poster][]\" class=\"video-poster\" placeholder=\"" + L.video_poster + "\"></cs-input-text>\n	<cs-button><button type=\"button\" class=\"delete-video\"><cs-icon icon=\"close\"></cs-icon></button></cs-button>\n	<progress is=\"cs-progress\" hidden full-width></progress>\n</p>");
               added_video = videos_container.children('p:last');
               video_video = added_video.find('.video-video').val(video.video);
               video_poster = added_video.find('.video-poster').val(video.poster);
               if (cs.file_upload) {
                 (function(){
                   var progress, uploader;
-                  video_video.after("&nbsp;<button is=\"cs-button\" type=\"button\" icon=\"upload\"></button>");
+                  video_video.after("&nbsp;<cs-button><button type=\"button\"><cs-icon icon=\"upload\"></cs-icon></button></cs-button>");
                   progress = video_video.parent().find('progress')[0];
                   uploader = cs.file_upload(video_video.next(), function(video){
                     progress.hidden = true;
@@ -230,7 +230,7 @@
                 })();
                 (function(){
                   var progress, uploader;
-                  video_poster.after("&nbsp;<button is=\"cs-button\" type=\"button\" icon=\"upload\"></button>");
+                  video_poster.after("&nbsp;<cs-button><button type=\"button\"><cs-icon icon=\"upload\"></cs-icon></button></cs-button>");
                   progress = video_video.parent().find('progress')[0];
                   uploader = cs.file_upload(video_poster.next(), function(poster){
                     progress.hidden = true;

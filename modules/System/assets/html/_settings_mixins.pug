@@ -17,11 +17,11 @@ mixin on-off-switcher (name, hidden, values, translations)
 					= translations[index]
 mixin footer-buttons
 	p
-		button(is="cs-button" type="button" on-tap="_apply" tooltip="[[L.system_admin_apply_info]]") [[L.system_admin_apply]]
+		cs-button(tooltip="[[L.system_admin_apply_info]]"): button(type="button" on-tap="_apply") [[L.system_admin_apply]]
 		= ' '
-		button(is="cs-button" type="button" on-tap="_save" tooltip="[[L.system_admin_save_info]]") [[L.system_admin_save]]
+		cs-button(tooltip="[[L.system_admin_save_info]]"): button(type="button" on-tap="_save") [[L.system_admin_save]]
 		= ' '
-		button(is="cs-button" type="button" on-tap="_cancel" tooltip="[[L.system_admin_cancel_info]]" disabled="[[!settings.applied]]") [[L.system_admin_cancel]]
+		cs-button(tooltip="[[L.system_admin_cancel_info]]"): button(type="button" on-tap="_cancel" disabled="[[!settings.applied]]") [[L.system_admin_cancel]]
 mixin input (name, hidden, type, min, max)
 	- hidden = hidden && '[[' + hidden + ']]'
 	label(tooltip=`[[L.${name}_info]]` hidden=hidden)

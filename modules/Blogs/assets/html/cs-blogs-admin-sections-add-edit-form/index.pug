@@ -21,5 +21,5 @@ dom-module#cs-blogs-admin-sections-add-edit-form
 							option(value="0") [[L.root_section]]
 							template(is="dom-repeat" items="[[sections]]")
 								option(value="[[item.id]]" disabled="[[equal(item.id, section.id)]]") [[item.full_title]]
-		button(is="cs-button" on-tap="_save" type="button" primary) [[L.save]]
+		cs-button(primary): button(on-tap="_save" type="button") [[L.save]]
 	script(src="script.js")

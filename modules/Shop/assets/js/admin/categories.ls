@@ -60,12 +60,12 @@ make_modal	= (attributes, categories, L, title, action) ->
 			<a target="_blank">
 				<img>
 				<br>
-				<button is="cs-button" force-compact type="button" class="remove-image" style="width: 100%">#{L.remove_image}</button>
+				<cs-button compact><button type="button" class="remove-image" style="width: 100%">#{L.remove_image}</button></cs-button>
 			</a>
 			<input type="hidden" name="image">
 		</p>
 		<p>
-			<button is="cs-button" tight type="button" class="set-image">#{L.set_image}</button>
+			<cs-button tight><button type="button" class="set-image">#{L.set_image}</button></cs-button>
 			<progress is="cs-progress" hidden></progress>
 		</p>
 		<p>
@@ -87,7 +87,7 @@ make_modal	= (attributes, categories, L, title, action) ->
 			<label is="cs-label-button"><input type="radio" name="visible" value="0"> #{L.no}</label>
 		</p>
 		<p>
-			<button is="cs-button" primary type="submit">#action</button>
+			<cs-button primary><button type="submit">#action</button></cs-button>
 		</p>
 	</form>"""))
 	modal.set_image	= (image) !->

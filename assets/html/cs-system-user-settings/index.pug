@@ -21,7 +21,9 @@ dom-module#cs-system-user-settings
 				img(src="[[if(user_data.avatar, user_data.avatar, '')]]" hidden="[[!user_data.avatar]]")
 			cs-input-text: input(type="text" value="{{user_data.avatar}}")
 			div.cs-padding-bottom
-				button#upload-avatar(is="cs-button" type="button" icon="upload" hidden="[[!can_upload]]") [[L.upload_avatar]]
+				cs-button(hidden="[[!can_upload]]"): button#upload-avatar(type="button")
+					cs-icon(icon="upload")
+					|  [[L.upload_avatar]]
 			nav(is="cs-nav-button=group")
-				button(is="cs-button" primary type="submit") [[L.save]]
+				cs-button(primary): button(type="submit") [[L.save]]
 	script(src="script.js")

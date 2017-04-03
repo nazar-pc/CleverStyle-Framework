@@ -113,8 +113,8 @@ $Page->content(
 				)
 			)
 		).
-		h::{'p.cs-text-center button[is=cs-button][type=submit]'}(
-			$L->save,
+		h::{'p.cs-text-center cs-button'}(
+			h::{'button[type=submit]'}($L->save),
 			[
 				'tooltip' => $L->save_info
 			]

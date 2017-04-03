@@ -95,13 +95,13 @@ Page::instance()
 										'href' => "admin/Shop/items/?listed=$item[listed]"
 									]
 								),
-								h::{'button.cs-shop-item-edit[is=cs-button]'}(
+								h::{'cs-button button.cs-shop-item-edit'}(
 									$L->edit,
 									[
 										'data-id' => $item['id']
 									]
 								).
-								h::{'button.cs-shop-item-delete[is=cs-button]'}(
+								h::{'cs-button button.cs-shop-item-delete'}(
 									$L->delete,
 									[
 										'data-id' => $item['id']
@@ -130,5 +130,5 @@ Page::instance()
 			},
 			true
 		).
-		h::{'p button.cs-shop-item-add[is=cs-button]'}($L->add)
+		h::{'p cs-button button.cs-shop-item-add'}($L->add)
 	);

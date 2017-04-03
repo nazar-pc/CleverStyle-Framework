@@ -20,7 +20,7 @@
         }
         types = res$;
         types = types.join('');
-        return cs.ui.simple_modal("<form is=\"cs-form\">\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<label>" + L.attribute_type + "</label>\n	<select is=\"cs-select\" name=\"type\" required>" + types + "</select>\n	<label>" + L.possible_values + "</label>\n	<textarea is=\"cs-textarea\" autosize name=\"value\"></textarea>\n	<label>" + L.title + "</label>\n	<cs-input-text><input name=\"title\" required></cs-input-text>\n	<label>" + L.title_internal + "</label>\n	<cs-input-text><input name=\"title_internal\" required></cs-input-text>\n	<br>\n	<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n</form>");
+        return cs.ui.simple_modal("<form is=\"cs-form\">\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<label>" + L.attribute_type + "</label>\n	<select is=\"cs-select\" name=\"type\" required>" + types + "</select>\n	<label>" + L.possible_values + "</label>\n	<textarea is=\"cs-textarea\" autosize name=\"value\"></textarea>\n	<label>" + L.title + "</label>\n	<cs-input-text><input name=\"title\" required></cs-input-text>\n	<label>" + L.title_internal + "</label>\n	<cs-input-text><input name=\"title_internal\" required></cs-input-text>\n	<br>\n	<cs-button primary><button type=\"submit\">" + action + "</button></cs-button>\n</form>");
       };
       $('html').on('mousedown', '.cs-shop-attribute-add', function(){
         Promise.all([cs.api('get api/Shop/admin/attributes/types'), cs.Language('shop_').ready()]).then(function(arg$){

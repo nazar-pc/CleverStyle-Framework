@@ -5,8 +5,8 @@ dom-module#cs-system-admin-users-list
 	template
 		style(include="advanced-styles")
 		nav(is="cs-nav-tabs")
-			button(is="cs-button") [[L.search]]
-			button(is="cs-button") [[L.show_columns]]
+			cs-button: button(type="button") [[L.search]]
+			cs-button: button(type="button") [[L.show_columns]]
 		section(is="cs-section-switcher")
 			div
 				select(is="cs-select" compact selected="{{search_column}}")
@@ -27,7 +27,7 @@ dom-module#cs-system-admin-users-list
 				cs-input-text(compact): input(min="1" step="1" type="number" value="{{search_limit}}")
 			div
 				template(is="dom-repeat" items="[[search_columns]]" as="column")
-					button(is="cs-button" on-tap="toggle_search_column" primary="[[column.selected]]") [[column.name]]
+					cs-button(primary="[[column.selected]]"): button(on-tap="toggle_search_column") [[column.name]]
 					= ' '
 		hr
 		+pagination
@@ -48,9 +48,11 @@ dom-module#cs-system-admin-users-list
 								a(is="cs-link-button" icon="pencil" on-tap="edit_user" tooltip="[[L.edit_user_information]]")
 								= ' '
 							template(is="dom-if" if="[[!user.is_guest]]")
-								button(is="cs-button" icon="group" on-tap="edit_groups" tooltip="[[L.edit_user_groups]]")
+								cs-button(compact tooltip="[[L.edit_user_groups]]"): button(on-tap="edit_groups")
+									cs-icon(icon="group")
 								= ' '
-							button(is="cs-button" icon="key" on-tap="edit_permissions" tooltip="[[L.edit_user_permissions]]")
+							cs-button(compact tooltip="[[L.edit_user_permissions]]"): button(on-tap="edit_permissions")
+								cs-icon(icon="key")
 					td
 						span(tooltip="[[user.type_info]]")
 							| [[user.type]]
@@ -59,5 +61,5 @@ dom-module#cs-system-admin-users-list
 						td [[column]]
 		+pagination
 		p.cs-text-left
-			button(is="cs-button" on-tap="add_user" type="button") [[L.add_user]]
+			cs-button: button(on-tap="add_user" type="button") [[L.add_user]]
 	script(src="script.js")

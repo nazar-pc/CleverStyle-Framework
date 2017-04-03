@@ -47,7 +47,7 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 		</p>
 		<p>
 			<div class="items"></div>
-			<button is="cs-button" class="add-item">#{L.add_item}</button>
+			<cs-button><button class="add-item">#{L.add_item}</button></cs-button>
 		</p>
 		<p>
 			#{L.shipping_type}: <select is="cs-select" name="shipping_type" required>#shipping_types_list</select>
@@ -79,7 +79,7 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 			#{L.comment}: <textarea is="cs-textarea" autosize name="comment"></textarea>
 		</p>
 		<p>
-			<button is="cs-button" primary type="submit">#action</button>
+			<cs-button primary><button type="submit">#action</button></cs-button>
 		</p>
 	</form>"""))
 	do !->
@@ -109,7 +109,7 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 					#{L.unit_price} <cs-input-text compact><input name="items[unit_price][]" value="#{item.unit_price}" required></cs-input-text> (<span class="unit-price">#{item_data.price}</span>)
 					#{L.units} <cs-input-text compact><input name="items[units][]" value="#{item.units}" required></cs-input-text>
 					#{L.total_price} <cs-input-text compact><input name="items[price][]" value="#{item.price}" required></cs-input-text> (<span class="item-price" data-original-price="#{item_data.price}">#total_price</span>)
-					<button is="cs-button" icon="close" type="button" class="delete-item"></button>
+					<cs-button><button type="button" class="delete-item"><cs-icon icon="close"></cs-icon></button></cs-button>
 				</p>""")
 				items_container.children(':last').find('.title').val(item_data.title)
 			if item.item

@@ -36,6 +36,8 @@ dom-module#cs-system-admin-databases-form
 				cs-tooltip
 			cs-input-text: input(type="text" value="{{database.password}}")
 			div
-				button(is="cs-button" type="button" primary on-tap="_save" disabled="[[!and(database.host, database.driver)]]") [[L.save]]
-				button(is="cs-button" type="button" on-tap="_test_connection" icon="signal" disabled="[[!and(database.host, database.driver)]]") [[L.test_connection]]
+				cs-button(primary): button(type="button" on-tap="_save" disabled="[[!and(database.host, database.driver)]]") [[L.save]]
+				cs-button: button(type="button" on-tap="_test_connection" disabled="[[!and(database.host, database.driver)]]")
+					cs-icon(icon="signal")
+					|  [[L.test_connection]]
 	script(src="script.js")

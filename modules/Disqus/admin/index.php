@@ -27,8 +27,8 @@ $Page->content(
 				'value' => $module_data->shortname ?: ''
 			]
 		).
-		h::{'p button[is=cs-button][type=submit]'}(
-			$L->save,
+		h::{'p cs-button'}(
+			h::{'button[type=submit]'}($L->save),
 			[
 				'tooltip' => $L->save_info
 			]

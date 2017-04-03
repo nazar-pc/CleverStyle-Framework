@@ -63,13 +63,13 @@ Page::instance()
 							$Attributes->get($category['title_attribute'])['title_internal'],
 							$Attributes->get($category['description_attribute'])['title_internal'] ?? '',
 							h::icon($category['visible'] ? 'check' : 'minus'),
-							h::{'button.cs-shop-category-edit[is=cs-button]'}(
+							h::{'cs-button button.cs-shop-category-edit'}(
 								$L->edit,
 								[
 									'data-id' => $category['id']
 								]
 							).
-							h::{'button.cs-shop-category-delete[is=cs-button]'}(
+							h::{'cs-button button.cs-shop-category-delete'}(
 								$L->delete,
 								[
 									'data-id' => $category['id']
@@ -81,5 +81,5 @@ Page::instance()
 				) ?: false
 			)
 		).
-		h::{'p button.cs-shop-category-add[is=cs-button]'}($L->add)
+		h::{'p cs-button button.cs-shop-category-add'}($L->add)
 	);

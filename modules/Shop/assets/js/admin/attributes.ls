@@ -23,7 +23,7 @@ make_modal			= (types, L, title, action) ->
 		<label>#{L.title_internal}</label>
 		<cs-input-text><input name="title_internal" required></cs-input-text>
 		<br>
-		<button is="cs-button" primary type="submit">#action</button>
+		<cs-button primary><button type="submit">#action</button></cs-button>
 	</form>""")
 $('html')
 	.on('mousedown', '.cs-shop-attribute-add', !->

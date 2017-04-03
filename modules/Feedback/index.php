@@ -38,7 +38,7 @@ $Page->content(
 							'value'       => isset($_POST['text']) ? $_POST['text'] : ''
 						]
 					),
-					h::{'button[is=cs-button][type=submit]'}($L->feedback_send)
+					h::{'cs-button button[type=submit]'}($L->feedback_send)
 				]
 			)
 		)

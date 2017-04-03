@@ -31,7 +31,7 @@ class Controller {
 			);
 		}
 		$Page->content(
-			h::{'p.cs-text-center button.cs-composer-admin-force-update[is=cs-button]'}($L->force_update)
+			h::{'p.cs-text-center cs-button button.cs-composer-admin-force-update'}($L->force_update)
 		);
 	}
 
@@ -52,8 +52,8 @@ class Controller {
 			h::{'form[is=cs-form]'}(
 				h::label($L->auth_json_contents).
 				h::{'p textarea[is=cs-textarea][autosize][name=auth_json]'}($module_data->auth_json ?: '').
-				h::{'button[is=cs-button][type=submit]'}(
-					$L->save,
+				h::cs_button(
+					h::{'button[type=submit]'}($L->save),
 					[
 						'tooltip' => $L->save_info
 					]

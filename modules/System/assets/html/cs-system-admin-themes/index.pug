@@ -11,16 +11,20 @@ dom-module#cs-system-admin-themes
 					td [[theme.name]]
 					td
 						cs-icon(icon="[[theme.icon]]")
-						button(is="cs-button" type="button" icon="book" tooltip="[[L.information_about_theme]]" hidden="[[!theme.readme]]")
+						cs-button(compact tooltip="[[L.information_about_theme]]" hidden="[[!theme.readme]]"): button(type="button")
+							cs-icon(icon="book")
 						section(is="cs-section-modal" content="[[theme.readme.content]]")
 						= ' '
-						button(is="cs-button" type="button" icon="legal" tooltip="[[L.license]]" hidden="[[!theme.license]]")
+						cs-button(compact tooltip="[[L.license]]" hidden="[[!theme.license]]"): button(type="button")
+							cs-icon(icon="legal")
 						section(is="cs-section-modal" content="[[theme.license.content]]")
 					td(left)
-						a(is="cs-link-button" icon="check" on-tap="_set_current" force-compact hidden="[[equal(theme.name, current_theme)]]") [[L.set_current_theme]]
+						a(is="cs-link-button" icon="check" on-tap="_set_current" compact hidden="[[equal(theme.name, current_theme)]]") [[L.set_current_theme]]
 						= ' '
 						a(is="cs-link-button" icon="trash" on-tap="_remove_completely" tooltip="[[L.complete_theme_removal]]" hidden="[[!theme.can_delete]]")
 		p
 			cs-input-text(compact tight): input(type="file" id="file")
-			button(is="cs-button" type="button" icon="upload" on-tap="_upload") [[L.upload_and_install_update_theme]]
+			cs-button: button(type="button" on-tap="_upload")
+				cs-icon(icon="upload")
+				|  [[L.upload_and_install_update_theme]]
 	script(src="script.js")

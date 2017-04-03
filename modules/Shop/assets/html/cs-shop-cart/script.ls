@@ -110,8 +110,8 @@ Polymer(
 				modal	= cs.ui.simple_modal("""
 					<h1 class="cs-text-center">#{@L.thanks_for_order}</h1>
 					<p class="cs-text-center">
-						<button is="cs-button" primary type="button" class="pay-now">#{@L.pay_now}</button>
-						<button is="cs-button" type="button" class="pay-later">#{@L.pay_later}</button>
+						<cs-button primary><button type="button" class="pay-now">#{@L.pay_now}</button></cs-button>
+						<cs-button><button type="button" class="pay-later">#{@L.pay_later}</button></cs-button>
 					</p>
 				""")
 				modal.addEventListener('close', !->

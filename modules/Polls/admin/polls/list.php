@@ -55,7 +55,7 @@ Page::instance()->content(
 				'placeholder' => $L->answers_one_per_line
 			]
 		).
-		h::{'p button[is=cs-button][type=submit]'}(
+		h::{'p cs-button button[type=submit]'}(
 			$L->add
 		)
 	)

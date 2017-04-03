@@ -364,23 +364,24 @@
       content = "<h3>" + content + "</h3>";
     }
     return new Promise(function(resolve){
-      var x$, modal, y$, ok, z$;
+      var x$, modal, y$, ok, z$, ok_button, z1$;
       x$ = modal = cs.ui.modal(content);
       x$.autoDestroy = true;
       x$.manualClose = true;
-      y$ = ok = document.createElement('button', 'cs-button');
-      y$.innerHTML = 'OK';
+      y$ = ok = document.createElement('cs-button');
+      y$.innerHTML = '<button>OK</button>';
       y$.primary = true;
       y$.action = 'close';
       y$.bind = modal;
-      y$.addEventListener('click', function(){
+      z$ = ok_button = ok.firstElementChild;
+      z$.addEventListener('click', function(){
         resolve();
       });
-      z$ = modal;
-      z$.ok = ok;
-      z$.appendChild(ok);
-      z$.open();
-      ok.focus();
+      z1$ = modal;
+      z1$.ok = ok_button;
+      z1$.appendChild(ok);
+      z1$.open();
+      ok_button.focus();
     });
   };
   /**
@@ -393,7 +394,7 @@
    * @return {(HTMLElement|Promise)}
    */
   x$.confirm = function(content, ok_callback, cancel_callback){
-    var x$, modal, y$, ok, z$, cancel, z1$;
+    var x$, modal, y$, ok, z$, ok_button, z1$, cancel, z2$, cancel_button, z3$;
     if (content instanceof Function) {
       content = content.toString();
     }
@@ -403,45 +404,47 @@
     x$ = modal = cs.ui.modal(content);
     x$.autoDestroy = true;
     x$.manualClose = true;
-    y$ = ok = document.createElement('button', 'cs-button');
-    y$.innerHTML = 'OK';
+    y$ = ok = document.createElement('cs-button');
+    y$.innerHTML = '<button>OK</button>';
     y$.primary = true;
     y$.action = 'close';
     y$.bind = modal;
-    y$.addEventListener('click', function(){
+    z$ = ok_button = ok.firstElementChild;
+    z$.addEventListener('click', function(){
       if (typeof ok_callback == 'function') {
         ok_callback();
       }
     });
-    z$ = cancel = document.createElement('button', 'cs-button');
-    z$.innerHTML = 'Cancel';
-    z$.action = 'close';
-    z$.bind = modal;
-    z$.addEventListener('click', function(){
+    z1$ = cancel = document.createElement('cs-button');
+    z1$.innerHTML = '<button>Cancel</button>';
+    z1$.action = 'close';
+    z1$.bind = modal;
+    z2$ = cancel_button = cancel.firstElementChild;
+    z2$.addEventListener('click', function(){
       if (typeof cancel_callback == 'function') {
         cancel_callback();
       }
     });
-    z1$ = modal;
-    z1$.ok = ok;
-    z1$.cancel = cancel;
-    z1$.appendChild(ok);
-    z1$.appendChild(cancel);
-    z1$.open();
-    ok.focus();
+    z3$ = modal;
+    z3$.ok = ok_button;
+    z3$.cancel = cancel_button;
+    z3$.appendChild(ok);
+    z3$.appendChild(cancel);
+    z3$.open();
+    ok_button.focus();
     cs.Language.ready().then(function(L){
-      if (cancel.innerHTML === 'Cancel') {
-        cancel.innerHTML = L.system_admin_cancel;
+      if (cancel_button.innerHTML === 'Cancel') {
+        cancel_button.innerHTML = L.system_admin_cancel;
       }
     });
     if (ok_callback) {
       return modal;
     } else {
       return new Promise(function(resolve, reject){
-        ok.addEventListener('click', function(){
+        ok_button.addEventListener('click', function(){
           resolve();
         });
-        cancel.addEventListener('click', function(){
+        cancel_button.addEventListener('click', function(){
           reject();
         });
       });

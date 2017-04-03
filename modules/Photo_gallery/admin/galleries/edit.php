@@ -62,13 +62,13 @@ Page::instance()
 				]
 			).
 			h::p(
-				h::{'button[is=cs-button][type=submit]'}(
-					$L->save,
+				h::cs_button(
+					h::{'button[type=submit]'}($L->save),
 					[
 						'tooltip' => $L->save_info
 					]
 				).
-				h::{'button[is=cs-button][type=button]'}(
+				h::{'cs-button button[type=button]'}(
 					$L->cancel,
 					[
 						'onclick' => 'history.go(-1);'

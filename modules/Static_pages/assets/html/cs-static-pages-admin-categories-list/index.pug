@@ -15,12 +15,14 @@ dom-module#cs-static-pages-admin-categories-list
 								| [[item.pages]]
 								cs-tooltip
 					td
-						button(is="cs-button" type="button" icon="pencil" on-tap="_edit" tooltip="[[L.edit]]" hidden="[[equal(item.id, 0)]]")
+						cs-button(compact tooltip="[[L.edit]]" hidden="[[equal(item.id, 0)]]"): button(type="button" on-tap="_edit")
+							cs-icon(icon="pencil")
 						= ' '
-						button(is="cs-button" type="button" icon="trash" on-tap="_delete" tooltip="[[L.delete]]" hidden="[[equal(item.id, 0)]]")
+						cs-button(compact tooltip="[[L.delete]]" hidden="[[equal(item.id, 0)]]"): button(type="button" on-tap="_delete")
+							cs-icon(icon="trash")
 		p [[L.index_page_path]]
 		p
-			button(is="cs-button" type="button" on-tap="_add") [[L.add_category]]
+			cs-button: button(type="button" on-tap="_add") [[L.add_category]]
 			= ' '
-			button(is="cs-button" type="button" on-tap="_add_page") [[L.add_page]]
+			cs-button: button(type="button" on-tap="_add_page") [[L.add_page]]
 	script(src="script.js")

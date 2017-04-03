@@ -283,22 +283,23 @@ cs.{}ui
 		if typeof content == 'string' && content.indexOf('<') == -1
 			content = "<h3>#{content}</h3>"
 		new Promise (resolve) !->
-			modal	= cs.ui.modal(content)
+			modal		= cs.ui.modal(content)
 				..autoDestroy	= true
 				..manualClose	= true
-			ok		= document.createElement('button', 'cs-button')
-				..innerHTML	= 'OK'
+			ok			= document.createElement('cs-button')
+				..innerHTML	= '<button>OK</button>'
 				..primary	= true
 				..action	= 'close'
 				..bind		= modal
+			ok_button	= ok.firstElementChild
 				..addEventListener('click', !->
 					resolve()
 				)
 			modal
-				..ok	= ok
+				..ok	= ok_button
 				..appendChild(ok)
 				..open()
-			ok.focus()
+			ok_button.focus()
 	/**
 	 * Confirm modal
 	 *
@@ -313,42 +314,44 @@ cs.{}ui
 			content = content.toString()
 		if typeof content == 'string' && content.indexOf('<') == -1
 			content = "<h3>#{content}</h3>"
-		modal	= cs.ui.modal(content)
+		modal			= cs.ui.modal(content)
 			..autoDestroy	= true
 			..manualClose	= true
-		ok		= document.createElement('button', 'cs-button')
-			..innerHTML	= 'OK'
+		ok				= document.createElement('cs-button')
+			..innerHTML	= '<button>OK</button>'
 			..primary	= true
 			..action	= 'close'
 			..bind		= modal
+		ok_button		= ok.firstElementChild
 			..addEventListener('click', !->
 				ok_callback?()
 			)
-		cancel	= document.createElement('button', 'cs-button')
-			..innerHTML	= 'Cancel'
+		cancel			= document.createElement('cs-button')
+			..innerHTML	= '<button>Cancel</button>'
 			..action	= 'close'
 			..bind		= modal
+		cancel_button	= cancel.firstElementChild
 			..addEventListener('click', !->
 				cancel_callback?()
 			)
 		modal
-			..ok		= ok
-			..cancel	= cancel
+			..ok		= ok_button
+			..cancel	= cancel_button
 			..appendChild(ok)
 			..appendChild(cancel)
 			..open()
-		ok.focus()
+		ok_button.focus()
 		cs.Language.ready().then (L) !->
-			if cancel.innerHTML == 'Cancel'
-				cancel.innerHTML = L.system_admin_cancel
+			if cancel_button.innerHTML == 'Cancel'
+				cancel_button.innerHTML = L.system_admin_cancel
 		if ok_callback
 			modal
 		else
 			new Promise (resolve, reject) !->
-				ok.addEventListener('click', !->
+				ok_button.addEventListener('click', !->
 					resolve()
 				)
-				cancel.addEventListener('click', !->
+				cancel_button.addEventListener('click', !->
 					reject()
 				)
 	/**

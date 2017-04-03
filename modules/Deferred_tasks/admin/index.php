@@ -48,8 +48,8 @@ $Page->content(
 				'value' => "$core_url/Deferred_tasks/$module_data->security_key"
 			]
 		).
-		h::{'p button[is=cs-button][type=submit]'}(
-			$L->save,
+		h::{'p cs-button'}(
+			h::{'button[type=submit]'}($L->save),
 			[
 				'tooltip' => $L->save_info
 			]

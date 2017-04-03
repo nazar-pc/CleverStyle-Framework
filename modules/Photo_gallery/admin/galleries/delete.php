@@ -28,10 +28,10 @@ Page::instance()
 				]
 			).
 			h::p(
-				h::{'button[is=cs-button][type=submit]'}(
+				h::{'cs-button button[type=submit]'}(
 					$L->yes
 				).
-				h::{'button[is=cs-button][type=button]'}(
+				h::{'cs-button button[type=button]'}(
 					$L->cancel,
 					[
 						'onclick' => 'history.go(-1);'

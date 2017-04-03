@@ -9,5 +9,5 @@ dom-module#cs-system-admin-permissions-form
 			label [[L.label]]
 			cs-input-text: input(type="text" value="{{label}}")
 			div
-				button(is="cs-button" type="button" primary on-tap="save" disabled="[[!and(group, label)]]") [[L.save]]
+				cs-button(primary): button(type="button" on-tap="save" disabled="[[!and(group, label)]]") [[L.save]]
 	script(src="script.js")

@@ -9,5 +9,5 @@ dom-module#cs-system-admin-groups-form
 			label [[L.group_description]]
 			cs-input-text: input(type="text" value="{{group_description}}")
 			div
-				button(is="cs-button" type="button" primary on-tap="save" disabled="[[!group_title]]") [[L.save]]
+				cs-button(primary): button(type="button" on-tap="save" disabled="[[!group_title]]") [[L.save]]
 	script(src="script.js")

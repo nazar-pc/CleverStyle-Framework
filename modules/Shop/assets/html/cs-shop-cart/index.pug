@@ -33,8 +33,8 @@ dom-module#cs-shop-cart
 				#payment_method_description.cs-margin-bottom
 				div
 					template(is="dom-if" if="[[!registration_required]]")
-						button(is="cs-button" primary on-tap="finish_order" type="button") [[L.finish_order]]
+						cs-button(primary): button(on-tap="finish_order" type="button") [[L.finish_order]]
 					template(is="dom-if" if="[[registration_required]]")
 						p.cs-block-warning.cs-text-warning [[L.register_to_finish_order]]
-						button(is="cs-button" disabled type="button") [[L.finish_order]]
+						cs-button: button(disabled type="button") [[L.finish_order]]
 	script(src="script.js")

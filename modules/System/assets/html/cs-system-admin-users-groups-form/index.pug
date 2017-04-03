@@ -15,5 +15,5 @@ dom-module#cs-system-admin-users-groups-form
 					.cs-block-warning.cs-text-warning(group="[[item.id]]" tooltip="[[item.description]]")
 						| [[item.title]]
 						cs-tooltip
-		button(is="cs-button" primary on-tap="save" type="button") [[L.save]]
+		cs-button: button(primary on-tap="save" type="button") [[L.save]]
 	script(src="script.js")

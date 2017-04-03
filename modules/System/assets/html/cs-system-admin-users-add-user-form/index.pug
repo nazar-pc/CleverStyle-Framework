@@ -4,5 +4,5 @@ dom-module#cs-system-admin-users-add-user-form
 			label Email
 			cs-input-text: input(type="email" value="{{email}}")
 			p
-				button(is="cs-button" type="button" primary on-tap="save" disabled="[[!email]]") [[L.save]]
+				cs-button(primary): button(type="button" on-tap="save" disabled="[[!email]]") [[L.save]]
 	script(src="script.js")

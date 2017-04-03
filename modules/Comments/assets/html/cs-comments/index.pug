@@ -11,6 +11,6 @@ dom-module#cs-comments
 			cs-editor-simple(value="{{text}}")
 				textarea(is="cs-textarea" autosize value="{{text}}")
 			p
-				button(is="cs-button" type="button" on-tap="_send") [[L.send_comment]]
+				cs-button: button(type="button" on-tap="_send") [[L.send_comment]]
 		p(hidden="[[is_user]]") [[L.register_for_comments_sending]]
 	script(src="script.js")

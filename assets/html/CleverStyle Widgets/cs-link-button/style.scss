@@ -53,28 +53,10 @@
 	@apply --cs-link-button-disabled;
 }
 
-/* Empty button, with icon inside, but empty content */
-:host(:empty:not([force-fullsize])),
-:host([empty]:not([force-fullsize])) {
-	@apply --cs-button-empty;
-	@apply --cs-link-button-empty;
-}
-
 /* Compact button */
-:host([force-compact]) {
+:host([compact]) {
 	@apply --cs-button-compact;
 	@apply --cs-link-button-compact;
-}
-
-/* Button with icon */
-:host([icon]:not(:empty):not([empty])) cs-icon:first-of-type {
-	@apply --cs-button-icon;
-	@apply --cs-link-button-icon;
-}
-
-:host([icon-after]:not(:empty):not([empty])) cs-icon:last-of-type {
-	@apply --cs-button-icon-after;
-	@apply --cs-link-button-icon-after;
 }
 
 /* The only non-default button type is primary button */

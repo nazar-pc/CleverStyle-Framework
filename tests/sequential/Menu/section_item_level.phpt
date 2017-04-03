@@ -54,14 +54,26 @@ echo $Menu->get_menu();
 ?>
 --EXPECTF--
 <nav is="cs-nav-button-group">
-	<button icon-after="caret-down" is="cs-button" primary type="button">Section 1</button>
+	<cs-button>
+		<button primary type="button">
+			Section 1 <cs-icon icon="caret-down"></cs-icon>
+		</button>
+	</cs-button>
 	<nav is="cs-nav-dropdown">
-		<nav%sis="cs-nav-button-group"%S>
+		<nav is="cs-nav-button-group" vertical>
 			<a href="System/section1/item1" is="cs-link-button" primary>Section 1 item 1</a>
 			<a href="System/section1/item2" is="cs-link-button">Section 1 item 2</a>
 			<a href="System/section1/item3" is="cs-link-button" primary>Section 1 item 3</a>
 		</nav>
 	</nav>
-	<button icon-after="caret-down" is="cs-button" type="button">Section 2</button>
-	<button icon-after="caret-down" is="cs-button" type="button">Section 3</button>
+	<cs-button>
+		<button type="button">
+			Section 2 <cs-icon icon="caret-down"></cs-icon>
+		</button>
+	</cs-button>
+	<cs-button>
+		<button type="button">
+			Section 3 <cs-icon icon="caret-down"></cs-icon>
+		</button>
+	</cs-button>
 </nav>

@@ -29,7 +29,7 @@ make_modal	= (types, L, title, action) ->
 		<label>#{L.comment_used_in_email}</label>
 		<textarea is="cs-textarea" autosize name="comment"></textarea>
 		<br>
-		<button is="cs-button" primary type="submit">#action</button>
+		<cs-button primary><button type="submit">#action</button></cs-button>
 	</form>"""))
 	modal.find('[type=color]').change !->
 		modal.find('[name=color]').val(

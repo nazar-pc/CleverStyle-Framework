@@ -31,7 +31,7 @@
       }
       cs.Language('content_').ready().then(function(L){
         var modal_body, key, title, content, type;
-        modal_body = html_to_node("<form is=\"cs-form\">\n	<label>" + L.key + "</label>\n	<cs-input-text><input type=\"text\" name=\"key\"></cs-input-text>\n	<label>" + L.title + "</label>\n	<cs-input-text><input type=\"text\" name=\"title\"></cs-input-text>\n	<label>" + L.content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html cs-margin-bottom\" hidden>\n		<textarea is=\"cs-textarea\" autosize></textarea>\n	</cs-editor>\n	<label>" + L.type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.save + "</button>\n	</div>\n</form>");
+        modal_body = html_to_node("<form is=\"cs-form\">\n	<label>" + L.key + "</label>\n	<cs-input-text><input type=\"text\" name=\"key\"></cs-input-text>\n	<label>" + L.title + "</label>\n	<cs-input-text><input type=\"text\" name=\"title\"></cs-input-text>\n	<label>" + L.content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html cs-margin-bottom\" hidden>\n		<textarea is=\"cs-textarea\" autosize></textarea>\n	</cs-editor>\n	<label>" + L.type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<cs-button primary><button type=\"button\">" + L.save + "</button></cs-button>\n	</div>\n</form>");
         key = modal_body.querySelector('[name=key]');
         title = modal_body.querySelector('[name=title]');
         content = modal_body.querySelector('.text');
@@ -75,7 +75,7 @@
         key = e.target.dataset.key;
         cs.api("get api/Content/" + key).then(function(data){
           var modal_body, x$, title, y$, content, type;
-          modal_body = html_to_node("<form is=\"cs-form\">\n	<label>" + L.key + "</label>\n	<cs-input-text><input readonly value=\"" + data.key + "\"></cs-input-text>\n	<label>" + L.title + "</label>\n	<cs-input-text><input type=\"text\" name=\"title\"></cs-input-text>\n	<label>" + L.content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html cs-margin-bottom\" hidden>\n		<textarea is=\"cs-textarea\" autosize></textarea>\n	</cs-editor>\n	<label>" + L.type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<button is=\"cs-button\" type=\"button\" primary>" + L.save + "</button>\n	</div>\n</form>");
+          modal_body = html_to_node("<form is=\"cs-form\">\n	<label>" + L.key + "</label>\n	<cs-input-text><input readonly value=\"" + data.key + "\"></cs-input-text>\n	<label>" + L.title + "</label>\n	<cs-input-text><input type=\"text\" name=\"title\"></cs-input-text>\n	<label>" + L.content + "</label>\n	<textarea is=\"cs-textarea\" autosize class=\"text cs-margin-bottom\"></textarea>\n	<cs-editor class=\"html cs-margin-bottom\" hidden>\n		<textarea is=\"cs-textarea\" autosize></textarea>\n	</cs-editor>\n	<label>" + L.type + "</label>\n	<select is=\"cs-select\" name=\"type\">\n		<option value=\"text\">text</option>\n		<option value=\"html\">html</option>\n	</select>\n	<div>\n		<cs-button primary><button type=\"button\">" + L.save + "</button></cs-button>\n	</div>\n</form>");
           x$ = title = modal_body.querySelector('[name=title]');
           x$.value = data.title;
           y$ = content = modal_body.querySelector('.text');
@@ -131,7 +131,7 @@
       show_edit_button = function(key, x, y, container){
         cs.Language('content_').ready().then(function(L){
           var button;
-          button = html_to_node("<button is=\"cs-button\" class=\"cs-content-edit\" data-key=\"" + key + "\" style=\"position: absolute; left: " + x + "; top: " + y + ";\">" + L.edit + "</button>");
+          button = html_to_node("<cs-button><button class=\"cs-content-edit\" data-key=\"" + key + "\" style=\"position: absolute; left: " + x + "; top: " + y + ";\">" + L.edit + "</button></cs-button>");
           container.appendChild(button);
           container.addEventListener('mousemove', function(){
             showed_button = false;

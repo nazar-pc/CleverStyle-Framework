@@ -40,5 +40,5 @@ dom-module#cs-static-pages-admin-pages-add-edit-form
 							textarea(is="cs-textarea" autosize value="{{page.content}}")
 					template(is="dom-if" if="[[equal(page.interface, 0)]]" restamp)
 						textarea(is="cs-textarea" autosize value="{{page.content}}")
-		button(is="cs-button" on-tap="_save" type="button" primary) [[L.save]]
+		cs-button(primary): button(on-tap="_save" type="button") [[L.save]]
 	script(src="script.js")
