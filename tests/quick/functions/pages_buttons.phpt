@@ -30,63 +30,161 @@ var_dump(pages_buttons(1, 1, '/page/%d'));
 ?>
 --EXPECT--
 string(23) "page 1/5, no formaction"
-string(404) "<button is="cs-button" name="page" primary type="button">1</button>
-<button formaction="" is="cs-button" name="page" type="submit" value="2">2</button>
-<button formaction="" is="cs-button" name="page" type="submit" value="3">3</button>
-<button formaction="" is="cs-button" name="page" type="submit" value="4">4</button>
-<button formaction="" is="cs-button" name="page" type="submit" value="5">5</button>
+string(459) "<cs-button>
+	<button name="page" primary type="button">1</button>
+</cs-button>
+<cs-button>
+	<button formaction="" name="page" type="submit" value="2">2</button>
+</cs-button>
+<cs-button>
+	<button formaction="" name="page" type="submit" value="3">3</button>
+</cs-button>
+<cs-button>
+	<button formaction="" name="page" type="submit" value="4">4</button>
+</cs-button>
+<cs-button>
+	<button formaction="" name="page" type="submit" value="5">5</button>
+</cs-button>
 "
 string(28) "page 3/20, string formatting"
-string(967) "<button formaction="/page/1" is="cs-button" name="page" type="submit" value="1">1</button>
-<button formaction="/page/2" is="cs-button" name="page" type="submit" value="2">2</button>
-<button is="cs-button" name="page" primary type="button">3</button>
-<button formaction="/page/4" is="cs-button" name="page" type="submit" value="4">4</button>
-<button formaction="/page/5" is="cs-button" name="page" type="submit" value="5">5</button>
-<button formaction="/page/6" is="cs-button" name="page" type="submit" value="6">6</button>
-<button formaction="/page/7" is="cs-button" name="page" type="submit" value="7">7</button>
-<button disabled is="cs-button" name="page" type="button">...</button>
-<button formaction="/page/18" is="cs-button" name="page" type="submit" value="18">18</button>
-<button formaction="/page/19" is="cs-button" name="page" type="submit" value="19">19</button>
-<button formaction="/page/20" is="cs-button" name="page" type="submit" value="20">20</button>
+string(1088) "<cs-button>
+	<button formaction="/page/1" name="page" type="submit" value="1">1</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/2" name="page" type="submit" value="2">2</button>
+</cs-button>
+<cs-button>
+	<button name="page" primary type="button">3</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/4" name="page" type="submit" value="4">4</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/5" name="page" type="submit" value="5">5</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/6" name="page" type="submit" value="6">6</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/7" name="page" type="submit" value="7">7</button>
+</cs-button>
+<cs-button>
+	<button disabled name="page" type="button">...</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/18" name="page" type="submit" value="18">18</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/19" name="page" type="submit" value="19">19</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/20" name="page" type="submit" value="20">20</button>
+</cs-button>
 "
 string(29) "page 17/20, string formatting"
-string(977) "<button formaction="/page/1" is="cs-button" name="page" type="submit" value="1">1</button>
-<button formaction="/page/2" is="cs-button" name="page" type="submit" value="2">2</button>
-<button formaction="/page/3" is="cs-button" name="page" type="submit" value="3">3</button>
-<button disabled is="cs-button" name="page" type="button">...</button>
-<button formaction="/page/14" is="cs-button" name="page" type="submit" value="14">14</button>
-<button formaction="/page/15" is="cs-button" name="page" type="submit" value="15">15</button>
-<button formaction="/page/16" is="cs-button" name="page" type="submit" value="16">16</button>
-<button is="cs-button" name="page" primary type="button">17</button>
-<button formaction="/page/18" is="cs-button" name="page" type="submit" value="18">18</button>
-<button formaction="/page/19" is="cs-button" name="page" type="submit" value="19">19</button>
-<button formaction="/page/20" is="cs-button" name="page" type="submit" value="20">20</button>
+string(1098) "<cs-button>
+	<button formaction="/page/1" name="page" type="submit" value="1">1</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/2" name="page" type="submit" value="2">2</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/3" name="page" type="submit" value="3">3</button>
+</cs-button>
+<cs-button>
+	<button disabled name="page" type="button">...</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/14" name="page" type="submit" value="14">14</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/15" name="page" type="submit" value="15">15</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/16" name="page" type="submit" value="16">16</button>
+</cs-button>
+<cs-button>
+	<button name="page" primary type="button">17</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/18" name="page" type="submit" value="18">18</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/19" name="page" type="submit" value="19">19</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/20" name="page" type="submit" value="20">20</button>
+</cs-button>
 "
 string(29) "page 10/20, string formatting"
-string(951) "<button formaction="/page/1" is="cs-button" name="page" type="submit" value="1">1</button>
-<button formaction="/page/2" is="cs-button" name="page" type="submit" value="2">2</button>
-<button disabled is="cs-button" name="page" type="button">...</button>
-<button formaction="/page/8" is="cs-button" name="page" type="submit" value="8">8</button>
-<button formaction="/page/9" is="cs-button" name="page" type="submit" value="9">9</button>
-<button is="cs-button" name="page" primary type="button">10</button>
-<button formaction="/page/11" is="cs-button" name="page" type="submit" value="11">11</button>
-<button formaction="/page/12" is="cs-button" name="page" type="submit" value="12">12</button>
-<button disabled is="cs-button" name="page" type="button">...</button>
-<button formaction="/page/19" is="cs-button" name="page" type="submit" value="19">19</button>
-<button formaction="/page/20" is="cs-button" name="page" type="submit" value="20">20</button>
+string(1072) "<cs-button>
+	<button formaction="/page/1" name="page" type="submit" value="1">1</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/2" name="page" type="submit" value="2">2</button>
+</cs-button>
+<cs-button>
+	<button disabled name="page" type="button">...</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/8" name="page" type="submit" value="8">8</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/9" name="page" type="submit" value="9">9</button>
+</cs-button>
+<cs-button>
+	<button name="page" primary type="button">10</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/11" name="page" type="submit" value="11">11</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/12" name="page" type="submit" value="12">12</button>
+</cs-button>
+<cs-button>
+	<button disabled name="page" type="button">...</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/19" name="page" type="submit" value="19">19</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/20" name="page" type="submit" value="20">20</button>
+</cs-button>
 "
 string(20) "page 10/20, callback"
-string(945) "<button formaction="/" is="cs-button" name="page" type="submit" value="1">1</button>
-<button formaction="/page/2" is="cs-button" name="page" type="submit" value="2">2</button>
-<button disabled is="cs-button" name="page" type="button">...</button>
-<button formaction="/page/8" is="cs-button" name="page" type="submit" value="8">8</button>
-<button formaction="/page/9" is="cs-button" name="page" type="submit" value="9">9</button>
-<button is="cs-button" name="page" primary type="button">10</button>
-<button formaction="/page/11" is="cs-button" name="page" type="submit" value="11">11</button>
-<button formaction="/page/12" is="cs-button" name="page" type="submit" value="12">12</button>
-<button disabled is="cs-button" name="page" type="button">...</button>
-<button formaction="/page/19" is="cs-button" name="page" type="submit" value="19">19</button>
-<button formaction="/page/20" is="cs-button" name="page" type="submit" value="20">20</button>
+string(1066) "<cs-button>
+	<button formaction="/" name="page" type="submit" value="1">1</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/2" name="page" type="submit" value="2">2</button>
+</cs-button>
+<cs-button>
+	<button disabled name="page" type="button">...</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/8" name="page" type="submit" value="8">8</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/9" name="page" type="submit" value="9">9</button>
+</cs-button>
+<cs-button>
+	<button name="page" primary type="button">10</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/11" name="page" type="submit" value="11">11</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/12" name="page" type="submit" value="12">12</button>
+</cs-button>
+<cs-button>
+	<button disabled name="page" type="button">...</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/19" name="page" type="submit" value="19">19</button>
+</cs-button>
+<cs-button>
+	<button formaction="/page/20" name="page" type="submit" value="20">20</button>
+</cs-button>
 "
 string(34) "Nothing to do with 1 page in total"
 bool(false)

@@ -455,7 +455,7 @@ function pages_buttons ($page, $total, $url = false) {
 			array_map($render_page_item, range($total - 1, $total));
 		}
 	}
-	return h::{'cs-button button[name=page]'}($output);
+	return h::{'cs-button| button[name=page]'}($output);
 }
 
 /**
