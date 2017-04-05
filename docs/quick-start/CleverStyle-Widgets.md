@@ -53,21 +53,20 @@ Examples:
 ```
 
 #### cs-form
-Extends native `form` element.
+Wrapper element for native `form` element.
 
 Primary purpose of element is to provide simple form styling (see example below).
 
-Properties:
-* this - read-only, `this` of element, useful for data-binding
-
 Example (and expected markup):
 ```html
-<form is="cs-form">
-    <label>Name</label>
-    <cs-input-text><input></cs-input-text>
-    <label>Description</label>
-    <textarea is="cs-textarea"></textarea>
-</form>
+<cs-form>
+    <form>
+        <label>Name</label>
+        <cs-input-text><input></cs-input-text>
+        <label>Description</label>
+        <textarea is="cs-textarea"></textarea>
+    </form>
+</cs-form>
 ```
 
 #### cs-icon
