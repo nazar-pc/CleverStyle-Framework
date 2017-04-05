@@ -6,27 +6,9 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var styles;
-  styles = '';
-  Polymer.cs.behaviors.csForm = [{
-    attached: function(){
-      var head, this$ = this;
-      if (this._styles_added) {
-        return;
-      }
-      this._styles_added = true;
-      if (!styles) {
-        head = document.querySelector('head');
-        head.insertAdjacentHTML('beforeend', "<style is=\"custom-style\" include=\"cs-form-styles\"></style>");
-        Polymer.updateStyles();
-        setTimeout(function(){
-          styles = head.lastElementChild.textContent.split(':not([style-scope]):not(.style-scope)').join('');
-          head.removeChild(head.lastElementChild);
-          this$.insertAdjacentHTML('beforeend', "<style>" + styles + "</style>");
-        }, 0);
-      } else {
-        this.insertAdjacentHTML('beforeend', "<style>" + styles + "</style>");
-      }
+  Polymer.cs.behaviors.csForm = [
+    Polymer.cs.behaviors.injectLightStyles, {
+      _styles_dom_module: 'cs-form-styles'
     }
-  }];
+  ];
 }).call(this);
