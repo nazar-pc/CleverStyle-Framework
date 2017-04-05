@@ -15,7 +15,7 @@ use
 $L     = new Prefix('polls_');
 $Polls = Polls::instance();
 Page::instance()->content(
-	h::{'form[is=cs-form]'}(
+	h::{'cs-form form'}(
 		h::{'table.cs-table[list]'}(
 			h::{'tr th'}(
 				$L->poll,

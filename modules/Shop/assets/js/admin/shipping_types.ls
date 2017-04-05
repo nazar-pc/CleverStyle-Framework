@@ -8,7 +8,7 @@
 $ <-! require(['jquery'], _)
 <-! $
 make_modal	= (L, title, action) ->
-	$(cs.ui.simple_modal("""<form is="cs-form">
+	$(cs.ui.simple_modal("""<cs-form><form>
 		<h3 class="cs-text-center">#title</h3>
 		<label>#{L.title}</label>
 		<cs-input-text><input name="title" required></cs-input-text>
@@ -28,7 +28,7 @@ make_modal	= (L, title, action) ->
 		<textarea is="cs-textarea" autosize name="description"></textarea>
 		<br>
 		<cs-button primary><button type="submit">#action</button></cs-button>
-	</form>"""))
+	</form></cs-form>"""))
 $('html')
 	.on('mousedown', '.cs-shop-shipping-type-add', !->
 		cs.Language('shop_').ready().then (L) !->

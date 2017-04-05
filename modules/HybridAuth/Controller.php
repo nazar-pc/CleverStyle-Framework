@@ -349,7 +349,7 @@ class Controller {
 	 */
 	protected static function email_form ($Page, $L) {
 		$Page->content(
-			h::{'form[is=cs-form]'}(
+			h::{'cs-form form'}(
 				h::{'p.cs-text-center'}(
 					$L->please_type_your_email.':'.
 					h::{'input[name=email]'}(

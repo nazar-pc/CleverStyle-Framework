@@ -20,7 +20,7 @@ if (isset($_POST['shortname'])) {
 }
 
 $Page->content(
-	h::{'form[is=cs-form]'}(
+	h::{'cs-form form'}(
 		h::label('Shortname').
 		h::{'cs-input-text input[name=shortname]'}(
 			[

@@ -22,7 +22,7 @@ mixin on-off-switcher (name)
 dom-module#cs-blogs-admin-general
 	template
 		style(include="advanced-styles")
-		form.cs-text-center(is="cs-form")
+		cs-form: form.cs-text-center
 			+input("posts_per_page", "number", 1)
 			+input("max_sections", "number", 1)
 			+on-off-switcher("enable_comments")

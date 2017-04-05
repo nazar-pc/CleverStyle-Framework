@@ -4,7 +4,7 @@ dom-module#cs-system-admin-users-edit-user-form
 		style(include="advanced-styles")
 		h2.cs-text-center(hidden="[[user_data.id]]")
 			cs-icon(icon="spinner" spin)
-		form(is="cs-form" hidden="[[!user_data.id]]")
+		cs-form: form(hidden="[[!user_data.id]]")
 			label id
 			cs-input-text: input(readonly value="[[user_data.id]]")
 			label [[L.registration_date]]

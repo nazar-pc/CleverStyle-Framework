@@ -15,7 +15,7 @@ $L      = Language::instance();
 $Page   = Page::instance();
 $User   = User::instance();
 $Page->content(
-	h::{'form[is=cs-form]'}(
+	h::{'cs-form form'}(
 		h::{'section.cs-feedback-form article'}(
 			h::{'header h2.cs-text-center'}($L->Feedback).
 			h::{'table.cs-table[center] tr| td'}(

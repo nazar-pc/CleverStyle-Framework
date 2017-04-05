@@ -31,7 +31,7 @@ if ($data) {
 }
 
 $Page->content(
-	h::{'form[is=cs-form]'}(
+	h::{'cs-form form'}(
 		h::label("$L->upload_size_limit (b, kb, mb, gb)").
 		h::{'cs-input-text[compact] input[name=max_file_size]'}(
 			[

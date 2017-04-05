@@ -25,7 +25,7 @@ if (isset($_POST['simple_insert'])) {
 	$Page->success($L->changes_saved);
 }
 $Page->content(
-	h::{'form[is=cs-form]'}(
+	h::{'cs-form form'}(
 		h::{'table.cs-table[center][list]'}(
 			h::{'tr th'}(
 				[

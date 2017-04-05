@@ -19,7 +19,7 @@ $client = OAuth2::instance()->get_client(Request::instance()->route[2]);
 Page::instance()
 	->title($L->editing_of_client($client['name']))
 	->content(
-		h::{'form[is=cs-form][action=admin/OAuth2/clients/list]'}(
+		h::{'cs-form form[action=admin/OAuth2/clients/list]'}(
 			h::{'h2.cs-text-center'}(
 				$L->editing_of_client($client['name'])
 			).

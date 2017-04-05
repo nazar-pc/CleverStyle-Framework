@@ -1,7 +1,7 @@
 dom-module#cs-system-sign-in
 	template
 		style(is="custom-style" include="advanced-styles")
-		form(is="cs-form" on-submit="_sign_in")
+		cs-form: form(on-submit="_sign_in")
 			h3 [[L.sign_in]]
 			label
 				cs-input-text: input#login(placeholder="[[L.login_or_email]]" type="text" autocorrect="off")

@@ -24,7 +24,7 @@ $Config           = Config::instance();
 $providers_config = $Config->module('HybridAuth')->providers;
 $providers        = file_get_json(__DIR__.'/../providers.json');
 $Page->content(
-	h::{'form[is=cs-form]'}(
+	h::{'cs-form form'}(
 		h::{'table.cs-table[list][center]'}(
 			h::{'tr th'}(
 				$L->provider,

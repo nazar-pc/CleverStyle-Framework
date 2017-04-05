@@ -1,5 +1,25 @@
+dom-module#cs-form-styles
+	template
+		style.
+			cs-form legend {
+				@apply --cs-form-legend;
+			}
+
+			cs-form > form > label:not([is]):not([hidden]) {
+				display : block;
+
+				@apply --cs-form-label;
+			}
+
+			cs-form > form > label:not([is]):not([hidden]) + * {
+				@apply --cs-form-after-label;
+			}
+
+			cs-form > form > label:not([is]):not([hidden])[hidden] + * {
+				display : none;
+			}
 dom-module#cs-form
 	link(rel="import" href="style.css" type="css")
 	template
-		content
+		slot
 	script(src="script.js")

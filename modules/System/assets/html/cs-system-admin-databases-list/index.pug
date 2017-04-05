@@ -40,7 +40,7 @@ dom-module#cs-system-admin-databases-list
 						td [[mirror.user]]
 		p
 			a(is="cs-link-button" on-tap="_add") [[L.add_database]]
-		form.cs-text-center(is="cs-form")
+		cs-form: form.cs-text-center
 			+on-off-switcher("db_balance")
 			+on-off-switcher("db_mirror_mode", null, [MIRROR_MODE_MASTER_MASTER, MIRROR_MODE_MASTER_SLAVE], ["[[L.master_master]]", "[[L.master_slave]]"])
 			+footer-buttons

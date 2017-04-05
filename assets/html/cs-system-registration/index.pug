@@ -1,7 +1,7 @@
 dom-module#cs-system-registration
 	template
 		style(is="custom-style" include="advanced-styles")
-		form(is="cs-form" on-submit="_registration")
+		cs-form: form(on-submit="_registration")
 			h3 [[L.registration]]
 			label
 				cs-input-text: input#email(placeholder="Email" type="email" autocorrect="off")

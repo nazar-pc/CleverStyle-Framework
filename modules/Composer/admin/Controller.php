@@ -49,7 +49,7 @@ class Controller {
 			$Page->success($L->changes_saved);
 		}
 		$Page->content(
-			h::{'form[is=cs-form]'}(
+			h::{'cs-form form'}(
 				h::label($L->auth_json_contents).
 				h::{'p textarea[is=cs-textarea][autosize][name=auth_json]'}($module_data->auth_json ?: '').
 				h::cs_button(

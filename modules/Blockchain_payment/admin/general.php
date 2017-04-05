@@ -28,7 +28,7 @@ if (isset($_POST['bitcoin_address'], $_POST['bitcoin_address'])) {
 	}
 }
 $Page->content(
-	h::{'form[is=cs-form]'}(
+	h::{'cs-form form'}(
 		h::{'label info'}('blockchain_payment_bitcoin_address').
 		h::{'cs-input-text input'}(
 			[

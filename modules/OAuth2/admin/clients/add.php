@@ -16,7 +16,7 @@ $L = new Prefix('oauth2_');
 Page::instance()
 	->title($L->addition_of_client)
 	->content(
-		h::{'form[is=cs-form][action=admin/OAuth2/clients/list]'}(
+		h::{'cs-form form[action=admin/OAuth2/clients/list]'}(
 			h::{'h2.cs-text-center'}(
 				$L->addition_of_client
 			).

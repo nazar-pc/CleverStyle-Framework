@@ -18,7 +18,7 @@ $poll = Polls::instance()->get(Request::instance()->route_ids[0]);
 Page::instance()
 	->title($L->deleting_of_poll($poll['title']))
 	->content(
-		h::{'form[is=cs-form][action=admin/Polls/polls]'}(
+		h::{'cs-form form[action=admin/Polls/polls]'}(
 			h::h2($L->sure_want_to_delete_poll($poll['title'])).
 			h::p(
 				h::{'cs-button button[type=submit][name=delete]'}(

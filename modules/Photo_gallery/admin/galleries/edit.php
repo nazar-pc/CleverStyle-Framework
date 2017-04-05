@@ -20,7 +20,7 @@ $L       = new Prefix('photo_gallery_');
 Page::instance()
 	->title($L->editing_of_gallery($gallery['title']))
 	->content(
-		h::{'form[is=cs-form][action=admin/Photo_gallery/galleries/browse]'}(
+		h::{'cs-form form[action=admin/Photo_gallery/galleries/browse]'}(
 			h::{'h2.cs-text-center'}(
 				$L->editing_of_gallery($gallery['title'])
 			).

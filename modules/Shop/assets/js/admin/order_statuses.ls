@@ -12,7 +12,7 @@ make_modal	= (types, L, title, action) ->
 		for index, type of types
 			"""<option value="#index">#type</option>"""
 	types	= types.join('')
-	modal	= $(cs.ui.simple_modal("""<form is="cs-form">
+	modal	= $(cs.ui.simple_modal("""<cs-form><form>
 		<h3 class="cs-text-center">#title</h3>
 		<label>#{L.title}</label>
 		<cs-input-text><input name="title" required></cs-input-text>
@@ -30,7 +30,7 @@ make_modal	= (types, L, title, action) ->
 		<textarea is="cs-textarea" autosize name="comment"></textarea>
 		<br>
 		<cs-button primary><button type="submit">#action</button></cs-button>
-	</form>"""))
+	</form></cs-form>"""))
 	modal.find('[type=color]').change !->
 		modal.find('[name=color]').val(
 			$(@).val()

@@ -1,7 +1,7 @@
 dom-module#cs-system-restore-password-form
 	template
 		style(is="custom-style" include="advanced-styles")
-		form(is="cs-form" on-submit="_restore_password")
+		cs-form: form(on-submit="_restore_password")
 			h3 [[L.restore_password]]
 			label
 				cs-input-text: input#login(placeholder="[[L.login_or_email]]" type="text" autocorrect="off")

@@ -9,7 +9,7 @@ dom-module#cs-shop-cart
 					img#img(src="[[item.image]]")
 					a#link(href="[[item.localized_href]]" target="_blank") [[item.title]]
 					#description [[item.short_description]]
-			form.cs-margin-top(is="cs-form")
+			cs-form: form.cs-margin-top
 				label [[L.shipping_type]]
 				div
 					select(is="cs-select" selected="{{shipping_type}}")

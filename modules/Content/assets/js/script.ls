@@ -22,7 +22,7 @@ Promise.all([
 				if !e.target.matches('.cs-content-add')
 					return
 				cs.Language('content_').ready().then (L) !->
-					modal_body	= html_to_node("""<form is="cs-form">
+					modal_body	= html_to_node("""<cs-form><form>
 						<label>#{L.key}</label>
 						<cs-input-text><input type="text" name="key"></cs-input-text>
 						<label>#{L.title}</label>
@@ -40,7 +40,7 @@ Promise.all([
 						<div>
 							<cs-button primary><button type="button">#{L.save}</button></cs-button>
 						</div>
-					</form>""")
+					</form></cs-form>""")
 					key		= modal_body.querySelector('[name=key]')
 					title	= modal_body.querySelector('[name=title]')
 					content	= modal_body.querySelector('.text')
@@ -76,7 +76,7 @@ Promise.all([
 				cs.Language('content_').ready().then (L) !->
 					key = e.target.dataset.key
 					cs.api("get api/Content/#key").then (data) !->
-						modal_body	= html_to_node("""<form is="cs-form">
+						modal_body	= html_to_node("""<cs-form><form>
 							<label>#{L.key}</label>
 							<cs-input-text><input readonly value="#{data.key}"></cs-input-text>
 							<label>#{L.title}</label>
@@ -94,7 +94,7 @@ Promise.all([
 							<div>
 								<cs-button primary><button type="button">#{L.save}</button></cs-button>
 							</div>
-						</form>""")
+						</form></cs-form>""")
 						title	= modal_body.querySelector('[name=title]')
 							..value	= data.title
 						content	= modal_body.querySelector('.text')

@@ -2,7 +2,7 @@ include ../_settings_mixins
 dom-module#cs-system-admin-site-info
 	template
 		style(include="advanced-styles")
-		form.cs-text-center(is="cs-form")
+		cs-form: form.cs-text-center
 			+input("site_name")
 			+textarea("url", undefined, "url_string")
 			+textarea("cookie_domain", "simple_admin_mode", "cookie_domain_string")

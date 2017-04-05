@@ -12,7 +12,7 @@ make_modal			= (types, L, title, action) ->
 	types		= for index, type of types
 		"""<option value="#index">#type</option>"""
 	types		= types.join('')
-	cs.ui.simple_modal("""<form is="cs-form">
+	cs.ui.simple_modal("""<cs-form><form>
 		<h3 class="cs-text-center">#title</h3>
 		<label>#{L.attribute_type}</label>
 		<select is="cs-select" name="type" required>#types</select>
@@ -24,7 +24,7 @@ make_modal			= (types, L, title, action) ->
 		<cs-input-text><input name="title_internal" required></cs-input-text>
 		<br>
 		<cs-button primary><button type="submit">#action</button></cs-button>
-	</form>""")
+	</form></cs-form>""")
 $('html')
 	.on('mousedown', '.cs-shop-attribute-add', !->
 		Promise.all([

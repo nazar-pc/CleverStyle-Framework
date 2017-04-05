@@ -2,7 +2,7 @@ dom-module#cs-system-user-settings
 	link(rel="import" href="style.css" type="css")
 	template
 		style(is="custom-style" include="advanced-styles")
-		form(is="cs-form" on-submit="_save")
+		cs-form: form(on-submit="_save")
 			h3 [[L.general_settings]]
 			label [[L.login]]
 			cs-input-text: input(type="text" value="{{user_data.login}}")

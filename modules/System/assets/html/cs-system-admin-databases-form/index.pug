@@ -1,6 +1,6 @@
 dom-module#cs-system-admin-databases-form
 	template
-		form(is="cs-form")
+		cs-form: form
 			template(is="dom-if" if="[[and(add, databases.length)]]")
 				label(tooltip="[[L.db_mirror_info]]")
 					| [[L.db_mirror]]

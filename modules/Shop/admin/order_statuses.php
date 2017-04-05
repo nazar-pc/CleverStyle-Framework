@@ -25,7 +25,7 @@ usort(
 Page::instance()
 	->title($L->order_statuses)
 	->content(
-		h::{'form[is=cs-form]'}(
+		h::{'cs-form form'}(
 			h::h2($L->order_statuses).
 			h::{'table.cs-table[list]'}(
 				h::{'tr th'}(

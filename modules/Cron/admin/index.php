@@ -28,7 +28,7 @@ if (isset($_POST['tasks'])) {
 }
 
 $Page->content(
-	h::{'form[is=cs-form]'}(
+	h::{'cs-form form'}(
 		h::{'p.cs-text-center'}(Language::instance()->crontab_content).
 		h::{'textarea[is=cs-textarea][full-width][autosize][name=tasks][rows=10]'}(
 			isset($_POST['tasks']) ? $_POST['tasks'] : shell_exec('crontab -l')

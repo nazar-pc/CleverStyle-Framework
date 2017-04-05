@@ -6,6 +6,5 @@
  */
 Polymer(
 	is			: 'cs-form'
-	extends		: 'form'
 	behaviors	: Polymer.cs.behaviors.cs-form
 )

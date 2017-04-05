@@ -45,7 +45,7 @@ if (isset($_POST['start_server']) && !is_server_running()) {
 	}
 }
 $Page->content(
-	h::{'form[is=cs-form]'}(
+	h::{'cs-form form'}(
 		h::{'label info'}('websockets_security_key').
 		h::{'cs-input-text input'}(
 			[

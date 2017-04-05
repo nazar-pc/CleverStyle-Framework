@@ -22,7 +22,7 @@ if (isset($_POST['general'])) {
 
 $core_url = $Config->core_url();
 $Page->content(
-	h::{'form[is=cs-form]'}(
+	h::{'cs-form form'}(
 		h::{'label info'}('deferred_tasks_security_key').
 		h::{'cs-input-text[full-width] input[name=general[security_key]]'}(
 			[

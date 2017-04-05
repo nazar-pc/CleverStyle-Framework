@@ -2,7 +2,7 @@ include ../_settings_mixins
 dom-module#cs-system-admin-system
 	template
 		style(include="advanced-styles")
-		form.cs-text-center(is="cs-form")
+		cs-form: form.cs-text-center
 			+on-off-switcher("site_mode")
 			+input("closed_title")
 			+editor("closed_text")

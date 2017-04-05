@@ -20,7 +20,7 @@ $Options = Options::instance();
 $Page
 	->title($L->editing_of_poll($poll['title']))
 	->content(
-		h::{'form[is=cs-form][action=admin/Polls/polls]'}(
+		h::{'cs-form form[action=admin/Polls/polls]'}(
 			h::h2($L->editing_of_poll($poll['title'])).
 			h::{'cs-input-text input[name=edit[title]]'}(
 				[

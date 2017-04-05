@@ -2,7 +2,7 @@ include ../_settings_mixins
 dom-module#cs-system-admin-users-general
 	template
 		style(include="advanced-styles")
-		form.cs-text-center(is="cs-form")
+		cs-form: form.cs-text-center
 			+input("session_expire", null, "number", 1)
 			= ' '
 			| [[L.system_time_seconds]]

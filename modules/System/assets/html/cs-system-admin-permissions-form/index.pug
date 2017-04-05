@@ -1,6 +1,6 @@
 dom-module#cs-system-admin-permissions-form
 	template
-		form(is="cs-form")
+		cs-form: form
 			template(is="dom-if" if="[[permission_id]]")
 				label id
 				cs-input-text: input(readonly value="[[permission_id]]")

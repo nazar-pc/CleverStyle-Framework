@@ -3,7 +3,7 @@ dom-module#cs-system-admin-permissions-for
 		style(include="advanced-styles")
 		h2.cs-text-center(hidden="[[all_permissions.length]]")
 			cs-icon(icon="spinner" spin)
-		form#form(is="cs-form")
+		cs-form: form#form
 			template(is="dom-repeat" items="[[all_permissions]]" as="permission")
 				legend [[permission.group]]
 				div
