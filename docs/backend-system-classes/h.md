@@ -73,7 +73,7 @@ results in:
 ```
 
 #### radio
-Convenient simplified interface for `label[is=cs-label-button] > input[radio]`:
+Convenient simplified interface for `cs-label-button > label > input[radio]`:
 ```php
 h::radio(
     [
@@ -86,10 +86,14 @@ h::radio(
 ```
 results in:
 ```html
-<label is="cs-label-button">
-    <input name="active" tag="input" type="radio" value="0"> Off
-</label>
-<label is="cs-label-button">
-    <input checked name="active" tag="input" type="radio" value="1"> On
-</label>
+<cs-label-button>
+    <label>
+        <input name="active" tag="input" type="radio" value="0"> Off
+    </label>
+</cs-label-button>
+<cs-label-button>
+    <label>
+        <input checked name="active" tag="input" type="radio" value="1"> On
+    </label>
+</cs-label-button>
 ```

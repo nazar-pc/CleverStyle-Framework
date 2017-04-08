@@ -10,7 +10,7 @@
   styles = {};
   ((ref$ = Polymer.cs || (Polymer.cs = {})).behaviors || (ref$.behaviors = {})).injectLightStyles = [{
     attached: function(){
-      var head, this$ = this;
+      var head, style_element, this$ = this;
       if (this._styles_added) {
         return;
       }
@@ -18,10 +18,11 @@
       if (!styles[this._styles_dom_module]) {
         head = document.querySelector('head');
         head.insertAdjacentHTML('beforeend', "<style is=\"custom-style\" include=\"" + this._styles_dom_module + "\"></style>");
+        style_element = head.lastElementChild;
         Polymer.updateStyles();
         setTimeout(function(){
-          styles[this$._styles_dom_module] = head.lastElementChild.textContent.split(':not([style-scope]):not(.style-scope)').join('');
-          head.removeChild(head.lastElementChild);
+          styles[this$._styles_dom_module] = style_element.textContent.split(':not([style-scope]):not(.style-scope)').join('');
+          head.removeChild(style_element);
           this$.insertAdjacentHTML('beforeend', "<style>" + styles[this$._styles_dom_module] + "</style>");
         }, 0);
       } else {

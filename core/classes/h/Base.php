@@ -169,16 +169,14 @@ abstract class Base extends BananaHTML {
 		}
 		if (@is_array($in['name']) || @is_array($in['id'])) {
 			return static::common_checkbox_radio_reduce($in, [static::class, 'checkbox']);
-		} else {
-			self::common_checkbox_radio_post($in);
-			return static::label(
-				static::u_wrap($in, 'input'),
-				[
-					'is'    => 'cs-label-switcher',
-					'class' => isset($item['class']) ? $item['class'] : false
-				]
-			);
 		}
+		self::common_checkbox_radio_post($in);
+		return static::cs_label_switcher(
+			static::label(static::u_wrap($in, 'input')),
+			[
+				'class' => isset($item['class']) ? $item['class'] : false
+			]
+		);
 	}
 	/**
 	 * Rendering of input[type=radio] with automatic adding labels and necessary classes
@@ -202,10 +200,9 @@ abstract class Base extends BananaHTML {
 			$in,
 			function ($item) {
 				self::common_checkbox_radio_post($item);
-				return static::label(
-					static::u_wrap($item, 'input'),
+				return static::cs_label_button(
+					static::label(static::u_wrap($item, 'input')),
 					[
-						'is'    => 'cs-label-button',
 						'class' => isset($item['class']) ? $item['class'] : false
 					]
 				);

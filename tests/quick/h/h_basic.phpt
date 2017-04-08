@@ -286,59 +286,89 @@ string(88) "<cs-icon data-x="1" icon="home"></cs-icon>
  "
 string(0) ""
 string(8) "Checkbox"
-string(104) "<label is="cs-label-switcher">
-	<input checked name="active" type="checkbox" value="1"> Active
-</label>
+string(125) "<cs-label-switcher>
+	<label>
+		<input checked name="active" type="checkbox" value="1"> Active
+	</label>
+</cs-label-switcher>
 "
-string(204) "<label is="cs-label-switcher">
-	<input name="inactive" type="checkbox" value="0"> Inactive
-</label>
-<label is="cs-label-switcher">
-	<input checked name="active" type="checkbox" value="1"> Active
-</label>
+string(246) "<cs-label-switcher>
+	<label>
+		<input name="inactive" type="checkbox" value="0"> Inactive
+	</label>
+</cs-label-switcher>
+<cs-label-switcher>
+	<label>
+		<input checked name="active" type="checkbox" value="1"> Active
+	</label>
+</cs-label-switcher>
 "
-string(204) "<label is="cs-label-switcher">
-	<input checked name="active" type="checkbox" value="1"> Active
-</label>
-<label is="cs-label-switcher">
-	<input name="inactive" type="checkbox" value="0"> Inactive
-</label>
+string(246) "<cs-label-switcher>
+	<label>
+		<input checked name="active" type="checkbox" value="1"> Active
+	</label>
+</cs-label-switcher>
+<cs-label-switcher>
+	<label>
+		<input name="inactive" type="checkbox" value="0"> Inactive
+	</label>
+</cs-label-switcher>
 "
-string(204) "<label is="cs-label-switcher">
-	<input checked name="active" type="checkbox" value="1"> Active
-</label>
-<label is="cs-label-switcher">
-	<input name="inactive" type="checkbox" value="0"> Inactive
-</label>
+string(246) "<cs-label-switcher>
+	<label>
+		<input checked name="active" type="checkbox" value="1"> Active
+	</label>
+</cs-label-switcher>
+<cs-label-switcher>
+	<label>
+		<input name="inactive" type="checkbox" value="0"> Inactive
+	</label>
+</cs-label-switcher>
 "
 string(0) ""
 string(5) "Radio"
-string(175) "<label is="cs-label-button">
-	<input name="on" type="radio" value="0"> Off
-</label>
-<label is="cs-label-button">
-	<input checked name="on" type="radio" value="1"> On
-</label>
+string(213) "<cs-label-button>
+	<label>
+		<input name="on" type="radio" value="0"> Off
+	</label>
+</cs-label-button>
+<cs-label-button>
+	<label>
+		<input checked name="on" type="radio" value="1"> On
+	</label>
+</cs-label-button>
 "
-string(183) "<label is="cs-label-button">
-	<input checked name="toggle" type="radio" value="0"> Off
-</label>
-<label is="cs-label-button">
-	<input name="toggle" type="radio" value="1"> On
-</label>
+string(221) "<cs-label-button>
+	<label>
+		<input checked name="toggle" type="radio" value="0"> Off
+	</label>
+</cs-label-button>
+<cs-label-button>
+	<label>
+		<input name="toggle" type="radio" value="1"> On
+	</label>
+</cs-label-button>
 "
-string(194) "<label is="cs-label-button">
-	<input checked name="active" type="radio" value="1"> Active
-</label>
-<label is="cs-label-button">
-	<input name="inactive" type="radio" value="0"> Inactive
-</label>
+string(232) "<cs-label-button>
+	<label>
+		<input checked name="active" type="radio" value="1"> Active
+	</label>
+</cs-label-button>
+<cs-label-button>
+	<label>
+		<input name="inactive" type="radio" value="0"> Inactive
+	</label>
+</cs-label-button>
 "
-string(192) "<label is="cs-label-button">
-	<input checked name="toggle" type="radio" value="1"> Active
-</label>
-<label is="cs-label-button">
-	<input name="toggle" type="radio" value="0"> Inactive
-</label>
+string(230) "<cs-label-button>
+	<label>
+		<input checked name="toggle" type="radio" value="1"> Active
+	</label>
+</cs-label-button>
+<cs-label-button>
+	<label>
+		<input name="toggle" type="radio" value="0"> Inactive
+	</label>
+</cs-label-button>
 "
 string(0) ""

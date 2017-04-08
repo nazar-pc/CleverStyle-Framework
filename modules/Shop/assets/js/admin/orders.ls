@@ -69,8 +69,8 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 		</p>
 		<p>
 			#{L.paid}:
-			<label is="cs-label-button"><input type="radio" name="paid" value="1"> #{L.yes}</label>
-			<label is="cs-label-button"><input type="radio" name="paid" value="0" checked> #{L.no}</label>
+			<cs-label-button><label><input type="radio" name="paid" value="1"> #{L.yes}</label></cs-label-button>
+			<cs-label-button><label><input type="radio" name="paid" value="0" checked> #{L.no}</label></cs-label-button>
 		</p>
 		<p>
 			#{L.status}: <select is="cs-select" name="status" required>#order_statuses</select>

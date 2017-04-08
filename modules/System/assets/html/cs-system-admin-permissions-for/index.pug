@@ -22,13 +22,13 @@ dom-module#cs-system-admin-permissions-for
 									sup [[label.description]]
 								td
 									nav(is="cs-nav-button-group")
-										label(is="cs-label-button")
+										cs-label-button: label
 											input(type="radio" value="-1" checked="[[permission_state(label.id, -1)]]" name="[[concat('permissions[', label.id, ']')]]")
 											| [[L.inherited]]
-										label(is="cs-label-button")
+										cs-label-button: label
 											input(type="radio" value="0" checked="[[permission_state(label.id, 0)]]" name="[[concat('permissions[', label.id, ']')]]")
 											| [[L.deny]]
-										label(is="cs-label-button")
+										cs-label-button: label
 											input(type="radio" value="1" checked="[[permission_state(label.id, 1)]]" name="[[concat('permissions[', label.id, ']')]]")
 											| [[L.allow]]
 		cs-button(primary): button(on-tap="save" type="button") [[L.save]]

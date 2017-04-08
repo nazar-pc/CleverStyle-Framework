@@ -23,8 +23,8 @@ make_modal	= (types, L, title, action) ->
 		<select is="cs-select" name="type" required>#types</select>
 		<label>#{L.send_update_status_email}</label>
 		<div>
-			<label is="cs-label-button"><input type="radio" name="send_update_status_email" value="1" checked> #{L.yes}</label>
-			<label is="cs-label-button"><input type="radio" name="send_update_status_email" value="0"> #{L.no}</label>
+			<cs-label-button><label><input type="radio" name="send_update_status_email" value="1" checked> #{L.yes}</label></cs-label-button>
+			<cs-label-button><label><input type="radio" name="send_update_status_email" value="0"> #{L.no}</label></cs-label-button>
 		</div>
 		<label>#{L.comment_used_in_email}</label>
 		<textarea is="cs-textarea" autosize name="comment"></textarea>

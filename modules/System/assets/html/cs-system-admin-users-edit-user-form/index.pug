@@ -35,13 +35,13 @@ dom-module#cs-system-admin-users-edit-user-form
 					option(value="[[timezone.timezone]]") [[timezone.description]]
 			label [[L.status]]
 			nav(is="cs-nav-button-group")
-				label(is="cs-label-button" value="{{user_data.status}}")
+				cs-label-button(value="{{user_data.status}}"): label
 					input(checked="[[equal(user_data.status, -1)]]" type="radio" value="-1")
 					| [[L.is_not_activated]]
-				label(is="cs-label-button")
+				cs-label-button: label
 					input(checked="[[equal(user_data.status, 0)]]" type="radio" value="0")
 					| [[L.inactive]]
-				label(is="cs-label-button")
+				cs-label-button: label
 					input(checked="[[equal(user_data.status, 1)]]" type="radio" value="1")
 					| [[L.active]]
 			label [[L.avatar]]

@@ -1,3 +1,14 @@
+dom-module#cs-label-button-styles
+	template
+		style.
+			cs-label-button input {
+				/* Just ` display: none ` is not working here, because it will break focus support */
+				height    : 0;
+				margin    : 0;
+				width     : 0;
+				/* Hack: Firefox ignores zero size, so we need some more hacks position: absolute; */
+				transform : scale(0);
+			}
 dom-module#cs-label-button
 	link(rel="import" href="style.css" type="css")
 	template

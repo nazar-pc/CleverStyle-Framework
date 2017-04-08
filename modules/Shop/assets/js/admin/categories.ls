@@ -83,8 +83,8 @@ make_modal	= (attributes, categories, L, title, action) ->
 		</p>
 		<p>
 			#{L.visible}:
-			<label is="cs-label-button"><input type="radio" name="visible" value="1" checked> #{L.yes}</label>
-			<label is="cs-label-button"><input type="radio" name="visible" value="0"> #{L.no}</label>
+			<cs-label-button><label><input type="radio" name="visible" value="1" checked> #{L.yes}</label></cs-label-button>
+			<cs-label-button><label><input type="radio" name="visible" value="0"> #{L.no}</label></cs-label-button>
 		</p>
 		<p>
 			<cs-button primary><button type="submit">#action</button></cs-button>

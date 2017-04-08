@@ -16,13 +16,13 @@ make_modal	= (L, title, action) ->
 		<cs-input-text><input name="price" type="number" min="0" value="0" required></cs-input-text>
 		<label>#{L.phone_needed}</label>
 		<div>
-			<label is="cs-label-button"><input type="radio" name="phone_needed" value="1" checked> #{L.yes}</label>
-			<label is="cs-label-button"><input type="radio" name="phone_needed" value="0"> #{L.no}</label>
+			<cs-label-button><label><input type="radio" name="phone_needed" value="1" checked> #{L.yes}</label></cs-label-button>
+			<cs-label-button><label><input type="radio" name="phone_needed" value="0"> #{L.no}</label></cs-label-button>
 		</div>
 		<label>#{L.address_needed}</label>
 		<div>
-			<label is="cs-label-button"><input type="radio" name="address_needed" value="1" checked> #{L.yes}</label>
-			<label is="cs-label-button"><input type="radio" name="address_needed" value="0"> #{L.no}</label>
+			<cs-label-button><label><input type="radio" name="address_needed" value="1" checked> #{L.yes}</label></cs-label-button>
+			<cs-label-button><label><input type="radio" name="address_needed" value="0"> #{L.no}</label></cs-label-button>
 		</div>
 		<label>#{L.description}</label>
 		<textarea is="cs-textarea" autosize name="description"></textarea>

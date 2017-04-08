@@ -119,30 +119,33 @@ Examples:
 ```
 
 #### cs-label-button
-Extends native `label` element.
+Wrapper element for native `label` element.
 
 Element is intended to replace regular UI of `input[type=checkbox]` and/or `input[type=radio]` while using native semantic as much as possible (see example).
 
 Attributes (also available as properties, so use whatever is more convenient):
 * active - boolean, represents current state of element and its input
-* first - boolean, whether current label is first in group of labels
-* last - boolean, whether current label is last in group of labels
+* first - boolean, whether current label is first in group of labels, typically set automatically
+* last - boolean, whether current label is last in group of labels, typically set automatically
 
 Properties:
-* this - object, read-only, `this` of element, useful for data-binding
 * tooltip - string, if specified then tooltip with specified content will be shown on hover
 * value - string, provides unified interface for value getting and setting on any label from group, will be synchronized automatically with `input`s `checked` attribute, useful for data-binding
 
 Example:
 ```html
-<label is="cs-label-button">
-    <input checked type="radio" value="0">
-    Zero
-</label>
-<label is="cs-label-button">
-    <input checked type="radio" value="1">
-    One
-</label>
+<cs-label-button>
+    <label>
+        <input checked type="radio" value="0">
+        Zero
+    </label>
+</cs-label-button>
+<cs-label-button>
+    <label>
+        <input checked type="radio" value="1">
+        One
+    </label>
+</cs-label-button>
 ```
 
 #### cs-label-switcher

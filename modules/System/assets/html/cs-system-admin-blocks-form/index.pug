@@ -25,10 +25,10 @@ dom-module#cs-system-admin-blocks-form
 						| [[L.block_active]]
 						cs-tooltip
 				td
-					label(is="cs-label-button" value="{{block.active}}")
+					cs-label-button(value="{{block.active}}"): label
 						input(name="block[active]" type="radio" value="1")
 						| [[L.yes]]
-					label(is="cs-label-button")
+					cs-label-button: label
 						input(name="block[active]" type="radio" value="0")
 						| [[L.no]]
 			tr
@@ -44,10 +44,10 @@ dom-module#cs-system-admin-blocks-form
 						| [[L.block_expire]]
 						cs-tooltip
 				td
-					label(is="cs-label-button" value="{{block.expire.state}}")
+					cs-label-button(value="{{block.expire.state}}"): label
 						input(name="block[expire][state]" type="radio" value="0")
 						| [[L.never]]
-					label(is="cs-label-button")
+					cs-label-button: label
 						input(name="block[expire][state]" type="radio" value="1")
 						| [[L.as_specified]]
 					br

@@ -6,20 +6,23 @@
  */
 Polymer.cs.behaviors.cs-label-button = [
 	Polymer.cs.behaviors.label
-	Polymer.cs.behaviors.this
 	Polymer.cs.behaviors.tooltip
-	hostAttributes	:
-		role	: 'button'
-	properties		:
+	Polymer.cs.behaviors.inject-light-styles
+	_styles_dom_module	: 'cs-label-button-styles'
+	properties			:
 		first	:
 			reflectToAttribute	: true
 			type				: Boolean
 		last	:
 			reflectToAttribute	: true
 			type				: Boolean
+		primary	:
+			reflectToAttribute	: true
+			type				: Boolean
 	ready		: ->
 		if @previousElementSibling?.is != @is
 			@first = true
-		if @nextElementSibling?.getAttribute('is') != @is
+		if @nextElementSibling?.is != @is
 			@last = true
+		@querySelector('label').setAttribute('role', 'button')
 ]

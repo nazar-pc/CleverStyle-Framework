@@ -12,11 +12,11 @@ mixin on-off-switcher (name)
 	nav(is="cs-nav-button-group")
 		each value, index in values
 			if index
-				label(is="cs-label-button")
+				cs-label-button: label
 					input(type="radio" value=value)
 					= translations[index]
 			else
-				label(is="cs-label-button" value=`{{settings.${name}}}`)
+				cs-label-button(value=`{{settings.${name}}}`): label
 					input(type="radio" value=value)
 					= translations[index]
 dom-module#cs-blogs-admin-general

@@ -121,13 +121,13 @@ make_modal = (attributes, categories, L, title, action) ->
 			</p>
 			<p>
 				#{L.available_soon}:
-				<label is="cs-label-button"><input type="radio" name="soon" value="1"> #{L.yes}</label>
-				<label is="cs-label-button"><input type="radio" name="soon" value="0" checked> #{L.no}</label>
+				<cs-label-button><label><input type="radio" name="soon" value="1"> #{L.yes}</label></cs-label-button>
+				<cs-label-button><label><input type="radio" name="soon" value="0" checked> #{L.no}</label></cs-label-button>
 			</p>
 			<p>
 				#{L.listed}:
-				<label is="cs-label-button"><input type="radio" name="listed" value="1" checked> #{L.yes}</label>
-				<label is="cs-label-button"><input type="radio" name="listed" value="0"> #{L.no}</label>
+				<cs-label-button><label><input type="radio" name="listed" value="1" checked> #{L.yes}</label></cs-label-button>
+				<cs-label-button><label><input type="radio" name="listed" value="0"> #{L.no}</label></cs-label-button>
 			</p>
 			<p>
 				<span class="images" style="display: block"></span>

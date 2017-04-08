@@ -11,9 +11,6 @@ Polymer.{}cs.{}behaviors.label =
 			observer			: '_active_changed'
 			reflectToAttribute	: true
 			type				: Boolean
-		focus	:
-			reflectToAttribute	: true
-			type				: Boolean
 		value	:
 			notify		: true
 			observer	: '_value_changed'
@@ -21,7 +18,7 @@ Polymer.{}cs.{}behaviors.label =
 	attached : !->
 		do !~>
 			next_node	= @nextSibling
-			if next_node && next_node.nodeType == Node.TEXT_NODE && next_node.nextSibling?.getAttribute?('is') == @is
+			if next_node && next_node.nodeType == Node.TEXT_NODE && next_node.nextSibling?.is == @is
 				next_node.parentNode.removeChild(next_node)
 		@local_input		= @querySelector('input')
 		@local_input.label	= @
@@ -58,7 +55,7 @@ Polymer.{}cs.{}behaviors.label =
 		inputs.push(@local_input)
 		label	= @
 		while label = label.previousElementSibling
-			if !label.matches('label')
+			if !label.matches(@is)
 				break
 			input	= label.querySelector('input')
 			if !input
@@ -66,7 +63,7 @@ Polymer.{}cs.{}behaviors.label =
 			inputs.push(input)
 		label	= @
 		while label = label.nextElementSibling
-			if !label.matches('label')
+			if !label.matches(@is)
 				break
 			input	= label.querySelector('input')
 			if !input

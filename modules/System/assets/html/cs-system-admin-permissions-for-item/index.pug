@@ -7,7 +7,7 @@ mixin radio-single (target, value)
 				case 1: return 'allow';
 			}
 		}();
-	label(is="cs-label-button")
+	cs-label-button: label
 		input(type="radio" value=value checked=`[[${target}_permission_state(${target}.id, ${value})]]` name$=`[[concat('${target}s[', ${target}.id, ']')]]`)
 		| [[L.#{text}]]
 mixin radio-group(target)

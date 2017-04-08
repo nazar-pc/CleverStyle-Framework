@@ -24,10 +24,10 @@ dom-module#cs-static-pages-admin-pages-add-edit-form
 					cs-input-text: input(type="text" value="{{page.path}}")
 				td
 					nav(is="cs-nav-button-group")
-						label(is="cs-label-button" value="{{page.interface}}")
+						cs-label-button(value="{{page.interface}}"): label
 							input(type="radio" name="interface" value="0")
 							| [[L.off]]
-						label(is="cs-label-button")
+						cs-label-button: label
 							input(type="radio" name="interface" value="1")
 							| [[L.on]]
 		table.cs-table(center)
