@@ -8,4 +8,12 @@ Polymer.cs.behaviors.cs-button = [
 	Polymer.cs.behaviors.button
 	Polymer.cs.behaviors.tight
 	Polymer.cs.behaviors.tooltip
+	properties	:
+		action	: String
+		bind	: Object
+	listeners	:
+		tap	: '_tap'
+	_tap : ->
+		if @bind && @action
+			@bind[@action]()
 ]

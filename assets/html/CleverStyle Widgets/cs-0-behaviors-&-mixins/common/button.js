@@ -9,28 +9,37 @@
   var ref$;
   ((ref$ = Polymer.cs || (Polymer.cs = {})).behaviors || (ref$.behaviors = {})).button = {
     properties: {
-      action: String,
       active: {
         notify: true,
         reflectToAttribute: true,
         type: Boolean
       },
-      bind: Object,
       compact: {
         reflectToAttribute: true,
         type: Boolean
+      },
+      iconBefore: {
+        type: String
+      },
+      iconAfter: {
+        type: String
+      },
+      icon: {
+        type: String
       },
       primary: {
         reflectToAttribute: true,
         type: Boolean
       }
     },
-    listeners: {
-      tap: '_tap'
-    },
-    _tap: function(){
-      if (this.bind && this.action) {
-        return this.bind[this.action]();
+    ready: function(){
+      var iconBefore;
+      iconBefore = this.iconBefore || this.icon;
+      if (iconBefore) {
+        this.firstElementChild.insertAdjacentHTML('afterbegin', "<cs-icon icon=\"" + iconBefore + "\" mono></cs-icon> ");
+      }
+      if (this.iconAfter) {
+        this.firstElementChild.insertAdjacentHTML('beforeend', "<cs-icon icon=\"" + this.iconAfter + "\" mono></cs-icon> ");
       }
     }
   };

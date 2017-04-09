@@ -6,5 +6,20 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csButton = [Polymer.cs.behaviors.button, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip];
+  Polymer.cs.behaviors.csButton = [
+    Polymer.cs.behaviors.button, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, {
+      properties: {
+        action: String,
+        bind: Object
+      },
+      listeners: {
+        tap: '_tap'
+      },
+      _tap: function(){
+        if (this.bind && this.action) {
+          return this.bind[this.action]();
+        }
+      }
+    }
+  ];
 }).call(this);

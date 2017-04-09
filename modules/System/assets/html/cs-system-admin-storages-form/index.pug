@@ -25,7 +25,5 @@ dom-module#cs-system-admin-storages-form
 			cs-input-text: input(type="text" value="{{storage.password}}")
 			div
 				cs-button(primary): button(type="button" on-tap="_save" disabled="[[!and(storage.url, storage.host, storage.driver)]]") [[L.save]]
-				cs-button: button(type="button" on-tap="_test_connection" disabled="[[!and(storage.url, storage.host, storage.driver)]]")
-					cs-icon(icon="signal")
-					|  [[L.test_connection]]
+				cs-button(icon="signal"): button(type="button" on-tap="_test_connection" disabled="[[!and(storage.url, storage.host, storage.driver)]]") [[L.test_connection]]
 	script(src="script.js")

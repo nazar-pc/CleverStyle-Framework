@@ -13,13 +13,13 @@ dom-module#cs-system-admin-storages-list
 					td
 						template(is="dom-if" if="[[!index]]") -
 						template(is="dom-if" if="[[index]]")
-							a(is="cs-link-button" on-tap="_edit" icon="pencil" tooltip="[[L.edit]] [[L.storage]]")
+							cs-button(icon="pencil" on-tap="_edit" tooltip="[[L.edit]] [[L.storage]]"): button
 							= ' '
-							a(is="cs-link-button" on-tap="_delete" icon="trash" tooltip="[[L.delete]] [[L.storage]]")
+							cs-button(icon="trash" on-tap="_delete" tooltip="[[L.delete]] [[L.storage]]"): button
 					td [[storage.url]]
 					td [[storage.host]]
 					td [[storage.driver]]
 					td [[if(index, storage.user, '*****')]]
 		p
-			a(is="cs-link-button" on-tap="_add") [[L.add_storage]]
+			cs-button(on-tap="_add"): button [[L.add_storage]]
 	script(src="script.js")

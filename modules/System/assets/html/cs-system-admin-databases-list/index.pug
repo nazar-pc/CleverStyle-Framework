@@ -16,12 +16,12 @@ dom-module#cs-system-admin-databases-list
 			template(is="dom-repeat" items="[[databases]]" as="database" id="databases_list")
 				tr(class$="[[if(index, '', 'cs-text-bold')]]")
 					td.cs-text-left
-						a(is="cs-link-button" on-tap="_add" icon="plus" tooltip="[[L.add]] [[L.mirror]] [[L.of_db]]")
+						cs-button(icon="plus" on-tap="_add" tooltip="[[L.add]] [[L.mirror]] [[L.of_db]]"): button
 						template(is="dom-if" if="[[index]]")
 							= ' '
-							a(is="cs-link-button" on-tap="_edit" icon="pencil" tooltip="[[L.edit]] [[L.db]]")
+							cs-button(icon="pencil" on-tap="_edit" tooltip="[[L.edit]] [[L.db]]"): button
 							= ' '
-							a(is="cs-link-button" on-tap="_delete" icon="trash" tooltip="[[L.delete]] [[L.db]]")
+							cs-button(icon="trash" on-tap="_delete" tooltip="[[L.delete]] [[L.db]]"): button
 					td [[database.host]]
 					td [[database.driver]]
 					td [[database.prefix]]
@@ -30,16 +30,16 @@ dom-module#cs-system-admin-databases-list
 				template(is="dom-repeat" items="[[database.mirrors]]" as="mirror")
 					tr
 						td.cs-text-right
-							a(is="cs-link-button" on-tap="_edit" icon="pencil" tooltip="[[L.edit]] [[L.mirror]] [[L.of_db]]")
+							cs-button(icon="pencil" on-tap="_edit" tooltip="[[L.edit]] [[L.mirror]] [[L.of_db]]"): button
 							= ' '
-							a(is="cs-link-button" on-tap="_delete" icon="trash" tooltip="[[L.delete]] [[L.mirror]] [[L.of_db]]")
+							cs-button(icon="trash" on-tap="_delete" tooltip="[[L.delete]] [[L.mirror]] [[L.of_db]]"): button
 						td [[mirror.host]]
 						td [[mirror.driver]]
 						td [[mirror.prefix]]
 						td [[mirror.name]]
 						td [[mirror.user]]
 		p
-			a(is="cs-link-button" on-tap="_add") [[L.add_database]]
+			cs-button(on-tap="_add"): button [[L.add_database]]
 		cs-form: form.cs-text-center
 			+on-off-switcher("db_balance")
 			+on-off-switcher("db_mirror_mode", null, [MIRROR_MODE_MASTER_MASTER, MIRROR_MODE_MASTER_SLAVE], ["[[L.master_master]]", "[[L.master_slave]]"])

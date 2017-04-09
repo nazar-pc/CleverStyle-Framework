@@ -45,14 +45,12 @@ dom-module#cs-system-admin-users-list
 						template(is="dom-if" if="[[user.is_root]]") -
 						template(is="dom-if" if="[[!user.is_root]]")
 							template(is="dom-if" if="[[!user.is_guest]]")
-								a(is="cs-link-button" icon="pencil" on-tap="edit_user" tooltip="[[L.edit_user_information]]")
+								cs-button(compact icon="pencil" tooltip="[[L.edit_user_information]]"): button(on-tap="edit_user")
 								= ' '
 							template(is="dom-if" if="[[!user.is_guest]]")
-								cs-button(compact tooltip="[[L.edit_user_groups]]"): button(on-tap="edit_groups")
-									cs-icon(icon="group")
+								cs-button(compact icon="group" tooltip="[[L.edit_user_groups]]"): button(on-tap="edit_groups")
 								= ' '
-							cs-button(compact tooltip="[[L.edit_user_permissions]]"): button(on-tap="edit_permissions")
-								cs-icon(icon="key")
+							cs-button(compact icon="key" tooltip="[[L.edit_user_permissions]]"): button(on-tap="edit_permissions")
 					td
 						span(tooltip="[[user.type_info]]")
 							| [[user.type]]

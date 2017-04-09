@@ -6,20 +6,31 @@
  */
 Polymer.{}cs.{}behaviors.button =
 	properties	:
-		action	: String
-		active	:
+		active		:
 			notify				: true
 			reflectToAttribute	: true
 			type				: Boolean
-		bind	: Object
-		compact	:
+		compact		:
 			reflectToAttribute	: true
 			type				: Boolean
-		primary	:
+		icon-before	:
+			type				: String
+		icon-after	:
+			type				: String
+		icon		:
+			type				: String
+		primary		:
 			reflectToAttribute	: true
 			type				: Boolean
-	listeners	:
-		tap	: '_tap'
-	_tap : ->
-		if @bind && @action
-			@bind[@action]()
+	ready : !->
+		icon-before	= @icon-before || @icon
+		if icon-before
+			@firstElementChild.insertAdjacentHTML(
+				'afterbegin'
+				"""<cs-icon icon="#icon-before" mono></cs-icon> """
+			)
+		if @icon-after
+			@firstElementChild.insertAdjacentHTML(
+				'beforeend'
+				"""<cs-icon icon="#{@icon-after}" mono></cs-icon> """
+			)

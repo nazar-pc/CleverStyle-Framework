@@ -14,9 +14,10 @@
 }
 
 ::slotted(button) {
-	border : none;
-	cursor : pointer;
-	width  : 100%;
+	border  : none;
+	cursor  : pointer;
+	display : flex;
+	width   : 100%;
 
 	@apply --cs-no-selection;
 	@apply --cs-global;

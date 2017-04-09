@@ -37,16 +37,20 @@ if (count($galleries) > 1) {
 					$controls = '';
 					if ($User->admin()) {
 						$controls =
-							h::{'a.cs-photo-gallery-gallery-control[is=cs-link-button]'}(
+							h::{'cs-link-button.cs-photo-gallery-gallery-control'}(
+								h::a([
+									'href' => "admin/Photo_gallery/galleries/edit/$gallery[id]"
+								]),
 								[
-									'href'    => "admin/Photo_gallery/galleries/edit/$gallery[id]",
 									'icon'    => 'pencil',
 									'tooltip' => $L->edit
 								]
 							).
-							h::{'a.cs-photo-gallery-gallery-control[is=cs-link-button]'}(
+							h::{'cs-link-button.cs-photo-gallery-gallery-control'}(
+								h::a([
+									'href' => "admin/Photo_gallery/galleries/delete/$gallery[id]"
+								]),
 								[
-									'href'    => "admin/Photo_gallery/galleries/delete/$gallery[id]",
 									'icon'    => 'trash',
 									'tooltip' => $L->delete
 								]

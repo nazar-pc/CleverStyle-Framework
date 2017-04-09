@@ -91,7 +91,7 @@ class Menu {
 			if ($base_href && strpos($item[1]['href'], $base_href) !== 0) {
 				continue;
 			}
-			$content .= h::{'a[is=cs-link-button]'}(
+			$content .= h::{'cs-link-button a'}(
 				$item[0],
 				$item[1]
 			);

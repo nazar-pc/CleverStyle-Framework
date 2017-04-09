@@ -44,15 +44,23 @@ Page::instance()
 										'value' => $client['secret']
 									]
 								),
-								h::{'a[is=cs-link-button][icon=pencil]'}(
+								h::{'cs-link-button[icon=pencil]'}(
+									h::a(
+										[
+											'href' => "admin/OAuth2/clients/edit/$client[id]"
+										]
+									),
 									[
-										'href'    => "admin/OAuth2/clients/edit/$client[id]",
 										'tooltip' => $L->edit
 									]
 								).
-								h::{'a[is=cs-link-button][icon=trash]'}(
+								h::{'cs-link-button[icon=trash]'}(
+									h::a(
+										[
+											'href' => "admin/OAuth2/clients/delete/$client[id]"
+										]
+									),
 									[
-										'href'    => "admin/OAuth2/clients/delete/$client[id]",
 										'tooltip' => $L->delete
 									]
 								)
@@ -89,7 +97,7 @@ Page::instance()
 				).$L->seconds
 			]
 		).
-		h::{'p.cs-text-left a[is=cs-link-button]'}(
+		h::{'p.cs-text-left cs-link-button a'}(
 			$L->add_client,
 			[
 				'href' => 'admin/OAuth2/clients/add'

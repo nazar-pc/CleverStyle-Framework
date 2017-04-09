@@ -28,6 +28,9 @@ Wrapper element for native `button` element.
 Attributes (also available as properties, so use whatever is more convenient):
 * active - boolean, allows to force `:active` state
 * compact - boolean, forces button to have smaller size than usually by reducing padding
+* icon-before - string, icon from `cs-icon` element added before button contents, only used on initialization, further changes are not reflected in UI
+* icon-after - string, icon from `cs-icon` element added after button contents, only used on initialization, further changes are not reflected in UI
+* icon - alias for `icon-before`, only used on initialization, further changes are not reflected in UI
 * primary - boolean, allows to apply different styling to button, usually used for some key actions
 * tight - boolean, affects button styling by removing space after button and placing directly before next element (useful for button groups and combining with inputs)
 
@@ -169,13 +172,15 @@ Example:
 ```
 
 #### cs-link-button
-Extends native `a` element.
+Wrapper element for native `a` element.
 
-Button-like UI of link. Completely similar to `cs-button`.
+Button-like UI of link. Completely similar to `cs-button` (except missing `action` and `bind` properties).
 
 Example:
 ```html
-<a is="cs-link-button" href="/" icon="home">Home</a>
+<cs-link-button>
+    <a href="/" icon="home">Home</a>
+</cs-link-button>
 ```
 
 #### cs-nav-button-group
@@ -214,7 +219,7 @@ Example:
 ```html
 <nav is="cs-nav-dropdown" align="right">
     <nav is="cs-nav-button-group" vertical>
-        <a is="cs-link-button" on-tap="_general_settings">[[L.general]]</a>
+        <cs-link-button><a on-tap="_general_settings">[[L.general]]</a></cs-link-button>
         <cs-button><button type="button" on-tap="_change_password">[[L.change_password]]</button></cs-button>
     </nav>
 </nav>

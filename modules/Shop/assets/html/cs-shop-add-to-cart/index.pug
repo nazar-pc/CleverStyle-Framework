@@ -3,6 +3,6 @@ dom-module#cs-shop-add-to-cart
 	template
 		nav(is="cs-nav-button-group" hidden="[[!in_cart]]")
 			cs-button(primary): button(on-tap="add" type="button") [[L.add_to_cart]]
-			a#in_cart(is="cs-link-button" href="/Shop/cart" tooltip="[[L.already_in_cart]]") [[in_cart]]
+			cs-link-button(tooltip="[[L.already_in_cart]]"): a#in_cart(href="/Shop/cart") [[in_cart]]
 		cs-button(hidden="[[and(in_cart)]]" primary): button(on-tap="add" type="button" ) [[L.add_to_cart]]
 	script(src="script.js")

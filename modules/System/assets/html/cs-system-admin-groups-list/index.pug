@@ -12,14 +12,11 @@ dom-module#cs-system-admin-groups-list
 			template(is="dom-repeat" items="[[groups]]" as="group")
 				tr
 					td
-						cs-button(compact): button(on-tap="edit_group" tooltip="[[L.edit_group_information]]")
-							cs-icon(icon="pencil")
+						cs-button(compact icon="pencil"): button(on-tap="edit_group" tooltip="[[L.edit_group_information]]")
 						= ' '
-						cs-button(compact): button(on-tap="edit_permissions" tooltip="[[L.edit_group_permissions]]")
-							cs-icon(icon="key")
+						cs-button(compact icon="key"): button(on-tap="edit_permissions" tooltip="[[L.edit_group_permissions]]")
 						= ' '
-						cs-button(compact): button(on-tap="delete_group" tooltip="[[L.delete]]" hidden="[[!group.allow_to_delete]]")
-							cs-icon(icon="trash")
+						cs-button(compact icon="trash"): button(on-tap="delete_group" tooltip="[[L.delete]]" hidden="[[!group.allow_to_delete]]")
 					td [[group.id]]
 					td [[group.title]]
 					td [[group.description]]

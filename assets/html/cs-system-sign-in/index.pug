@@ -9,6 +9,5 @@ dom-module#cs-system-sign-in
 				cs-input-text: input#password(placeholder="[[L.password]]" type="password")
 			nav(is="cs-nav-button-group")
 				cs-button(primary): button(type="submit") [[L.sign_in]]
-				cs-button(tooltip="[[L.restore_password]]"): button(type="button" on-tap="_restore_password")
-					cs-icon(icon="question")
+				cs-button(icon="question" tooltip="[[L.restore_password]]"): button(type="button" on-tap="_restore_password")
 	script(src="script.js")

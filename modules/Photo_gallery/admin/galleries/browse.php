@@ -34,15 +34,19 @@ Page::instance()
 									'href' => "$module/$gallery[path]"
 								]
 							),
-							h::{'a[is=cs-link-button][icon=pencil]'}(
+							h::{'cs-link-button[icon=pencil]'}(
+								h::a([
+									'href'    => "admin/Photo_gallery/galleries/edit/$gallery[id]"
+								]),
 								[
-									'href'    => "admin/Photo_gallery/galleries/edit/$gallery[id]",
 									'tooltip' => $L->edit
 								]
 							).
-							h::{'a[is=cs-link-button][icon=trash]'}(
+							h::{'cs-link-button[icon=trash]'}(
+								h::a([
+									'href'    => "admin/Photo_gallery/galleries/delete/$gallery[id]"
+								]),
 								[
-									'href'    => "admin/Photo_gallery/galleries/delete/$gallery[id]",
 									'tooltip' => $L->delete
 								]
 							)
@@ -52,7 +56,7 @@ Page::instance()
 				)
 			)
 		).
-		h::{'p.cs-text-left a[is=cs-link-button]'}(
+		h::{'p.cs-text-left cs-link-button a'}(
 			$L->add_gallery,
 			[
 				'href' => 'admin/Photo_gallery/galleries/add'

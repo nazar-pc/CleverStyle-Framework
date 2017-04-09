@@ -51,10 +51,10 @@
     for (i$ = 0, len$ = (ref$ = links).length; i$ < len$; ++i$) {
       link = ref$[i$];
       if (!link.matches("[href='" + href + "']")) {
-        link.primary = false;
+        link.parentElement.primary = false;
       } else {
-        link.primary = true;
-        link.parentElement.parentElement.previousElementSibling.primary = true;
+        link.parentElement.primary = true;
+        link.parentElement.parentElement.parentElement.previousElementSibling.primary = true;
       }
     }
   }

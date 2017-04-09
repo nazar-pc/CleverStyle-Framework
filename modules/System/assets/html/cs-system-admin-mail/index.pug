@@ -14,8 +14,6 @@ dom-module#cs-system-admin-mail
 			+input("mail_from_name")
 			+editor("mail_signature", true)
 			p
-				cs-button(compact): button(type="button" on-tap="_test_email")
-					cs-icon(icon="signal")
-					|  [[L.test_email_sending]]
+				cs-button(compact icon="signal"): button(type="button" on-tap="_test_email") [[L.test_email_sending]]
 			+footer-buttons
 	script(src="script.js")

@@ -24,7 +24,7 @@ $Photo_gallery = Photo_gallery::instance();
 $gallery       = $Photo_gallery->get_gallery(Request::instance()->route[1]);
 if ($User->user()) {
 	$Page->content(
-		h::{'p.cs-text-left a.cs-photo-gallery-add-images[is=cs-link-button][icon=plus]'}(
+		h::{'p.cs-text-left cs-link-button[icon=plus] a.cs-photo-gallery-add-images'}(
 			$L->add_image,
 			[
 				'data-gallery' => $gallery['id']
@@ -65,17 +65,21 @@ $Page->content(
 					$controls = '';
 					if ($User->admin() || $image['user'] == $User->id) {
 						$controls =
-							h::{'a.cs-photo-gallery-image-control[is=cs-link-button]'}(
+							h::{'cs-link-button.cs-photo-gallery-image-control'}(
+								h::a([
+									'href'       => "Photo_gallery/edit_images/$image[id]"
+								]),
 								[
-									'href'       => "Photo_gallery/edit_images/$image[id]",
 									'icon'       => 'pencil',
 									'tooltip'    => $L->edit,
 									'data-image' => $image['id']
 								]
 							).
-							h::{'a.cs-photo-gallery-image-control[is=cs-link-button]'}(
+							h::{'cs-link-button.cs-photo-gallery-image-control'}(
+								h::a([
+									'icon'       => 'trash'
+								]),
 								[
-									'icon'       => 'trash',
 									'tooltip'    => $L->delete,
 									'class'      => 'cs-photo-gallery-image-delete',
 									'data-image' => $image['id']

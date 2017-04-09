@@ -197,8 +197,8 @@ function format_time ($time) {
 	foreach ($units as $time_frame => $key) {
 		if ($time >= $time_frame) {
 			$time_full = floor($time / $time_frame);
-			$time -= $time_full * $time_frame;
-			$res[] = $L->time($time_full, $key);
+			$time      -= $time_full * $time_frame;
+			$res[]     = $L->time($time_full, $key);
 		}
 	}
 	return implode(' ', $res);
@@ -328,10 +328,14 @@ function pages ($page, $total, $url, $head_links = false) {
 			}
 		}
 		$output[] = [
-			$i,
+			h::a(
+				$i,
+				[
+					'href' => $i == $page ? false : $href,
+					'is'   => 'cs-link-button'
+				]
+			),
 			[
-				'href'    => $i == $page ? false : $href,
-				'is'      => 'cs-link-button',
 				'primary' => $i == $page
 			]
 		];
@@ -339,43 +343,29 @@ function pages ($page, $total, $url, $head_links = false) {
 	if ($total <= 11) {
 		array_map($render_page_item, range(1, $total));
 	} else {
+		$empty = [
+			h::a('...'),
+			[
+				'disabled' => true
+			]
+		];
 		if ($page <= 6) {
 			array_map($render_page_item, range(1, 7));
-			$output[] = [
-				'...',
-				[
-					'disabled' => true
-				]
-			];
+			$output[] = $empty;
 			array_map($render_page_item, range($total - 2, $total));
 		} elseif ($page >= $total - 5) {
 			array_map($render_page_item, range(1, 3));
-			$output[] = [
-				'...',
-				[
-					'disabled' => true
-				]
-			];
+			$output[] = $empty;
 			array_map($render_page_item, range($total - 6, $total));
 		} else {
 			array_map($render_page_item, range(1, 2));
-			$output[] = [
-				'...',
-				[
-					'disabled' => true
-				]
-			];
+			$output[] = $empty;
 			array_map($render_page_item, range($page - 2, $page + 2));
-			$output[] = [
-				'...',
-				[
-					'disabled' => true
-				]
-			];
+			$output[] = $empty;
 			array_map($render_page_item, range($total - 1, $total));
 		}
 	}
-	return h::{'a[is=cs-link-button]'}($output);
+	return h::cs_link_button($output);
 }
 
 /**
@@ -403,59 +393,49 @@ function pages_buttons ($page, $total, $url = false) {
 	$output           = [];
 	$render_page_item = function ($i) use ($page, $url, &$output) {
 		$output[] = [
-			$i,
+			h::button(
+				$i,
+				[
+					'name'       => 'page',
+					'formaction' => $i == $page || $url === false ? false : $url($i),
+					'value'      => $i == $page ? false : $i,
+					'type'       => $i == $page ? 'button' : 'submit'
+				]
+			),
 			[
-				'formaction' => $i == $page || $url === false ? false : $url($i),
-				'value'      => $i == $page ? false : $i,
-				'type'       => $i == $page ? 'button' : 'submit',
-				'primary'    => $i == $page
+				'primary' => $i == $page
 			]
 		];
 	};
 	if ($total <= 11) {
 		array_map($render_page_item, range(1, $total));
 	} else {
-		if ($page <= 6) {
-			array_map($render_page_item, range(1, 7));
-			$output[] = [
+		$empty = [
+			h::button(
 				'...',
 				[
 					'type' => 'button',
 					'disabled'
 				]
-			];
+			)
+		];
+		if ($page <= 6) {
+			array_map($render_page_item, range(1, 7));
+			$output[] = $empty;
 			array_map($render_page_item, range($total - 2, $total));
 		} elseif ($page >= $total - 5) {
 			array_map($render_page_item, range(1, 3));
-			$output[] = [
-				'...',
-				[
-					'type' => 'button',
-					'disabled'
-				]
-			];
+			$output[] = $empty;
 			array_map($render_page_item, range($total - 6, $total));
 		} else {
 			array_map($render_page_item, range(1, 2));
-			$output[] = [
-				'...',
-				[
-					'type' => 'button',
-					'disabled'
-				]
-			];
+			$output[] = $empty;
 			array_map($render_page_item, range($page - 2, $page + 2));
-			$output[] = [
-				'...',
-				[
-					'type' => 'button',
-					'disabled'
-				]
-			];
+			$output[] = $empty;
 			array_map($render_page_item, range($total - 1, $total));
 		}
 	}
-	return h::{'cs-button| button[name=page]'}($output);
+	return h::cs_button($output);
 }
 
 /**

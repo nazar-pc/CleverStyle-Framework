@@ -26,15 +26,19 @@ Page::instance()->content(
 					function ($poll) use ($L) {
 						return [
 							$poll['title'],
-							h::{'a[is=cs-link-button][icon=pencil]'}(
+							h::{'cs-link-button[icon=pencil]'}(
+								h::a([
+									'href'    => "admin/Polls/polls/edit/$poll[id]"
+								]),
 								[
-									'href'    => "admin/Polls/polls/edit/$poll[id]",
 									'tooltip' => $L->edit
 								]
 							).
-							h::{'a[is=cs-link-button][icon=trash]'}(
+							h::{'cs-link-button[icon=trash]'}(
+								h::a([
+									'href'    => "admin/Polls/polls/delete/$poll[id]"
+								]),
 								[
-									'href'    => "admin/Polls/polls/delete/$poll[id]",
 									'tooltip' => $L->delete
 								]
 							)

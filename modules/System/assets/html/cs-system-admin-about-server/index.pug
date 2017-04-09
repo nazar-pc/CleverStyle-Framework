@@ -2,7 +2,7 @@ dom-module#cs-system-admin-about-server
 	template
 		style(include="advanced-styles")
 		div.cs-text-right
-			a(is="cs-link-button" target="_blank" href="/admin/System/general/about_server/phpinfo") phpinfo()
+			cs-link-button: a(target="_blank" href="/admin/System/general/about_server/phpinfo") phpinfo()
 		table.cs-table(right-left)
 			tr
 				td [[L.operating_system]]:

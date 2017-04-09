@@ -59,10 +59,10 @@ title_format	= document.title
 		button.primary	= false
 	for link in links
 		if !link.matches("[href='#href']")
-			link.primary = false
+			link.parentElement.primary = false
 		else
-			link.primary													= true
-			link.parentElement.parentElement.previousElementSibling.primary	= true
+			link.parentElement.primary														= true
+			link.parentElement.parentElement.parentElement.previousElementSibling.primary	= true
 !function popstate (e)
 	if location.href.indexOf('admin/System/') != -1
 		go(

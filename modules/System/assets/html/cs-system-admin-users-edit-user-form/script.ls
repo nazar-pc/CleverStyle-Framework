@@ -55,8 +55,8 @@ Polymer(
 					@set('user_data.avatar', files[0])
 		)
 	_show_password : (e) !->
-		lock		= e.currentTarget
-		password	= lock.previousElementSibling
+		lock		= e.currentTarget.querySelector('cs-icon')
+		password	= lock.parentElement.parentElement.previousElementSibling.firstElementChild
 		if password.type == 'password'
 			password.type	= 'text'
 			lock.icon		= 'unlock'

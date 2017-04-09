@@ -15,8 +15,8 @@ Polymer(
 		e.preventDefault()
 		cs.change_password(@$.current_password.value, @$.new_password.value)
 	_show_password	: (e) ->
-		lock		= e.currentTarget
-		password	= lock.previousElementSibling
+		lock		= e.currentTarget.querySelector('cs-icon')
+		password	= lock.parentElement.parentElement.previousElementSibling.firstElementChild
 		if password.type == 'password'
 			password.type	= 'text'
 			lock.icon		= 'unlock'
