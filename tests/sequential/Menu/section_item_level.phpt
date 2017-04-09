@@ -52,7 +52,7 @@ $Menu->add_section_item(
 );
 echo $Menu->get_menu();
 ?>
---EXPECTF--
+--EXPECT--
 <nav is="cs-nav-button-group">
 	<cs-button>
 		<button primary type="button">
@@ -61,9 +61,15 @@ echo $Menu->get_menu();
 	</cs-button>
 	<nav is="cs-nav-dropdown">
 		<nav is="cs-nav-button-group" vertical>
-			<a href="System/section1/item1" is="cs-link-button" primary>Section 1 item 1</a>
-			<a href="System/section1/item2" is="cs-link-button">Section 1 item 2</a>
-			<a href="System/section1/item3" is="cs-link-button" primary>Section 1 item 3</a>
+			<cs-link-button primary>
+				<a href="System/section1/item1">Section 1 item 1</a>
+			</cs-link-button>
+			<cs-link-button>
+				<a href="System/section1/item2">Section 1 item 2</a>
+			</cs-link-button>
+			<cs-link-button primary>
+				<a href="System/section1/item3">Section 1 item 3</a>
+			</cs-link-button>
 		</nav>
 	</nav>
 	<cs-button>

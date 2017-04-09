@@ -91,9 +91,24 @@ class Menu {
 			if ($base_href && strpos($item[1]['href'], $base_href) !== 0) {
 				continue;
 			}
-			$content .= h::{'cs-link-button a'}(
-				$item[0],
-				$item[1]
+			$content .= h::cs_link_button(
+				h::a(
+					$item[0],
+					array_filter(
+						$item[1],
+						function ($item) {
+							return in_array($item, ['href', 'target']);
+						},
+						ARRAY_FILTER_USE_KEY
+					)
+				),
+				array_filter(
+					$item[1],
+					function ($item) {
+						return !in_array($item, ['href', 'target']);
+					},
+					ARRAY_FILTER_USE_KEY
+				)
 			);
 		}
 		return $content;
@@ -105,7 +120,7 @@ class Menu {
 	 *
 	 * @param string $module
 	 * @param string $title
-	 * @param array  $attributes
+	 * @param array  $attributes `href` and `target` if present will go to `a` element, all other attributes will go to `cs-link-button` element
 	 */
 	public function add_section_item ($module, $title, $attributes = []) {
 		$this->section_items[$module][] = [

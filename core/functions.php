@@ -331,8 +331,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			h::a(
 				$i,
 				[
-					'href' => $i == $page ? false : $href,
-					'is'   => 'cs-link-button'
+					'href' => $i == $page ? false : $href
 				]
 			),
 			[

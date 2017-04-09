@@ -31,7 +31,13 @@ echo $Menu->get_menu();
 ?>
 --EXPECT--
 <nav is="cs-nav-button-group">
-	<a href="System/section1" is="cs-link-button" primary>Section 1</a>
-	<a href="System/section2" is="cs-link-button">Section 2</a>
-	<a href="System/section3" is="cs-link-button">Section 3</a>
+	<cs-link-button primary>
+		<a href="System/section1">Section 1</a>
+	</cs-link-button>
+	<cs-link-button>
+		<a href="System/section2">Section 2</a>
+	</cs-link-button>
+	<cs-link-button>
+		<a href="System/section3">Section 3</a>
+	</cs-link-button>
 </nav>
