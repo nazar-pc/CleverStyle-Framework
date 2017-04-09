@@ -31,7 +31,10 @@
         if (((ref1$ = this.nextElementSibling) != null ? ref1$.is : void 8) !== this.is) {
           this.last = true;
         }
-        return this.querySelector('label').setAttribute('role', 'button');
+        this.querySelector('label').setAttribute('role', 'button');
+        if (this.querySelector('input').disabled) {
+          return this.querySelector('label').setAttribute('disabled', '');
+        }
       }
     }
   ];

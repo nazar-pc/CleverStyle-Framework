@@ -165,6 +165,7 @@
 		/* Label switcher */
 
 		--cs-label-switcher: {
+			cursor  : pointer;
 			height  : var(--form-element-height);
 			padding : var(--form-element-padding);
 		};
@@ -179,11 +180,12 @@
 		};
 
 		--cs-label-switcher-focus-icon: {
-
+			box-shadow : var(--form-element-box-shadow), var(--form-element-inner-box-shadow);
+			opacity    : .8;
 		};
 
 		--cs-label-switcher-active-icon: {
-			opacity : 1;
+			opacity : 1 !important;
 		};
 
 		/* Modal */

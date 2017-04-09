@@ -43,7 +43,7 @@ results in
 Where *Section path* from `$L->section_path` and *Section path info* from `$L->section_path_info`.
 
 #### checkbox
-Convenient simplified interface for `label[is=cs-label-button] > input[radio]`:
+Convenient simplified interface for `cs-label-switcher > label > input[type=checkbox]`:
 ```php
 h::checkbox(
     [
@@ -64,16 +64,20 @@ h::checkbox(
 ```
 results in:
 ```html
-<label is="cs-label-switcher">
-    <input checked name="active" type="checkbox" value="1"> Active
-</label>
-<label is="cs-label-switcher">
-    <input name="inactive" type="checkbox" value="1"> Inactive
-</label>
+<cs-label-switcher>
+    <label>
+        <input checked name="active" type="checkbox" value="1"> Active
+    </label>
+</cs-label-switcher>
+<cs-label-switcher>
+    <label>
+        <input name="inactive" type="checkbox" value="1"> Inactive
+    </label>
+</cs-label-switcher>
 ```
 
 #### radio
-Convenient simplified interface for `cs-label-button > label > input[radio]`:
+Convenient simplified interface for `cs-label-button > label > input[type=radio]`:
 ```php
 h::radio(
     [

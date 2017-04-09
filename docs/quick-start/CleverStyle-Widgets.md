@@ -149,19 +149,23 @@ Example:
 ```
 
 #### cs-label-switcher
-Extends native `label` element.
+Wrapper element for native `label` element.
 
 Completely similar to `cs-label-button` (except missing `first` and `last` attributes), but has checkbox-like UI instead of button-like in `cs-label-button`.
 Example:
 ```html
-<label is="cs-label-switcher">
-    <input checked type="radio" value="0">
-    Zero
-</label>
-<label is="cs-label-switcher">
-    <input checked type="radio" value="1">
-    One
-</label>
+<cs-label-switcher>
+    <label>
+        <input checked type="radio" value="0">
+        Zero
+    </label>
+</cs-label-switcher>
+<cs-label-switcher>
+    <label>
+        <input checked type="radio" value="1">
+        One
+    </label>
+</cs-label-switcher>
 ```
 
 #### cs-link-button

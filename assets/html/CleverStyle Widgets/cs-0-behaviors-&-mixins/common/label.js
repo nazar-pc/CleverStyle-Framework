@@ -26,7 +26,7 @@
       (function(){
         var next_node, ref$;
         next_node = this$.nextSibling;
-        if (next_node && next_node.nodeType === Node.TEXT_NODE && ((ref$ = next_node.nextSibling) != null ? ref$.is : void 8) === this$.is) {
+        if (next_node && next_node.nodeType === Node.TEXT_NODE && ((ref$ = next_node.nextSibling) != null && (typeof ref$.matches == 'function' && ref$.matches(this$.is)))) {
           next_node.parentNode.removeChild(next_node);
         }
       })();

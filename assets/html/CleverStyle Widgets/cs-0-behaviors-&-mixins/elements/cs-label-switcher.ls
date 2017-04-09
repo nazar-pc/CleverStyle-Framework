@@ -6,6 +6,14 @@
  */
 Polymer.cs.behaviors.cs-label-switcher = [
 	Polymer.cs.behaviors.label
-	Polymer.cs.behaviors.this
 	Polymer.cs.behaviors.tooltip
+	Polymer.cs.behaviors.inject-light-styles
+	_styles_dom_module	: 'cs-label-switcher-styles'
+	ready : !->
+		@querySelector('input').insertAdjacentHTML?(
+			'afterend'
+			'<cs-icon icon="check" mono></cs-icon>'
+		)
+		if @querySelector('input').disabled
+			@querySelector('label').setAttribute('disabled', '')
 ]

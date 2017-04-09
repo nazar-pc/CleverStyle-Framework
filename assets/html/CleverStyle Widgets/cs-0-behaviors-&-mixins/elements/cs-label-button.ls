@@ -25,4 +25,6 @@ Polymer.cs.behaviors.cs-label-button = [
 		if @nextElementSibling?.is != @is
 			@last = true
 		@querySelector('label').setAttribute('role', 'button')
+		if @querySelector('input').disabled
+			@querySelector('label').setAttribute('disabled', '')
 ]

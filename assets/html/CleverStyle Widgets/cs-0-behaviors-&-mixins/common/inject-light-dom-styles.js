@@ -20,11 +20,11 @@
         head.insertAdjacentHTML('beforeend', "<style is=\"custom-style\" include=\"" + this._styles_dom_module + "\"></style>");
         style_element = head.lastElementChild;
         Polymer.updateStyles();
-        setTimeout(function(){
+        cs.ui.ready.then(function(){
           styles[this$._styles_dom_module] = style_element.textContent.split(':not([style-scope]):not(.style-scope)').join('');
           head.removeChild(style_element);
           this$.insertAdjacentHTML('beforeend', "<style>" + styles[this$._styles_dom_module] + "</style>");
-        }, 0);
+        });
       } else {
         this.insertAdjacentHTML('beforeend', "<style>" + styles[this._styles_dom_module] + "</style>");
       }

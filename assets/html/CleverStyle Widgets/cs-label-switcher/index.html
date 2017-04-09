@@ -1,1 +1,30 @@
-<dom-module id="cs-label-switcher"><link rel="import" href="style.css" type="css"><template><cs-icon icon="check" mono></cs-icon><content></content></template><script src="script.js"></script></dom-module>
+<dom-module id="cs-label-switcher-styles"><template><style>cs-label-switcher input {
+	/* Just ` display: none ` is not working here, because it will break focus support */
+	height    : 0;
+	margin    : 0;
+	width     : 0;
+	/* Hack: Firefox ignores zero size, so we need some more hacks position: absolute; */
+	transform : scale(0);
+}
+
+cs-label-switcher cs-icon {
+	@apply --cs-label-switcher-icon;
+}
+
+cs-label-switcher:active cs-icon,
+cs-label-switcher[active] cs-icon {
+	@apply --cs-label-switcher-active-icon;
+}
+
+cs-label-switcher:not(:active):not([active]):hover cs-icon {
+	@apply --cs-label-switcher-hover-icon;
+}
+
+cs-label-switcher input:focus + cs-icon {
+	@apply --cs-label-switcher-hover-icon;
+	@apply --cs-label-switcher-focus-icon;
+}
+
+cs-label-switcher label input:disabled + cs-icon {
+	@apply --cs-label-switcher-disabled-icon;
+}</style></template></dom-module><dom-module id="cs-label-switcher"><link rel="import" href="style.css" type="css"><template><slot></slot></template><script src="script.js"></script></dom-module>

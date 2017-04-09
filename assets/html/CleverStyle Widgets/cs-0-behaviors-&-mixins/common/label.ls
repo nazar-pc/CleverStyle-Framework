@@ -18,7 +18,7 @@ Polymer.{}cs.{}behaviors.label =
 	attached : !->
 		do !~>
 			next_node	= @nextSibling
-			if next_node && next_node.nodeType == Node.TEXT_NODE && next_node.nextSibling?.is == @is
+			if next_node && next_node.nodeType == Node.TEXT_NODE && next_node.nextSibling?.matches?(@is)
 				next_node.parentNode.removeChild(next_node)
 		@local_input		= @querySelector('input')
 		@local_input.label	= @

@@ -19,11 +19,10 @@ Polymer.{}cs.{}behaviors.inject-light-styles = [
 			)
 			style_element	= head.lastElementChild
 			Polymer.updateStyles()
-			setTimeout (!~>
+			cs.ui.ready.then !~>
 				styles[@_styles_dom_module]	= style_element.textContent.split(':not([style-scope]):not(.style-scope)').join('')
 				head.removeChild(style_element)
 				@insertAdjacentHTML('beforeend', "<style>#{styles[@_styles_dom_module]}</style>")
-			), 0
 		else
 			@insertAdjacentHTML('beforeend', "<style>#{styles[@_styles_dom_module]}</style>")
 ]

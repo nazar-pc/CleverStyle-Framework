@@ -1,1 +1,48 @@
-:host{border:none;cursor:pointer;display:inline-block;vertical-align:middle;@apply --cs-no-selection;@apply --cs-global;@apply --cs-label-switcher}:host cs-icon{@apply --cs-label-switcher-icon}:host([hidden]){display:none}::content input{height:0;margin:0;width:0;position:absolute;transform:scale(0)}:host(:active),:host([active]){@apply --cs-label-switcher-active}:host(:active) cs-icon,:host([active]) cs-icon{@apply --cs-label-switcher-active-icon}:host([focus]),:host(:focus){outline:none;@apply --cs-label-switcher-hover;@apply --cs-label-switcher-focus}:host([focus]:not(:active):not([active])) cs-icon,:host(:focus:not(:active):not([active])) cs-icon{@apply --cs-label-switcher-hover-icon;@apply --cs-label-switcher-focus-icon}:host(:hover){@apply --cs-label-switcher-hover}:host(:hover:not(:active):not([active])) cs-icon{@apply --cs-label-switcher-hover-icon}:host([disabled]){cursor:not-allowed;@apply --cs-label-switcher-disabled}:host([disabled]) cs-icon{@apply --cs-label-switcher-disabled-icon}
+/**
+ * @package   CleverStyle Widgets
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+:host {
+	display        : inline-flex;
+	vertical-align : middle;
+}
+
+:host([hidden]) {
+	display : none;
+}
+
+::slotted(label) {
+	border         : none;
+	cursor         : pointer;
+	display        : inline-block;
+	vertical-align : middle;
+
+	@apply --cs-no-selection;
+	@apply --cs-global;
+	@apply --cs-label-switcher;
+}
+
+:host(:active) ::slotted(label),
+:host([active]) ::slotted(label) {
+	@apply --cs-label-switcher-active;
+}
+
+::slotted(label:focus) {
+	outline : none;
+
+	@apply --cs-label-switcher-hover;
+	@apply --cs-label-switcher-focus;
+}
+
+:host(:hover) ::slotted(label) {
+	@apply --cs-label-switcher-hover;
+}
+
+::slotted(label[disabled]) {
+	cursor : not-allowed;
+
+	@apply --cs-label-switcher-disabled;
+
+}
