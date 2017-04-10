@@ -35,7 +35,7 @@ dom-module#cs-system-admin-modules-list
 						= ' '
 						cs-button(compact icon="hdd-o" hidden="[[!module.storage_settings]]" tooltip="[[L.storages]]"): button(type="button" on-tap="_storage_settings")
 						= ' '
-						cs-link-button(hidden="[[!module.administration]]" icon="sliders" tooltip="[[L.module_admin_page]]"): a(href="/admin/[[module.name]]")
+						cs-link-button(compact hidden="[[!module.administration]]" icon="sliders" tooltip="[[L.module_admin_page]]"): a(href="/admin/[[module.name]]")
 						= ' '
 						cs-button(compact icon="minus" hidden="[[!module.can_disable]]" tooltip="[[L.disable]]"): button(type="button" on-tap="_disable")
 						= ' '
