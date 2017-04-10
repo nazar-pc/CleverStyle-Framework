@@ -132,7 +132,7 @@ make_modal = (attributes, categories, L, title, action) ->
 			<p>
 				<span class="images" style="display: block"></span>
 				<cs-button tight><button type="button" class="add-images">#{L.add_images}</button></cs-button>
-				<progress is="cs-progress" hidden></progress>
+				<cs-progress hidden><progress></progress></cs-progress>
 				<input type="hidden" name="images">
 			</p>
 			<p>
@@ -226,7 +226,7 @@ make_modal = (attributes, categories, L, title, action) ->
 					<textarea is="cs-textarea" autosize name="videos[video][]" placeholder="#{L.url_or_code}" class="video-video" rows="3"></textarea>
 					<cs-input-text><input name="videos[poster][]" class="video-poster" placeholder="#{L.video_poster}"></cs-input-text>
 					<cs-button><button type="button" class="delete-video"><cs-icon icon="close"></cs-icon></button></cs-button>
-					<progress is="cs-progress" hidden full-width></progress>
+					<cs-progress hidden full-width><progress></progress></cs-progress>
 				</p>""")
 				added_video		= videos_container.children('p:last')
 				video_video		= added_video.find('.video-video').val(video.video)

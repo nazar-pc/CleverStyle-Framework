@@ -21,7 +21,7 @@ Polymer(
 		@_clean_cache_common('clean_public_cache')
 	_clean_cache_common : (method) !->
 		modal = cs.ui.simple_modal("""
-			<progress is="cs-progress" infinite></progress>
+			<cs-progress infinite><progress></progress></cs-progress>
 		""")
 		cs.api("#method " + @settings_api_url, {@path_prefix})
 			.then !~>

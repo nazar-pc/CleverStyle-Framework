@@ -66,7 +66,7 @@ make_modal	= (attributes, categories, L, title, action) ->
 		</p>
 		<p>
 			<cs-button tight><button type="button" class="set-image">#{L.set_image}</button></cs-button>
-			<progress is="cs-progress" hidden></progress>
+			<cs-progress hidden><progress></progress></cs-progress>
 		</p>
 		<p>
 			#{L.category_attributes}: <select is="cs-select" name="attributes[]" multiple required size="5">#attributes</select>

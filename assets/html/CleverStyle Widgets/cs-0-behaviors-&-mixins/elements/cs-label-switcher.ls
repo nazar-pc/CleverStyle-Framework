@@ -9,7 +9,9 @@ Polymer.cs.behaviors.cs-label-switcher = [
 	Polymer.cs.behaviors.tooltip
 	Polymer.cs.behaviors.inject-light-styles
 	_styles_dom_module	: 'cs-label-switcher-styles'
-	ready : !->
+	attached : !->
+		if @querySelector('cs-icon')
+			return
 		@querySelector('input').insertAdjacentHTML(
 			'afterend'
 			'<cs-icon icon="check" mono></cs-icon>'

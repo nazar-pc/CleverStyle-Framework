@@ -34,7 +34,8 @@ load_tinymce	= ->
 				cs.ui.notify(error, 'error')
 			(file) !->
 				if !tinymce.uploader_dialog
-					progress								= document.createElement('progress', 'cs-progress')
+					progress								= document.createElement('cs-progress')
+					progress.innerHTML						= '<progress></progress>'
 					tinymce.uploader_dialog					= cs.ui.modal(progress)
 					tinymce.uploader_dialog.progress		= progress
 					tinymce.uploader_dialog.style.zIndex	= 100000

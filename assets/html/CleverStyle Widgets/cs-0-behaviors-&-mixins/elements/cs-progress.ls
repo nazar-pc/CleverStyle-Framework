@@ -7,23 +7,39 @@
 Polymer.cs.behaviors.cs-progress = [
 	Polymer.cs.behaviors.tight
 	Polymer.cs.behaviors.tooltip
+	Polymer.cs.behaviors.inject-light-styles
+	_styles_dom_module	: 'cs-progress-styles'
 	properties	:
+		full-width		:
+			reflectToAttribute	: true
+			type				: Boolean
 		infinite		: Boolean
-		textProgress	: Boolean # Chromium only
-	created		: !->
-		if !@getAttribute('max')
-			@max = 100
-		if @value
-			@setAttribute('value', @value)
+		primary			:
+			reflectToAttribute	: true
+			type				: Boolean
+		text-progress	:
+			type				: Boolean
+			value				: false
+		value			:
+			observer			: '_value_changed'
+			reflectToAttribute	: true
+			type				: Number
 	attached : !->
+		if !@firstElementChild.getAttribute('max')
+			@firstElementChild.max = 100
+		value = @firstElementChild.getAttribute('value')
+		if !@value
+			@value = value || 0
+		else
+			@firstElementChild.setAttribute('value', @value)
 		if @infinite
 			update_progress	= !~>
 				if !@parentNode
 					return
-				@value = (@value + 9) % 100
+				@value						= (@value + 9) % @firstElementChild.max
+				@firstElementChild.value	= @value
 				setTimeout(update_progress, 200)
 			update_progress()
-	attributeChanged : (name) !->
-		if name == 'value' && @textProgress
-			@setAttribute('text', @[name] + '%')
+	_value_changed : !->
+		@firstElementChild?.value	= @value
 ]

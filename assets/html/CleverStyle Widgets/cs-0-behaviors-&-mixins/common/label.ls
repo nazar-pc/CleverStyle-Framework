@@ -74,6 +74,8 @@ Polymer.{}cs.{}behaviors.label =
 		# This method might be called before `attached`, so we need to define this property here
 		if !@local_input
 			@local_input	= @querySelector('input')
+			if !@local_input
+				return
 		# If checked state is already correct - skip, just micro optimization
 		if @local_input.checked == @active
 			return

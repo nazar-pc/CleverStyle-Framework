@@ -1,68 +1,34 @@
-style(is="custom-style").
-	html /deep/ progress[is=cs-progress] {
-		appearance         : none;
-		-moz-appearance    : none;
-		-webkit-appearance : none;
-		border             : none;
-		display            : inline-block;
-		vertical-align     : middle;
+dom-module#cs-progress-styles
+	template
+		style.
+			cs-progress > progress::-webkit-progress-bar {
+				background : inherit;
+			}
 
-		@apply --cs-no-selection;
-		@apply --cs-global;
-		@apply --cs-button;
-		@apply --cs-button-disabled;
-		@apply --cs-progress;
-	}
+			/* Some declarations will be duplicated for each browser, otherwise they fail to apply */
+			cs-progress > progress::-moz-progress-bar {
+				@apply --cs-button;
+				@apply --cs-progress-bar;
+			}
 
-	html /deep/ progress[is=cs-progress][hidden] {
-		display : none;
-	}
+			cs-progress > progress::-webkit-progress-value {
+				@apply --cs-button;
+				@apply --cs-progress-bar;
+			}
 
-	html /deep/ progress[is=cs-progress][full-width] {
-		width : 100%;
-	}
+			cs-progress[primary] > progress::-moz-progress-bar {
+				@apply --cs-button-primary;
+				@apply --cs-progress-bar-primary;
+			}
 
-	html /deep/ progress[is=cs-progress]::-webkit-progress-bar {
-		background : inherit;
-	}
+			cs-progress[primary] > progress::-webkit-progress-value {
+				@apply --cs-button-primary;
+				@apply --cs-progress-bar-primary;
+			}
 
-	/* Some declarations will be duplicated for each browser, otherwise they fail to apply */
-	html /deep/ progress[is=cs-progress]::-moz-progress-bar {
-		@apply --cs-button;
-		@apply --cs-progress-bar;
-	}
-
-	html /deep/ progress[is=cs-progress]::-webkit-progress-value {
-		@apply --cs-button;
-		@apply --cs-progress-bar;
-	}
-
-	html /deep/ progress[is=cs-progress]::before {
-		content    : attr(text);
-		display    : block;
-		height     : inherit;
-		text-align : center;
-		width      : inherit;
-
-		@apply --cs-progress-text;
-	}
-
-	html /deep/ progress[is=cs-progress][primary] {
-		@apply --cs-button-primary-disabled;
-		@apply --cs-progress-primary;
-	}
-
-	html /deep/ progress[is=cs-progress][primary]::-moz-progress-bar {
-		@apply --cs-button-primary;
-		@apply --cs-progress-bar-primary;
-	}
-
-	html /deep/ progress[is=cs-progress][primary]::-webkit-progress-value {
-		@apply --cs-button-primary;
-		@apply --cs-progress-bar-primary;
-	}
-
-	html /deep/ progress[is=cs-progress][primary]::before {
-		@apply --cs-progress-text-primary;
-	}
-script(src="script.js")
+dom-module#cs-progress
+	link(rel="import" href="style.css" type="css")
+	template
+		#text(hidden$="[[!textProgress]]") [[value]]%
+		slot
+	script(src="script.js")

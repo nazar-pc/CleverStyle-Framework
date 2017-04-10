@@ -101,6 +101,9 @@
     _active_changed: function(){
       if (!this.local_input) {
         this.local_input = this.querySelector('input');
+        if (!this.local_input) {
+          return;
+        }
       }
       if (this.local_input.checked === this.active) {
         return;

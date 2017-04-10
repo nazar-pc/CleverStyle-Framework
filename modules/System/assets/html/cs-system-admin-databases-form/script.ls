@@ -67,7 +67,7 @@ Polymer(
 	_test_connection : (e) !->
 		modal	= cs.ui.simple_modal("""<div>
 			<h3 class="cs-text-center">#{@L.test_connection}</h3>
-			<progress is="cs-progress" infinite></progress>
+			<cs-progress infinite><progress></progress></cs-progress>
 		</div>""")
 		cs.api('test api/System/admin/databases', @database)
 			.then !~>

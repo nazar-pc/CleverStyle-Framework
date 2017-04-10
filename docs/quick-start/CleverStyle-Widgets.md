@@ -32,7 +32,7 @@ Attributes (also available as properties, so use whatever is more convenient):
 * icon-after - string, icon from `cs-icon` element added after button contents, only used on initialization, further changes are not reflected in UI
 * icon - alias for `icon-before`, only used on initialization, further changes are not reflected in UI
 * primary - boolean, allows to apply different styling to button, usually used for some key actions
-* tight - boolean, affects button styling by removing space after button and placing directly before next element (useful for button groups and combining with inputs)
+* tight - boolean, affects styling by removing space after element and placing directly before next element (useful for button groups and combining with inputs)
 
 Properties:
 * action - string, method on `bind` object to call on button click (see examples below)
@@ -138,8 +138,8 @@ Wrapper element for native `input` element.
 
 Attributes (also available as properties, so use whatever is more convenient):
 * compact - boolean, uses automatic width computation, which is more compact that enforced styled width
-* fullWidth - boolean, makes element width 100%
-* tight - boolean, affects button styling by removing space after button and placing directly before next element (useful for button groups and combining with inputs)
+* full-width - boolean, makes element width 100%
+* tight - boolean, affects styling by removing space after element and placing directly before next element (useful for button groups and combining with inputs)
 
 Properties:
 * tooltip - string, if specified then tooltip with specified content will be shown on hover
@@ -274,17 +274,17 @@ Example:
 ```
 
 #### cs-progress
-Extends native `progress` element.
-
-Progress bar.
+Wrapper element for native `progress` element.
 
 Attributes (also available as properties, so use whatever is more convenient):
+* full-width - boolean, makes element width 100%
 * infinite - boolean, infinite progress bar
-* text-progress - whether show text with percents inside progress bar (Chromium only)
-* value - number, attribute only (not working as property!), current progress 0..100%
+* primary - boolean, allows to apply different styling to progress
+* text-progress - whether show text with percents inside progress bar
+* tight - boolean, affects styling by removing space after element and placing directly before next element (useful for button groups and combining with inputs)
+* value - number, useful for data binding, otherwise attribute on `progress` element might be used
 
 Properties:
-* this - object, read-only, `this` of element, useful for data-binding
 * tooltip - string, if specified then tooltip with specified content will be shown on hover
 
 Example:
@@ -353,8 +353,8 @@ Extends native `select` element.
 
 Attributes (also available as properties, so use whatever is more convenient):
 * compact - boolean, uses automatic width computation, which is more compact that enforced styled width
-* fullWidth - boolean, makes element width 100%
-* tight - boolean, affects button styling by removing space after button and placing directly before next element (useful for button groups and combining with inputs)
+* full-width - boolean, makes element width 100%
+* tight - boolean, affects styling by removing space after element and placing directly before next element (useful for button groups and combining with inputs)
 
 Properties:
 * selected - string or array, depending on `multiple` attribute might contain single value or array of values (extremely convenient for two-way data-bindings), it is recommended to use it instead of native `value`
@@ -381,8 +381,7 @@ Extends native `textarea` element.
 Attributes (also available as properties, so use whatever is more convenient):
 * autosize - boolean, if specified then height will be adjusted dynamically as contents grow
 * compact - boolean, uses automatic width computation, which is more compact that enforced styled width
-* fullWidth - boolean, makes element width 100%
-* tight - boolean, affects button styling by removing space after button and placing directly before next element (useful for button groups and combining with inputs)
+* full-width - boolean, makes element width 100%
 
 Properties:
 * this - object, read-only, `this` of element, useful for data-binding
