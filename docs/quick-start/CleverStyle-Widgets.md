@@ -4,14 +4,14 @@ Instead, system comes with CleverStyle Widgets, which is set of useful custom el
 
 CleverStyle Widgets includes following elements:
 * `cs-button`
+* `cs-dropdown`
 * `cs-form`
+* `cs-group`
 * `cs-icon`
 * `cs-input-text`
 * `cs-label-button`
 * `cs-label-switcher`
 * `cs-link-button`
-* `cs-group`
-* `cs-nav-dropdown`
 * `cs-nav-pagination`
 * `cs-nav-tabs`
 * `cs-notify`
@@ -37,6 +37,7 @@ Attributes (also available as properties, so use whatever is more convenient):
 Properties:
 * action - string, method on `bind` object to call on button click (see examples below)
 * bind - object, object that contains `action` method to call on button click (see examples below)
+* this - object, read-only, `this` of element, useful for data-binding
 * tooltip - string, if specified then tooltip with specified content will be shown on hover
 
 Examples:
@@ -53,6 +54,27 @@ Examples:
     <section is="cs-section-modal" this="{{modal}}">One Two Three</section>
     <cs-button bind="[[modal]]" action="open"><button type="button">Button</button></cs-button>
 </template>
+```
+
+#### cs-dropdown
+Regular dropdown element with some content inside.
+
+Attributes (also available as properties, so use whatever is more convenient):
+* align - string, either `left` (by default) or `right`
+* opened - boolean, is set automatically when dropdown is opened
+
+Properties:
+* target - object, if `cs-button` object passed, click on corresponding button will toggle dropdown (if dropdown is placed right after button - this property will be filled automatically)
+
+Example:
+```html
+<cs-button icon="cog"><button type="button" small-button>[[L.settings]]</button></cs-button>
+<cs-dropdown>
+    <cs-group vertical>
+        <cs-button><button type="button" on-tap="_general_settings">[[L.general]]</button></cs-link-button>
+        <cs-button><button type="button" on-tap="_change_password">[[L.change_password]]</button></cs-button>
+    </cs-group>
+</cs-dropdown>
 ```
 
 #### cs-form
@@ -195,29 +217,6 @@ Example:
 <cs-link-button>
     <a href="/" icon="home">Home</a>
 </cs-link-button>
-```
-
-#### cs-nav-dropdown
-Extends native `nav` element.
-
-Regular dropdown element with some content inside.
-
-Attributes (also available as properties, so use whatever is more convenient):
-* align - string, either `left` (by default) or `right`
-* opened - boolean, automatically when dropdown is opened
-
-Properties:
-* target - object, if `cs-button` object passed, click on corresponding button will toggle dropdown (if dropdown is placed right after button - this property will be filled automatically)
-* this - object, read-only, `this` of element, useful for data-binding
-
-Example:
-```html
-<nav is="cs-nav-dropdown" align="right">
-    <nav is="cs-group" vertical>
-        <cs-link-button><a on-tap="_general_settings">[[L.general]]</a></cs-link-button>
-        <cs-button><button type="button" on-tap="_change_password">[[L.change_password]]</button></cs-button>
-    </nav>
-</nav>
 ```
 
 #### cs-nav-pagination

@@ -943,7 +943,7 @@ New features:
   * `cs-label-switcher`
   * `cs-link-button`
   * `cs-group`
-  * `cs-nav-dropdown`
+  * `cs-dropdown`
   * `cs-nav-pagination`
   * `cs-nav-tabs`
   * `cs-notify`

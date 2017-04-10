@@ -59,7 +59,7 @@ echo $Menu->get_menu();
 			Section 1 <cs-icon icon="caret-down"></cs-icon>
 		</button>
 	</cs-button>
-	<nav is="cs-nav-dropdown">
+	<cs-dropdown>
 		<cs-group vertical>
 			<cs-link-button primary>
 				<a href="System/section1/item1">Section 1 item 1</a>
@@ -71,7 +71,7 @@ echo $Menu->get_menu();
 				<a href="System/section1/item3">Section 1 item 3</a>
 			</cs-link-button>
 		</cs-group>
-	</nav>
+	</cs-dropdown>
 	<cs-button>
 		<button type="button">
 			Section 2 <cs-icon icon="caret-down"></cs-icon>

@@ -6,6 +6,7 @@
  */
 Polymer.cs.behaviors.cs-button = [
 	Polymer.cs.behaviors.button
+	Polymer.cs.behaviors.this
 	Polymer.cs.behaviors.tight
 	Polymer.cs.behaviors.tooltip
 	properties	:

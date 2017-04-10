@@ -1,0 +1,1 @@
+:host{display:none;opacity:0;position:absolute;z-index:800;@apply --cs-global;@apply --cs-dropdown}:host([opened]){display:block;@apply --cs-dropdown-open}#content{@apply --cs-dropdown-content}:host([as-is]) #content{@apply --cs-dropdown-content-as-is}

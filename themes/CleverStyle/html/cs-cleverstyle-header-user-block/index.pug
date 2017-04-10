@@ -15,7 +15,7 @@ dom-module#cs-cleverstyle-header-user-block
 			template(is="dom-if" if="[[!guest]]")
 				cs-group
 					cs-button(icon="cog"): button(type="button" small-button) [[L.settings]]
-					nav(is="cs-nav-dropdown" align="right")
+					cs-dropdown(align="right")
 						cs-group(vertical)
 							cs-button: button(type="button" on-tap="_general_settings") [[L.general_settings]]
 							cs-button: button(type="button" on-tap="_change_password") [[L.change_password]]
