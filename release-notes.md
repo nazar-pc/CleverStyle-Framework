@@ -942,8 +942,8 @@ New features:
   * `cs-label-button`
   * `cs-label-switcher`
   * `cs-link-button`
-  * `cs-group`
-  * `cs-dropdown`
+  * `cs-nav-button-group`
+  * `cs-nav-dropdown`
   * `cs-nav-pagination`
   * `cs-nav-tabs`
   * `cs-notify`
