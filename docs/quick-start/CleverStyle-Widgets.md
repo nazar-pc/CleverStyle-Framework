@@ -12,9 +12,9 @@ CleverStyle Widgets includes following elements:
 * `cs-label-button`
 * `cs-label-switcher`
 * `cs-link-button`
-* `cs-nav-pagination`
 * `cs-nav-tabs`
 * `cs-notify`
+* `cs-pagination`
 * `cs-progress`
 * `cs-section-modal`
 * `cs-section-switcher`
@@ -219,23 +219,6 @@ Example:
 </cs-link-button>
 ```
 
-#### cs-nav-pagination
-Extends native `nav` element.
-
-Generates pagination by specified page number and total number of pages, especially convenient to use with data bindings.
-
-Attributes (also available as properties, so use whatever is more convenient):
-* page - number, current page (starting from 1)
-* pages - number, total number of pages
-
-Properties:
-* this - object, read-only, `this` of element, useful for data-binding
-
-Example:
-```html
-<nav is="cs-nav-pagination" page="{{page}}" pages="[[total_pages]]"></nav>
-```
-
 #### cs-nav-tabs
 Extends native `nav` element.
 
@@ -276,6 +259,18 @@ Examples:
 <cs-notify>Hello</cs-notify>
 <cs-notify success left>Hello</cs-notify>
 <cs-notify error bottom right>Hello</cs-notify>
+```
+
+#### cs-pagination
+Generates pagination by specified page number and total number of pages, especially convenient to use with data bindings.
+
+Attributes (also available as properties, so use whatever is more convenient):
+* page - number, current page (starting from 1)
+* pages - number, total number of pages
+
+Example:
+```html
+<cs-pagination page="{{page}}" pages="[[total_pages]]"></cs-pagination>
 ```
 
 #### cs-progress

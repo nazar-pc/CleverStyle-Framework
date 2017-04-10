@@ -343,10 +343,12 @@ function pages ($page, $total, $url, $head_links = false) {
 		array_map($render_page_item, range(1, $total));
 	} else {
 		$empty = [
-			h::a('...'),
-			[
-				'disabled' => true
-			]
+			h::a(
+				'...',
+				[
+					'disabled' => true
+				]
+			)
 		];
 		if ($page <= 6) {
 			array_map($render_page_item, range(1, 7));

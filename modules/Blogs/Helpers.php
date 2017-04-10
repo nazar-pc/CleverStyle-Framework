@@ -42,7 +42,7 @@ class Helpers {
 					JSON_UNESCAPED_UNICODE
 				)
 			).
-			h::{'.cs-block-margin.cs-text-center.cs-margin nav[is=cs-nav-pagination]'}(
+			h::{'.cs-block-margin.cs-text-center.cs-margin cs-pagination'}(
 				pages(
 					$page,
 					ceil($posts_count / $module_data->posts_per_page),

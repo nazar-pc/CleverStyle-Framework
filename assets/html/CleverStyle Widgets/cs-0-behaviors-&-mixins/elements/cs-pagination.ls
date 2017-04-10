@@ -4,8 +4,7 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-Polymer.cs.behaviors.cs-nav-pagination = [
-	Polymer.cs.behaviors.this
+Polymer.cs.behaviors.cs-pagination = [
 	hostAttributes	:
 		role	: 'group'
 	properties		:
@@ -17,10 +16,7 @@ Polymer.cs.behaviors.cs-nav-pagination = [
 			reflectToAttribute	: true
 			type				: Number
 		pages_list	: Array
-	observers		: [
-		'_refresh(page, pages)'
-	]
-	_refresh : (page, pages) !->
+	_pages_list : (page, pages) ->
 		if !page || !pages
 			return
 		pages_list	= []
@@ -55,7 +51,7 @@ Polymer.cs.behaviors.cs-nav-pagination = [
 				render_one(i)
 		pages_list[0].first						= true
 		pages_list[pages_list.length - 1].last	= true
-		@set('pages_list', pages_list)
+		pages_list
 	_render_one : (pages_list, page, i, text) !->
 		pages_list.push(
 			text		: text || i

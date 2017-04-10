@@ -1,6 +1,6 @@
 mixin pagination
 	.cs-margin.cs-text-center(hidden="[[!show_pagination]]")
-		nav(is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]")
+		cs-pagination(page="{{search_page}}" pages="[[search_pages]]")
 dom-module#cs-system-admin-users-list
 	template
 		style(include="advanced-styles")

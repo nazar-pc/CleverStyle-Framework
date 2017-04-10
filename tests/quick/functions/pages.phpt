@@ -89,8 +89,8 @@ string(826) "<cs-link-button>
 <cs-link-button>
 	<a href="http://cscms.travis/page/7">7</a>
 </cs-link-button>
-<cs-link-button disabled>
-	<a>...</a>
+<cs-link-button>
+	<a disabled>...</a>
 </cs-link-button>
 <cs-link-button>
 	<a href="http://cscms.travis/page/18">18</a>
@@ -112,8 +112,8 @@ string(833) "<cs-link-button>
 <cs-link-button>
 	<a href="http://cscms.travis/page/3">3</a>
 </cs-link-button>
-<cs-link-button disabled>
-	<a>...</a>
+<cs-link-button>
+	<a disabled>...</a>
 </cs-link-button>
 <cs-link-button>
 	<a href="http://cscms.travis/page/14">14</a>
@@ -144,8 +144,8 @@ string(798) "<cs-link-button>
 <cs-link-button>
 	<a href="http://example.com/page/2">2</a>
 </cs-link-button>
-<cs-link-button disabled>
-	<a>...</a>
+<cs-link-button>
+	<a disabled>...</a>
 </cs-link-button>
 <cs-link-button>
 	<a href="http://example.com/page/8">8</a>
@@ -162,8 +162,8 @@ string(798) "<cs-link-button>
 <cs-link-button>
 	<a href="http://example.com/page/12">12</a>
 </cs-link-button>
-<cs-link-button disabled>
-	<a>...</a>
+<cs-link-button>
+	<a disabled>...</a>
 </cs-link-button>
 <cs-link-button>
 	<a href="http://example.com/page/19">19</a>
@@ -200,8 +200,8 @@ string(800) "<cs-link-button>
 <cs-link-button>
 	<a href="http://cscms.travis/page/2">2</a>
 </cs-link-button>
-<cs-link-button disabled>
-	<a>...</a>
+<cs-link-button>
+	<a disabled>...</a>
 </cs-link-button>
 <cs-link-button>
 	<a href="http://cscms.travis/page/8">8</a>
@@ -218,8 +218,8 @@ string(800) "<cs-link-button>
 <cs-link-button>
 	<a href="http://cscms.travis/page/12">12</a>
 </cs-link-button>
-<cs-link-button disabled>
-	<a>...</a>
+<cs-link-button>
+	<a disabled>...</a>
 </cs-link-button>
 <cs-link-button>
 	<a href="http://cscms.travis/page/19">19</a>
