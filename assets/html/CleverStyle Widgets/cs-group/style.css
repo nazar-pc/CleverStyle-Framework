@@ -24,25 +24,25 @@
 }
 
 ::slotted(:not(template)) {
-	@apply --cs-group-button;
+	@apply --cs-group-item;
 }
 
 ::slotted(:not(template):first-of-type) {
-	@apply --cs-group-button-first;
+	@apply --cs-group-item-first;
 }
 
 ::slotted(:not(template):last-of-type) {
-	@apply --cs-group-button-last;
+	@apply --cs-group-item-last;
 }
 
 :host([vertical]) ::slotted(:not(template)) {
-	@apply --cs-group-button-vertical;
+	@apply --cs-group-item-vertical;
 }
 
 :host([vertical]) ::slotted(:not(template):first-of-type) {
-	@apply --cs-group-button-vertical-first;
+	@apply --cs-group-item-vertical-first;
 }
 
 :host([vertical]) ::slotted(:not(template):last-of-type) {
-	@apply --cs-group-button-vertical-last;
+	@apply --cs-group-item-vertical-last;
 }

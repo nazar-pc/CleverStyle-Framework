@@ -54,10 +54,8 @@ echo $Menu->get_menu();
 ?>
 --EXPECT--
 <cs-group>
-	<cs-button>
-		<button primary type="button">
-			Section 1 <cs-icon icon="caret-down"></cs-icon>
-		</button>
+	<cs-button icon-after="caret-down" primary>
+		<button type="button">Section 1</button>
 	</cs-button>
 	<cs-dropdown>
 		<cs-group vertical>
@@ -72,14 +70,10 @@ echo $Menu->get_menu();
 			</cs-link-button>
 		</cs-group>
 	</cs-dropdown>
-	<cs-button>
-		<button type="button">
-			Section 2 <cs-icon icon="caret-down"></cs-icon>
-		</button>
+	<cs-button icon-after="caret-down">
+		<button type="button">Section 2</button>
 	</cs-button>
-	<cs-button>
-		<button type="button">
-			Section 3 <cs-icon icon="caret-down"></cs-icon>
-		</button>
+	<cs-button icon-after="caret-down">
+		<button type="button">Section 3</button>
 	</cs-button>
 </cs-group>

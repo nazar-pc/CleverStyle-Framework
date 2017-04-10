@@ -5,7 +5,7 @@
  * @license   MIT License, see license.txt
  */
 :host {
-	display        : inline-flex;
+	display        : inline-block;
 	vertical-align : middle;
 }
 

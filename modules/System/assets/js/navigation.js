@@ -27,8 +27,8 @@
     "admin/System/users/security": "cs-system-admin-security",
     "admin/System/users/mail": "cs-system-admin-mail"
   };
-  buttons = document.querySelectorAll('body > header > nav cs-button');
-  links = document.querySelectorAll('body > header > nav a');
+  buttons = document.querySelectorAll('body > header > cs-group cs-button');
+  links = document.querySelectorAll('body > header > cs-group a');
   for (i$ = 0, len$ = links.length; i$ < len$; ++i$) {
     link = links[i$];
     link.addEventListener('mousedown', fn$);

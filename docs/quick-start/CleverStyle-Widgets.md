@@ -12,7 +12,7 @@ CleverStyle Widgets includes following elements:
 * `cs-label-button`
 * `cs-label-switcher`
 * `cs-link-button`
-* `cs-nav-tabs`
+* `cs-tabs`
 * `cs-notify`
 * `cs-pagination`
 * `cs-progress`
@@ -219,18 +219,15 @@ Example:
 </cs-link-button>
 ```
 
-#### cs-nav-tabs
-Extends native `nav` element.
-
+#### cs-tabs
 Tabs functionality, especially useful in conjunction with `cs-section-switcher` element. If next element after tabs is `cs-section-switcher` - tabs will control it automatically.
 
 Properties:
 * selected - number, current selected tab index (starting from 0)
-* this - object, read-only, `this` of element, useful for data-binding
 
 Example:
 ```html
-<nav is="cs-nav-tabs">
+<nav is="cs-tabs">
     <cs-button><button type="button">One</button></cs-button>
     <cs-button><button type="button">Two</button></cs-button>
 </nav>
@@ -322,7 +319,7 @@ Examples:
 #### cs-section-switcher
 Extends native `section` element.
 
-Switcher element, especially useful in conjunction with `cs-nav-tabs` element (see example). If switcher is placed right after `cs-nav-tabs` - tabs will control switcher automatically.
+Switcher element, especially useful in conjunction with `cs-tabs` element (see example). If switcher is placed right after `cs-tabs` - tabs will control switcher automatically.
 
 Properties:
 * selected - number, current selected content element index (starting from 0)
@@ -330,7 +327,7 @@ Properties:
 
 Examples:
 ```html
-<nav is="cs-nav-tabs">
+<nav is="cs-tabs">
     <cs-button><button type="button">One</button></cs-button>
     <cs-button><button type="button">Two</button></cs-button>
 </nav>
@@ -342,7 +339,7 @@ Examples:
     <article>One</article>
     <article>Two</article>
 </section>
-<nav is="cs-nav-tabs" selected="{{selected}}">
+<nav is="cs-tabs" selected="{{selected}}">
     <cs-button><button type="button">One</button></cs-button>
     <cs-button><button type="button">Two</button></cs-button>
 </nav>

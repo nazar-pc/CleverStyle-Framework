@@ -24,9 +24,9 @@ url_map = {
 	"admin/System/users/security"       : "cs-system-admin-security",
 	"admin/System/users/mail"           : "cs-system-admin-mail"
 }
-# Hack: should be `nav > button`, but fails in Firefox (https://github.com/Polymer/polymer/issues/3809)
-buttons	= document.querySelectorAll('body > header > nav cs-button')
-links	= document.querySelectorAll('body > header > nav a')
+# Hack: should be `cs-group > button`, but fails in Firefox (https://github.com/Polymer/polymer/issues/3809)
+buttons	= document.querySelectorAll('body > header > cs-group cs-button')
+links	= document.querySelectorAll('body > header > cs-group a')
 for link in links
 	link.addEventListener('mousedown', (e) !->
 		# We are interested in left click only

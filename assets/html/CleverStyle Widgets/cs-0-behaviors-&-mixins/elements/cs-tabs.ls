@@ -4,8 +4,7 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-Polymer.cs.behaviors.cs-nav-tabs = [
-	Polymer.cs.behaviors.this
+Polymer.cs.behaviors.cs-tabs = [
 	hostAttributes	:
 		role	: 'group'
 	properties		:

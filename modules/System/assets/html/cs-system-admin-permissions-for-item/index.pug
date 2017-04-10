@@ -32,7 +32,7 @@ mixin group-actions
 dom-module#cs-system-admin-permissions-for-item
 	template
 		style(include="advanced-styles")
-		nav(is="cs-nav-tabs" selected="{{selected_tab}}")
+		cs-tabs(selected="{{selected_tab}}")
 			cs-button: button(type="button") [[L.groups]]
 			cs-button: button(type="button") [[L.users]]
 		form#form

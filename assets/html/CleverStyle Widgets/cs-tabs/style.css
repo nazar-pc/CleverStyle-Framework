@@ -4,8 +4,16 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-Polymer(
-	is			: 'cs-nav-tabs'
-	extends		: 'nav'
-	behaviors	: Polymer.cs.behaviors.cs-nav-tabs
-)
+:host {
+	border         : none;
+	display        : flex;
+	vertical-align : middle;
+
+	@apply --cs-no-selection;
+	@apply --cs-global;
+	@apply --cs-tabs;
+}
+
+:host([hidden]) {
+	display : none;
+}
