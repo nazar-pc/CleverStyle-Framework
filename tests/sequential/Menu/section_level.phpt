@@ -30,7 +30,7 @@ $Menu->add_section_item(
 echo $Menu->get_menu();
 ?>
 --EXPECT--
-<nav is="cs-nav-button-group">
+<cs-group>
 	<cs-button>
 		<button primary type="button">
 			Section 1 <cs-icon icon="caret-down"></cs-icon>
@@ -46,4 +46,4 @@ echo $Menu->get_menu();
 			Section 3 <cs-icon icon="caret-down"></cs-icon>
 		</button>
 	</cs-button>
-</nav>
+</cs-group>

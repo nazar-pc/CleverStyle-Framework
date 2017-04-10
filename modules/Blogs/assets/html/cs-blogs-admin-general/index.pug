@@ -9,7 +9,7 @@ mixin on-off-switcher (name)
 	label(tooltip=`[[L.${name}_info]]`)
 		| [[L.#{name}]]
 		cs-tooltip
-	nav(is="cs-nav-button-group")
+	cs-group
 		each value, index in values
 			if index
 				cs-label-button: label

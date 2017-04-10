@@ -215,12 +215,12 @@ string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-custom.
 <link href="/assets/html/CleverStyle Widgets/cs-0-behaviors-&-mixins/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-button/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-form/index.html?%s" rel="import">
+<link href="/assets/html/CleverStyle Widgets/cs-group/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-icon/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-input-text/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-label-button/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-label-switcher/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-link-button/index.html?%s" rel="import">
-<link href="/assets/html/CleverStyle Widgets/cs-nav-button-group/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-nav-dropdown/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-nav-pagination/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-nav-tabs/index.html?%s" rel="import">
@@ -287,12 +287,12 @@ string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-custom.
 <link href="/assets/html/CleverStyle Widgets/cs-0-behaviors-&-mixins/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-button/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-form/index.html?%s" rel="import">
+<link href="/assets/html/CleverStyle Widgets/cs-group/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-icon/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-input-text/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-label-button/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-label-switcher/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-link-button/index.html?%s" rel="import">
-<link href="/assets/html/CleverStyle Widgets/cs-nav-button-group/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-nav-dropdown/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-nav-pagination/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-nav-tabs/index.html?%s" rel="import">

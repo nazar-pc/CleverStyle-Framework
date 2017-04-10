@@ -1,0 +1,48 @@
+/**
+ * @package   CleverStyle Widgets
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+:host {
+	display        : inline-flex;
+	vertical-align : middle;
+
+	@apply --cs-no-selection;
+	@apply --cs-global;
+	@apply --cs-group;
+}
+
+:host([hidden]) {
+	display : none;
+}
+
+:host([vertical]) {
+	flex-direction : column;
+
+	@apply --cs-group-vertical;
+}
+
+::slotted(:not(template)) {
+	@apply --cs-group-button;
+}
+
+::slotted(:not(template):first-of-type) {
+	@apply --cs-group-button-first;
+}
+
+::slotted(:not(template):last-of-type) {
+	@apply --cs-group-button-last;
+}
+
+:host([vertical]) ::slotted(:not(template)) {
+	@apply --cs-group-button-vertical;
+}
+
+:host([vertical]) ::slotted(:not(template):first-of-type) {
+	@apply --cs-group-button-vertical-first;
+}
+
+:host([vertical]) ::slotted(:not(template):last-of-type) {
+	@apply --cs-group-button-vertical-last;
+}

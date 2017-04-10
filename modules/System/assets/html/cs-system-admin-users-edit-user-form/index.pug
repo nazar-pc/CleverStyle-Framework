@@ -33,7 +33,7 @@ dom-module#cs-system-admin-users-edit-user-form
 				template(is="dom-repeat" items="[[timezones]]" as="timezone")
 					option(value="[[timezone.timezone]]") [[timezone.description]]
 			label [[L.status]]
-			nav(is="cs-nav-button-group")
+			cs-group
 				cs-label-button(value="{{user_data.status}}"): label
 					input(checked="[[equal(user_data.status, -1)]]" type="radio" value="-1")
 					| [[L.is_not_activated]]

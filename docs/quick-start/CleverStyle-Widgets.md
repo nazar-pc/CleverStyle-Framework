@@ -10,7 +10,7 @@ CleverStyle Widgets includes following elements:
 * `cs-label-button`
 * `cs-label-switcher`
 * `cs-link-button`
-* `cs-nav-button-group`
+* `cs-group`
 * `cs-nav-dropdown`
 * `cs-nav-pagination`
 * `cs-nav-tabs`
@@ -70,6 +70,20 @@ Example (and expected markup):
         <textarea is="cs-textarea"></textarea>
     </form>
 </cs-form>
+```
+
+#### cs-group
+Creates either horizontal or vertical group of elements (for instance, buttons), where there is no space between them.
+
+Attributes (also available as properties, so use whatever is more convenient):
+* vertical - boolean, make vertical group
+
+Example:
+```html
+<cs-group>
+    <cs-button primary><button type="submit">OK</button></cs-button>
+    <cs-button><button type="button">Cancel</button></cs-button>
+</cs-group>
 ```
 
 #### cs-icon
@@ -183,25 +197,6 @@ Example:
 </cs-link-button>
 ```
 
-#### cs-nav-button-group
-Extends native `nav` element.
-
-Creates group of buttons (either horizontal or vertical), where there is no space between buttons.
-
-Attributes (also available as properties, so use whatever is more convenient):
-* vertical - boolean, make vertical button group
-
-Properties:
-* this - object, read-only, `this` of element, useful for data-binding
-
-Example:
-```html
-<nav is="cs-nav-button-group">
-    <cs-button primary><button type="submit">OK</button></cs-button>
-    <cs-button><button type="button">Cancel</button></cs-button>
-</nav>
-```
-
 #### cs-nav-dropdown
 Extends native `nav` element.
 
@@ -218,7 +213,7 @@ Properties:
 Example:
 ```html
 <nav is="cs-nav-dropdown" align="right">
-    <nav is="cs-nav-button-group" vertical>
+    <nav is="cs-group" vertical>
         <cs-link-button><a on-tap="_general_settings">[[L.general]]</a></cs-link-button>
         <cs-button><button type="button" on-tap="_change_password">[[L.change_password]]</button></cs-button>
     </nav>

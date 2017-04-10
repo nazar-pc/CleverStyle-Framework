@@ -47,7 +47,7 @@ class Menu {
 		} else {
 			$content = $this->render_items($current_module);
 		}
-		return h::{'nav[is=cs-nav-button-group]'}($content ?: false);
+		return h::cs_group($content ?: false);
 	}
 	/**
 	 * Render sections (automatically includes nested items)
@@ -61,7 +61,7 @@ class Menu {
 		foreach ($this->section_items[$module] as $item) {
 			$dropdown = $this->render_items($module, $item[1]['href']);
 			if ($dropdown) {
-				$dropdown = h::{'nav[is=cs-nav-dropdown] nav[is=cs-nav-button-group][vertical]'}($dropdown);
+				$dropdown = h::{'nav[is=cs-nav-dropdown] cs-group[vertical]'}($dropdown);
 			}
 			// Render as button without `href` attribute
 			unset($item[1]['href']);

@@ -53,14 +53,14 @@ $Menu->add_section_item(
 echo $Menu->get_menu();
 ?>
 --EXPECT--
-<nav is="cs-nav-button-group">
+<cs-group>
 	<cs-button>
 		<button primary type="button">
 			Section 1 <cs-icon icon="caret-down"></cs-icon>
 		</button>
 	</cs-button>
 	<nav is="cs-nav-dropdown">
-		<nav is="cs-nav-button-group" vertical>
+		<cs-group vertical>
 			<cs-link-button primary>
 				<a href="System/section1/item1">Section 1 item 1</a>
 			</cs-link-button>
@@ -70,7 +70,7 @@ echo $Menu->get_menu();
 			<cs-link-button primary>
 				<a href="System/section1/item3">Section 1 item 3</a>
 			</cs-link-button>
-		</nav>
+		</cs-group>
 	</nav>
 	<cs-button>
 		<button type="button">
@@ -82,4 +82,4 @@ echo $Menu->get_menu();
 			Section 3 <cs-icon icon="caret-down"></cs-icon>
 		</button>
 	</cs-button>
-</nav>
+</cs-group>

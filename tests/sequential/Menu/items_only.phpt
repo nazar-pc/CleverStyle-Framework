@@ -30,7 +30,7 @@ $Menu->add_item(
 echo $Menu->get_menu();
 ?>
 --EXPECT--
-<nav is="cs-nav-button-group">
+<cs-group>
 	<cs-link-button primary>
 		<a href="System/section1">Section 1</a>
 	</cs-link-button>
@@ -40,4 +40,4 @@ echo $Menu->get_menu();
 	<cs-link-button>
 		<a href="System/section3">Section 3</a>
 	</cs-link-button>
-</nav>
+</cs-group>

@@ -5,7 +5,7 @@ mixin on-off-switcher (name, hidden, values, translations)
 	label(tooltip=`[[L.${name}_info]]` hidden=hidden)
 		| [[L.#{name}]]
 		cs-tooltip
-	nav(is="cs-nav-button-group" hidden=hidden)
+	cs-group(hidden=hidden)
 		each value, index in values
 			if index
 				cs-label-button: label

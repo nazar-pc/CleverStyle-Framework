@@ -21,7 +21,7 @@ dom-module#cs-system-admin-permissions-for
 									= ' '
 									sup [[label.description]]
 								td
-									nav(is="cs-nav-button-group")
+									cs-group
 										cs-label-button: label
 											input(type="radio" value="-1" checked="[[permission_state(label.id, -1)]]" name="[[concat('permissions[', label.id, ']')]]")
 											| [[L.inherited]]
