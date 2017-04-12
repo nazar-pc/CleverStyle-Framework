@@ -249,7 +249,7 @@ cs.{}ui
 	 * @return {HTMLElement}
 	 */
 	..modal = (content) ->
-		modal = document.createElement('section', 'cs-section-modal')
+		modal = document.createElement('cs-modal')
 		if typeof content == 'string' || content instanceof Function
 			modal.innerHTML = content
 		else

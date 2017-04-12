@@ -12,10 +12,10 @@ dom-module#cs-system-admin-themes
 					td
 						cs-icon(icon="[[theme.icon]]")
 						cs-button(compact icon="book" tooltip="[[L.information_about_theme]]" hidden="[[!theme.readme]]"): button(type="button")
-						section(is="cs-section-modal" content="[[theme.readme.content]]")
+						cs-modal(content="[[theme.readme.content]]")
 						= ' '
 						cs-button(compact icon="legal" tooltip="[[L.license]]" hidden="[[!theme.license]]"): button(type="button")
-						section(is="cs-section-modal" content="[[theme.license.content]]")
+						cs-modal(content="[[theme.license.content]]")
 					td(left)
 						cs-button(compact hidden="[[equal(theme.name, current_theme)]]" icon="check" on-tap="_set_current"): button [[L.set_current_theme]]
 						= ' '

@@ -12,13 +12,13 @@ CleverStyle Widgets includes following elements:
 * `cs-label-button`
 * `cs-label-switcher`
 * `cs-link-button`
-* `cs-tabs`
+* `cs-modal`
 * `cs-notify`
 * `cs-pagination`
 * `cs-progress`
-* `cs-section-modal`
 * `cs-section-switcher`
 * `cs-select`
+* `cs-tabs`
 * `cs-textarea`
 * `cs-tooltip`
 
@@ -51,7 +51,7 @@ Examples:
     </button>
 </cs-button>
 <template is="dom-bind">
-    <section is="cs-section-modal" this="{{modal}}">One Two Three</section>
+    <cs-modal this="{{modal}}">One Two Three</cs-modal>
     <cs-button bind="[[modal]]" action="open"><button type="button">Button</button></cs-button>
 </template>
 ```
@@ -219,18 +219,29 @@ Example:
 </cs-link-button>
 ```
 
-#### cs-tabs
-Tabs functionality, especially useful in conjunction with `cs-section-switcher` element. If next element after tabs is `cs-section-switcher` - tabs will control it automatically.
+#### cs-modal
+Modal dialog.
+
+If placed right after `cs-button` element, then button will be automatically used for modal opening.
+
+Attributes (also available as properties, so use whatever is more convenient):
+* as-is - boolean, if specified then there will be no background in modal
+* auto-destroy - boolean, whether to destroy modal on closing
+* auto-open - boolean, whether to open modal automatically on creation
+* manual-close - boolean, if specified then `Esc` key and click outside of modal will not work and explicit calling `this.close()` will is needed
 
 Properties:
-* selected - number, current selected tab index (starting from 0)
+* this - object, read-only, `this` of element, useful for data-binding
 
-Example:
+Examples:
 ```html
-<nav is="cs-tabs">
-    <cs-button><button type="button">One</button></cs-button>
-    <cs-button><button type="button">Two</button></cs-button>
-</nav>
+<template is="dom-bind">
+    <cs-modal this="{{modal}}">One Two Three</cs-modal>
+    <cs-button bind="[[modal]]" action="open"><button type="button">Button</button></cs-button>
+</template>
+<cs-button><button type="button">Button</button></cs-button>
+<cs-modal>One Two Three</cs-modal>
+<cs-modal auto-open>One Two Three</cs-modal>
 ```
 
 #### cs-notify
@@ -289,33 +300,6 @@ Example:
 <progress is="cs-progress" value="20"></progress>
 ```
 
-#### cs-section-modal
-Extends native `section` element.
-
-Modal dialog.
-
-If placed right after `cs-button` element, then button will be automatically used for modal opening.
-
-Attributes (also available as properties, so use whatever is more convenient):
-* as-is - boolean, if specified then there will be no background in modal
-* auto-destroy - boolean, whether to destroy modal on closing
-* auto-open - boolean, whether to open modal automatically on creation
-* manual-close - boolean, if specified then `Esc` key and click outside of modal will not work and explicit calling `this.close()` will is needed
-
-Properties:
-* this - object, read-only, `this` of element, useful for data-binding
-
-Examples:
-```html
-<template is="dom-bind">
-    <section is="cs-section-modal" this="{{modal}}">One Two Three</section>
-    <cs-button bind="[[modal]]" action="open"><button type="button">Button</button></cs-button>
-</template>
-<cs-button><button type="button">Button</button></cs-button>
-<section is="cs-section-modal">One Two Three</section>
-<section is="cs-section-modal" auto-open>One Two Three</section>
-```
-
 #### cs-section-switcher
 Extends native `section` element.
 
@@ -370,6 +354,20 @@ Examples:
         <option value="[[language.clanguage]]">[[language.description]]</option>
     </template>
 </select>
+```
+
+#### cs-tabs
+Tabs functionality, especially useful in conjunction with `cs-section-switcher` element. If next element after tabs is `cs-section-switcher` - tabs will control it automatically.
+
+Properties:
+* selected - number, current selected tab index (starting from 0)
+
+Example:
+```html
+<nav is="cs-tabs">
+    <cs-button><button type="button">One</button></cs-button>
+    <cs-button><button type="button">Two</button></cs-button>
+</nav>
 ```
 
 #### cs-textarea

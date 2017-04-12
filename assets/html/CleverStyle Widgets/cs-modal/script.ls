@@ -5,7 +5,6 @@
  * @license   MIT License, see license.txt
  */
 Polymer(
-	is			: 'cs-section-modal'
-	extends		: 'section'
-	behaviors	: Polymer.cs.behaviors.cs-section-modal
+	is			: 'cs-modal'
+	behaviors	: Polymer.cs.behaviors.cs-modal
 )

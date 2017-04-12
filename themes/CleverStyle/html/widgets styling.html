@@ -186,7 +186,7 @@
 
 		/* Modal */
 
-		--cs-section-modal: {
+		--cs-modal: {
 			opacity     : 0;
 			transform   : scale(0);
 			transition  : opacity var(--transition-duration) var(--transition-duration-short), transform 0s var(--transition-duration);
@@ -196,7 +196,7 @@
 			@apply --layout-center-center;
 		};
 
-		--cs-section-modal-open: {
+		--cs-modal-open: {
 			opacity    : 1;
 			transform  : scale(1);
 			transition : opacity var(--transition-duration);
@@ -205,21 +205,21 @@
 			@apply --layout-center-center;
 		};
 
-		--cs-section-modal-body: {
+		--cs-modal-body: {
 			transition : filter var(--transition-duration) var(--transition-duration);
 		};
 
-		--cs-section-modal-body-open: {
+		--cs-modal-body-open: {
 			filter   : blur(var(--modal-blur-radius));
 			overflow : hidden;
 		};
 
-		--cs-section-modal-overlay: {
+		--cs-modal-overlay: {
 			display    : block;
 			background : var(--modal-overlay-background);
 		};
 
-		--cs-section-modal-content: {
+		--cs-modal-content: {
 			background          : var(--modal-content-background);
 			display             : block;
 			opacity             : 0;
@@ -230,13 +230,13 @@
 			will-change         : opacity, transform;
 		};
 
-		--cs-section-modal-content-open: {
+		--cs-modal-content-open: {
 			opacity    : 1;
 			transform  : translateY(0);
 			transition : var(--transition-duration);
 		};
 
-		--cs-section-modal-content-as-is: {
+		--cs-modal-content-as-is: {
 			background : transparent;
 			padding    : 0;
 		};

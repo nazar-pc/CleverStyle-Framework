@@ -9,7 +9,7 @@
   var body, html;
   body = document.body;
   html = document.documentElement;
-  Polymer.cs.behaviors.csSectionModal = [
+  Polymer.cs.behaviors.csModal = [
     Polymer.cs.behaviors['this'], {
       properties: {
         asIs: {

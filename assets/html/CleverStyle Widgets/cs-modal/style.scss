@@ -15,7 +15,7 @@
 	z-index  : 400;
 
 	@apply --cs-global;
-	@apply --cs-section-modal;
+	@apply --cs-modal;
 }
 
 #overlay {
@@ -27,7 +27,7 @@
 	width    : 100vw;
 	z-index  : 500;
 
-	@apply --cs-section-modal-overlay;
+	@apply --cs-modal-overlay;
 }
 
 #content {
@@ -37,27 +37,27 @@
 	overflow   : auto;
 	z-index    : 600;
 
-	@apply --cs-section-modal-content;
+	@apply --cs-modal-content;
 }
 
 :host([as-is]) #content {
-	@apply --cs-section-modal-content-as-is;
+	@apply --cs-modal-content-as-is;
 }
 
 :host([opened]) {
 	display : block;
 
-	@apply --cs-section-modal-open;
+	@apply --cs-modal-open;
 
 	#overlay {
 		display : block;
 
-		@apply --cs-section-modal-overlay-open;
+		@apply --cs-modal-overlay-open;
 	}
 
 	#content {
 		display : block;
 
-		@apply --cs-section-modal-content-open;
+		@apply --cs-modal-content-open;
 	}
 }
