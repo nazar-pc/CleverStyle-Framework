@@ -7,7 +7,7 @@ dom-module#cs-system-admin-users-list
 		cs-tabs
 			cs-button: button(type="button") [[L.search]]
 			cs-button: button(type="button") [[L.show_columns]]
-		section(is="cs-section-switcher")
+		cs-switcher
 			div
 				select(is="cs-select" compact selected="{{search_column}}")
 					option(selected value="") [[L.all_columns]]

@@ -76,7 +76,7 @@
           element.removeAttribute('active');
         }
       }
-      if (((ref$ = this.nextElementSibling) != null ? ref$.is : void 8) === 'cs-section-switcher') {
+      if ((ref$ = this.nextElementSibling) != null && (typeof ref$.matches == 'function' && ref$.matches('cs-switcher'))) {
         this.nextElementSibling.selected = this.selected;
       }
     }

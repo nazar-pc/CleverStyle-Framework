@@ -1,0 +1,24 @@
+/**
+ * @package   CleverStyle Widgets
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+:host {
+	@apply --cs-global;
+	@apply --cs-switcher;
+}
+
+::slotted(:not(template)) {
+	@apply --cs-switcher-block;
+}
+
+::slotted(:not(template):not([active])) {
+	display : none;
+
+	@apply --cs-switcher-block-inactive;
+}
+
+::slotted(:not(template)[active]) {
+	@apply --cs-switcher-block-active;
+}

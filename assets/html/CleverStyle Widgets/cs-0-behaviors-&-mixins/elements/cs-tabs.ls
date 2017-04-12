@@ -45,6 +45,6 @@ Polymer.cs.behaviors.cs-tabs = [
 				element.setAttribute('active', '')
 			else
 				element.removeAttribute('active')
-		if @nextElementSibling?.is == 'cs-section-switcher'
+		if @nextElementSibling?.matches?('cs-switcher')
 			@nextElementSibling.selected = @selected
 ]

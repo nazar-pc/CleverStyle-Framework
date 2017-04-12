@@ -16,7 +16,7 @@ CleverStyle Widgets includes following elements:
 * `cs-notify`
 * `cs-pagination`
 * `cs-progress`
-* `cs-section-switcher`
+* `cs-switcher`
 * `cs-select`
 * `cs-tabs`
 * `cs-textarea`
@@ -300,7 +300,7 @@ Example:
 <progress is="cs-progress" value="20"></progress>
 ```
 
-#### cs-section-switcher
+#### cs-switcher
 Extends native `section` element.
 
 Switcher element, especially useful in conjunction with `cs-tabs` element (see example). If switcher is placed right after `cs-tabs` - tabs will control switcher automatically.
@@ -315,11 +315,11 @@ Examples:
     <cs-button><button type="button">One</button></cs-button>
     <cs-button><button type="button">Two</button></cs-button>
 </nav>
-<section is="cs-section-switcher">
+<section is="cs-switcher">
     <article>One</article>
     <article>Two</article>
 </section>
-<section is="cs-section-switcher" selected="[[selected]]">
+<section is="cs-switcher" selected="[[selected]]">
     <article>One</article>
     <article>Two</article>
 </section>
@@ -357,7 +357,7 @@ Examples:
 ```
 
 #### cs-tabs
-Tabs functionality, especially useful in conjunction with `cs-section-switcher` element. If next element after tabs is `cs-section-switcher` - tabs will control it automatically.
+Tabs functionality, especially useful in conjunction with `cs-switcher` element. If next element after tabs is `cs-switcher` - tabs will control it automatically.
 
 Properties:
 * selected - number, current selected tab index (starting from 0)

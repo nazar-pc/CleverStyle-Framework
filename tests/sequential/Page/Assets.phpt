@@ -226,8 +226,8 @@ string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-custom.
 <link href="/assets/html/CleverStyle Widgets/cs-notify/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-pagination/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-progress/index.html?%s" rel="import">
-<link href="/assets/html/CleverStyle Widgets/cs-section-switcher/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-select/index.html?%s" rel="import">
+<link href="/assets/html/CleverStyle Widgets/cs-switcher/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-tabs/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-textarea/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-tooltip/index.html?%s" rel="import">
@@ -298,8 +298,8 @@ string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-custom.
 <link href="/assets/html/CleverStyle Widgets/cs-notify/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-pagination/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-progress/index.html?%s" rel="import">
-<link href="/assets/html/CleverStyle Widgets/cs-section-switcher/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-select/index.html?%s" rel="import">
+<link href="/assets/html/CleverStyle Widgets/cs-switcher/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-tabs/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-textarea/index.html?%s" rel="import">
 <link href="/assets/html/CleverStyle Widgets/cs-tooltip/index.html?%s" rel="import">

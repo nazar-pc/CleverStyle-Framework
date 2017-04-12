@@ -36,7 +36,7 @@ dom-module#cs-system-admin-permissions-for-item
 			cs-button: button(type="button") [[L.groups]]
 			cs-button: button(type="button") [[L.users]]
 		form#form
-			section(is="cs-section-switcher" selected="[[selected_tab]]")
+			cs-switcher(selected="[[selected_tab]]")
 				div
 					+group-actions
 					table.cs-table(right-left)

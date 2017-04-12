@@ -1,1 +1,0 @@
-:host{@apply --cs-global;@apply --cs-section-switcher}::content>:not(template){@apply --cs-section-switcher-block}::content>:not(template):not([active]){display:none;@apply --cs-section-switcher-block-inactive}::content>:not(template)[active]{@apply --cs-section-switcher-block-active}
