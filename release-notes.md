@@ -945,7 +945,7 @@ New features:
   * `cs-nav-button-group`
   * `cs-nav-dropdown`
   * `cs-nav-pagination`
-  * `cs-tabs`
+  * `cs-nav-tabs`
   * `cs-notify`
   * `cs-progress`
   * `cs-section-modal`
