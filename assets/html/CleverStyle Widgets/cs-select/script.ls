@@ -6,6 +6,5 @@
  */
 Polymer(
 	is			: 'cs-select'
-	extends		: 'select'
 	behaviors	: Polymer.cs.behaviors.cs-select
 )

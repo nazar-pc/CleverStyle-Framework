@@ -11,7 +11,7 @@ dom-module#cs-system-admin-site-info
 				| [[L.timezone]]
 				cs-tooltip
 			template(is="dom-if" if="[[timezones]]")
-				select(is="cs-select" selected="{{settings.timezone}}" size="7")
+				cs-select(selected="{{settings.timezone}}"): select(size="7")
 					template(is="dom-repeat" items="[[timezones]]")
 						option(value="[[item.timezone]]") [[item.description]]
 			+input("admin_email", null, "email")

@@ -14,10 +14,6 @@
         reflectToAttribute: true,
         type: Boolean
       },
-      compact: {
-        reflectToAttribute: true,
-        type: Boolean
-      },
       iconBefore: {
         type: String
       },

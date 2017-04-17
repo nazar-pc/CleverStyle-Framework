@@ -10,9 +10,6 @@ Polymer.{}cs.{}behaviors.button =
 			notify				: true
 			reflectToAttribute	: true
 			type				: Boolean
-		compact		:
-			reflectToAttribute	: true
-			type				: Boolean
 		icon-before	:
 			type				: String
 		icon-after	:

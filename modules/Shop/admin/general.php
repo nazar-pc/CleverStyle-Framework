@@ -58,7 +58,7 @@ $Page
 			h::{'table.cs-table[right-left] tr| td'}(
 				[
 					$L->currency,
-					h::{'select[is=cs-select][name=currency]'}(
+					h::{'cs-select select[name=currency]'}(
 						h::optgroup(
 							[
 								'in'    => array_values(
@@ -144,7 +144,7 @@ $Page
 				],
 				[
 					h::info('shop_default_order_status'),
-					h::{'select[is=cs-select][name=default_order_status]'}(
+					h::{'cs-select select[name=default_order_status]'}(
 						[
 							'in'    => array_column($order_statuses, 'title'),
 							'value' => array_column($order_statuses, 'id')
@@ -156,7 +156,7 @@ $Page
 				],
 				[
 					h::info('shop_default_paid_order_status'),
-					h::{'select[is=cs-select][name=default_paid_order_status]'}(
+					h::{'cs-select select[name=default_paid_order_status]'}(
 						[
 							'in'    => array_column($order_statuses, 'title'),
 							'value' => array_column($order_statuses, 'id')

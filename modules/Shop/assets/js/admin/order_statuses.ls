@@ -20,7 +20,7 @@ make_modal	= (types, L, title, action) ->
 		<cs-input-text><input name="color"></cs-input-text><br>
 		<cs-input-text><input type="color"></cs-input-text>
 		<label>#{L.order_status_type}</label>
-		<select is="cs-select" name="type" required>#types</select>
+		<cs-select><select name="type" required>#types</select></cs-select>
 		<label>#{L.send_update_status_email}</label>
 		<div>
 			<cs-label-button><label><input type="radio" name="send_update_status_email" value="1" checked> #{L.yes}</label></cs-label-button>

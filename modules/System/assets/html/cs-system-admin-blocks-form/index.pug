@@ -9,7 +9,7 @@ dom-module#cs-system-admin-blocks-form
 						| [[L.block_type]]
 						cs-tooltip
 				td
-					select(is="cs-select" name="block[type]" size="5" selected="{{block.type}}")
+					cs-select(selected="{{block.type}}"): select(size="5")
 						template(is="dom-repeat" items="[[types]]" as="type")
 							option(value="[[type]]") [[type]]
 			tr
@@ -18,7 +18,7 @@ dom-module#cs-system-admin-blocks-form
 						| [[L.block_title]]
 						cs-tooltip
 				td
-					cs-input-text: input(name="block[title]" type="text" value="{{block.title}}")
+					cs-input-text: input(type="text" value="{{block.title}}")
 			tr
 				td
 					span(tooltip="[[L.block_active_info]]")
@@ -26,10 +26,10 @@ dom-module#cs-system-admin-blocks-form
 						cs-tooltip
 				td
 					cs-label-button(value="{{block.active}}"): label
-						input(name="block[active]" type="radio" value="1")
+						input(type="radio" value="1")
 						| [[L.yes]]
 					cs-label-button: label
-						input(name="block[active]" type="radio" value="0")
+						input(type="radio" value="0")
 						| [[L.no]]
 			tr
 				td
@@ -37,7 +37,7 @@ dom-module#cs-system-admin-blocks-form
 						| [[L.block_start]]
 						cs-tooltip
 				td
-					cs-input-text: input(name="block[start]" type="datetime-local" value="{{block.start}}")
+					cs-input-text: input(type="datetime-local" value="{{block.start}}")
 			tr
 				td
 					span(tooltip="[[L.block_expire_info]]")
@@ -45,18 +45,18 @@ dom-module#cs-system-admin-blocks-form
 						cs-tooltip
 				td
 					cs-label-button(value="{{block.expire.state}}"): label
-						input(name="block[expire][state]" type="radio" value="0")
+						input(type="radio" value="0")
 						| [[L.never]]
 					cs-label-button: label
-						input(name="block[expire][state]" type="radio" value="1")
+						input(type="radio" value="1")
 						| [[L.as_specified]]
 					br
 					br
-					cs-input-text: input(name="block[expire][date]" type="datetime-local" value="{{block.expire.date}}")
+					cs-input-text: input(type="datetime-local" value="{{block.expire.date}}")
 		.html(hidden="[[!equal(block.type, 'html')]]")
 			cs-editor(value="{{block.content}}")
-				textarea(is="cs-textarea" autosize full-width rows="5" name="block[html]" value="{{block.content}}")
+				textarea(is="cs-textarea" autosize full-width rows="5" value="{{block.content}}")
 		.raw_html(hidden="[[!equal(block.type, 'raw_html')]]")
-			textarea(is="cs-textarea" autosize full-width rows="5" name="block[raw_html]" value="{{block.content}}")
+			textarea(is="cs-textarea" autosize full-width rows="5" value="{{block.content}}")
 		cs-button(primary class="cs-margin-top"): button(type="button" on-tap="_save") [[L.save]]
 	script(src="script.js")

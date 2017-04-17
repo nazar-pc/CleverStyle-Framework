@@ -15,7 +15,7 @@ dom-module#cs-static-pages-admin-pages-add-edit-form
 			tr
 				td
 					template(is="dom-if" if="[[categories]]")
-						select(is="cs-select" selected="{{page.category}}" size="5")
+						cs-select(selected="{{page.category}}"): select(size="5")
 							template(is="dom-repeat" items="[[categories]]")
 								option(value="[[item.id]]") [[item.full_title]]
 				td

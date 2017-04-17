@@ -25,11 +25,11 @@ dom-module#cs-system-admin-users-edit-user-form
 				cs-input-text(tight): input(type="password" value="{{user_data.password}}")
 				cs-button(icon="lock"): button(type="button" on-tap="_show_password")
 			label [[L.language]]
-			select(is="cs-select" selected="{{user_data.language}}" size="5")
+			cs-select(selected="{{user_data.language}}"): select(size="5")
 				template(is="dom-repeat" items="[[languages]]" as="language")
 					option(value="[[language.clanguage]]") [[language.description]]
 			label [[L.timezone]]
-			select(is="cs-select" selected="{{user_data.timezone}}" size="7")
+			cs-select(selected="{{user_data.timezone}}"): select(size="7")
 				template(is="dom-repeat" items="[[timezones]]" as="timezone")
 					option(value="[[timezone.timezone]]") [[timezone.description]]
 			label [[L.status]]

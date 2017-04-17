@@ -7,13 +7,9 @@
  */
 (function(){
   Polymer.cs.behaviors.csProgress = [
-    Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.injectLightStyles, {
+    Polymer.cs.behaviors.fullWidth, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.injectLightStyles, {
       _styles_dom_module: 'cs-progress-styles',
       properties: {
-        fullWidth: {
-          reflectToAttribute: true,
-          type: Boolean
-        },
         infinite: Boolean,
         primary: {
           reflectToAttribute: true,

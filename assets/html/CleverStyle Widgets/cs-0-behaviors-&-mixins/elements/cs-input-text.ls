@@ -5,6 +5,8 @@
  * @license   MIT License, see license.txt
  */
 Polymer.cs.behaviors.cs-input-text = [
+	Polymer.cs.behaviors.compact
+	Polymer.cs.behaviors.full-width
 	Polymer.cs.behaviors.size
 	Polymer.cs.behaviors.tight
 	Polymer.cs.behaviors.tooltip

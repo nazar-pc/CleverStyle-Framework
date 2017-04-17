@@ -61,7 +61,7 @@
           return results$;
         }();
         categories_list = categories_list.join('');
-        modal = $(cs.ui.simple_modal("<form>\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<p>\n		" + L.category + ": <select is=\"cs-select\" name=\"category\" required>" + categories_list + "</select>\n	</p>\n	<div></div>\n</form>"));
+        modal = $(cs.ui.simple_modal("<form>\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<p>\n		" + L.category + ": <cs-select><select name=\"category\" required>" + categories_list + "</select></cs-select>\n	</p>\n	<div></div>\n</form>"));
         modal.item_data = {};
         modal.update_item_data = function(){
           var item, attribute, ref$, value;
@@ -122,7 +122,7 @@
                 values = fn$();
                 values = values.join('');
                 color = attribute.type === color_set_attribute_type ? "<cs-input-text><input type=\"color\"></cs-input-text>" : '';
-                results$.push("<p>\n	" + attribute.title + ":\n	<select is=\"cs-select\" name=\"attributes[" + attribute.id + "]\">\n		<option value=\"\">" + L.none + "</option>\n		" + values + "\n	</select>\n	" + color + "\n</p>");
+                results$.push("<p>\n	" + attribute.title + ":\n	<cs-select>\n		<select name=\"attributes[" + attribute.id + "]\">\n			<option value=\"\">" + L.none + "</option>\n			" + values + "\n		</select>\n	</cs-select>\n	" + color + "\n</p>");
               } else if (string_attribute_types.indexOf(attribute.type) !== -1) {
                 results$.push("<p>\n	" + attribute.title + ": <cs-input-text><input name=\"attributes[" + attribute.id + "]\"></cs-input-text>\n</p>");
               } else {
@@ -207,7 +207,7 @@
           modal.add_videos = function(videos){
             videos.forEach(function(video){
               var added_video, video_video, video_poster;
-              videos_container.append("<p>\n	<cs-icon icon=\"sort\" class=\"handle\"></cs-icon>\n	<select is=\"cs-select\" name=\"videos[type][]\" class=\"video-type\">\n		<option value=\"supported_video\">" + L.youtube_vimeo_url + "</option>\n		<option value=\"iframe\">" + L.iframe_url_or_embed_code + "</option>\n		<option value=\"direct_url\">" + L.direct_video_url + "</option>\n	</select>\n	<textarea is=\"cs-textarea\" autosize name=\"videos[video][]\" placeholder=\"" + L.url_or_code + "\" class=\"video-video\" rows=\"3\"></textarea>\n	<cs-input-text><input name=\"videos[poster][]\" class=\"video-poster\" placeholder=\"" + L.video_poster + "\"></cs-input-text>\n	<cs-button><button type=\"button\" class=\"delete-video\"><cs-icon icon=\"close\"></cs-icon></button></cs-button>\n	<cs-progress hidden full-width><progress></progress></cs-progress>\n</p>");
+              videos_container.append("<p>\n	<cs-icon icon=\"sort\" class=\"handle\"></cs-icon>\n	<cs-select>\n		<select name=\"videos[type][]\" class=\"video-type\">\n			<option value=\"supported_video\">" + L.youtube_vimeo_url + "</option>\n			<option value=\"iframe\">" + L.iframe_url_or_embed_code + "</option>\n			<option value=\"direct_url\">" + L.direct_video_url + "</option>\n		</select>\n	</cs-select>\n	<textarea is=\"cs-textarea\" autosize name=\"videos[video][]\" placeholder=\"" + L.url_or_code + "\" class=\"video-video\" rows=\"3\"></textarea>\n	<cs-input-text><input name=\"videos[poster][]\" class=\"video-poster\" placeholder=\"" + L.video_poster + "\"></cs-input-text>\n	<cs-button><button type=\"button\" class=\"delete-video\"><cs-icon icon=\"close\"></cs-icon></button></cs-button>\n	<cs-progress hidden full-width><progress></progress></cs-progress>\n</p>");
               added_video = videos_container.children('p:last');
               video_video = added_video.find('.video-video').val(video.video);
               video_poster = added_video.find('.video-poster').val(video.poster);

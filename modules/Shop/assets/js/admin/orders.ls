@@ -50,7 +50,7 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 			<cs-button><button class="add-item">#{L.add_item}</button></cs-button>
 		</p>
 		<p>
-			#{L.shipping_type}: <select is="cs-select" name="shipping_type" required>#shipping_types_list</select>
+			#{L.shipping_type}: <cs-select><select name="shipping_type" required>#shipping_types_list</select></cs-select>
 		</p>
 		<p>
 			#{L.shipping_cost}: <cs-input-text><input name="shipping_cost"></cs-input-text> (<span id="shipping_cost"></span>)
@@ -65,7 +65,7 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 			#{L.shipping_address}: <textarea is="cs-textarea" autosize name="shipping_address"></textarea>
 		</p>
 		<p>
-			#{L.payment_method}: <select is="cs-select" name="payment_method" required>#payment_methods_list</select>
+			#{L.payment_method}: <cs-select><select name="payment_method" required>#payment_methods_list</select></cs-select>
 		</p>
 		<p>
 			#{L.paid}:
@@ -73,7 +73,7 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 			<cs-label-button><label><input type="radio" name="paid" value="0" checked> #{L.no}</label></cs-label-button>
 		</p>
 		<p>
-			#{L.status}: <select is="cs-select" name="status" required>#order_statuses</select>
+			#{L.status}: <cs-select><select name="status" required>#order_statuses</select></cs-select>
 		</p>
 		<p>
 			#{L.comment}: <textarea is="cs-textarea" autosize name="comment"></textarea>

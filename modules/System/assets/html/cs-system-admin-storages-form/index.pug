@@ -12,7 +12,7 @@ dom-module#cs-system-admin-storages-form
 			label(tooltip="[[L.storage_driver]]")
 				| [[L.storage_driver]]
 				cs-tooltip
-			select(is="cs-select" selected="{{storage.driver}}" size="5")
+			cs-select(selected="{{storage.driver}}"): select(size="5")
 				template(is="dom-repeat" items="[[drivers]]")
 					option [[item]]
 			label(tooltip="[[L.storage_user_info]]")

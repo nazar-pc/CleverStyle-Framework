@@ -44,10 +44,12 @@ make_modal	= (attributes, categories, L, title, action) ->
 		<h3 class="cs-text-center">#title</h3>
 		<p>
 			#{L.parent_category}:
-			<select is="cs-select" name="parent" required>
-				<option value="0">#{L.none}</option>
-				#categories
-			</select>
+			<cs-select>
+				<select name="parent" required>
+					<option value="0">#{L.none}</option>
+					#categories
+				</select>
+			</cs-select>
 		</p>
 		<p>
 			#{L.title}: <cs-input-text><input name="title" required></cs-input-text>
@@ -69,17 +71,19 @@ make_modal	= (attributes, categories, L, title, action) ->
 			<cs-progress hidden><progress></progress></cs-progress>
 		</p>
 		<p>
-			#{L.category_attributes}: <select is="cs-select" name="attributes[]" multiple required size="5">#attributes</select>
+			#{L.category_attributes}: <cs-select><select name="attributes[]" multiple required size="5">#attributes</select></cs-select>
 		</p>
 		<p>
-			#{L.title_attribute}: <select is="cs-select" name="title_attribute" required>#attributes</select>
+			#{L.title_attribute}: <cs-select><select name="title_attribute" required>#attributes</select></cs-select>
 		</p>
 		<p>
 			#{L.description_attribute}:
-			<select is="cs-select" name="description_attribute" required>
-				<option value="0">#{L.none}</option>
-				#attributes
-			</select>
+			<cs-select>
+				<select name="description_attribute" required>
+					<option value="0">#{L.none}</option>
+					#attributes
+				</select>
+			</cs-select>
 		</p>
 		<p>
 			#{L.visible}:

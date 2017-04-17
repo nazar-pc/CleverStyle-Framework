@@ -43,7 +43,7 @@ make_modal = (attributes, categories, L, title, action) ->
 	modal			= $(cs.ui.simple_modal("""<form>
 		<h3 class="cs-text-center">#title</h3>
 		<p>
-			#{L.category}: <select is="cs-select" name="category" required>#categories_list</select>
+			#{L.category}: <cs-select><select name="category" required>#categories_list</select></cs-select>
 		</p>
 		<div></div>
 	</form>"""))
@@ -97,10 +97,12 @@ make_modal = (attributes, categories, L, title, action) ->
 							''
 					"""<p>
 						#{attribute.title}:
-						<select is="cs-select" name="attributes[#{attribute.id}]">
-							<option value="">#{L.none}</option>
-							#values
-						</select>
+						<cs-select>
+							<select name="attributes[#{attribute.id}]">
+								<option value="">#{L.none}</option>
+								#values
+							</select>
+						</cs-select>
 						#color
 					</p>"""
 				else if string_attribute_types.indexOf(attribute.type) != -1
@@ -218,11 +220,13 @@ make_modal = (attributes, categories, L, title, action) ->
 			videos.forEach (video) !->
 				videos_container.append("""<p>
 					<cs-icon icon="sort" class="handle"></cs-icon>
-					<select is="cs-select" name="videos[type][]" class="video-type">
-						<option value="supported_video">#{L.youtube_vimeo_url}</option>
-						<option value="iframe">#{L.iframe_url_or_embed_code}</option>
-						<option value="direct_url">#{L.direct_video_url}</option>
-					</select>
+					<cs-select>
+						<select name="videos[type][]" class="video-type">
+							<option value="supported_video">#{L.youtube_vimeo_url}</option>
+							<option value="iframe">#{L.iframe_url_or_embed_code}</option>
+							<option value="direct_url">#{L.direct_video_url}</option>
+						</select>
+					</cs-select>
 					<textarea is="cs-textarea" autosize name="videos[video][]" placeholder="#{L.url_or_code}" class="video-video" rows="3"></textarea>
 					<cs-input-text><input name="videos[poster][]" class="video-poster" placeholder="#{L.video_poster}"></cs-input-text>
 					<cs-button><button type="button" class="delete-video"><cs-icon icon="close"></cs-icon></button></cs-button>

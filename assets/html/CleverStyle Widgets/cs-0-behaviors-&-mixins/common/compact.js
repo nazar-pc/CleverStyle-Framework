@@ -6,5 +6,13 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csInputText = [Polymer.cs.behaviors.compact, Polymer.cs.behaviors.fullWidth, Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value];
+  var ref$;
+  ((ref$ = Polymer.cs || (Polymer.cs = {})).behaviors || (ref$.behaviors = {})).compact = {
+    properties: {
+      compact: {
+        reflectToAttribute: true,
+        type: Boolean
+      }
+    }
+  };
 }).call(this);

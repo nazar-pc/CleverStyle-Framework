@@ -33,10 +33,12 @@ Promise.all([
 							<textarea is="cs-textarea" autosize></textarea>
 						</cs-editor>
 						<label>#{L.type}</label>
-						<select is="cs-select" name="type">
-							<option value="text">text</option>
-							<option value="html">html</option>
-						</select>
+						<cs-select>
+							<select name="type">
+								<option value="text">text</option>
+								<option value="html">html</option>
+							</select>
+						</cs-select>
 						<div>
 							<cs-button primary><button type="button">#{L.save}</button></cs-button>
 						</div>
@@ -87,10 +89,12 @@ Promise.all([
 								<textarea is="cs-textarea" autosize></textarea>
 							</cs-editor>
 							<label>#{L.type}</label>
-							<select is="cs-select" name="type">
-								<option value="text">text</option>
-								<option value="html">html</option>
-							</select>
+							<cs-select>
+								<select name="type">
+									<option value="text">text</option>
+									<option value="html">html</option>
+								</select>
+							</cs-select>
 							<div>
 								<cs-button primary><button type="button">#{L.save}</button></cs-button>
 							</div>

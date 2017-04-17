@@ -1,0 +1,70 @@
+/**
+ * @package   CleverStyle Widgets
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+:host {
+	display        : inline-flex;
+	vertical-align : middle;
+}
+
+:host([hidden]) {
+	display : none;
+}
+
+::slotted(select) {
+	background-color : #fff;
+	border           : none;
+	color            : inherit;
+
+	@apply --cs-global;
+	@apply --cs-input-text;
+	@apply --cs-select;
+}
+
+:host([compact]) ::slotted(select) {
+	width : auto;
+}
+
+:host([full-width]) ::slotted(select) {
+	width : 100%;
+}
+
+::slotted(select[size]:not([size='0']):not([size='1'])) {
+	height : auto;
+}
+
+::slotted(select:active) {
+	@apply --cs-input-text-active;
+	@apply --cs-select-active;
+}
+
+::slotted(select:focus) {
+	outline : none;
+
+	@apply --cs-input-text-hover;
+	@apply --cs-select-hover;
+	@apply --cs-input-text-focus;
+	@apply --cs-select-focus;
+}
+
+::slotted(select:hover) {
+	@apply --cs-input-text-hover;
+	@apply --cs-select-hover;
+}
+
+::slotted(select:disabled) {
+	cursor : not-allowed;
+
+	@apply --cs-input-text-disabled;
+	@apply --cs-select-disabled;
+}
+
+/* Should be :read-only, but https://bugzilla.mozilla.org/show_bug.cgi?id=312971 */
+::slotted(select[readonly]) {
+	cursor : not-allowed;
+
+	@apply --cs-input-text-readonly;
+	@apply --cs-select-readonly;
+}

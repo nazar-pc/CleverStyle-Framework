@@ -212,7 +212,7 @@ Polymer(
 					content	+= """<tr>
 						<td>#db_name</td>
 						<td>
-							<select is="cs-select" name="db[#db_name]">#db_options</select>
+							<cs-select><select name="db[#db_name]">#db_options</select></cs-select>
 						</td>
 					</tr>"""
 		if meta.storage && storages.length
@@ -238,7 +238,7 @@ Polymer(
 					content	+= """<tr>
 						<td>#storage_name</td>
 						<td>
-							<select is="cs-select" name="storage[#storage_name]">#storage_options</select>
+							<cs-select><select name="storage[#storage_name]">#storage_options</select></cs-select>
 						</td>
 					</tr>"""
 		if settings.simple_admin_mode

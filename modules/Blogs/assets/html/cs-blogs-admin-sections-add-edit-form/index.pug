@@ -17,7 +17,7 @@ dom-module#cs-blogs-admin-sections-add-edit-form
 				td [[L.parent_section]]
 				td
 					template(is="dom-if" if="[[sections]]")
-						select(is="cs-select" selected="{{section.parent}}" size="7")
+						cs-select(selected="{{section.parent}}"): select(size="7")
 							option(value="0") [[L.root_section]]
 							template(is="dom-repeat" items="[[sections]]")
 								option(value="[[item.id]]" disabled="[[equal(item.id, section.id)]]") [[item.full_title]]

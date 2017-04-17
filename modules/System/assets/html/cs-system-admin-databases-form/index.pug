@@ -5,7 +5,7 @@ dom-module#cs-system-admin-databases-form
 				label(tooltip="[[L.db_mirror_info]]")
 					| [[L.db_mirror]]
 					cs-tooltip
-				select(is="cs-select" selected="{{database.mirror}}" size="5")
+				cs-select(selected="{{database.mirror}}"): select(size="5")
 					option(value="-1") [[L.separate_db]]
 					template(is="dom-repeat" items="[[databases]]")
 						option(value="[[item.index]]") [[_db_name(item.index, item.host, item.name)]]
@@ -16,7 +16,7 @@ dom-module#cs-system-admin-databases-form
 			label(tooltip="[[L.db_type_info]]")
 				| [[L.db_driver]]
 				cs-tooltip
-			select(is="cs-select" selected="{{database.driver}}" size="5")
+			cs-select(selected="{{database.driver}}"): select(size="5")
 				template(is="dom-repeat" items="[[drivers]]")
 					option [[item]]
 			label(tooltip="[[L.db_prefix_info]]")

@@ -6,13 +6,13 @@ dom-module#cs-system-admin-languages
 			label(tooltip="[[L.default_language_info]]")
 				| [[L.default_language]]
 				cs-tooltip
-			select(is="cs-select" selected="{{settings.language}}" size="5")
+			cs-select(selected="{{settings.language}}"): select(size="5")
 				template(is="dom-repeat" items="[[settings.active_languages]]")
 					option [[item]]
 			label(tooltip="[[L.active_languages_info]]")
 				| [[L.active_languages]]
 				cs-tooltip
-			select(is="cs-select" selected="{{settings.active_languages}}" size="5" multiple)
+			cs-select(selected="{{settings.active_languages}}"): select(size="5" multiple)
 				template(is="dom-repeat" items="[[settings.languages]]")
 					option [[item]]
 			+on-off-switcher("multilingual")

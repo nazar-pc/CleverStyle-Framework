@@ -15,7 +15,7 @@ make_modal			= (types, L, title, action) ->
 	cs.ui.simple_modal("""<cs-form><form>
 		<h3 class="cs-text-center">#title</h3>
 		<label>#{L.attribute_type}</label>
-		<select is="cs-select" name="type" required>#types</select>
+		<cs-select><select name="type" required>#types</select></cs-select>
 		<label>#{L.possible_values}</label>
 		<textarea is="cs-textarea" autosize name="value"></textarea>
 		<label>#{L.title}</label>
