@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer.cs.behaviors.csSelect = [
-    Polymer.cs.behaviors.compact, Polymer.cs.behaviors.fullWidth, Polymer.cs.behaviors.ready, Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value, Polymer.cs.behaviors.injectLightStyles, {
+    Polymer.cs.behaviors.ready, Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value, Polymer.cs.behaviors.injectLightStyles, {
       _styles_dom_module: 'cs-select-styles',
       properties: {
         selected: {

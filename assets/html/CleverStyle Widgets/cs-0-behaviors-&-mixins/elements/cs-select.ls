@@ -5,12 +5,9 @@
  * @license   MIT License, see license.txt
  */
 Polymer.cs.behaviors.cs-select = [
-	Polymer.cs.behaviors.compact
-	Polymer.cs.behaviors.full-width
 	Polymer.cs.behaviors.ready
 	Polymer.cs.behaviors.size
 	Polymer.cs.behaviors.tight
-	Polymer.cs.behaviors.this
 	Polymer.cs.behaviors.tooltip
 	Polymer.cs.behaviors.value
 	Polymer.cs.behaviors.inject-light-styles

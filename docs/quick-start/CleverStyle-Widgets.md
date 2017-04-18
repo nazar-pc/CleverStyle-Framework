@@ -330,7 +330,7 @@ Examples:
 ```
 
 #### cs-select
-Extends native `select` element.
+Wrapper element for native `select` element.
 
 Attributes (also available as properties, so use whatever is more convenient):
 * compact - boolean, uses automatic width computation, which is more compact that enforced styled width
@@ -339,21 +339,26 @@ Attributes (also available as properties, so use whatever is more convenient):
 
 Properties:
 * selected - string or array, depending on `multiple` attribute might contain single value or array of values (extremely convenient for two-way data-bindings), it is recommended to use it instead of native `value`
-* this - object, read-only, `this` of element, useful for data-binding
 * tooltip - string, if specified then tooltip with specified content will be shown on hover
+
+Select element will start firing `value-change` event on any `change` or `input` event, so that it works nicely and more convenient with data bindings (though, `selected` property is much better at this)
 
 Examples:
 ```html
-<select is="cs-select">
-    <option>One</option>
-    <option>Two</option>
-    <option>Three</option>
-</select>
-<select is="cs-select" selected="{{user_data.language}}" size="5">
-    <template is="dom-repeat" items="[[languages]]" as="language">
-        <option value="[[language.clanguage]]">[[language.description]]</option>
-    </template>
-</select>
+<cs-select>
+    <select>
+        <option>One</option>
+        <option>Two</option>
+        <option>Three</option>
+    </select>
+</cs-select>
+<cs-select selected="{{user_data.language}}">
+    <select size="5">
+        <template is="dom-repeat" items="[[languages]]" as="language">
+            <option value="[[language.clanguage]]">[[language.description]]</option>
+        </template>
+    </select>
+</cs-select>
 ```
 
 #### cs-tabs

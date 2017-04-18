@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer.cs.behaviors.csTextarea = [
-    Polymer.cs.behaviors.compact, Polymer.cs.behaviors.fullWidth, Polymer.cs.behaviors.ready, Polymer.cs.behaviors.size, Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value, {
+    Polymer.cs.behaviors.ready, Polymer.cs.behaviors.size, Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value, {
       properties: {
         autosize: {
           observer: '_autosize_changed',
