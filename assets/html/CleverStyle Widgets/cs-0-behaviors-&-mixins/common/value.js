@@ -12,7 +12,7 @@
       if (this['extends']) {
         target = this;
       } else {
-        target = this.firstChild;
+        target = this.firstElementChild;
       }
       x$ = target;
       x$.addEventListener('change', function(){

@@ -22,7 +22,7 @@
         timeout = null;
         callback = function(){
           var timeout, height_in_px, font_size;
-          this$._select = this$.querySelector('select');
+          this$._select = this$.firstElementChild;
           this$._select.addEventListener('value-changed', bind$(this$, '_value_changed'));
           if (this$.selected === undefined) {
             this$.selected = this$._select.value;

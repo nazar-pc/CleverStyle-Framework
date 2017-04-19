@@ -25,7 +25,7 @@ make_modal	= (L, title, action) ->
 			<cs-label-button><label><input type="radio" name="address_needed" value="0"> #{L.no}</label></cs-label-button>
 		</div>
 		<label>#{L.description}</label>
-		<textarea is="cs-textarea" autosize name="description"></textarea>
+		<cs-textarea autosize><textarea name="description"></textarea></cs-textarea>
 		<br>
 		<cs-button primary><button type="submit">#action</button></cs-button>
 	</form></cs-form>"""))

@@ -17,7 +17,7 @@ make_modal			= (types, L, title, action) ->
 		<label>#{L.attribute_type}</label>
 		<cs-select><select name="type" required>#types</select></cs-select>
 		<label>#{L.possible_values}</label>
-		<textarea is="cs-textarea" autosize name="value"></textarea>
+		<cs-textarea autosize><textarea name="value"></textarea></cs-textarea>
 		<label>#{L.title}</label>
 		<cs-input-text><input name="title" required></cs-input-text>
 		<label>#{L.title_internal}</label>

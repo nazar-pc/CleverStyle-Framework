@@ -6,5 +6,4 @@
  */
 Polymer(
 	is			: 'cs-textarea'
-	extends		: 'textarea'
 	behaviors	: Polymer.cs.behaviors.cs-textarea)

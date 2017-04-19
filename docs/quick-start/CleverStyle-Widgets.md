@@ -376,7 +376,7 @@ Example:
 ```
 
 #### cs-textarea
-Extends native `textarea` element.
+Wrapper element for native `textarea` element.
 
 Attributes (also available as properties, so use whatever is more convenient):
 * autosize - boolean, if specified then height will be adjusted dynamically as contents grow
@@ -384,14 +384,14 @@ Attributes (also available as properties, so use whatever is more convenient):
 * full-width - boolean, makes element width 100%
 
 Properties:
-* this - object, read-only, `this` of element, useful for data-binding
 * tooltip - string, if specified, tooltip with specified content will be shown on hover
-* value - string, actually, native property, but now fires `value-change` event on any `change` or `input` event, so works nicely and more convenient with data bindings
+
+Textarea element will start firing `value-change` event on any `change` or `input` event, so that it works nicely and more convenient with data bindings
 
 Examples:
 ```html
-<textarea is="cs-textarea"></textarea>
-<textarea is="cs-textarea" autosize full-width rows="5" value="{{content}}"></textarea>
+<cs-textarea><textarea></textarea></cs-textarea>
+<cs-textarea autosize full-width><textarea rows="5" value="{{content}}"></textarea></cs-textarea>
 ```
 
 #### cs-tooltip

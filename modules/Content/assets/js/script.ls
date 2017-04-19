@@ -28,9 +28,9 @@ Promise.all([
 						<label>#{L.title}</label>
 						<cs-input-text><input type="text" name="title"></cs-input-text>
 						<label>#{L.content}</label>
-						<textarea is="cs-textarea" autosize class="text cs-margin-bottom"></textarea>
+						<cs-textarea autosize><textarea class="text cs-margin-bottom"></textarea></cs-textarea>
 						<cs-editor class="html cs-margin-bottom" hidden>
-							<textarea is="cs-textarea" autosize></textarea>
+							<cs-textarea autosize><textarea></textarea></cs-textarea>
 						</cs-editor>
 						<label>#{L.type}</label>
 						<cs-select>
@@ -84,9 +84,9 @@ Promise.all([
 							<label>#{L.title}</label>
 							<cs-input-text><input type="text" name="title"></cs-input-text>
 							<label>#{L.content}</label>
-							<textarea is="cs-textarea" autosize class="text cs-margin-bottom"></textarea>
+							<cs-textarea autosize><textarea class="text cs-margin-bottom"></textarea></cs-textarea>
 							<cs-editor class="html cs-margin-bottom" hidden>
-								<textarea is="cs-textarea" autosize></textarea>
+								<cs-textarea autosize><textarea></textarea></cs-textarea>
 							</cs-editor>
 							<label>#{L.type}</label>
 							<cs-select>

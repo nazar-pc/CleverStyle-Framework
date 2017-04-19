@@ -12,7 +12,7 @@ dom-module#cs-static-pages-page
 			h1#title(contenteditable="true") [[page.title]]
 			template(is="dom-if" if="[[!inline_editor]]")
 				cs-editor(value="{{page.content}}")
-					textarea(is="cs-textarea" autosize value="{{page.content}}")
+					cs-textarea(autosize): textarea(value="{{page.content}}")
 			template(is="dom-if" if="[[inline_editor]]" restamp)
 				cs-editor-inline(value="{{page.content}}")
 					div

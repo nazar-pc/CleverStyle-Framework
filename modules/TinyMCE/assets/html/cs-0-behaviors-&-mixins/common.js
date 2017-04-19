@@ -131,7 +131,7 @@
         delete this._tinymce_editor;
       }
       tinymce.init(importAll$({
-        target: this.firstElementChild,
+        target: this.querySelector('textarea, div'),
         init_instance_callback: function(editor){
           var target;
           this$._tinymce_editor = editor;

@@ -107,7 +107,7 @@ Polymer.cs.behaviors.{}TinyMCE.editor =
 			delete @_tinymce_editor
 		tinymce.init(
 			{
-				target					: @firstElementChild
+				target					: @querySelector('textarea, div')
 				init_instance_callback	: (editor) !~>
 					@_tinymce_editor	= editor
 					@_init_started		= false

@@ -62,7 +62,7 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 			#{L.shipping_phone}: <cs-input-text><input name="shipping_phone"></cs-input-text>
 		</p>
 		<p>
-			#{L.shipping_address}: <textarea is="cs-textarea" autosize name="shipping_address"></textarea>
+			#{L.shipping_address}: <cs-textarea autosize><textarea name="shipping_address"></textarea></cs-textarea>
 		</p>
 		<p>
 			#{L.payment_method}: <cs-select><select name="payment_method" required>#payment_methods_list</select></cs-select>
@@ -76,7 +76,7 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 			#{L.status}: <cs-select><select name="status" required>#order_statuses</select></cs-select>
 		</p>
 		<p>
-			#{L.comment}: <textarea is="cs-textarea" autosize name="comment"></textarea>
+			#{L.comment}: <cs-textarea autosize><textarea name="comment"></textarea></cs-textarea>
 		</p>
 		<p>
 			<cs-button primary><button type="submit">#action</button></cs-button>

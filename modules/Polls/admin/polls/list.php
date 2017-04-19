@@ -54,7 +54,7 @@ Page::instance()->content(
 				'placeholder' => $L->poll_title
 			]
 		).
-		h::{'p textarea[is=cs-textarea][autosize][name=add[options]]'}(
+		h::{'p cs-textarea[autosize] textarea[name=add[options]]'}(
 			[
 				'placeholder' => $L->answers_one_per_line
 			]

@@ -55,8 +55,8 @@ dom-module#cs-system-admin-blocks-form
 					cs-input-text: input(type="datetime-local" value="{{block.expire.date}}")
 		.html(hidden="[[!equal(block.type, 'html')]]")
 			cs-editor(value="{{block.content}}")
-				textarea(is="cs-textarea" autosize full-width rows="5" value="{{block.content}}")
+				cs-textarea(autosize full-width): textarea(rows="5" value="{{block.content}}")
 		.raw_html(hidden="[[!equal(block.type, 'raw_html')]]")
-			textarea(is="cs-textarea" autosize full-width rows="5" value="{{block.content}}")
+			cs-textarea(autosize full-width): textarea(rows="5" value="{{block.content}}")
 		cs-button(primary class="cs-margin-top"): button(type="button" on-tap="_save") [[L.save]]
 	script(src="script.js")

@@ -13,7 +13,7 @@
 	display : none;
 }
 
-::slotted(input) {
+::slotted(textarea) {
 	background-color : #fff;
 	border           : none;
 	color            : inherit;
@@ -21,40 +21,47 @@
 
 	@apply --cs-global;
 	@apply --cs-input-text;
+	@apply --cs-textarea;
 }
 
-:host([compact]) ::slotted(input) {
+:host([compact]) ::slotted(textarea) {
 	width : auto;
 }
 
-:host([full-width]) ::slotted(input) {
+:host([full-width]) ::slotted(textarea) {
 	width : 100%;
 }
 
-::slotted(input:active) {
+::slotted(textarea:active) {
 	@apply --cs-input-text-active;
+	@apply --cs-textarea-active;
 }
 
-::slotted(input:focus) {
+::slotted(textarea:focus) {
 	outline : none;
 
 	@apply --cs-input-text-hover;
+	@apply --cs-textarea-hover;
 	@apply --cs-input-text-focus;
+	@apply --cs-textarea-focus;
 }
 
-::slotted(input:hover) {
+::slotted(textarea:hover) {
 	@apply --cs-input-text-hover;
+	@apply --cs-textarea-hover;
 }
 
-::slotted(input:disabled) {
+::slotted(textarea:disabled) {
 	cursor : not-allowed;
 
 	@apply --cs-input-text-disabled;
+	@apply --cs-textarea-disabled;
 }
 
 /* Should be :read-only, but https://bugzilla.mozilla.org/show_bug.cgi?id=312971 */
-::slotted(input[readonly]) {
+::slotted(textarea[readonly]) {
 	cursor : not-allowed;
 
 	@apply --cs-input-text-readonly;
+	@apply --cs-textarea-readonly;
 }

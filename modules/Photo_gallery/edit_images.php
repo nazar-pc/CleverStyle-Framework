@@ -48,7 +48,7 @@ Page::instance()
 									]
 								).
 								h::label($L->image_description).
-								h::{'textarea[is=cs-textarea][autosize]'}(
+								h::{'cs-textarea[autosize] textarea'}(
 									$image['description'],
 									[
 										'name' => "edit_images[$image[id]][description]"

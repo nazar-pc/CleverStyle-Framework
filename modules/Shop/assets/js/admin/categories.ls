@@ -55,7 +55,7 @@ make_modal	= (attributes, categories, L, title, action) ->
 			#{L.title}: <cs-input-text><input name="title" required></cs-input-text>
 		</p>
 		<p>
-			#{L.description}: <textarea is="cs-textarea" autosize name="description"></textarea>
+			#{L.description}: <cs-textarea autosize><textarea name="description"></textarea></cs-textarea>
 		</p>
 		<p class="image" hidden style="width: 150px">
 			#{L.image}:

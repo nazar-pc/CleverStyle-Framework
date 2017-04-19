@@ -1,7 +1,7 @@
 {
 	"package"      : "Blogs",
 	"category"     : "modules",
-	"version"      : "2.85.0+build-292",
+	"version"      : "2.86.0+build-293",
 	"description"  : "Adds blogging functionality. Comments module is required for comments functionality, Plupload or similar module is required for files uploading functionality.",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/Framework",
@@ -23,7 +23,7 @@
 	],
 	"provide"      : "blogs",
 	"require"      : [
-		"System>=7.15",
+		"System>=7.16",
 		"System<8.0",
 		"Tags>=2.0",
 		"Tags<3.0",

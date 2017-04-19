@@ -39,7 +39,7 @@ Page::instance()
 				)
 			).
 			h::label($L->gallery_description).
-			h::{'textarea[is=cs-textarea][name=edit[description]]'}($gallery['description']).
+			h::{'cs-textarea textarea[name=edit[description]]'}($gallery['description']).
 			h::label($L->state).
 			h::{'div radio[name=edit[active]]'}(
 				[

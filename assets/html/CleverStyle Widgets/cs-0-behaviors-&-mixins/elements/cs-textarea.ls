@@ -7,7 +7,6 @@
 Polymer.cs.behaviors.cs-textarea = [
 	Polymer.cs.behaviors.ready
 	Polymer.cs.behaviors.size
-	Polymer.cs.behaviors.this
 	Polymer.cs.behaviors.tooltip
 	Polymer.cs.behaviors.value
 	properties	:
@@ -32,8 +31,8 @@ Polymer.cs.behaviors.cs-textarea = [
 			require(['autosize'], @~_do_autosizing_callback)
 	_do_autosizing_callback : (autosize) !->
 		if @autosize
-			autosize(@)
-			autosize.update(@)
+			autosize(@firstElementChild)
+			autosize.update(@firstElementChild)
 		else
-			autosize.destroy(@)
+			autosize.destroy(@firstElementChild)
 ]

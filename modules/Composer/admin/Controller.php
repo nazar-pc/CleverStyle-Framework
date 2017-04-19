@@ -51,7 +51,7 @@ class Controller {
 		$Page->content(
 			h::{'cs-form form'}(
 				h::label($L->auth_json_contents).
-				h::{'p textarea[is=cs-textarea][autosize][name=auth_json]'}($module_data->auth_json ?: '').
+				h::{'p cs-textarea[autosize] textarea[name=auth_json]'}($module_data->auth_json ?: '').
 				h::cs_button(
 					h::{'button[type=submit]'}($L->save),
 					[

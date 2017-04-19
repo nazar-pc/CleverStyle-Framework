@@ -26,12 +26,12 @@ dom-module#cs-blogs-add-edit-post
 							div [[post.content]]
 					template(is="dom-if" if="[[!settings.inline_editor]]")
 						cs-editor(value="{{post.content}}")
-							textarea(is="cs-textarea" autosize name="content" required value="{{post.content}}") [[post.content]]
+							cs-textarea(autosize): textarea(required value="{{post.content}}") [[post.content]]
 					p(inner-h-t-m-l="[[L.post_use_pagebreak]]")
 			tr
 				td [[L.post_tags]]
 				td
-					cs-input-text: input(name="tags" required value="{{local_tags}}" placeholder="CleverStyle, Framework, Open Source")
+					cs-input-text: input(required value="{{local_tags}}" placeholder="CleverStyle, Framework, Open Source")
 		cs-button: button(type="button" on-tap="_preview") [[L.preview]]
 		= ' '
 		cs-button: button(type="button" on-tap="_publish") [[L.publish]]

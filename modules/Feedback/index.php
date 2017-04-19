@@ -32,7 +32,7 @@ $Page->content(
 							'value'       => $User->user() ? $User->email : (isset($_POST['email']) ? $_POST['email'] : '')
 						]
 					),
-					h::{'textarea[is=cs-textarea][autosize][name=text][required]'}(
+					h::{'cs-textarea[autosize] textarea[name=text][required]'}(
 						[
 							'placeholder' => $L->feedback_text,
 							'value'       => isset($_POST['text']) ? $_POST['text'] : ''

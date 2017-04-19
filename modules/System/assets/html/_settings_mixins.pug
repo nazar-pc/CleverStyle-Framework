@@ -34,14 +34,14 @@ mixin textarea (name, hidden, bind_name)
 	label(tooltip=`[[L.${name}_info]]` hidden=hidden)
 		| [[L.#{name}]]
 		cs-tooltip
-	textarea(is="cs-textarea" autosize value=`{{${bind_name}}}` hidden=hidden)
+	cs-textarea(autosize): textarea(value=`{{${bind_name}}}` hidden=hidden)
 mixin editor (name, simple)
 	label(tooltip=`[[L.${name}_info]]`)
 		| [[L.#{name}]]
 		cs-tooltip
 	if simple
 		cs-editor-simple(value=`{{settings.${name}}}`)
-			textarea(is="cs-textarea" autosize value=`{{settings.${name}}}`)
+			cs-textarea(autosize): textarea(value=`{{settings.${name}}}`)
 	else
 		cs-editor(value=`{{settings.${name}}}`)
-			textarea(is="cs-textarea" autosize value=`{{settings.${name}}}`)
+			cs-textarea(autosize): textarea(value=`{{settings.${name}}}`)

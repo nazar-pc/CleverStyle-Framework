@@ -111,7 +111,7 @@ make_modal = (attributes, categories, L, title, action) ->
 					</p>"""
 				else
 					"""<p>
-						#{attribute.title}: <textarea is="cs-textarea" autosize name="attributes[#{attribute.id}]"></textarea>
+						#{attribute.title}: <cs-textarea autosize><textarea name="attributes[#{attribute.id}]"></textarea></cs-textarea>
 					</p>"""
 		attributes_list	= attributes_list.join('')
 		$this.parent().next().html("""
@@ -227,7 +227,7 @@ make_modal = (attributes, categories, L, title, action) ->
 							<option value="direct_url">#{L.direct_video_url}</option>
 						</select>
 					</cs-select>
-					<textarea is="cs-textarea" autosize name="videos[video][]" placeholder="#{L.url_or_code}" class="video-video" rows="3"></textarea>
+					<cs-textarea autosize><textarea name="videos[video][]" placeholder="#{L.url_or_code}" class="video-video" rows="3"></textarea></cs-textarea>
 					<cs-input-text><input name="videos[poster][]" class="video-poster" placeholder="#{L.video_poster}"></cs-input-text>
 					<cs-button><button type="button" class="delete-video"><cs-icon icon="close"></cs-icon></button></cs-button>
 					<cs-progress hidden full-width><progress></progress></cs-progress>

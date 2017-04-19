@@ -23,7 +23,7 @@ Polymer.cs.behaviors.cs-select = [
 		# Hack to work nicely with `dom-repeat`-created options inside
 		timeout		= null
 		callback	= !~>
-			@_select	= @querySelector('select')
+			@_select	= @firstElementChild
 			@_select.addEventListener('value-changed', @~_value_changed)
 			if @selected == undefined
 				@selected = @_select.value

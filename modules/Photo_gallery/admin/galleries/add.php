@@ -29,7 +29,7 @@ Page::instance()
 				h::{'cs-input-text input[name=add[path]]'}()
 			).
 			h::label($L->gallery_description).
-			h::{'textarea[is=cs-textarea][name=add[description]]'}().
+			h::{'cs-textarea textarea[name=add[description]]'}().
 			h::label($L->state).
 			h::{'div radio[name=add[active]][checked=1]'}(
 				[

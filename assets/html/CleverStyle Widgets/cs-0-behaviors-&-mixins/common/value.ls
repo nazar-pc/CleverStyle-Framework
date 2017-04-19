@@ -10,7 +10,7 @@ Polymer.cs.behaviors.value =
 		if this.extends
 			target	= @
 		else
-			target	= @firstChild
+			target	= @firstElementChild
 		target
 			..addEventListener('change', !->
 				@dispatchEvent(new CustomEvent('value-changed'))
