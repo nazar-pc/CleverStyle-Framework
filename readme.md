@@ -94,7 +94,6 @@ Some components are developed in parallel with core in this repository
  * **Json_ld** (simplifies some parts of JSON-LD generation)
  * **OAuth2** (provides realization of OAuth 2 authorization protocol (server side))
  * **Photo gallery** (simple photo gallery module)
- * **Picturefill** (integration of [Picturefill](https://github.com/scottjehl/picturefill) polyfill into CleverStyle Framework)
  * **Polls** (provides polls functionality to other modules)
  * **Prism** (integration of [Prism](http://prismjs.com/index.html) syntax highlighter into CleverStyle Framework)
  * **Psr7** (allows initializing system request from Psr7-compatible request and output response to Psr7-compatible response object)
