@@ -10,4 +10,6 @@ Polymer(
 	behaviors	: [
 		cs.Polymer.behaviors.Language('shop_')
 	]
-);
+	ready : !->
+		@$.orders.innerHTML	= @querySelector('#orders').innerHTML
+)

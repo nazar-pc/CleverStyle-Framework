@@ -7,11 +7,7 @@
  */
 @import '../../../../../../assets/css/flexy-plexy';
 
-.nested-categories {
-	@apply --layout-horizontal;
-}
-
-::content h1 {
+h1 {
 	margin-top : 0;
 }
 
@@ -27,9 +23,11 @@
 	}
 }
 
-::content #nested {
+#nested {
 	margin-top : 1em;
 	width      : 100%;
 
-	@include flexy-plexy(.51em, 1 1 1 1)
+	@include flexy-plexy(.51em, 1 1 1 1);
+
+	@apply --layout-horizontal;
 }

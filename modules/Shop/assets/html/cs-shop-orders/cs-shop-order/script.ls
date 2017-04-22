@@ -19,6 +19,7 @@ Polymer(
 		payment_method		: String
 		paid				: Boolean
 	ready : !->
+		@$.items.innerHTML	= @querySelector('#items').innerHTML
 		Promise.all([
 			require(['sprintf-js'])
 			cs.Language.ready()

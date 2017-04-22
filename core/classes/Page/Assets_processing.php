@@ -347,6 +347,7 @@ class Assets_processing {
 			 * Check for custom styles `is="custom-style"` or styles includes `include=".."` - we'll skip them
 			 * Or if content is plain CSS
 			 */
+			// TODO: add support for custom-style instead of style[is=custom-style]
 			if (
 				preg_match('/^[^>]*(is="custom-style"|include=)[^>]*>/Uim', $links_and_styles[2][$index]) ||
 				mb_strpos($links_and_styles[0][$index], '</style>') > 0

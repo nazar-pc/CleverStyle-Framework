@@ -7,12 +7,12 @@ dom-module#cs-shop-category-item
 				a(href="[[href]]")
 					img#img
 			div
-				content(select="h1")
+				h1
 				p
 					span.cs-text-primary.cs-text-lead [[price]]
 					= ' '
 					cs-shop-add-to-cart(item_id="[[item_id]]")
 					= ' '
 					span.cs-text-lead ([[L.in_stock]]: [[in_stock]])
-				content(select="#description")
+				#description
 	script(src="script.js")

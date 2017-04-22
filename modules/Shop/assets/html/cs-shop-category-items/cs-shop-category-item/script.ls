@@ -7,7 +7,6 @@
  */
 Polymer(
 	is			: 'cs-shop-category-item'
-	extends		: 'article'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('shop_')
 	]
@@ -17,9 +16,12 @@ Polymer(
 		item_id		: Number
 		in_stock	: String
 	ready : !->
-		img				= @querySelector('#img')
-		@$.img.src		= img.src
-		@$.img.title	= img.title
+		debugger
+		img											= @querySelector('#img')
+		@$.img.src									= img.src
+		@$.img.title								= img.title
+		@shadowRoot.querySelector('h1').innerHTML	= @querySelector('h1').innerHTML
+		@$.description.innerHTML					= @querySelector('#description').innerHTML
 		@set('href', @querySelector('#link').href)
 		{sprintf} <~! require(['sprintf-js'])
 		@set('price', sprintf(cs.shop.settings.price_formatting, @price))

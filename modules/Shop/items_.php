@@ -36,44 +36,46 @@ unset(
 	$item['attributes'][$category['description_attribute']]
 );
 $Page->content(
-	h::{'section[is=cs-shop-item]'}(
-		h::{'#images'}(
-			implode(
-				'',
-				array_map(
-					function ($image) {
-						return h::img(['src' => $image]);
-					},
-					$item['images'] ?: Items::DEFAULT_IMAGE
+	h::cs_shop_item(
+		h::section(
+			h::{'#images'}(
+				implode(
+					'',
+					array_map(
+						function ($image) {
+							return h::img(['src' => $image]);
+						},
+						$item['images'] ?: Items::DEFAULT_IMAGE
+					)
 				)
+			).
+			h::{'#videos a'}(
+				array_map(
+					function ($video) {
+						$content = $video['poster'] ? h::img(['src' => $video['poster']]) : '';
+						return [
+							$content,
+							[
+								'href' => $video['video']
+							]
+						];
+					},
+					$item['videos']
+				) ?: false
+			).
+			h::h1($item['title']).
+			h::{'#description'}($item['description']).
+			h::{'#attributes table tr| td'}(
+				array_map(
+					function ($attribute) use ($item, $Attributes) {
+						return [
+							$Attributes->get($attribute)['title'],
+							$item['attributes'][$attribute]
+						];
+					},
+					array_keys($item['attributes'])
+				) ?: false
 			)
-		).
-		h::{'#videos a'}(
-			array_map(
-				function ($video) {
-					$content = $video['poster'] ? h::img(['src' => $video['poster']]) : '';
-					return [
-						$content,
-						[
-							'href' => $video['video']
-						]
-					];
-				},
-				$item['videos']
-			) ?: false
-		).
-		h::h1($item['title']).
-		h::{'#description'}($item['description']).
-		h::{'#attributes table tr| td'}(
-			array_map(
-				function ($attribute) use ($item, $Attributes) {
-					return [
-						$Attributes->get($attribute)['title'],
-						$item['attributes'][$attribute]
-					];
-				},
-				array_keys($item['attributes'])
-			) ?: false
 		),
 		[
 			'item_id'  => $item['id'],

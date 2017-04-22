@@ -66,7 +66,7 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 				]
 			).
 			h::{'#description'}($category['description'] ?: false).
-			h::{'section#nested article[is=cs-shop-category-nested]'}(
+			h::{'section#nested cs-shop-category-nested| article'}(
 				array_map(
 					function ($category) use ($all_categories, $module_path, $categories_path) {
 						$category = $all_categories[$category];
@@ -90,7 +90,7 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 	}
 	ksort($categories_list);
 	$Page->content(
-		h::{'section[is=cs-shop-categories] article[is=cs-shop-category]'}(array_values($categories_list))
+		h::{'cs-shop-categories section cs-shop-category| article'}(array_values($categories_list))
 	);
 	unset($categories_list);
 }
@@ -128,19 +128,21 @@ $items_total     = $Items->search(
 $base_items_path = "$module_path/".path($L->items).'/'.path($all_categories[$current_category]['title']).'/';
 foreach ($items as &$item) {
 	$item = [
-		h::{'img#img'}(
-			[
-				'src'   => $item['images'][0] ?? Items::DEFAULT_IMAGE,
-				'title' => $item['title']
-			]
-		).
-		h::{'h1 a#link'}(
-			$item['title'],
-			[
-				'href' => $base_items_path.path($item['title']).":$item[id]"
-			]
-		).
-		h::{'#description'}(truncate($item['description'], 200) ?: false),
+		h::article(
+			h::{'img#img'}(
+				[
+					'src'   => $item['images'][0] ?? Items::DEFAULT_IMAGE,
+					'title' => $item['title']
+				]
+			).
+			h::{'h1 a#link'}(
+				$item['title'],
+				[
+					'href' => $base_items_path.path($item['title']).":$item[id]"
+				]
+			).
+			h::{'#description'}(truncate($item['description'], 200) ?: false)
+		),
 		[
 			'item_id'  => $item['id'],
 			'date'     => $item['date'],
@@ -152,7 +154,7 @@ foreach ($items as &$item) {
 }
 unset($item);
 $Page->content(
-	h::{'section[is=cs-shop-category-items] article[is=cs-shop-category-item]'}(array_values($items)).
+	h::{'cs-shop-category-items section cs-shop-category-item'}(array_values($items)).
 	pages(
 		$page,
 		ceil($items_total / $count),

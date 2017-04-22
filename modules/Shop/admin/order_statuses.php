@@ -66,6 +66,6 @@ Page::instance()
 					) ?: false
 				)
 			).
-			h::{'p button.cs-shop-order-status-add[is=cs-button]'}($L->add)
+			h::{'p cs-button button.cs-shop-order-status-add'}($L->add)
 		)
 	);

@@ -6,7 +6,7 @@ dom-module#cs-shop-order
 			template(is="dom-if" if="[[show_pay_now]]")
 				cs-button(primary): button(on-tap="pay" type="button") [[L.pay_now]]
 		div [[date_formatted]]
-		content(select="#items")
+		#items
 		p [[L.shop_shipping_type]]: [[shipping_type]] ([[shipping_cost_formatted]])
 		p [[L.shop_total_price]]: [[total_price_formatted]]
 		p(hidden="[[!discount_formatted]]") [[L.shop_discount]]: [[discount_formatted]]

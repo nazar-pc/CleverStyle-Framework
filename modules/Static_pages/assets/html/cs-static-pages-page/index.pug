@@ -7,7 +7,7 @@ dom-module#cs-static-pages-page
 				cs-button(compact icon="file-text" tooltip="[[L.edit]]"): button(type="button" on-tap="_edit")
 				= ' '
 				cs-button(compact icon="trash" tooltip="[[L.delete]]"): button(type="button" on-tap="_delete")
-			content
+			slot
 		div(hidden="[[!editing]]")
 			h1#title(contenteditable="true") [[page.title]]
 			template(is="dom-if" if="[[!inline_editor]]")

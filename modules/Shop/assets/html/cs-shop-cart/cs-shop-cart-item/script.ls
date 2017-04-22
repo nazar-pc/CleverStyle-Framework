@@ -24,9 +24,10 @@ Polymer(
 		let (img = @querySelector('#img'))
 			@$.img.src		= img.src
 			@$.img.title	= img.title
-		link					= @querySelector('#link')
-		@href					= link.href
-		@item_title				= link.textContent
+		@$.description.innerHTML	= @querySelector('#description').innerHTML
+		link						= @querySelector('#link')
+		@href						= link.href
+		@item_title					= link.textContent
 		{sprintf} <~! require(['sprintf-js'])
 		@unit_price_formatted	= sprintf(price_formatting, @unit_price)
 	units_changed : (item_id, units) !->

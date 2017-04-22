@@ -13,11 +13,11 @@ dom-module#cs-shop-item
 					cs-shop-add-to-cart(item_id="[[item_id]]")
 					= ' '
 					span.cs-text-lead ([[L.in_stock]]: [[in_stock]])
-				content(select="#description")
-		template(is="dom-if" if="[[show_attributes]]")
+				#description
+		div(hidden="[[!show_attributes]]")
 			h2.cs-margin-top [[L.characteristics]]
-			content(select="#attributes")
+			#attributes
 		//- Ugly hack for Firefox because of https://github.com/webcomponents/webcomponentsjs/issues/112
 		div(hidden)
-			content
+			slot
 	script(src="script.js")

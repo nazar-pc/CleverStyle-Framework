@@ -190,7 +190,7 @@ class Controller {
 			->article('tag', $post['tags']);
 		array_map([$Meta, 'image'], $post['image']);
 		$Page->content(
-			h::{'article[is=cs-blogs-post] script[type=application/ld+json]'}(
+			h::{'cs-blogs-post script[type=application/ld+json]'}(
 				json_encode($post, JSON_UNESCAPED_UNICODE)
 			)
 		);

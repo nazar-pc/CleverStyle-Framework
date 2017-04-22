@@ -7,7 +7,6 @@
  */
 Polymer(
 	is			: 'cs-shop-item'
-	extends		: 'section'
 	behaviors	: [
 		cs.Polymer.behaviors.Language('shop_')
 	]
@@ -17,10 +16,12 @@ Polymer(
 		price			: String
 		in_stock		: Number
 	ready : !->
+		@$.description.innerHTML	= @querySelector('#description').innerHTML
+		@$.attributes.innerHTML		= @querySelector('#attributes')?.innerHTML
 		@set('header_title', @querySelector('h1').textContent)
 		require(['jquery', 'sprintf-js']).then ([$, {sprintf}]) !~>
 			@set('price', sprintf(cs.shop.settings.price_formatting, @price))
-			attributes	= $(@querySelector('#attributes'))
+			attributes	= $(@$.attributes)
 			if attributes.length
 				@show_attributes	= true
 				attributes

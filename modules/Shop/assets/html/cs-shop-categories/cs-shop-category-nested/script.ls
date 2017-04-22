@@ -7,7 +7,6 @@
  */
 Polymer(
 	is			: 'cs-shop-category-nested'
-	extends		: 'article'
 	properties	:
 		href			: String
 		category_title	: String

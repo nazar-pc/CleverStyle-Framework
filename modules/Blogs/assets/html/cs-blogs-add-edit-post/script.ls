@@ -79,9 +79,9 @@ Polymer(
 		cs.api('preview api/Blogs/posts', @post).then (result) !~>
 			result					= JSON.stringify(result)
 			@$.preview.innerHTML	= """
-			<article is="cs-blogs-post" preview>
+			<cs-blogs-post preview>
 				<script type="application/ld+json">#result</script>
-			</article>
+			</cs-blogs-post>
 			"""
 			# TODO: Add nice scroll without jQuery and much code:)
 			document.querySelector('html').scrollTop	= @$.preview.offsetTop

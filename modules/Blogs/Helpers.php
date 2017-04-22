@@ -36,7 +36,7 @@ class Helpers {
 			return;
 		}
 		$Page->content(
-			h::{'section[is=cs-blogs-posts] script[type=application/ld+json]'}(
+			h::{'cs-blogs-posts script[type=application/ld+json]'}(
 				json_encode(
 					Posts::instance()->get_as_json_ld($posts),
 					JSON_UNESCAPED_UNICODE

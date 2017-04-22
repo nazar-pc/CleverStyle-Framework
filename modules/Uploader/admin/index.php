@@ -46,7 +46,7 @@ $Page->content(
 		).
 		$L->seconds.
 		h::{'p cs-button'}(
-			h::{'button[is=][type=submit]'}($L->save),
+			h::{'button[type=submit]'}($L->save),
 			[
 				'tooltip' => $L->save_info
 			]
