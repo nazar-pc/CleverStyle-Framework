@@ -17,8 +17,8 @@
       this._styles_added = true;
       if (!styles[this._styles_dom_module]) {
         head = document.querySelector('head');
-        head.insertAdjacentHTML('beforeend', "<style is=\"custom-style\" include=\"" + this._styles_dom_module + "\"></style>");
-        style_element = head.lastElementChild;
+        head.insertAdjacentHTML('beforeend', "<custom-style><style is=\"custom-style\" include=\"" + this._styles_dom_module + "\"></style></custom-style>");
+        style_element = head.lastElementChild.firstChildElement;
         Polymer.updateStyles();
         cs.ui.ready.then(function(){
           styles[this$._styles_dom_module] = style_element.textContent.split(':not([style-scope]):not(.style-scope)').join('');

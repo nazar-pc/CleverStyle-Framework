@@ -15,9 +15,9 @@ Polymer.{}cs.{}behaviors.inject-light-styles = [
 			head	= document.querySelector('head')
 			head.insertAdjacentHTML(
 				'beforeend',
-				"""<style is="custom-style" include="#{@_styles_dom_module}"></style>"""
+				"""<custom-style><style is="custom-style" include="#{@_styles_dom_module}"></style></custom-style>"""
 			)
-			style_element	= head.lastElementChild
+			style_element	= head.lastElementChild.firstChildElement
 			Polymer.updateStyles()
 			cs.ui.ready.then !~>
 				styles[@_styles_dom_module]	= style_element.textContent.split(':not([style-scope]):not(.style-scope)').join('')
