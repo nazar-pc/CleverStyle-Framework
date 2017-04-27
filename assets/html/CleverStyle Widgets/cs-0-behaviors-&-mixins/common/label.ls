@@ -70,23 +70,22 @@ Polymer.{}cs.{}behaviors.label =
 				break
 			inputs.push(input)
 		inputs
-	_active_changed : !->
-		# This method might be called before `attached`, so we need to define this property here
-		if !@local_input
-			@local_input	= @querySelector('input')
-			if !@local_input
-				return
+	_active_changed : (active) !->
+		if active == undefined
+			return
 		# If checked state is already correct - skip, just micro optimization
-		if @local_input.checked == @active
+		if @local_input.checked == active
 			return
 		if @local_input.type == 'radio'
 			# Simulate regular click for simplicity
-			if @active
+			if active
 				@click()
 		else
 			# For checkbox just set checked property is enough
-			@local_input.checked = @active
+			@local_input.checked = active
 	_value_changed : (value) !->
+		if value == undefined
+			return
 		if @local_input
 			for input in @_get_inputs()
 				state				= input.value ~= value

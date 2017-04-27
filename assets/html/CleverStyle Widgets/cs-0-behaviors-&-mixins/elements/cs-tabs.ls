@@ -22,10 +22,10 @@ Polymer.cs.behaviors.cs-tabs = [
 			@selected = 0
 	_tap : (e) !->
 		target = do ~>
-			for path, index in e.path
-				if path == @
+			for element, index in e.composedPath()
+				if element == @
 					# `-3` because `-1` is Shadow Root and `-2` is `<content>` element
-					return e.path[index - 3]
+					return e.composedPath()[index - 3]
 		if !target
 			return
 		for element, index in @children
@@ -36,15 +36,17 @@ Polymer.cs.behaviors.cs-tabs = [
 				element.setAttribute('active', '')
 			else
 				element.removeAttribute('active')
-	_selected_changed : !->
+	_selected_changed : (selected) !->
+		if selected == undefined
+			return
 		for element, index in @children
 			if element.matches('template')
 				continue
-			element.active = index == @selected
-			if index == @selected
+			element.active = index == selected
+			if index == selected
 				element.setAttribute('active', '')
 			else
 				element.removeAttribute('active')
 		if @nextElementSibling?.matches?('cs-switcher')
-			@nextElementSibling.selected = @selected
+			@nextElementSibling.selected = selected
 ]

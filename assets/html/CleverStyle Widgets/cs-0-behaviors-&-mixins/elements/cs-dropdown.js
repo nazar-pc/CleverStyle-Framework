@@ -30,7 +30,7 @@
       document.addEventListener('click', function(e){
         var i$, ref$, len$, element;
         if (this$.opened) {
-          for (i$ = 0, len$ = (ref$ = e.path).length; i$ < len$; ++i$) {
+          for (i$ = 0, len$ = (ref$ = e.composedPath()).length; i$ < len$; ++i$) {
             element = ref$[i$];
             if (element === this$.target) {
               return;

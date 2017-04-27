@@ -5,7 +5,6 @@
  * @license   MIT License, see license.txt
  */
 Polymer.cs.behaviors.cs-icon = [
-	Polymer.cs.behaviors.this
 	Polymer.cs.behaviors.tooltip
 	observers			: [
 		'_icon_changed(icon, flipX, flipY, mono, rotate, spin, spinStep)'
@@ -44,8 +43,6 @@ Polymer.cs.behaviors.cs-icon = [
 		stacked1		: String
 		stacked2		: String
 		regular			: String
-	attached : !->
-		@hidden = @icon == undefined
 	_icon_changed : (icon, flipX, flipY, mono, rotate, spin, spinStep) !->
 		if !icon
 			@hidden = true

@@ -98,26 +98,26 @@
       }
       return inputs;
     },
-    _active_changed: function(){
-      if (!this.local_input) {
-        this.local_input = this.querySelector('input');
-        if (!this.local_input) {
-          return;
-        }
+    _active_changed: function(active){
+      if (active === undefined) {
+        return;
       }
-      if (this.local_input.checked === this.active) {
+      if (this.local_input.checked === active) {
         return;
       }
       if (this.local_input.type === 'radio') {
-        if (this.active) {
+        if (active) {
           this.click();
         }
       } else {
-        this.local_input.checked = this.active;
+        this.local_input.checked = active;
       }
     },
     _value_changed: function(value){
       var i$, ref$, len$, input, state, ref1$;
+      if (value === undefined) {
+        return;
+      }
       if (this.local_input) {
         for (i$ = 0, len$ = (ref$ = this._get_inputs()).length; i$ < len$; ++i$) {
           input = ref$[i$];

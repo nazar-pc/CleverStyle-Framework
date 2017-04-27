@@ -7,7 +7,7 @@
  */
 (function(){
   Polymer.cs.behaviors.csButton = [
-    Polymer.cs.behaviors.button, Polymer.cs.behaviors['this'], Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, {
+    Polymer.cs.behaviors.button, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, {
       properties: {
         action: String,
         bind: Object

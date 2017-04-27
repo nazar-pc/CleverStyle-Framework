@@ -93,6 +93,9 @@
     },
     shipping_type_changed: function(shipping_type_selected){
       var this$ = this;
+      if (shipping_type_selected === undefined) {
+        return;
+      }
       require(['sprintf-js'], function(arg$){
         var sprintf;
         sprintf = arg$.sprintf;
@@ -107,21 +110,36 @@
       });
     },
     payment_method_changed: function(payment_method_selected){
+      if (payment_method_selected === undefined) {
+        return;
+      }
       if (payment_method_selected) {
         this.$.payment_method_description.innerHTML = shop.payment_methods[payment_method_selected].description;
       }
     },
-    shipping_username_changed: function(){
-      params.shipping_username = this.shipping_username;
+    shipping_username_changed: function(shipping_username){
+      if (shipping_username === undefined) {
+        return;
+      }
+      params.shipping_username = shipping_username;
     },
-    phone_changed: function(){
-      params.phone = this.phone;
+    phone_changed: function(phone){
+      if (phone === undefined) {
+        return;
+      }
+      params.phone = phone;
     },
-    address_changed: function(){
-      params.address = this.address;
+    address_changed: function(address){
+      if (address === undefined) {
+        return;
+      }
+      params.address = address;
     },
-    comment_changed: function(){
-      params.comment = this.comment;
+    comment_changed: function(comment){
+      if (comment === undefined) {
+        return;
+      }
+      params.comment = comment;
     },
     finish_order: function(){
       var data, this$ = this;

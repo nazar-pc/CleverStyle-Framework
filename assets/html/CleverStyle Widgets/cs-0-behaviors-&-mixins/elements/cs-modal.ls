@@ -20,7 +20,6 @@ Polymer.cs.behaviors.cs-modal	= [
 			type		: Boolean
 	listeners	:
 		transitionend	: '_transitionend'
-		'overlay.tap'	: '_overlay_tap'
 	_esc_handler : (e) !->
 		if e.keyCode == 27 && !@manualClose # Esc
 			@close()
@@ -40,14 +39,16 @@ Polymer.cs.behaviors.cs-modal	= [
 	_overlay_tap : !->
 		if !@manualClose
 			@close()
-	_opened_changed : !->
+	_opened_changed : (opened) !->
+		if opened == undefined
+			return
 		if !@parentNode?.matches('html')
 			html.appendChild(@)
 		# Hack to make modal opening really smooth
 		@distributeContent(true)
 		Polymer.dom.flush()
 		body.modalOpened = body.modalOpened || 0
-		if @opened
+		if opened
 			document.addEventListener('keydown', @_esc_handler)
 			# Actually insert content only when needed
 			if @content

@@ -22,7 +22,7 @@ Polymer.cs.behaviors.cs-dropdown	= [
 		document.addEventListener('click', (e)  !~>
 			# We'll ignore clicks on button, since button will close dropdown by itself
 			if @opened
-				for element in e.path
+				for element in e.composedPath()
 					if element == @target
 						return
 				@close()

@@ -40,7 +40,7 @@
     },
     units_changed: function(item_id, units){
       var this$ = this;
-      if (!item_id) {
+      if (!item_id || units === undefined) {
         return;
       }
       if (parseInt(units)) {

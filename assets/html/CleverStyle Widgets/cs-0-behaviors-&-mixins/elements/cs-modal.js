@@ -25,8 +25,7 @@
         }
       },
       listeners: {
-        transitionend: '_transitionend',
-        'overlay.tap': '_overlay_tap'
+        transitionend: '_transitionend'
       },
       _esc_handler: function(e){
         if (e.keyCode === 27 && !this.manualClose) {
@@ -60,15 +59,18 @@
           this.close();
         }
       },
-      _opened_changed: function(){
+      _opened_changed: function(opened){
         var ref$, this$ = this;
+        if (opened === undefined) {
+          return;
+        }
         if (!((ref$ = this.parentNode) != null && ref$.matches('html'))) {
           html.appendChild(this);
         }
         this.distributeContent(true);
         Polymer.dom.flush();
         body.modalOpened = body.modalOpened || 0;
-        if (this.opened) {
+        if (opened) {
           document.addEventListener('keydown', this._esc_handler);
           if (this.content) {
             this.innerHTML = this.content;

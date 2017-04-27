@@ -35,12 +35,12 @@
     _tap: function(e){
       var target, i$, ref$, len$, index, element, this$ = this;
       target = function(){
-        var i$, ref$, len$, index, path;
-        for (i$ = 0, len$ = (ref$ = e.path).length; i$ < len$; ++i$) {
+        var i$, ref$, len$, index, element;
+        for (i$ = 0, len$ = (ref$ = e.composedPath()).length; i$ < len$; ++i$) {
           index = i$;
-          path = ref$[i$];
-          if (path === this$) {
-            return e.path[index - 3];
+          element = ref$[i$];
+          if (element === this$) {
+            return e.composedPath()[index - 3];
           }
         }
       }();
@@ -61,23 +61,26 @@
         }
       }
     },
-    _selected_changed: function(){
+    _selected_changed: function(selected){
       var i$, ref$, len$, index, element;
+      if (selected === undefined) {
+        return;
+      }
       for (i$ = 0, len$ = (ref$ = this.children).length; i$ < len$; ++i$) {
         index = i$;
         element = ref$[i$];
         if (element.matches('template')) {
           continue;
         }
-        element.active = index === this.selected;
-        if (index === this.selected) {
+        element.active = index === selected;
+        if (index === selected) {
           element.setAttribute('active', '');
         } else {
           element.removeAttribute('active');
         }
       }
       if ((ref$ = this.nextElementSibling) != null && (typeof ref$.matches == 'function' && ref$.matches('cs-switcher'))) {
-        this.nextElementSibling.selected = this.selected;
+        this.nextElementSibling.selected = selected;
       }
     }
   }];

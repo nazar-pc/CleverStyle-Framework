@@ -34,7 +34,10 @@
         }
       },
       _do_autosizing_callback: function(autosize){
-        if (this.autosize) {
+        if (autosize === undefined) {
+          return;
+        }
+        if (autosize) {
           autosize(this.firstElementChild);
           autosize.update(this.firstElementChild);
         } else {

@@ -48,10 +48,13 @@
           update_progress();
         }
       },
-      _value_changed: function(){
+      _value_changed: function(value){
         var ref$;
+        if (value === undefined) {
+          return;
+        }
         if ((ref$ = this.firstElementChild) != null) {
-          ref$.value = this.value;
+          ref$.value = value;
         }
       }
     }

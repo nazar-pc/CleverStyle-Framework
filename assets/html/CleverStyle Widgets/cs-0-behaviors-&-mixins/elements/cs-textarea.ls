@@ -30,7 +30,9 @@ Polymer.cs.behaviors.cs-textarea = [
 		else if window.require
 			require(['autosize'], @~_do_autosizing_callback)
 	_do_autosizing_callback : (autosize) !->
-		if @autosize
+		if autosize == undefined
+			return
+		if autosize
 			autosize(@firstElementChild)
 			autosize.update(@firstElementChild)
 		else

@@ -31,7 +31,7 @@ Polymer(
 		{sprintf} <~! require(['sprintf-js'])
 		@unit_price_formatted	= sprintf(price_formatting, @unit_price)
 	units_changed : (item_id, units) !->
-		if !item_id
+		if !item_id || units == undefined
 			return
 		if parseInt(units)
 			cart.set(item_id, units)

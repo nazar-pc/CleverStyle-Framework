@@ -11,13 +11,12 @@ Polymer(
 		cs.Polymer.behaviors.Language('static_pages_')
 	]
 	properties	:
-		category		: Number
+		category		:
+			observer	: '_category_changed'
+			type		: Number
 		page			: Object
 		original_title	: String
 		categories		: Array
-	observers	: [
-		'_category_changed(category)'
-	]
 	ready : !->
 		Promise.all([
 			if @id then cs.api('get api/Static_pages/admin/pages/' + @id) else {
@@ -33,9 +32,11 @@ Polymer(
 				@set('page.category', @category)
 			@original_title	= @page.title
 			@categories		= categories
-	_category_changed : !->
+	_category_changed : (category) !->
+		if category == undefined
+			return
 		if @page
-			@set('page.category', @category)
+			@set('page.category', category)
 	_save : !->
 		method	= if @id then 'put' else 'post'
 		suffix	= if @id then '/' + @id else ''

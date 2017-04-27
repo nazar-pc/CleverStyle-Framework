@@ -50,7 +50,10 @@
       this.$.title.addEventListener('keydown', bind$(this, '_add_close_tab_handler'));
       this._close_tab_handler = this._close_tab_handler.bind(this);
     },
-    _add_close_tab_handler: function(){
+    _add_close_tab_handler: function(post_change, local_tags){
+      if (!post_change || !local_tags) {
+        return;
+      }
       if (this.user_id && !this._close_tab_handler_installed && !window.onbeforeunload) {
         addEventListener('beforeunload', this._close_tab_handler);
         this._close_tab_handler_installed = true;

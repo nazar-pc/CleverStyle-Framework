@@ -45,7 +45,9 @@ Polymer(
 			@user_id					= profile.id
 		@$.title.addEventListener('keydown', @~_add_close_tab_handler)
 		@_close_tab_handler	= @_close_tab_handler.bind(@)
-	_add_close_tab_handler : !->
+	_add_close_tab_handler : (post_change, local_tags) !->
+		if !post_change || !local_tags
+			return
 		# user_id presence means that element was initialized properly
 		if @user_id && !@_close_tab_handler_installed && !window.onbeforeunload
 			addEventListener('beforeunload', @_close_tab_handler)

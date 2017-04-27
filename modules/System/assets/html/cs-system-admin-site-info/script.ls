@@ -31,10 +31,14 @@ Polymer(
 				for description, timezone of timezones
 					{timezone, description}
 	_url_changed : (url) !->
+		if url == undefined
+			return
 		url = url.join('\n')
 		if @url_string !== url
 			@url_string = url
 	_cookie_domain_changed : (cookie_domain) !->
+		if cookie_domain == undefined
+			return
 		cookie_domain = cookie_domain.join('\n')
 		if @cookie_domain_string !== cookie_domain
 			@cookie_domain_string = cookie_domain

@@ -38,6 +38,8 @@ Polymer.cs.behaviors.cs-progress = [
 				@firstElementChild.value	= @value
 				setTimeout(update_progress, 200)
 			update_progress()
-	_value_changed : !->
-		@firstElementChild?.value	= @value
+	_value_changed : (value) !->
+		if value == undefined
+			return
+		@firstElementChild?.value	= value
 ]

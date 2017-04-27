@@ -229,9 +229,11 @@ cs.{}Polymer.{}behaviors.{}admin.System	=
 				type		: String
 			settings			: Object
 			simple_admin_mode	: Boolean
-		_reload_settings : !->
+		_reload_settings : (settings_api_url) !->
+			if settings_api_url == undefined
+				return
 			cs.api([
-				'get_settings ' + @settings_api_url
+				'get_settings ' + settings_api_url
 				'get_settings api/System/admin/system'
 			]).then ([settings, system_settings]) !~>
 				@simple_admin_mode	= system_settings.simple_admin_mode == 1

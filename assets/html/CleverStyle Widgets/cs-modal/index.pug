@@ -11,7 +11,7 @@ custom-style: style(is="custom-style").
 dom-module#cs-modal
 	link(href="style.css" rel="import" type="css")
 	template
-		#overlay
+		#overlay(on-tap="_overlay_tap")
 		#content
 			slot
 	script(src="script.js")

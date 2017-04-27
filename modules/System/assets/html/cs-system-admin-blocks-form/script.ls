@@ -37,6 +37,8 @@ Polymer(
 						state	: 0
 			.then (@block) !~>
 	_type_change : (type) !->
+		if type == undefined
+			return
 		@shadowRoot
 			..querySelector('.html').hidden		= type != 'html'
 			..querySelector('.raw_html').hidden	= type != 'raw_html'

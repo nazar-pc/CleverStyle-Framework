@@ -44,6 +44,8 @@ Polymer.{}cs.{}behaviors.tooltip	=
 	_cancel_schedule_show : !->
 		if @show_timeout
 			clearTimeout(@show_timeout)
-	_tooltip_changed : !->
+	_tooltip_changed : (tooltip) !->
+		if tooltip == undefined
+			return
 		if tooltip_element && tooltip_element._for_element == @
-			tooltip_element._update_content(@tooltip)
+			tooltip_element._update_content(tooltip)

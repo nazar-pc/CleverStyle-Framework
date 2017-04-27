@@ -9,7 +9,6 @@
 promise							= new Promise(Polymer.cs.behaviors.ready._when_ready)
 Polymer.cs.behaviors.cs-notify	= [
 	Polymer.cs.behaviors.ready
-	Polymer.cs.behaviors.this
 	properties	:
 		bottom	:
 			reflectToAttribute	: true
@@ -40,8 +39,6 @@ Polymer.cs.behaviors.cs-notify	= [
 		warning	:
 			reflectToAttribute	: true
 			type				: Boolean
-	listeners	:
-		'content.tap'	: '_tap'
 	attached : !->
 		@last_node = @parentNode
 		if !@parentNode.matches('html')

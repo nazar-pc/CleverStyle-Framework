@@ -1,7 +1,7 @@
 dom-module#cs-notify
 	link(rel="import" href="style.css" type="css")
 	template
-		#content
+		#content(on-tap="_tap")
 			slot
 			cs-icon#icon(icon="close")
 	script(src="script.js")

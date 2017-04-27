@@ -37,7 +37,6 @@ Attributes (also available as properties, so use whatever is more convenient):
 Properties:
 * action - string, method on `bind` object to call on button click (see examples below)
 * bind - object, object that contains `action` method to call on button click (see examples below)
-* this - object, read-only, `this` of element, useful for data-binding
 * tooltip - string, if specified then tooltip with specified content will be shown on hover
 
 Examples:
@@ -121,7 +120,6 @@ Attributes (also available as properties, so use whatever is more convenient):
 * spin-step - boolean, makes spinning step-wise with 8 steps, not smooth
 
 Properties:
-* this - object, read-only, `this` of element, useful for data-binding
 * tooltip - string, if specified then tooltip with specified content will be shown on hover
 
 Examples:
@@ -260,7 +258,6 @@ Attributes (also available as properties, so use whatever is more convenient):
 
 Properties:
 * content - string, notification content (will set `this.innerHTML`, so DOM elements can be inserted into element explicitly instead)
-* this - object, read-only, `this` of element, useful for data-binding
 
 Examples:
 ```html
@@ -307,7 +304,6 @@ Switcher element, especially useful in conjunction with `cs-tabs` element (see e
 
 Properties:
 * selected - number, current selected content element index (starting from 0)
-* this - object, read-only, `this` of element, useful for data-binding
 
 Examples:
 ```html

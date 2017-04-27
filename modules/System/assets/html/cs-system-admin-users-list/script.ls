@@ -19,7 +19,7 @@ Polymer(
 		search_column		: ''
 		search_mode			: 'LIKE'
 		search_text			:
-			observer	: 'search_textChanged'
+			observer	: 'search_text_changed'
 			type		: String
 			value		: ''
 		search_page			:
@@ -131,7 +131,7 @@ Polymer(
 			@search_page	= 1
 		else
 			@search()
-	search_textChanged : !->
+	search_text_changed : !->
 		if @_initialized == undefined
 			return
 		clearTimeout(@search_text_timeout)

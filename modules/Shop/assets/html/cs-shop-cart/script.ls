@@ -67,6 +67,8 @@ Polymer(
 			if !@shipping_username && is_user
 				@shipping_username = data.username || data.login
 	shipping_type_changed : (shipping_type_selected) !->
+		if shipping_type_selected == undefined
+			return
 		{sprintf} <~! require(['sprintf-js'])
 		params.shipping_type	= shipping_type_selected
 		shop.shipping_types.forEach (shipping_type) !~>
@@ -75,16 +77,26 @@ Polymer(
 				@set('shipping_cost_formatted', sprintf(shop.settings.price_formatting, shipping_type.price))
 				return false
 	payment_method_changed : (payment_method_selected) !->
+		if payment_method_selected == undefined
+			return
 		if (payment_method_selected)
 			@$.payment_method_description.innerHTML	= shop.payment_methods[payment_method_selected].description
-	shipping_username_changed : !->
-		params.shipping_username	= @shipping_username
-	phone_changed : !->
-		params.phone	= @phone
-	address_changed : !->
-		params.address	= @address
-	comment_changed : !->
-		params.comment	= @comment
+	shipping_username_changed : (shipping_username) !->
+		if shipping_username == undefined
+			return
+		params.shipping_username	= shipping_username
+	phone_changed : (phone) !->
+		if phone == undefined
+			return
+		params.phone	= phone
+	address_changed : (address) !->
+		if address == undefined
+			return
+		params.address	= address
+	comment_changed : (comment) !->
+		if comment == undefined
+			return
+		params.comment	= comment
 	finish_order : !->
 		if !@shipping_username
 			cs.ui.alert(@L.shipping_username_is_required)
