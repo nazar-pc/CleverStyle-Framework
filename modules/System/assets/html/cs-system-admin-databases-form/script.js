@@ -10,7 +10,7 @@
 (function(){
   Polymer({
     is: 'cs-system-admin-databases-form',
-    behaviors: [cs.Polymer.behaviors.Language('system_admin_databases_')],
+    behaviors: [cs.Polymer.behaviors.computed_bindings, cs.Polymer.behaviors.Language('system_admin_databases_')],
     properties: {
       add: Boolean,
       databaseIndex: Number,

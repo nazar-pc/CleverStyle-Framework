@@ -9,6 +9,7 @@
 Polymer(
 	is			: 'cs-system-admin-permissions-form'
 	behaviors	: [
+		cs.Polymer.behaviors.computed_bindings
 		cs.Polymer.behaviors.Language('system_admin_permissions_')
 	]
 	properties	:

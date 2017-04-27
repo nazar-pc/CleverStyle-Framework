@@ -8,6 +8,7 @@
 Polymer(
 	is			: 'cs-static-pages-admin-categories-list'
 	behaviors	: [
+		cs.Polymer.behaviors.computed_bindings
 		cs.Polymer.behaviors.Language('static_pages_')
 	]
 	properties	:

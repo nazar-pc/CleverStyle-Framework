@@ -9,7 +9,7 @@
 (function(){
   Polymer({
     is: 'cs-static-pages-admin-pages-add-edit-form',
-    behaviors: [cs.Polymer.behaviors.Language('static_pages_')],
+    behaviors: [cs.Polymer.behaviors.computed_bindings, cs.Polymer.behaviors.Language('static_pages_')],
     properties: {
       category: {
         observer: '_category_changed',

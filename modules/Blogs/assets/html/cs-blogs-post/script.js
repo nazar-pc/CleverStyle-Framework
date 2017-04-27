@@ -9,7 +9,7 @@
 (function(){
   Polymer({
     is: 'cs-blogs-post',
-    behaviors: [cs.Polymer.behaviors.Language('blogs_')],
+    behaviors: [cs.Polymer.behaviors.computed_bindings, cs.Polymer.behaviors.Language('blogs_')],
     properties: {
       can_edit: false,
       can_delete: false,

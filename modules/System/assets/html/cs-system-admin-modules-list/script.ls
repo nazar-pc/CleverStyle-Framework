@@ -14,6 +14,7 @@ active_switch	= (active, if_uninstalled, if_disabled, if_enabled) ->
 Polymer(
 	is			: 'cs-system-admin-modules-list'
 	behaviors	: [
+		cs.Polymer.behaviors.computed_bindings
 		cs.Polymer.behaviors.Language('system_admin_modules_')
 		cs.Polymer.behaviors.admin.System.components
 		cs.Polymer.behaviors.admin.System.upload

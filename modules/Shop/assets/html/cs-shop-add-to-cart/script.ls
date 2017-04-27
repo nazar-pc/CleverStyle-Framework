@@ -9,6 +9,7 @@ let (cart = cs.shop.cart)
 	Polymer(
 		is			: 'cs-shop-add-to-cart'
 		behaviors	: [
+			cs.Polymer.behaviors.computed_bindings
 			cs.Polymer.behaviors.Language('shop_')
 		]
 		properties	:

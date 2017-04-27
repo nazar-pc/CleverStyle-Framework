@@ -7,6 +7,7 @@
 Polymer(
 	is			: 'cs-system-user-settings'
 	behaviors	: [
+		cs.Polymer.behaviors.computed_bindings
 		cs.Polymer.behaviors.Language('system_profile_')
 	]
 	properties	:

@@ -8,6 +8,7 @@
 Polymer(
 	is			: 'cs-comments-comment'
 	behaviors	: [
+		cs.Polymer.behaviors.computed_bindings
 		cs.Polymer.behaviors.Language('comments_')
 	]
 	properties	:

@@ -9,6 +9,7 @@
 Polymer(
 	is			: 'cs-system-admin-users-edit-user-form'
 	behaviors	: [
+		cs.Polymer.behaviors.computed_bindings
 		cs.Polymer.behaviors.Language('system_admin_users_')
 	]
 	properties	:

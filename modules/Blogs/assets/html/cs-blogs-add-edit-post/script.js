@@ -9,7 +9,7 @@
 (function(){
   Polymer({
     is: 'cs-blogs-add-edit-post',
-    behaviors: [cs.Polymer.behaviors.Language('blogs_')],
+    behaviors: [cs.Polymer.behaviors.computed_bindings, cs.Polymer.behaviors.Language('blogs_')],
     properties: {
       post: Object,
       original_title: String,

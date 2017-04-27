@@ -9,6 +9,7 @@
 Polymer(
 	is			: 'cs-system-admin-optimization'
 	behaviors	: [
+		cs.Polymer.behaviors.computed_bindings
 		cs.Polymer.behaviors.Language('system_admin_optimization_')
 		cs.Polymer.behaviors.admin.System.settings
 	]

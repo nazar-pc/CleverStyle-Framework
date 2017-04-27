@@ -9,6 +9,7 @@
 Polymer(
 	is			: 'cs-system-admin-about-server'
 	behaviors	: [
+		cs.Polymer.behaviors.computed_bindings
 		cs.Polymer.behaviors.Language('system_admin_about_server_')
 	]
 	properties	:

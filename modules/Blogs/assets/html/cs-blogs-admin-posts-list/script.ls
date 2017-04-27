@@ -8,6 +8,7 @@
 Polymer(
 	is			: 'cs-blogs-admin-posts-list'
 	behaviors	: [
+		cs.Polymer.behaviors.computed_bindings
 		cs.Polymer.behaviors.Language('blogs_')
 	]
 	properties	:

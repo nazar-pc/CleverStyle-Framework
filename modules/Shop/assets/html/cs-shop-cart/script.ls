@@ -13,6 +13,7 @@ params	= cart.params
 Polymer(
 	is			: 'cs-shop-cart'
 	behaviors	: [
+		cs.Polymer.behaviors.computed_bindings
 		cs.Polymer.behaviors.Language('shop_')
 	]
 	properties	:
