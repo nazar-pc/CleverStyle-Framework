@@ -284,7 +284,7 @@ trait Assets {
 			$hash = file_get_contents(PUBLIC_CACHE.'/webcomponents.js.hash');
 			$this->add_script_imports_to_document($Config, "<script src=\"/storage/public_cache/$hash.js\"></script>\n");
 		} else {
-			$this->add_script_imports_to_document($Config, "<script src=\"/assets/js/WebComponents-polyfill/webcomponents-custom.min.js\"></script>\n");
+			$this->add_script_imports_to_document($Config, "<script src=\"/assets/js/WebComponents-polyfill/webcomponents-hi-sd-ce.min.js\"></script>\n");
 		}
 	}
 	/**

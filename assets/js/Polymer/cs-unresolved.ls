@@ -5,11 +5,11 @@
  * @license   MIT License, see license.txt
  */
 # Simplified default value declaration
-registerFeatures_original	= Polymer.Base._registerFeatures
-ready						= false
-Polymer.Base._addFeature(
-	_registerFeatures : !->
-		@[]behaviors.push(
+polymerFn_original	= Polymer._polymerFn
+ready				= false
+Polymer._polymerFn	= (info) ->
+	if typeof info != 'function'
+		info.[]behaviors.push(
 			attached	: !->
 				if ready
 					return
@@ -18,5 +18,4 @@ Polymer.Base._addFeature(
 					ready	:= true
 					@removeAttribute('cs-resolved')
 		)
-		registerFeatures_original.call(@)
-)
+	polymerFn_original.call(@, info)

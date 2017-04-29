@@ -1,1 +1,1 @@
-Polymer build included is a custom build with Shady DOM support removed, available in [special branch](https://github.com/nazar-pc/polymer/tree/no-shady-dom)
+Polymer build included is a JavaScript source code obtained as the result of running `estimate-size` command (file `dist/bundled/polymer.html`) as well as files `dist/bundled/bower_components/shadycss/apply-shim.min.js` and `dist/bundled/bower_components/shadycss/custom-style-interface.min.js`

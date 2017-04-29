@@ -79,7 +79,7 @@ class Cache {
 		file_put_json("$this->public_cache/$theme.optimized.json", [$optimized_assets, $preload]);
 	}
 	protected function rebuild_webcomponents_polyfill () {
-		$webcomponents_js = file_get_contents(DIR.'/assets/js/WebComponents-polyfill/webcomponents-custom.min.js');
+		$webcomponents_js = file_get_contents(DIR.'/assets/js/WebComponents-polyfill/webcomponents-hi-sd-ce.min.js');
 		$hash             = md5($webcomponents_js);
 		file_put_contents("$this->public_cache/$hash.js", $webcomponents_js, LOCK_EX | FILE_BINARY);
 		file_put_contents("$this->public_cache/webcomponents.js.hash", $hash, LOCK_EX | FILE_BINARY);

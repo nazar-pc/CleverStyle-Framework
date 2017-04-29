@@ -5,7 +5,6 @@
  * @license   MIT License, see license.txt
  */
 # Simplified default value declaration
-registerFeatures_original	= Polymer.Base._registerFeatures
 normalize_properties		= (properties) !->
 	if properties
 		for property, value of properties
@@ -23,11 +22,11 @@ normalize_properties		= (properties) !->
 				properties[property] =
 					type	: type,
 					value	: value
-Polymer.Base._addFeature(
-	_registerFeatures : !->
-		normalize_properties(@properties)
-		if @behaviors
-			@behaviors.forEach (behavior) !->
+polymerFn_original	= Polymer._polymerFn
+Polymer._polymerFn	= (info) ->
+	if typeof info != 'function'
+		normalize_properties(info.properties)
+		if info.behaviors
+			info.behaviors.forEach (behavior) !->
 				normalize_properties(behavior.properties)
-		registerFeatures_original.call(@)
-)
+	polymerFn_original.call(@, info)

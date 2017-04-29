@@ -184,7 +184,7 @@ Page_test::test();
 --EXPECTF--
 string(20) "No compression, head"
 string(4) "Head"
-string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-custom.min.js"></script>
+string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-hi-sd-ce.min.js"></script>
 <link href="/assets/css/unresolved.css?%s" rel="stylesheet">
 <link href="/themes/CleverStyle/css/app-shell.css?%s" rel="stylesheet">
 <link href="/themes/CleverStyle/css/style.css?%s" rel="stylesheet">
@@ -199,9 +199,10 @@ string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-custom.
 <script src="/assets/js/Polymer/a0.config.js?%s"></script>
 <script src="/assets/js/Polymer/a0.hacks.js?%s"></script>
 <script src="/assets/js/Polymer/a1.behaviors.js?%s"></script>
-<script src="/assets/js/Polymer/a2.polymer-%s+no-shady-dom.min.js?%s"></script>
+<script src="/assets/js/Polymer/a2.apply-shim.min.js?%s"></script>
+<script src="/assets/js/Polymer/a2.custom-style-interface.min.js?%s"></script>
+<script src="/assets/js/Polymer/a3.polymer-%s.min.js?%s"></script>
 <script src="/assets/js/Polymer/cs-unresolved.js?%s"></script>
-<script src="/assets/js/Polymer/default-computed-bindings.js?%s"></script>
 <script src="/assets/js/Polymer/extend-override.js?%s"></script>
 <script src="/assets/js/Polymer/simplified-default-value-declaration.js?%s"></script>
 <script src="/assets/js/zz0.alameda-custom.js?%s"></script>
@@ -263,7 +264,7 @@ string(%d) "<link href="/assets/css/unresolved.css?%s" rel="stylesheet">
 <script class="cs-config" target="requirejs" type="application/json">%s</script>
 "
 string(9) "post_Body"
-string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-custom.min.js"></script>
+string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-hi-sd-ce.min.js"></script>
 <script src="/assets/js/a0.config.js?%s"></script>
 <script src="/assets/js/a1.Event.js?%s"></script>
 <script src="/assets/js/a1.Language.js?%s"></script>
@@ -271,9 +272,10 @@ string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-custom.
 <script src="/assets/js/Polymer/a0.config.js?%s"></script>
 <script src="/assets/js/Polymer/a0.hacks.js?%s"></script>
 <script src="/assets/js/Polymer/a1.behaviors.js?%s"></script>
-<script src="/assets/js/Polymer/a2.polymer-%s+no-shady-dom.min.js?%s"></script>
+<script src="/assets/js/Polymer/a2.apply-shim.min.js?%s"></script>
+<script src="/assets/js/Polymer/a2.custom-style-interface.min.js?%s"></script>
+<script src="/assets/js/Polymer/a3.polymer-%s.min.js?%s"></script>
 <script src="/assets/js/Polymer/cs-unresolved.js?%s"></script>
-<script src="/assets/js/Polymer/default-computed-bindings.js?%s"></script>
 <script src="/assets/js/Polymer/extend-override.js?%s"></script>
 <script src="/assets/js/Polymer/simplified-default-value-declaration.js?%s"></script>
 <script src="/assets/js/zz0.alameda-custom.js?%s"></script>
