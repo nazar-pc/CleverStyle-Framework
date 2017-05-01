@@ -8,13 +8,8 @@
 (function(){
   Polymer.cs.behaviors.value = {
     ready: function(){
-      var target, x$;
-      if (this['extends']) {
-        target = this;
-      } else {
-        target = this.firstElementChild;
-      }
-      x$ = target;
+      var x$;
+      x$ = this.firstElementChild;
       x$.addEventListener('change', function(){
         this.dispatchEvent(new CustomEvent('value-changed'));
       });

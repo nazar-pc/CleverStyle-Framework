@@ -6,12 +6,7 @@
  */
 Polymer.cs.behaviors.value =
 	ready : !->
-		#TODO: Should always be firstChild when everything converted to wrapper elements
-		if this.extends
-			target	= @
-		else
-			target	= @firstElementChild
-		target
+		@firstElementChild
 			..addEventListener('change', !->
 				@dispatchEvent(new CustomEvent('value-changed'))
 			)
