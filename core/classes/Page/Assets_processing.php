@@ -23,8 +23,7 @@ class Assets_processing {
 		'png'  => 'image/png',
 		'svg'  => 'image/svg+xml',
 		'svgz' => 'image/svg+xml',
-		'woff' => 'application/font-woff',
-		//'woff2' => 'application/font-woff2'
+		'woff2' => 'application/font-woff2'
 	];
 	/**
 	 * Analyses file for images, fonts and css links and include they content into single resulting css file.

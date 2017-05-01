@@ -36,8 +36,7 @@ trait Assets {
 		'png'  => 'image',
 		'svg'  => 'image',
 		'svgz' => 'image',
-		'woff' => 'font',
-		//'woff2' => 'font',
+		'woff2' => 'font',
 		'css'  => 'style',
 		'js'   => 'script',
 		'html' => 'document'
