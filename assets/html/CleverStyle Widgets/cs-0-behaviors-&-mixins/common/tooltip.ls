@@ -4,8 +4,8 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-tooltip_element						= null
-Polymer.{}cs.{}behaviors.tooltip	=
+tooltip_element			= null
+csw.behaviors.tooltip	=
 	properties	:
 		tooltip	:
 			observer	: '_tooltip_changed'

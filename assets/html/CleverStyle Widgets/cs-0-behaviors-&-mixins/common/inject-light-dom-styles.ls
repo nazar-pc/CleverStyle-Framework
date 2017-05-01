@@ -4,8 +4,8 @@
  * @copyright Copyright (c) 2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-styles	= {}
-Polymer.{}cs.{}behaviors.inject-light-styles = [
+styles								= {}
+csw.behaviors.inject-light-styles	= [
 	attached : !->
 		# Hack: The only way to achieve proper styling inside of cs-form, otherwise new slots system doesn't give us enough flexibility
 		if @_styles_added

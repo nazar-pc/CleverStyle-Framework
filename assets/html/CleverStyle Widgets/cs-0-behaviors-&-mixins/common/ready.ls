@@ -4,7 +4,7 @@
  * @copyright Copyright (c) 2016-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-Polymer.{}cs.{}behaviors.ready =
+csw.behaviors.ready =
 	_when_ready : (action) !->
 		if document.readyState != 'complete'
 			callback	= !->

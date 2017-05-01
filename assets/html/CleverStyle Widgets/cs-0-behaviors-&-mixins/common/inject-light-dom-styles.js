@@ -6,9 +6,9 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var styles, ref$;
+  var styles;
   styles = {};
-  ((ref$ = Polymer.cs || (Polymer.cs = {})).behaviors || (ref$.behaviors = {})).injectLightStyles = [{
+  csw.behaviors.injectLightStyles = [{
     attached: function(){
       var head, custom_style_element, this$ = this;
       if (this._styles_added) {

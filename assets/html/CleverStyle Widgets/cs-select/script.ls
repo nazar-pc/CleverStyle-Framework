@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-select'
-	behaviors	: Polymer.cs.behaviors.cs-select
+	behaviors	: csw.behaviors.cs-select
 )

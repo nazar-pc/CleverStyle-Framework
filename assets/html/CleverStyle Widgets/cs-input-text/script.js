@@ -8,6 +8,6 @@
 (function(){
   Polymer({
     is: 'cs-input-text',
-    behaviors: Polymer.cs.behaviors.csInputText
+    behaviors: csw.behaviors.csInputText
   });
 }).call(this);

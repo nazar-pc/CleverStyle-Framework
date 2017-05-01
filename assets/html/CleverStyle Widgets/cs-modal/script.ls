@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-modal'
-	behaviors	: Polymer.cs.behaviors.cs-modal
+	behaviors	: csw.behaviors.cs-modal
 )

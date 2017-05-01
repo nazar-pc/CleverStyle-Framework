@@ -4,8 +4,8 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-Polymer.cs.behaviors.cs-icon = [
-	Polymer.cs.behaviors.tooltip
+csw.behaviors.cs-icon = [
+	csw.behaviors.tooltip
 	observers			: [
 		'_icon_changed(icon, flipX, flipY, mono, rotate, spin, spinStep)'
 	]

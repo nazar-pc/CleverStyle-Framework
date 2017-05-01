@@ -8,6 +8,6 @@
 (function(){
   Polymer({
     is: 'cs-tabs',
-    behaviors: Polymer.cs.behaviors.csTabs
+    behaviors: csw.behaviors.csTabs
   });
 }).call(this);

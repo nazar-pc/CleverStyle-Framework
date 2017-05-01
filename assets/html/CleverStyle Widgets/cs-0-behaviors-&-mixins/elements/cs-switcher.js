@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csSwitcher = [{
+  csw.behaviors.csSwitcher = [{
     properties: {
       selected: {
         notify: true,

@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-switcher'
-	behaviors	: Polymer.cs.behaviors.cs-switcher
+	behaviors	: csw.behaviors.cs-switcher
 )

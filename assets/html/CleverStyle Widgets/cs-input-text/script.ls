@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-input-text'
-	behaviors	: Polymer.cs.behaviors.cs-input-text
+	behaviors	: csw.behaviors.cs-input-text
 )

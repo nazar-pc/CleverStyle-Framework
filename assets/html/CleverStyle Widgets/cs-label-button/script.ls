@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-label-button'
-	behaviors	: Polymer.cs.behaviors.cs-label-button
+	behaviors	: csw.behaviors.cs-label-button
 )

@@ -4,8 +4,8 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-html								= document.documentElement
-Polymer.cs.behaviors.cs-dropdown	= [
+html						= document.documentElement
+csw.behaviors.cs-dropdown	= [
 	hostAttributes	:
 		role	: 'group'
 	properties		:

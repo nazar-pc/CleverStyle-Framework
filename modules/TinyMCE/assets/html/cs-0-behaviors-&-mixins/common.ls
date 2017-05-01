@@ -78,7 +78,7 @@ load_tinymce	= ->
 				inline  : true,
 				menubar : false
 			} <<<< tinymce.editor_config_simple
-Polymer.cs.behaviors.{}TinyMCE.editor =
+TinyMCE_Polymer_editor_behavior =
 	listeners	:
 		tap	: '_style_fix'
 	properties	:

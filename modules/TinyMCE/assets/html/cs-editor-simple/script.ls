@@ -7,6 +7,6 @@
  */
 Polymer(
 	is				: 'cs-editor-simple'
-	behaviors		: [Polymer.cs.behaviors.TinyMCE.editor]
+	behaviors		: [TinyMCE_Polymer_editor_behavior]
 	editor_config	: 'editor_config_simple'
 )

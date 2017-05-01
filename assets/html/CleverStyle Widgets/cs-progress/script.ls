@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-progress'
-	behaviors	: Polymer.cs.behaviors.cs-progress
+	behaviors	: csw.behaviors.cs-progress
 )

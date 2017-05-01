@@ -6,9 +6,9 @@
  */
 # Chain of promises is used to show/hide notifications sequentially, variable contains always latest promise in chain and is constantly updated
 # We'll start doing something only when Web Components are ready
-promise							= new Promise(Polymer.cs.behaviors.ready._when_ready)
-Polymer.cs.behaviors.cs-notify	= [
-	Polymer.cs.behaviors.ready
+promise					= new Promise(csw.behaviors.ready._when_ready)
+csw.behaviors.cs-notify	= [
+	csw.behaviors.ready
 	properties	:
 		bottom	:
 			reflectToAttribute	: true

@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csIcon = [
-    Polymer.cs.behaviors.tooltip, {
+  csw.behaviors.csIcon = [
+    csw.behaviors.tooltip, {
       observers: ['_icon_changed(icon, flipX, flipY, mono, rotate, spin, spinStep)'],
       properties: {
         icon: {

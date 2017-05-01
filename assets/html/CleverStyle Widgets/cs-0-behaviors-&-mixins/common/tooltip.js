@@ -6,9 +6,9 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var tooltip_element, ref$;
+  var tooltip_element;
   tooltip_element = null;
-  ((ref$ = Polymer.cs || (Polymer.cs = {})).behaviors || (ref$.behaviors = {})).tooltip = {
+  csw.behaviors.tooltip = {
     properties: {
       tooltip: {
         observer: '_tooltip_changed',

@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csGroup = [{
+  csw.behaviors.csGroup = [{
     hostAttributes: {
       role: 'group'
     },

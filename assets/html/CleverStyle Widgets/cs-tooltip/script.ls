@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-tooltip'
-	behaviors	: Polymer.cs.behaviors.cs-tooltip
+	behaviors	: csw.behaviors.cs-tooltip
 )

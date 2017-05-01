@@ -4,10 +4,10 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-body							= document.body
-html							= document.documentElement
-Polymer.cs.behaviors.cs-modal	= [
-	Polymer.cs.behaviors.this
+body					= document.body
+html					= document.documentElement
+csw.behaviors.cs-modal	= [
+	csw.behaviors.this
 	properties	:
 		asIs		:
 			reflectToAttribute	: true

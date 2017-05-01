@@ -4,7 +4,7 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-Polymer.{}cs.{}behaviors.this =
+csw.behaviors.this =
 	properties	:
 		this	:
 			notify		: true

@@ -8,6 +8,6 @@
 (function(){
   Polymer({
     is: 'cs-link-button',
-    behaviors: Polymer.cs.behaviors.csLinkButton
+    behaviors: csw.behaviors.csLinkButton
   });
 }).call(this);

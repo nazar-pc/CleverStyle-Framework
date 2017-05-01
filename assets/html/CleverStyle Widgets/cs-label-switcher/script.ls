@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-label-switcher'
-	behaviors	: Polymer.cs.behaviors.cs-label-switcher
+	behaviors	: csw.behaviors.cs-label-switcher
 )

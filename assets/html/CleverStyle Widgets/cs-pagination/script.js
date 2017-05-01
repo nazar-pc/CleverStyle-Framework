@@ -8,6 +8,6 @@
 (function(){
   Polymer({
     is: 'cs-pagination',
-    behaviors: Polymer.cs.behaviors.csPagination
+    behaviors: csw.behaviors.csPagination
   });
 }).call(this);

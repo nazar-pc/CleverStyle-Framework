@@ -8,6 +8,6 @@
 (function(){
   Polymer({
     is: 'cs-progress',
-    behaviors: Polymer.cs.behaviors.csProgress
+    behaviors: csw.behaviors.csProgress
   });
 }).call(this);

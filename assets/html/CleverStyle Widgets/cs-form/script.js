@@ -8,6 +8,6 @@
 (function(){
   Polymer({
     is: 'cs-form',
-    behaviors: Polymer.cs.behaviors.csForm
+    behaviors: csw.behaviors.csForm
   });
 }).call(this);

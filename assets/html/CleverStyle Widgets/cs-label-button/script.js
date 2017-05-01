@@ -8,6 +8,6 @@
 (function(){
   Polymer({
     is: 'cs-label-button',
-    behaviors: Polymer.cs.behaviors.csLabelButton
+    behaviors: csw.behaviors.csLabelButton
   });
 }).call(this);

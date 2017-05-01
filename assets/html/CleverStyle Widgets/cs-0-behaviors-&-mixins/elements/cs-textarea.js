@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csTextarea = [
-    Polymer.cs.behaviors.ready, Polymer.cs.behaviors.size, Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value, {
+  csw.behaviors.csTextarea = [
+    csw.behaviors.ready, csw.behaviors.size, csw.behaviors.tooltip, csw.behaviors.value, {
       properties: {
         autosize: {
           observer: '_autosize_changed',

@@ -6,5 +6,5 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csInputText = [Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value];
+  csw.behaviors.csInputText = [csw.behaviors.size, csw.behaviors.tight, csw.behaviors.tooltip, csw.behaviors.value];
 }).call(this);

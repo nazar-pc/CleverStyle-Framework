@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csSelect = [
-    Polymer.cs.behaviors.ready, Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value, Polymer.cs.behaviors.injectLightStyles, {
+  csw.behaviors.csSelect = [
+    csw.behaviors.ready, csw.behaviors.size, csw.behaviors.tight, csw.behaviors.tooltip, csw.behaviors.value, csw.behaviors.injectLightStyles, {
       _styles_dom_module: 'cs-select-styles',
       properties: {
         selected: {

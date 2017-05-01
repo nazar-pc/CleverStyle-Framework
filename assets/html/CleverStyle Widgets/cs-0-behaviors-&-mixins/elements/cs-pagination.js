@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csPagination = [{
+  csw.behaviors.csPagination = [{
     hostAttributes: {
       role: 'group'
     },

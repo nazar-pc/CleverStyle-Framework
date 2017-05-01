@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.value = {
+  csw.behaviors.value = {
     ready: function(){
       var x$;
       x$ = this.firstElementChild;

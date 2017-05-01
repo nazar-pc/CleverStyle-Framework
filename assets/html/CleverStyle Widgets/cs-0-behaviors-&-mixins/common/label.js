@@ -6,8 +6,7 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var ref$;
-  ((ref$ = Polymer.cs || (Polymer.cs = {})).behaviors || (ref$.behaviors = {})).label = {
+  csw.behaviors.label = {
     properties: {
       active: {
         notify: true,

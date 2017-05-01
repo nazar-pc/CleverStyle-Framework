@@ -8,7 +8,7 @@
 (function(){
   var html;
   html = document.documentElement;
-  Polymer.cs.behaviors.csDropdown = [{
+  csw.behaviors.csDropdown = [{
     hostAttributes: {
       role: 'group'
     },

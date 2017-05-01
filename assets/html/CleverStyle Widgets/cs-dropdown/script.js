@@ -8,6 +8,6 @@
 (function(){
   Polymer({
     is: 'cs-dropdown',
-    behaviors: Polymer.cs.behaviors.csDropdown
+    behaviors: csw.behaviors.csDropdown
   });
 }).call(this);

@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-dropdown'
-	behaviors	: Polymer.cs.behaviors.cs-dropdown
+	behaviors	: csw.behaviors.cs-dropdown
 )

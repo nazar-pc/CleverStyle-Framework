@@ -8,6 +8,6 @@
 (function(){
   Polymer({
     is: 'cs-group',
-    behaviors: Polymer.cs.behaviors.csGroup
+    behaviors: csw.behaviors.csGroup
   });
 }).call(this);

@@ -7,9 +7,9 @@
  */
 (function(){
   var promise;
-  promise = new Promise(Polymer.cs.behaviors.ready._when_ready);
-  Polymer.cs.behaviors.csNotify = [
-    Polymer.cs.behaviors.ready, {
+  promise = new Promise(csw.behaviors.ready._when_ready);
+  csw.behaviors.csNotify = [
+    csw.behaviors.ready, {
       properties: {
         bottom: {
           reflectToAttribute: true,

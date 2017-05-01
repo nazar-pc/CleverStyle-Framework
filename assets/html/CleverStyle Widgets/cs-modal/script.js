@@ -8,6 +8,6 @@
 (function(){
   Polymer({
     is: 'cs-modal',
-    behaviors: Polymer.cs.behaviors.csModal
+    behaviors: csw.behaviors.csModal
   });
 }).call(this);

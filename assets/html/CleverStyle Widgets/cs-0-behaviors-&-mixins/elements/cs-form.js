@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csForm = [
-    Polymer.cs.behaviors.injectLightStyles, {
+  csw.behaviors.csForm = [
+    csw.behaviors.injectLightStyles, {
       _styles_dom_module: 'cs-form-styles'
     }
   ];

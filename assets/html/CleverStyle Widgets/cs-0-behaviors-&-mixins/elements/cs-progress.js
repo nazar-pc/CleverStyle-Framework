@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csProgress = [
-    Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.injectLightStyles, {
+  csw.behaviors.csProgress = [
+    csw.behaviors.size, csw.behaviors.tight, csw.behaviors.tooltip, csw.behaviors.injectLightStyles, {
       _styles_dom_module: 'cs-progress-styles',
       properties: {
         infinite: Boolean,

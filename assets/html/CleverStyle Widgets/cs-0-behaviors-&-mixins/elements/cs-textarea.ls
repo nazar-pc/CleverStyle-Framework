@@ -4,11 +4,11 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-Polymer.cs.behaviors.cs-textarea = [
-	Polymer.cs.behaviors.ready
-	Polymer.cs.behaviors.size
-	Polymer.cs.behaviors.tooltip
-	Polymer.cs.behaviors.value
+csw.behaviors.cs-textarea = [
+	csw.behaviors.ready
+	csw.behaviors.size
+	csw.behaviors.tooltip
+	csw.behaviors.value
 	properties	:
 		autosize	:
 			observer			: '_autosize_changed'

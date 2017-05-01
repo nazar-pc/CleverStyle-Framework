@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csButton = [
-    Polymer.cs.behaviors.button, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, {
+  csw.behaviors.csButton = [
+    csw.behaviors.button, csw.behaviors.tight, csw.behaviors.tooltip, {
       properties: {
         action: String,
         bind: Object

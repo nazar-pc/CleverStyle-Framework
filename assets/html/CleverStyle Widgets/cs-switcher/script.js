@@ -8,6 +8,6 @@
 (function(){
   Polymer({
     is: 'cs-switcher',
-    behaviors: Polymer.cs.behaviors.csSwitcher
+    behaviors: csw.behaviors.csSwitcher
   });
 }).call(this);

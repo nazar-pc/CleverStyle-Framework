@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-notify'
-	behaviors	: Polymer.cs.behaviors.cs-notify
+	behaviors	: csw.behaviors.cs-notify
 )

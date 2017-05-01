@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-pagination'
-	behaviors	: Polymer.cs.behaviors.cs-pagination
+	behaviors	: csw.behaviors.cs-pagination
 )

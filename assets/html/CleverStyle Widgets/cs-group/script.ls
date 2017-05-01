@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-group'
-	behaviors	: Polymer.cs.behaviors.cs-group
+	behaviors	: csw.behaviors.cs-group
 )

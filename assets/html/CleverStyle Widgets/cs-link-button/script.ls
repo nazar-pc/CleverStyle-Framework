@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-link-button'
-	behaviors	: Polymer.cs.behaviors.cs-link-button
+	behaviors	: csw.behaviors.cs-link-button
 )

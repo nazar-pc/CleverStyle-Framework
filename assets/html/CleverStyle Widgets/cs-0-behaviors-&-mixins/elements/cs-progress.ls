@@ -4,11 +4,11 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-Polymer.cs.behaviors.cs-progress = [
-	Polymer.cs.behaviors.size
-	Polymer.cs.behaviors.tight
-	Polymer.cs.behaviors.tooltip
-	Polymer.cs.behaviors.inject-light-styles
+csw.behaviors.cs-progress = [
+	csw.behaviors.size
+	csw.behaviors.tight
+	csw.behaviors.tooltip
+	csw.behaviors.inject-light-styles
 	_styles_dom_module	: 'cs-progress-styles'
 	properties	:
 		infinite		: Boolean

@@ -4,13 +4,13 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-Polymer.cs.behaviors.cs-select = [
-	Polymer.cs.behaviors.ready
-	Polymer.cs.behaviors.size
-	Polymer.cs.behaviors.tight
-	Polymer.cs.behaviors.tooltip
-	Polymer.cs.behaviors.value
-	Polymer.cs.behaviors.inject-light-styles
+csw.behaviors.cs-select = [
+	csw.behaviors.ready
+	csw.behaviors.size
+	csw.behaviors.tight
+	csw.behaviors.tooltip
+	csw.behaviors.value
+	csw.behaviors.inject-light-styles
 	_styles_dom_module	: 'cs-select-styles'
 	properties	:
 		selected	:

@@ -9,8 +9,8 @@
   var body, html;
   body = document.body;
   html = document.documentElement;
-  Polymer.cs.behaviors.csModal = [
-    Polymer.cs.behaviors['this'], {
+  csw.behaviors.csModal = [
+    csw.behaviors['this'], {
       properties: {
         asIs: {
           reflectToAttribute: true,

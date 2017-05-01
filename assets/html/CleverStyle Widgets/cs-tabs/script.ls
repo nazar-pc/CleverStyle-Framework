@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-tabs'
-	behaviors	: Polymer.cs.behaviors.cs-tabs
+	behaviors	: csw.behaviors.cs-tabs
 )

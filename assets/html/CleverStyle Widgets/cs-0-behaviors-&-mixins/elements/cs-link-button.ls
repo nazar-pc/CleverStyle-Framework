@@ -4,10 +4,10 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-Polymer.cs.behaviors.cs-link-button = [
-	Polymer.cs.behaviors.button
-	Polymer.cs.behaviors.tight
-	Polymer.cs.behaviors.tooltip
+csw.behaviors.cs-link-button = [
+	csw.behaviors.button
+	csw.behaviors.tight
+	csw.behaviors.tooltip
 	ready		: ->
 		@querySelector('a').setAttribute('role', 'button')
 ]

@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-icon'
-	behaviors	: Polymer.cs.behaviors.cs-icon
+	behaviors	: csw.behaviors.cs-icon
 )

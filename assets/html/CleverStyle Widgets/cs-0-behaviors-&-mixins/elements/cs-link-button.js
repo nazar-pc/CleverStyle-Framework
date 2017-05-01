@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  Polymer.cs.behaviors.csLinkButton = [
-    Polymer.cs.behaviors.button, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.tooltip, {
+  csw.behaviors.csLinkButton = [
+    csw.behaviors.button, csw.behaviors.tight, csw.behaviors.tooltip, {
       ready: function(){
         return this.querySelector('a').setAttribute('role', 'button');
       }

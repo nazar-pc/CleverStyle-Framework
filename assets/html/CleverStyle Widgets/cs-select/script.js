@@ -8,6 +8,6 @@
 (function(){
   Polymer({
     is: 'cs-select',
-    behaviors: Polymer.cs.behaviors.csSelect
+    behaviors: csw.behaviors.csSelect
   });
 }).call(this);

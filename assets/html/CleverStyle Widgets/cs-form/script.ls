@@ -6,5 +6,5 @@
  */
 Polymer(
 	is			: 'cs-form'
-	behaviors	: Polymer.cs.behaviors.cs-form
+	behaviors	: csw.behaviors.cs-form
 )
