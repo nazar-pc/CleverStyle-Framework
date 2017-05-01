@@ -15,13 +15,13 @@ Polymer.{}cs.{}behaviors.inject-light-styles = [
 			head	= document.querySelector('head')
 			head.insertAdjacentHTML(
 				'beforeend',
-				"""<custom-style><style is="custom-style" include="#{@_styles_dom_module}"></style></custom-style>"""
+				"""<custom-style><style include="#{@_styles_dom_module}"></style></custom-style>"""
 			)
-			style_element	= head.lastElementChild.firstChildElement
-			Polymer.updateStyles()
+			custom_style_element	= head.lastElementChild
 			cs.ui.ready.then !~>
-				styles[@_styles_dom_module]	= style_element.textContent.split(':not([style-scope]):not(.style-scope)').join('')
-				head.removeChild(style_element)
+				Polymer.updateStyles()
+				styles[@_styles_dom_module]	= custom_style_element.firstElementChild.textContent.split(':not([style-scope]):not(.style-scope)').join('')
+				head.removeChild(custom_style_element)
 				@insertAdjacentHTML('beforeend', "<style>#{styles[@_styles_dom_module]}</style>")
 		else
 			@insertAdjacentHTML('beforeend', "<style>#{styles[@_styles_dom_module]}</style>")

@@ -10,19 +10,19 @@
   styles = {};
   ((ref$ = Polymer.cs || (Polymer.cs = {})).behaviors || (ref$.behaviors = {})).injectLightStyles = [{
     attached: function(){
-      var head, style_element, this$ = this;
+      var head, custom_style_element, this$ = this;
       if (this._styles_added) {
         return;
       }
       this._styles_added = true;
       if (!styles[this._styles_dom_module]) {
         head = document.querySelector('head');
-        head.insertAdjacentHTML('beforeend', "<custom-style><style is=\"custom-style\" include=\"" + this._styles_dom_module + "\"></style></custom-style>");
-        style_element = head.lastElementChild.firstChildElement;
-        Polymer.updateStyles();
+        head.insertAdjacentHTML('beforeend', "<custom-style><style include=\"" + this._styles_dom_module + "\"></style></custom-style>");
+        custom_style_element = head.lastElementChild;
         cs.ui.ready.then(function(){
-          styles[this$._styles_dom_module] = style_element.textContent.split(':not([style-scope]):not(.style-scope)').join('');
-          head.removeChild(style_element);
+          Polymer.updateStyles();
+          styles[this$._styles_dom_module] = custom_style_element.firstElementChild.textContent.split(':not([style-scope]):not(.style-scope)').join('');
+          head.removeChild(custom_style_element);
           this$.insertAdjacentHTML('beforeend', "<style>" + styles[this$._styles_dom_module] + "</style>");
         });
       } else {

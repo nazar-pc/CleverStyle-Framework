@@ -1,7 +1,7 @@
 {
 	"package"             : "System",
 	"category"            : "modules",
-	"version"             : "7.21.1+build-2632",
+	"version"             : "7.22.0+build-2633",
 	"description"         : "Base system module of CleverStyle Framework",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/Framework",
