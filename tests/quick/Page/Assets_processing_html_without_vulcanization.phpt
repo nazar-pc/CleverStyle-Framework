@@ -24,9 +24,13 @@ echo file_get_contents("$tmp_dir/1493da20bba0b80de0e0f7297d3cf6d0.js")."\n";
 %w
 </dom-module>
 <script src="/external-script.js"></script>
-<style is="custom-style">html{--my-property:black;}</style>
+<custom-style>
+	<style>html{--my-property:black;}</style>
+</custom-style>
 <script src="./d56902a9037da35c4d51753cb1b31d4f.js"></script>
-<style is="custom-style">html{--my-property-2:black;}</style>
+<custom-style>
+	<style>html{--my-property-2:black;}</style>
+</custom-style>
 <script src="./b0c4817554bfb8e8f10f16ab1c683f47.js"></script>
 <script src="/external-imported-script.js"></script>
 <link rel="import" href="/external-import.html" type="html">

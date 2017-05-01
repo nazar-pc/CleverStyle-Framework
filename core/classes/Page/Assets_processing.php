@@ -337,6 +337,7 @@ class Assets_processing {
 	 */
 	protected static function html_process_links_and_styles (&$data, $file, $target_directory_path, $vulcanization, &$not_embedded_resources) {
 		// Drop Polymer inclusion, since it is already present
+		// TODO: Be smarter and drop any separate files from Polymer
 		$data = str_replace('<link rel="import" href="../polymer/polymer.html">', '', $data);
 		if (!preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles)) {
 			return;
@@ -344,14 +345,9 @@ class Assets_processing {
 		$dir = dirname($file);
 		foreach ($links_and_styles[1] as $index => $link) {
 			/**
-			 * Check for custom styles `is="custom-style"` or styles includes `include=".."` - we'll skip them
-			 * Or if content is plain CSS
+			 * For plain styles we do not do anything fancy besides minifying its sources (no rearrangement or anything like that)
 			 */
-			// TODO: add support for custom-style instead of style[is=custom-style]
-			if (
-				preg_match('/^[^>]*(is="custom-style"|include=)[^>]*>/Uim', $links_and_styles[2][$index]) ||
-				mb_strpos($links_and_styles[0][$index], '</style>') > 0
-			) {
+			if (mb_strpos($links_and_styles[0][$index], '</style>') > 0) {
 				$content = explode('>', $links_and_styles[2][$index], 2)[1];
 				$data    = str_replace(
 					$content,
@@ -369,7 +365,10 @@ class Assets_processing {
 			 */
 			$css_import = $import && preg_match('/type\s*=\s*[\'"]css[\'"]/Uim', $link);
 			$stylesheet = preg_match('/rel\s*=\s*[\'"]stylesheet[\'"]/Uim', $link);
-			// TODO: Polymer only supports `style[is=custom-style]`, but no `link`-based counterpart, so we can't provide CSP-compatibility for CSS anyway
+			/**
+			 * TODO: Polymer only supports `custom-style > style`, but no `link`-based counterpart, so we can't provide CSP-compatibility in general,
+			 * thus always inlining styles into HTML
+			 */
 			if ($css_import || $stylesheet) {
 				/**
 				 * If content is link to CSS file
