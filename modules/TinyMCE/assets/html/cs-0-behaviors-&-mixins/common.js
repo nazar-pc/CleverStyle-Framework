@@ -7,7 +7,7 @@
  * @license   GNU Lesser General Public License 2.1, see license.txt
  */
 (function(){
-  var load_promise, change_timeout, load_tinymce, TinyMCE_Polymer_editor_behavior;
+  var load_promise, change_timeout, load_tinymce;
   load_promise = null;
   change_timeout = null;
   load_tinymce = function(){
@@ -97,7 +97,7 @@
       }, tinymce.editor_config_simple);
     });
   };
-  TinyMCE_Polymer_editor_behavior = {
+  window.TinyMCE_Polymer_editor_behavior = {
     listeners: {
       tap: '_style_fix'
     },
