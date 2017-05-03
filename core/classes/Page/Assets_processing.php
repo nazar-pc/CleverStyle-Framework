@@ -314,10 +314,6 @@ class Assets_processing {
 		 * If vulcanization is not used - put contents into separate file, and put link to it, otherwise put minified content back
 		 */
 		if (!$vulcanization) {
-			// TODO: Remove in 7.x; For backward compatibility, since some modules might use this by specifying file path
-			if (!is_dir($target_directory_path)) {
-				$target_directory_path = dirname($target_directory_path);
-			}
 			$filename = static::file_put_contents_with_hash($target_directory_path, 'js', $scripts_content);
 			// Add script with combined content file to the end
 			$data                     .= "<script src=\"./$filename\"></script>";
