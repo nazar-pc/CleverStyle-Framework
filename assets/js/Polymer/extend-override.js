@@ -6,5 +6,50 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-
+  var delay_registration, polymerFn_original, already_registered_modules, register_original;
+  delay_registration = {};
+  polymerFn_original = Polymer._polymerFn;
+  Polymer._polymerFn = function(info){
+    var new_prototype;
+    if (typeof info !== 'function') {
+      if (delay_registration[info.is]) {
+        new_prototype = delay_registration[info.is];
+        if (!new_prototype.overrides) {
+          new_prototype.behaviors = (info.behaviors || (info.behaviors = [])).slice().concat(new_prototype.behaviors || []);
+          if (info['extends']) {
+            new_prototype['extends'] = info['extends'];
+          }
+          delete info.behaviors;
+          delete info['extends'];
+          new_prototype.behaviors.unshift(info);
+        }
+        delete new_prototype.overrides;
+        info = new_prototype;
+        delete delay_registration[info.is];
+      }
+      if (info.is === info['extends']) {
+        delete info['extends'];
+        delay_registration[info.is] = info;
+        return;
+      }
+      if (info.is === info.overrides) {
+        delay_registration[info.is] = info;
+        return;
+      }
+    }
+    return polymerFn_original.call(this, info);
+  };
+  already_registered_modules = {};
+  register_original = Polymer.DomModule.register;
+  document.createElement('dom-module').__proto__.register = function(){
+    if (this.id) {
+      if (already_registered_modules[this.id]) {
+        return;
+      }
+      if (this.getAttribute('overrides') === this.id) {
+        already_registered_modules[this.id] = true;
+      }
+    }
+    register_original.call(this);
+  };
 }).call(this);
