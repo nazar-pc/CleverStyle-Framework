@@ -206,8 +206,6 @@ trait Assets {
 		if (!$Config) {
 			return $this;
 		}
-		// TODO: I hope some day we'll get rid of this sh*t :(
-		$this->edge();
 		$Request = Request::instance();
 		/**
 		 * If CSS and JavaScript compression enabled
@@ -258,17 +256,6 @@ trait Assets {
 		return $Config->core['cache_compress_js_css'] && !($Request->admin_path && isset($Request->query['debug']));
 	}
 	/**
-	 * Add JS polyfills for IE/Edge
-	 */
-	protected function edge () {
-		if (strpos(Request::instance()->header('user-agent'), 'Edge') === false) {
-			return;
-		}
-		$this->core_js(
-			get_files_list(DIR.'/assets/js/microsoft_shit', '/.*\.js$/i', 'f', 'assets/js/microsoft_shit', true)
-		);
-	}
-	/**
 	 * Hack: Add WebComponents Polyfill for browsers without native Shadow DOM support
 	 *
 	 * @param Request $Request
@@ -276,7 +263,7 @@ trait Assets {
 	 * @param bool    $with_compression
 	 */
 	protected function webcomponents_polyfill ($Request, $Config, $with_compression) {
-		if (($this->theme != Config::SYSTEM_THEME && $Config->core['disable_webcomponents']) || $Request->cookie('shadow_dom') == 1) {
+		if (($this->theme != Config::SYSTEM_THEME && $Config->core['disable_webcomponents']) || $Request->cookie('shadow_dom_v1') == 1) {
 			return;
 		}
 		if ($with_compression) {

@@ -90,21 +90,12 @@ class Page_test extends Page {
 		var_dump('post_Body', $Page->post_Body);
 		var_dump('headers', Response::instance()->headers);
 
-		var_dump('Edge 14');
-		Response::instance_reset();
-		Request::instance_reset();
-		Page::instance_reset();
-		Request::instance()->headers['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14928';
-		$Page                                      = Page::instance();
-		$Page->add_assets_on_page();
-		var_dump('post_Body', $Page->post_Body);
-
 		var_dump('Shadow DOM supported');
 		Response::instance_reset();
 		Request::instance_reset();
 		Page::instance_reset();
-		Request::instance()->cookie['shadow_dom'] = 1;
-		$Page                                     = Page::instance();
+		Request::instance()->cookie['shadow_dom_v1'] = 1;
+		$Page                                        = Page::instance();
 		$Page->add_assets_on_page();
 		var_dump('post_Body', $Page->post_Body);
 
@@ -432,13 +423,6 @@ array(2) {
     string(%d) "</storage/public_cache/%s.css>; rel=preload; as=style"
   }
 }
-string(7) "Edge 14"
-string(9) "post_Body"
-string(%d) "<script src="/storage/public_cache/%s.js"></script>
-<script src="assets/js/microsoft_shit/14/URL.js"></script>
-<script src="/storage/public_cache/%s.js"></script>
-<link href="/storage/public_cache/%s.html" rel="import">
-"
 string(20) "Shadow DOM supported"
 string(9) "post_Body"
 string(%d) "<script src="/storage/public_cache/%s.js"></script>

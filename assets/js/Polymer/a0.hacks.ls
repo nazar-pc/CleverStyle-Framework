@@ -24,7 +24,7 @@ document.addEventListener('WebComponentsReady', !->
 			setTimeout(Polymer.updateStyles, 1000)
 	), 250
 )
-if !window.WebComponents?.flags
+if !window.WebComponents
 	addEventListener('load', !->
 		document.dispatchEvent(new CustomEvent(
 			'WebComponentsReady'
@@ -32,12 +32,12 @@ if !window.WebComponents?.flags
 		))
 	)
 # If there is native Shadow DOM support - lets store cookie so that we can skip loading Shadow DOM polyfill
-if document.cookie.indexOf('shadow_dom=1') == -1
+if document.cookie.indexOf('shadow_dom_v1=1') == -1
 	value	=
-		if 'registerElement' of document && 'import' of document.createElement('link') && 'content' of document.createElement('template')
+		if 'registerElement' of document && 'import' of document.createElement('link') && 'attachShadow' of document.createElement('div')
 			1
 		else
 			0
 	date	= new Date()
 	date.setTime(date.getTime() + (30d * 24h * 3600s * 1000ms))
-	document.cookie = "shadow_dom=#value; path=/; expires=" + date.toGMTString()
+	document.cookie = "shadow_dom_v1=#value; path=/; expires=" + date.toGMTString()
