@@ -29,17 +29,17 @@ use
  */
 trait Assets {
 	protected $extension_to_as = [
-		'jpeg' => 'image',
-		'jpe'  => 'image',
-		'jpg'  => 'image',
-		'gif'  => 'image',
-		'png'  => 'image',
-		'svg'  => 'image',
-		'svgz' => 'image',
+		'jpeg'  => 'image',
+		'jpe'   => 'image',
+		'jpg'   => 'image',
+		'gif'   => 'image',
+		'png'   => 'image',
+		'svg'   => 'image',
+		'svgz'  => 'image',
 		'woff2' => 'font',
-		'css'  => 'style',
-		'js'   => 'script',
-		'html' => 'document'
+		'css'   => 'style',
+		'js'    => 'script',
+		'html'  => 'document'
 	];
 	/**
 	 * @var array
@@ -439,7 +439,7 @@ trait Assets {
 				return "$content<link href=\"$href\" rel=\"import\">\n";
 			}
 		);
-		$this->Head .= $configs;
+		$this->Head   .= $configs;
 		$this->add_script_imports_to_document($Config, $scripts.$html_imports);
 	}
 	/**

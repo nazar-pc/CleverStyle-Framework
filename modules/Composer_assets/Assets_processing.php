@@ -72,7 +72,7 @@ HTACCESS
 	 * @return string[]
 	 */
 	protected static function extract_files ($meta, $package_name) {
-		$meta += ['require_bower' => [], 'require_npm' => []];
+		$meta     += ['require_bower' => [], 'require_npm' => []];
 		$packages = $meta['require_bower'] + $meta['require_npm'];
 		return isset($packages[$package_name]['files']) ? $packages[$package_name]['files'] : [];
 	}

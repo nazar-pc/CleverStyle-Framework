@@ -16,13 +16,13 @@ namespace cs\Page;
  */
 class Assets_processing {
 	protected static $extension_to_mime = [
-		'jpeg' => 'image/jpg',
-		'jpe'  => 'image/jpg',
-		'jpg'  => 'image/jpg',
-		'gif'  => 'image/gif',
-		'png'  => 'image/png',
-		'svg'  => 'image/svg+xml',
-		'svgz' => 'image/svg+xml',
+		'jpeg'  => 'image/jpg',
+		'jpe'   => 'image/jpg',
+		'jpg'   => 'image/jpg',
+		'gif'   => 'image/gif',
+		'png'   => 'image/png',
+		'svg'   => 'image/svg+xml',
+		'svgz'  => 'image/svg+xml',
 		'woff2' => 'application/font-woff2'
 	];
 	/**
