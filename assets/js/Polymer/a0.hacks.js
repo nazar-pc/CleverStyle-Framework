@@ -43,14 +43,9 @@
     });
   }
   if (document.cookie.indexOf('shadow_dom_v1=1') === -1) {
-    value = in$('registerElement', document) && in$('import', document.createElement('link')) && in$('attachShadow', document.createElement('div')) ? 1 : 0;
+    value = 'registerElement' in document && 'import' in document.createElement('link') && 'attachShadow' in document.createElement('div') ? 1 : 0;
     date = new Date();
     date.setTime(date.getTime() + 30 * 24 * 3600 * 1000);
     document.cookie = ("shadow_dom_v1=" + value + "; path=/; expires=") + date.toGMTString();
-  }
-  function in$(x, xs){
-    var i = -1, l = xs.length >>> 0;
-    while (++i < l) if (x === xs[i]) return true;
-    return false;
   }
 }).call(this);

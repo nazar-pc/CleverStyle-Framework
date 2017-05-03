@@ -40,7 +40,7 @@
     return polymerFn_original.call(this, info);
   };
   already_registered_modules = {};
-  register_original = Polymer.DomModule.register;
+  register_original = Polymer.DomModule.prototype.register;
   document.createElement('dom-module').__proto__.register = function(){
     if (this.id) {
       if (already_registered_modules[this.id]) {

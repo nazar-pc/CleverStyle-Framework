@@ -32,7 +32,7 @@ Polymer._polymerFn	= (info) ->
 	polymerFn_original.call(@, info)
 # DOM module override
 already_registered_modules	= {}
-register_original			= Polymer.DomModule.register
+register_original			= Polymer.DomModule.prototype.register
 document.createElement('dom-module').__proto__.register = !->
 	if @id
 		if already_registered_modules[@id]
