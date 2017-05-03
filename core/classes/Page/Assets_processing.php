@@ -331,9 +331,6 @@ class Assets_processing {
 	 * @param string[] $not_embedded_resources Resources like images/fonts might not be embedded into resulting CSS because of big size or CSS/JS because of CSP
 	 */
 	protected static function html_process_links_and_styles (&$data, $file, $target_directory_path, $vulcanization, &$not_embedded_resources) {
-		// Drop Polymer inclusion, since it is already present
-		// TODO: Be smarter and drop any separate files from Polymer
-		$data = str_replace('<link rel="import" href="../polymer/polymer.html">', '', $data);
 		if (!preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles)) {
 			return;
 		}
