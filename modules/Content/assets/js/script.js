@@ -14,16 +14,8 @@
     div.innerHTML = html;
     return div.firstChild;
   };
-  Promise.all([
-    cs.api('is_admin api/Content')['catch'](function(o){
-      if (o.xhr.status === 404) {
-        clearTimeout(o.timeout);
-        return Promise.reject();
-      }
-    }), cs.ui.ready
-  ]).then(function(arg$){
-    var is_admin, x$;
-    is_admin = arg$[0];
+  cs.ui.ready.then(function(){
+    var x$;
     x$ = document.querySelector('body');
     x$.addEventListener('click', function(e){
       if (!e.target.matches('.cs-content-add')) {
@@ -125,7 +117,8 @@
       });
     });
     (function(){
-      var mousemove_timeout, showed_button, show_edit_button, x$;
+      var is_admin, mousemove_timeout, showed_button, show_edit_button, x$;
+      is_admin = undefined;
       mousemove_timeout = 0;
       showed_button = false;
       show_edit_button = function(key, x, y, container){
@@ -133,11 +126,12 @@
           var button;
           button = html_to_node("<cs-button><button class=\"cs-content-edit\" data-key=\"" + key + "\" style=\"position: absolute; left: " + x + "; top: " + y + ";\">" + L.edit + "</button></cs-button>");
           container.appendChild(button);
-          container.addEventListener('mousemove', function(){
+          container.addEventListener('mouseleave', function(){
             showed_button = false;
             button.parentNode.removeChild(button);
           }, {
-            passive: true
+            passive: true,
+            once: true
           });
         });
       };
@@ -152,7 +146,23 @@
         clearTimeout(mousemove_timeout);
         mousemove_timeout = setTimeout(function(){
           showed_button = true;
-          show_edit_button(e.target.dataset.csContent, e.pageX, e.pageY, e.target);
+          if (is_admin === undefined) {
+            cs.api('is_admin api/Content').then(function(result){
+              is_admin = result;
+              if (is_admin) {
+                show_edit_button(e.target.dataset.csContent, e.pageX, e.pageY, e.target);
+              }
+            })['catch'](function(o){
+              if (o.xhr.status === 404) {
+                clearTimeout(o.timeout);
+                return Promise.reject();
+              }
+            });
+            return;
+          }
+          if (is_admin) {
+            show_edit_button(e.target.dataset.csContent, e.pageX, e.pageY, e.target);
+          }
         }, 200);
       }, {
         passive: true

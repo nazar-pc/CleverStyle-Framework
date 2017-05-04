@@ -9,14 +9,9 @@ html_to_node	= (html) ->
 	div				= document.createElement('div')
 	div.innerHTML	= html
 	div.firstChild
-Promise.all([
-	cs.api('is_admin api/Content').catch (o) ->
-		if o.xhr.status == 404
-			clearTimeout(o.timeout)
-			Promise.reject()
-	cs.ui.ready
-])
-	.then ([is_admin]) !->
+# TODO: Refactor into cs-content-editable element
+cs.ui.ready
+	.then !->
 		document.querySelector('body')
 			..addEventListener('click', (e) !->
 				if !e.target.matches('.cs-content-add')
@@ -139,6 +134,7 @@ Promise.all([
 						.then(location~reload)
 			)
 		do !->
+			is_admin			= undefined
 			mousemove_timeout	= 0
 			showed_button		= false
 			show_edit_button	= (key, x, y, container) !->
@@ -148,11 +144,11 @@ Promise.all([
 					""")
 					container.appendChild(button)
 					container.addEventListener(
-						'mousemove'
+						'mouseleave'
 						!->
 							showed_button	:= false
 							button.parentNode.removeChild(button)
-						{passive : true}
+						{passive : true, once: true}
 					)
 			document.querySelector('body')
 				..addEventListener(
@@ -165,7 +161,19 @@ Promise.all([
 						clearTimeout(mousemove_timeout)
 						mousemove_timeout := setTimeout (!->
 							showed_button	:= true
-							show_edit_button(e.target.dataset.cs-content, e.pageX, e.pageY, e.target)
+							if is_admin == undefined
+								cs.api('is_admin api/Content')
+									.then (result) !->
+										is_admin	:= result
+										if is_admin
+											show_edit_button(e.target.dataset.cs-content, e.pageX, e.pageY, e.target)
+									.catch (o) ->
+										if o.xhr.status == 404
+											clearTimeout(o.timeout)
+											Promise.reject()
+								return
+							if is_admin
+								show_edit_button(e.target.dataset.cs-content, e.pageX, e.pageY, e.target)
 						), 200
 					{passive : true}
 				)
