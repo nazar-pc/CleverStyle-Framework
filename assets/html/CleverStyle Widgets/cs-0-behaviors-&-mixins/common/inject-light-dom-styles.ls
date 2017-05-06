@@ -7,10 +7,10 @@
 styles								= {}
 csw.behaviors.inject-light-styles	= [
 	attached : !->
-		# Hack: The only way to achieve proper styling inside of cs-form, otherwise new slots system doesn't give us enough flexibility
-		if @_styles_added
+		# Hack: The only way to achieve proper styling inside of some element, otherwise new slots system doesn't give us enough flexibility
+		if @_styles_dom_module_added
 			return
-		@_styles_added	= true
+		@_styles_dom_module_added	= true
 		if !styles[@_styles_dom_module]
 			head	= document.querySelector('head')
 			head.insertAdjacentHTML(

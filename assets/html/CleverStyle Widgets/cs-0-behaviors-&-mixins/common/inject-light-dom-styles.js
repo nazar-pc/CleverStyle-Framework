@@ -11,10 +11,10 @@
   csw.behaviors.injectLightStyles = [{
     attached: function(){
       var head, custom_style_element, this$ = this;
-      if (this._styles_added) {
+      if (this._styles_dom_module_added) {
         return;
       }
-      this._styles_added = true;
+      this._styles_dom_module_added = true;
       if (!styles[this._styles_dom_module]) {
         head = document.querySelector('head');
         head.insertAdjacentHTML('beforeend', "<custom-style><style include=\"" + this._styles_dom_module + "\"></style></custom-style>");

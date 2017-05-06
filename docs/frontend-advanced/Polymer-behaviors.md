@@ -71,3 +71,36 @@ Behavior provides a few trivial, but useful computed bindings methods:
 * `or(x, y [, z [,...]])`
 * `xor(x, y [, z [,...]])`
 * `equal(a, b, strict = false)`
+
+### cs.Polymer.behaviors.inject_light_styles
+This behavior aims to partially overcome limitations of Web Components v1 spec.
+
+Currently, it is not impossible to use CSS within Shadow DOM to apply arbitrary styling to projected elements. `::slotted()` is limited to only root elements and doesn't allow anything more advanced.
+
+This behavior requires `_styles_dom_module` property to be specified on element with name of the DOM module `dom-module`, whose styles will be inserted as stylesheet at the end of the element's children.
+In contrast to plain CSS insertion, involving `dom-module` allows usage of CSS mixing and other advanced stuff.
+
+Example (note that usage of target element's name is highly recommended in order to avoid styling issues):
+```html
+<dom-module id="my-element-styles">
+	<template>
+		<style>
+			my-element input {
+				@apply --my-element-input;
+			}
+		</style>
+	</template>
+</dom-module>
+<dom-module id="my-element">
+	<template>
+		<slot></slot>
+	</template>
+	<script>
+		Polymer({
+			is                 : 'my-element',
+			behaviors          : [cs.Polymer.behaviors.inject_light_styles],
+			_styles_dom_module : 'my-element-styles'
+		});
+	</script>
+</dom-module>
+```

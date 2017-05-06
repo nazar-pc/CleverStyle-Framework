@@ -6,10 +6,11 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var normalize_bool, ref$;
+  var normalize_bool, styles, ref$;
   normalize_bool = function(value){
     return value && value !== '0';
   };
+  styles = {};
   ((ref$ = window.cs || (window.cs = {})).Polymer || (ref$.Polymer = {})).behaviors = {
     /**
      * Simplified access to translations in Polymer elements
@@ -105,6 +106,28 @@
           return a === b;
         } else {
           return a == b;
+        }
+      }
+    },
+    inject_light_styles: {
+      attached: function(){
+        var head, custom_style_element, this$ = this;
+        if (this._styles_dom_module_added) {
+          return;
+        }
+        this._styles_dom_module_added = true;
+        if (!styles[this._styles_dom_module]) {
+          head = document.querySelector('head');
+          head.insertAdjacentHTML('beforeend', "<custom-style><style include=\"" + this._styles_dom_module + "\"></style></custom-style>");
+          custom_style_element = head.lastElementChild;
+          cs.ui.ready.then(function(){
+            Polymer.updateStyles();
+            styles[this$._styles_dom_module] = custom_style_element.firstElementChild.textContent.split(':not([style-scope]):not(.style-scope)').join('');
+            head.removeChild(custom_style_element);
+            this$.insertAdjacentHTML('beforeend', "<style>" + styles[this$._styles_dom_module] + "</style>");
+          });
+        } else {
+          this.insertAdjacentHTML('beforeend', "<style>" + styles[this._styles_dom_module] + "</style>");
         }
       }
     }

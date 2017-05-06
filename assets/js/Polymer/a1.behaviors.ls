@@ -4,8 +4,9 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-normalize_bool = (value) ->
+normalize_bool	= (value) ->
 	value && value != '0'
+styles			= {}
 window.{}cs.{}Polymer.behaviors =
 	/**
 	 * Simplified access to translations in Polymer elements
@@ -77,3 +78,23 @@ window.{}cs.{}Polymer.behaviors =
 		# equal(a, b, strict = false)
 		equal : (a, b, strict) ->
 			if strict then a == b else a ~= b
+	inject_light_styles	:
+		attached : !->
+			# Hack: The only way to achieve proper styling inside of some element, otherwise new slots system doesn't give us enough flexibility
+			if @_styles_dom_module_added
+				return
+			@_styles_dom_module_added	= true
+			if !styles[@_styles_dom_module]
+				head	= document.querySelector('head')
+				head.insertAdjacentHTML(
+					'beforeend',
+					"""<custom-style><style include="#{@_styles_dom_module}"></style></custom-style>"""
+				)
+				custom_style_element	= head.lastElementChild
+				cs.ui.ready.then !~>
+					Polymer.updateStyles()
+					styles[@_styles_dom_module]	= custom_style_element.firstElementChild.textContent.split(':not([style-scope]):not(.style-scope)').join('')
+					head.removeChild(custom_style_element)
+					@insertAdjacentHTML('beforeend', "<style>#{styles[@_styles_dom_module]}</style>")
+			else
+				@insertAdjacentHTML('beforeend', "<style>#{styles[@_styles_dom_module]}</style>")
