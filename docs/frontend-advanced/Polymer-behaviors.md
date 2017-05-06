@@ -60,3 +60,14 @@ A bit more advanced usage is to use formatted translations using exposed `__()` 
  </dom-module>
  ```
 The result will be exactly the same af in previous.
+
+#### cs.Polymer.behaviors.computed_bindings
+Behavior provides a few trivial, but useful computed bindings methods:
+
+* `if(condition, then [, otherwise [, prefix [, postfix]]])`
+* `join(array [, separator = ','])`
+* `concat(thing [, another [, ...]])`
+* `and(x, y [, z [,...]])`
+* `or(x, y [, z [,...]])`
+* `xor(x, y [, z [,...]])`
+* `equal(a, b, strict = false)`
