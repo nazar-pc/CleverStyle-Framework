@@ -21,7 +21,7 @@ Prism.highlightAll = (async, callback, root) !->
 cs.ui.ready.then(Prism.highlightAll)
 cs.Event.on('System/content_enhancement', ({element}) !->
 	Prism.highlightAll(true, ->, element)
-	if !document.querySelector('custom-style > style[include=cs-prism-styles]')
+	if !element.querySelector('custom-style > style[include=cs-prism-styles]')
 		element.insertAdjacentHTML(
 			'beforeend',
 			"""<custom-style><style include="cs-prism-styles"></style></custom-style>"""

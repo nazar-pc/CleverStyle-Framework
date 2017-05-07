@@ -25,7 +25,7 @@
     var element;
     element = arg$.element;
     Prism.highlightAll(true, function(){}, element);
-    if (!document.querySelector('custom-style > style[include=cs-prism-styles]')) {
+    if (!element.querySelector('custom-style > style[include=cs-prism-styles]')) {
       element.insertAdjacentHTML('beforeend', "<custom-style><style include=\"cs-prism-styles\"></style></custom-style>");
     }
   });
