@@ -60,6 +60,7 @@ Here you can find all useful information:
 * [Polymer behaviors](/docs/frontend-advanced/Polymer-behaviors.md)
 * [Polymer elements extension](/docs/frontend-advanced/Polymer-elements-extension.md)
 * [Files uploading](/docs/frontend-advanced/Files-uploading.md)
+* [Content enhancement](/docs/frontend-advanced/Content-enhancement.md)
 * [RequireJS](/docs/frontend-advanced/RequireJS.md)
 * [Bower & NPM](/docs/frontend-advanced/Bower-and-NPM.md)
 * [Frontend loading and CSS/JS/HTML processing](/docs/frontend-advanced/Frontend-loading-and-CSS-JS-HTML-processing.md)
