@@ -83,24 +83,24 @@ In contrast to plain CSS insertion, involving `dom-module` allows usage of CSS m
 Example (note that usage of target element's name is highly recommended in order to avoid styling issues):
 ```html
 <dom-module id="my-element-styles">
-	<template>
-		<style>
-			my-element input {
-				@apply --my-element-input;
-			}
-		</style>
-	</template>
+    <template>
+        <style>
+            my-element input {
+                @apply --my-element-input;
+            }
+        </style>
+    </template>
 </dom-module>
 <dom-module id="my-element">
-	<template>
-		<slot></slot>
-	</template>
-	<script>
-		Polymer({
-			is                 : 'my-element',
-			behaviors          : [cs.Polymer.behaviors.inject_light_styles],
-			_styles_dom_module : 'my-element-styles'
-		});
-	</script>
+    <template>
+        <slot></slot>
+    </template>
+    <script>
+        Polymer({
+            is                 : 'my-element',
+            behaviors          : [cs.Polymer.behaviors.inject_light_styles],
+            _styles_dom_module : 'my-element-styles'
+        });
+    </script>
 </dom-module>
 ```
