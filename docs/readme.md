@@ -48,7 +48,7 @@ Here you can find all useful information:
 * [Testing](/docs/backend-advanced/Testing.md)
 * [System classes extension](/docs/backend-advanced/System-classes-extension.md)
 * [Components dependencies and conflicts](/docs/backend-advanced/Components-dependencies-and-conflicts.md)
-* [Files uploading](/docs/backend-advanced/Comments.md)
+* [Comments](/docs/backend-advanced/Comments.md)
 * [Files uploading](/docs/backend-advanced/Files-uploading.md)
 * [Routing](/docs/backend-advanced/Routing.md)
 * [Database](/docs/backend-advanced/Database.md)
@@ -60,7 +60,7 @@ Here you can find all useful information:
 ### Advanced [Frontend] [dev]
 * [Polymer behaviors](/docs/frontend-advanced/Polymer-behaviors.md)
 * [Polymer elements extension](/docs/frontend-advanced/Polymer-elements-extension.md)
-* [Files uploading](/docs/frontend-advanced/Comments.md)
+* [Comments](/docs/frontend-advanced/Comments.md)
 * [Files uploading](/docs/frontend-advanced/Files-uploading.md)
 * [Content enhancement](/docs/frontend-advanced/Content-enhancement.md)
 * [RequireJS](/docs/frontend-advanced/RequireJS.md)
