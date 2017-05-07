@@ -9,7 +9,8 @@
 (function(){
   Polymer({
     is: 'cs-editor',
-    behaviors: [TinyMCE_Polymer_editor_behavior],
+    behaviors: [TinyMCE_Polymer_editor_behavior, cs.Polymer.behaviors.inject_light_styles],
+    _styles_dom_module: 'cs-editor-styles',
     editor_config: 'editor_config_full'
   });
 }).call(this);
