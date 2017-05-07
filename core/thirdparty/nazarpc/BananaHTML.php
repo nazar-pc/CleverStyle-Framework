@@ -40,7 +40,7 @@ class BananaHTML {
 	 *
 	 * @return string
 	 */
-	static function level ($in, $level = 1) {
+	public static function level ($in, $level = 1) {
 		if ($level < 1) {
 			return $in;
 		}
@@ -75,7 +75,7 @@ class BananaHTML {
 		if (isset($data['href'])) {
 			if ($tag != 'a') {
 				$data['href'] = static::prepare_url($data['href']);
-			} elseif (substr($data['href'], 0, 1) == '#') {
+			} elseif ($data['href'][0] == '#') {
 				$data['href'] = static::url_with_hash($data['href']);
 			}
 		}
@@ -88,7 +88,7 @@ class BananaHTML {
 			if ($value === true) {
 				$attributes .= " $key";
 			} else {
-				$value = static::prepare_attr_value($value);
+				$value      = static::prepare_attr_value($value);
 				$attributes .= " $key=\"$value\"";
 			}
 		}
@@ -113,16 +113,16 @@ class BananaHTML {
 	 *
 	 * @return false|string
 	 */
-	static function prepare_url ($url, $absolute = false) {
+	public static function prepare_url ($url, $absolute = false) {
 		if ($url === false) {
 			return false;
 		}
-		if (substr($url, 0, 1) == '#') {
+		if ($url[0] == '#') {
 			$url = static::url_with_hash($url);
 		} elseif (
 			substr($url, 0, 2) != '$i' &&
 			substr($url, 0, 5) != 'data:' &&
-			substr($url, 0, 1) != '/' &&
+			$url[0] != '/' &&
 			substr($url, 0, 7) != 'http://' &&
 			substr($url, 0, 8) != 'https://'
 		) {
@@ -164,8 +164,9 @@ class BananaHTML {
 	 *
 	 * @return string|string[]
 	 */
-	static function prepare_attr_value ($text) {
+	public static function prepare_attr_value ($text) {
 		if (is_array($text)) {
+			/** @noinspection ForeachSourceInspection */
 			foreach ($text as &$t) {
 				$t = static::prepare_attr_value($t);
 			}
@@ -259,13 +260,14 @@ class BananaHTML {
 	 *
 	 * @return bool|string
 	 */
-	static function form ($in = '', $data = []) {
+	public static function form ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
 			return static::__callStatic_internal(__FUNCTION__, func_get_args());
 		}
 		if ($in === false) {
 			return '';
-		} elseif (is_array($in)) {
+		}
+		if (is_array($in)) {
 			return static::__callStatic_internal(__FUNCTION__, [$in, $data]);
 		}
 		if (isset($in['method'])) {
@@ -304,7 +306,7 @@ class BananaHTML {
 	 *
 	 * @return string
 	 */
-	static function input ($in = [], $data = []) {
+	public static function input ($in = [], $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
 			return static::__callStatic_internal(__FUNCTION__, func_get_args());
 		}
@@ -327,6 +329,9 @@ class BananaHTML {
 	 * @return array
 	 */
 	protected static function input_merge ($in, $data) {
+		if (is_string($in)) {
+			$in = ['in' => $in];
+		}
 		return !$data ? $in : array_merge(
 			static::is_array_assoc($in) ? $in : ['in' => $in],
 			$data
@@ -374,23 +379,22 @@ class BananaHTML {
 				$return .= static::input($item);
 			}
 			return $return;
-		} else {
-			/** @noinspection NotOptimalIfConditionsInspection */
-			if (!isset($in['type'])) {
-				$in['type'] = 'text';
-			}
-			if ($in['type'] == 'checkbox' && isset($in['value'], $in['checked']) && $in['value'] == $in['checked']) {
-				$in[] = 'checked';
-			}
-			unset($in['checked']);
-			if (isset($in['min'], $in['value']) && $in['min'] !== false && $in['min'] > $in['value']) {
-				$in['value'] = $in['min'];
-			}
-			if (isset($in['max'], $in['value']) && $in['max'] !== false && $in['max'] < $in['value']) {
-				$in['value'] = $in['max'];
-			}
-			return static::u_wrap($in, 'input');
 		}
+		/** @noinspection NotOptimalIfConditionsInspection */
+		if (!isset($in['type'])) {
+			$in['type'] = 'text';
+		}
+		if ($in['type'] == 'checkbox' && isset($in['value'], $in['checked']) && $in['value'] == $in['checked']) {
+			$in[] = 'checked';
+		}
+		unset($in['checked']);
+		if (isset($in['min'], $in['value']) && $in['min'] !== false && $in['min'] > $in['value']) {
+			$in['value'] = $in['min'];
+		}
+		if (isset($in['max'], $in['value']) && $in['max'] !== false && $in['max'] < $in['value']) {
+			$in['value'] = $in['max'];
+		}
+		return static::u_wrap($in, 'input');
 	}
 	/**
 	 * Template 1
@@ -504,7 +508,7 @@ class BananaHTML {
 	 *
 	 * @return bool|string
 	 */
-	static function select ($in = '', $data = []) {
+	public static function select ($in = '', $data = []) {
 		return static::select_common($in, $data, __FUNCTION__);
 	}
 	/**
@@ -518,7 +522,7 @@ class BananaHTML {
 	 *
 	 * @return bool|string
 	 */
-	static function optgroup ($in = '', $data = []) {
+	public static function optgroup ($in = '', $data = []) {
 		return static::select_common($in, $data, __FUNCTION__);
 	}
 	/**
@@ -532,7 +536,7 @@ class BananaHTML {
 	 *
 	 * @return bool|string
 	 */
-	static function datalist ($in = '', $data = []) {
+	public static function datalist ($in = '', $data = []) {
 		return static::select_common($in, $data, __FUNCTION__);
 	}
 	/**
@@ -587,7 +591,7 @@ class BananaHTML {
 	 *
 	 * @return bool|string
 	 */
-	static function textarea ($in = '', $data = []) {
+	public static function textarea ($in = '', $data = []) {
 		return static::textarea_common($in, $data, __FUNCTION__);
 	}
 	/**
@@ -600,7 +604,7 @@ class BananaHTML {
 	 *
 	 * @return bool|string
 	 */
-	static function pre ($in = '', $data = []) {
+	public static function pre ($in = '', $data = []) {
 		return static::textarea_common($in, $data, __FUNCTION__);
 	}
 	/**
@@ -613,7 +617,7 @@ class BananaHTML {
 	 *
 	 * @return bool|string
 	 */
-	static function code ($in = '', $data = []) {
+	public static function code ($in = '', $data = []) {
 		return static::textarea_common($in, $data, __FUNCTION__);
 	}
 	/**
@@ -626,13 +630,14 @@ class BananaHTML {
 	 *
 	 * @return bool|string
 	 */
-	static function button ($in = '', $data = []) {
+	public static function button ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
 			return static::__callStatic_internal(__FUNCTION__, func_get_args());
 		}
 		if ($in === false) {
 			return '';
-		} elseif (is_array($in)) {
+		}
+		if (is_array($in)) {
 			return static::__callStatic_internal(__FUNCTION__, [$in, $data]);
 		}
 		if (is_array($in)) {
@@ -656,13 +661,14 @@ class BananaHTML {
 	 *
 	 * @return bool|string
 	 */
-	static function style ($in = '', $data = []) {
+	public static function style ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
 			return static::__callStatic_internal(__FUNCTION__, func_get_args());
 		}
 		if ($in === false) {
 			return '';
-		} elseif (is_array($in)) {
+		}
+		if (is_array($in)) {
 			return static::__callStatic_internal(__FUNCTION__, [$in, $data]);
 		}
 		if (is_array($in)) {
@@ -685,7 +691,7 @@ class BananaHTML {
 	 *
 	 * @return bool|string
 	 */
-	static function br ($repeat = 1) {
+	public static function br ($repeat = 1) {
 		if ($repeat === false) {
 			return false;
 		}
@@ -722,7 +728,7 @@ class BananaHTML {
 	 *
 	 * @return string
 	 */
-	static function __callStatic ($selector, $data) {
+	public static function __callStatic ($selector, $data) {
 		if ($data === false || $data === [false]) {
 			return false;
 		}
@@ -1068,6 +1074,7 @@ class BananaHTML {
 	 */
 	protected static function inserts_replacing_recursive ($data, $insert) {
 		if (is_array($data)) {
+			/** @noinspection ForeachSourceInspection */
 			foreach ($data as &$d) {
 				$d = static::inserts_replacing_recursive($d, $insert);
 			}
@@ -1089,7 +1096,8 @@ class BananaHTML {
 		$tag = str_replace('_', '-', $tag);
 		if (method_exists(get_called_class(), $tag)) {
 			return static::$tag($in, $attributes);
-		} elseif (isset(static::$unpaired_tags[$tag])) {
+		}
+		if (isset(static::$unpaired_tags[$tag])) {
 			$attributes['in'] = $in;
 			return static::u_wrap($attributes, $tag);
 		}
@@ -1140,6 +1148,7 @@ class BananaHTML {
 			$size = max($size, count((array)$values));
 		}
 		foreach ($array as $key => $values) {
+			/** @noinspection ForeachInvariantsInspection */
 			for ($i = 0; $i < $size; ++$i) {
 				if (is_array($values)) {
 					if (isset($values[$i])) {
