@@ -1,6 +1,6 @@
 First of all, files uploading is implemented not by system core, but by modules (for instance, Plupload) with `file_upload` functionality.
 
-However, since files uploading is crucial feature for many applications, how files uploading should work is specified here in order to maintain cross-compatible modules.
+However, since it is crucial feature for many applications, how it should work is specified here in order to maintain cross-compatible modules.
 
 [Frontend integration can be found here](/docs/frontend-advanced/Files-uploading.md)
 

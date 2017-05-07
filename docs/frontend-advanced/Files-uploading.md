@@ -1,6 +1,6 @@
 First of all, files uploading is not implemented by system core, but might be provided by some modules with `file_upload` functionality.
 
-However, since files uploading is crucial feature for many applications, how files uploading should work is specified here in order to maintain cross-compatible modules.
+However, since it is crucial feature for many applications, how it should work is specified here in order to maintain cross-compatible modules.
 
 [Backend integration can be found here](/docs/backend-advanced/Files-uploading.md)
 
