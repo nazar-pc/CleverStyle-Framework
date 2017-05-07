@@ -2,59 +2,17 @@ First of all, files uploading is implemented not by system core, but by modules 
 
 However, since files uploading is crucial feature for many applications, how files uploading should work is specified here in order to maintain cross-compatible modules.
 
-On backend side there are 2 events that are used to associate uploaded file with some tag.
+[Frontend integration can be found here](/docs/frontend-advanced/Files-uploading.md)
 
-The idea here is to keep tracking on all files, that is why if file is kept if only associated with at least one tag.
+On server side any module should confirm files uploading by adding tag to uploaded file (and should delete tag, when file is not used any more).
 
-First event is `System/upload_files/add_tag`, usage:
+Confirmation is implemented through 2 events, that third-party components may fire. Also, any uploaded file may have several tags.
+
+Examples (Blogs module):
 ```php
 <?php
-\cs\Event::instance()->fire(
-    'System/upload_files/add_tag',
-    [
-        'tag' => "Items/10",
-        'url' => $uploaded_file_url
-    ]
-);
-```
-
-Where usually `tag` starts with module name which uploaded file and some identifier that uniquely connects with some item in module.
-
-Both `tag` and `url` are required.
-
-Second event is `System/upload_files/del_tag`, usage:
-```php
-<?php
-\cs\Event::instance()->fire(
-    'System/upload_files/del_tag',
-    [
-        'tag' => "Items/10",
-        'url' => $uploaded_file_url
-    ]
-);
-```
-
-Where arguments are the same, but both `tag` and `url` are optional, so you can:
-* remove all files for specified tag (for instance, all images of some article)
-* remove file regardless of tag where it is used (rarely used)
-* remove tag for specific file (for example, if some article was edited and image is not used there anymore)
-
-For searching files in any HTML code next RegExp usually is used:
-```php
-<?php
-preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $text, $found_files);
-$found_files = isset($found_files[1]) ? $found_files[1] : [];
-```
-
-or just function `find_links()` from UPF, which is bundled with system.
-
-It will work fine, because mentioned events will ignore all URLs which are not actually uploaded files registered in system.
-
-Example of usage in Blogs module:
-```php
-<?php
-$old_files    = find_links($data['content']);
-$new_files    = find_links($content);
+$old_files = find_links($data['content']);
+$new_files = find_links($content);
 if ($old_files || $new_files) {
     foreach (array_diff($old_files, $new_files) as $file) {
         \cs\Event::instance()->fire(
@@ -79,3 +37,41 @@ if ($old_files || $new_files) {
 }
 unset($old_files, $new_files);
 ```
+This code compares previous version of post and current for links, removes old files, and adds new ones.
+Links that doesn't corresponds to any existed files will be ignored automatically.
+`find_links()` is a generic function from [UPF](https://github.com/nazar-pc/Useful-PHP-Functions) that will collect all of the links from specified text, which is fine for this purpose.
+
+```php
+<?php
+\cs\Event::instance()->fire(
+    'System/upload_files/del_tag',
+    [
+        'tag' => "Blogs/posts/$id%"
+    ]
+);
+```
+This code deletes all links, associated with post on any language.
+
+##### System/upload_files/add_tag
+Event should be fired in order to add tag to the file. Can be fired on non-uploaded files without any negative consequences, non-uploaded files will be safely ignored.
+```
+[
+	'url' => $url, //Required
+	'tag' => $tag  //Required
+]
+```
+
+* `url` - absolute url to uploaded file, obtained on client-side
+* `tag` - tag of the item, which will be associated with this file
+
+##### System/upload_files/del_tag
+Event should be fired in order to delete tag from the file or remove tag from all of the files tagged with it (even wildcard syntax is supported). Can be fired on non-uploaded files without any negative consequences, non-uploaded files will be safely ignored.
+```
+[
+    'url' => $url, //Optional
+    'tag' => $tag  //Optional
+]
+```
+
+* `url` - absolute url to uploaded file, obtained on client-side
+* `tag` - tag of the item, which is associated with this file, "%" symbol may be used at the end of string to delete all files, that starts from specified string
