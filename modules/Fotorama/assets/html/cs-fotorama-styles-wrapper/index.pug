@@ -1,0 +1,12 @@
+dom-module#cs-fotorama-styles
+	template
+		style
+			include fotorama.css
+custom-style: style(include="cs-fotorama-styles")
+dom-module#cs-fotorama-styles-wrapper-styles
+	template
+		custom-style: style(include="cs-fotorama-styles")
+dom-module#cs-fotorama-styles-wrapper
+	template
+		slot
+	script(src="script.js")

@@ -17,7 +17,6 @@
       in_stock: String
     },
     ready: function(){
-      debugger;
       var img, this$ = this;
       img = this.querySelector('#img');
       this.$.img.src = img.src;

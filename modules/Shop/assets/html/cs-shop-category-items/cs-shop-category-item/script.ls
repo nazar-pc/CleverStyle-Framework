@@ -16,7 +16,6 @@ Polymer(
 		item_id		: Number
 		in_stock	: String
 	ready : !->
-		debugger
 		img											= @querySelector('#img')
 		@$.img.src									= img.src
 		@$.img.title								= img.title
