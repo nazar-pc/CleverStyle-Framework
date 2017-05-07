@@ -15,6 +15,7 @@ Polymer(
 		post		: {}
 		settings	: Object
 	ready : !->
+		cs.Event.fire('System/content_enhancement', {element: @$.content})
 		cs.api('get_settings api/Blogs').then (@settings) !~>
 	sections_path : (index) ->
 		@post.sections_paths[index]

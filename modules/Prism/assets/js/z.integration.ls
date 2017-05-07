@@ -5,11 +5,11 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-Prism.plugins.autoloader.languages_path = '/modules/Prism/assets/js/components/'
-Prism.highlightAll = (async, callback) !->
-	elements = document.querySelectorAll('html /deep/ code[class*="language-"], html /deep/ [class*="language-"] code, html /deep/ code[class*="lang-"], html /deep/ [class*="lang-"] code')
+Prism.plugins.autoloader.languages_path	= '/modules/Prism/assets/js/components/'
+Prism.highlightAll = (async, callback, root) !->
+	elements = (root || document).querySelectorAll('code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code')
 	for element in elements
-		if element.matches('html /deep/ [contenteditable=true] *')
+		if element.matches('[contenteditable=true] *')
 			continue
 		(
 			if element.parentNode.tagName == 'PRE'
@@ -17,5 +17,13 @@ Prism.highlightAll = (async, callback) !->
 			else
 				element
 		).classList.add('line-numbers')
-		Prism.highlightElement(element, async == true, callback);
+		Prism.highlightElement(element, async == true, callback)
 cs.ui.ready.then(Prism.highlightAll)
+cs.Event.on('System/content_enhancement', ({element}) !->
+	Prism.highlightAll(true, ->, element)
+	if !document.querySelector('custom-style > style[include=cs-prism-styles]')
+		element.insertAdjacentHTML(
+			'beforeend',
+			"""<custom-style><style include="cs-prism-styles"></style></custom-style>"""
+		)
+)

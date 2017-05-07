@@ -25,6 +25,9 @@
         }
       });
       this.jsonld = JSON.parse(this.children[0].innerHTML);
+      cs.Event.fire('System/content_enhancement', {
+        element: this.$.content
+      });
       cs.api(['get_settings	api/Blogs', 'get			api/System/profile']).then(function(arg$){
         var profile;
         this$.settings = arg$[0], profile = arg$[1];

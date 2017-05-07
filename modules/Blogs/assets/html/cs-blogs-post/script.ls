@@ -22,6 +22,7 @@ Polymer(
 			if location.pathname.indexOf('/' + L.clang) == 0
 				@url_prefix	= '/' + L.clang
 		@jsonld	= JSON.parse(@children[0].innerHTML)
+		cs.Event.fire('System/content_enhancement', {element: @$.content})
 		cs.api([
 			'get_settings	api/Blogs'
 			'get			api/System/profile'

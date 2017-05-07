@@ -13,7 +13,7 @@ dom-module#cs-blogs-post
 					template(is="dom-repeat" items="[[jsonld.articleSection]]" as="section")
 						| [[if(index, '\, ', ' ')]]
 						a(href="[[sections_path(index)]]") [[section]]
-		div(inner-h-t-m-l="[[jsonld.content]]")
+		div#content(inner-h-t-m-l="[[jsonld.content]]")
 		footer
 			template(is="dom-if" if="[[jsonld.tags.length]]")
 				p

@@ -16,6 +16,9 @@
     },
     ready: function(){
       var this$ = this;
+      cs.Event.fire('System/content_enhancement', {
+        element: this.$.content
+      });
       cs.api('get_settings api/Blogs').then(function(settings){
         this$.settings = settings;
       });

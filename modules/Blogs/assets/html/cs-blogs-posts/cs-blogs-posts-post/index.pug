@@ -11,7 +11,7 @@ dom-module#cs-blogs-posts-post
 						template(is="dom-repeat" items="[[post.articleSection]]" as="section")
 							| [[if(index, '\, ', ' ')]]
 							a(href="[[sections_path(index)]]") [[section]]
-			div(inner-h-t-m-l="[[post.short_content]]")
+			div#content(inner-h-t-m-l="[[post.short_content]]")
 			footer
 				hr
 				p
