@@ -48,7 +48,6 @@ class FileSystem extends _Abstract {
 		if (!$path_in_filesystem) {
 			return false;
 		}
-		$data = _json_encode($data);
 		if (mb_strpos($item, '/') !== false) {
 			$path = mb_substr($item, 0, mb_strrpos($item, '/'));
 			if (!is_dir(CACHE."/$path")) {
@@ -58,7 +57,10 @@ class FileSystem extends _Abstract {
 			unset($path);
 		}
 		if (!file_exists($path_in_filesystem) || is_writable($path_in_filesystem)) {
-			return (bool)file_put_contents($path_in_filesystem, $data, LOCK_EX | FILE_BINARY);
+			$random = uniqid($path_in_filesystem, true);
+			return
+				(bool)file_put_contents($random, _json_encode($data), LOCK_EX | FILE_BINARY) &&
+				rename($random, $path_in_filesystem);
 		}
 		trigger_error("File $path_in_filesystem not available for writing", E_USER_WARNING);
 		return false;
