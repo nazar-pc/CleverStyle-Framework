@@ -35,19 +35,35 @@ echo file_get_contents("$tmp_dir/1493da20bba0b80de0e0f7297d3cf6d0.js")."\n";
 <script src="/external-imported-script.js"></script>
 <link rel="import" href="/external-import.html" type="html">
 <script src="./1493da20bba0b80de0e0f7297d3cf6d0.js"></script>
-array(6) {
+array(14) {
   [0]=>
-  string(%d) "/tests/%s/b0baee9d279d34fa1dfd71aadb908c3f.svg"
+  string(%d) "/tests/%s/23ade486f04787f66ae11b23a663c51b.css"
   [1]=>
-  string(%d) "/tests/%s/0bf9edfe605a79ba7a8bea72b894729f.svg"
+  string(%d) "/tests/%s/23ade486f04787f66ae11b23a663c51b.css"
   [2]=>
-  string(%d) "/tests/%s/b0baee9d279d34fa1dfd71aadb908c3f.svg"
+  string(%d) "/tests/%s/fa302422c3063896a9294da61f07e969.css"
   [3]=>
-  string(%d) "/tests/%s/d56902a9037da35c4d51753cb1b31d4f.js"
+  string(%d) "/tests/%s/fa302422c3063896a9294da61f07e969.css"
   [4]=>
-  string(%d) "/tests/%s/b0c4817554bfb8e8f10f16ab1c683f47.js"
+  string(%d) "/tests/%s/23ade486f04787f66ae11b23a663c51b.css"
   [5]=>
-  string(%d) "/tests/%s/1493da20bba0b80de0e0f7297d3cf6d0.js"
+  string(%d) "/tests/%s/23ade486f04787f66ae11b23a663c51b.css"
+  [6]=>
+  string(%d) "/tests/%s/fa302422c3063896a9294da61f07e969.css"
+  [7]=>
+  string(%d) "/tests/%s/fa302422c3063896a9294da61f07e969.css"
+  [8]=>
+  string(%d) "/tests/%s/b0baee9d279d34fa1dfd71aadb908c3f.svg"
+  [9]=>
+  string(%d) "/tests/%s/0bf9edfe605a79ba7a8bea72b894729f.svg"
+  [10]=>
+  string(%d) "/tests/%s/b0baee9d279d34fa1dfd71aadb908c3f.svg"
+  [11]=>
+  string(70) "/tests/%s/d56902a9037da35c4d51753cb1b31d4f.js"
+  [12]=>
+  string(70) "/tests/%s/b0c4817554bfb8e8f10f16ab1c683f47.js"
+  [13]=>
+  string(70) "/tests/%s/1493da20bba0b80de0e0f7297d3cf6d0.js"
 }
 string(11) "imported.js"
 var xyz = 'xyz';

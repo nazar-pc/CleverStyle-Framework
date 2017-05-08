@@ -29,11 +29,27 @@ var_dump($not_embedded_resources);
 <script>Polymer({is : 'my-element'});;var bar = 'bar'; /* another comment */var foo = 'foo'; // Single-line after code
 (function (bar, foo) {return foo + bar +(10 * 15 / 5);})(bar, foo);if ( !( bar > foo ) ){console . log (foo), console.log(bar
 );}var script_code = "<script>JS here<\/script>";;Polymer.updateStyles();;var xyz = 'xyz';;var zyx = 'zyx';</script>
-array(3) {
+array(11) {
   [0]=>
-  string(%d) "/tests/%s/b0baee9d279d34fa1dfd71aadb908c3f.svg"
+  string(%d) "/tests/%s/23ade486f04787f66ae11b23a663c51b.css"
   [1]=>
-  string(%d) "/tests/%s/0bf9edfe605a79ba7a8bea72b894729f.svg"
+  string(%d) "/tests/%s/23ade486f04787f66ae11b23a663c51b.css"
   [2]=>
+  string(%d) "/tests/%s/fa302422c3063896a9294da61f07e969.css"
+  [3]=>
+  string(%d) "/tests/%s/fa302422c3063896a9294da61f07e969.css"
+  [4]=>
+  string(%d) "/tests/%s/23ade486f04787f66ae11b23a663c51b.css"
+  [5]=>
+  string(%d) "/tests/%s/23ade486f04787f66ae11b23a663c51b.css"
+  [6]=>
+  string(%d) "/tests/%s/fa302422c3063896a9294da61f07e969.css"
+  [7]=>
+  string(%d) "/tests/%s/fa302422c3063896a9294da61f07e969.css"
+  [8]=>
+  string(%d) "/tests/%s/b0baee9d279d34fa1dfd71aadb908c3f.svg"
+  [9]=>
+  string(%d) "/tests/%s/0bf9edfe605a79ba7a8bea72b894729f.svg"
+  [10]=>
   string(%d) "/tests/%s/b0baee9d279d34fa1dfd71aadb908c3f.svg"
 }

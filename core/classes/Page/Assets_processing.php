@@ -93,11 +93,16 @@ class Assets_processing {
 				/**
 				 * Process recursively CSS imports, but ignore non embedded resources there
 				 */
+				/** @noinspection UsageOfSilenceOperatorInspection */
 				if ($extension == 'css' && @$match[2]) {
 					$content = static::css($content, $absolute_path, $target_directory_path);
 				}
 				$filename = static::file_put_contents_with_hash($target_directory_path, $extension, $content);
-				if (strpos($path, '?') === false) {
+				/** @noinspection UsageOfSilenceOperatorInspection */
+				/**
+				 * We ignore files with query parameters as well as CSS imports with media queries
+				 */
+				if (strpos($path, '?') === false && !trim(@$match[3])) {
 					$not_embedded_resources[] = str_replace(getcwd(), '', "$target_directory_path/$filename");
 				}
 				return str_replace($path_matched, "'./$filename'", $match[0]);
