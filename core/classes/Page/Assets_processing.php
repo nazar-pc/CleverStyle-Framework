@@ -15,16 +15,6 @@ namespace cs\Page;
  * to target directory and processed if needed.
  */
 class Assets_processing {
-	protected static $extension_to_mime = [
-		'jpeg'  => 'image/jpg',
-		'jpe'   => 'image/jpg',
-		'jpg'   => 'image/jpg',
-		'gif'   => 'image/gif',
-		'png'   => 'image/png',
-		'svg'   => 'image/svg+xml',
-		'svgz'  => 'image/svg+xml',
-		'woff2' => 'application/font-woff2'
-	];
 	/**
 	 * Analyses file for images, fonts and css links and include they content into single resulting css file.
 	 *
@@ -89,7 +79,7 @@ class Assets_processing {
 		 */
 		// TODO: replace by loop, track duplicated stuff that are subject to inlining and if they appear more than once, don't inline them
 		$data = preg_replace_callback(
-			'/url\((.*)\)|@import\s*(?:url\()?\s*([\'"].*[\'"])\s*\)??(.*);/U',
+			'/url\((.*)\)|@import\s*(?:url\()?\s*([\'"].*[\'"])\s*\)??.*;/U',
 			function ($match) use ($dir, $target_directory_path, &$not_embedded_resources) {
 				$path_matched = $match[2] ?? $match[1];
 				$path         = trim($path_matched, '\'" ');
@@ -100,26 +90,13 @@ class Assets_processing {
 				$extension     = file_extension($link);
 				$absolute_path = static::absolute_path($link, $dir);
 				$content       = file_get_contents($absolute_path);
+				/**
+				 * Process recursively CSS imports, but ignore non embedded resources there
+				 */
 				if ($extension == 'css' && @$match[2]) {
-					/**
-					 * Only inline CSS imports without media queries, imports with media queries will be placed as separate files
-					 */
-					if (!trim(@$match[3])) {
-						return static::css($content, $absolute_path, $target_directory_path, $not_embedded_resources);
-					}
-					$filename = static::file_put_contents_with_hash(
-						$target_directory_path,
-						$extension,
-						static::css($content, $absolute_path, $target_directory_path)
-					);
-					return str_replace($path_matched, "'./$filename'", $match[0]);
+					$content = static::css($content, $absolute_path, $target_directory_path);
 				}
-				if (!isset(static::$extension_to_mime[$extension])) {
-					$filename = static::file_put_contents_with_hash($target_directory_path, $extension, $content);
-					return str_replace($path_matched, "'./$filename'", $match[0]);
-				}
-				$filename = md5_file($absolute_path).'.'.$extension;
-				copy($absolute_path, "$target_directory_path/$filename");
+				$filename = static::file_put_contents_with_hash($target_directory_path, $extension, $content);
 				if (strpos($path, '?') === false) {
 					$not_embedded_resources[] = str_replace(getcwd(), '', "$target_directory_path/$filename");
 				}
