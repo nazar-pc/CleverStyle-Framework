@@ -203,7 +203,7 @@ trait Management {
 			$remote_addr = $Request->remote_addr;
 			$ip          = $Request->ip;
 		}
-		return
+		$result =
 			md5($session_data['user_agent']) == md5($user_agent) &&
 			(
 				!Config::instance()->core['remember_user_ip'] ||
@@ -212,6 +212,11 @@ trait Management {
 					md5($session_data['ip']) == md5(ip2hex($ip))
 				)
 			);
+		if (!$result) {
+			// Delete session if there is a chance that it was hijacked
+			$this->del($session_data['id']);
+		}
+		return $result;
 	}
 	/**
 	 * Load session by id and return id of session owner (user), update session expiration
