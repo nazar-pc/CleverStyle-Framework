@@ -126,12 +126,15 @@
           var button;
           button = html_to_node("<cs-button><button class=\"cs-content-edit\" data-key=\"" + key + "\" style=\"position: absolute; left: " + x + "; top: " + y + ";\">" + L.edit + "</button></cs-button>");
           container.appendChild(button);
-          container.addEventListener('mouseleave', function(){
-            showed_button = false;
-            button.parentNode.removeChild(button);
-          }, {
-            passive: true,
-            once: true
+          container.addEventListener('mouseleave', (function(){
+            function callback(e){
+              showed_button = false;
+              button.parentNode.removeChild(button);
+              e.currentTarget.removeEventListener(e.type, callback);
+            }
+            return callback;
+          }()), {
+            passive: true
           });
         });
       };

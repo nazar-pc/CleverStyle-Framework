@@ -145,10 +145,11 @@ cs.ui.ready
 					container.appendChild(button)
 					container.addEventListener(
 						'mouseleave'
-						!->
+						!function callback (e)
 							showed_button	:= false
 							button.parentNode.removeChild(button)
-						{passive : true, once: true}
+							e.currentTarget.removeEventListener(e.type, callback)
+						{passive : true}
 					)
 			document.querySelector('body')
 				..addEventListener(
