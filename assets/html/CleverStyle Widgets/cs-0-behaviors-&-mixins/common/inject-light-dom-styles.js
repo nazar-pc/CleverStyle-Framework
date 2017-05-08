@@ -6,7 +6,19 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var styles;
+  var ready, styles;
+  ready = new Promise(function(resolve){
+    var callback;
+    if (document.readyState !== 'complete') {
+      callback = function(){
+        setTimeout(resolve);
+        document.removeEventListener('WebComponentsReady', callback);
+      };
+      document.addEventListener('WebComponentsReady', callback);
+    } else {
+      setTimeout(resolve);
+    }
+  });
   styles = {};
   csw.behaviors.injectLightStyles = [{
     attached: function(){
@@ -19,7 +31,7 @@
         head = document.querySelector('head');
         head.insertAdjacentHTML('beforeend', "<custom-style><style include=\"" + this._styles_dom_module + "\"></style></custom-style>");
         custom_style_element = head.lastElementChild;
-        cs.ui.ready.then(function(){
+        ready.then(function(){
           Polymer.updateStyles();
           styles[this$._styles_dom_module] = custom_style_element.firstElementChild.textContent.split(':not([style-scope]):not(.style-scope)').join('');
           head.removeChild(custom_style_element);
