@@ -317,6 +317,13 @@ class Assets_processing {
 			return;
 		}
 		$dir = dirname($file);
+		// With reverse order we can add inlined CSS imports directly to the beginning of `<template>` element
+		$links_and_styles = array_map(
+			function ($item) {
+				return array_reverse($item, true);
+			},
+			$links_and_styles
+		);
 		foreach ($links_and_styles[1] as $index => $link) {
 			/**
 			 * For plain styles we do not do anything fancy besides minifying its sources (no rearrangement or anything like that)
@@ -354,8 +361,13 @@ class Assets_processing {
 					$not_embedded_resources
 				);
 				$data = preg_replace(
-					'/'.$links_and_styles[0][$index].'.*<template>/Uims',
-					"<template><style>$css</style>",
+					'/'.preg_quote($links_and_styles[0][$index], '/').'(.*)<template>/Uims',
+					"$1<template><style>$css</style>",
+					$data
+				);
+				$data = preg_replace(
+					'/(<template><style>[^<]+)<\/style><style>/Uim',
+					'$1',
 					$data
 				);
 			} elseif ($import) {
