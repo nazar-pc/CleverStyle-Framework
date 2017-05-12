@@ -129,7 +129,7 @@ Event::instance()
 			$data['paths'] += [
 				'jssha'         => DIR.'/assets/js/modules/jsSHA-2.1.0',
 				'autosize'      => DIR.'/assets/js/modules/autosize.min',
-				'html5sortable' => DIR.'/assets/js/modules/html5sortable-0.5.1.min',
+				'html5sortable' => DIR.'/assets/js/modules/html5sortable-0.5.3.min',
 				'sprintf-js'    => DIR.'/assets/js/modules/sprintf-1.1.0.min'
 			];
 		}
