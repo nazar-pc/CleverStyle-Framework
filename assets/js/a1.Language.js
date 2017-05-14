@@ -6,33 +6,8 @@
  * @license   MIT License, see license.txt
  */
 (function(){
-  var translations, is_ready, fill_prefixed, vsprintf, get_formatted, fill_translations, x$, slice$ = [].slice;
+  var vsprintf, translations, get_formatted, fill_translations, x$, slice$ = [].slice;
   translations = cs.Language;
-  is_ready = false;
-  fill_prefixed = function(prefix){
-    var prefix_length, key;
-    prefix_length = prefix.length;
-    for (key in Language) {
-      if (key.indexOf(prefix) === 0) {
-        this[key.substr(prefix_length)] = Language[key];
-      }
-    }
-  };
-  function Language(prefix){
-    var prefixed;
-    prefixed = Object.create(Language);
-    prefixed.ready = function(){
-      return Language.ready().then(function(){
-        return prefixed;
-      });
-    };
-    if (is_ready) {
-      fill_prefixed.call(prefixed, prefix);
-    } else {
-      Language.ready().then(fill_prefixed.bind(prefixed, prefix));
-    }
-    return prefixed;
-  }
   get_formatted = function(){
     return '' + (arguments.length ? vsprintf(this, slice$.call(arguments)) : this);
   };
@@ -48,6 +23,24 @@
       }
     }
   };
+  function Language(prefix){
+    var x$;
+    x$ = Object.create(Language);
+    x$.ready = function(){
+      var this$ = this;
+      return Language.ready().then(function(){
+        var prefix_length, key;
+        prefix_length = prefix.length;
+        for (key in Language) {
+          if (key.indexOf(prefix) === 0) {
+            this$[key.substr(prefix_length)] = Language[key];
+          }
+        }
+        return this$;
+      });
+    };
+    return x$;
+  }
   x$ = cs.Language = Language;
   x$.get = function(key){
     return this[key].toString();
@@ -73,7 +66,6 @@
         translations = arg$[0][0], sprintfjs = arg$[1][0];
         fill_translations(translations);
         vsprintf = sprintfjs.vsprintf;
-        is_ready = true;
         resolve(Language);
       });
     });

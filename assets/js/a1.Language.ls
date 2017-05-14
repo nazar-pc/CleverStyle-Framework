@@ -4,24 +4,9 @@
  * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-translations	= cs.Language
-is_ready		= false
-fill_prefixed	= (prefix) !->
-	prefix_length	= prefix.length
-	for key of Language
-		if key.indexOf(prefix) == 0
-			@[key.substr(prefix_length)] = Language[key]
-function Language (prefix)
-	prefixed		= Object.create(Language)
-	prefixed.ready	= ->
-		Language.ready().then -> prefixed
-	if is_ready
-		fill_prefixed.call(prefixed, prefix)
-	else
-		Language.ready().then(fill_prefixed.bind(prefixed, prefix))
-	prefixed
 var vsprintf
-get_formatted		= ->
+translations	= cs.Language
+get_formatted	= ->
 	'' + (if &length then vsprintf(@, [...&]) else @)
 fill_translations	= (translations) !->
 	for key, value of translations
@@ -31,7 +16,16 @@ fill_translations	= (translations) !->
 		else
 			Language[key]			= get_formatted.bind(value)
 			Language[key].toString	= Language[key]
-cs.Language		= Language
+function Language (prefix)
+	Object.create(Language)
+		..ready	= ->
+			Language.ready().then ~>
+				prefix_length	= prefix.length
+				for key of Language
+					if key.indexOf(prefix) == 0
+						@[key.substr(prefix_length)] = Language[key]
+				@
+cs.Language = Language
 	..get	= (key) ->
 		@[key].toString()
 	..format	= (key, ...args) ->
@@ -47,7 +41,6 @@ cs.Language		= Language
 			]).then ([[translations], [sprintfjs]]) !->
 				fill_translations(translations)
 				vsprintf	:= sprintfjs.vsprintf
-				is_ready	:= true
 				resolve(Language)
 		@ready	= -> ready
 		ready.then !->
