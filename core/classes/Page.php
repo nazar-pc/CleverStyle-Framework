@@ -485,17 +485,12 @@ class Page {
 	 * Generic method for 3 methods above
 	 *
 	 * @param string $message
-	 * @param string $class_ending
+	 * @param string $styling
 	 *
 	 * @return Page
 	 */
-	protected function top_message ($message, $class_ending) {
-		$this->Top .= h::div(
-			$message,
-			[
-				'class' => "cs-text-center cs-block-$class_ending cs-text-$class_ending"
-			]
-		);
+	protected function top_message ($message, $styling) {
+		$this->post_Body .= h::{"cs-notify[$styling]"}($message);
 		return $this;
 	}
 	/**
