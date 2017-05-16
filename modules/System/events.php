@@ -133,4 +133,32 @@ Event::instance()
 				'sprintf-js'    => DIR.'/assets/js/modules/sprintf-1.1.0.min'
 			];
 		}
+	)
+	->on(
+		'System/Request/routing_replace/before',
+		function ($data) {
+			/** @noinspection NotOptimalIfConditionsInspection */
+			if (
+				(
+					strpos($data['rc'], 'bower_components/polymer/') === 0 ||
+					strpos($data['rc'], 'bower_components/shadycss/') === 0 ||
+					strpos($data['rc'], 'node_modules/@polymer/polymer/') === 0 ||
+					strpos($data['rc'], 'node_modules/@webcomponents/shadycss/') === 0
+				) &&
+				Request::instance()->method == 'GET'
+			) {
+				$extension = file_extension(explode('?', $data['rc'])[0]);
+				if ($extension == 'css' || $extension == 'html') {
+					$content_type = "text/$extension";
+				} elseif ($extension == 'js') {
+					$content_type = 'application/javascript';
+				}
+				if (isset($content_type)) {
+					Response::instance()
+						->header('Content-Type', $content_type)
+						->header('Cache-Control', 'max-age=2592000, immutable');
+					throw new ExitException;
+				}
+			}
+		}
 	);

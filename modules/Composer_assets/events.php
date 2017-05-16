@@ -30,21 +30,44 @@ Event::instance()
 			if (!Config::instance()->module('Composer_assets')->enabled()) {
 				return;
 			}
+			/** @noinspection NotOptimalIfConditionsInspection */
 			if (
-				Request::instance()->method == 'GET' &&
 				(
 					strpos($data['rc'], 'bower_components/') === 0 ||
 					strpos($data['rc'], 'node_modules/') === 0
-				)
+				) &&
+				(
+					strpos($data['rc'], 'bower_components/polymer/') !== 0 &&
+					strpos($data['rc'], 'bower_components/shadycss/') !== 0 &&
+					strpos($data['rc'], 'node_modules/@polymer/polymer/') !== 0 &&
+					strpos($data['rc'], 'node_modules/@webcomponents/shadycss/') !== 0
+				) &&
+				Request::instance()->method == 'GET'
 			) {
-				$composer_lock   = @file_get_json(STORAGE.'/Composer/composer.lock');
-				$target_location = str_replace(
+				$composer_lock_hash = @file_get_json(STORAGE.'/Composer/composer.lock')['content-hash'];
+				$target_location    = str_replace(
 					['bower_components', 'node_modules'],
 					['storage/Composer/vendor/bower-asset', 'storage/Composer/vendor/npm-asset'],
 					$data['rc']
 				);
-				Response::instance()->redirect("/$target_location?$composer_lock[hash]", 301);
+				Response::instance()->redirect("/$target_location?$composer_lock_hash", 301);
 				throw new ExitException;
+			}
+			/** @noinspection NotOptimalIfConditionsInspection */
+			if (
+				(
+					strpos($data['rc'], 'storage/Composer/vendor/bower-asset/polymer/') === 0 ||
+					strpos($data['rc'], 'storage/Composer/vendor/bower-asset/shadycss/') === 0 ||
+					strpos($data['rc'], 'storage/Composer/vendor/npm-asset/@polymer/polymer/') === 0 ||
+					strpos($data['rc'], 'storage/Composer/vendor/npm-asset/@webcomponents/shadycss/') === 0
+				) &&
+				Request::instance()->method == 'GET'
+			) {
+				$data['rc'] = str_replace(
+					['storage/Composer/vendor/bower-asset', 'storage/Composer/vendor/npm-asset'],
+					['bower_components', 'node_modules'],
+					$data['rc']
+				);
 			}
 		}
 	)
@@ -116,7 +139,7 @@ Event::instance()
 			/** @noinspection MkdirRaceConditionInspection */
 			@mkdir($composer_assets_dir, 0770);
 			$dependencies = [];
-			$assets_map = [];
+			$assets_map   = [];
 			foreach ($composer_lock['packages'] as $package) {
 				$package_name = $package['name'];
 				if (preg_match('#^modules/#', $package_name)) {
@@ -151,7 +174,7 @@ Event::instance()
 				}
 			}
 			$data['dependencies'] = array_merge_recursive($data['dependencies'], $dependencies);
-			$data['assets_map'] = array_merge_recursive($data['assets_map'], $assets_map);
+			$data['assets_map']   = array_merge_recursive($data['assets_map'], $assets_map);
 		}
 	)
 	->on(

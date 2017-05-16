@@ -58,6 +58,7 @@ Here you can find all useful information:
 * [SQL compatibility](/docs/backend-advanced/SQL-compatibility.md)
 
 ### Advanced [Frontend] [dev]
+* [Polymer](/docs/frontend-advanced/Polymer.md)
 * [Polymer behaviors](/docs/frontend-advanced/Polymer-behaviors.md)
 * [Polymer elements extension](/docs/frontend-advanced/Polymer-elements-extension.md)
 * [Comments](/docs/frontend-advanced/Comments.md)
