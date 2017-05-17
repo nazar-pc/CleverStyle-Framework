@@ -23,7 +23,7 @@ $filter->removeDirectoryFromWhitelist(__DIR__.'/../modules/System/meta/update');
 $filter->removeDirectoryFromWhitelist(__DIR__.'/cscms.travis/core/thirdparty');
 
 $coverage_data_location = __DIR__.'/coverage_data.json';
-$normal_prefix          = realpath(__DIR__.'/..');
+$normal_prefix          = dirname(__DIR__);
 $installed_prefix       = __DIR__.'/cscms.travis';
 
 $coverage = new \SebastianBergmann\CodeCoverage\CodeCoverage(null, $filter);
