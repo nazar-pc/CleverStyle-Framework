@@ -11,39 +11,31 @@ namespace cs\modules\System;
 use
 	cs\Config,
 	cs\Event,
+	cs\ExitException,
 	cs\Language,
 	cs\Mail,
 	cs\Page,
+	cs\Session,
 	cs\User;
 
 class Controller {
 	/**
 	 * @param \cs\Request  $Request
 	 * @param \cs\Response $Response
+	 *
+	 * @throws ExitException
 	 */
 	public static function profile_registration_confirmation ($Request, $Response) {
 		$L    = Language::prefix('system_profile_registration_');
-		$Page = Page::instance();
 		$User = User::instance();
-		if ($Request->cookie('reg_confirm')) {
-			$Response->cookie('reg_confirm', '');
-			$Page->title($L->success_title);
-			$Page->success($L->success);
-			return;
-		} elseif (!$User->guest()) {
-			$Page->title($L->you_are_already_registered_title);
-			$Page->warning($L->you_are_already_registered);
-			return;
+		if (!$User->guest()) {
+			static::redirect_with_notification($Response, $L->you_are_already_registered, 'notice');
 		} elseif (!isset($Request->route[2])) {
-			$Page->title($L->invalid_confirmation_code);
-			$Page->warning($L->invalid_confirmation_code);
-			return;
+			static::redirect_with_notification($Response, $L->invalid_confirmation_code, 'warning');
 		}
 		$result = $User->registration_confirmation($Request->route[2]);
 		if ($result === false) {
-			$Page->title($L->invalid_confirmation_code);
-			$Page->warning($L->invalid_confirmation_code);
-			return;
+			static::redirect_with_notification($Response, $L->invalid_confirmation_code, 'warning');
 		}
 		$Config = Config::instance();
 		if ($result['password']) {
@@ -68,41 +60,41 @@ class Controller {
 			$body
 		)
 		) {
-			$Response->cookie('reg_confirm', 1, 0, true);
-			$Response->redirect('/System/profile/registration_confirmation');
+			static::redirect_with_notification($Response, $L->success, 'success');
 		} else {
 			$User->registration_cancel();
-			$Page->title($L->mail_sending_error_title);
-			$Page->warning($L->mail_sending_error);
+			static::redirect_with_notification($Response, $L->mail_sending_error, 'warning');
 		}
+	}
+	/**
+	 * @param \cs\Response $Response
+	 * @param              $content
+	 * @param string       $type `success`, `notice` or `warning`
+	 *
+	 * @throws ExitException
+	 */
+	protected static function redirect_with_notification ($Response, $content, $type) {
+		Session::instance()->set_data('system_notification', [$content, $type]);
+		$Response->redirect('/');
+		throw new ExitException;
 	}
 	/**
 	 * @param \cs\Request  $Request
 	 * @param \cs\Response $Response
+	 *
+	 * @throws ExitException
 	 */
 	public static function profile_restore_password_confirmation ($Request, $Response) {
 		$L    = Language::prefix('system_profile_restore_password_');
-		$Page = Page::instance();
 		$User = User::instance();
-		if ($Request->cookie('restore_password_confirm')) {
-			$Response->cookie('restore_password_confirm', '');
-			$Page->title($L->success_title);
-			$Page->success($L->success);
-			return;
-		} elseif (!$User->guest()) {
-			$Page->title($L->you_are_already_registered_title);
-			$Page->warning($L->you_are_already_registered);
-			return;
+		if (!$User->guest()) {
+			static::redirect_with_notification($Response, $L->you_are_already_registered, 'notice');
 		} elseif (!isset($Request->route[2])) {
-			$Page->title($L->invalid_confirmation_code);
-			$Page->warning($L->invalid_confirmation_code);
-			return;
+			static::redirect_with_notification($Response, $L->invalid_confirmation_code, 'warning');
 		}
 		$result = $User->restore_password_confirmation($Request->route[2]);
 		if ($result === false) {
-			$Page->title($L->invalid_confirmation_code);
-			$Page->warning($L->invalid_confirmation_code);
-			return;
+			static::redirect_with_notification($Response, $L->invalid_confirmation_code, 'warning');
 		}
 		$Config = Config::instance();
 		if (Mail::instance()->send_to(
@@ -117,11 +109,9 @@ class Controller {
 			)
 		)
 		) {
-			$Response->cookie('restore_password_confirm', 1, 0, true);
-			$Response->redirect('/System/profile/restore_password_confirmation');
+			static::redirect_with_notification($Response, $L->success, 'success');
 		} else {
-			$Page->title($L->mail_sending_error_title);
-			$Page->warning($L->mail_sending_error);
+			static::redirect_with_notification($Response, $L->mail_sending_error, 'warning');
 		}
 	}
 	public static function robots_txt () {

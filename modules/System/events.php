@@ -50,6 +50,14 @@ Event::instance()
 			) {
 				$Request->data = [];
 			}
+			/**
+			 * Show notification if there is any
+			 */
+			$notification = $Session->get_data('system_notification');
+			if ($notification) {
+				list($content, $type) = $notification;
+				Page::instance()->post_Body .= h::{"cs-notify[$type]"}($content);
+			}
 		}
 	)
 	->on(
