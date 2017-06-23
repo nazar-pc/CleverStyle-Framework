@@ -114,7 +114,7 @@ class RequireJS {
 	protected static function find_package_npm ($dir, $allowed_extensions) {
 		$package = @file_get_json("$dir/package.json");
 		// If we have browser-specific declaration - use it
-		$main = $package['browser'] ?? $package['jspm']['main'] ?? @$package['main'];
+		$main = $package['jspm']['main'] ?? $package['browser'] ?? @$package['main'];
 		if (preg_match('/\.js$/', $main)) {
 			$main = substr($main, 0, -3);
 		}
