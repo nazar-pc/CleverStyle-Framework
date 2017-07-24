@@ -12,19 +12,18 @@ services:
 #  - postgresql
 addons:
   mariadb: '10.1'
-#  postgresql: "9.4"
+  postgresql: "9.5"
 env:
   matrix:
     - DB=MySQLi
     - DB=SQLite
-#    - DB=PostgreSQL
+    - DB=PostgreSQL
 
 matrix:
   fast_finish: true
   allow_failures:
     - php: nightly
     - php: hhvm-nightly
-#    - env: DB=PostgreSQL
 
 before_script:
   - |
