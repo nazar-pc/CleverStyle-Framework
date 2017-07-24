@@ -11,7 +11,7 @@ services:
   - memcached
 #  - postgresql
 addons:
-  mariadb: '10.2'
+  mariadb: '10.1'
 #  postgresql: "9.4"
 env:
   matrix:
