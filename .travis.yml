@@ -9,9 +9,9 @@ php:
   - hhvm-nightly
 services:
   - memcached
-  - mysql
 #  - postgresql
-#addons:
+addons:
+  mariadb: '10.2'
 #  postgresql: "9.4"
 env:
   matrix:
@@ -28,15 +28,10 @@ matrix:
 
 before_script:
   - |
-    if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
-      mysql -u root -e 'CREATE DATABASE `travis`;'
-    fi
-  - |
-    if [[ $TRAVIS_PHP_VERSION = hhv* && $DB = 'MySQLi' ]]; then
-      mysql -u root -e "CREATE USER 'travis'@'127.0.0.1' IDENTIFIED WITH mysql_native_password;"
-      mysql -u root -e "GRANT ALL ON travis.* TO 'travis'@'%';"
-      mysql -u root -e "DROP TABLE travis.test;"
-    fi
+    mysql -u root -e 'CREATE DATABASE IF NOT EXISTS `travis`;'
+    mysql -u root -e "CREATE USER IF NOT EXISTS 'travis'@'127.0.0.1' IDENTIFIED WITH mysql_native_password;"
+    mysql -u root -e "GRANT ALL ON travis.* TO 'travis'@'%';"
+    mysql -u root -e "DROP TABLE IF EXISTS travis.test;"
 # Enable preinstalled APCu on PHP 7.0+ (but not HHVM)
   - |
     if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
