@@ -9,10 +9,9 @@ php:
   - hhvm-nightly
 services:
   - memcached
-#  - postgresql
 addons:
   mariadb: '10.1'
-  postgresql: "9.5"
+  postgresql: "9.6"
 env:
   matrix:
     - DB=MySQLi
@@ -24,6 +23,8 @@ matrix:
   allow_failures:
     - php: nightly
     - php: hhvm-nightly
+    - php: hhvm
+      env: DB=PostgreSQL
 
 before_script:
   - |
