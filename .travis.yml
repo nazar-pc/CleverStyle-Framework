@@ -1,6 +1,5 @@
 language: php
 sudo: false
-dist: trusty
 php:
   - 7.0
   - 7.1
@@ -28,12 +27,7 @@ before_script:
     mysql -u root -e "CREATE USER IF NOT EXISTS 'travis'@'127.0.0.1' IDENTIFIED WITH mysql_native_password;"
     mysql -u root -e "GRANT ALL ON travis.* TO 'travis'@'%';"
     mysql -u root -e "DROP TABLE IF EXISTS travis.test;"
-# TODO: Travis CI is buggy again, version check should be removed when https://github.com/travis-ci/travis-ci/issues/8151 is fixed
-  - |
-    if [[ $TRAVIS_PHP_VERSION != '7.0' ]]; then
-      echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    fi
-  - |
+    echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 # Only compute code coverage on PHP 7.1
