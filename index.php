@@ -19,7 +19,6 @@
  *  * cURL
  *  Optional PHP libraries:
  *  * APCu, Memcached
- * * or HHVM 3.14+
  * * MySQL 5.6+
  * * or MariaDB 10.0.5+
  */

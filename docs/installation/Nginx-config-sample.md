@@ -16,8 +16,6 @@ server {
 		include			fastcgi_params;
 		# Uncomment next line for PHP-FPM
 		# fastcgi_pass	unix:/run/php/php7.0-fpm.sock;
-		# Uncomment next line for HHVM
-		# fastcgi_pass	127.0.0.1:9000;
 		fastcgi_index	index.php;
 		fastcgi_param	SCRIPT_FILENAME $document_root$fastcgi_script_name;
 	}
@@ -75,4 +73,4 @@ Change `example.com` and `/path/to/example.com/` to desired values.
 
 Change `8080` to port where WebSockets server stating (if you do not use WebSockets module - corresponding section can be removed).
 
-Uncomment in `location ~ ^/index\.php {` section line that corresponds to your interpreter (PHP-FPM or HHVM).
+Uncomment in `location ~ ^/index\.php {` section line that corresponds to your interpreter (PHP-FPM).

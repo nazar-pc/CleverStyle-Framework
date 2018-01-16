@@ -57,7 +57,7 @@ Performance is critical.
 
 Providing superior performance of system core is a key for the best possible performance of end product.
 
-Out of the box CleverStyle Framework can render simple web page in just under 2ms. When installing standard Http server module, changing cache to APCu/Memcached and running it under HHVM you fall under 1ms for generating simple page or API response. All without additional system tweaks.
+Out of the box CleverStyle Framework can render simple web page in just under 2ms. When installing standard Http server module and changing cache to APCu/Memcached you fall under 1ms for generating simple page or API response. All without additional system tweaks.
 
 ### Convention over configuration
 Zero configuration whenever it is possible.
@@ -89,7 +89,7 @@ Some components are developed in parallel with core in this repository
  * **Disqus** (Integration of Disqus commenting service, adds comments functionality to other modules)
  * **Feedback** (simple feedback module, sends message to admin's email)
  * **Fotorama** (integration of [Fotorama](https://github.com/artpolikarpov/fotorama) jQuery gallery into CleverStyle Framework)
- * **Http server** (Http server based on [React](https://github.com/reactphp/react), potentially consumes less memory and works much faster that mod-php5 and php-fpm (and even pure HHVM too))
+ * **Http server** (Http server based on [React](https://github.com/reactphp/react), potentially consumes less memory and works much faster that mod-php5 and php-fpm)
  * **HybridAuth** (integration of [HybridAuth](https://github.com/hybridauth/hybridauth) library for integration with social networks and other services)
  * **Json_ld** (simplifies some parts of JSON-LD generation)
  * **OAuth2** (provides realization of OAuth 2 authorization protocol (server side))
@@ -120,7 +120,6 @@ Some components are developed in parallel with core in this repository
 * PHP 7.0+ with libraries:
  * REQUIRED: cURL, XML, mbstring
  * OPTIONAL: APCu, Memcached
-* or HHVM 3.14+
 * MySQL 5.6+
 * or MariaDB 10.0.5+
 * or PostgreSQL 9.5+

@@ -9,7 +9,7 @@ Here you can find all useful information:
 ### [Installation](/docs/installation/Installation.md)
 * [Download installation packages](/docs/installation/Download-installation-packages.md)
 * [Creation of own installation packages](/docs/installation/Installer-builder.md)
-* [Nginx config sample (with PHP-FPM or HHVM)](/docs/installation/Nginx-config-sample.md)
+* [Nginx config sample (with PHP-FPM)](/docs/installation/Nginx-config-sample.md)
 
 ### [File system structure](/docs/File-system-structure.md) [Backend] [dev]
 

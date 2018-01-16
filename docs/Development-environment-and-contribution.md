@@ -5,7 +5,7 @@ You can, of course, use any IDE of your choice, but system is developed under Ph
 Repository already contains code style config and inspections settings for PhpStorm, so you'll have right settings for these key elements from the beginning.
 
 ### Interpreter
-PHP 5.5 is minimum requirement, also HHVM is supported, so you should have any of those or both
+PHP 7.0 is minimum requirement
 
 ### Web Server
 Apache2 and Nginx are officially supported, so it is recommended to have one of those or both

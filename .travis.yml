@@ -4,9 +4,8 @@ dist: trusty
 php:
   - 7.0
   - 7.1
+  - 7.2
   - nightly
-  - hhvm
-  - hhvm-nightly
 services:
   - memcached
 addons:
@@ -22,8 +21,6 @@ matrix:
   fast_finish: true
   allow_failures:
     - php: nightly
-    - php: hhvm-nightly
-    - php: hhvm
       env: DB=PostgreSQL
 
 before_script:
@@ -32,30 +29,22 @@ before_script:
     mysql -u root -e "CREATE USER IF NOT EXISTS 'travis'@'127.0.0.1' IDENTIFIED WITH mysql_native_password;"
     mysql -u root -e "GRANT ALL ON travis.* TO 'travis'@'%';"
     mysql -u root -e "DROP TABLE IF EXISTS travis.test;"
-# Enable preinstalled APCu on PHP (but not HHVM)
 # TODO: Travis CI is buggy again, version check should be removed when https://github.com/travis-ci/travis-ci/issues/8151 is fixed
   - |
-    if [[ $TRAVIS_PHP_VERSION != hhv* && $TRAVIS_PHP_VERSION != '7.0' ]]; then
+    if [[ $TRAVIS_PHP_VERSION != '7.0' ]]; then
       echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     fi
   - |
-    if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
-      echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    fi
+    echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 # Only compute code coverage on PHP 7.1
-# HHVM doesn't have write support for Phar archives, so we'll only run quick tests on it
 script:
   - |
     if [[ $TRAVIS_PHP_VERSION != '7.1' ]]; then
       export SKIP_COVERAGE=1
     fi
   - |
-    if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then
-      hhvm phpt-tests-runner tests/quick
-    else
-      php -d variables_order=EGPCS phpt-tests-runner tests
-    fi
+    php -d variables_order=EGPCS phpt-tests-runner tests
 
 after_success:
   - |

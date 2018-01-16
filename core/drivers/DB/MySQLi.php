@@ -129,15 +129,6 @@ class MySQLi extends _Abstract {
 	 * @return bool
 	 */
 	protected function q_internal_once_bind_param ($stmt, $local_parameters) {
-		/**
-		 * Hack: Until https://github.com/facebook/hhvm/issues/6229 is fixed
-		 *
-		 * Some black magic to please HHVM, ideally only last line is necessary
-		 */
-		$tmp = [];
-		foreach (array_keys($local_parameters) as $key) {
-			$tmp[$key] = &$local_parameters[$key];
-		}
 		return $stmt->bind_param(
 			str_repeat('s', count($local_parameters)),
 			...$local_parameters
@@ -217,15 +208,6 @@ class MySQLi extends _Abstract {
 	 * @return bool
 	 */
 	protected function f_stmt_bind_result ($stmt, &$result) {
-		/**
-		 * Hack: Until https://github.com/facebook/hhvm/issues/6229 is fixed
-		 *
-		 * Some black magic to please HHVM, ideally only last line is necessary
-		 */
-		$tmp = [];
-		foreach (array_keys($result) as $key) {
-			$tmp[$key] = &$result[$key];
-		}
 		return $stmt->bind_result(...$result);
 	}
 	/**

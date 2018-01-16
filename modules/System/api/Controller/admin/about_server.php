@@ -56,18 +56,18 @@ trait about_server {
 					str_replace(
 						['K', 'M', 'G'],
 						[" $L->KiB", " $L->MiB", " $L->GiB"],
-						ini_get('upload_max_filesize') ?: ini_get('hhvm.server.upload.upload_max_file_size')
+						ini_get('upload_max_filesize')
 					)
 				),
 				'post_max_size'          => format_filesize(
 					str_replace(
 						['K', 'M', 'G'],
 						[" $L->KiB", " $L->MiB", " $L->GiB"],
-						ini_get('post_max_size') ?: ini_get('hhvm.server.max_post_size')
+						ini_get('post_max_size')
 					)
 				),
 				'max_execution_time'     => format_time(ini_get('max_execution_time')),
-				'max_input_time'         => format_time(ini_get('max_input_time') ?: ini_get('hhvm.http.default_timeout')),
+				'max_input_time'         => format_time(ini_get('max_input_time')),
 				'default_socket_timeout' => format_time(ini_get('default_socket_timeout')),
 				'allow_url_fopen'        => (bool)ini_get('allow_url_fopen'),
 				'display_errors'         => (bool)ini_get('display_errors'),
@@ -98,8 +98,6 @@ trait about_server {
 			$return = 'Nginx '.explode('/', $server_software)[1];
 			if (stripos($phpinfo, 'php-fpm') !== false) {
 				$return .= ' + PHP-FPM '.PHP_VERSION;
-			} elseif (defined('HHVM_VERSION')) {
-				$return .= ' + HHVM '.HHVM_VERSION;
 			}
 			return $return;
 		}

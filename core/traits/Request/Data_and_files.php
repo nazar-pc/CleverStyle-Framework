@@ -372,15 +372,13 @@ trait Data_and_files {
 	 * @return int
 	 */
 	protected function post_max_size () {
-		$size = ini_get('post_max_size') ?: ini_get('hhvm.server.max_post_size');
-		return $this->convert_size_to_bytes($size);
+		return $this->convert_size_to_bytes(ini_get('post_max_size'));
 	}
 	/**
 	 * @return int
 	 */
 	protected function upload_max_file_size () {
-		$size = ini_get('upload_max_filesize') ?: ini_get('hhvm.server.upload.upload_max_file_size');
-		return $this->convert_size_to_bytes($size);
+		return $this->convert_size_to_bytes(ini_get('upload_max_filesize'));
 	}
 	/**
 	 * @param int|string $size

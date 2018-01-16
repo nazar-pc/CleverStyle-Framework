@@ -28,14 +28,6 @@ To see all available parameters and details about they usage execute command wit
 php CleverStyle_Framework.phar.php
 ```
 
-### HHVM
-Using HipHip Virtual Machine currently you can only install it using CLI way above, replacing `php` with `hhvm`:
-```bash
-hhvm CleverStyle_Framework.phar.php -sn Web-site -su http://web.site -dn web.site -du web.site -dp pass -ae admin@web.site -ap pass
-```
-
-But please, make sure you have supported version: HHVM 3.3.2+ LTS / HHVM 3.4.1+
-
 ### TROUBLESHOOTING:
 
 #### If after successful installation you go to website and get *Internal Server Error* - most likely you have disabled "rewrite" module in Apache2 web-server.

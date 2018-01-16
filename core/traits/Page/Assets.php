@@ -345,8 +345,7 @@ trait Assets {
 		$dependencies_assets = array_values($dependencies_assets);
 		// Flatten array on higher level
 		$dependencies_assets = array_merge(...$dependencies_assets);
-		// Hack: 2 array_merge_recursive() just to be compatible with HHVM, simplify when https://github.com/facebook/hhvm/issues/7087 is resolved
-		return _array(array_merge_recursive(array_merge_recursive($system_assets, ...$dependencies_assets), ...$assets));
+		return _array(array_merge_recursive($system_assets, ...$dependencies_assets, ...$assets));
 	}
 	/**
 	 * @param array   $dependencies

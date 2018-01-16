@@ -8,11 +8,6 @@
  */
 namespace cs;
 
-/**
- * Hack: HHVM doesn't have ENT_DISALLOWED constant unfortunately, remove when https://github.com/facebook/hhvm/issues/4938 resolved
- */
-defined('ENT_DISALLOWED') || define('ENT_DISALLOWED', 128);
-
 if (!defined('CORE')) {
 	define('CORE', realpath(__DIR__.'/../core'));
 }

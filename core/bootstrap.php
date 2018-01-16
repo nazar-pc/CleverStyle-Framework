@@ -43,10 +43,6 @@ require_once CORE.'/functions.php';
 
 error_reporting(E_ALL);
 
-/**
- * Hack: HHVM doesn't have ENT_DISALLOWED constant unfortunately, remove when https://github.com/facebook/hhvm/issues/4938 resolved
- */
-defined('ENT_DISALLOWED') || define('ENT_DISALLOWED', 128);
 if (!is_dir(CACHE)) {
 	/** @noinspection MkdirRaceConditionInspection */
 	mkdir(CACHE, 0770);
