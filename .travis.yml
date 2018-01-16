@@ -21,7 +21,6 @@ matrix:
   fast_finish: true
   allow_failures:
     - php: nightly
-      env: DB=PostgreSQL
 
 before_script:
   - |
