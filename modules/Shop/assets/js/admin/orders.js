@@ -96,7 +96,7 @@
             callback = function(item_data){
               var total_price;
               total_price = item_data.price * item.units;
-              items_container.append("<p>\n	" + L.item + ": <cs-input-text compact><input value=\"-\" class=\"title\" readonly></cs-input-text>\n	id: <cs-input-text compact><input name=\"items[item][]\" value=\"" + item.item + "\" required></cs-input-text>\n	" + L.unit_price + " <cs-input-text compact><input name=\"items[unit_price][]\" value=\"" + item.unit_price + "\" required></cs-input-text> (<span class=\"unit-price\">" + item_data.price + "</span>)\n	" + L.units + " <cs-input-text compact><input name=\"items[units][]\" value=\"" + item.units + "\" required></cs-input-text>\n	" + L.total_price + " <cs-input-text compact><input name=\"items[price][]\" value=\"" + item.price + "\" required></cs-input-text> (<span class=\"item-price\" data-original-price=\"" + item_data.price + "\">" + total_price + "</span>)\n	<cs-button><button type=\"button\" class=\"delete-item\"><cs-icon icon=\"close\"></cs-icon></button></cs-button>\n</p>");
+              items_container.append("<p>\n	" + L.item + ": <cs-input-text compact><input value=\"-\" class=\"title\" readonly></cs-input-text>\n	id: <cs-input-text compact><input name=\"items[item][]\" value=\"" + item.item + "\" required></cs-input-text>\n	" + L.unit_price + " <cs-input-text compact><input name=\"items[unit_price][]\" value=\"" + item.unit_price + "\" required></cs-input-text> (<span class=\"unit-price\">" + item_data.price + "</span>)\n	" + L.units + " <cs-input-text compact><input name=\"items[units][]\" value=\"" + item.units + "\" required></cs-input-text>\n	" + L.total_price + " <cs-input-text compact><input name=\"items[price][]\" value=\"" + item.price + "\" required></cs-input-text> (<span class=\"item-price\" data-original-price=\"" + item_data.price + "\">" + total_price + "</span>)\n	<cs-button><button type=\"button\" class=\"delete-item\"><cs-icon icon=\"times\"></cs-icon></button></cs-button>\n</p>");
               items_container.children(':last').find('.title').val(item_data.title);
             };
             if (item.item) {
@@ -184,7 +184,7 @@
             order_status = order_statuses != null ? order_statuses[status.status] : void 8;
             color = order_status ? "background: " + order_status.color : '';
             comment = status.comment ? "<tr style=\"" + color + "\">\n	<td colspan=\"2\" style=\"white-space:pre\">" + status.comment + "</td>\n</tr>" : '';
-            content += "<tr style=\"" + color + "\">\n	<td><cs-icon icon=\"calendar\"></cs-icon> " + status.date_formatted + "</td>\n	<td>" + (order_status != null ? order_status.title : void 8) + "</td>\n</tr>\n" + comment;
+            content += "<tr style=\"" + color + "\">\n	<td><cs-icon icon=\"calendar-alt\"></cs-icon> " + status.date_formatted + "</td>\n	<td>" + (order_status != null ? order_status.title : void 8) + "</td>\n</tr>\n" + comment;
           });
           cs.ui.simple_modal("<table class=\"cs-table\" list>" + content + "</table>");
         });

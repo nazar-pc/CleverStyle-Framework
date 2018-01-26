@@ -13,9 +13,9 @@ dom-module#cs-system-admin-storages-list
 					td
 						template(is="dom-if" if="[[!index]]") -
 						template(is="dom-if" if="[[index]]")
-							cs-button(icon="pencil" on-tap="_edit" tooltip="[[L.edit]] [[L.storage]]"): button
+							cs-button(icon="pencil-alt" on-tap="_edit" tooltip="[[L.edit]] [[L.storage]]"): button
 							= ' '
-							cs-button(icon="trash" on-tap="_delete" tooltip="[[L.delete]] [[L.storage]]"): button
+							cs-button(icon="trash-alt" on-tap="_delete" tooltip="[[L.delete]] [[L.storage]]"): button
 					td [[storage.url]]
 					td [[storage.host]]
 					td [[storage.driver]]

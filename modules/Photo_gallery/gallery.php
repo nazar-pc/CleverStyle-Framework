@@ -70,14 +70,14 @@ $Page->content(
 									'href'       => "Photo_gallery/edit_images/$image[id]"
 								]),
 								[
-									'icon'       => 'pencil',
+									'icon'       => 'pencil-alt',
 									'tooltip'    => $L->edit,
 									'data-image' => $image['id']
 								]
 							).
 							h::{'cs-link-button.cs-photo-gallery-image-control'}(
 								h::a([
-									'icon'       => 'trash'
+									'icon'       => 'trash-alt'
 								]),
 								[
 									'tooltip'    => $L->delete,

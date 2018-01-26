@@ -44,7 +44,7 @@ Page::instance()
 										'value' => $client['secret']
 									]
 								),
-								h::{'cs-link-button[icon=pencil]'}(
+								h::{'cs-link-button[icon=pencil-alt]'}(
 									h::a(
 										[
 											'href' => "admin/OAuth2/clients/edit/$client[id]"
@@ -54,7 +54,7 @@ Page::instance()
 										'tooltip' => $L->edit
 									]
 								).
-								h::{'cs-link-button[icon=trash]'}(
+								h::{'cs-link-button[icon=trash-alt]'}(
 									h::a(
 										[
 											'href' => "admin/OAuth2/clients/delete/$client[id]"

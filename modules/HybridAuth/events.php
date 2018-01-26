@@ -29,8 +29,10 @@ Event::instance()
 			$L             = new Prefix('hybridauth_');
 			$icons_mapping = function ($provider) {
 				switch ($provider) {
+					case 'Facebook':
+						return 'facebook-f';
 					case 'Google':
-						return 'google-plus';
+						return 'google-plus-g';
 					case 'Vkontakte':
 						return 'vk';
 					default:

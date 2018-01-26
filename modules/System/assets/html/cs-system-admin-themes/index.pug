@@ -14,12 +14,12 @@ dom-module#cs-system-admin-themes
 						cs-button(compact icon="book" tooltip="[[L.information_about_theme]]" hidden="[[!theme.readme]]"): button(type="button")
 						cs-modal(content="[[theme.readme.content]]")
 						= ' '
-						cs-button(compact icon="legal" tooltip="[[L.license]]" hidden="[[!theme.license]]"): button(type="button")
+						cs-button(compact icon="gavel" tooltip="[[L.license]]" hidden="[[!theme.license]]"): button(type="button")
 						cs-modal(content="[[theme.license.content]]")
 					td(left)
 						cs-button(compact hidden="[[equal(theme.name, current_theme)]]" icon="check" on-tap="_set_current"): button [[L.set_current_theme]]
 						= ' '
-						cs-button(compact hidden="[[!theme.can_delete]]" icon="trash" on-tap="_remove_completely" tooltip="[[L.complete_theme_removal]]"): button
+						cs-button(compact hidden="[[!theme.can_delete]]" icon="trash-alt" on-tap="_remove_completely" tooltip="[[L.complete_theme_removal]]"): button
 		p
 			cs-input-text(compact tight): input(type="file" id="file")
 			cs-button(icon="upload"): button(type="button" on-tap="_upload") [[L.upload_and_install_update_theme]]

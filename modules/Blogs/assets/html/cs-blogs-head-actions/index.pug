@@ -2,10 +2,10 @@ dom-module#cs-blogs-head-actions
 	template
 		style(include="basic-styles")
 		p
-			cs-link-button(compact icon="gears" hidden="[[!settings.admin]]" tooltip="[[L.system_admin_administration]]"): a(href="/admin/Blogs")
+			cs-link-button(compact icon="cogs" hidden="[[!settings.admin]]" tooltip="[[L.system_admin_administration]]"): a(href="/admin/Blogs")
 			template(is="dom-if" if="[[can_write_post]]")
 				= ' '
-				cs-link-button(compact icon="pencil"): a(href="/Blogs/new_post") [[L.new_post]]
+				cs-link-button(compact icon="pencil-alt"): a(href="/Blogs/new_post") [[L.new_post]]
 				= ' '
 				cs-link-button(compact icon="archive"): a(href="/Blogs/drafts") [[L.drafts]]
 	script(src="script.js")

@@ -15,9 +15,9 @@ dom-module#cs-static-pages-admin-categories-list
 								| [[item.pages]]
 								cs-tooltip
 					td
-						cs-button(compact icon="pencil" tooltip="[[L.edit]]" hidden="[[equal(item.id, 0)]]"): button(type="button" on-tap="_edit")
+						cs-button(compact icon="pencil-alt" tooltip="[[L.edit]]" hidden="[[equal(item.id, 0)]]"): button(type="button" on-tap="_edit")
 						= ' '
-						cs-button(compact icon="trash" tooltip="[[L.delete]]" hidden="[[equal(item.id, 0)]]"): button(type="button" on-tap="_delete")
+						cs-button(compact icon="trash-alt" tooltip="[[L.delete]]" hidden="[[equal(item.id, 0)]]"): button(type="button" on-tap="_delete")
 		p [[L.index_page_path]]
 		p
 			cs-button: button(type="button" on-tap="_add") [[L.add_category]]

@@ -19,9 +19,9 @@ dom-module#cs-system-admin-databases-list
 						cs-button(icon="plus" on-tap="_add" tooltip="[[L.add]] [[L.mirror]] [[L.of_db]]"): button
 						template(is="dom-if" if="[[index]]")
 							= ' '
-							cs-button(icon="pencil" on-tap="_edit" tooltip="[[L.edit]] [[L.db]]"): button
+							cs-button(icon="pencil-alt" on-tap="_edit" tooltip="[[L.edit]] [[L.db]]"): button
 							= ' '
-							cs-button(icon="trash" on-tap="_delete" tooltip="[[L.delete]] [[L.db]]"): button
+							cs-button(icon="trash-alt" on-tap="_delete" tooltip="[[L.delete]] [[L.db]]"): button
 					td [[database.host]]
 					td [[database.driver]]
 					td [[database.prefix]]
@@ -30,9 +30,9 @@ dom-module#cs-system-admin-databases-list
 				template(is="dom-repeat" items="[[database.mirrors]]" as="mirror")
 					tr
 						td.cs-text-right
-							cs-button(icon="pencil" on-tap="_edit" tooltip="[[L.edit]] [[L.mirror]] [[L.of_db]]"): button
+							cs-button(icon="pencil-alt" on-tap="_edit" tooltip="[[L.edit]] [[L.mirror]] [[L.of_db]]"): button
 							= ' '
-							cs-button(icon="trash" on-tap="_delete" tooltip="[[L.delete]] [[L.mirror]] [[L.of_db]]"): button
+							cs-button(icon="trash-alt" on-tap="_delete" tooltip="[[L.delete]] [[L.mirror]] [[L.of_db]]"): button
 						td [[mirror.host]]
 						td [[mirror.driver]]
 						td [[mirror.prefix]]

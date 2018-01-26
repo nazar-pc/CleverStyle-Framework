@@ -109,7 +109,7 @@ make_modal	= (shipping_types, order_statuses, payment_methods, L, title, action)
 					#{L.unit_price} <cs-input-text compact><input name="items[unit_price][]" value="#{item.unit_price}" required></cs-input-text> (<span class="unit-price">#{item_data.price}</span>)
 					#{L.units} <cs-input-text compact><input name="items[units][]" value="#{item.units}" required></cs-input-text>
 					#{L.total_price} <cs-input-text compact><input name="items[price][]" value="#{item.price}" required></cs-input-text> (<span class="item-price" data-original-price="#{item_data.price}">#total_price</span>)
-					<cs-button><button type="button" class="delete-item"><cs-icon icon="close"></cs-icon></button></cs-button>
+					<cs-button><button type="button" class="delete-item"><cs-icon icon="times"></cs-icon></button></cs-button>
 				</p>""")
 				items_container.children(':last').find('.title').val(item_data.title)
 			if item.item
@@ -208,7 +208,7 @@ $('html')
 						''
 				content			+= """
 					<tr style="#color">
-						<td><cs-icon icon="calendar"></cs-icon> #{status.date_formatted}</td>
+						<td><cs-icon icon="calendar-alt"></cs-icon> #{status.date_formatted}</td>
 						<td>#{order_status?.title}</td>
 					</tr>
 					#comment

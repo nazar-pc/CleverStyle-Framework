@@ -1,7 +1,7 @@
 {
 	"package"          : "Photo_gallery",
 	"category"         : "modules",
-	"version"          : "1.43.0+build-135",
+	"version"          : "1.44.0+build-136",
 	"description"      : "Simple photo gallery, works standalone and integrates with other components (depends on Composer, Fotorama and Uploader).",
 	"author"           : "Nazar Mokrynskyi",
 	"website"          : "cleverstyle.org/Framework",
@@ -21,7 +21,7 @@
 	],
 	"provide"          : "photo_gallery",
 	"require"          : [
-		"System>=7.16",
+		"System>=7.63",
 		"System<8.0",
 		"Composer",
 		"Fotorama>=4.6.4+cs16",

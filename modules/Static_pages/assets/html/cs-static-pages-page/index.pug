@@ -4,9 +4,9 @@ dom-module#cs-static-pages-page
 		style(include="advanced-styles")
 		div(hidden="[[editing]]")
 			p(hidden="[[!admin]]")
-				cs-button(compact icon="file-text" tooltip="[[L.edit]]"): button(type="button" on-tap="_edit")
+				cs-button(compact icon="file-alt" tooltip="[[L.edit]]"): button(type="button" on-tap="_edit")
 				= ' '
-				cs-button(compact icon="trash" tooltip="[[L.delete]]"): button(type="button" on-tap="_delete")
+				cs-button(compact icon="trash-alt" tooltip="[[L.delete]]"): button(type="button" on-tap="_delete")
 			slot
 		div(hidden="[[!editing]]")
 			h1#title(contenteditable="true") [[page.title]]

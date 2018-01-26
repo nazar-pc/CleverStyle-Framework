@@ -3,9 +3,9 @@ dom-module#cs-blogs-post
 	template
 		style(include="basic-styles")
 		header
-			cs-link-button(hidden="[[!can_edit]]" icon="pencil" tooltip="[[L.edit]]"): a(href="[[url_prefix]]/Blogs/edit_post/[[jsonld.id]]")
+			cs-link-button(hidden="[[!can_edit]]" icon="pencil-alt" tooltip="[[L.edit]]"): a(href="[[url_prefix]]/Blogs/edit_post/[[jsonld.id]]")
 			= ' '
-			cs-button(compact icon="trash" tooltip="[[L.delete]]" hidden="[[!can_delete]]"): button(type="button" on-tap="_delete")
+			cs-button(compact icon="trash-alt" tooltip="[[L.delete]]" hidden="[[!can_delete]]"): button(type="button" on-tap="_delete")
 			h1 [[jsonld.title]]
 			template(is="dom-if" if="[[jsonld.articleSection.length]]")
 				p

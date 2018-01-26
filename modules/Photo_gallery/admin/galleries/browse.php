@@ -34,7 +34,7 @@ Page::instance()
 									'href' => "$module/$gallery[path]"
 								]
 							),
-							h::{'cs-link-button[icon=pencil]'}(
+							h::{'cs-link-button[icon=pencil-alt]'}(
 								h::a([
 									'href'    => "admin/Photo_gallery/galleries/edit/$gallery[id]"
 								]),
@@ -42,7 +42,7 @@ Page::instance()
 									'tooltip' => $L->edit
 								]
 							).
-							h::{'cs-link-button[icon=trash]'}(
+							h::{'cs-link-button[icon=trash-alt]'}(
 								h::a([
 									'href'    => "admin/Photo_gallery/galleries/delete/$gallery[id]"
 								]),

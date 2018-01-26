@@ -5,11 +5,11 @@ mixin blocks-container (position)
 			div(index="[[item.index]]" class$="[[_status_class(item.active)]]")
 				.title [[item.title]]
 				div
-					cs-button(compact icon="pencil" on-tap="_edit_block" tooltip="[[L.edit]]"): button
+					cs-button(compact icon="pencil-alt" on-tap="_edit_block" tooltip="[[L.edit]]"): button
 					= ' '
 					cs-button(compact icon="key" on-tap="_block_permissions" tooltip="[[L.edit_permissions]]"): button
 					= ' '
-					cs-button(compact icon="trash" on-tap="_delete_block" tooltip="[[L.delete]]"): button
+					cs-button(compact icon="trash-alt" on-tap="_delete_block" tooltip="[[L.delete]]"): button
 dom-module#cs-system-admin-blocks-list
 	link(rel="import" href="style.css" type="css")
 	template

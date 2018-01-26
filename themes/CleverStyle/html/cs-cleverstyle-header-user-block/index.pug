@@ -7,11 +7,11 @@ dom-module#cs-cleverstyle-header-user-block
 		div
 			b
 				| [[__('hello', username)]]
-				cs-icon(icon="sign-out" hidden="[[guest]]" tooltip="[[L.sign_out]]" on-tap="_sign_out")
+				cs-icon(icon="sign-out-alt" hidden="[[guest]]" tooltip="[[L.sign_out]]" on-tap="_sign_out")
 			template(is="dom-if" if="[[guest]]")
 				cs-group
-					cs-button(icon="sign-in" primary): button(type="button" on-tap="_sign_in" small-button) [[L.sign_in]]
-					cs-button(icon="pencil"): button(tooltip="[[L.registration_quick_form]]" type="button" on-tap="_registration" small-button) [[L.registration]]
+					cs-button(icon="sign-in-alt" primary): button(type="button" on-tap="_sign_in" small-button) [[L.sign_in]]
+					cs-button(icon="pencil-alt"): button(tooltip="[[L.registration_quick_form]]" type="button" on-tap="_registration" small-button) [[L.registration]]
 			template(is="dom-if" if="[[!guest]]")
 				cs-group
 					cs-button(icon="cog"): button(type="button" small-button) [[L.settings]]

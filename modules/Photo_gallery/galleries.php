@@ -42,7 +42,7 @@ if (count($galleries) > 1) {
 									'href' => "admin/Photo_gallery/galleries/edit/$gallery[id]"
 								]),
 								[
-									'icon'    => 'pencil',
+									'icon'    => 'pencil-alt',
 									'tooltip' => $L->edit
 								]
 							).
@@ -51,7 +51,7 @@ if (count($galleries) > 1) {
 									'href' => "admin/Photo_gallery/galleries/delete/$gallery[id]"
 								]),
 								[
-									'icon'    => 'trash',
+									'icon'    => 'trash-alt',
 									'tooltip' => $L->delete
 								]
 							);

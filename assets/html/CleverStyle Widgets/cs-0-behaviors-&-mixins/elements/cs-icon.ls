@@ -62,12 +62,17 @@ csw.behaviors.cs-icon = [
 			class_prefix	+= 'fa-spin '
 		if spinStep
 			class_prefix	+= 'fa-pulse '
-		class_prefix	+= 'fa fa-'
+		class_prefix	+= 'fa '
 		icons			= icon.split(' ')
 		@multiple		= icons.length > 1
 		if @multiple
-			@stacked1 = class_prefix + icons[0] + 'fa-stack-2x'
-			@stacked2 = class_prefix + icons[1] + 'fa-stack-1x fa-inverse'
+			@stacked1 = class_prefix + @_full_icon_name(icons[0]) + 'fa-stack-2x'
+			@stacked2 = class_prefix + @_full_icon_name(icons[1]) + 'fa-stack-1x fa-inverse'
 		else
-			@regular = class_prefix + icons[0]
+			@regular = class_prefix + @_full_icon_name(icons[0])
+	_full_icon_name : (name) ->
+		if name.split('-')[0] in ['fab', 'fa', 'fas', 'far']
+			name
+		else
+			'fab-' + name + ' fa-' + name
 ]

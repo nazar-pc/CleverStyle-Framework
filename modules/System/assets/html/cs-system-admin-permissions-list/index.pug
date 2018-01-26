@@ -12,9 +12,9 @@ dom-module#cs-system-admin-permissions-list
 			template(is="dom-repeat" items="[[permissions]]" as="permission")
 				tr
 					td
-						cs-button(compact icon="pencil" tooltip="[[L.edit]]"): button(on-tap="edit_permission")
+						cs-button(compact icon="pencil-alt" tooltip="[[L.edit]]"): button(on-tap="edit_permission")
 						= ' '
-						cs-button(compact icon="trash" tooltip="[[L.delete]]"): button(on-tap="delete_permission")
+						cs-button(compact icon="trash-alt" tooltip="[[L.delete]]"): button(on-tap="delete_permission")
 					td [[permission.id]]
 					td [[permission.group]]
 					td

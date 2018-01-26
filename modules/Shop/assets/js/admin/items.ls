@@ -229,7 +229,7 @@ make_modal = (attributes, categories, L, title, action) ->
 					</cs-select>
 					<cs-textarea autosize><textarea name="videos[video][]" placeholder="#{L.url_or_code}" class="video-video" rows="3"></textarea></cs-textarea>
 					<cs-input-text><input name="videos[poster][]" class="video-poster" placeholder="#{L.video_poster}"></cs-input-text>
-					<cs-button><button type="button" class="delete-video"><cs-icon icon="close"></cs-icon></button></cs-button>
+					<cs-button><button type="button" class="delete-video"><cs-icon icon="times"></cs-icon></button></cs-button>
 					<cs-progress hidden full-width><progress></progress></cs-progress>
 				</p>""")
 				added_video		= videos_container.children('p:last')

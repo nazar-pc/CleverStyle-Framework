@@ -79,14 +79,22 @@
         if (spinStep) {
           class_prefix += 'fa-pulse ';
         }
-        class_prefix += 'fa fa-';
+        class_prefix += 'fa ';
         icons = icon.split(' ');
         this.multiple = icons.length > 1;
         if (this.multiple) {
-          this.stacked1 = class_prefix + icons[0] + 'fa-stack-2x';
-          this.stacked2 = class_prefix + icons[1] + 'fa-stack-1x fa-inverse';
+          this.stacked1 = class_prefix + this._full_icon_name(icons[0]) + 'fa-stack-2x';
+          this.stacked2 = class_prefix + this._full_icon_name(icons[1]) + 'fa-stack-1x fa-inverse';
         } else {
-          this.regular = class_prefix + icons[0];
+          this.regular = class_prefix + this._full_icon_name(icons[0]);
+        }
+      },
+      _full_icon_name: function(name){
+        var ref$;
+        if ((ref$ = name.split('-')[0]) === 'fab' || ref$ === 'fa' || ref$ === 'fas' || ref$ === 'far') {
+          return name;
+        } else {
+          return 'fab-' + name + ' fa-' + name;
         }
       }
     }
