@@ -33,7 +33,7 @@
         custom_style_element = head.lastElementChild;
         ready.then(function(){
           Polymer.updateStyles();
-          styles[this$._styles_dom_module] = custom_style_element.firstElementChild.textContent.split(':not([style-scope]):not(.style-scope)').join('');
+          styles[this$._styles_dom_module] = custom_style_element.firstElementChild.textContent.split(':not(.style-scope)').join('');
           head.removeChild(custom_style_element);
           this$.insertAdjacentHTML('beforeend', "<style>" + styles[this$._styles_dom_module] + "</style>");
         });

@@ -28,7 +28,7 @@ csw.behaviors.inject-light-styles	= [
 			custom_style_element	= head.lastElementChild
 			ready.then !~>
 				Polymer.updateStyles()
-				styles[@_styles_dom_module]	= custom_style_element.firstElementChild.textContent.split(':not([style-scope]):not(.style-scope)').join('')
+				styles[@_styles_dom_module]	= custom_style_element.firstElementChild.textContent.split(':not(.style-scope)').join('')
 				head.removeChild(custom_style_element)
 				@insertAdjacentHTML('beforeend', "<style>#{styles[@_styles_dom_module]}</style>")
 		else
