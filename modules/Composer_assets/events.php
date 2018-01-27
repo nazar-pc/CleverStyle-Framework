@@ -124,6 +124,21 @@ Event::instance()
 		}
 	)
 	->on(
+		'Composer/updated',
+		function () {
+			// Hack: Ignore development dependencies until https://github.com/fxpio/composer-asset-plugin/issues/269 is properly resolved
+			$file_to_modify = STORAGE.'/Composer/vendor/fxp/composer-asset-plugin/Converter/AbstractPackageConverter.php';
+			file_put_contents(
+				$file_to_modify,
+				str_replace(
+					"'devDependencies' => 'require-dev',",
+					'',
+					file_get_contents($file_to_modify)
+				)
+			);
+		}
+	)
+	->on(
 		'System/Page/assets_dependencies_and_map',
 		function ($data) {
 			if (!Config::instance()->module('Composer_assets')->enabled()) {
