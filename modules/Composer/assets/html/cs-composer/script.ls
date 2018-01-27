@@ -28,6 +28,7 @@ Polymer(
 			cs.Language.ready()
 		])
 			.then ([result]) !~>
+				@_stop_updates	= true
 				@_save_scroll_position()
 				@status =
 					switch result.code

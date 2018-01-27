@@ -29,6 +29,7 @@
       Promise.all([cs.api(method + " api/Composer", data), cs.Language.ready()]).then(function(arg$){
         var result;
         result = arg$[0];
+        this$._stop_updates = true;
         this$._save_scroll_position();
         this$.status = (function(){
           switch (result.code) {
