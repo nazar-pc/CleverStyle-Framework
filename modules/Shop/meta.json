@@ -1,7 +1,7 @@
 {
 	"package"      : "Shop",
 	"category"     : "modules",
-	"version"      : "0.191.0+build-308",
+	"version"      : "0.191.0+build-309",
 	"description"  : "Shop functionality",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/Framework",
@@ -31,7 +31,7 @@
 		"composer_assets"
 	],
 	"require_npm"  : {
-		"jquery" : "^3.0.0"
+		"jquery" : "^3.3.1"
 	},
 	"optional"     : [
 		"Comments",
