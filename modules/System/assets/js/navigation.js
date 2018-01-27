@@ -8,7 +8,7 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var url_map, buttons, links, i$, len$, link, title_format;
+  var url_map;
   url_map = {
     "admin/System/components/modules": "cs-system-admin-modules-list",
     "admin/System/components/blocks": "cs-system-admin-blocks-list",
@@ -27,66 +27,69 @@
     "admin/System/users/security": "cs-system-admin-security",
     "admin/System/users/mail": "cs-system-admin-mail"
   };
-  buttons = document.querySelectorAll('body > header > cs-group cs-button');
-  links = document.querySelectorAll('body > header > cs-group a');
-  for (i$ = 0, len$ = links.length; i$ < len$; ++i$) {
-    link = links[i$];
-    link.addEventListener('mousedown', fn$);
-    link.addEventListener('click', fn1$);
-  }
-  title_format = document.title;
-  function go(href){
-    var href_splitted, i$, ref$, len$, button, link;
-    href_splitted = href.split('/');
-    Promise.all([cs.Language('system_admin_').ready(), require(['sprintf-js'])]).then(function(arg$){
-      var L, sprintf;
-      L = arg$[0], sprintf = arg$[1][0].sprintf;
-      document.title = sprintf(title_format, L[href_splitted[2]], L[href_splitted[3]]);
-    });
-    document.querySelector('#main_content > div').innerHTML = '<' + url_map[href] + '/>';
-    for (i$ = 0, len$ = (ref$ = buttons).length; i$ < len$; ++i$) {
-      button = ref$[i$];
-      button.primary = false;
+  cs.ui.ready.then(function(){
+    var buttons, links, i$, len$, link, title_format;
+    buttons = document.querySelectorAll('body > header > cs-group cs-button');
+    links = document.querySelectorAll('body > header > cs-group a');
+    for (i$ = 0, len$ = links.length; i$ < len$; ++i$) {
+      link = links[i$];
+      link.addEventListener('mousedown', fn$);
+      link.addEventListener('click', fn1$);
     }
-    for (i$ = 0, len$ = (ref$ = links).length; i$ < len$; ++i$) {
-      link = ref$[i$];
-      if (!link.matches("[href='" + href + "']")) {
-        link.parentElement.primary = false;
+    title_format = document.title;
+    function go(href){
+      var href_splitted, i$, ref$, len$, button, link;
+      href_splitted = href.split('/');
+      Promise.all([cs.Language('system_admin_').ready(), require(['sprintf-js'])]).then(function(arg$){
+        var L, sprintf;
+        L = arg$[0], sprintf = arg$[1][0].sprintf;
+        document.title = sprintf(title_format, L[href_splitted[2]], L[href_splitted[3]]);
+      });
+      document.querySelector('#main_content > div').innerHTML = '<' + url_map[href] + '/>';
+      for (i$ = 0, len$ = (ref$ = buttons).length; i$ < len$; ++i$) {
+        button = ref$[i$];
+        button.primary = false;
+      }
+      for (i$ = 0, len$ = (ref$ = links).length; i$ < len$; ++i$) {
+        link = ref$[i$];
+        if (!link.matches("[href='" + href + "']")) {
+          link.parentElement.primary = false;
+        } else {
+          link.parentElement.primary = true;
+          link.parentElement.parentElement.parentElement.previousElementSibling.primary = true;
+        }
+      }
+    }
+    function popstate(e){
+      var href;
+      if (location.href.indexOf('admin/System/') !== -1) {
+        go(location.href.match(/admin\/System\/\w+\/\w+/)[0]);
       } else {
-        link.parentElement.primary = true;
-        link.parentElement.parentElement.parentElement.previousElementSibling.primary = true;
+        href = location.href.split('?')[0];
+        if (href.substr(-1) === '/') {
+          href = href.substr(0, href.length - 1);
+        }
+        if (href === document.baseURI + 'admin' || href === document.baseURI + 'admin/System') {
+          go('admin/System/components/modules');
+        }
       }
     }
-  }
-  function popstate(e){
-    var href;
-    if (location.href.indexOf('admin/System/') !== -1) {
-      go(location.href.match(/admin\/System\/\w+\/\w+/)[0]);
-    } else {
-      href = location.href.split('?')[0];
-      if (href.substr(-1) === '/') {
-        href = href.substr(0, href.length - 1);
-      }
-      if (href === document.baseURI + 'admin' || href === document.baseURI + 'admin/System') {
-        go('admin/System/components/modules');
+    addEventListener('popstate', popstate);
+    popstate();
+    function fn$(e){
+      var href;
+      if (e.which === 1) {
+        e.preventDefault();
+        href = this.getAttribute('href');
+        go(href);
+        history.pushState({}, document.title, href);
       }
     }
-  }
-  addEventListener('popstate', popstate);
-  popstate();
-  function fn$(e){
-    var href;
-    if (e.which === 1) {
-      e.preventDefault();
-      href = this.getAttribute('href');
-      go(href);
-      history.pushState({}, document.title, href);
+    function fn1$(e){
+      if (e.which === 1) {
+        e.preventDefault();
+        return e.stopPropagation();
+      }
     }
-  }
-  function fn1$(e){
-    if (e.which === 1) {
-      e.preventDefault();
-      return e.stopPropagation();
-    }
-  }
+  });
 }).call(this);
