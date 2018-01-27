@@ -50,10 +50,17 @@
       var xhr;
       xhr = new XMLHttpRequest();
       xhr.onload = function(){
+        var e;
         if (this.status >= 400) {
           this.onerror();
         } else {
-          resolve(JSON.parse(this.responseText));
+          try {
+            resolve(JSON.parse(this.responseText));
+          } catch (e$) {
+            e = e$;
+            console.error(e);
+            this.onerror();
+          }
         }
       };
       xhr.onerror = function(){

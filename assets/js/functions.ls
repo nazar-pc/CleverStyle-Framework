@@ -35,7 +35,11 @@ cs.api = (method_path, data) ->
 			if @status >= 400
 				@onerror()
 			else
-				resolve(JSON.parse(@responseText))
+				try
+					resolve(JSON.parse(@responseText))
+				catch e
+					console.error(e)
+					@onerror()
 		xhr.onerror	= !->
 			timeout	= setTimeout(!~>
 				if @responseText
