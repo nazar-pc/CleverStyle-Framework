@@ -13,3 +13,4 @@ requirejs.config(
 		''
 	waitSeconds	: 60
 )
+define('async-eventer', -> window.async_eventer)

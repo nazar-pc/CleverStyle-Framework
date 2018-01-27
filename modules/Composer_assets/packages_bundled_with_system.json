@@ -3,6 +3,7 @@
 	"bower-asset/jssha"                 : "*",
 	"bower-asset/polymer"               : "*",
 	"bower-asset/shadycss"              : "*",
+	"npm-asset/async-eventer"           : "*",
 	"npm-asset/jssha"                   : "*",
 	"npm-asset/html5sortable"           : "*",
 	"npm-asset/@polymer/polymer"        : "*",
