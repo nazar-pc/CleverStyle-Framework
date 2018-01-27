@@ -35,6 +35,7 @@ cs.Event
 	.on('admin/System/modules/update/after', (data) ->
 		open_modal('update', data.name, 'modules')
 	)
-document.querySelector('.cs-composer-admin-force-update')?.addEventListener('click', !->
-	open_modal('install', 'Composer', 'modules', true)
-)
+cs.ui.ready.then !->
+	document.querySelector('.cs-composer-admin-force-update')?.addEventListener('click', !->
+		open_modal('install', 'Composer', 'modules', true)
+	)
