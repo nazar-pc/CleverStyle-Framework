@@ -257,6 +257,7 @@ string(%d) "<link href="/assets/css/unresolved.css?%s" rel="stylesheet">
 string(9) "post_Body"
 string(%d) "<script src="/assets/js/WebComponents-polyfill/webcomponents-hi-sd-ce.min.js"></script>
 <script src="/assets/js/a0.async-eventer-%s.js?%s"></script>
+<script src="/assets/js/a0.config.js?%s"></script>
 <script src="/assets/js/a1.Event.js?%s"></script>
 <script src="/assets/js/a1.Language.js?%s"></script>
 <script src="/assets/js/functions.js?%s"></script>
