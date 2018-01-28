@@ -18,8 +18,6 @@ csw.behaviors.cs-select = [
 			observer	: '_selected_changed'
 			type		: Object
 	ready : !->
-		# We need to scroll because of possible changed height of `option`, so that `option[selected]` will not be visible
-		@_when_ready(@~_scroll_to_selected)
 		# Hack to work nicely with `dom-repeat`-created options inside
 		timeout		= null
 		callback	= !~>
@@ -48,6 +46,8 @@ csw.behaviors.cs-select = [
 				@_height_updated	= true
 				font_size		= parseFloat(getComputedStyle(@_select).fontSize)
 				@_select.style.height	= "calc(#{height_in_px}em / #{font_size})"
+			# We need to scroll because of possible changed height of `option`, so that `option[selected]` will not be visible
+			@_scroll_to_selected()
 		@addEventListener('dom-change', callback)
 	_scroll_to_selected : !->
 		option			= @querySelector('option')

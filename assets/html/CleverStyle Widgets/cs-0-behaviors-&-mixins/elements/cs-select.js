@@ -18,7 +18,6 @@
       },
       ready: function(){
         var timeout, callback, this$ = this;
-        this._when_ready(bind$(this, '_scroll_to_selected'));
         timeout = null;
         callback = function(){
           var timeout, height_in_px, font_size;
@@ -50,6 +49,7 @@
             font_size = parseFloat(getComputedStyle(this$._select).fontSize);
             this$._select.style.height = "calc(" + height_in_px + "em / " + font_size + ")";
           }
+          this$._scroll_to_selected();
         };
         this.addEventListener('dom-change', callback);
       },
