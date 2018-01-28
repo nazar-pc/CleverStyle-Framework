@@ -12,7 +12,7 @@ use
 	cs\Language,
 	Ratchet\ConnectionInterface,
 	Ratchet\Http\HttpServerInterface,
-	Guzzle\Http\Message\RequestInterface;
+	Psr\Http\Message\RequestInterface;
 
 class Connection_properties_injector implements HttpServerInterface {
 	private $delegate;
@@ -28,23 +28,34 @@ class Connection_properties_injector implements HttpServerInterface {
 	public function onOpen (ConnectionInterface $conn, RequestInterface $request = null) {
 		$L = Language::instance();
 		/** @noinspection PhpUndefinedFieldInspection */
-		$ip               = $this->ip(
+		/** @noinspection NullPointerExceptionInspection */
+		$ip = $this->ip(
 			[
 				$conn->remoteAddress,
-				$request->getHeader('X-Forwarded-For'),
-				$request->getHeader('Client-IP'),
-				$request->getHeader('X-Forwarded'),
-				$request->getHeader('X-Cluster-Client-IP'),
-				$request->getHeader('Forwarded-For'),
-				$request->getHeader('Forwarded')
+				$request->getHeaderLine('X-Forwarded-For'),
+				$request->getHeaderLine('Client-IP'),
+				$request->getHeaderLine('X-Forwarded'),
+				$request->getHeaderLine('X-Cluster-Client-IP'),
+				$request->getHeaderLine('Forwarded-For'),
+				$request->getHeaderLine('Forwarded')
 			]
 		);
-		$conn->user_agent = $request->getHeader('User-Agent');
-		$conn->session_id = $request->getCookie(Config::instance()->core['cookie_prefix'].'session');
+		/** @noinspection NullPointerExceptionInspection */
+		$conn->user_agent = $request->getHeaderLine('User-Agent');
+		$cookie_name      = Config::instance()->core['cookie_prefix'].'session';
+		/** @noinspection NullPointerExceptionInspection */
+		foreach ($request->getHeader('Cookie') as $cookie) {
+			$cookie = explode('=', $cookie);
+			if ($cookie[0] === $cookie_name) {
+				$conn->session_id = $cookie[1];
+				break;
+			}
+		}
 		/** @noinspection PhpUndefinedFieldInspection */
 		$conn->remote_addr = $conn->remoteAddress;
 		$conn->ip          = $ip;
-		$conn->language    = $L->url_language($request->getPath()) ?: $L->clanguage;
+		/** @noinspection NullPointerExceptionInspection */
+		$conn->language = $L->url_language($request->getUri()->getPath()) ?: $L->clanguage;
 		$this->delegate->onOpen($conn, $request);
 	}
 	/**

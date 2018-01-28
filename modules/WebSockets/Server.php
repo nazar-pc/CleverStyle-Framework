@@ -66,7 +66,7 @@ class Server implements MessageComponentInterface {
 	/**
 	 * Connection to master server
 	 *
-	 * @var ConnectionInterface
+	 * @var Client_websocket
 	 */
 	protected $connection_to_master;
 	/**
@@ -119,7 +119,7 @@ class Server implements MessageComponentInterface {
 		$this->listen_port         = $module_data->listen_port;
 		$this->listen_locally      = $module_data->listen_locally ? '127.0.0.1' : '0.0.0.0';
 		$this->dns_server          = $module_data->dns_server ?: '127.0.0.1';
-		$this->dns_server          = $module_data->security_key;
+		$this->security_key        = $module_data->security_key;
 		$this->remember_session_ip = $Config->core['remember_user_ip'];
 		$this->pool                = Pool::instance();
 		$this->clients             = new SplObjectStorage;
@@ -134,12 +134,7 @@ class Server implements MessageComponentInterface {
 	public function run ($address = null) {
 		$this->address = $address ?: $this->address;
 		@ini_set('error_log', LOGS.'/WebSockets-server.log');
-		$ws_server = new WsServer($this);
-		// No encoding check - better performance, browsers do this anyway
-		$ws_server->setEncodingChecks(false);
-		// Disable all versions except RFC6455, which is supported by all modern browsers
-		$ws_server->disableVersion(0);
-		$ws_server->disableVersion(6);
+		$ws_server              = new WsServer($this);
 		$this->io_server        = IoServer::factory(
 			new HttpServer(
 				new Connection_properties_injector($ws_server)
@@ -171,6 +166,15 @@ class Server implements MessageComponentInterface {
 	 * @param string              $message
 	 */
 	public function onMessage (ConnectionInterface $connection, $message) {
+		$this->on_message_internal($connection, $message);
+	}
+	/**
+	 * TODO: Probably split this into 2 methods
+	 *
+	 * @param Client_websocket|ConnectionInterface $connection
+	 * @param string                               $message
+	 */
+	protected function on_message_internal ($connection, $message) {
 		$from_master = $connection === $this->connection_to_master;
 		if (!$this->parse_message($message, $action, $details, $send_to, $target)) {
 			if (!$from_master) {
@@ -199,7 +203,6 @@ class Server implements MessageComponentInterface {
 			 * Internal connection from application
 			 */
 			case "Application/Internal:$this->security_key":
-				/** @noinspection PhpUndefinedFieldInspection */
 				if ($this->parse_message($details, $action_, $details_, $send_to_, $target_)) {
 					$connection->close();
 					$this->send_to_clients($action_, $details_, $send_to_, $target_);
@@ -236,7 +239,7 @@ class Server implements MessageComponentInterface {
 				return;
 			}
 			$this->send_to_clients_internal($action, $details, $send_to, $target);
-		} elseif (isset($connection->user_id)) {
+		} elseif (property_exists($connection, 'user_id')) {
 			/** @noinspection PhpUndefinedFieldInspection */
 			Event::instance()->fire(
 				'WebSockets/message',
@@ -271,7 +274,7 @@ class Server implements MessageComponentInterface {
 		}
 		list($action, $details) = $decoded_message;
 		$send_to = isset($decoded_message[2]) ? $decoded_message[2] : 0;
-		$target  = isset($decoded_message[3]) ? $decoded_message[3] : false;
+		$target  = isset($decoded_message[3]) ? $decoded_message[3] : 0;
 		return true;
 	}
 	/**
@@ -454,30 +457,32 @@ class Server implements MessageComponentInterface {
 				function (Client_websocket $connection) use (&$last_trial, $master) {
 					$last_trial                 = '';
 					$this->connection_to_master = $connection;
-					$connection->on(
-						'message',
-						function ($message) use ($connection) {
-							$this->onMessage($connection, $message);
-						}
-					);
-					$connection->on(
-						'error',
-						function () use ($connection) {
-							$connection->close();
-						}
-					);
-					$connection->on(
-						'close',
-						function () {
-							$this->connection_to_master = null;
-							$this->loop->addTimer(
-								1,
-								function () {
-									$this->connect_to_master();
-								}
-							);
-						}
-					);
+					/** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+					$connection
+						->on(
+							'message',
+							function ($message) use ($connection) {
+								$this->on_message_internal($connection, $message);
+							}
+						)
+						->on(
+							'error',
+							function () use ($connection) {
+								$connection->close();
+							}
+						)
+						->on(
+							'close',
+							function () {
+								$this->connection_to_master = null;
+								$this->loop->addTimer(
+									1,
+									function () {
+										$this->connect_to_master();
+									}
+								);
+							}
+						);
 					/**
 					 * Tell master that we are server also, not regular client
 					 */
