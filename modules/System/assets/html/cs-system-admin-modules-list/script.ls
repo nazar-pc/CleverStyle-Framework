@@ -253,9 +253,9 @@ Polymer(
 	_db_option : (db) ->
 		name	=
 			if db.index
-				"#{db.host}/#{db.name} (#{db.type})"
+				"#{db.host}/#{db.name} (#{db.driver})"
 			else
-				@L.core_db + " (#{db.type})"
+				@L.core_db + " (#{db.driver})"
 		checked	= if db.index then '' else 'checked'
 		"""<option value="#{db.index}" #checked>#name</option>"""
 	_storage_option : (storage) ->

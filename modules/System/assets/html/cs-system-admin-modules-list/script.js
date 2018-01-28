@@ -223,8 +223,8 @@
     _db_option: function(db){
       var name, checked;
       name = db.index
-        ? db.host + "/" + db.name + " (" + db.type + ")"
-        : this.L.core_db + (" (" + db.type + ")");
+        ? db.host + "/" + db.name + " (" + db.driver + ")"
+        : this.L.core_db + (" (" + db.driver + ")");
       checked = db.index ? '' : 'checked';
       return "<option value=\"" + db.index + "\" " + checked + ">" + name + "</option>";
     },
