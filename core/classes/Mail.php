@@ -8,8 +8,8 @@
 namespace cs;
 use
 	h,
-	PHPMailer,
-	phpmailerException;
+	PHPMailer\PHPMailer\Exception,
+	PHPMailer\PHPMailer\PHPMailer;
 
 /**
  * @method static $this instance($check = false)
@@ -53,13 +53,15 @@ class Mail {
 				$PHPMailer->AltBody = $body_text.strip_tags($signature);
 			}
 			return $PHPMailer->send();
-		} catch (phpmailerException $e) {
+		} catch (Exception $e) {
 			trigger_error($e->getMessage(), E_USER_WARNING);
 		}
 		return false;
 	}
 	/**
 	 * Create PHPMailer instance with parameters according to system configuration
+	 *
+	 * @param Config $Config
 	 *
 	 * @return PHPMailer
 	 */

@@ -1,6 +1,6 @@
 --FILE--
 <?php
-namespace {
+namespace PHPMailer\PHPMailer {
 	class PHPMailer {
 		public function __set ($name, $value) {
 			var_dump("PHPMailer->$name set to", $value);
@@ -10,7 +10,7 @@ namespace {
 		}
 		public function addAttachment (...$arguments) {
 			if (!file_exists($arguments[0])) {
-				throw new phpmailerException("Attachment file doesn't exists");
+				throw new Exception("Attachment file doesn't exists");
 			}
 			var_dump("PHPMailer->addAttachment() called with", $arguments);
 		}
@@ -28,13 +28,13 @@ namespace {
 				return true;
 			}
 			if ($cache['exception']) {
-				throw new phpmailerException('Sending failed');
+				throw new Exception('Sending failed');
 			}
 			return $cache['return'];
 		}
 	}
 
-	class phpmailerException extends Exception {
+	class Exception extends \Exception {
 	}
 }
 namespace cs {
@@ -137,7 +137,7 @@ namespace cs {
 			);
 
 			var_dump('Attachment addition fails with exception, sending fails with exception');
-			$PHPMailer = new \PHPMailer;
+			$PHPMailer = new \PHPMailer\PHPMailer\PHPMailer;
 			$PHPMailer->send(null, true);
 			var_dump($Mail->send_to('user@test.com', 'Test email', '<strong>HTML body content</strong>', null, __DIR__.'/attachment2.txt'));
 		}
