@@ -1,1 +1,1 @@
-`cli` directory with `wp-cli/wp-cli-tools` uses upstream version + https://github.com/wp-cli/php-cli-tools/pull/100 on top of it
+`cli` directory with `wp-cli/php-cli-tools` uses https://github.com/nazar-pc/php-cli-tools/tree/tags-colorize-support, which is an upstream version + https://github.com/wp-cli/php-cli-tools/pull/100 on top of it
