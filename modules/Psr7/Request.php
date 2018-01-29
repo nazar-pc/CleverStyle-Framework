@@ -25,6 +25,7 @@ class Request {
 		self::from_psr7_query($System_request, $Psr7_request);
 		self::from_psr7_data_and_files($System_request, $Psr7_request);
 		$System_request->init_route();
+		$System_request->started = microtime(true);
 	}
 	/**
 	 * @param System_request                           $System_request

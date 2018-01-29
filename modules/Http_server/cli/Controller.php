@@ -8,15 +8,10 @@
  */
 namespace cs\modules\Http_server\cli;
 use
-	React,
-	cs\App,
 	cs\ExitException,
-	cs\Page,
-	cs\User,
-	cs\Response as System_response,
-	cs\modules\Psr7\Request,
-	cs\modules\Psr7\Response,
-	Psr\Http\Message\ServerRequestInterface;
+	cs\modules\Psr15\Middleware,
+	FriendsOfReact\Http\Middleware\Psr15Adapter\PSR15Middleware,
+	React;
 
 class Controller {
 	public static function index_help () {
@@ -50,29 +45,41 @@ HELP;
 			throw new ExitException('Port is required', 400);
 		}
 		$_SERVER['SERVER_SOFTWARE'] = 'ReactPHP';
-		$memory_cache_disabled      = false;
-		$app                        = function (ServerRequestInterface $request) use (&$memory_cache_disabled) {
-			try {
-				System_response::instance()->init_with_typical_default_settings();
-				Request::init_from_psr7($request);
-				App::instance()->execute();
-				if (!$memory_cache_disabled) {
-					$memory_cache_disabled = true;
-					User::instance()->disable_memory_cache();
-				}
-			} catch (ExitException $e) {
-				if ($e->getCode() >= 400) {
-					Page::instance()->error($e->getMessage() ?: null, $e->getJson());
-				}
-			}
-			return Response::output_to_psr7(new React\Http\Response);
-		};
+		static::add_composer_loader_mapping();
 
 		$loop   = React\EventLoop\Factory::create();
 		$socket = new React\Socket\Server($port, $loop);
-		$http   = new React\Http\StreamingServer([new React\Http\Middleware\RequestBodyBufferMiddleware(), $app]);
+		$http   = new React\Http\StreamingServer(
+			[
+				new React\Http\Middleware\RequestBodyBufferMiddleware(),
+				new PSR15Middleware(
+					$loop,
+					Middleware::class,
+					[React\Http\Response::class]
+				)
+			]
+		);
 		$http->listen($socket);
 		$loop->run();
+	}
+	/**
+	 * Hack for PSR15Middleware that blindly relies on Composer's autoloader
+	 */
+	protected static function add_composer_loader_mapping () {
+		foreach (get_declared_classes() as $class) {
+			if (strpos($class, 'ComposerAutoloaderInit') === 0) {
+				/**
+				 * @var \Composer\Autoload\ClassLoader $loader
+				 */
+				$loader = $class::getLoader();
+				$loader->addClassMap(
+					[
+						Middleware::class => MODULES.'/Psr15/Middleware.php'
+					]
+				);
+				break;
+			}
+		}
 	}
 	/**
 	 * @param \cs\Request $Request

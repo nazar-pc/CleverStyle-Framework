@@ -1,7 +1,7 @@
 {
 	"package"          : "Http_server",
 	"category"         : "modules",
-	"version"          : "0.42.0+build-68",
+	"version"          : "0.43.0+build-69",
 	"description"      : "Http server based on React, potentially consumes less memory and works much faster that mod-php5 and php-fpm",
 	"author"           : "Nazar Mokrynskyi",
 	"website"          : "cleverstyle.org/Framework",
@@ -10,10 +10,11 @@
 	"require"          : [
 		"System>=7.0",
 		"System<8.0",
-		"psr7",
+		"psr15",
 		"composer"
 	],
 	"require_composer" : {
-		"react/http" : "0.8.*"
+		"react/http"                        : "0.8.*",
+		"for/http-middleware-psr15-adapter" : "^1.0"
 	}
 }
