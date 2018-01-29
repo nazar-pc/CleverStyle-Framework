@@ -70,15 +70,15 @@ string(2) "23"
 int(%d)
 string(8) "Bad mode"
 %A
-Warning: %S"cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
+Warning: %S"cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/File_stream_basic.phpt.test_code.php on line %d
 bool(false)
 %A
-Warning: %S"cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
+Warning: %S"cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/File_stream_basic.phpt.test_code.php on line %d
 bool(false)
 string(17) "Non-existing file"
 %A
-Warning: %S"cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
+Warning: %S"cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/File_stream_basic.phpt.test_code.php on line %d
 bool(false)
 %A
-Warning: %S"cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/__code.php on line %d
+Warning: %S"cs\Request\File_stream::stream_open" call failed in %s/tests/quick/Request/File_stream_basic.phpt.test_code.php on line %d
 bool(false)

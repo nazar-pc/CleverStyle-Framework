@@ -321,6 +321,7 @@ function find_tests ($target) {
 	return file_exists($target) ? [$target] : [];
 }
 
+$offset  = 0;
 $options = getopt('hb:', [], $offset);
 $targets = array_slice($argv, $offset);
 line("<g>PHPT Tests runner</g>\n");
