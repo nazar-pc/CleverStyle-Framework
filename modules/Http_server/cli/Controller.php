@@ -9,8 +9,14 @@
 namespace cs\modules\Http_server\cli;
 use
 	React,
+	cs\App,
 	cs\ExitException,
-	cs\modules\Http_server\Request;
+	cs\Page,
+	cs\User,
+	cs\Response as System_response,
+	cs\modules\Psr7\Request,
+	cs\modules\Psr7\Response,
+	Psr\Http\Message\ServerRequestInterface;
 
 class Controller {
 	public static function index_help () {
@@ -43,22 +49,29 @@ HELP;
 		if (!$port) {
 			throw new ExitException('Port is required', 400);
 		}
+		$_SERVER['SERVER_SOFTWARE'] = 'ReactPHP';
+		$memory_cache_disabled      = false;
+		$app                        = function (ServerRequestInterface $request) use (&$memory_cache_disabled) {
+			try {
+				System_response::instance()->init_with_typical_default_settings();
+				Request::init_from_psr7($request);
+				App::instance()->execute();
+				if (!$memory_cache_disabled) {
+					$memory_cache_disabled = true;
+					User::instance()->disable_memory_cache();
+				}
+			} catch (ExitException $e) {
+				if ($e->getCode() >= 400) {
+					Page::instance()->error($e->getMessage() ?: null, $e->getJson());
+				}
+			}
+			return Response::output_to_psr7(new React\Http\Response);
+		};
 
 		$loop   = React\EventLoop\Factory::create();
-		$socket = new React\Socket\Server($loop);
-		$http   = new React\Http\Server($socket);
-		$http->on(
-			'request',
-			function (React\Http\Request $request, React\Http\Response $response) {
-				$request->on(
-					'data',
-					function ($data) use ($request, $response) {
-						Request::process($request, $response, microtime(true), $data);
-					}
-				);
-			}
-		);
-		$socket->listen($port);
+		$socket = new React\Socket\Server($port, $loop);
+		$http   = new React\Http\StreamingServer([new React\Http\Middleware\RequestBodyBufferMiddleware(), $app]);
+		$http->listen($socket);
 		$loop->run();
 	}
 	/**
@@ -78,15 +91,16 @@ HELP;
 		echo "Pool of Http servers started!\n";
 	}
 	/**
-	 * @param string $posts
+	 * @param string $ports
 	 *
 	 * @return int[]
 	 */
-	protected static function prepare_ports ($posts) {
+	protected static function prepare_ports ($ports) {
 		$result_ports = [];
-		foreach (explode(',', $posts) as $p) {
+		foreach (explode(',', $ports) as $p) {
 			if (strpos($p, '-') !== false) {
-				$result_ports = array_merge($posts, range(...explode('-', $p)));
+				/** @noinspection SlowArrayOperationsInLoopInspection */
+				$result_ports = array_merge($result_ports, range(...explode('-', $p)));
 			} else {
 				$result_ports[] = $p;
 			}
@@ -100,7 +114,7 @@ HELP;
 	 * @param int $port
 	 */
 	protected static function cross_platform_server_in_background ($port) {
-		$dir        = realpath(__DIR__.'/..');
+		$dir        = dirname(__DIR__);
 		$supervisor = "php $dir/supervisor.php";
 		$cmd        = escapeshellarg(PHP_BINARY.' '.DIR."/cli run_server:Http_server port=$port");
 		if (strpos(PHP_OS, 'WIN') === false) {
