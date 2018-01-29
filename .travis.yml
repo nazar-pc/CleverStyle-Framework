@@ -40,7 +40,7 @@ script:
       export SKIP_COVERAGE=1
     fi
   - |
-    php -d variables_order=EGPCS phpt-tests-runner tests
+    php -d variables_order=EGPCS phpt-tests-runner -c tests
 
 after_success:
   - |

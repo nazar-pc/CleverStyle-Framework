@@ -40,10 +40,15 @@ function colorize ($text) {
  * Based on code of Fabien Potencier:
  * \Symfony\Component\Console\Output\StreamOutput::hasColorSupport()
  *
+ * @param bool|null $set_to
+ *
  * @return bool true if ANSI escape sequences are supported.
  */
-function has_color_support () {
+function has_color_support ($set_to = null) {
 	static $result;
+	if ($set_to !== null) {
+		$result = $set_to;
+	}
 	if ($result !== null) {
 		return $result;
 	}
@@ -321,7 +326,7 @@ function find_tests ($target) {
 	return file_exists($target) ? [$target] : [];
 }
 
-$options = getopt('hb:', []);
+$options = getopt('hb:cC', []);
 $targets = array_filter(
 	array_slice($argv, 1),
 	function ($path) {
@@ -330,15 +335,22 @@ $targets = array_filter(
 );
 line("<g>PHPT Tests runner</g>\n");
 
+if (isset($options['c'])) {
+	has_color_support(true);
+} elseif (isset($options['C'])) {
+	has_color_support(false);
+}
 if (!$targets || isset($options['h'])) {
 	line(
 		<<<HTML
 <y>Usage:</y>
-  phpt-tests-runner [-h] [-b binary] [files] [directories]
+  phpt-tests-runner [-h] [-c] [-C] [-b binary] [files] [directories]
 
 <y>Arguments:</y>
   <g>-h</g> Print this help message
   <g>-b</g> Specify custom PHP binary to be used (current is used by default)
+  <g>-c</g> Force colored output
+  <g>-C</g> Force no colored output
 
 <y>Examples:</y>
   Execute tests from tests directory:
