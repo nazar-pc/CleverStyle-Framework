@@ -1,10 +1,9 @@
 #!/usr/bin/env php
 <?php
 /**
- * @package   PHPT Tests runner
- * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright Copyright (c) 2016-2017, Nazar Mokrynskyi
- * @license   MIT License, see license.txt
+ * @package PHPT Tests runner
+ * @author  Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @license 0BSD
  */
 /**
  * @param string $text
@@ -12,9 +11,8 @@
  * @return string
  */
 function colorize ($text) {
-	return preg_replace_callback(
-		'#<([gyr])>(.*)</\1>#Us',
-		function ($matches) {
+	if (has_color_support()) {
+		$callback = function ($matches) {
 			$color_codes = [
 				'g' => 32, // Green
 				'y' => 33, // Yellow
@@ -23,9 +21,42 @@ function colorize ($text) {
 			$color       = $color_codes[$matches[1]];
 			$text        = $matches[2];
 			return "\033[{$color}m$text\033[0m";
-		},
+		};
+	} else {
+		$callback = function ($matches) {
+			return $matches[2];
+		};
+	}
+	return preg_replace_callback(
+		'#<([gyr])>(.*)</\1>#Us',
+		$callback,
 		$text
 	);
+}
+
+/**
+ * Returns true if ANSI escape sequences are supported.
+ *
+ * Based on code of Fabien Potencier:
+ * \Symfony\Component\Console\Output\StreamOutput::hasColorSupport()
+ *
+ * @return bool true if ANSI escape sequences are supported.
+ */
+function has_color_support () {
+	static $result;
+	if ($result !== null) {
+		return $result;
+	}
+	if (strpos(PHP_OS, 'WIN') === false) {
+		$result = function_exists('posix_isatty') && @posix_isatty(STDOUT);
+	} else {
+		$result =
+			PHP_WINDOWS_VERSION_MAJOR.'.'.PHP_WINDOWS_VERSION_MINOR.'.'.PHP_WINDOWS_VERSION_BUILD === '10.0.10586' ||
+			getenv('ANSICON') !== false ||
+			getenv('ConEmuANSI') === 'ON' ||
+			getenv('TERM') === 'xterm';
+	}
+	return $result;
 }
 
 /**
@@ -57,13 +88,13 @@ function line ($text = '', $clean = false) {
 }
 
 /**
+ * @param string $binary
  * @param string $test_file
  * @param string $base_text
  *
  * @return string `skipped`, `success` or `error`
  */
-function run_test ($test_file, $base_text) {
-	$time = microtime(true);
+function run_test ($binary, $test_file, $base_text) {
 	out("<y>$base_text ...</y>");
 	$test_file = realpath($test_file);
 	@unlink("$test_file.exp");
@@ -75,7 +106,7 @@ function run_test ($test_file, $base_text) {
 	 */
 	if (!isset($parsed_test['FILE'])) {
 		line("<r>$base_text ERROR</r>", true);
-		line("--FILE-- section MUST be present");
+		line('--FILE-- section MUST be present');
 		return 'error';
 	}
 	$output_sections = ['EXPECT', 'EXPECTF', 'EXPECTREGEX'];
@@ -92,23 +123,28 @@ function run_test ($test_file, $base_text) {
 	];
 	if (isset($parsed_test['INI'])) {
 		foreach (explode("\n", trim($parsed_test['INI'])) as $line) {
-			list($key, $value) = explode('=', $line, 2);
-			$php_arguments[] = '-d '.trim($key).'='.trim($value);
+			list($key, $value) = array_map('trim', explode('=', $line, 2));
+			$php_arguments[] = "-d $key=$value";
 		}
-		unset($line, $key, $value);
 	}
-	$script_arguments = isset($parsed_test['ARGS']) ? $parsed_test['ARGS'] : '';
+	$script_arguments = $parsed_test['ARGS'] ?? '';
 	$working_dir      = dirname($test_file);
 	if (isset($parsed_test['SKIPIF'])) {
-		$result = execute_code($working_dir, $parsed_test['SKIPIF'], $php_arguments, $script_arguments, $test_file);
+		$result = execute_code($binary, $working_dir, $parsed_test['SKIPIF'], $php_arguments, $script_arguments, $test_file);
 		if (stripos($result, 'skip') === 0) {
 			line("<y>$base_text SKIPPED</y>", true);
 			line(ltrim(substr($result, 4)));
 			return 'skipped';
 		}
 	}
-	$output = rtrim(execute_code($working_dir, $parsed_test['FILE'], $php_arguments, $script_arguments, $test_file));
-	return compare_output($output, $base_text, $test_file, $php_arguments, $script_arguments, $parsed_test, $time);
+	$started_time = microtime(true);
+	$output       = rtrim(execute_code($binary, $working_dir, $parsed_test['FILE'], $php_arguments, $script_arguments, $test_file, true));
+	$result       = compare_output(PHP_BINARY, $output, $base_text, $test_file, $php_arguments, $script_arguments, $parsed_test, $started_time);
+	isset($parsed_test['CLEAN']) && execute_code($binary, $working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
+	if ($result === 'success') {
+		unlink("$test_file.test_code.php");
+	}
+	return $result;
 }
 
 /**
@@ -120,11 +156,7 @@ function parse_test ($test_file) {
 	$result      = [];
 	$current_key = null;
 	foreach (file($test_file) as $line) {
-		if (preg_match(
-			"/^--(SKIPIF|INI|ARGS|FILE|EXPECT|EXPECTF|EXPECTREGEX|CLEAN)--\n$/",
-			$line,
-			$match
-		)) {
+		if (preg_match("/^--(SKIPIF|INI|ARGS|FILE|EXPECT|EXPECTF|EXPECTREGEX|CLEAN)--\n$/", $line, $match)) {
 			$current_key          = $match[1];
 			$result[$current_key] = '';
 		} elseif ($current_key) {
@@ -138,20 +170,30 @@ function parse_test ($test_file) {
 }
 
 /**
+ * @param string   $binary
  * @param string   $working_dir
  * @param string   $code
  * @param string[] $php_arguments
  * @param string   $script_arguments
  * @param string   $test_file
+ * @param bool     $keep_file
  *
  * @return string
  */
-function execute_code ($working_dir, $code, $php_arguments, $script_arguments, $test_file) {
-	$file = "$working_dir/__code.php";
-	file_put_contents($file, $code);
+function execute_code ($binary, $working_dir, $code, $php_arguments, $script_arguments, $test_file, $keep_file = false) {
+	if ($keep_file) {
+		$tmp_code_file = "$test_file.test_code.php";
+	} else {
+		$tmp_code_file = tempnam($working_dir, basename($test_file));
+	}
+	file_put_contents($tmp_code_file, $code);
 	putenv("TEST_FILE=\"$test_file\"");
-	$output = shell_exec(PHP_BINARY.' '.implode(' ', $php_arguments).' -f '.escapeshellarg($file)." -- $script_arguments 2>&1");
-	unlink($file);
+	$arguments     = implode(' ', $php_arguments);
+	$prepared_file = escapeshellarg($tmp_code_file);
+	$output        = shell_exec("$binary $arguments -f $prepared_file -- $script_arguments 2>&1");
+	if (!$keep_file) {
+		unlink($tmp_code_file);
+	}
 	return $output;
 }
 
@@ -165,6 +207,7 @@ function time_since_started ($started) {
 }
 
 /**
+ * @param string   $binary
  * @param string   $output
  * @param string   $base_text
  * @param string   $test_file
@@ -173,19 +216,20 @@ function time_since_started ($started) {
  * @param string[] $parsed_test
  * @param float    $started_time
  *
- * @return string `skipped`, `success` or `error`
+ * @return string `success` or `error`
  */
-function compare_output ($output, $base_text, $test_file, $php_arguments, $script_arguments, $parsed_test, $started_time) {
-	$working_dir = dirname($test_file);
+function compare_output ($binary, $output, $base_text, $test_file, $php_arguments, $script_arguments, $parsed_test, $started_time) {
+	$working_dir    = dirname($test_file);
+	$execution_time = time_since_started($started_time);
 	if (isset($parsed_test['EXPECT'])) {
-		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECT'], $php_arguments, $script_arguments, $test_file));
+		$expect = rtrim(execute_code($binary, $working_dir, $parsed_test['EXPECT'], $php_arguments, $script_arguments, $test_file));
 		if ($expect === $output) {
-			line("<g>$base_text SUCCESS</g> ".time_since_started($started_time), true);
-			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
+			line("<g>$base_text SUCCESS</g> $execution_time", true);
+			isset($parsed_test['CLEAN']) && execute_code($binary, $working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
 	} elseif (isset($parsed_test['EXPECTF'])) {
-		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECTF'], $php_arguments, $script_arguments, $test_file));
+		$expect = rtrim(execute_code($binary, $working_dir, $parsed_test['EXPECTF'], $php_arguments, $script_arguments, $test_file));
 		$regex  = str_replace(
 			[
 				'%s',
@@ -214,29 +258,28 @@ function compare_output ($output, $base_text, $test_file, $php_arguments, $scrip
 			preg_quote($expect, '/')
 		);
 		if (preg_match("/^$regex\$/s", $output)) {
-			line("<g>$base_text SUCCESS</g> ".time_since_started($started_time), true);
-			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
+			line("<g>$base_text SUCCESS</g> $execution_time", true);
+			isset($parsed_test['CLEAN']) && execute_code($binary, $working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
 	} else {
-		$expect = rtrim(execute_code($working_dir, $parsed_test['EXPECREGEX'], $php_arguments, $script_arguments, $test_file));
+		$expect = rtrim(execute_code($binary, $working_dir, $parsed_test['EXPECREGEX'], $php_arguments, $script_arguments, $test_file));
 		$regex  = preg_quote($expect, '/');
 		if (preg_match("/^$regex\$/s", $output)) {
-			line("<g>$base_text SUCCESS</g> ".time_since_started($started_time), true);
-			isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
+			line("<g>$base_text SUCCESS</g> $execution_time", true);
+			isset($parsed_test['CLEAN']) && execute_code($binary, $working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
 	}
-	line("<r>$base_text ERROR:</r> ".time_since_started($started_time), true);
+	line("<r>$base_text ERROR:</r> $execution_time", true);
 	$diff = preg_replace_callback(
 		'/^([-+]).*$/m',
 		function ($match) {
-			return $match[1] == '-' ? "<r>$match[0]</r>" : "<g>$match[0]</g>";
+			return $match[1] === '-' ? "<r>$match[0]</r>" : "<g>$match[0]</g>";
 		},
 		compute_diff($test_file, $expect, $output)
 	);
 	line($diff);
-	isset($parsed_test['CLEAN']) && execute_code($working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 	return 'error';
 }
 
@@ -278,31 +321,19 @@ function find_tests ($target) {
 	return file_exists($target) ? [$target] : [];
 }
 
-/** @var bool[] $options */
-$options = [];
-$targets = [];
-foreach (array_slice($argv, 1) as $arg) {
-	if (strpos($arg, '-') === 0) {
-		$options[ltrim($arg, '-')] = true;
-	} else {
-		$targets[] = $arg;
-	}
-}
-/** @noinspection AdditionOperationOnArraysInspection */
-$options += [
-	'h'         => false,
-	'skip-slow' => false
-];
+$options = getopt('hb:', [], $offset);
+$targets = array_slice($argv, $offset);
 line("<g>PHPT Tests runner</g>\n");
 
-if (!$targets || $options['h']) {
+if (!$targets || isset($options['h'])) {
 	line(
 		<<<HTML
 <y>Usage:</y>
-  phpt-tests-runner [-h] [files] [directories] 
+  phpt-tests-runner [-h] [-b binary] [files] [directories]
 
 <y>Arguments:</y>
-  <g>h</g> Print this help message  
+  <g>-h</g> Print this help message
+  <g>-b</g> Specify custom PHP binary to be used (current is used by default)
 
 <y>Examples:</y>
   Execute tests from tests directory:
@@ -314,10 +345,10 @@ if (!$targets || $options['h']) {
 
 <y>PHPT Format:</y>
   This runner uses modification of PHPT format used by PHP itself, so that it can run many original PHPT tests without any changes.
-  
+
   PHPT test if text file with *.phpt extension.
   Each file contains sections followed by section contents, everything before first section is ignored, you can use it for storing test description.
-  
+
   Required sections are <g>--FILE--</g> and one of [<g>--EXPECT--</g>, <g>--EXPECTF--</g>, <g>--EXPECTREGEX--</g>].
 
 <y>PHPT sections supported:</y>
@@ -369,6 +400,7 @@ foreach ($tests as $test_file) {
 	$max_length = max($max_length, strlen($test_file));
 }
 
+$binary       = $options['b'] ?? PHP_BINARY;
 $results      = [
 	'skipped' => 0,
 	'success' => 0,
@@ -378,7 +410,7 @@ $started_time = microtime(true);
 
 foreach ($tests as $index => $test_file) {
 	$base_text = sprintf("%' 3d/$tests_count %s", $index + 1, str_pad($test_file, $max_length));
-	$results[run_test($test_file, $base_text)]++;
+	$results[run_test($binary, $test_file, $base_text)]++;
 }
 
 line("\nResults:");
