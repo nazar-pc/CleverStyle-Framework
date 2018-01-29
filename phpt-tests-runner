@@ -321,9 +321,13 @@ function find_tests ($target) {
 	return file_exists($target) ? [$target] : [];
 }
 
-$offset  = 0;
-$options = getopt('hb:', [], $offset);
-$targets = array_slice($argv, $offset);
+$options = getopt('hb:', []);
+$targets = array_filter(
+	array_slice($argv, 1),
+	function ($path) {
+		return is_dir($path) || (is_file($path) && substr($path, -5) === '.phpt');
+	}
+);
 line("<g>PHPT Tests runner</g>\n");
 
 if (!$targets || isset($options['h'])) {
