@@ -230,7 +230,6 @@ function compare_output ($binary, $output, $base_text, $test_file, $php_argument
 		$expect = rtrim(execute_code($binary, $working_dir, $parsed_test['EXPECT'], $php_arguments, $script_arguments, $test_file));
 		if ($expect === $output) {
 			line("<g>$base_text SUCCESS</g> $execution_time", true);
-			isset($parsed_test['CLEAN']) && execute_code($binary, $working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
 	} elseif (isset($parsed_test['EXPECTF'])) {
@@ -264,7 +263,6 @@ function compare_output ($binary, $output, $base_text, $test_file, $php_argument
 		);
 		if (preg_match("/^$regex\$/s", $output)) {
 			line("<g>$base_text SUCCESS</g> $execution_time", true);
-			isset($parsed_test['CLEAN']) && execute_code($binary, $working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
 	} else {
@@ -272,7 +270,6 @@ function compare_output ($binary, $output, $base_text, $test_file, $php_argument
 		$regex  = preg_quote($expect, '/');
 		if (preg_match("/^$regex\$/s", $output)) {
 			line("<g>$base_text SUCCESS</g> $execution_time", true);
-			isset($parsed_test['CLEAN']) && execute_code($binary, $working_dir, $parsed_test['CLEAN'], $php_arguments, $script_arguments, $test_file);
 			return 'success';
 		}
 	}
