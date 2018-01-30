@@ -105,12 +105,6 @@ JS
 				h::{'input[type=password][name=admin_password]'}()
 			)
 		).
-		h::{'button.license'}(
-			'License',
-			[
-				'onclick' => "window.open('license.txt', 'license', 'location=no')"
-			]
-		).
 		h::{'button[type=submit]'}(
 			'Install'
 		)

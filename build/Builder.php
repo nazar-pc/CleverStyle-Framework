@@ -83,12 +83,6 @@ class Builder {
 		}
 		unset($index, $file);
 		/**
-		 * Add license under the file `license-cleverstyle-framework.txt` rather than `license.txt`, so that license is not enforced on projects using it and is
-		 * not overridden on framework update
-		 */
-		$phar->addFile("$this->root/license.txt", 'fs/'.count($core_files));
-		$core_files[] = 'license-cleverstyle-framework.txt';
-		/**
 		 * Addition of separate files into package
 		 */
 		$phar->addFromString(
@@ -146,7 +140,6 @@ class Builder {
 		 * Addition of supplementary files, that are needed directly for installation process: installer with GUI interface, readme, license, some additional
 		 * information about available languages, themes, current version of system
 		 */
-		$phar->addFile("$this->root/license.txt", 'license.txt');
 		$phar->addFile("$this->root/modules/System/meta.json", 'meta.json');
 		$phar->setStub(
 		/** @lang PHP */
@@ -287,9 +280,6 @@ RewriteBase /
 		Header set Cache-Control "max-age=2592000, immutable"
 	</ifModule>
 </FilesMatch>
-<Files license.txt>
-	RewriteEngine Off
-</Files>
 
 RewriteRule .* index.php
 HTACCESS;

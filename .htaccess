@@ -21,9 +21,6 @@ RewriteBase /
 		Header set Cache-Control "max-age=2592000, immutable"
 	</ifModule>
 </FilesMatch>
-<Files license.txt>
-	RewriteEngine Off
-</Files>
 <Files *.php>
 	RewriteEngine Off
 </Files>

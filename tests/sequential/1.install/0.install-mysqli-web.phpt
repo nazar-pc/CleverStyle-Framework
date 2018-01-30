@@ -120,7 +120,6 @@ include __DIR__.'/../_clean.php';
 			</td>
 		</tr>
 	</table>
-	<button class="license" onclick="window.open(&apos;license.txt&apos;, &apos;license&apos;, &apos;location=no&apos;)" type="button">License</button>
 	<button type="submit">Install</button>
 </form>
 </section>
