@@ -15,7 +15,7 @@ function form () {
 			h::{'radio[name=mode]'}(
 				[
 					'value' => ['core', 'module', 'theme'],
-					'in'    => ['Core', 'Module', 'Theme']
+					'in'    => [h::span('Core'), h::span('Module'), h::span('Theme')]
 				]
 			)
 		).

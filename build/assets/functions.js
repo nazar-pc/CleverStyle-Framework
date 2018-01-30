@@ -7,23 +7,14 @@
  */
 (function(){
   addEventListener('load', function(){
-    var labels, modules, themes, ref$, ref1$;
-    labels = document.querySelectorAll('label');
+    var modules, themes, ref$;
     modules = document.querySelector("[name='modules[]']");
     themes = document.querySelector("[name='themes[]']");
     if ((ref$ = document.querySelector('nav')) != null) {
       ref$.addEventListener('click', function(e){
-        var i$, ref$, len$, label;
+        var ref$;
         if (!e.target.matches('input')) {
           return;
-        }
-        for (i$ = 0, len$ = (ref$ = labels).length; i$ < len$; ++i$) {
-          label = ref$[i$];
-          if (label.querySelector("[value=" + e.target.value + "]")) {
-            label.classList.add('active');
-          } else {
-            label.classList.remove('active');
-          }
         }
         ref$ = (function(){
           switch (e.target.value) {
@@ -36,11 +27,6 @@
           }
         }()), modules.disabled = ref$[0], themes.disabled = ref$[1];
       });
-    }
-    if (!document.querySelector('nav > label.active')) {
-      if ((ref1$ = document.querySelector('nav > label')) != null) {
-        ref1$.click();
-      }
     }
   });
 }).call(this);

@@ -45,7 +45,7 @@ section {
 	width            : 520px;
 
 	nav {
-		label {
+		cs-label-button {
 			background-color : #666;
 			color            : #aaa;
 			cursor           : pointer;
@@ -53,13 +53,19 @@ section {
 			height           : 30px;
 			line-height      : 30px;
 			position         : relative;
-			padding          : 0 30px;
 
-			&:nth-of-type(1) {
+			label {
+				cursor  : pointer;
+				display : block;
+				height  : 100%;
+				padding : 0 30px;
+			}
+
+			&:nth-child(n + 1) {
 				margin-right : -10px;
 			}
 
-			&:nth-of-type(2)::before {
+			&:nth-child(n + 2):before {
 				background-color : #d7d7d7;
 				content          : "";
 				height           : 30px;
