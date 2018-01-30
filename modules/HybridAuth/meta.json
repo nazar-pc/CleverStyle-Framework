@@ -5,7 +5,7 @@
 	"description"  : "Module for integration with social networks. Integrates HybridAuth library with all available providers into CleverStyle Framework.",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/Framework",
-	"license"      : "MIT License",
+	"license"      : "0BSD",
 	"db"           : [
 		"integration"
 	],

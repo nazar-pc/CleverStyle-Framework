@@ -3,8 +3,7 @@
  * @package    WebSockets
  * @subpackage CleverStyle Framework We
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2015-2017, Nazar Mokrynskyi
- * @license    MIT License, see license.txt
+ * @license    0BSD
  */
 namespace cs\modules\WebSockets;
 use

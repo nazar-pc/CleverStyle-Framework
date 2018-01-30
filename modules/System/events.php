@@ -4,8 +4,7 @@
  * @subpackage System module
  * @category   modules
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2013-2017, Nazar Mokrynskyi
- * @license    MIT License, see license.txt
+ * @license    0BSD
  */
 namespace cs;
 use

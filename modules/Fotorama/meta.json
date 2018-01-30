@@ -3,9 +3,9 @@
 	"category"    : "modules",
 	"version"     : "4.6.4+cs18",
 	"description" : "A simple, stunning, powerful jQuery gallery. Integration into CleverStyle Framework.",
-	"author"      : "Artem Polikarpov",
-	"website"     : "fotorama.io",
-	"license"     : "MIT License",
+	"author"      : "Nazar Mokrynskyi",
+	"website"     : "cleverstyle.org/Framework",
+	"license"     : "0BSD",
 	"assets"      : {
 		"Fotorama" : "*"
 	},

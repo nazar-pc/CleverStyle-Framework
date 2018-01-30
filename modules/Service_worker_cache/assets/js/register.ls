@@ -1,9 +1,8 @@
 /**
- * @package   Service worker cache
- * @category  modules
- * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
- * @license   MIT License, see license.txt
+ * @package  Service worker cache
+ * @category modules
+ * @author   Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @license  0BSD
  */
 if navigator.serviceWorker
 	navigator.serviceWorker.register(

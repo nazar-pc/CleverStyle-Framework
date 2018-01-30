@@ -1,9 +1,8 @@
 <?php
 /**
- * @package   CleverStyle Framework
- * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright Copyright (c) 2011-2017, Nazar Mokrynskyi
- * @license   MIT License, see license.txt
+ * @package CleverStyle Framework
+ * @author  Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @license 0BSD
  */
 /**
  * Class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage

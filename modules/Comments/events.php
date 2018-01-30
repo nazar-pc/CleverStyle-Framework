@@ -1,10 +1,9 @@
 <?php
 /**
- * @package   Comments
- * @category  modules
- * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright Copyright (c) 2011-2017, Nazar Mokrynskyi
- * @license   MIT License, see license.txt
+ * @package  Comments
+ * @category modules
+ * @author   Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @license  0BSD
  */
 namespace cs\modules\Comments;
 use

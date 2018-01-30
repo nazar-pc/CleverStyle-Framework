@@ -1,8 +1,7 @@
 /**
- * @package   CleverStyle Framework
- * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright Copyright (c) 2014-2017, Nazar Mokrynskyi
- * @license   MIT License, see license.txt
+ * @package CleverStyle Framework
+ * @author  Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @license 0BSD
  */
 ###
  # Load configuration from special script elements

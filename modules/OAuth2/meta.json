@@ -5,7 +5,7 @@
 	"description"  : "Module provides realization of OAuth 2 authorization protocol (server side).",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/Framework",
-	"license"      : "MIT License",
+	"license"      : "0BSD",
 	"assets"       : {
 		"admin/OAuth2" : "admin.css",
 		"OAuth2"       : "user.css"

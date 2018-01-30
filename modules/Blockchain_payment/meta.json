@@ -5,7 +5,7 @@
 	"description"  : "Payment though blockchain.info in Bitcoin",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/Framework",
-	"license"      : "MIT License",
+	"license"      : "0BSD",
 	"assets"       : {
 		"admin/Blockchain_payment" : "admin.css",
 		"Blockchain_payment"       : [

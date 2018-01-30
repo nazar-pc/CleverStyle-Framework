@@ -2,10 +2,10 @@
 	"package"      : "TinyMCE",
 	"category"     : "modules",
 	"version"      : "4.5.5+custom-patches+cs-2.0.0",
-	"description"  : "TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control released as Open Source under LGPL by Moxiecode Systems AB. Plupload or similar module is required for files uploading functionality.",
-	"author"       : "Moxiecode Systems AB",
-	"website"      : "www.tinymce.com",
-	"license"      : "GNU Lesser General Public License 2.1",
+	"description"  : "TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control released as Open Source under LGPL by Moxiecode Systems AB. Uploader or similar module is required for files uploading functionality.",
+	"author"       : "Nazar Mokrynskyi",
+	"website"      : "cleverstyle.org/Framework",
+	"license"      : "0BSD",
 	"assets"       : {
 		"TinyMCE" : "*"
 	},

@@ -9,7 +9,11 @@
 
 CleverStyle Framework is simple, scalable, fast and secure full-stack PHP framework.
 
-It is free, Open Source and is distributed under MIT license, see [license.txt](/license.txt)
+It is free, Open Source and is distributed under Free Public License 1.0.0 / Zero Clause BSD License
+
+https://opensource.org/licenses/FPL-1.0.0
+
+https://tldrlegal.com/license/bsd-0-clause-license
 
 [Installation instructions](/docs/installation/Installation.md), [documentation](/docs), [video tutorials for developers](https://www.youtube.com/watch?v=GVXHeCVbO_c&list=PLVUA3QJ02XIiKEzpD4dxoCENgzzJyNEnH), [help with translations on Transifex](https://www.transifex.com/cleverstyle/cleverstyle-framework).
 

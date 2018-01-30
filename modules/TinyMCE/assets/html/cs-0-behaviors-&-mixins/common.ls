@@ -1,9 +1,8 @@
 /**
- * @package   TinyMCE
- * @category  modules
- * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright Copyright (c) 2015-2017, Nazar Mokrynskyi
- * @license   GNU Lesser General Public License 2.1, see license.txt
+ * @package  TinyMCE
+ * @category modules
+ * @author   Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @license  0BSD
  */
 load_promise	= null
 change_timeout	= null

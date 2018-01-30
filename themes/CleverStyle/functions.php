@@ -3,8 +3,7 @@
  * @package    CleverStyle Framework
  * @subpackage CleverStyle theme
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2014-2017, Nazar Mokrynskyi
- * @license    MIT License, see license.txt
+ * @license    0BSD
  */
 namespace cs\themes\CleverStyle;
 use

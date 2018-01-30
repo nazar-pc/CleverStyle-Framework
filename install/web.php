@@ -3,8 +3,7 @@
  * @package    CleverStyle Framework
  * @subpackage Installer
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2016-2017, Nazar Mokrynskyi
- * @license    MIT License, see license.txt
+ * @license    0BSD
  */
 namespace cs;
 use
@@ -214,4 +213,3 @@ $version = file_get_json("$phar_path/meta.json")['version'];
 	<h1>Installation</h1>
 </header>
 <section><?=isset($_POST['site_name']) ? install_process($phar_path) : install_form($phar_path)?></section>
-<footer>Copyright (c) 2011-2017, Nazar Mokrynskyi</footer>

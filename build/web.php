@@ -3,8 +3,7 @@
  * @package    CleverStyle Framework
  * @subpackage Builder
  * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2016-2017, Nazar Mokrynskyi
- * @license    MIT License, see license.txt
+ * @license    0BSD
  */
 namespace cs;
 
@@ -41,4 +40,3 @@ if ($mode == 'core') {
 <section>
 	<?=$content?>
 </section>
-<footer>Copyright (c) 2011-2017, Nazar Mokrynskyi</footer>

@@ -5,7 +5,7 @@
 	"description"      : "Simple photo gallery, works standalone and integrates with other components (depends on Composer, Fotorama and Uploader).",
 	"author"           : "Nazar Mokrynskyi",
 	"website"          : "cleverstyle.org/Framework",
-	"license"          : "MIT License",
+	"license"          : "0BSD",
 	"assets"           : {
 		"admin/Photo_gallery" : "admin.css",
 		"Photo_gallery"       : "general.*"

@@ -3,9 +3,9 @@
 	"category"    : "modules",
 	"version"     : "1.6.0+cs-2.0.2",
 	"description" : "Prism is a lightweight, extensible syntax highlighter, built with modern web standards in mind. Integration into CleverStyle Framework.",
-	"author"      : "Lea Verou",
-	"website"     : "prismjs.com",
-	"license"     : "MIT License",
+	"author"      : "Nazar Mokrynskyi",
+	"website"     : "cleverstyle.org/Framework",
+	"license"     : "0BSD",
 	"provide"     : "code_highlighting",
 	"require"     : [
 		"System>=7.0",

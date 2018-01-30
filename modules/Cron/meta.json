@@ -5,7 +5,7 @@
 	"description"  : "Module for tasks scheduling with the help of crontab. Module uses shell_exec() function, it should be allowed for execution.",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/Framework",
-	"license"      : "MIT License",
+	"license"      : "0BSD",
 	"assets"       : {
 		"admin/Cron" : "admin.css"
 	},
