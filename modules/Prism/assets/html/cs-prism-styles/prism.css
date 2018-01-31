@@ -1,4 +1,5 @@
-/* http://prismjs.com/download.html?themes=prism-okaidia&languages=markup+css+clike+javascript&plugins=line-highlight+line-numbers+autolinker+file-highlight+previewer-base+previewer-color+previewer-gradient+previewer-easing+previewer-time+previewer-angle+autoloader+command-line */
+/* PrismJS 1.10.0
+http://prismjs.com/download.html?themes=prism-okaidia&plugins=line-highlight+line-numbers+autolinker+file-highlight+previewers+autoloader+command-line */
 /**
  * okaidia theme for JavaScript, CSS and HTML
  * Loosely based on Monokai textmate theme by http://www.monokai.nl/
@@ -166,6 +167,11 @@ pre[data-line] {
 		bottom: .4em;
 	}
 
+.line-numbers .line-highlight:before,
+.line-numbers .line-highlight:after {
+	content: none;
+}
+
 pre.line-numbers {
 	position: relative;
 	padding-left: 3.8em;
@@ -174,6 +180,7 @@ pre.line-numbers {
 
 pre.line-numbers > code {
 	position: relative;
+    white-space: inherit;
 }
 
 .line-numbers .line-numbers-rows {
@@ -249,7 +256,6 @@ pre.line-numbers > code {
 	border: 5px solid #fff;
 	box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) inset, 0 0 10px rgba(0, 0, 0, 0.75);
 }
-
 .prism-previewer:after {
 	top: 100%;
 	width: 0;
@@ -270,14 +276,36 @@ pre.line-numbers > code {
 .prism-previewer.active {
 	opacity: 1;
 }
-.prism-previewer-color {
-	background-image: linear-gradient(45deg, #bbb 25%, transparent 25%, transparent 75%, #bbb 75%, #bbb), linear-gradient(45deg, #bbb 25%, #eee 25%, #eee 75%, #bbb 75%, #bbb);
-	background-size: 10px 10px;
-	background-position: 0 0, 5px 5px;
+
+.prism-previewer-angle:before {
+	border-radius: 50%;
+	background: #fff;
 }
-.prism-previewer-color:before {
-	background-color: inherit;
-	background-clip: padding-box;
+.prism-previewer-angle:after {
+	margin-top: 4px;
+}
+.prism-previewer-angle svg {
+	width: 32px;
+	height: 32px;
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+}
+.prism-previewer-angle[data-negative] svg {
+	-webkit-transform: scaleX(-1) rotate(-90deg);
+	-moz-transform: scaleX(-1) rotate(-90deg);
+	-ms-transform: scaleX(-1) rotate(-90deg);
+	-o-transform: scaleX(-1) rotate(-90deg);
+	transform: scaleX(-1) rotate(-90deg);
+}
+.prism-previewer-angle circle {
+	fill: transparent;
+	stroke: hsl(200, 10%, 20%);
+	stroke-opacity: 0.9;
+	stroke-width: 32;
+	stroke-dasharray: 0, 500;
 }
 
 .prism-previewer-gradient {
@@ -301,6 +329,17 @@ pre.line-numbers > code {
 	border: 5px solid #fff;
 	box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) inset, 0 0 10px rgba(0, 0, 0, 0.75);
 }
+
+.prism-previewer-color {
+	background-image: linear-gradient(45deg, #bbb 25%, transparent 25%, transparent 75%, #bbb 75%, #bbb), linear-gradient(45deg, #bbb 25%, #eee 25%, #eee 75%, #bbb 75%, #bbb);
+	background-size: 10px 10px;
+	background-position: 0 0, 5px 5px;
+}
+.prism-previewer-color:before {
+	background-color: inherit;
+	background-clip: padding-box;
+}
+
 .prism-previewer-easing {
 	margin-top: -76px;
 	margin-left: -30px;
@@ -330,6 +369,7 @@ pre.line-numbers > code {
 	stroke-opacity: 0.5;
 	stroke-width: 2;
 }
+
 @-webkit-keyframes prism-previewer-time {
 	0% {
 		stroke-dasharray: 0, 500;
@@ -417,36 +457,6 @@ pre.line-numbers > code {
 	-moz-animation: prism-previewer-time linear infinite 3s;
 	-o-animation: prism-previewer-time linear infinite 3s;
 	animation: prism-previewer-time linear infinite 3s;
-}
-.prism-previewer-angle:before {
-	border-radius: 50%;
-	background: #fff;
-}
-.prism-previewer-angle:after {
-	margin-top: 4px;
-}
-.prism-previewer-angle svg {
-	width: 32px;
-	height: 32px;
-	-webkit-transform: rotate(-90deg);
-	-moz-transform: rotate(-90deg);
-	-ms-transform: rotate(-90deg);
-	-o-transform: rotate(-90deg);
-	transform: rotate(-90deg);
-}
-.prism-previewer-angle[data-negative] svg {
-	-webkit-transform: scaleX(-1) rotate(-90deg);
-	-moz-transform: scaleX(-1) rotate(-90deg);
-	-ms-transform: scaleX(-1) rotate(-90deg);
-	-o-transform: scaleX(-1) rotate(-90deg);
-	transform: scaleX(-1) rotate(-90deg);
-}
-.prism-previewer-angle circle {
-	fill: transparent;
-	stroke: hsl(200, 10%, 20%);
-	stroke-opacity: 0.9;
-	stroke-width: 32;
-	stroke-dasharray: 0, 500;
 }
 .command-line-prompt {
 	border-right: 1px solid #999;
