@@ -215,7 +215,7 @@ class Page {
 		 * Theme is fixed for administration, and may vary for other pages
 		 */
 		if (Request::instance()->admin_path) {
-			$this->theme = 'CleverStyle';
+			$this->theme = Config::SYSTEM_THEME;
 		}
 		ob_start();
 		$theme_dir = THEMES."/$this->theme";
